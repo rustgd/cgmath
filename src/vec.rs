@@ -45,18 +45,12 @@ trait Vector<T:Num Ord FuzzyEq> {
 
 
 
-//
-//  2-Dimensional Vector
-//
 trait Vector2<T:Num Ord FuzzyEq> {
     // This is where I wish rust had properties ;)
     pure fn x() -> T;
     pure fn y() -> T;
 }
 
-//
-//  3-Dimensional Vector
-//
 trait Vector3<T:Num Ord FuzzyEq> {
     pure fn x() -> T;
     pure fn y() -> T;
@@ -65,9 +59,6 @@ trait Vector3<T:Num Ord FuzzyEq> {
     fn cross(&&other:self) -> self;
 }
 
-//
-//  4-Dimensional Vector
-//
 trait Vector4<T:Num Ord FuzzyEq> {
     pure fn x() -> T;
     pure fn y() -> T;
@@ -81,12 +72,12 @@ trait Vector4<T:Num Ord FuzzyEq> {
 
 
 //
-//  Vec2 struct definition
+//  Vec2
 //
 struct vec2 { data:[float * 2] }
 
 //
-//  Vec2 Constructor
+//  Constructor
 //
 #[inline(always)]
 pure fn vec2(x:float, y:float) -> vec2 {
@@ -101,17 +92,11 @@ pure fn vec2(x:float, y:float) -> vec2 {
 #[inline(always)] pure fn vec2_unit_y()   -> vec2 { vec2 (0f, 1f) }
 #[inline(always)] pure fn vec2_identity() -> vec2 { vec2 (1f, 1f) }
 
-//
-//  Vector2 Implementation
-//
 impl vec2: Vector2<float> {
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
 }
 
-//
-//  Vector Implementation
-//
 impl vec2: Vector<float> {
     #[inline(always)]
     pure fn dim() -> uint { 2 }
@@ -226,9 +211,6 @@ impl vec2: Vector<float> {
     // }
 }
 
-//
-//  Convert To String
-//
 impl vec2: ToStr {
     fn to_str() -> ~str {
         fmt!("vec2[ %f, %f ]", self[0], self[1])
@@ -241,7 +223,7 @@ impl vec2: ToStr {
 
 
 //
-//  Vec3 struct definition
+//  Vec3
 //
 struct vec3 { data:[float * 3] }
 
@@ -255,17 +237,13 @@ struct vec3 { data:[float * 3] }
 #[inline(always)] pure fn vec3_identity() -> vec3 { vec3(1f, 1f, 1f) }
 
 //
-//  Vec3 Constructor
+//  Constructor
 //
 #[inline(always)]
 pure fn vec3(x:float, y:float, z:float) -> vec3 {
     vec3 { data: [ x, y, z ] }
 }
 
-
-//
-//  Vector3 Implementation
-//
 impl vec3: Vector3<float> {
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
@@ -279,9 +257,6 @@ impl vec3: Vector3<float> {
     }
 }
 
-//
-//  Vector Implementation
-//
 impl vec3: Vector<float> {
     #[inline(always)]
     pure fn dim() -> uint { 3 }
@@ -409,9 +384,6 @@ impl vec3: Vector<float> {
     // }
 }
 
-//
-//  Convert To String
-//
 impl vec3: ToStr {
     fn to_str() -> ~str {
         fmt!("vec3[ %f, %f, %f ]", self[0], self[1], self[2])
@@ -424,7 +396,7 @@ impl vec3: ToStr {
 
 
 //
-//  Vec4 struct definition
+//  Vec4
 //
 struct vec4 { data:[float * 4] }
 
@@ -439,16 +411,13 @@ struct vec4 { data:[float * 4] }
 #[inline(always)] pure fn vec4_identity() -> vec4 { vec4(1f, 1f, 1f, 1f) }
 
 //
-//  Vec4 Constructor
+//  Constructor
 //
 #[inline(always)]
 pure fn vec4(x:float, y:float, z:float, w:float) -> vec4 {
     vec4 { data: [ x, y, z, w ] }
 }
 
-//
-//  Vector4 Implementation
-//
 impl vec4: Vector4<float> {
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
@@ -456,9 +425,6 @@ impl vec4: Vector4<float> {
     #[inline(always)] pure fn w() -> float { self.data[3] }
 }
 
-//
-//  Vector Implementation
-//
 impl vec4: Vector<float> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
@@ -599,9 +565,6 @@ impl vec4: Vector<float> {
     // }
 }
 
-//
-//  Convert To String
-//
 impl vec4: ToStr {
     fn to_str() -> ~str {
         fmt!("vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
