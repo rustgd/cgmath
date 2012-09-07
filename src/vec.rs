@@ -1,7 +1,7 @@
 import std::cmp::FuzzyEq;
 import cmp::Ord;
 import num::Num;
-import float::sqrt;
+import float::{sqrt, abs, fmin, fmax};
 import to_str::ToStr;
 
 // TODO: Unittests! I've probably made lots of mistakes...
@@ -34,11 +34,16 @@ trait Vector<T:Num Ord FuzzyEq> {
     pure fn magnitude() -> T;
     pure fn normalize() -> self;
     
-    // pure fn lerp(&&other:self, &&value:T) -> self;
-    // pure fn abs(&&other:self) -> self;
+    pure fn lerp(&&other:self, &&value:T) -> self;
+    pure fn abs() -> self;
     // pure fn min(&&other:self) -> self;
     // pure fn max(&&other:self) -> self;
 }
+
+
+
+
+
 
 //
 //  2-Dimensional Vector
@@ -196,6 +201,29 @@ impl vec2: Vector<float> {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
+    
+    #[inline(always)]
+    pure fn lerp(&&other:vec2, &&value:float) -> vec2 {
+        self.add_v((other.sub_v(self)).mul_f(value))
+    }
+    
+    #[inline(always)]
+    pure fn abs() -> vec2 {
+        vec2(abs(self[0]),
+             abs(self[1]))
+    }
+    
+    // #[inline(always)]
+    // pure fn min(&&other:vec2) -> vec2 {
+    //     vec2(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]))
+    // }
+    
+    // #[inline(always)]
+    // pure fn max(&&other:vec2) -> vec2 {
+    //     vec2(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]))
+    // }
 }
 
 //
@@ -353,6 +381,32 @@ impl vec3: Vector<float> {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
+    
+    #[inline(always)]
+    pure fn lerp(&&other:vec3, &&value:float) -> vec3 {
+        self.add_v((other.sub_v(self)).mul_f(value))
+    }
+    
+    #[inline(always)]
+    pure fn abs() -> vec3 {
+        vec3(abs(self[0]),
+             abs(self[1]),
+             abs(self[2]))
+    }
+    
+    // #[inline(always)]
+    // pure fn min(&&other:vec3) -> vec3 {
+    //     vec3(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]),
+    //          fmin(self[2], other[2]))
+    // }
+    
+    // #[inline(always)]
+    // pure fn max(&&other:vec3) -> vec3 {
+    //     vec3(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]),
+    //          fmin(self[2], other[2]))
+    // }
 }
 
 //
@@ -501,7 +555,7 @@ impl vec4: Vector<float> {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2] +
-        self[3] + self[3]
+        self[3] * self[3]
     }
     
     #[inline(always)]
@@ -514,6 +568,35 @@ impl vec4: Vector<float> {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
+    
+    #[inline(always)]
+    pure fn lerp(&&other:vec4, &&value:float) -> vec4 {
+        self.add_v((other.sub_v(self)).mul_f(value))
+    }
+    
+    #[inline(always)]
+    pure fn abs() -> vec4 {
+        vec4(abs(self[0]),
+             abs(self[1]),
+             abs(self[2]),
+             abs(self[3]))
+    }
+    
+    // #[inline(always)]
+    // pure fn min(&&other:vec4) -> vec4 {
+    //     vec4(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]),
+    //          fmin(self[2], other[2]),
+    //          fmin(self[3], other[3]))
+    // }
+    
+    // #[inline(always)]
+    // pure fn max(&&other:vec4) -> vec4 {
+    //     vec4(fmin(self[0], other[0]),
+    //          fmin(self[1], other[1]),
+    //          fmin(self[2], other[2]),
+    //          fmin(self[3], other[3]))
+    // }
 }
 
 //
