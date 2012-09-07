@@ -24,11 +24,11 @@ trait Vector<T:Num Ord FuzzyEq> {
     pure fn add_v(&&other: self) -> self;
     pure fn sub_v(&&other: self) -> self;
     
+    pure fn dot(&&other: self) -> T;
+    
     pure fn exact_eq(&&other:self) -> bool;
     pure fn fuzzy_eq(&&other:self) -> bool;
     pure fn eq(&&other:self) -> bool;
-    
-    pure fn dot(&&other: self) -> T;
     
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
@@ -158,6 +158,12 @@ impl vec2: Vector<float> {
     }
     
     #[inline(always)]
+    pure fn dot(&&other: vec2) -> float {
+        self[0] * other[0] +
+        self[1] * other[1]
+    }
+    
+    #[inline(always)]
     pure fn exact_eq(&&other:vec2) -> bool {
         self[0] == other[0] &&
         self[1] == other[1]
@@ -172,12 +178,6 @@ impl vec2: Vector<float> {
     #[inline(always)]
     pure fn eq(&&other:vec2) -> bool {
         self.fuzzy_eq(other)
-    }
-    
-    #[inline(always)]
-    pure fn dot(&&other: vec2) -> float {
-        self[0] * other[0] +
-        self[1] * other[1]
     }
     
     #[inline(always)]
@@ -311,6 +311,13 @@ impl vec3: Vector<float> {
     }
     
     #[inline(always)]
+    pure fn dot(&&other: vec3) -> float {
+        self[0] * other[0] +
+        self[1] * other[1] +
+        self[2] * other[2]
+    }
+    
+    #[inline(always)]
     pure fn exact_eq(&&other:vec3) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
@@ -327,13 +334,6 @@ impl vec3: Vector<float> {
     #[inline(always)]
     pure fn eq(&&other:vec3) -> bool {
         self.fuzzy_eq(other)
-    }
-    
-    #[inline(always)]
-    pure fn dot(&&other: vec3) -> float {
-        self[0] * other[0] +
-        self[1] * other[1] +
-        self[2] * other[2]
     }
     
     #[inline(always)]
@@ -468,6 +468,14 @@ impl vec4: Vector<float> {
     }
     
     #[inline(always)]
+    pure fn dot(&&other:vec4) -> float {
+        self[0] * other[0] +
+        self[1] * other[1] +
+        self[2] * other[2] +
+        self[3] * other[3]
+    }
+    
+    #[inline(always)]
     pure fn exact_eq(&&other:vec4) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
@@ -486,14 +494,6 @@ impl vec4: Vector<float> {
     #[inline(always)]
     pure fn eq(&&other:vec4) -> bool {
         self.fuzzy_eq(other)
-    }
-    
-    #[inline(always)]
-    pure fn dot(&&other:vec4) -> float {
-        self[0] * other[0] +
-        self[1] * other[1] +
-        self[2] * other[2] +
-        self[3] * other[3]
     }
     
     #[inline(always)]
