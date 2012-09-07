@@ -23,6 +23,7 @@ Any assistance would be most appreciated!
 ## Todo:
 
 - Unittests: I have full unittest coverage on my D project so the algorithms should be correct I just haven't implemented the yet because of the compilation issue above
+- Vector functions: abs, lerp, min, max
 - Matrix Inversion: ugh
 - Matrix rotation
 - Euler and Axial rotations
