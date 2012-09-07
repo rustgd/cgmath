@@ -20,8 +20,17 @@ For some reason my makefile isn't working - it give me the following error:
     
 Any assistance would be most appreciated!
 
+## Todo:
+
+- Unittests: I have full unittest coverage on my D project so the algorithms should be correct I just haven't implemented the yet because of the compilation issue above
+- Matrix Inversion: ugh
+- Matrix rotation
+- Euler and Axial rotations
+
 ## Disclaimer:
 
 I'm new to Rust and a novice at linear algebra. I also haven't written any unittests yet (although I plan to soon). I've almost certainly made mistakes, so use this at your own risk!
 
 At the time of writing (September 2012) the Rust language is still in a state of flux. There is a good chance that the code will be soon out of date.
+
+~B☼
