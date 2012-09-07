@@ -22,7 +22,7 @@ Any assistance would be most appreciated!
 
 ## Todo:
 
-- Unittests: I have full unittest coverage on my D project so the algorithms should be correct I just haven't implemented the yet because of the compilation issue above
+- Unittests: I have full unittest coverage on my D project so the algorithms should be correct. I just haven't implemented them in om3D-rs yet because of the unfortunate compilation issue aove. :(
 - Vector functions: abs, lerp, min, max
 - Matrix Inversion: ugh
 - Matrix rotation
