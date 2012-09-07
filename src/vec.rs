@@ -45,17 +45,17 @@ trait Vector<T:Num Ord FuzzyEq> {
 //
 trait Vector2<T:Num Ord FuzzyEq> {
     // This is where I wish rust had properties ;)
-    fn x() -> T;
-    fn y() -> T;
+    pure fn x() -> T;
+    pure fn y() -> T;
 }
 
 //
 //  3-Dimensional Vector
 //
 trait Vector3<T:Num Ord FuzzyEq> {
-    fn x() -> T;
-    fn y() -> T;
-    fn z() -> T;
+    pure fn x() -> T;
+    pure fn y() -> T;
+    pure fn z() -> T;
     
     fn cross(&&other:self) -> self;
 }
@@ -64,10 +64,10 @@ trait Vector3<T:Num Ord FuzzyEq> {
 //  4-Dimensional Vector
 //
 trait Vector4<T:Num Ord FuzzyEq> {
-    fn x() -> T;
-    fn y() -> T;
-    fn z() -> T;
-    fn w() -> T;
+    pure fn x() -> T;
+    pure fn y() -> T;
+    pure fn z() -> T;
+    pure fn w() -> T;
 }
 
 
@@ -91,17 +91,17 @@ pure fn vec2(x:float, y:float) -> vec2 {
 //
 //  Constants
 //
-#[inline(always)] pure fn vec2_zero()     -> vec2 { vec2 (0.0, 0.0) }
-#[inline(always)] pure fn vec2_unit_x()   -> vec2 { vec2 (1.0, 0.0) }
-#[inline(always)] pure fn vec2_unit_y()   -> vec2 { vec2 (0.0, 1.0) }
-#[inline(always)] pure fn vec2_identity() -> vec2 { vec2 (1.0, 1.0) }
+#[inline(always)] pure fn vec2_zero()     -> vec2 { vec2 (0f, 0f) }
+#[inline(always)] pure fn vec2_unit_x()   -> vec2 { vec2 (1f, 0f) }
+#[inline(always)] pure fn vec2_unit_y()   -> vec2 { vec2 (0f, 1f) }
+#[inline(always)] pure fn vec2_identity() -> vec2 { vec2 (1f, 1f) }
 
 //
 //  Vector2 Implementation
 //
 impl vec2: Vector2<float> {
-    #[inline(always)] fn x() -> float { self.data[0] }
-    #[inline(always)] fn y() -> float { self.data[1] }
+    #[inline(always)] pure fn x() -> float { self.data[0] }
+    #[inline(always)] pure fn y() -> float { self.data[1] }
 }
 
 //
@@ -193,7 +193,7 @@ impl vec2: Vector<float> {
     
     #[inline(always)]
     pure fn normalize() -> vec2 {
-        let n = 1.0 / self.magnitude();
+        let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
 }
@@ -220,11 +220,11 @@ struct vec3 { data:[float * 3] }
 //
 //  Constants
 //
-#[inline(always)] pure fn vec3_zero()     -> vec3 { vec3(0.0, 0.0, 0.0) }
-#[inline(always)] pure fn vec3_unit_x()   -> vec3 { vec3(1.0, 0.0, 0.0) }
-#[inline(always)] pure fn vec3_unit_y()   -> vec3 { vec3(0.0, 1.0, 0.0) }
-#[inline(always)] pure fn vec3_unit_z()   -> vec3 { vec3(0.0, 0.0, 1.0) }
-#[inline(always)] pure fn vec3_identity() -> vec3 { vec3(1.0, 1.0, 1.0) }
+#[inline(always)] pure fn vec3_zero()     -> vec3 { vec3(0f, 0f, 0f) }
+#[inline(always)] pure fn vec3_unit_x()   -> vec3 { vec3(1f, 0f, 0f) }
+#[inline(always)] pure fn vec3_unit_y()   -> vec3 { vec3(0f, 1f, 0f) }
+#[inline(always)] pure fn vec3_unit_z()   -> vec3 { vec3(0f, 0f, 1f) }
+#[inline(always)] pure fn vec3_identity() -> vec3 { vec3(1f, 1f, 1f) }
 
 //
 //  Vec3 Constructor
@@ -239,9 +239,9 @@ pure fn vec3(x:float, y:float, z:float) -> vec3 {
 //  Vector3 Implementation
 //
 impl vec3: Vector3<float> {
-    #[inline(always)] fn x() -> float { self.data[0] }
-    #[inline(always)] fn y() -> float { self.data[1] }
-    #[inline(always)] fn z() -> float { self.data[2] }
+    #[inline(always)] pure fn x() -> float { self.data[0] }
+    #[inline(always)] pure fn y() -> float { self.data[1] }
+    #[inline(always)] pure fn z() -> float { self.data[2] }
     
     #[inline(always)]
     fn cross(&&other:vec3) -> vec3 {
@@ -350,7 +350,7 @@ impl vec3: Vector<float> {
     
     #[inline(always)]
     pure fn normalize() -> vec3 {
-        let n = 1.0 / self.magnitude();
+        let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
 }
@@ -377,12 +377,12 @@ struct vec4 { data:[float * 4] }
 //
 //  Constants
 //
-#[inline(always)] pure fn vec4_zero()     -> vec4 { vec4(0.0, 0.0, 0.0, 0.0) }
-#[inline(always)] pure fn vec4_unit_x()   -> vec4 { vec4(1.0, 0.0, 0.0, 0.0) }
-#[inline(always)] pure fn vec4_unit_y()   -> vec4 { vec4(0.0, 1.0, 0.0, 0.0) }
-#[inline(always)] pure fn vec4_unit_z()   -> vec4 { vec4(0.0, 0.0, 1.0, 0.0) }
-#[inline(always)] pure fn vec4_unit_w()   -> vec4 { vec4(0.0, 0.0, 0.0, 1.0) }
-#[inline(always)] pure fn vec4_identity() -> vec4 { vec4(1.0, 1.0, 1.0, 1.0) }
+#[inline(always)] pure fn vec4_zero()     -> vec4 { vec4(0f, 0f, 0f, 0f) }
+#[inline(always)] pure fn vec4_unit_x()   -> vec4 { vec4(1f, 0f, 0f, 0f) }
+#[inline(always)] pure fn vec4_unit_y()   -> vec4 { vec4(0f, 1f, 0f, 0f) }
+#[inline(always)] pure fn vec4_unit_z()   -> vec4 { vec4(0f, 0f, 1f, 0f) }
+#[inline(always)] pure fn vec4_unit_w()   -> vec4 { vec4(0f, 0f, 0f, 1f) }
+#[inline(always)] pure fn vec4_identity() -> vec4 { vec4(1f, 1f, 1f, 1f) }
 
 //
 //  Vec4 Constructor
@@ -396,10 +396,10 @@ pure fn vec4(x:float, y:float, z:float, w:float) -> vec4 {
 //  Vector4 Implementation
 //
 impl vec4: Vector4<float> {
-    #[inline(always)] fn x() -> float { self.data[0] }
-    #[inline(always)] fn y() -> float { self.data[1] }
-    #[inline(always)] fn z() -> float { self.data[2] }
-    #[inline(always)] fn w() -> float { self.data[3] }
+    #[inline(always)] pure fn x() -> float { self.data[0] }
+    #[inline(always)] pure fn y() -> float { self.data[1] }
+    #[inline(always)] pure fn z() -> float { self.data[2] }
+    #[inline(always)] pure fn w() -> float { self.data[3] }
 }
 
 //
@@ -511,7 +511,7 @@ impl vec4: Vector<float> {
     
     #[inline(always)]
     pure fn normalize() -> vec4 {
-        let n = 1.0 / self.magnitude();
+        let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
 }

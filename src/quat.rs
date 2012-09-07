@@ -1,9 +1,10 @@
 import std::cmp::FuzzyEq;
 import cmp::Ord;
+import float::sqrt;
 import num::Num;
 import to_str::ToStr;
-import mat::*;
-import vec::*;
+import mat::{mat3, mat4};
+import vec::vec3;
 
 // TODO: Unittests! I've probably made lots of mistakes...
 
@@ -14,10 +15,10 @@ trait Quaternion<T:Num Ord FuzzyEq> {
     pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
-    fn w() -> T;
-    fn x() -> T;
-    fn y() -> T;
-    fn z() -> T;
+    pure fn w() -> T;
+    pure fn x() -> T;
+    pure fn y() -> T;
+    pure fn z() -> T;
     
     pure fn neg() -> self;
     
@@ -54,6 +55,12 @@ trait Quaternion<T:Num Ord FuzzyEq> {
 struct quat { data:[float * 4] }
 
 //
+//  Constants
+//
+#[inline(always)] pure fn quat_zero()     -> quat { quat(0f, 0f, 0f, 0f) }
+#[inline(always)] pure fn quat_identity() -> quat { quat(1f, 0f, 0f, 0f) }
+
+//
 //  Quat Constructor
 //
 #[inline(always)]
@@ -64,7 +71,7 @@ pure fn quat(w:float, x:float, y:float, z:float) -> quat {
 //
 //  Quaternion Implementation
 //
-impl quat<float> {
+impl quat: Quaternion<float> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     
@@ -78,10 +85,10 @@ impl quat<float> {
         quat(-self[0], -self[1], -self[2], -self[3])
     }
     
-    #[inline(always)] fn w() -> float { self.data[0] }
-    #[inline(always)] fn x() -> float { self.data[1] }
-    #[inline(always)] fn y() -> float { self.data[2] }
-    #[inline(always)] fn z() -> float { self.data[3] }
+    #[inline(always)] pure fn w() -> float { self.data[0] }
+    #[inline(always)] pure fn x() -> float { self.data[1] }
+    #[inline(always)] pure fn y() -> float { self.data[2] }
+    #[inline(always)] pure fn z() -> float { self.data[3] }
     
     #[inline(always)]
     pure fn mul_f(&&value:float) -> quat {
@@ -146,12 +153,12 @@ impl quat<float> {
     
     #[inline(always)]
     pure fn conjugate() -> quat {
-        quat(self.w(), -self.x(), -self.y(), -self.z());
+        quat(self.w(), -self.x(), -self.y(), -self.z())
     }
     
     #[inline(always)]
     pure fn inverse() -> quat {
-        
+        self.conjugate().mul_f((1f / self.magnitude2()))
     }
     
     #[inline(always)]
@@ -164,7 +171,7 @@ impl quat<float> {
     
     #[inline(always)]
     pure fn magnitude() -> float {
-        sqrt(self.magnitude2)
+        sqrt(self.magnitude2())
     }
     
     #[inline(always)]
@@ -185,9 +192,9 @@ impl quat<float> {
         let wz2 = z2 * self.w();
         let wx2 = x2 * self.w();
         
-        return mat3(1 - yy2 - zz2,     xy2 - wz2,     xz2 + wy2,
-                        xy2 + wz2, 1 - xx2 - zz2,     yz2 - wx2,
-                        xz2 - wy2,     yz2 + wx2, 1 - xx2 - yy2);
+        return mat3(1f - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
+                         xy2 + wz2, 1f - xx2 - zz2,      yz2 - wx2,
+                         xz2 - wy2,      yz2 + wx2, 1f - xx2 - yy2);
     }
     
     #[inline(always)]

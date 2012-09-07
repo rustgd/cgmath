@@ -1,0 +1,14 @@
+#[link(name = "om3d-test",
+       vers = "0.1",
+       author = "Brendan Zabarauskas")];
+
+#[comment = "Unittests for om3d"];
+#[crate_type = "unittests"];
+
+use std;
+use om3d;
+
+mod test_mat;
+mod test_projection;
+mod test_quat;
+mod test_vec;

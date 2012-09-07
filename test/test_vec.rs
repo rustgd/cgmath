@@ -1,16 +1,16 @@
 // TODO
 
 #[test]
-fn test_mat2() {
+fn test_vec2() {
     
 }
 
 #[test]
-fn test_mat3() {
+fn test_vec3() {
     
 }
 
 #[test]
-fn test_mat4() {
+fn test_vec4() {
     
 }

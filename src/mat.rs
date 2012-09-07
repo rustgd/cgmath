@@ -2,7 +2,7 @@ import std::cmp::FuzzyEq;
 import cmp::Ord;
 import num::Num;
 // import to_str::ToStr;
-import quat::*;
+import quat::quat;
 import vec::*;
 
 // TODO: Unittests! I've probably made lots of mistakes...
@@ -87,14 +87,14 @@ pure fn mat2_v(col0:vec2, col1:vec2) -> mat2 {
 
 #[inline(always)]
 pure fn mat2_zero() -> mat2 {
-    mat2 (0.0, 0.0,
-          0.0, 0.0)
+    mat2(0f, 0f,
+         0f, 0f)
 }
 
 #[inline(always)]
 pure fn mat2_identity() -> mat2 {
-    mat2 (1.0, 0.0,
-          0.0, 1.0)
+    mat2(1f, 0f,
+         0f, 1f)
 }
 
 //
@@ -204,8 +204,8 @@ impl mat2: Matrix<float, vec2> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0.0) &&
-        self[1][0].fuzzy_eq(&0.0)
+        self[0][1].fuzzy_eq(&0f) &&
+        self[1][0].fuzzy_eq(&0f)
     }
     
     #[inline(always)]
@@ -246,16 +246,16 @@ pure fn mat3_v(col0:vec3, col1:vec3, col2:vec3) -> mat3 {
 
 #[inline(always)]
 pure fn mat3_zero() -> mat3 {
-    mat3 (0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0)
+    mat3 (0f, 0f, 0f,
+          0f, 0f, 0f,
+          0f, 0f, 0f)
 }
 
 #[inline(always)]
 pure fn mat3_identity() -> mat3 {
-    mat3 (1.0, 0.0, 0.0,
-          0.0, 1.0, 0.0,
-          0.0, 0.0, 1.0)
+    mat3 (1f, 0f, 0f,
+          0f, 1f, 0f,
+          0f, 0f, 1f)
 }
 
 //
@@ -385,14 +385,14 @@ impl mat3: Matrix<float, vec3> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0.0) &&
-        self[0][2].fuzzy_eq(&0.0) &&
+        self[0][1].fuzzy_eq(&0f) &&
+        self[0][2].fuzzy_eq(&0f) &&
         
-        self[1][0].fuzzy_eq(&0.0) &&
-        self[1][2].fuzzy_eq(&0.0) &&
+        self[1][0].fuzzy_eq(&0f) &&
+        self[1][2].fuzzy_eq(&0f) &&
         
-        self[2][0].fuzzy_eq(&0.0) &&
-        self[2][1].fuzzy_eq(&0.0)
+        self[2][0].fuzzy_eq(&0f) &&
+        self[2][1].fuzzy_eq(&0f)
     }
     
     #[inline(always)]
@@ -403,50 +403,51 @@ impl mat3: Matrix<float, vec3> {
 
 impl mat3: Matrix3<float, vec3> {
     #[inline(always)]
-    pure fn scale(&&vec:V) -> mat3 {
-        self.mul_m(mat3(vec.x(),       0,       0,
-                              0, vec.y(),       0,
-                              0,       0, vec.z()))
+    pure fn scale(&&vec:vec3) -> mat3 {
+        self.mul_m(mat3(vec.x(),      0f,      0f,
+                             0f, vec.y(),      0f,
+                             0f,      0f, vec.z()))
     }
     
     #[inline(always)]
     pure fn to_mat4() -> mat4 {
-        mat4(self[0][0], self[0][1], self[0][2], 0,
-             self[1][0], self[1][1], self[1][2], 0,
-             self[2][0], self[2][1], self[2][2], 0,
-             0,          0,          0,          1)
+        mat4(self[0][0], self[0][1], self[0][2],  0f,
+             self[1][0], self[1][1], self[1][2],  0f,
+             self[2][0], self[2][1], self[2][2],  0f,
+                     0f,         0f,         0f,  1f)
     }
     
     pure fn to_quat() -> quat {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
         
-        let w:float, x:float, y:float, z:float, s:float;
+        let mut s:float;
+        let w:float, x:float, y:float, z:float;
         let trace:float = self[0][0] + self[1][1] + self[2][2];
         
-        if trace >= 0 {
-            s = sqrt(trace + 1);
+        if trace >= 0f {
+            s = sqrt(trace + 1f);
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[1][2] - self[2][1] * s;
             y = self[2][0] - self[0][2] * s;
             z = self[0][1] - self[1][0] * s;
         } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = sqrt(1 + self[0][0] - self[1][1] - self[2][2]);
+            s = sqrt(1f + self[0][0] - self[1][1] - self[2][2]);
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[0][1] - self[1][0] * s;
             y = self[2][0] - self[0][2] * s;
             z = self[1][2] - self[2][1] * s;
         } else if self[1][1] > self[2][2] {
-            s = sqrt(1 + self[1][1] - self[0][0] - self[2][2]);
+            s = sqrt(1f + self[1][1] - self[0][0] - self[2][2]);
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[0][1] - self[1][0] * s;
             y = self[1][2] - self[2][1] * s;
             z = self[2][0] - self[0][2] * s;
         } else {
-            s = sqrt(1 + self[2][2] - self[0][0] - self[1][1]);
+            s = sqrt(1f + self[2][2] - self[0][0] - self[1][1]);
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[2][0] - self[0][2] * s;
@@ -491,18 +492,18 @@ pure fn mat4_v(col0:vec4, col1:vec4, col2:vec4, col3:vec4) -> mat4 {
 
 #[inline(always)]
 pure fn mat4_zero() -> mat4 {
-    mat4 (0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 0.0)
+    mat4 (0f, 0f, 0f, 0f,
+          0f, 0f, 0f, 0f,
+          0f, 0f, 0f, 0f,
+          0f, 0f, 0f, 0f)
 }
 
 #[inline(always)]
 pure fn mat4_identity() -> mat4 {
-    mat4 (1.0, 0.0, 0.0, 0.0,
-          0.0, 1.0, 0.0, 0.0,
-          0.0, 0.0, 1.0, 0.0,
-          0.0, 0.0, 0.0, 1.0)
+    mat4 (1f, 0f, 0f, 0f,
+          0f, 1f, 0f, 0f,
+          0f, 0f, 1f, 0f,
+          0f, 0f, 0f, 1f)
 }
 
 //
@@ -655,21 +656,21 @@ impl mat4: Matrix<float, vec4> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0.0) &&
-        self[0][2].fuzzy_eq(&0.0) &&
-        self[0][3].fuzzy_eq(&0.0) &&
+        self[0][1].fuzzy_eq(&0f) &&
+        self[0][2].fuzzy_eq(&0f) &&
+        self[0][3].fuzzy_eq(&0f) &&
         
-        self[1][0].fuzzy_eq(&0.0) &&
-        self[1][2].fuzzy_eq(&0.0) &&
-        self[1][3].fuzzy_eq(&0.0) &&
+        self[1][0].fuzzy_eq(&0f) &&
+        self[1][2].fuzzy_eq(&0f) &&
+        self[1][3].fuzzy_eq(&0f) &&
         
-        self[2][0].fuzzy_eq(&0.0) &&
-        self[2][1].fuzzy_eq(&0.0) &&
-        self[2][3].fuzzy_eq(&0.0) &&
+        self[2][0].fuzzy_eq(&0f) &&
+        self[2][1].fuzzy_eq(&0f) &&
+        self[2][3].fuzzy_eq(&0f) &&
         
-        self[3][0].fuzzy_eq(&0.0) &&
-        self[3][1].fuzzy_eq(&0.0) &&
-        self[3][2].fuzzy_eq(&0.0)
+        self[3][0].fuzzy_eq(&0f) &&
+        self[3][1].fuzzy_eq(&0f) &&
+        self[3][2].fuzzy_eq(&0f)
     }
     
     #[inline(always)]
@@ -681,20 +682,20 @@ impl mat4: Matrix<float, vec4> {
 impl mat4: Matrix4<float, vec4> {
     #[inline(always)]
     pure fn scale(&&vec:vec3) -> mat4 {
-        self.mul_m(mat3(vec.x(),       0,       0, 0,
-                              0, vec.y(),       0, 0,
-                              0,       0, vec.z(), 0,
-                              0,       0,       0, 1))
+        self.mul_m(mat4(vec.x(),       0f,      0f, 0f,
+                              0f, vec.y(),      0f, 0f,
+                              0f,      0f, vec.z(), 0f,
+                              0f,      0f,      0f, 1f))
     }
     
     #[inline(always)]
     pure fn translate(&&vec:vec3) -> mat4 {
-        mat4(self[0],
-             self[1],
-             self[2],
-             vec4(self[3][0] + vec.x(),
-                  self[3][1] + vec.y(),
-                  self[3][2] + vec.z(),
-                  self[3][3]))
+        mat4_v(self[0],
+               self[1],
+               self[2],
+               vec4(self[3][0] + vec.x(),
+                    self[3][1] + vec.y(),
+                    self[3][2] + vec.z(),
+                    self[3][3]))
     }
 }
