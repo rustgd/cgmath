@@ -1,0 +1,13 @@
+#[link(name = "om3d",
+       vers = "0.1",
+       author = "Brendan Zabarauskas")];
+
+#[comment = "Linear algebra library for Rust. Incomplete and probably buggy."];
+#[crate_type = "lib"];
+
+use std;
+
+mod mat;
+mod projection;
+mod quat;
+mod vec;
