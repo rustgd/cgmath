@@ -49,10 +49,10 @@ fn test_mat2() {
     // fuzzy_eq
     // eq
     
-    assert mat2_identity().is_identity();
-    assert mat2_identity().is_symmetric();
-    assert mat2_identity().is_diagonal();
-    assert !mat2_identity().is_rotated();
+    assert mat2_identity.is_identity();
+    assert mat2_identity.is_symmetric();
+    assert mat2_identity.is_diagonal();
+    assert !mat2_identity.is_rotated();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
@@ -126,10 +126,10 @@ fn test_mat3() {
     // fuzzy_eq
     // eq
     
-    assert mat3_identity().is_identity();
-    assert mat3_identity().is_symmetric();
-    assert mat3_identity().is_diagonal();
-    assert !mat3_identity().is_rotated();
+    assert mat3_identity.is_identity();
+    assert mat3_identity.is_symmetric();
+    assert mat3_identity.is_diagonal();
+    assert !mat3_identity.is_rotated();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
@@ -224,10 +224,10 @@ fn test_mat4() {
     // fuzzy_eq
     // eq
     
-    assert mat4_identity().is_identity();
-    assert mat4_identity().is_symmetric();
-    assert mat4_identity().is_diagonal();
-    assert !mat4_identity().is_rotated();
+    assert mat4_identity.is_identity();
+    assert mat4_identity.is_symmetric();
+    assert mat4_identity.is_diagonal();
+    assert !mat4_identity.is_rotated();
     
     assert !a.is_identity();
     assert !a.is_symmetric();

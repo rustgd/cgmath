@@ -67,6 +67,11 @@ trait Matrix4<T:Num Ord FuzzyEq, V:Vector<T>> {
 //
 struct mat2 { data:[vec2 * 2] }
 
+const mat2_zero     :mat2 = mat2 { data: [ vec2_zero,
+                                           vec2_zero ] };
+const mat2_identity :mat2 = mat2 { data: [ vec2_unit_x,
+                                           vec2_unit_y ] };
+
 //
 //  Mat2 Constructor
 //
@@ -83,18 +88,6 @@ pure fn mat2(m00:float, m01:float,
 #[inline(always)]
 pure fn mat2_v(col0:vec2, col1:vec2) -> mat2 {
     mat2 { data: [ col0, col1 ] }
-}
-
-#[inline(always)]
-pure fn mat2_zero() -> mat2 {
-    mat2(0f, 0f,
-         0f, 0f)
-}
-
-#[inline(always)]
-pure fn mat2_identity() -> mat2 {
-    mat2(1f, 0f,
-         0f, 1f)
 }
 
 //
@@ -193,7 +186,7 @@ impl mat2: Matrix<float, vec2> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat2_identity())
+        self.fuzzy_eq(mat2_identity)
     }
     
     #[inline(always)]
@@ -210,7 +203,7 @@ impl mat2: Matrix<float, vec2> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat2_identity())
+        !self.fuzzy_eq(mat2_identity)
     }
 }
 
@@ -223,6 +216,13 @@ impl mat2: Matrix<float, vec2> {
 //  Mat3: A 3x3, column major matrix
 //
 struct mat3 { data:[vec3 * 3] }
+
+const mat3_zero     :mat3 = mat3 { data: [ vec3_zero,
+                                           vec3_zero,
+                                           vec3_zero ] };
+const mat3_identity :mat3 = mat3 { data: [ vec3_unit_x,
+                                           vec3_unit_y,
+                                           vec3_unit_z ] };
 
 //
 //  Mat3 Constructor
@@ -242,20 +242,6 @@ pure fn mat3(m00:float, m01:float, m02:float,
 #[inline(always)]
 pure fn mat3_v(col0:vec3, col1:vec3, col2:vec3) -> mat3 {
     mat3 { data: [ col0, col1, col2 ] }
-}
-
-#[inline(always)]
-pure fn mat3_zero() -> mat3 {
-    mat3 (0f, 0f, 0f,
-          0f, 0f, 0f,
-          0f, 0f, 0f)
-}
-
-#[inline(always)]
-pure fn mat3_identity() -> mat3 {
-    mat3 (1f, 0f, 0f,
-          0f, 1f, 0f,
-          0f, 0f, 1f)
 }
 
 //
@@ -368,7 +354,7 @@ impl mat3: Matrix<float, vec3> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat3_identity())
+        self.fuzzy_eq(mat3_identity)
     }
     
     #[inline(always)]
@@ -397,7 +383,7 @@ impl mat3: Matrix<float, vec3> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat3_identity())
+        !self.fuzzy_eq(mat3_identity)
     }
 }
 
@@ -454,7 +440,6 @@ impl mat3: Matrix3<float, vec3> {
             y = self[1][2] - self[2][1] * s;
             z = self[0][1] - self[1][0] * s;
         }
-        return quat(w, x, y, z);
     }
 }
 
@@ -467,6 +452,15 @@ impl mat3: Matrix3<float, vec3> {
 //  Mat4: A 4x4, column major matrix
 //
 struct mat4 { data:[vec4 * 4] }
+
+const mat4_zero     :mat4 = mat4 { data: [ vec4_zero,
+                                           vec4_zero,
+                                           vec4_zero,
+                                           vec4_zero ] };
+const mat4_identity :mat4 = mat4 { data: [ vec4_unit_x,
+                                           vec4_unit_y,
+                                           vec4_unit_z,
+                                           vec4_unit_w ] };
 
 //
 //  Mat4 Constructor
@@ -488,22 +482,6 @@ pure fn mat4(m00:float, m01:float, m02:float, m03:float,
 #[inline(always)]
 pure fn mat4_v(col0:vec4, col1:vec4, col2:vec4, col3:vec4) -> mat4 {
     mat4 { data: [ col0, col1, col2, col3 ] }
-}
-
-#[inline(always)]
-pure fn mat4_zero() -> mat4 {
-    mat4 (0f, 0f, 0f, 0f,
-          0f, 0f, 0f, 0f,
-          0f, 0f, 0f, 0f,
-          0f, 0f, 0f, 0f)
-}
-
-#[inline(always)]
-pure fn mat4_identity() -> mat4 {
-    mat4 (1f, 0f, 0f, 0f,
-          0f, 1f, 0f, 0f,
-          0f, 0f, 1f, 0f,
-          0f, 0f, 0f, 1f)
 }
 
 //
@@ -632,7 +610,7 @@ impl mat4: Matrix<float, vec4> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat4_identity())
+        self.fuzzy_eq(mat4_identity)
     }
     
     #[inline(always)]
@@ -675,7 +653,7 @@ impl mat4: Matrix<float, vec4> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat4_identity())
+        !self.fuzzy_eq(mat4_identity)
     }
 }
 

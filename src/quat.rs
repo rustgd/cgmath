@@ -54,11 +54,8 @@ trait Quaternion<T:Num Ord FuzzyEq> {
 //
 struct quat { data:[float * 4] }
 
-//
-//  Constants
-//
-#[inline(always)] pure fn quat_zero()     -> quat { quat(0f, 0f, 0f, 0f) }
-#[inline(always)] pure fn quat_identity() -> quat { quat(1f, 0f, 0f, 0f) }
+const quat_zero     :quat = quat { data: [ 0f, 0f, 0f, 0f ] };
+const quat_identity :quat = quat { data: [ 1f, 0f, 0f, 0f ] };
 
 //
 //  Quat Constructor
