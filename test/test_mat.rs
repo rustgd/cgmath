@@ -1,5 +1,5 @@
-import om3d::mat::*;
-import om3d::vec::*;
+import omath::mat::*;
+import omath::vec::*;
 
 // TODO
 

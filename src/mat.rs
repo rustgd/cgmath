@@ -440,6 +440,7 @@ impl mat3: Matrix3<float, vec3> {
             y = self[1][2] - self[2][1] * s;
             z = self[0][1] - self[1][0] * s;
         }
+        return quat(w, x, y, z);
     }
 }
 

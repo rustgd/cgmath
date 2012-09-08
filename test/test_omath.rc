@@ -1,12 +1,12 @@
-#[link(name = "om3d-test",
+#[link(name = "test_omath",
        vers = "0.1",
        author = "Brendan Zabarauskas")];
 
-#[comment = "Unittests for om3d"];
+#[comment = "Unittests for omath"];
 #[crate_type = "unittests"];
 
 use std;
-use om3d;
+use omath;
 
 mod test_mat;
 mod test_math;

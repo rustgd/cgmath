@@ -1,6 +1,6 @@
-import om3d::mat::*;
-import om3d::quat::*;
-import om3d::vec::*;
+import omath::mat::*;
+import omath::quat::*;
+import omath::vec::*;
 
 // TODO
 

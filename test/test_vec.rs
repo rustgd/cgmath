@@ -1,5 +1,5 @@
 import std::cmp::FuzzyEq;
-import om3d::vec::*;
+import omath::vec::*;
 
 // TODO
 
