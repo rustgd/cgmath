@@ -5,6 +5,8 @@ import om3d::vec::*;
 
 #[test]
 fn test_vec2() {
+    // assert vec2::dim == 2;
+    
     let a = vec2 { data: [ 1f, 2f ] };
     let b = vec2 { data: [ 3f, 4f ] };
     let f1 = 1.5f;
@@ -12,10 +14,10 @@ fn test_vec2() {
     
     assert a == vec2(1f, 2f);
     
-    assert vec2_zero()     == vec2(0f, 0f);
-    assert vec2_unit_x()   == vec2(1f, 0f);
-    assert vec2_unit_y()   == vec2(0f, 1f);
-    assert vec2_identity() == vec2(1f, 1f);
+    assert vec2_zero     == vec2(0f, 0f);
+    assert vec2_unit_x   == vec2(1f, 0f);
+    assert vec2_unit_y   == vec2(0f, 1f);
+    assert vec2_identity == vec2(1f, 1f);
     
     assert a[0] == 1f;
     assert a[1] == 2f;
@@ -45,13 +47,15 @@ fn test_vec2() {
     let f3 = 0.75f;
     
     assert c.lerp(d, f3) == vec2(0.250f, -0.250f);
-    assert c.abs() == vec2(2.0f, 1.0f);
-    
-    // TODO min, max
+    assert c.abs()       == vec2( 2.0f,  1.0f);
+    assert c.min(d)      == vec2(-2.0f, -1.0f);
+    assert c.max(d)      == vec2( 1.0f,  0.0f);
 }
 
 #[test]
 fn test_vec3() {
+    // assert vec3::dim == 3;
+    
     let a = vec3 { data: [ 1f, 2f, 3f ] };
     let b = vec3 { data: [ 4f, 5f, 6f ] };
     let f1 = 1.5f;
@@ -59,11 +63,11 @@ fn test_vec3() {
     
     assert a == vec3(1f, 2f, 3f);
     
-    assert vec3_zero()     == vec3(0f, 0f, 0f);
-    assert vec3_unit_x()   == vec3(1f, 0f, 0f);
-    assert vec3_unit_y()   == vec3(0f, 1f, 0f);
-    assert vec3_unit_z()   == vec3(0f, 0f, 1f);
-    assert vec3_identity() == vec3(1f, 1f, 1f);
+    assert vec3_zero     == vec3(0f, 0f, 0f);
+    assert vec3_unit_x   == vec3(1f, 0f, 0f);
+    assert vec3_unit_y   == vec3(0f, 1f, 0f);
+    assert vec3_unit_z   == vec3(0f, 0f, 1f);
+    assert vec3_identity == vec3(1f, 1f, 1f);
     
     assert a[0] == 1f;
     assert a[1] == 2f;
@@ -97,13 +101,15 @@ fn test_vec3() {
     let f3 = 0.75f;
     
     assert c.lerp(d, f3) == vec3(0.250f, -0.250f, 0.625f);
-    assert c.abs() == vec3(2.0f, 1.0f, 1.0f);
-    
-    // TODO min, max
+    assert c.abs()       == vec3( 2.0f,  1.0f, 1.0f);
+    assert c.min(d)      == vec3(-2.0f, -1.0f, 0.5f);
+    assert c.max(d)      == vec3( 1.0f,  0.0f, 1.0f);
 }
 
 #[test]
 fn test_vec4() {
+    // assert vec4::dim == 4;
+    
     let a = vec4 { data: [ 1f, 2f, 3f, 4f ] };
     let b = vec4 { data: [ 5f, 6f, 7f, 8f ] };
     let f1 = 1.5f;
@@ -111,12 +117,12 @@ fn test_vec4() {
     
     assert a == vec4(1f, 2f, 3f, 4f);
     
-    assert vec4_zero()     == vec4(0f, 0f, 0f, 0f);
-    assert vec4_unit_x()   == vec4(1f, 0f, 0f, 0f);
-    assert vec4_unit_y()   == vec4(0f, 1f, 0f, 0f);
-    assert vec4_unit_z()   == vec4(0f, 0f, 1f, 0f);
-    assert vec4_unit_w()   == vec4(0f, 0f, 0f, 1f);
-    assert vec4_identity() == vec4(1f, 1f, 1f, 1f);
+    assert vec4_zero     == vec4(0f, 0f, 0f, 0f);
+    assert vec4_unit_x   == vec4(1f, 0f, 0f, 0f);
+    assert vec4_unit_y   == vec4(0f, 1f, 0f, 0f);
+    assert vec4_unit_z   == vec4(0f, 0f, 1f, 0f);
+    assert vec4_unit_w   == vec4(0f, 0f, 0f, 1f);
+    assert vec4_identity == vec4(1f, 1f, 1f, 1f);
     
     assert a[0] == 1f;
     assert a[1] == 2f;
@@ -152,7 +158,7 @@ fn test_vec4() {
     let f3 = 0.75f;
     
     assert c.lerp(d, f3) == vec4(0.250f, -0.250f, 0.625f, 1.250f);
-    assert c.abs() == vec4(2.0f, 1.0f, 1.0f, 2.0f);
-    
-    // TODO min, max
+    assert c.abs()       == vec4( 2.0f,  1.0f, 1.0f, 2.0f);
+    assert c.min(d)      == vec4(-2.0f, -1.0f, 0.5f, 1.0f);
+    assert c.max(d)      == vec4( 1.0f,  0.0f, 1.0f, 2.0f);
 }

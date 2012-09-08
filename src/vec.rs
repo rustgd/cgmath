@@ -1,16 +1,15 @@
 import std::cmp::FuzzyEq;
 import cmp::Ord;
 import num::Num;
-import float::{sqrt, abs, fmin, fmax};
+import float::sqrt;
+import math::{Abs, min, max};
 import to_str::ToStr;
-
-// TODO: Unittests! I've probably made lots of mistakes...
 
 //
 //  N-dimensional Vector
 //
 trait Vector<T:Num Ord FuzzyEq> {
-    pure fn dim() -> uint;
+    static pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
     
@@ -36,9 +35,13 @@ trait Vector<T:Num Ord FuzzyEq> {
     
     pure fn lerp(&&other:self, &&value:T) -> self;
     pure fn abs() -> self;
-    // pure fn min(&&other:self) -> self;
-    // pure fn max(&&other:self) -> self;
+    pure fn min(&&other:self) -> self;
+    pure fn max(&&other:self) -> self;
+    
+    static pure fn zero() -> self;
+    static pure fn identity() -> self;
 }
+
 
 
 
@@ -49,12 +52,22 @@ trait Vector2<T:Num Ord FuzzyEq> {
     // This is where I wish rust had properties ;)
     pure fn x() -> T;
     pure fn y() -> T;
+    
+    // static pure fn make(x:float, y:float) -> self;
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
 }
 
 trait Vector3<T:Num Ord FuzzyEq> {
     pure fn x() -> T;
     pure fn y() -> T;
     pure fn z() -> T;
+    
+    // static pure fn make(x:float, y:float, z:float) -> self;
+    
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
+    // static pure fn unit_z() -> self;
     
     fn cross(&&other:self) -> self;
 }
@@ -64,6 +77,13 @@ trait Vector4<T:Num Ord FuzzyEq> {
     pure fn y() -> T;
     pure fn z() -> T;
     pure fn w() -> T;
+    
+    // static pure fn make(x:float, y:float, z:float, w:float) -> self;
+    
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
+    // static pure fn unit_z() -> self;
+    // static pure fn unit_w() -> self;
 }
 
 
@@ -76,6 +96,11 @@ trait Vector4<T:Num Ord FuzzyEq> {
 //
 struct vec2 { data:[float * 2] }
 
+const vec2_zero     :vec2 = vec2 { data: [ 0f, 0f ] };
+const vec2_unit_x   :vec2 = vec2 { data: [ 1f, 0f ] };
+const vec2_unit_y   :vec2 = vec2 { data: [ 0f, 1f ] };
+const vec2_identity :vec2 = vec2 { data: [ 1f, 1f ] };
+
 //
 //  Constructor
 //
@@ -84,14 +109,6 @@ pure fn vec2(x:float, y:float) -> vec2 {
     vec2 { data: [ x, y ] }
 }
 
-//
-//  Constants
-//
-#[inline(always)] pure fn vec2_zero()     -> vec2 { vec2 (0f, 0f) }
-#[inline(always)] pure fn vec2_unit_x()   -> vec2 { vec2 (1f, 0f) }
-#[inline(always)] pure fn vec2_unit_y()   -> vec2 { vec2 (0f, 1f) }
-#[inline(always)] pure fn vec2_identity() -> vec2 { vec2 (1f, 1f) }
-
 impl vec2: Vector2<float> {
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
@@ -99,7 +116,7 @@ impl vec2: Vector2<float> {
 
 impl vec2: Vector<float> {
     #[inline(always)]
-    pure fn dim() -> uint { 2 }
+    static pure fn dim() -> uint { 2 }
     
     #[inline(always)]
     pure fn index(&&i: uint) -> float {
@@ -194,21 +211,24 @@ impl vec2: Vector<float> {
     
     #[inline(always)]
     pure fn abs() -> vec2 {
-        vec2(abs(self[0]),
-             abs(self[1]))
+        vec2(self[0].abs(),
+             self[1].abs())
     }
     
-    // #[inline(always)]
-    // pure fn min(&&other:vec2) -> vec2 {
-    //     vec2(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]))
-    // }
+    #[inline(always)]
+    pure fn min(&&other:vec2) -> vec2 {
+        vec2(min(self[0], other[0]),
+             min(self[1], other[1]))
+    }
     
-    // #[inline(always)]
-    // pure fn max(&&other:vec2) -> vec2 {
-    //     vec2(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]))
-    // }
+    #[inline(always)]
+    pure fn max(&&other:vec2) -> vec2 {
+        vec2(max(self[0], other[0]),
+             max(self[1], other[1]))
+    }
+    
+    #[inline(always)] static pure fn zero()     -> vec2 { vec2(1f, 1f) }
+    #[inline(always)] static pure fn identity() -> vec2 { vec2(1f, 1f) }
 }
 
 impl vec2: ToStr {
@@ -227,14 +247,11 @@ impl vec2: ToStr {
 //
 struct vec3 { data:[float * 3] }
 
-//
-//  Constants
-//
-#[inline(always)] pure fn vec3_zero()     -> vec3 { vec3(0f, 0f, 0f) }
-#[inline(always)] pure fn vec3_unit_x()   -> vec3 { vec3(1f, 0f, 0f) }
-#[inline(always)] pure fn vec3_unit_y()   -> vec3 { vec3(0f, 1f, 0f) }
-#[inline(always)] pure fn vec3_unit_z()   -> vec3 { vec3(0f, 0f, 1f) }
-#[inline(always)] pure fn vec3_identity() -> vec3 { vec3(1f, 1f, 1f) }
+const vec3_zero     :vec3 = vec3 { data: [ 0f, 0f, 0f ] };
+const vec3_unit_x   :vec3 = vec3 { data: [ 1f, 0f, 0f ] };
+const vec3_unit_y   :vec3 = vec3 { data: [ 0f, 1f, 0f ] };
+const vec3_unit_z   :vec3 = vec3 { data: [ 0f, 0f, 1f ] };
+const vec3_identity :vec3 = vec3 { data: [ 1f, 1f, 1f ] };
 
 //
 //  Constructor
@@ -259,7 +276,7 @@ impl vec3: Vector3<float> {
 
 impl vec3: Vector<float> {
     #[inline(always)]
-    pure fn dim() -> uint { 3 }
+    static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
     pure fn index(&&i: uint) -> float {
@@ -364,24 +381,27 @@ impl vec3: Vector<float> {
     
     #[inline(always)]
     pure fn abs() -> vec3 {
-        vec3(abs(self[0]),
-             abs(self[1]),
-             abs(self[2]))
+        vec3(self[0].abs(),
+             self[1].abs(),
+             self[2].abs())
     }
     
-    // #[inline(always)]
-    // pure fn min(&&other:vec3) -> vec3 {
-    //     vec3(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]),
-    //          fmin(self[2], other[2]))
-    // }
+    #[inline(always)]
+    pure fn min(&&other:vec3) -> vec3 {
+        vec3(min(self[0], other[0]),
+             min(self[1], other[1]),
+             min(self[2], other[2]))
+    }
     
-    // #[inline(always)]
-    // pure fn max(&&other:vec3) -> vec3 {
-    //     vec3(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]),
-    //          fmin(self[2], other[2]))
-    // }
+    #[inline(always)]
+    pure fn max(&&other:vec3) -> vec3 {
+        vec3(max(self[0], other[0]),
+             max(self[1], other[1]),
+             max(self[2], other[2]))
+    }
+    
+    #[inline(always)] static pure fn zero()     -> vec3 { vec3(1f, 1f, 1f) }
+    #[inline(always)] static pure fn identity() -> vec3 { vec3(1f, 1f, 1f) }
 }
 
 impl vec3: ToStr {
@@ -400,15 +420,12 @@ impl vec3: ToStr {
 //
 struct vec4 { data:[float * 4] }
 
-//
-//  Constants
-//
-#[inline(always)] pure fn vec4_zero()     -> vec4 { vec4(0f, 0f, 0f, 0f) }
-#[inline(always)] pure fn vec4_unit_x()   -> vec4 { vec4(1f, 0f, 0f, 0f) }
-#[inline(always)] pure fn vec4_unit_y()   -> vec4 { vec4(0f, 1f, 0f, 0f) }
-#[inline(always)] pure fn vec4_unit_z()   -> vec4 { vec4(0f, 0f, 1f, 0f) }
-#[inline(always)] pure fn vec4_unit_w()   -> vec4 { vec4(0f, 0f, 0f, 1f) }
-#[inline(always)] pure fn vec4_identity() -> vec4 { vec4(1f, 1f, 1f, 1f) }
+const vec4_zero     :vec4 = vec4 { data: [ 0f, 0f, 0f, 0f ] };
+const vec4_unit_x   :vec4 = vec4 { data: [ 1f, 0f, 0f, 0f ] };
+const vec4_unit_y   :vec4 = vec4 { data: [ 0f, 1f, 0f, 0f ] };
+const vec4_unit_z   :vec4 = vec4 { data: [ 0f, 0f, 1f, 0f ] };
+const vec4_unit_w   :vec4 = vec4 { data: [ 0f, 0f, 0f, 1f ] };
+const vec4_identity :vec4 = vec4 { data: [ 1f, 1f, 1f, 1f ] };
 
 //
 //  Constructor
@@ -427,7 +444,7 @@ impl vec4: Vector4<float> {
 
 impl vec4: Vector<float> {
     #[inline(always)]
-    pure fn dim() -> uint { 4 }
+    static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     pure fn index(&&i: uint) -> float {
@@ -542,27 +559,30 @@ impl vec4: Vector<float> {
     
     #[inline(always)]
     pure fn abs() -> vec4 {
-        vec4(abs(self[0]),
-             abs(self[1]),
-             abs(self[2]),
-             abs(self[3]))
+        vec4(self[0].abs(),
+             self[1].abs(),
+             self[2].abs(),
+             self[3].abs())
     }
     
-    // #[inline(always)]
-    // pure fn min(&&other:vec4) -> vec4 {
-    //     vec4(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]),
-    //          fmin(self[2], other[2]),
-    //          fmin(self[3], other[3]))
-    // }
+    #[inline(always)]
+    pure fn min(&&other:vec4) -> vec4 {
+        vec4(min(self[0], other[0]),
+             min(self[1], other[1]),
+             min(self[2], other[2]),
+             min(self[3], other[3]))
+    }
     
-    // #[inline(always)]
-    // pure fn max(&&other:vec4) -> vec4 {
-    //     vec4(fmin(self[0], other[0]),
-    //          fmin(self[1], other[1]),
-    //          fmin(self[2], other[2]),
-    //          fmin(self[3], other[3]))
-    // }
+    #[inline(always)]
+    pure fn max(&&other:vec4) -> vec4 {
+        vec4(max(self[0], other[0]),
+             max(self[1], other[1]),
+             max(self[2], other[2]),
+             max(self[3], other[3]))
+    }
+    
+    #[inline(always)] static pure fn zero()     -> vec4 { vec4(1f, 1f, 1f, 1f) }
+    #[inline(always)] static pure fn identity() -> vec4 { vec4(1f, 1f, 1f, 1f) }
 }
 
 impl vec4: ToStr {
