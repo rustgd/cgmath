@@ -5,7 +5,6 @@ Here's some linear algebra I've been working on. I've translated it over from my
 ## Todo:
 
 - Unittests: I have full unittest coverage on my D project so the algorithms should be correct, but this is definately top on my list.
-- Vector functions: abs, lerp, min, max
 - Matrix Inversion: ugh
 - Matrix rotation
 - Euler and Axial rotations
