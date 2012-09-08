@@ -682,10 +682,10 @@ impl mat4: Matrix<float, vec4> {
 impl mat4: Matrix4<float, vec4> {
     #[inline(always)]
     pure fn scale(&&vec:vec3) -> mat4 {
-        self.mul_m(mat4(vec.x(),       0f,      0f, 0f,
-                              0f, vec.y(),      0f, 0f,
-                              0f,      0f, vec.z(), 0f,
-                              0f,      0f,      0f, 1f))
+        self.mul_m(mat4(vec.x(),      0f,      0f, 0f,
+                             0f, vec.y(),      0f, 0f,
+                             0f,      0f, vec.z(), 0f,
+                             0f,      0f,      0f, 1f))
     }
     
     #[inline(always)]
