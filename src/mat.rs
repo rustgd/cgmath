@@ -21,10 +21,10 @@ trait Matrix<T:Num Ord FuzzyEq, V:Vector<T>> {
     
     pure fn neg() -> self;
     
-    pure fn add_m(&&other:self) -> self;
-    pure fn sub_m(&&other:self) -> self;
     pure fn mul_f(&&value:T) -> self;
     pure fn mul_v(&&other:V) -> V;
+    pure fn add_m(&&other:self) -> self;
+    pure fn sub_m(&&other:self) -> self;
     pure fn mul_m(&&other:self) -> self;
     
     // pure fn invert(&&other:self) -> self;
@@ -132,18 +132,6 @@ impl mat2: Matrix<float, vec2> {
     }
     
     #[inline(always)]
-    pure fn add_m(&&other:mat2) -> mat2 {
-        mat2_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]))
-    }
-    
-    #[inline(always)]
-    pure fn sub_m(&&other:mat2) -> mat2 {
-        mat2_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]))
-    }
-    
-    #[inline(always)]
     pure fn mul_f(&&value:float) -> mat2 {
         mat2_v(self[0].mul_f(value),
                self[1].mul_f(value))
@@ -153,6 +141,18 @@ impl mat2: Matrix<float, vec2> {
     pure fn mul_v(&&other:vec2) -> vec2 {
         vec2(self[0][0]*other[0] + self[1][0]*other[1],
              self[0][1]*other[0] + self[1][1]*other[1])
+    }
+    
+    #[inline(always)]
+    pure fn add_m(&&other:mat2) -> mat2 {
+        mat2_v(self[0].add_v(other[0]),
+               self[1].add_v(other[1]))
+    }
+    
+    #[inline(always)]
+    pure fn sub_m(&&other:mat2) -> mat2 {
+        mat2_v(self[0].sub_v(other[0]),
+               self[1].sub_v(other[1]))
     }
     
     #[inline(always)]
@@ -294,20 +294,6 @@ impl mat3: Matrix<float, vec3> {
     }
     
     #[inline(always)]
-    pure fn add_m(&&other:mat3) -> mat3 {
-        mat3_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]))
-    }
-    
-    #[inline(always)]
-    pure fn sub_m(&&other:mat3) -> mat3 {
-        mat3_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]))
-    }
-    
-    #[inline(always)]
     pure fn mul_f(&&value:float) -> mat3 {
         mat3_v(self[0].mul_f(value),
                self[1].mul_f(value),
@@ -319,6 +305,20 @@ impl mat3: Matrix<float, vec3> {
         vec3(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2],
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2],
              self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2])
+    }
+    
+    #[inline(always)]
+    pure fn add_m(&&other:mat3) -> mat3 {
+        mat3_v(self[0].add_v(other[0]),
+               self[1].add_v(other[1]),
+               self[2].add_v(other[2]))
+    }
+    
+    #[inline(always)]
+    pure fn sub_m(&&other:mat3) -> mat3 {
+        mat3_v(self[0].sub_v(other[0]),
+               self[1].sub_v(other[1]),
+               self[2].sub_v(other[2]))
     }
     
     #[inline(always)]
@@ -543,22 +543,6 @@ impl mat4: Matrix<float, vec4> {
     }
     
     #[inline(always)]
-    pure fn add_m(&&other:mat4) -> mat4 {
-        mat4_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]),
-               self[3].add_v(other[3]))
-    }
-    
-    #[inline(always)]
-    pure fn sub_m(&&other:mat4) -> mat4 {
-        mat4_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]),
-               self[3].add_v(other[3]))
-    }
-    
-    #[inline(always)]
     pure fn mul_f(&&value:float) -> mat4 {
         mat4_v(self[0].mul_f(value),
                self[1].mul_f(value),
@@ -572,6 +556,22 @@ impl mat4: Matrix<float, vec4> {
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2] + self[3][1]*other[3],
              self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2] + self[3][2]*other[3],
              self[0][3]*other[0] + self[1][3]*other[1] + self[2][3]*other[2] + self[3][3]*other[3])
+    }
+    
+    #[inline(always)]
+    pure fn add_m(&&other:mat4) -> mat4 {
+        mat4_v(self[0].add_v(other[0]),
+               self[1].add_v(other[1]),
+               self[2].add_v(other[2]),
+               self[3].add_v(other[3]))
+    }
+    
+    #[inline(always)]
+    pure fn sub_m(&&other:mat4) -> mat4 {
+        mat4_v(self[0].sub_v(other[0]),
+               self[1].sub_v(other[1]),
+               self[2].sub_v(other[2]),
+               self[3].sub_v(other[3]))
     }
     
     #[inline(always)]
