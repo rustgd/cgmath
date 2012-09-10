@@ -48,21 +48,23 @@ trait Vector<T> {
 
 
 trait Vector2<T> {
+    // static pure fn _new(x:float, y:float) -> self;
+    
     // This is where I wish rust had properties ;)
     pure fn x() -> T;
     pure fn y() -> T;
     
-    // static pure fn make(x:float, y:float) -> self;
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
 }
 
 trait Vector3<T> {
+    // error: duplicate function definition
+    // static pure fn _new(x:float, y:float, z:float) -> self;
+    
     pure fn x() -> T;
     pure fn y() -> T;
     pure fn z() -> T;
-    
-    // static pure fn make(x:float, y:float, z:float) -> self;
     
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
@@ -72,12 +74,13 @@ trait Vector3<T> {
 }
 
 trait Vector4<T> {
+    // error: duplicate function definition
+    // static pure fn _new(x:float, y:float, z:float, w:float) -> self;
+    
     pure fn x() -> T;
     pure fn y() -> T;
     pure fn z() -> T;
     pure fn w() -> T;
-    
-    // static pure fn make(x:float, y:float, z:float, w:float) -> self;
     
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
@@ -109,6 +112,11 @@ pure fn vec2(x:float, y:float) -> vec2 {
 }
 
 impl vec2: Vector2<float> {
+    // #[inline(always)]
+    // static pure fn _new(x:float, y:float) -> vec2 {
+    //     vec2 { data: [ x, y ] }
+    // }
+    
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
 }
@@ -261,6 +269,11 @@ pure fn vec3(x:float, y:float, z:float) -> vec3 {
 }
 
 impl vec3: Vector3<float> {
+    // #[inline(always)]
+    // static pure fn _new(x:float, y:float, z:float) -> vec3 {
+    //     vec2 { data: [ x, y, z ] }
+    // }
+    
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
     #[inline(always)] pure fn z() -> float { self.data[2] }
@@ -435,6 +448,11 @@ pure fn vec4(x:float, y:float, z:float, w:float) -> vec4 {
 }
 
 impl vec4: Vector4<float> {
+    // #[inline(always)]
+    // static pure fn _new(x:float, y:float, z:float, w:float) -> vec3 {
+    //     vec2 { data: [ x, y, z, w ] }
+    // }
+    
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
     #[inline(always)] pure fn z() -> float { self.data[2] }
