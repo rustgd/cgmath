@@ -1,8 +1,8 @@
 import std::cmp::FuzzyEq;
 import cmp::Ord;
-import float::sqrt;
 import num::Num;
 import to_str::ToStr;
+import math::Sqrt;
 import mat::{mat3, mat4};
 import vec::vec3;
 
@@ -168,7 +168,7 @@ impl quat: Quaternion<float> {
     
     #[inline(always)]
     pure fn magnitude() -> float {
-        sqrt(self.magnitude2())
+        self.magnitude2().sqrt()
     }
     
     #[inline(always)]

@@ -1,7 +1,4 @@
 import cmp::Ord;
-import float::sqrt;
-import f32::sqrt;
-import f64::sqrt;
 
 //
 //  Abs
