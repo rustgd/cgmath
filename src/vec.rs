@@ -1,14 +1,13 @@
 import std::cmp::FuzzyEq;
 import cmp::Ord;
 import num::Num;
-import float::sqrt;
-import math::{Abs, min, max};
+import math::{Abs, min, max, Sqrt};
 import to_str::ToStr;
 
 //
 //  N-dimensional Vector
 //
-trait Vector<T:Num Ord FuzzyEq> {
+trait Vector<T> {
     static pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
@@ -48,7 +47,7 @@ trait Vector<T:Num Ord FuzzyEq> {
 
 
 
-trait Vector2<T:Num Ord FuzzyEq> {
+trait Vector2<T> {
     // This is where I wish rust had properties ;)
     pure fn x() -> T;
     pure fn y() -> T;
@@ -58,7 +57,7 @@ trait Vector2<T:Num Ord FuzzyEq> {
     // static pure fn unit_y() -> self;
 }
 
-trait Vector3<T:Num Ord FuzzyEq> {
+trait Vector3<T> {
     pure fn x() -> T;
     pure fn y() -> T;
     pure fn z() -> T;
@@ -72,7 +71,7 @@ trait Vector3<T:Num Ord FuzzyEq> {
     fn cross(&&other:self) -> self;
 }
 
-trait Vector4<T:Num Ord FuzzyEq> {
+trait Vector4<T> {
     pure fn x() -> T;
     pure fn y() -> T;
     pure fn z() -> T;
@@ -195,7 +194,7 @@ impl vec2: Vector<float> {
     
     #[inline(always)]
     pure fn magnitude() -> float {
-        sqrt(self.magnitude2())
+        self.magnitude2().sqrt()
     }
     
     #[inline(always)]
@@ -365,7 +364,7 @@ impl vec3: Vector<float> {
     
     #[inline(always)]
     pure fn magnitude() -> float {
-        sqrt(self.magnitude2())
+        self.magnitude2().sqrt()
     }
     
     #[inline(always)]
@@ -543,7 +542,7 @@ impl vec4: Vector<float> {
     
     #[inline(always)]
     pure fn magnitude() -> float {
-        sqrt(self.magnitude2())
+        self.magnitude2().sqrt()
     }
     
     #[inline(always)]

@@ -6,12 +6,12 @@ import to_str::ToStr;
 import mat::{mat3, mat4};
 import vec::vec3;
 
-// TODO: Unittests! I've probably made lots of mistakes...
+// TODO: Unittests
 
 //
 //  Quaternion
 //
-trait Quaternion<T:Num Ord FuzzyEq> {
+trait Quaternion<T> {
     pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;

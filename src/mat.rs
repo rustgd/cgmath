@@ -2,15 +2,14 @@ import std::cmp::FuzzyEq;
 import cmp::Ord;
 import num::Num;
 // import to_str::ToStr;
+import math::Sqrt;
 import quat::quat;
 import vec::*;
-
-// TODO: Unittests! I've probably made lots of mistakes...
 
 //
 //  NxN Matrix
 //
-trait Matrix<T:Num Ord FuzzyEq, V:Vector<T>> {
+trait Matrix<T, V> {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
@@ -43,8 +42,8 @@ trait Matrix<T:Num Ord FuzzyEq, V:Vector<T>> {
 //
 //  3x3 Matrix
 //
-trait Matrix3<T:Num Ord FuzzyEq, V:Vector<T>> {
-    pure fn scale(&&vec:V) -> self;
+trait Matrix3<V3> {
+    pure fn scale(&&vec:V3) -> self;
     pure fn to_mat4() -> mat4;
     pure fn to_quat() -> quat;
 }
@@ -52,9 +51,9 @@ trait Matrix3<T:Num Ord FuzzyEq, V:Vector<T>> {
 //
 //  4x4 Matrix
 //
-trait Matrix4<T:Num Ord FuzzyEq, V:Vector<T>> {
-    pure fn scale(&&vec:vec3) -> self;      // I don't like the use of `vec3` here
-    pure fn translate(&&vec:vec3) -> self;
+trait Matrix4<V3, V4> {
+    pure fn scale(&&vec:V3) -> self;      // I don't like the use of `vec3` here
+    pure fn translate(&&vec:V3) -> self;
 }
 
 
@@ -387,7 +386,7 @@ impl mat3: Matrix<float, vec3> {
     }
 }
 
-impl mat3: Matrix3<float, vec3> {
+impl mat3: Matrix3<vec3> {
     #[inline(always)]
     pure fn scale(&&vec:vec3) -> mat3 {
         self.mul_m(mat3(vec.x(),      0f,      0f,
@@ -412,28 +411,28 @@ impl mat3: Matrix3<float, vec3> {
         let trace:float = self[0][0] + self[1][1] + self[2][2];
         
         if trace >= 0f {
-            s = sqrt(trace + 1f);
+            s = (trace + 1f).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[1][2] - self[2][1] * s;
             y = self[2][0] - self[0][2] * s;
             z = self[0][1] - self[1][0] * s;
         } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = sqrt(1f + self[0][0] - self[1][1] - self[2][2]);
+            s = (1f + self[0][0] - self[1][1] - self[2][2]).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[0][1] - self[1][0] * s;
             y = self[2][0] - self[0][2] * s;
             z = self[1][2] - self[2][1] * s;
         } else if self[1][1] > self[2][2] {
-            s = sqrt(1f + self[1][1] - self[0][0] - self[2][2]);
+            s = (1f + self[1][1] - self[0][0] - self[2][2]).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[0][1] - self[1][0] * s;
             y = self[1][2] - self[2][1] * s;
             z = self[2][0] - self[0][2] * s;
         } else {
-            s = sqrt(1f + self[2][2] - self[0][0] - self[1][1]);
+            s = (1f + self[2][2] - self[0][0] - self[1][1]).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
             x = self[2][0] - self[0][2] * s;
@@ -658,7 +657,7 @@ impl mat4: Matrix<float, vec4> {
     }
 }
 
-impl mat4: Matrix4<float, vec4> {
+impl mat4: Matrix4<vec3, vec4> {
     #[inline(always)]
     pure fn scale(&&vec:vec3) -> mat4 {
         self.mul_m(mat4(vec.x(),      0f,      0f, 0f,

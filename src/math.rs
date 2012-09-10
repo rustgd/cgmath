@@ -1,5 +1,11 @@
 import cmp::Ord;
+import float::sqrt;
+import f32::sqrt;
+import f64::sqrt;
 
+//
+//  Abs
+//
 trait Abs {
     pure fn abs() -> self;
 }
@@ -36,14 +42,55 @@ impl f64: Abs {
     }
 }
 
+//
+//  Min
+//
 #[inline(always)]
-pure fn min<T:copy Ord>(&&a:T, &&b:T) -> T {
+pure fn min<T:Copy Ord>(&&a:T, &&b:T) -> T {
     if a < b { a }
     else     { b }
 }
 
+//
+//  Max
+//
 #[inline(always)]
-pure fn max<T:copy Ord>(&&a:T, &&b:T) -> T {
+pure fn max<T:Copy Ord>(&&a:T, &&b:T) -> T {
     if a > b { a }
     else     { b }
+}
+
+//
+//  Sqrt
+//
+trait Sqrt {
+    pure fn sqrt() -> self;
+}
+
+// impl int: Sqrt {
+//     #[inline(always)]
+//     pure fn sqrt() -> int {
+//         sqrt(self)
+//     }
+// }
+
+impl float: Sqrt {
+    #[inline(always)]
+    pure fn sqrt() -> float {
+        float::sqrt(self)
+    }
+}
+
+impl f32: Sqrt {
+    #[inline(always)]
+    pure fn sqrt() -> f32 {
+        f32::sqrt(self)
+    }
+}
+
+impl f64: Sqrt {
+    #[inline(always)]
+    pure fn sqrt() -> f64 {
+        f64::sqrt(self)
+    }
 }
