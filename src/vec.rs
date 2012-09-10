@@ -119,6 +119,10 @@ impl vec2: Vector2<float> {
     
     #[inline(always)] pure fn x() -> float { self.data[0] }
     #[inline(always)] pure fn y() -> float { self.data[1] }
+    
+    // #[inline(always)] static pure fn unit_x() -> vec2 { vec2(1f, 0f) }
+    // #[inline(always)] static pure fn unit_y() -> vec2 { vec2(0f, 1f) }
+    // #[inline(always)] static pure fn unit_z() -> vec2 { vec2(0f, 0f) }
 }
 
 impl vec2: Vector<float> {
@@ -284,6 +288,10 @@ impl vec3: Vector3<float> {
              (self[2] * other[0]) - (self[0] * other[2]),
              (self[0] * other[1]) - (self[1] * other[0]))
     }
+    
+    // #[inline(always)] static pure fn unit_x() -> vec3 { vec3(1f, 0f, 0f) }
+    // #[inline(always)] static pure fn unit_y() -> vec3 { vec3(0f, 1f, 0f) }
+    // #[inline(always)] static pure fn unit_z() -> vec3 { vec3(0f, 0f, 1f) }
 }
 
 impl vec3: Vector<float> {
@@ -457,6 +465,11 @@ impl vec4: Vector4<float> {
     #[inline(always)] pure fn y() -> float { self.data[1] }
     #[inline(always)] pure fn z() -> float { self.data[2] }
     #[inline(always)] pure fn w() -> float { self.data[3] }
+    
+    // #[inline(always)] static pure fn unit_x() -> vec4 { vec4(1f, 0f, 0f, 0f) }
+    // #[inline(always)] static pure fn unit_y() -> vec4 { vec4(0f, 1f, 0f, 0f) }
+    // #[inline(always)] static pure fn unit_z() -> vec4 { vec4(0f, 0f, 1f, 0f) }
+    // #[inline(always)] static pure fn unit_w() -> vec4 { vec4(0f, 0f, 0f, 1f) }
 }
 
 impl vec4: Vector<float> {
