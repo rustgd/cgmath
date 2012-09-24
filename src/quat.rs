@@ -1,10 +1,10 @@
-import std::cmp::FuzzyEq;
-import cmp::Ord;
-import num::Num;
-import to_str::ToStr;
-import math::Sqrt;
-import mat::{mat3, mat4};
-import vec::vec3;
+use std::cmp::FuzzyEq;
+use cmp::Ord;
+use num::Num;
+use to_str::ToStr;
+use math::Sqrt;
+use mat::{Mat3, Mat4};
+use vec::Vec3;
 
 // TODO: Unittests
 
@@ -25,7 +25,7 @@ trait Quaternion<T> {
     pure fn mul_f(&&value:T) -> self;
     pure fn div_f(&&value:T) -> self;
     
-    // pure fn mul_v(&&vec3) -> vec3;
+    // pure fn mul_v(&&Vec3) -> Vec3;
     
     pure fn add_q(&&other:self) -> self;
     pure fn sub_q(&&other:self) -> self;
@@ -40,8 +40,8 @@ trait Quaternion<T> {
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
     
-    pure fn to_mat3() -> mat3;
-    pure fn to_mat4() -> mat4;
+    pure fn to_Mat3() -> Mat3;
+    pure fn to_Mat4() -> Mat4;
 }
 
 
@@ -52,113 +52,113 @@ trait Quaternion<T> {
 //
 //  Quat struct definition
 //
-struct quat { data:[float * 4] }
+struct Quat { data:[float * 4] }
 
-const quat_zero     :quat = quat { data: [ 0f, 0f, 0f, 0f ] };
-const quat_identity :quat = quat { data: [ 1f, 0f, 0f, 0f ] };
+const quat_zero     :Quat = Quat { data: [ 0f, 0f, 0f, 0f ] };
+const quat_identity :Quat = Quat { data: [ 1f, 0f, 0f, 0f ] };
 
 //
 //  Quat Constructor
 //
-#[inline(always)]
-pure fn quat(w:float, x:float, y:float, z:float) -> quat {
-    quat { data: [ w, x, y, z ] }
+#[inline]
+pure fn Quat(w:float, x:float, y:float, z:float) -> Quat {
+    Quat { data: [ w, x, y, z ] }
 }
 
 //
 //  Quaternion Implementation
 //
-impl quat: Quaternion<float> {
-    #[inline(always)]
+impl Quat: Quaternion<float> {
+    #[inline]
     pure fn dim() -> uint { 4 }
     
-    #[inline(always)]
+    #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
     }
     
-    #[inline(always)]
-    pure fn neg() -> quat {
-        quat(-self[0], -self[1], -self[2], -self[3])
+    #[inline]
+    pure fn neg() -> Quat {
+        Quat(-self[0], -self[1], -self[2], -self[3])
     }
     
-    #[inline(always)] pure fn w() -> float { self.data[0] }
-    #[inline(always)] pure fn x() -> float { self.data[1] }
-    #[inline(always)] pure fn y() -> float { self.data[2] }
-    #[inline(always)] pure fn z() -> float { self.data[3] }
+    #[inline] pure fn w() -> float { self.data[0] }
+    #[inline] pure fn x() -> float { self.data[1] }
+    #[inline] pure fn y() -> float { self.data[2] }
+    #[inline] pure fn z() -> float { self.data[3] }
     
-    #[inline(always)]
-    pure fn mul_f(&&value:float) -> quat {
-        quat(self[0] * value,
+    #[inline]
+    pure fn mul_f(&&value:float) -> Quat {
+        Quat(self[0] * value,
              self[1] * value,
              self[2] * value,
              self[3] * value)
     }
     
-    #[inline(always)]
-    pure fn div_f(&&value:float) -> quat {
-        quat(self[0] / value,
+    #[inline]
+    pure fn div_f(&&value:float) -> Quat {
+        Quat(self[0] / value,
              self[1] / value,
              self[2] / value,
              self[3] / value)
     }
     
-    #[inline(always)]
-    pure fn add_q(&&other:quat) -> quat{
-        quat(self[0] + other[0],
+    #[inline]
+    pure fn add_q(&&other:Quat) -> Quat{
+        Quat(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
              self[3] + other[3])
     }
     
-    #[inline(always)]
-    pure fn sub_q(&&other:quat) -> quat{
-        quat(self[0] - other[0],
+    #[inline]
+    pure fn sub_q(&&other:Quat) -> Quat{
+        Quat(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
              self[3] - other[3])
     }
     
-    #[inline(always)]
-    pure fn mul_q(&&other:quat) -> quat {
-        quat(self.w()*other.w() - self.x()*other.x() - self.y()*other.y() - self.z()*other.z(),
+    #[inline]
+    pure fn mul_q(&&other:Quat) -> Quat {
+        Quat(self.w()*other.w() - self.x()*other.x() - self.y()*other.y() - self.z()*other.z(),
              self.w()*other.x() + self.x()*other.w() + self.y()*other.z() - self.z()*other.y(),
              self.w()*other.y() + self.y()*other.w() + self.z()*other.x() - self.x()*other.z(),
              self.w()*other.z() + self.z()*other.w() + self.x()*other.y() - self.y()*other.x())
     }
     
-    #[inline(always)]
-    pure fn exact_eq(&&other:quat) -> bool {
+    #[inline]
+    pure fn exact_eq(&&other:Quat) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
         self[3] == other[3]
     }
     
-    #[inline(always)]
-    pure fn fuzzy_eq(&&other: quat) -> bool {
+    #[inline]
+    pure fn fuzzy_eq(&&other: Quat) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
     }
     
-    #[inline(always)]
-    pure fn eq(&&other:quat) -> bool {
+    #[inline]
+    pure fn eq(&&other:Quat) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline(always)]
-    pure fn conjugate() -> quat {
-        quat(self.w(), -self.x(), -self.y(), -self.z())
+    #[inline]
+    pure fn conjugate() -> Quat {
+        Quat(self.w(), -self.x(), -self.y(), -self.z())
     }
     
-    #[inline(always)]
-    pure fn inverse() -> quat {
+    #[inline]
+    pure fn inverse() -> Quat {
         self.conjugate().mul_f((1f / self.magnitude2()))
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude2() -> float {
         self.w() * self.w() +
         self.x() * self.x() +
@@ -166,13 +166,13 @@ impl quat: Quaternion<float> {
         self.z() * self.z()
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude() -> float {
         self.magnitude2().sqrt()
     }
     
-    #[inline(always)]
-    pure fn to_mat3() -> mat3 {
+    #[inline]
+    pure fn to_Mat3() -> Mat3 {
         let x2 = self.x() + self.x();
         let y2 = self.y() + self.y();
         let z2 = self.z() + self.z();
@@ -189,22 +189,22 @@ impl quat: Quaternion<float> {
         let wz2 = z2 * self.w();
         let wx2 = x2 * self.w();
         
-        return mat3(1f - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
+        return Mat3(1f - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
                          xy2 + wz2, 1f - xx2 - zz2,      yz2 - wx2,
                          xz2 - wy2,      yz2 + wx2, 1f - xx2 - yy2);
     }
     
-    #[inline(always)]
-    pure fn to_mat4() -> mat4 {
-        self.to_mat3().to_mat4()
+    #[inline]
+    pure fn to_Mat4() -> Mat4 {
+        self.to_Mat3().to_Mat4()
     }
 }
 
 //
 //  Convert To String
 //
-impl quat: ToStr {
+impl Quat: ToStr {
     fn to_str() -> ~str {
-        fmt!("quat[ %f, %f, %f, %f ]", self.w(), self.x(), self.y(), self.z())
+        fmt!("Quat[ %f, %f, %f, %f ]", self.w(), self.x(), self.y(), self.z())
     }
 }

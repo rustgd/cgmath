@@ -13,6 +13,7 @@ TEST_CRATE     = $(TEST).rc
 
 $(TARGET):
 	@echo "Building $(TARGET)"
+	@mkdir -p $(BUILD_DIR)
 	@rustc $(SRC_DIR)/$(SRC_CRATE) --lib -g --out-dir=$(BUILD_DIR)
 	@echo "Success! \o/"
 
@@ -21,10 +22,11 @@ all: $(TARGET)
 test: all
 	@echo "..."
 	@echo "Building $(TEST)"
+	@mkdir -p $(TEST_BUILD_DIR)
 	@rustc --test -L lib $(TEST_DIR)/$(TEST_CRATE) -g --out-dir=$(TEST_BUILD_DIR)
 	@echo "Success! \o/"
 	@$(TEST_BUILD_DIR)/$(TEST)
 
 clean:
-	rm -R -f $(BUILD_DIR)/*
-	rm -R -f $(TEST_BUILD_DIR)/*
+	rm -R -f $(BUILD_DIR)
+	rm -R -f $(TEST_BUILD_DIR)

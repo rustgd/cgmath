@@ -1,6 +1,6 @@
-import float::consts::pi;
-import float::tan;
-import mat::mat4;
+use float::consts::pi;
+use float::tan;
+use mat::Mat4;
 
 //
 //  Create a perspective projection matrix
@@ -8,7 +8,7 @@ import mat::mat4;
 //  fov is in degrees
 //  http://www.opengl.org/wiki/GluPerspective_code
 //
-pure fn perspective(fovy:float, aspectRatio:float, near:float, far:float) -> mat4 {
+pure fn perspective(fovy:float, aspectRatio:float, near:float, far:float) -> Mat4 {
     let ymax = near * tan(fovy * pi / 360f);
     let xmax = ymax * aspectRatio;
     return frustum(-xmax, xmax, -ymax, ymax, near, far);
@@ -21,7 +21,7 @@ pure fn perspective(fovy:float, aspectRatio:float, near:float, far:float) -> mat
 //
 //  TODO: double check algorithm
 //
-pure fn frustum(left:float, right:float, bottom:float, top:float, near:float, far:float) -> mat4 {
+pure fn frustum(left:float, right:float, bottom:float, top:float, near:float, far:float) -> Mat4 {
     let m00 = (2f * near) / (right - left);
     let m01 = 0f;
     let m02 = 0f;
@@ -39,7 +39,7 @@ pure fn frustum(left:float, right:float, bottom:float, top:float, near:float, fa
     let m32 = -(2f * far * near) / (far - near);
     let m33 = 0f;
     
-    return mat4(m00, m01, m02, m03,
+    return Mat4(m00, m01, m02, m03,
                 m10, m11, m12, m13,
                 m20, m21, m22, m23,
                 m30, m31, m32, m33);

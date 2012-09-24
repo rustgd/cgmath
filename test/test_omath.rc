@@ -5,8 +5,8 @@
 #[comment = "Unittests for omath"];
 #[crate_type = "unittests"];
 
-use std;
-use omath;
+extern mod std;
+extern mod omath;
 
 mod test_mat;
 mod test_math;

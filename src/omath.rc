@@ -5,7 +5,7 @@
 #[comment = "Linear algebra library for Rust. Incomplete and probably buggy."];
 #[crate_type = "lib"];
 
-use std;
+extern mod std;
 
 mod mat;
 mod math;

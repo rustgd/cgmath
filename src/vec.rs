@@ -1,8 +1,8 @@
-import std::cmp::FuzzyEq;
-import cmp::Ord;
-import num::Num;
-import math::{Abs, min, max, Sqrt};
-import to_str::ToStr;
+use std::cmp::FuzzyEq;
+use cmp::Ord;
+use num::Num;
+use math::{Abs, min, max, Sqrt};
+use to_str::ToStr;
 
 //
 //  N-dimensional Vector
@@ -96,155 +96,155 @@ trait Vector4<T> {
 //
 //  Vec2
 //
-struct vec2 { data:[float * 2] }
+struct Vec2 { data:[float * 2] }
 
-const vec2_zero     :vec2 = vec2 { data: [ 0f, 0f ] };
-const vec2_unit_x   :vec2 = vec2 { data: [ 1f, 0f ] };
-const vec2_unit_y   :vec2 = vec2 { data: [ 0f, 1f ] };
-const vec2_identity :vec2 = vec2 { data: [ 1f, 1f ] };
+const vec2_zero     :Vec2 = Vec2 { data: [ 0f, 0f ] };
+const vec2_unit_x   :Vec2 = Vec2 { data: [ 1f, 0f ] };
+const vec2_unit_y   :Vec2 = Vec2 { data: [ 0f, 1f ] };
+const vec2_identity :Vec2 = Vec2 { data: [ 1f, 1f ] };
 
 //
 //  Constructor
 //
-#[inline(always)]
-pure fn vec2(x:float, y:float) -> vec2 {
-    vec2 { data: [ x, y ] }
+#[inline]
+pure fn Vec2(x:float, y:float) -> Vec2 {
+    Vec2 { data: [ x, y ] }
 }
 
-impl vec2: Vector2<float> {
-    // #[inline(always)]
-    // static pure fn _new(x:float, y:float) -> vec2 {
-    //     vec2 { data: [ x, y ] }
+impl Vec2: Vector2<float> {
+    // #[inline]
+    // static pure fn _new(x:float, y:float) -> Vec2 {
+    //     Vec2 { data: [ x, y ] }
     // }
     
-    #[inline(always)] pure fn x() -> float { self.data[0] }
-    #[inline(always)] pure fn y() -> float { self.data[1] }
+    #[inline] pure fn x() -> float { self.data[0] }
+    #[inline] pure fn y() -> float { self.data[1] }
     
-    // #[inline(always)] static pure fn unit_x() -> vec2 { vec2(1f, 0f) }
-    // #[inline(always)] static pure fn unit_y() -> vec2 { vec2(0f, 1f) }
-    // #[inline(always)] static pure fn unit_z() -> vec2 { vec2(0f, 0f) }
+    // #[inline] static pure fn unit_x() -> Vec2 { Vec2(1f, 0f) }
+    // #[inline] static pure fn unit_y() -> Vec2 { Vec2(0f, 1f) }
+    // #[inline] static pure fn unit_z() -> Vec2 { Vec2(0f, 0f) }
 }
 
-impl vec2: Vector<float> {
-    #[inline(always)]
+impl Vec2: Vector<float> {
+    #[inline]
     static pure fn dim() -> uint { 2 }
     
-    #[inline(always)]
+    #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
     }
     
-    #[inline(always)]
-    pure fn neg() -> vec2 {
-        vec2(-self[0], -self[1])
+    #[inline]
+    pure fn neg() -> Vec2 {
+        Vec2(-self[0], -self[1])
     }
     
-    #[inline(always)]
-    pure fn add_f(&&value:float) -> vec2 {
-        vec2(self[0] + value,
+    #[inline]
+    pure fn add_f(&&value:float) -> Vec2 {
+        Vec2(self[0] + value,
              self[1] + value)
     }
     
-    #[inline(always)]
-    pure fn sub_f(&&value:float) -> vec2 {
-        vec2(self[0] - value,
+    #[inline]
+    pure fn sub_f(&&value:float) -> Vec2 {
+        Vec2(self[0] - value,
              self[1] - value)
     }
     
-    #[inline(always)]
-    pure fn mul_f(&&value:float) -> vec2 {
-        vec2(self[0] * value,
+    #[inline]
+    pure fn mul_f(&&value:float) -> Vec2 {
+        Vec2(self[0] * value,
              self[1] * value)
     }
     
-    #[inline(always)]
-    pure fn div_f(&&value:float) -> vec2 {
-        vec2(self[0] / value,
+    #[inline]
+    pure fn div_f(&&value:float) -> Vec2 {
+        Vec2(self[0] / value,
              self[1] / value)
     }
     
-    #[inline(always)]
-    pure fn add_v(&&other: vec2) -> vec2{
-        vec2(self[0] + other[0],
+    #[inline]
+    pure fn add_v(&&other: Vec2) -> Vec2{
+        Vec2(self[0] + other[0],
              self[1] + other[1])
     }
     
-    #[inline(always)]
-    pure fn sub_v(&&other: vec2) -> vec2{
-        vec2(self[0] - other[0],
+    #[inline]
+    pure fn sub_v(&&other: Vec2) -> Vec2{
+        Vec2(self[0] - other[0],
              self[1] - other[1])
     }
     
-    #[inline(always)]
-    pure fn dot(&&other: vec2) -> float {
+    #[inline]
+    pure fn dot(&&other: Vec2) -> float {
         self[0] * other[0] +
         self[1] * other[1]
     }
     
-    #[inline(always)]
-    pure fn exact_eq(&&other:vec2) -> bool {
+    #[inline]
+    pure fn exact_eq(&&other:Vec2) -> bool {
         self[0] == other[0] &&
         self[1] == other[1]
     }
     
-    #[inline(always)]
-    pure fn fuzzy_eq(&&other: vec2) -> bool {
+    #[inline]
+    pure fn fuzzy_eq(&&other: Vec2) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
     }
     
-    #[inline(always)]
-    pure fn eq(&&other:vec2) -> bool {
+    #[inline]
+    pure fn eq(&&other:Vec2) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1]
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude() -> float {
         self.magnitude2().sqrt()
     }
     
-    #[inline(always)]
-    pure fn normalize() -> vec2 {
+    #[inline]
+    pure fn normalize() -> Vec2 {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
     
-    #[inline(always)]
-    pure fn lerp(&&other:vec2, &&value:float) -> vec2 {
+    #[inline]
+    pure fn lerp(&&other:Vec2, &&value:float) -> Vec2 {
         self.add_v((other.sub_v(self)).mul_f(value))
     }
     
-    #[inline(always)]
-    pure fn abs() -> vec2 {
-        vec2(self[0].abs(),
+    #[inline]
+    pure fn abs() -> Vec2 {
+        Vec2(self[0].abs(),
              self[1].abs())
     }
     
-    #[inline(always)]
-    pure fn min(&&other:vec2) -> vec2 {
-        vec2(min(self[0], other[0]),
+    #[inline]
+    pure fn min(&&other:Vec2) -> Vec2 {
+        Vec2(min(self[0], other[0]),
              min(self[1], other[1]))
     }
     
-    #[inline(always)]
-    pure fn max(&&other:vec2) -> vec2 {
-        vec2(max(self[0], other[0]),
+    #[inline]
+    pure fn max(&&other:Vec2) -> Vec2 {
+        Vec2(max(self[0], other[0]),
              max(self[1], other[1]))
     }
     
-    #[inline(always)] static pure fn zero()     -> vec2 { vec2(1f, 1f) }
-    #[inline(always)] static pure fn identity() -> vec2 { vec2(1f, 1f) }
+    #[inline] static pure fn zero()     -> Vec2 { Vec2(1f, 1f) }
+    #[inline] static pure fn identity() -> Vec2 { Vec2(1f, 1f) }
 }
 
-impl vec2: ToStr {
+impl Vec2: ToStr {
     fn to_str() -> ~str {
-        fmt!("vec2[ %f, %f ]", self[0], self[1])
+        fmt!("Vec2[ %f, %f ]", self[0], self[1])
     }
 }
 
@@ -256,177 +256,177 @@ impl vec2: ToStr {
 //
 //  Vec3
 //
-struct vec3 { data:[float * 3] }
+struct Vec3 { data:[float * 3] }
 
-const vec3_zero     :vec3 = vec3 { data: [ 0f, 0f, 0f ] };
-const vec3_unit_x   :vec3 = vec3 { data: [ 1f, 0f, 0f ] };
-const vec3_unit_y   :vec3 = vec3 { data: [ 0f, 1f, 0f ] };
-const vec3_unit_z   :vec3 = vec3 { data: [ 0f, 0f, 1f ] };
-const vec3_identity :vec3 = vec3 { data: [ 1f, 1f, 1f ] };
+const vec3_zero     :Vec3 = Vec3 { data: [ 0f, 0f, 0f ] };
+const vec3_unit_x   :Vec3 = Vec3 { data: [ 1f, 0f, 0f ] };
+const vec3_unit_y   :Vec3 = Vec3 { data: [ 0f, 1f, 0f ] };
+const vec3_unit_z   :Vec3 = Vec3 { data: [ 0f, 0f, 1f ] };
+const vec3_identity :Vec3 = Vec3 { data: [ 1f, 1f, 1f ] };
 
 //
 //  Constructor
 //
-#[inline(always)]
-pure fn vec3(x:float, y:float, z:float) -> vec3 {
-    vec3 { data: [ x, y, z ] }
+#[inline]
+pure fn Vec3(x:float, y:float, z:float) -> Vec3 {
+    Vec3 { data: [ x, y, z ] }
 }
 
-impl vec3: Vector3<float> {
-    // #[inline(always)]
-    // static pure fn _new(x:float, y:float, z:float) -> vec3 {
-    //     vec2 { data: [ x, y, z ] }
+impl Vec3: Vector3<float> {
+    // #[inline]
+    // static pure fn _new(x:float, y:float, z:float) -> Vec3 {
+    //     Vec2 { data: [ x, y, z ] }
     // }
     
-    #[inline(always)] pure fn x() -> float { self.data[0] }
-    #[inline(always)] pure fn y() -> float { self.data[1] }
-    #[inline(always)] pure fn z() -> float { self.data[2] }
+    #[inline] pure fn x() -> float { self.data[0] }
+    #[inline] pure fn y() -> float { self.data[1] }
+    #[inline] pure fn z() -> float { self.data[2] }
     
-    #[inline(always)]
-    fn cross(&&other:vec3) -> vec3 {
-        vec3((self[1] * other[2]) - (self[2] * other[1]),
+    #[inline]
+    fn cross(&&other:Vec3) -> Vec3 {
+        Vec3((self[1] * other[2]) - (self[2] * other[1]),
              (self[2] * other[0]) - (self[0] * other[2]),
              (self[0] * other[1]) - (self[1] * other[0]))
     }
     
-    // #[inline(always)] static pure fn unit_x() -> vec3 { vec3(1f, 0f, 0f) }
-    // #[inline(always)] static pure fn unit_y() -> vec3 { vec3(0f, 1f, 0f) }
-    // #[inline(always)] static pure fn unit_z() -> vec3 { vec3(0f, 0f, 1f) }
+    // #[inline] static pure fn unit_x() -> Vec3 { Vec3(1f, 0f, 0f) }
+    // #[inline] static pure fn unit_y() -> Vec3 { Vec3(0f, 1f, 0f) }
+    // #[inline] static pure fn unit_z() -> Vec3 { Vec3(0f, 0f, 1f) }
 }
 
-impl vec3: Vector<float> {
-    #[inline(always)]
+impl Vec3: Vector<float> {
+    #[inline]
     static pure fn dim() -> uint { 3 }
     
-    #[inline(always)]
+    #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
     }
     
-    #[inline(always)]
-    pure fn neg() -> vec3 {
-        vec3(-self[0], -self[1], -self[2])
+    #[inline]
+    pure fn neg() -> Vec3 {
+        Vec3(-self[0], -self[1], -self[2])
     }
     
-    #[inline(always)]
-    pure fn add_f(&&value:float) -> vec3 {
-        vec3(self[0] + value,
+    #[inline]
+    pure fn add_f(&&value:float) -> Vec3 {
+        Vec3(self[0] + value,
              self[1] + value,
              self[2] + value)
     }
     
-    #[inline(always)]
-    pure fn sub_f(&&value:float) -> vec3 {
-        vec3(self[0] - value,
+    #[inline]
+    pure fn sub_f(&&value:float) -> Vec3 {
+        Vec3(self[0] - value,
              self[1] - value,
              self[2] - value)
     }
     
-    #[inline(always)]
-    pure fn mul_f(&&value:float) -> vec3 {
-        vec3(self[0] * value,
+    #[inline]
+    pure fn mul_f(&&value:float) -> Vec3 {
+        Vec3(self[0] * value,
              self[1] * value,
              self[2] * value)
     }
     
-    #[inline(always)]
-    pure fn div_f(&&value:float) -> vec3 {
-        vec3(self[0] / value,
+    #[inline]
+    pure fn div_f(&&value:float) -> Vec3 {
+        Vec3(self[0] / value,
              self[1] / value,
              self[2] / value)
     }
     
-    #[inline(always)]
-    pure fn add_v(&&other: vec3) -> vec3{
-        vec3(self[0] + other[0],
+    #[inline]
+    pure fn add_v(&&other: Vec3) -> Vec3{
+        Vec3(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2])
     }
     
-    #[inline(always)]
-    pure fn sub_v(&&other: vec3) -> vec3{
-        vec3(self[0] - other[0],
+    #[inline]
+    pure fn sub_v(&&other: Vec3) -> Vec3{
+        Vec3(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2])
     }
     
-    #[inline(always)]
-    pure fn dot(&&other: vec3) -> float {
+    #[inline]
+    pure fn dot(&&other: Vec3) -> float {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
     }
     
-    #[inline(always)]
-    pure fn exact_eq(&&other:vec3) -> bool {
+    #[inline]
+    pure fn exact_eq(&&other:Vec3) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2]
     }
     
-    #[inline(always)]
-    pure fn fuzzy_eq(&&other: vec3) -> bool {
+    #[inline]
+    pure fn fuzzy_eq(&&other: Vec3) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
     }
     
-    #[inline(always)]
-    pure fn eq(&&other:vec3) -> bool {
+    #[inline]
+    pure fn eq(&&other:Vec3) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2]
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude() -> float {
         self.magnitude2().sqrt()
     }
     
-    #[inline(always)]
-    pure fn normalize() -> vec3 {
+    #[inline]
+    pure fn normalize() -> Vec3 {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
     
-    #[inline(always)]
-    pure fn lerp(&&other:vec3, &&value:float) -> vec3 {
+    #[inline]
+    pure fn lerp(&&other:Vec3, &&value:float) -> Vec3 {
         self.add_v((other.sub_v(self)).mul_f(value))
     }
     
-    #[inline(always)]
-    pure fn abs() -> vec3 {
-        vec3(self[0].abs(),
+    #[inline]
+    pure fn abs() -> Vec3 {
+        Vec3(self[0].abs(),
              self[1].abs(),
              self[2].abs())
     }
     
-    #[inline(always)]
-    pure fn min(&&other:vec3) -> vec3 {
-        vec3(min(self[0], other[0]),
+    #[inline]
+    pure fn min(&&other:Vec3) -> Vec3 {
+        Vec3(min(self[0], other[0]),
              min(self[1], other[1]),
              min(self[2], other[2]))
     }
     
-    #[inline(always)]
-    pure fn max(&&other:vec3) -> vec3 {
-        vec3(max(self[0], other[0]),
+    #[inline]
+    pure fn max(&&other:Vec3) -> Vec3 {
+        Vec3(max(self[0], other[0]),
              max(self[1], other[1]),
              max(self[2], other[2]))
     }
     
-    #[inline(always)] static pure fn zero()     -> vec3 { vec3(1f, 1f, 1f) }
-    #[inline(always)] static pure fn identity() -> vec3 { vec3(1f, 1f, 1f) }
+    #[inline] static pure fn zero()     -> Vec3 { Vec3(1f, 1f, 1f) }
+    #[inline] static pure fn identity() -> Vec3 { Vec3(1f, 1f, 1f) }
 }
 
-impl vec3: ToStr {
+impl Vec3: ToStr {
     fn to_str() -> ~str {
-        fmt!("vec3[ %f, %f, %f ]", self[0], self[1], self[2])
+        fmt!("Vec3[ %f, %f, %f ]", self[0], self[1], self[2])
     }
 }
 
@@ -438,132 +438,132 @@ impl vec3: ToStr {
 //
 //  Vec4
 //
-struct vec4 { data:[float * 4] }
+struct Vec4 { data:[float * 4] }
 
-const vec4_zero     :vec4 = vec4 { data: [ 0f, 0f, 0f, 0f ] };
-const vec4_unit_x   :vec4 = vec4 { data: [ 1f, 0f, 0f, 0f ] };
-const vec4_unit_y   :vec4 = vec4 { data: [ 0f, 1f, 0f, 0f ] };
-const vec4_unit_z   :vec4 = vec4 { data: [ 0f, 0f, 1f, 0f ] };
-const vec4_unit_w   :vec4 = vec4 { data: [ 0f, 0f, 0f, 1f ] };
-const vec4_identity :vec4 = vec4 { data: [ 1f, 1f, 1f, 1f ] };
+const vec4_zero     :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 0f ] };
+const vec4_unit_x   :Vec4 = Vec4 { data: [ 1f, 0f, 0f, 0f ] };
+const vec4_unit_y   :Vec4 = Vec4 { data: [ 0f, 1f, 0f, 0f ] };
+const vec4_unit_z   :Vec4 = Vec4 { data: [ 0f, 0f, 1f, 0f ] };
+const vec4_unit_w   :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 1f ] };
+const vec4_identity :Vec4 = Vec4 { data: [ 1f, 1f, 1f, 1f ] };
 
 //
 //  Constructor
 //
-#[inline(always)]
-pure fn vec4(x:float, y:float, z:float, w:float) -> vec4 {
-    vec4 { data: [ x, y, z, w ] }
+#[inline]
+pure fn Vec4(x:float, y:float, z:float, w:float) -> Vec4 {
+    Vec4 { data: [ x, y, z, w ] }
 }
 
-impl vec4: Vector4<float> {
-    // #[inline(always)]
-    // static pure fn _new(x:float, y:float, z:float, w:float) -> vec3 {
-    //     vec2 { data: [ x, y, z, w ] }
+impl Vec4: Vector4<float> {
+    // #[inline]
+    // static pure fn _new(x:float, y:float, z:float, w:float) -> Vec3 {
+    //     Vec2 { data: [ x, y, z, w ] }
     // }
     
-    #[inline(always)] pure fn x() -> float { self.data[0] }
-    #[inline(always)] pure fn y() -> float { self.data[1] }
-    #[inline(always)] pure fn z() -> float { self.data[2] }
-    #[inline(always)] pure fn w() -> float { self.data[3] }
+    #[inline] pure fn x() -> float { self.data[0] }
+    #[inline] pure fn y() -> float { self.data[1] }
+    #[inline] pure fn z() -> float { self.data[2] }
+    #[inline] pure fn w() -> float { self.data[3] }
     
-    // #[inline(always)] static pure fn unit_x() -> vec4 { vec4(1f, 0f, 0f, 0f) }
-    // #[inline(always)] static pure fn unit_y() -> vec4 { vec4(0f, 1f, 0f, 0f) }
-    // #[inline(always)] static pure fn unit_z() -> vec4 { vec4(0f, 0f, 1f, 0f) }
-    // #[inline(always)] static pure fn unit_w() -> vec4 { vec4(0f, 0f, 0f, 1f) }
+    // #[inline] static pure fn unit_x() -> Vec4 { Vec4(1f, 0f, 0f, 0f) }
+    // #[inline] static pure fn unit_y() -> Vec4 { Vec4(0f, 1f, 0f, 0f) }
+    // #[inline] static pure fn unit_z() -> Vec4 { Vec4(0f, 0f, 1f, 0f) }
+    // #[inline] static pure fn unit_w() -> Vec4 { Vec4(0f, 0f, 0f, 1f) }
 }
 
-impl vec4: Vector<float> {
-    #[inline(always)]
+impl Vec4: Vector<float> {
+    #[inline]
     static pure fn dim() -> uint { 4 }
     
-    #[inline(always)]
+    #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
     }
     
-    #[inline(always)]
-    pure fn neg() -> vec4 {
-        vec4(-self[0], -self[1], -self[2], -self[3])
+    #[inline]
+    pure fn neg() -> Vec4 {
+        Vec4(-self[0], -self[1], -self[2], -self[3])
     }
     
-    #[inline(always)]
-    pure fn add_f(&&value:float) -> vec4 {
-        vec4(self[0] + value,
+    #[inline]
+    pure fn add_f(&&value:float) -> Vec4 {
+        Vec4(self[0] + value,
              self[1] + value,
              self[2] + value,
              self[3] + value)
     }
     
-    #[inline(always)]
-    pure fn sub_f(&&value:float) -> vec4 {
-        vec4(self[0] - value,
+    #[inline]
+    pure fn sub_f(&&value:float) -> Vec4 {
+        Vec4(self[0] - value,
              self[1] - value,
              self[2] - value,
              self[3] - value)
     }
     
-    #[inline(always)]
-    pure fn mul_f(&&value:float) -> vec4 {
-        vec4(self[0] * value,
+    #[inline]
+    pure fn mul_f(&&value:float) -> Vec4 {
+        Vec4(self[0] * value,
              self[1] * value,
              self[2] * value,
              self[3] * value)
     }
     
-    #[inline(always)]
-    pure fn div_f(&&value:float) -> vec4 {
-        vec4(self[0] / value,
+    #[inline]
+    pure fn div_f(&&value:float) -> Vec4 {
+        Vec4(self[0] / value,
              self[1] / value,
              self[2] / value,
              self[3] / value)
     }
     
-    #[inline(always)]
-    pure fn add_v(&&other: vec4) -> vec4{
-        vec4(self[0] + other[0],
+    #[inline]
+    pure fn add_v(&&other: Vec4) -> Vec4{
+        Vec4(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
              self[3] + other[3])
     }
     
-    #[inline(always)]
-    pure fn sub_v(&&other: vec4) -> vec4{
-        vec4(self[0] - other[0],
+    #[inline]
+    pure fn sub_v(&&other: Vec4) -> Vec4{
+        Vec4(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
              self[3] - other[3])
     }
     
-    #[inline(always)]
-    pure fn dot(&&other:vec4) -> float {
+    #[inline]
+    pure fn dot(&&other:Vec4) -> float {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
         self[3] * other[3]
     }
     
-    #[inline(always)]
-    pure fn exact_eq(&&other:vec4) -> bool {
+    #[inline]
+    pure fn exact_eq(&&other:Vec4) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
         self[3] == other[3]
     }
     
-    #[inline(always)]
-    pure fn fuzzy_eq(&&other: vec4) -> bool {
+    #[inline]
+    pure fn fuzzy_eq(&&other: Vec4) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
     }
     
-    #[inline(always)]
-    pure fn eq(&&other:vec4) -> bool {
+    #[inline]
+    pure fn eq(&&other:Vec4) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
@@ -571,52 +571,52 @@ impl vec4: Vector<float> {
         self[3] * self[3]
     }
     
-    #[inline(always)]
+    #[inline]
     pure fn magnitude() -> float {
         self.magnitude2().sqrt()
     }
     
-    #[inline(always)]
-    pure fn normalize() -> vec4 {
+    #[inline]
+    pure fn normalize() -> Vec4 {
         let n = 1f / self.magnitude();
         return self.mul_f(n);
     }
     
-    #[inline(always)]
-    pure fn lerp(&&other:vec4, &&value:float) -> vec4 {
+    #[inline]
+    pure fn lerp(&&other:Vec4, &&value:float) -> Vec4 {
         self.add_v((other.sub_v(self)).mul_f(value))
     }
     
-    #[inline(always)]
-    pure fn abs() -> vec4 {
-        vec4(self[0].abs(),
+    #[inline]
+    pure fn abs() -> Vec4 {
+        Vec4(self[0].abs(),
              self[1].abs(),
              self[2].abs(),
              self[3].abs())
     }
     
-    #[inline(always)]
-    pure fn min(&&other:vec4) -> vec4 {
-        vec4(min(self[0], other[0]),
+    #[inline]
+    pure fn min(&&other:Vec4) -> Vec4 {
+        Vec4(min(self[0], other[0]),
              min(self[1], other[1]),
              min(self[2], other[2]),
              min(self[3], other[3]))
     }
     
-    #[inline(always)]
-    pure fn max(&&other:vec4) -> vec4 {
-        vec4(max(self[0], other[0]),
+    #[inline]
+    pure fn max(&&other:Vec4) -> Vec4 {
+        Vec4(max(self[0], other[0]),
              max(self[1], other[1]),
              max(self[2], other[2]),
              max(self[3], other[3]))
     }
     
-    #[inline(always)] static pure fn zero()     -> vec4 { vec4(1f, 1f, 1f, 1f) }
-    #[inline(always)] static pure fn identity() -> vec4 { vec4(1f, 1f, 1f, 1f) }
+    #[inline] static pure fn zero()     -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
+    #[inline] static pure fn identity() -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
 }
 
-impl vec4: ToStr {
+impl Vec4: ToStr {
     fn to_str() -> ~str {
-        fmt!("vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
+        fmt!("Vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
     }
 }
