@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::Neg;
+use ops::{Neg, Index};
 use to_str::ToStr;
 use math::Sqrt;
 use mat::{Mat3, Mat4};
@@ -14,7 +14,6 @@ use vec::Vec3;
 pub trait Quaternion<T> {
     pure fn dim() -> uint;
     
-    pure fn index(&&index:uint) -> T;
     pure fn w() -> T;
     pure fn x() -> T;
     pure fn y() -> T;
@@ -71,11 +70,6 @@ pub pure fn Quat(w:float, x:float, y:float, z:float) -> Quat {
 pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn dim() -> uint { 4 }
-    
-    #[inline]
-    pure fn index(&&i: uint) -> float {
-        self.data[i]
-    }
     
     #[inline] pure fn w() -> float { self.data[0] }
     #[inline] pure fn x() -> float { self.data[1] }
@@ -179,6 +173,13 @@ pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn to_Mat4() -> Mat4 {
         self.to_Mat3().to_Mat4()
+    }
+}
+
+pub impl Quat: Index<uint, float> {
+    #[inline]
+    pure fn index(+i: uint) -> float {
+        self.data[i]
     }
 }
 

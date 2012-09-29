@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::Neg;
+use ops::{Neg, Index};
 // use to_str::ToStr;
 use math::Sqrt;
 use quat::Quat;
@@ -14,7 +14,6 @@ pub trait Matrix<T, V> {
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
     
-    pure fn index(&&index:uint) -> V;
     pure fn row(&&i:uint) -> V;
     pure fn col(&&i:uint) -> V;
     
@@ -99,11 +98,6 @@ pub impl Mat2: Matrix<float, Vec2> {
     pure fn is_col_major() -> bool { true }
     
     #[inline]
-    pure fn index(&&i: uint) -> Vec2 {
-        self.data[i]
-    }
-    
-    #[inline]
     pure fn row(&&i:uint) -> Vec2 {
         Vec2(self[0][i],
              self[1][i])
@@ -186,6 +180,13 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
 }
 
+pub impl Mat2: Index<uint, Vec2> {
+    #[inline]
+    pure fn index(+i: uint) -> Vec2 {
+        self.data[i]
+    }
+}
+
 pub impl Mat2: Neg<Mat2> {
     #[inline]
     pure fn neg() -> Mat2 {
@@ -262,11 +263,6 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn is_col_major() -> bool { true }
-    
-    #[inline]
-    pure fn index(&&i: uint) -> Vec3 {
-        self.data[i]
-    }
     
     #[inline]
     pure fn row(&&i:uint) -> Vec3 {
@@ -433,6 +429,13 @@ pub impl Mat3: Matrix3<Vec3> {
     }
 }
 
+pub impl Mat3: Index<uint, Vec3> {
+    #[inline]
+    pure fn index(+i: uint) -> Vec3 {
+        self.data[i]
+    }
+}
+
 pub impl Mat3: Neg<Mat3> {
     #[inline]
     pure fn neg() -> Mat3 {
@@ -514,11 +517,6 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn is_col_major() -> bool { true }
-    
-    #[inline]
-    pure fn index(&&i: uint) -> Vec4 {
-        self.data[i]
-    }
     
     #[inline]
     pure fn row(&&i:uint) -> Vec4 {
@@ -675,6 +673,13 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
                     self[3][1] + vec.y(),
                     self[3][2] + vec.z(),
                     self[3][3]))
+    }
+}
+
+pub impl Mat4: Index<uint, Vec4> {
+    #[inline]
+    pure fn index(+i: uint) -> Vec4 {
+        self.data[i]
     }
 }
 

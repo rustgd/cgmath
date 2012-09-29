@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::Neg;
+use ops::{Neg, Index};
 use math::{Abs, min, max, Sqrt};
 use to_str::ToStr;
 
@@ -9,8 +9,6 @@ use to_str::ToStr;
 //
 pub trait Vector<T> {
     static pure fn dim() -> uint;
-    
-    pure fn index(&&index:uint) -> T;
     
     pure fn add_f(&&value:T) -> self;
     pure fn sub_f(&&value:T) -> self;
@@ -126,11 +124,6 @@ pub impl Vec2: Vector<float> {
     static pure fn dim() -> uint { 2 }
     
     #[inline]
-    pure fn index(&&i: uint) -> float {
-        self.data[i]
-    }
-    
-    #[inline]
     pure fn add_f(&&value:float) -> Vec2 {
         Vec2(self[0] + value,
              self[1] + value)
@@ -222,6 +215,13 @@ pub impl Vec2: Vector<float> {
     #[inline] static pure fn identity() -> Vec2 { Vec2(1f, 1f) }
 }
 
+pub impl Vec2: Index<uint, float> {
+    #[inline]
+    pure fn index(+i: uint) -> float {
+        self.data[i]
+    }
+}
+
 pub impl Vec2: Neg<Vec2> {
     #[inline]
     pure fn neg() -> Vec2 {
@@ -304,11 +304,6 @@ pub impl Vec3: Vector3<float> {
 pub impl Vec3: Vector<float> {
     #[inline]
     static pure fn dim() -> uint { 3 }
-    
-    #[inline]
-    pure fn index(&&i: uint) -> float {
-        self.data[i]
-    }
     
     #[inline]
     pure fn add_f(&&value:float) -> Vec3 {
@@ -414,6 +409,13 @@ pub impl Vec3: Vector<float> {
     #[inline] static pure fn identity() -> Vec3 { Vec3(1f, 1f, 1f) }
 }
 
+pub impl Vec3: Index<uint, float> {
+    #[inline]
+    pure fn index(+i: uint) -> float {
+        self.data[i]
+    }
+}
+
 pub impl Vec3: Neg<Vec3> {
     #[inline]
     pure fn neg() -> Vec3 {
@@ -493,11 +495,6 @@ pub impl Vec4: Vector4<float> {
 pub impl Vec4: Vector<float> {
     #[inline]
     static pure fn dim() -> uint { 4 }
-    
-    #[inline]
-    pure fn index(&&i: uint) -> float {
-        self.data[i]
-    }
     
     #[inline]
     pure fn add_f(&&value:float) -> Vec4 {
@@ -613,6 +610,13 @@ pub impl Vec4: Vector<float> {
     
     #[inline] static pure fn zero()     -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
     #[inline] static pure fn identity() -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
+}
+
+pub impl Vec4: Index<uint, float> {
+    #[inline]
+    pure fn index(+i: uint) -> float {
+        self.data[i]
+    }
 }
 
 pub impl Vec4: Neg<Vec4> {
