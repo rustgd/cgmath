@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
-use cmp::Ord;
-use num::Num;
+use cmp::Eq;
+use ops::Neg;
 use math::{Abs, min, max, Sqrt};
 use to_str::ToStr;
 
@@ -11,8 +11,6 @@ pub trait Vector<T> {
     static pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
-    
-    pure fn neg() -> self;
     
     pure fn add_f(&&value:T) -> self;
     pure fn sub_f(&&value:T) -> self;
@@ -25,8 +23,6 @@ pub trait Vector<T> {
     pure fn dot(&&other: self) -> T;
     
     pure fn exact_eq(&&other:self) -> bool;
-    pure fn fuzzy_eq(&&other:self) -> bool;
-    pure fn eq(&&other:self) -> bool;
     
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
@@ -135,11 +131,6 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn neg() -> Vec2 {
-        Vec2(-self[0], -self[1])
-    }
-    
-    #[inline]
     pure fn add_f(&&value:float) -> Vec2 {
         Vec2(self[0] + value,
              self[1] + value)
@@ -188,17 +179,6 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other: Vec2) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Vec2) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1]
@@ -240,6 +220,33 @@ pub impl Vec2: Vector<float> {
     
     #[inline] static pure fn zero()     -> Vec2 { Vec2(1f, 1f) }
     #[inline] static pure fn identity() -> Vec2 { Vec2(1f, 1f) }
+}
+
+pub impl Vec2: Neg<Vec2> {
+    #[inline]
+    pure fn neg() -> Vec2 {
+        Vec2(-self[0], -self[1])
+    }
+}
+
+pub impl Vec2: Eq {
+    #[inline]
+    pure fn eq(other: &Vec2) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Vec2) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Vec2: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Vec2) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1])
+    }
 }
 
 pub impl Vec2: ToStr {
@@ -304,11 +311,6 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn neg() -> Vec3 {
-        Vec3(-self[0], -self[1], -self[2])
-    }
-    
-    #[inline]
     pure fn add_f(&&value:float) -> Vec3 {
         Vec3(self[0] + value,
              self[1] + value,
@@ -365,18 +367,6 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other: Vec3) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1]) &&
-        self[2].fuzzy_eq(&other[2])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Vec3) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
@@ -422,6 +412,34 @@ pub impl Vec3: Vector<float> {
     
     #[inline] static pure fn zero()     -> Vec3 { Vec3(1f, 1f, 1f) }
     #[inline] static pure fn identity() -> Vec3 { Vec3(1f, 1f, 1f) }
+}
+
+pub impl Vec3: Neg<Vec3> {
+    #[inline]
+    pure fn neg() -> Vec3 {
+        Vec3(-self[0], -self[1], -self[2])
+    }
+}
+
+pub impl Vec3: Eq {
+    #[inline]
+    pure fn eq(other: &Vec3) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Vec3) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Vec3: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Vec3) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1]) &&
+        self[2].fuzzy_eq(&other[2])
+    }
 }
 
 pub impl Vec3: ToStr {
@@ -479,11 +497,6 @@ pub impl Vec4: Vector<float> {
     #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
-    }
-    
-    #[inline]
-    pure fn neg() -> Vec4 {
-        Vec4(-self[0], -self[1], -self[2], -self[3])
     }
     
     #[inline]
@@ -551,19 +564,6 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other: Vec4) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1]) &&
-        self[2].fuzzy_eq(&other[2]) &&
-        self[3].fuzzy_eq(&other[3])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Vec4) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
@@ -613,6 +613,35 @@ pub impl Vec4: Vector<float> {
     
     #[inline] static pure fn zero()     -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
     #[inline] static pure fn identity() -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
+}
+
+pub impl Vec4: Neg<Vec4> {
+    #[inline]
+    pure fn neg() -> Vec4 {
+        Vec4(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+pub impl Vec4: Eq {
+    #[inline]
+    pure fn eq(other: &Vec4) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Vec4) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Vec4: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Vec4) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1]) &&
+        self[2].fuzzy_eq(&other[2]) &&
+        self[3].fuzzy_eq(&other[3])
+    }
 }
 
 pub impl Vec4: ToStr {

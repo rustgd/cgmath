@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
-use cmp::Ord;
-use num::Num;
+use cmp::Eq;
+use ops::Neg;
 // use to_str::ToStr;
 use math::Sqrt;
 use quat::Quat;
@@ -18,8 +18,6 @@ pub trait Matrix<T, V> {
     pure fn row(&&i:uint) -> V;
     pure fn col(&&i:uint) -> V;
     
-    pure fn neg() -> self;
-    
     pure fn mul_f(&&value:T) -> self;
     pure fn mul_v(&&other:V) -> V;
     pure fn add_m(&&other:self) -> self;
@@ -30,8 +28,6 @@ pub trait Matrix<T, V> {
     pure fn transpose() -> self;
     
     pure fn exact_eq(&&other:self) -> bool;
-    pure fn fuzzy_eq(&&other:self) -> bool;
-    pure fn eq(&&other:self) -> bool;
     
     pure fn is_identity() -> bool;
     pure fn is_symmetric() -> bool;
@@ -119,11 +115,6 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     #[inline]
-    pure fn neg() -> Mat2 {
-        Mat2_v(-self[0], -self[1])
-    }
-    
-    #[inline]
     pure fn mul_f(&&value:float) -> Mat2 {
         Mat2_v(self[0].mul_f(value),
                self[1].mul_f(value))
@@ -173,19 +164,8 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other:Mat2) -> bool {
-        self[0].fuzzy_eq(other[0]) &&
-        self[1].fuzzy_eq(other[1])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Mat2) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat2_identity)
+        self.fuzzy_eq(&mat2_identity)
     }
     
     #[inline]
@@ -202,7 +182,34 @@ pub impl Mat2: Matrix<float, Vec2> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat2_identity)
+        !self.fuzzy_eq(&mat2_identity)
+    }
+}
+
+pub impl Mat2: Neg<Mat2> {
+    #[inline]
+    pure fn neg() -> Mat2 {
+        Mat2_v(-self[0], -self[1])
+    }
+}
+
+pub impl Mat2: Eq {
+    #[inline]
+    pure fn eq(other: &Mat2) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Mat2) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Mat2: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Mat2) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1])
     }
 }
 
@@ -274,11 +281,6 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     #[inline]
-    pure fn neg() -> Mat3 {
-        Mat3_v(-self[0], -self[1], -self[2])
-    }
-    
-    #[inline]
     pure fn mul_f(&&value:float) -> Mat3 {
         Mat3_v(self[0].mul_f(value),
                self[1].mul_f(value),
@@ -340,20 +342,8 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other:Mat3) -> bool {
-        self[0].fuzzy_eq(other[0]) &&
-        self[1].fuzzy_eq(other[1]) &&
-        self[2].fuzzy_eq(other[2])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Mat3) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat3_identity)
+        self.fuzzy_eq(&mat3_identity)
     }
     
     #[inline]
@@ -382,7 +372,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat3_identity)
+        !self.fuzzy_eq(&mat3_identity)
     }
 }
 
@@ -440,6 +430,34 @@ pub impl Mat3: Matrix3<Vec3> {
             z = self[0][1] - self[1][0] * s;
         }
         return Quat(w, x, y, z);
+    }
+}
+
+pub impl Mat3: Neg<Mat3> {
+    #[inline]
+    pure fn neg() -> Mat3 {
+        Mat3_v(-self[0], -self[1], -self[2])
+    }
+}
+
+pub impl Mat3: Eq {
+    #[inline]
+    pure fn eq(other: &Mat3) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Mat3) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Mat3: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Mat3) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1]) &&
+        self[2].fuzzy_eq(&other[2])
     }
 }
 
@@ -513,11 +531,6 @@ pub impl Mat4: Matrix<float, Vec4> {
     #[inline]
     pure fn col(&&i:uint) -> Vec4 {
         self.data[i]
-    }
-    
-    #[inline]
-    pure fn neg() -> Mat4 {
-        Mat4_v(-self[0], -self[1], -self[2], -self[3])
     }
     
     #[inline]
@@ -596,21 +609,8 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other:Mat4) -> bool {
-        self[0].fuzzy_eq(other[0]) &&
-        self[1].fuzzy_eq(other[1]) &&
-        self[2].fuzzy_eq(other[2]) &&
-        self[3].fuzzy_eq(other[3])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Mat4) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(mat4_identity)
+        self.fuzzy_eq(&mat4_identity)
     }
     
     #[inline]
@@ -653,7 +653,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(mat4_identity)
+        !self.fuzzy_eq(&mat4_identity)
     }
 }
 
@@ -675,5 +675,34 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
                     self[3][1] + vec.y(),
                     self[3][2] + vec.z(),
                     self[3][3]))
+    }
+}
+
+pub impl Mat4: Neg<Mat4> {
+    #[inline]
+    pure fn neg() -> Mat4 {
+        Mat4_v(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+pub impl Mat4: Eq {
+    #[inline]
+    pure fn eq(other: &Mat4) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Mat4) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Mat4: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Mat4) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1]) &&
+        self[2].fuzzy_eq(&other[2]) &&
+        self[3].fuzzy_eq(&other[3])
     }
 }

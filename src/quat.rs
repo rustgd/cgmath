@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
-use cmp::Ord;
-use num::Num;
+use cmp::Eq;
+use ops::Neg;
 use to_str::ToStr;
 use math::Sqrt;
 use mat::{Mat3, Mat4};
@@ -20,7 +20,7 @@ pub trait Quaternion<T> {
     pure fn y() -> T;
     pure fn z() -> T;
     
-    pure fn neg() -> self;
+    // pure fn neg() -> self;
     
     pure fn mul_f(&&value:T) -> self;
     pure fn div_f(&&value:T) -> self;
@@ -32,8 +32,8 @@ pub trait Quaternion<T> {
     pure fn mul_q(&&other:self) -> self;
     
     pure fn exact_eq(&&other:self) -> bool;
-    pure fn fuzzy_eq(&&other:self) -> bool;
-    pure fn eq(&&other:self) -> bool;
+    // pure fn fuzzy_eq(&&other:self) -> bool;
+    // pure fn eq(&&other:self) -> bool;
     
     pure fn conjugate() -> self;
     pure fn inverse() -> self;
@@ -75,11 +75,6 @@ pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn index(&&i: uint) -> float {
         self.data[i]
-    }
-    
-    #[inline]
-    pure fn neg() -> Quat {
-        Quat(-self[0], -self[1], -self[2], -self[3])
     }
     
     #[inline] pure fn w() -> float { self.data[0] }
@@ -136,19 +131,6 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn fuzzy_eq(&&other: Quat) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1]) &&
-        self[2].fuzzy_eq(&other[2]) &&
-        self[3].fuzzy_eq(&other[3])
-    }
-    
-    #[inline]
-    pure fn eq(&&other:Quat) -> bool {
-        self.fuzzy_eq(other)
-    }
-    
-    #[inline]
     pure fn conjugate() -> Quat {
         Quat(self.w(), -self.x(), -self.y(), -self.z())
     }
@@ -197,6 +179,35 @@ pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn to_Mat4() -> Mat4 {
         self.to_Mat3().to_Mat4()
+    }
+}
+
+pub impl Quat: Neg<Quat> {
+    #[inline]
+    pure fn neg() -> Quat {
+        Quat(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+pub impl Quat: Eq {
+    #[inline]
+    pure fn eq(other: &Quat) -> bool {
+        self.fuzzy_eq(other)
+    }
+    
+    #[inline]
+    pure fn ne(other: &Quat) -> bool {
+        !(self == *other)
+    }
+}
+
+pub impl Quat: FuzzyEq {
+    #[inline]
+    pure fn fuzzy_eq(other: &Quat) -> bool {
+        self[0].fuzzy_eq(&other[0]) &&
+        self[1].fuzzy_eq(&other[1]) &&
+        self[2].fuzzy_eq(&other[2]) &&
+        self[3].fuzzy_eq(&other[3])
     }
 }
 
