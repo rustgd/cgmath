@@ -7,8 +7,8 @@
 
 extern mod std;
 
-mod mat;
-mod math;
-mod projection;
-mod quat;
-mod vec;
+pub mod mat;
+pub mod math;
+pub mod projection;
+pub mod quat;
+pub mod vec;

@@ -7,7 +7,7 @@ use to_str::ToStr;
 //
 //  N-dimensional Vector
 //
-trait Vector<T> {
+pub trait Vector<T> {
     static pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
@@ -47,7 +47,7 @@ trait Vector<T> {
 
 
 
-trait Vector2<T> {
+pub trait Vector2<T> {
     // static pure fn _new(x:float, y:float) -> self;
     
     // This is where I wish rust had properties ;)
@@ -58,7 +58,7 @@ trait Vector2<T> {
     // static pure fn unit_y() -> self;
 }
 
-trait Vector3<T> {
+pub trait Vector3<T> {
     // error: duplicate function definition
     // static pure fn _new(x:float, y:float, z:float) -> self;
     
@@ -73,7 +73,7 @@ trait Vector3<T> {
     fn cross(&&other:self) -> self;
 }
 
-trait Vector4<T> {
+pub trait Vector4<T> {
     // error: duplicate function definition
     // static pure fn _new(x:float, y:float, z:float, w:float) -> self;
     
@@ -96,22 +96,22 @@ trait Vector4<T> {
 //
 //  Vec2
 //
-struct Vec2 { data:[float * 2] }
+pub struct Vec2 { data:[float * 2] }
 
-const vec2_zero     :Vec2 = Vec2 { data: [ 0f, 0f ] };
-const vec2_unit_x   :Vec2 = Vec2 { data: [ 1f, 0f ] };
-const vec2_unit_y   :Vec2 = Vec2 { data: [ 0f, 1f ] };
-const vec2_identity :Vec2 = Vec2 { data: [ 1f, 1f ] };
+pub const vec2_zero     :Vec2 = Vec2 { data: [ 0f, 0f ] };
+pub const vec2_unit_x   :Vec2 = Vec2 { data: [ 1f, 0f ] };
+pub const vec2_unit_y   :Vec2 = Vec2 { data: [ 0f, 1f ] };
+pub const vec2_identity :Vec2 = Vec2 { data: [ 1f, 1f ] };
 
 //
 //  Constructor
 //
 #[inline]
-pure fn Vec2(x:float, y:float) -> Vec2 {
+pub pure fn Vec2(x:float, y:float) -> Vec2 {
     Vec2 { data: [ x, y ] }
 }
 
-impl Vec2: Vector2<float> {
+pub impl Vec2: Vector2<float> {
     // #[inline]
     // static pure fn _new(x:float, y:float) -> Vec2 {
     //     Vec2 { data: [ x, y ] }
@@ -125,7 +125,7 @@ impl Vec2: Vector2<float> {
     // #[inline] static pure fn unit_z() -> Vec2 { Vec2(0f, 0f) }
 }
 
-impl Vec2: Vector<float> {
+pub impl Vec2: Vector<float> {
     #[inline]
     static pure fn dim() -> uint { 2 }
     
@@ -242,7 +242,7 @@ impl Vec2: Vector<float> {
     #[inline] static pure fn identity() -> Vec2 { Vec2(1f, 1f) }
 }
 
-impl Vec2: ToStr {
+pub impl Vec2: ToStr {
     fn to_str() -> ~str {
         fmt!("Vec2[ %f, %f ]", self[0], self[1])
     }
@@ -256,23 +256,23 @@ impl Vec2: ToStr {
 //
 //  Vec3
 //
-struct Vec3 { data:[float * 3] }
+pub struct Vec3 { data:[float * 3] }
 
-const vec3_zero     :Vec3 = Vec3 { data: [ 0f, 0f, 0f ] };
-const vec3_unit_x   :Vec3 = Vec3 { data: [ 1f, 0f, 0f ] };
-const vec3_unit_y   :Vec3 = Vec3 { data: [ 0f, 1f, 0f ] };
-const vec3_unit_z   :Vec3 = Vec3 { data: [ 0f, 0f, 1f ] };
-const vec3_identity :Vec3 = Vec3 { data: [ 1f, 1f, 1f ] };
+pub const vec3_zero     :Vec3 = Vec3 { data: [ 0f, 0f, 0f ] };
+pub const vec3_unit_x   :Vec3 = Vec3 { data: [ 1f, 0f, 0f ] };
+pub const vec3_unit_y   :Vec3 = Vec3 { data: [ 0f, 1f, 0f ] };
+pub const vec3_unit_z   :Vec3 = Vec3 { data: [ 0f, 0f, 1f ] };
+pub const vec3_identity :Vec3 = Vec3 { data: [ 1f, 1f, 1f ] };
 
 //
 //  Constructor
 //
 #[inline]
-pure fn Vec3(x:float, y:float, z:float) -> Vec3 {
+pub pure fn Vec3(x:float, y:float, z:float) -> Vec3 {
     Vec3 { data: [ x, y, z ] }
 }
 
-impl Vec3: Vector3<float> {
+pub impl Vec3: Vector3<float> {
     // #[inline]
     // static pure fn _new(x:float, y:float, z:float) -> Vec3 {
     //     Vec2 { data: [ x, y, z ] }
@@ -294,7 +294,7 @@ impl Vec3: Vector3<float> {
     // #[inline] static pure fn unit_z() -> Vec3 { Vec3(0f, 0f, 1f) }
 }
 
-impl Vec3: Vector<float> {
+pub impl Vec3: Vector<float> {
     #[inline]
     static pure fn dim() -> uint { 3 }
     
@@ -424,7 +424,7 @@ impl Vec3: Vector<float> {
     #[inline] static pure fn identity() -> Vec3 { Vec3(1f, 1f, 1f) }
 }
 
-impl Vec3: ToStr {
+pub impl Vec3: ToStr {
     fn to_str() -> ~str {
         fmt!("Vec3[ %f, %f, %f ]", self[0], self[1], self[2])
     }
@@ -438,24 +438,24 @@ impl Vec3: ToStr {
 //
 //  Vec4
 //
-struct Vec4 { data:[float * 4] }
+pub struct Vec4 { data:[float * 4] }
 
-const vec4_zero     :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 0f ] };
-const vec4_unit_x   :Vec4 = Vec4 { data: [ 1f, 0f, 0f, 0f ] };
-const vec4_unit_y   :Vec4 = Vec4 { data: [ 0f, 1f, 0f, 0f ] };
-const vec4_unit_z   :Vec4 = Vec4 { data: [ 0f, 0f, 1f, 0f ] };
-const vec4_unit_w   :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 1f ] };
-const vec4_identity :Vec4 = Vec4 { data: [ 1f, 1f, 1f, 1f ] };
+pub const vec4_zero     :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 0f ] };
+pub const vec4_unit_x   :Vec4 = Vec4 { data: [ 1f, 0f, 0f, 0f ] };
+pub const vec4_unit_y   :Vec4 = Vec4 { data: [ 0f, 1f, 0f, 0f ] };
+pub const vec4_unit_z   :Vec4 = Vec4 { data: [ 0f, 0f, 1f, 0f ] };
+pub const vec4_unit_w   :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 1f ] };
+pub const vec4_identity :Vec4 = Vec4 { data: [ 1f, 1f, 1f, 1f ] };
 
 //
 //  Constructor
 //
 #[inline]
-pure fn Vec4(x:float, y:float, z:float, w:float) -> Vec4 {
+pub pure fn Vec4(x:float, y:float, z:float, w:float) -> Vec4 {
     Vec4 { data: [ x, y, z, w ] }
 }
 
-impl Vec4: Vector4<float> {
+pub impl Vec4: Vector4<float> {
     // #[inline]
     // static pure fn _new(x:float, y:float, z:float, w:float) -> Vec3 {
     //     Vec2 { data: [ x, y, z, w ] }
@@ -472,7 +472,7 @@ impl Vec4: Vector4<float> {
     // #[inline] static pure fn unit_w() -> Vec4 { Vec4(0f, 0f, 0f, 1f) }
 }
 
-impl Vec4: Vector<float> {
+pub impl Vec4: Vector<float> {
     #[inline]
     static pure fn dim() -> uint { 4 }
     
@@ -615,7 +615,7 @@ impl Vec4: Vector<float> {
     #[inline] static pure fn identity() -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
 }
 
-impl Vec4: ToStr {
+pub impl Vec4: ToStr {
     fn to_str() -> ~str {
         fmt!("Vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
     }

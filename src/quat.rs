@@ -11,7 +11,7 @@ use vec::Vec3;
 //
 //  Quaternion
 //
-trait Quaternion<T> {
+pub trait Quaternion<T> {
     pure fn dim() -> uint;
     
     pure fn index(&&index:uint) -> T;
@@ -52,23 +52,23 @@ trait Quaternion<T> {
 //
 //  Quat struct definition
 //
-struct Quat { data:[float * 4] }
+pub struct Quat { data:[float * 4] }
 
-const quat_zero     :Quat = Quat { data: [ 0f, 0f, 0f, 0f ] };
-const quat_identity :Quat = Quat { data: [ 1f, 0f, 0f, 0f ] };
+pub const quat_zero     :Quat = Quat { data: [ 0f, 0f, 0f, 0f ] };
+pub const quat_identity :Quat = Quat { data: [ 1f, 0f, 0f, 0f ] };
 
 //
 //  Quat Constructor
 //
 #[inline]
-pure fn Quat(w:float, x:float, y:float, z:float) -> Quat {
+pub pure fn Quat(w:float, x:float, y:float, z:float) -> Quat {
     Quat { data: [ w, x, y, z ] }
 }
 
 //
 //  Quaternion Implementation
 //
-impl Quat: Quaternion<float> {
+pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn dim() -> uint { 4 }
     
@@ -203,7 +203,7 @@ impl Quat: Quaternion<float> {
 //
 //  Convert To String
 //
-impl Quat: ToStr {
+pub impl Quat: ToStr {
     fn to_str() -> ~str {
         fmt!("Quat[ %f, %f, %f, %f ]", self.w(), self.x(), self.y(), self.z())
     }

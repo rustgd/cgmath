@@ -9,7 +9,7 @@ use vec::*;
 //
 //  NxN Matrix
 //
-trait Matrix<T, V> {
+pub trait Matrix<T, V> {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
@@ -42,7 +42,7 @@ trait Matrix<T, V> {
 //
 //  3x3 Matrix
 //
-trait Matrix3<V3> {
+pub trait Matrix3<V3> {
     pure fn scale(&&vec:V3) -> self;
     pure fn to_Mat4() -> Mat4;
     pure fn to_Quat() -> Quat;
@@ -51,7 +51,7 @@ trait Matrix3<V3> {
 //
 //  4x4 Matrix
 //
-trait Matrix4<V3, V4> {
+pub trait Matrix4<V3, V4> {
     pure fn scale(&&vec:V3) -> self;      // I don't like the use of `Vec3` here
     pure fn translate(&&vec:V3) -> self;
 }
@@ -64,35 +64,35 @@ trait Matrix4<V3, V4> {
 //
 //  Mat2: A 2x2, column major matrix
 //
-struct Mat2 { data:[Vec2 * 2] }
+pub struct Mat2 { data:[Vec2 * 2] }
 
-const mat2_zero     :Mat2 = Mat2 { data: [ vec2_zero,
-                                           vec2_zero ] };
-const mat2_identity :Mat2 = Mat2 { data: [ vec2_unit_x,
-                                           vec2_unit_y ] };
+pub const mat2_zero     :Mat2 = Mat2 { data: [ vec2_zero,
+                                               vec2_zero ] };
+pub const mat2_identity :Mat2 = Mat2 { data: [ vec2_unit_x,
+                                               vec2_unit_y ] };
 
 //
 //  Mat2 Constructor
 //
 #[inline]
-pure fn Mat2(m00:float, m01:float,
-             m10:float, m11:float) -> Mat2 {
+pub pure fn Mat2(m00:float, m01:float,
+                 m10:float, m11:float) -> Mat2 {
     Mat2 { data: [ Vec2(m00, m01),
                    Vec2(m10, m11) ] }
 }
 
 //
-//  Construct Mat2 from column vectors
+//  Conpub struct Mat2 from column vectors
 //
 #[inline]
-pure fn mat2_v(col0:Vec2, col1:Vec2) -> Mat2 {
+pub pure fn Mat2_v(col0:Vec2, col1:Vec2) -> Mat2 {
     Mat2 { data: [ col0, col1 ] }
 }
 
 //
 //  Matrix2x2 Implementation
 //
-impl Mat2: Matrix<float, Vec2> {
+pub impl Mat2: Matrix<float, Vec2> {
     #[inline]
     pure fn rows() -> uint { 2 }
     
@@ -120,12 +120,12 @@ impl Mat2: Matrix<float, Vec2> {
     
     #[inline]
     pure fn neg() -> Mat2 {
-        mat2_v(-self[0], -self[1])
+        Mat2_v(-self[0], -self[1])
     }
     
     #[inline]
     pure fn mul_f(&&value:float) -> Mat2 {
-        mat2_v(self[0].mul_f(value),
+        Mat2_v(self[0].mul_f(value),
                self[1].mul_f(value))
     }
     
@@ -137,13 +137,13 @@ impl Mat2: Matrix<float, Vec2> {
     
     #[inline]
     pure fn add_m(&&other:Mat2) -> Mat2 {
-        mat2_v(self[0].add_v(other[0]),
+        Mat2_v(self[0].add_v(other[0]),
                self[1].add_v(other[1]))
     }
     
     #[inline]
     pure fn sub_m(&&other:Mat2) -> Mat2 {
-        mat2_v(self[0].sub_v(other[0]),
+        Mat2_v(self[0].sub_v(other[0]),
                self[1].sub_v(other[1]))
     }
     
@@ -214,39 +214,39 @@ impl Mat2: Matrix<float, Vec2> {
 //
 //  Mat3: A 3x3, column major matrix
 //
-struct Mat3 { data:[Vec3 * 3] }
+pub struct Mat3 { data:[Vec3 * 3] }
 
-const mat3_zero     :Mat3 = Mat3 { data: [ vec3_zero,
-                                           vec3_zero,
-                                           vec3_zero ] };
-const mat3_identity :Mat3 = Mat3 { data: [ vec3_unit_x,
-                                           vec3_unit_y,
-                                           vec3_unit_z ] };
+pub const mat3_zero     :Mat3 = Mat3 { data: [ vec3_zero,
+                                               vec3_zero,
+                                               vec3_zero ] };
+pub const mat3_identity :Mat3 = Mat3 { data: [ vec3_unit_x,
+                                               vec3_unit_y,
+                                               vec3_unit_z ] };
 
 //
 //  Mat3 Constructor
 //
 #[inline]
-pure fn Mat3(m00:float, m01:float, m02:float,
-             m10:float, m11:float, m12:float,
-             m20:float, m21:float, m22:float) -> Mat3 {
+pub pure fn Mat3(m00:float, m01:float, m02:float,
+                 m10:float, m11:float, m12:float,
+                 m20:float, m21:float, m22:float) -> Mat3 {
     Mat3 { data: [ Vec3(m00, m01, m02),
                    Vec3(m10, m11, m12),
                    Vec3(m20, m21, m22) ] }
 }
 
 //
-//  Construct Mat3 from column vectors
+//  Conpub struct Mat3 from column vectors
 //
 #[inline]
-pure fn mat3_v(col0:Vec3, col1:Vec3, col2:Vec3) -> Mat3 {
+pub pure fn Mat3_v(col0:Vec3, col1:Vec3, col2:Vec3) -> Mat3 {
     Mat3 { data: [ col0, col1, col2 ] }
 }
 
 //
 //  Matrix3x3 Implementation
 //
-impl Mat3: Matrix<float, Vec3> {
+pub impl Mat3: Matrix<float, Vec3> {
     #[inline]
     pure fn rows() -> uint { 3 }
     
@@ -275,12 +275,12 @@ impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn neg() -> Mat3 {
-        mat3_v(-self[0], -self[1], -self[2])
+        Mat3_v(-self[0], -self[1], -self[2])
     }
     
     #[inline]
     pure fn mul_f(&&value:float) -> Mat3 {
-        mat3_v(self[0].mul_f(value),
+        Mat3_v(self[0].mul_f(value),
                self[1].mul_f(value),
                self[2].mul_f(value))
     }
@@ -294,14 +294,14 @@ impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn add_m(&&other:Mat3) -> Mat3 {
-        mat3_v(self[0].add_v(other[0]),
+        Mat3_v(self[0].add_v(other[0]),
                self[1].add_v(other[1]),
                self[2].add_v(other[2]))
     }
     
     #[inline]
     pure fn sub_m(&&other:Mat3) -> Mat3 {
-        mat3_v(self[0].sub_v(other[0]),
+        Mat3_v(self[0].sub_v(other[0]),
                self[1].sub_v(other[1]),
                self[2].sub_v(other[2]))
     }
@@ -386,7 +386,7 @@ impl Mat3: Matrix<float, Vec3> {
     }
 }
 
-impl Mat3: Matrix3<Vec3> {
+pub impl Mat3: Matrix3<Vec3> {
     #[inline]
     pure fn scale(&&vec:Vec3) -> Mat3 {
         self.mul_m(Mat3(vec.x(),      0f,      0f,
@@ -451,13 +451,13 @@ impl Mat3: Matrix3<Vec3> {
 //
 //  Mat4: A 4x4, column major matrix
 //
-struct Mat4 { data:[Vec4 * 4] }
+pub struct Mat4 { data:[Vec4 * 4] }
 
-const mat4_zero     :Mat4 = Mat4 { data: [ vec4_zero,
+pub const mat4_zero     :Mat4 = Mat4 { data: [ vec4_zero,
                                            vec4_zero,
                                            vec4_zero,
                                            vec4_zero ] };
-const mat4_identity :Mat4 = Mat4 { data: [ vec4_unit_x,
+pub const mat4_identity :Mat4 = Mat4 { data: [ vec4_unit_x,
                                            vec4_unit_y,
                                            vec4_unit_z,
                                            vec4_unit_w ] };
@@ -466,7 +466,7 @@ const mat4_identity :Mat4 = Mat4 { data: [ vec4_unit_x,
 //  Mat4 Constructor
 //
 #[inline]
-pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
+pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
              m10:float, m11:float, m12:float, m13:float,
              m20:float, m21:float, m22:float, m23:float,
              m30:float, m31:float, m32:float, m33:float) -> Mat4 {
@@ -477,17 +477,17 @@ pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 }
 
 //
-//  Construct Mat4 from column vectors
+//  Conpub struct Mat4 from column vectors
 //
 #[inline]
-pure fn mat4_v(col0:Vec4, col1:Vec4, col2:Vec4, col3:Vec4) -> Mat4 {
+pub pure fn Mat4_v(col0:Vec4, col1:Vec4, col2:Vec4, col3:Vec4) -> Mat4 {
     Mat4 { data: [ col0, col1, col2, col3 ] }
 }
 
 //
 //  Matrix4x4 Implementation
 //
-impl Mat4: Matrix<float, Vec4> {
+pub impl Mat4: Matrix<float, Vec4> {
     #[inline]
     pure fn rows() -> uint { 4 }
     
@@ -517,12 +517,12 @@ impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn neg() -> Mat4 {
-        mat4_v(-self[0], -self[1], -self[2], -self[3])
+        Mat4_v(-self[0], -self[1], -self[2], -self[3])
     }
     
     #[inline]
     pure fn mul_f(&&value:float) -> Mat4 {
-        mat4_v(self[0].mul_f(value),
+        Mat4_v(self[0].mul_f(value),
                self[1].mul_f(value),
                self[2].mul_f(value),
                self[3].mul_f(value))
@@ -538,7 +538,7 @@ impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn add_m(&&other:Mat4) -> Mat4 {
-        mat4_v(self[0].add_v(other[0]),
+        Mat4_v(self[0].add_v(other[0]),
                self[1].add_v(other[1]),
                self[2].add_v(other[2]),
                self[3].add_v(other[3]))
@@ -546,7 +546,7 @@ impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn sub_m(&&other:Mat4) -> Mat4 {
-        mat4_v(self[0].sub_v(other[0]),
+        Mat4_v(self[0].sub_v(other[0]),
                self[1].sub_v(other[1]),
                self[2].sub_v(other[2]),
                self[3].sub_v(other[3]))
@@ -657,7 +657,7 @@ impl Mat4: Matrix<float, Vec4> {
     }
 }
 
-impl Mat4: Matrix4<Vec3, Vec4> {
+pub impl Mat4: Matrix4<Vec3, Vec4> {
     #[inline]
     pure fn scale(&&vec:Vec3) -> Mat4 {
         self.mul_m(Mat4(vec.x(),      0f,      0f, 0f,
@@ -668,7 +668,7 @@ impl Mat4: Matrix4<Vec3, Vec4> {
     
     #[inline]
     pure fn translate(&&vec:Vec3) -> Mat4 {
-        mat4_v(self[0],
+        Mat4_v(self[0],
                self[1],
                self[2],
                Vec4(self[3][0] + vec.x(),
