@@ -32,8 +32,8 @@ fn test_Vec2() {
     assert a.mul_f(f1) == Vec2( 1.5f, 3.0f);
     assert a.div_f(f2) == Vec2( 2.0f, 4.0f);
     
-    assert a.add_v(b) == Vec2( 4f,  6f);
-    assert a.sub_v(b) == Vec2(-2f, -2f);
+    assert a.add_v(&b) == Vec2( 4f,  6f);
+    assert a.sub_v(&b) == Vec2(-2f, -2f);
     
     // exact_eq
     // fuzzy_eq
@@ -46,10 +46,10 @@ fn test_Vec2() {
     let d = Vec2( 1.0f,  0.0f);
     let f3 = 0.75f;
     
-    assert c.lerp(d, f3) == Vec2(0.250f, -0.250f);
+    assert c.lerp(&d, f3) == Vec2(0.250f, -0.250f);
     assert c.abs()       == Vec2( 2.0f,  1.0f);
-    assert c.min(d)      == Vec2(-2.0f, -1.0f);
-    assert c.max(d)      == Vec2( 1.0f,  0.0f);
+    assert c.min(&d)      == Vec2(-2.0f, -1.0f);
+    assert c.max(&d)      == Vec2( 1.0f,  0.0f);
 }
 
 #[test]
@@ -76,7 +76,7 @@ fn test_Vec3() {
     assert a.y() == 2f;
     assert a.z() == 3f;
     
-    assert a.cross(b) == Vec3(-3f, 6f, -3f);
+    assert a.cross(&b) == Vec3(-3f, 6f, -3f);
     
     assert -a      == Vec3(-1f, -2f, -3f);
     assert a.neg() == Vec3(-1f, -2f, -3f);
@@ -86,8 +86,8 @@ fn test_Vec3() {
     assert a.mul_f(f1) == Vec3( 1.5f, 3.0f, 4.5f);
     assert a.div_f(f2) == Vec3( 2.0f, 4.0f, 6.0f);
     
-    assert a.add_v(b) == Vec3( 5f,  7f,  9f);
-    assert a.sub_v(b) == Vec3(-3f, -3f, -3f);
+    assert a.add_v(&b) == Vec3( 5f,  7f,  9f);
+    assert a.sub_v(&b) == Vec3(-3f, -3f, -3f);
     
     // exact_eq
     // fuzzy_eq
@@ -100,10 +100,10 @@ fn test_Vec3() {
     let d = Vec3( 1.0f,  0.0f, 0.5f);
     let f3 = 0.75f;
     
-    assert c.lerp(d, f3) == Vec3(0.250f, -0.250f, 0.625f);
-    assert c.abs()       == Vec3( 2.0f,  1.0f, 1.0f);
-    assert c.min(d)      == Vec3(-2.0f, -1.0f, 0.5f);
-    assert c.max(d)      == Vec3( 1.0f,  0.0f, 1.0f);
+    assert c.lerp(&d, f3) == Vec3(0.250f, -0.250f, 0.625f);
+    assert c.abs()        == Vec3( 2.0f,  1.0f, 1.0f);
+    assert c.min(&d)      == Vec3(-2.0f, -1.0f, 0.5f);
+    assert c.max(&d)      == Vec3( 1.0f,  0.0f, 1.0f);
 }
 
 #[test]
@@ -141,10 +141,10 @@ fn test_Vec4() {
     assert a.mul_f(f1) == Vec4( 1.5f, 3.0f, 4.5f, 6.0f);
     assert a.div_f(f2) == Vec4( 2.0f, 4.0f, 6.0f, 8.0f);
     
-    assert a.add_v(b) == Vec4( 6f,  8f, 10f, 12f);
-    assert a.sub_v(b) == Vec4(-4f, -4f, -4f, -4f);
+    assert a.add_v(&b) == Vec4( 6f,  8f, 10f, 12f);
+    assert a.sub_v(&b) == Vec4(-4f, -4f, -4f, -4f);
     
-    assert a.dot(b) == 70f;
+    assert a.dot(&b) == 70f;
     
     // exact_eq
     // fuzzy_eq
@@ -157,8 +157,8 @@ fn test_Vec4() {
     let d = Vec4( 1.0f,  0.0f, 0.5f, 1.0f);
     let f3 = 0.75f;
     
-    assert c.lerp(d, f3) == Vec4(0.250f, -0.250f, 0.625f, 1.250f);
-    assert c.abs()       == Vec4( 2.0f,  1.0f, 1.0f, 2.0f);
-    assert c.min(d)      == Vec4(-2.0f, -1.0f, 0.5f, 1.0f);
-    assert c.max(d)      == Vec4( 1.0f,  0.0f, 1.0f, 2.0f);
+    assert c.lerp(&d, f3) == Vec4(0.250f, -0.250f, 0.625f, 1.250f);
+    assert c.abs()        == Vec4( 2.0f,  1.0f, 1.0f, 2.0f);
+    assert c.min(&d)      == Vec4(-2.0f, -1.0f, 0.5f, 1.0f);
+    assert c.max(&d)      == Vec4( 1.0f,  0.0f, 1.0f, 2.0f);
 }

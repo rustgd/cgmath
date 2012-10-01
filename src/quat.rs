@@ -19,20 +19,16 @@ pub trait Quaternion<T> {
     pure fn y() -> T;
     pure fn z() -> T;
     
-    // pure fn neg() -> self;
+    pure fn mul_f(value: T) -> self;
+    pure fn div_f(value: T) -> self;
     
-    pure fn mul_f(&&value:T) -> self;
-    pure fn div_f(&&value:T) -> self;
+    // pure fn mul_v(other: &Vec3) -> Vec3;
     
-    // pure fn mul_v(&&Vec3) -> Vec3;
+    pure fn add_q(other: &self) -> self;
+    pure fn sub_q(other: &self) -> self;
+    pure fn mul_q(other: &self) -> self;
     
-    pure fn add_q(&&other:self) -> self;
-    pure fn sub_q(&&other:self) -> self;
-    pure fn mul_q(&&other:self) -> self;
-    
-    pure fn exact_eq(&&other:self) -> bool;
-    // pure fn fuzzy_eq(&&other:self) -> bool;
-    // pure fn eq(&&other:self) -> bool;
+    pure fn exact_eq(other: &self) -> bool;
     
     pure fn conjugate() -> self;
     pure fn inverse() -> self;
@@ -60,7 +56,7 @@ pub const quat_identity :Quat = Quat { data: [ 1f, 0f, 0f, 0f ] };
 //  Quat Constructor
 //
 #[inline]
-pub pure fn Quat(w:float, x:float, y:float, z:float) -> Quat {
+pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
     Quat { data: [ w, x, y, z ] }
 }
 
@@ -77,7 +73,7 @@ pub impl Quat: Quaternion<float> {
     #[inline] pure fn z() -> float { self.data[3] }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Quat {
+    pure fn mul_f(value: float) -> Quat {
         Quat(self[0] * value,
              self[1] * value,
              self[2] * value,
@@ -85,7 +81,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn div_f(&&value:float) -> Quat {
+    pure fn div_f(value: float) -> Quat {
         Quat(self[0] / value,
              self[1] / value,
              self[2] / value,
@@ -93,7 +89,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn add_q(&&other:Quat) -> Quat{
+    pure fn add_q(other: &Quat) -> Quat{
         Quat(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
@@ -101,7 +97,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn sub_q(&&other:Quat) -> Quat{
+    pure fn sub_q(other: &Quat) -> Quat{
         Quat(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
@@ -109,7 +105,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn mul_q(&&other:Quat) -> Quat {
+    pure fn mul_q(other: &Quat) -> Quat {
         Quat(self.w()*other.w() - self.x()*other.x() - self.y()*other.y() - self.z()*other.z(),
              self.w()*other.x() + self.x()*other.w() + self.y()*other.z() - self.z()*other.y(),
              self.w()*other.y() + self.y()*other.w() + self.z()*other.x() - self.x()*other.z(),
@@ -117,7 +113,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Quat) -> bool {
+    pure fn exact_eq(other: &Quat) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&

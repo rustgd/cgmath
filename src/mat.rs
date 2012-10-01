@@ -14,19 +14,19 @@ pub trait Matrix<T, V> {
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
     
-    pure fn row(&&i:uint) -> V;
-    pure fn col(&&i:uint) -> V;
+    pure fn row(i: uint) -> V;
+    pure fn col(i: uint) -> V;
     
-    pure fn mul_f(&&value:T) -> self;
-    pure fn mul_v(&&other:V) -> V;
-    pure fn add_m(&&other:self) -> self;
-    pure fn sub_m(&&other:self) -> self;
-    pure fn mul_m(&&other:self) -> self;
+    pure fn mul_f(value: T) -> self;
+    pure fn mul_v(other: &V) -> V;
+    pure fn add_m(other: &self) -> self;
+    pure fn sub_m(other: &self) -> self;
+    pure fn mul_m(other: &self) -> self;
     
-    // pure fn invert(&&other:self) -> self;
+    // pure fn invert(other: &self) -> self;
     pure fn transpose() -> self;
     
-    pure fn exact_eq(&&other:self) -> bool;
+    pure fn exact_eq(other: &self) -> bool;
     
     pure fn is_identity() -> bool;
     pure fn is_symmetric() -> bool;
@@ -38,7 +38,7 @@ pub trait Matrix<T, V> {
 //  3x3 Matrix
 //
 pub trait Matrix3<V3> {
-    pure fn scale(&&vec:V3) -> self;
+    pure fn scale(vec: &V3) -> self;
     pure fn to_Mat4() -> Mat4;
     pure fn to_Quat() -> Quat;
 }
@@ -47,8 +47,8 @@ pub trait Matrix3<V3> {
 //  4x4 Matrix
 //
 pub trait Matrix4<V3, V4> {
-    pure fn scale(&&vec:V3) -> self;      // I don't like the use of `Vec3` here
-    pure fn translate(&&vec:V3) -> self;
+    pure fn scale(vec: &V3) -> self;      // I don't like the use of `Vec3` here
+    pure fn translate(vec: &V3) -> self;
 }
 
 
@@ -80,8 +80,8 @@ pub pure fn Mat2(m00:float, m01:float,
 //  Conpub struct Mat2 from column vectors
 //
 #[inline]
-pub pure fn Mat2_v(col0:Vec2, col1:Vec2) -> Mat2 {
-    Mat2 { data: [ col0, col1 ] }
+pub pure fn Mat2_v(col0: &Vec2, col1: &Vec2) -> Mat2 {
+    Mat2 { data: [ *col0, *col1 ] }
 }
 
 //
@@ -98,42 +98,42 @@ pub impl Mat2: Matrix<float, Vec2> {
     pure fn is_col_major() -> bool { true }
     
     #[inline]
-    pure fn row(&&i:uint) -> Vec2 {
+    pure fn row(i: uint) -> Vec2 {
         Vec2(self[0][i],
              self[1][i])
     }
     
     #[inline]
-    pure fn col(&&i:uint) -> Vec2 {
+    pure fn col(i: uint) -> Vec2 {
         self.data[i]
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Mat2 {
-        Mat2_v(self[0].mul_f(value),
-               self[1].mul_f(value))
+    pure fn mul_f(value: float) -> Mat2 {
+        Mat2_v(&self[0].mul_f(value),
+               &self[1].mul_f(value))
     }
     
     #[inline]
-    pure fn mul_v(&&other:Vec2) -> Vec2 {
+    pure fn mul_v(other: &Vec2) -> Vec2 {
         Vec2(self[0][0]*other[0] + self[1][0]*other[1],
              self[0][1]*other[0] + self[1][1]*other[1])
     }
     
     #[inline]
-    pure fn add_m(&&other:Mat2) -> Mat2 {
-        Mat2_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]))
+    pure fn add_m(other: &Mat2) -> Mat2 {
+        Mat2_v(&self[0].add_v(&other[0]),
+               &self[1].add_v(&other[1]))
     }
     
     #[inline]
-    pure fn sub_m(&&other:Mat2) -> Mat2 {
-        Mat2_v(self[0].sub_v(other[0]),
-               self[1].sub_v(other[1]))
+    pure fn sub_m(other: &Mat2) -> Mat2 {
+        Mat2_v(&self[0].sub_v(&other[0]),
+               &self[1].sub_v(&other[1]))
     }
     
     #[inline]
-    pure fn mul_m(&&other:Mat2) -> Mat2 {
+    pure fn mul_m(other: &Mat2) -> Mat2 {
         Mat2(self[0][0]*other[0][0] + self[1][0]*other[0][1],
              self[0][1]*other[0][0] + self[1][1]*other[0][1],
              
@@ -143,7 +143,7 @@ pub impl Mat2: Matrix<float, Vec2> {
     
     // TODO - inversion is harrrd D:
     // #[inline]
-    // pure fn invert(&&other:Mat2) -> Mat2 {}
+    // pure fn invert(other: &Mat2) -> Mat2 {}
     
     #[inline]
     pure fn transpose() -> Mat2 {
@@ -152,9 +152,9 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Mat2) -> bool {
-        self[0].exact_eq(other[0]) &&
-        self[1].exact_eq(other[1])
+    pure fn exact_eq(other: &Mat2) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1])
     }
     
     #[inline]
@@ -190,7 +190,7 @@ pub impl Mat2: Index<uint, Vec2> {
 pub impl Mat2: Neg<Mat2> {
     #[inline]
     pure fn neg() -> Mat2 {
-        Mat2_v(-self[0], -self[1])
+        Mat2_v(&-self[0], &-self[1])
     }
 }
 
@@ -247,8 +247,8 @@ pub pure fn Mat3(m00:float, m01:float, m02:float,
 //  Conpub struct Mat3 from column vectors
 //
 #[inline]
-pub pure fn Mat3_v(col0:Vec3, col1:Vec3, col2:Vec3) -> Mat3 {
-    Mat3 { data: [ col0, col1, col2 ] }
+pub pure fn Mat3_v(col0: &Vec3, col1: &Vec3, col2: &Vec3) -> Mat3 {
+    Mat3 { data: [ *col0, *col1, *col2 ] }
 }
 
 //
@@ -265,47 +265,47 @@ pub impl Mat3: Matrix<float, Vec3> {
     pure fn is_col_major() -> bool { true }
     
     #[inline]
-    pure fn row(&&i:uint) -> Vec3 {
+    pure fn row(i: uint) -> Vec3 {
         Vec3(self[0][i],
              self[1][i],
              self[2][i])
     }
     
     #[inline]
-    pure fn col(&&i:uint) -> Vec3 {
+    pure fn col(i: uint) -> Vec3 {
         self.data[i]
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Mat3 {
-        Mat3_v(self[0].mul_f(value),
-               self[1].mul_f(value),
-               self[2].mul_f(value))
+    pure fn mul_f(value: float) -> Mat3 {
+        Mat3_v(&self[0].mul_f(value),
+               &self[1].mul_f(value),
+               &self[2].mul_f(value))
     }
     
     #[inline]
-    pure fn mul_v(&&other:Vec3) -> Vec3 {
+    pure fn mul_v(other: &Vec3) -> Vec3 {
         Vec3(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2],
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2],
              self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2])
     }
     
     #[inline]
-    pure fn add_m(&&other:Mat3) -> Mat3 {
-        Mat3_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]))
+    pure fn add_m(other: &Mat3) -> Mat3 {
+        Mat3_v(&self[0].add_v(&other[0]),
+               &self[1].add_v(&other[1]),
+               &self[2].add_v(&other[2]))
     }
     
     #[inline]
-    pure fn sub_m(&&other:Mat3) -> Mat3 {
-        Mat3_v(self[0].sub_v(other[0]),
-               self[1].sub_v(other[1]),
-               self[2].sub_v(other[2]))
+    pure fn sub_m(other: &Mat3) -> Mat3 {
+        Mat3_v(&self[0].sub_v(&other[0]),
+               &self[1].sub_v(&other[1]),
+               &self[2].sub_v(&other[2]))
     }
     
     #[inline]
-    pure fn mul_m(&&other:Mat3) -> Mat3 {
+    pure fn mul_m(other: &Mat3) -> Mat3 {
         Mat3(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2],
              self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2],
              self[0][2]*other[0][0] + self[1][2]*other[0][1] + self[2][2]*other[0][2],
@@ -321,7 +321,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     // TODO - inversion is harrrd D:
     // #[inline]
-    // pure fn invert(&&other:Mat3) -> Mat3 {}
+    // pure fn invert(other: &Mat3) -> Mat3 {}
     
     #[inline]
     pure fn transpose() -> Mat3 {
@@ -331,10 +331,10 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Mat3) -> bool {
-        self[0].exact_eq(other[0]) &&
-        self[1].exact_eq(other[1]) &&
-        self[2].exact_eq(other[2])
+    pure fn exact_eq(other: &Mat3) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1]) &&
+        self[2].exact_eq(&other[2])
     }
     
     #[inline]
@@ -374,10 +374,10 @@ pub impl Mat3: Matrix<float, Vec3> {
 
 pub impl Mat3: Matrix3<Vec3> {
     #[inline]
-    pure fn scale(&&vec:Vec3) -> Mat3 {
-        self.mul_m(Mat3(vec.x(),      0f,      0f,
-                             0f, vec.y(),      0f,
-                             0f,      0f, vec.z()))
+    pure fn scale(vec: &Vec3) -> Mat3 {
+        self.mul_m(&Mat3(vec.x(),      0f,      0f,
+                              0f, vec.y(),      0f,
+                              0f,      0f, vec.z()))
     }
     
     #[inline]
@@ -439,7 +439,7 @@ pub impl Mat3: Index<uint, Vec3> {
 pub impl Mat3: Neg<Mat3> {
     #[inline]
     pure fn neg() -> Mat3 {
-        Mat3_v(-self[0], -self[1], -self[2])
+        Mat3_v(&-self[0], &-self[1], &-self[2])
     }
 }
 
@@ -501,8 +501,8 @@ pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 //  Conpub struct Mat4 from column vectors
 //
 #[inline]
-pub pure fn Mat4_v(col0:Vec4, col1:Vec4, col2:Vec4, col3:Vec4) -> Mat4 {
-    Mat4 { data: [ col0, col1, col2, col3 ] }
+pub pure fn Mat4_v(col0: &Vec4, col1: &Vec4, col2: &Vec4, col3: &Vec4) -> Mat4 {
+    Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
 }
 
 //
@@ -519,7 +519,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     pure fn is_col_major() -> bool { true }
     
     #[inline]
-    pure fn row(&&i:uint) -> Vec4 {
+    pure fn row(i: uint) -> Vec4 {
         Vec4(self[0][i],
              self[1][i],
              self[2][i],
@@ -527,20 +527,20 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline]
-    pure fn col(&&i:uint) -> Vec4 {
+    pure fn col(i: uint) -> Vec4 {
         self.data[i]
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Mat4 {
-        Mat4_v(self[0].mul_f(value),
-               self[1].mul_f(value),
-               self[2].mul_f(value),
-               self[3].mul_f(value))
+    pure fn mul_f(value: float) -> Mat4 {
+        Mat4_v(&self[0].mul_f(value),
+               &self[1].mul_f(value),
+               &self[2].mul_f(value),
+               &self[3].mul_f(value))
     }
     
     #[inline]
-    pure fn mul_v(&&other:Vec4) -> Vec4 {
+    pure fn mul_v(other: &Vec4) -> Vec4 {
         Vec4(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2] + self[3][0]*other[3],
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2] + self[3][1]*other[3],
              self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2] + self[3][2]*other[3],
@@ -548,23 +548,23 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline]
-    pure fn add_m(&&other:Mat4) -> Mat4 {
-        Mat4_v(self[0].add_v(other[0]),
-               self[1].add_v(other[1]),
-               self[2].add_v(other[2]),
-               self[3].add_v(other[3]))
+    pure fn add_m(other: &Mat4) -> Mat4 {
+        Mat4_v(&self[0].add_v(&other[0]),
+               &self[1].add_v(&other[1]),
+               &self[2].add_v(&other[2]),
+               &self[3].add_v(&other[3]))
     }
     
     #[inline]
-    pure fn sub_m(&&other:Mat4) -> Mat4 {
-        Mat4_v(self[0].sub_v(other[0]),
-               self[1].sub_v(other[1]),
-               self[2].sub_v(other[2]),
-               self[3].sub_v(other[3]))
+    pure fn sub_m(other: &Mat4) -> Mat4 {
+        Mat4_v(&self[0].sub_v(&other[0]),
+               &self[1].sub_v(&other[1]),
+               &self[2].sub_v(&other[2]),
+               &self[3].sub_v(&other[3]))
     }
     
     #[inline]
-    pure fn mul_m(&&other:Mat4) -> Mat4 {
+    pure fn mul_m(other: &Mat4) -> Mat4 {
         Mat4(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2] + self[3][0]*other[0][3],
              self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2] + self[3][1]*other[0][3],
              self[0][2]*other[0][0] + self[1][2]*other[0][1] + self[2][2]*other[0][2] + self[3][2]*other[0][3],
@@ -588,7 +588,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     // TODO - inversion is harrrd D:
     // #[inline]
-    // pure fn invert(&&other:Mat4) -> Mat4 {}
+    // pure fn invert(other: &Mat4) -> Mat4 {}
     
     #[inline]
     pure fn transpose() -> Mat4 {
@@ -599,11 +599,11 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Mat4) -> bool {
-        self[0].exact_eq(other[0]) &&
-        self[1].exact_eq(other[1]) &&
-        self[2].exact_eq(other[2]) &&
-        self[3].exact_eq(other[3])
+    pure fn exact_eq(other: &Mat4) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1]) &&
+        self[2].exact_eq(&other[2]) &&
+        self[3].exact_eq(&other[3])
     }
     
     #[inline]
@@ -657,22 +657,22 @@ pub impl Mat4: Matrix<float, Vec4> {
 
 pub impl Mat4: Matrix4<Vec3, Vec4> {
     #[inline]
-    pure fn scale(&&vec:Vec3) -> Mat4 {
-        self.mul_m(Mat4(vec.x(),      0f,      0f, 0f,
-                             0f, vec.y(),      0f, 0f,
-                             0f,      0f, vec.z(), 0f,
-                             0f,      0f,      0f, 1f))
+    pure fn scale(vec: &Vec3) -> Mat4 {
+        self.mul_m(&Mat4(vec.x(),      0f,      0f, 0f,
+                              0f, vec.y(),      0f, 0f,
+                              0f,      0f, vec.z(), 0f,
+                              0f,      0f,      0f, 1f))
     }
     
     #[inline]
-    pure fn translate(&&vec:Vec3) -> Mat4 {
-        Mat4_v(self[0],
-               self[1],
-               self[2],
-               Vec4(self[3][0] + vec.x(),
-                    self[3][1] + vec.y(),
-                    self[3][2] + vec.z(),
-                    self[3][3]))
+    pure fn translate(vec: &Vec3) -> Mat4 {
+        Mat4_v(&self[0],
+               &self[1],
+               &self[2],
+               &Vec4(self[3][0] + vec.x(),
+                     self[3][1] + vec.y(),
+                     self[3][2] + vec.z(),
+                     self[3][3]))
     }
 }
 
@@ -686,7 +686,7 @@ pub impl Mat4: Index<uint, Vec4> {
 pub impl Mat4: Neg<Mat4> {
     #[inline]
     pure fn neg() -> Mat4 {
-        Mat4_v(-self[0], -self[1], -self[2], -self[3])
+        Mat4_v(&-self[0], &-self[1], &-self[2], &-self[3])
     }
 }
 

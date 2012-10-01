@@ -10,26 +10,26 @@ use to_str::ToStr;
 pub trait Vector<T> {
     static pure fn dim() -> uint;
     
-    pure fn add_f(&&value:T) -> self;
-    pure fn sub_f(&&value:T) -> self;
-    pure fn mul_f(&&value:T) -> self;
-    pure fn div_f(&&value:T) -> self;
+    pure fn add_f(value: T) -> self;
+    pure fn sub_f(value: T) -> self;
+    pure fn mul_f(value: T) -> self;
+    pure fn div_f(value: T) -> self;
     
-    pure fn add_v(&&other: self) -> self;
-    pure fn sub_v(&&other: self) -> self;
+    pure fn add_v(other: &self) -> self;
+    pure fn sub_v(other: &self) -> self;
     
-    pure fn dot(&&other: self) -> T;
+    pure fn dot(other: &self) -> T;
     
-    pure fn exact_eq(&&other:self) -> bool;
+    pure fn exact_eq(other:&self) -> bool;
     
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
     pure fn normalize() -> self;
     
-    pure fn lerp(&&other:self, &&value:T) -> self;
+    pure fn lerp(other: &self, value: T) -> self;
     pure fn abs() -> self;
-    pure fn min(&&other:self) -> self;
-    pure fn max(&&other:self) -> self;
+    pure fn min(other: &self) -> self;
+    pure fn max(other: &self) -> self;
     
     static pure fn zero() -> self;
     static pure fn identity() -> self;
@@ -42,7 +42,7 @@ pub trait Vector<T> {
 
 
 pub trait Vector2<T> {
-    // static pure fn _new(x:float, y:float) -> self;
+    // static pure fn _new(x: float, y: float) -> self;
     
     // This is where I wish rust had properties ;)
     pure fn x() -> T;
@@ -54,7 +54,7 @@ pub trait Vector2<T> {
 
 pub trait Vector3<T> {
     // error: duplicate function definition
-    // static pure fn _new(x:float, y:float, z:float) -> self;
+    // static pure fn _new(x: float, y: float, z: float) -> self;
     
     pure fn x() -> T;
     pure fn y() -> T;
@@ -64,12 +64,12 @@ pub trait Vector3<T> {
     // static pure fn unit_y() -> self;
     // static pure fn unit_z() -> self;
     
-    fn cross(&&other:self) -> self;
+    fn cross(other: &self) -> self;
 }
 
 pub trait Vector4<T> {
     // error: duplicate function definition
-    // static pure fn _new(x:float, y:float, z:float, w:float) -> self;
+    // static pure fn _new(x: float, y: float, z: float, w: float) -> self;
     
     pure fn x() -> T;
     pure fn y() -> T;
@@ -101,13 +101,13 @@ pub const vec2_identity :Vec2 = Vec2 { data: [ 1f, 1f ] };
 //  Constructor
 //
 #[inline]
-pub pure fn Vec2(x:float, y:float) -> Vec2 {
+pub pure fn Vec2(x: float, y: float) -> Vec2 {
     Vec2 { data: [ x, y ] }
 }
 
 pub impl Vec2: Vector2<float> {
     // #[inline]
-    // static pure fn _new(x:float, y:float) -> Vec2 {
+    // static pure fn _new(x: float, y: float) -> Vec2 {
     //     Vec2 { data: [ x, y ] }
     // }
     
@@ -124,49 +124,49 @@ pub impl Vec2: Vector<float> {
     static pure fn dim() -> uint { 2 }
     
     #[inline]
-    pure fn add_f(&&value:float) -> Vec2 {
+    pure fn add_f(value: float) -> Vec2 {
         Vec2(self[0] + value,
              self[1] + value)
     }
     
     #[inline]
-    pure fn sub_f(&&value:float) -> Vec2 {
+    pure fn sub_f(value: float) -> Vec2 {
         Vec2(self[0] - value,
              self[1] - value)
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Vec2 {
+    pure fn mul_f(value: float) -> Vec2 {
         Vec2(self[0] * value,
              self[1] * value)
     }
     
     #[inline]
-    pure fn div_f(&&value:float) -> Vec2 {
+    pure fn div_f(value: float) -> Vec2 {
         Vec2(self[0] / value,
              self[1] / value)
     }
     
     #[inline]
-    pure fn add_v(&&other: Vec2) -> Vec2{
+    pure fn add_v(other: &Vec2) -> Vec2{
         Vec2(self[0] + other[0],
              self[1] + other[1])
     }
     
     #[inline]
-    pure fn sub_v(&&other: Vec2) -> Vec2{
+    pure fn sub_v(other: &Vec2) -> Vec2{
         Vec2(self[0] - other[0],
              self[1] - other[1])
     }
     
     #[inline]
-    pure fn dot(&&other: Vec2) -> float {
+    pure fn dot(other: &Vec2) -> float {
         self[0] * other[0] +
         self[1] * other[1]
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Vec2) -> bool {
+    pure fn exact_eq(other: &Vec2) -> bool {
         self[0] == other[0] &&
         self[1] == other[1]
     }
@@ -189,8 +189,8 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn lerp(&&other:Vec2, &&value:float) -> Vec2 {
-        self.add_v((other.sub_v(self)).mul_f(value))
+    pure fn lerp(other: &Vec2, value: float) -> Vec2 {
+        self.add_v(&other.sub_v(&self).mul_f(value))
     }
     
     #[inline]
@@ -200,13 +200,13 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn min(&&other:Vec2) -> Vec2 {
+    pure fn min(other: &Vec2) -> Vec2 {
         Vec2(min(self[0], other[0]),
              min(self[1], other[1]))
     }
     
     #[inline]
-    pure fn max(&&other:Vec2) -> Vec2 {
+    pure fn max(other: &Vec2) -> Vec2 {
         Vec2(max(self[0], other[0]),
              max(self[1], other[1]))
     }
@@ -275,13 +275,13 @@ pub const vec3_identity :Vec3 = Vec3 { data: [ 1f, 1f, 1f ] };
 //  Constructor
 //
 #[inline]
-pub pure fn Vec3(x:float, y:float, z:float) -> Vec3 {
+pub pure fn Vec3(x: float, y: float, z: float) -> Vec3 {
     Vec3 { data: [ x, y, z ] }
 }
 
 pub impl Vec3: Vector3<float> {
     // #[inline]
-    // static pure fn _new(x:float, y:float, z:float) -> Vec3 {
+    // static pure fn _new(x: float, y: float, z: float) -> Vec3 {
     //     Vec2 { data: [ x, y, z ] }
     // }
     
@@ -290,7 +290,7 @@ pub impl Vec3: Vector3<float> {
     #[inline] pure fn z() -> float { self.data[2] }
     
     #[inline]
-    fn cross(&&other:Vec3) -> Vec3 {
+    fn cross(other: &Vec3) -> Vec3 {
         Vec3((self[1] * other[2]) - (self[2] * other[1]),
              (self[2] * other[0]) - (self[0] * other[2]),
              (self[0] * other[1]) - (self[1] * other[0]))
@@ -306,56 +306,56 @@ pub impl Vec3: Vector<float> {
     static pure fn dim() -> uint { 3 }
     
     #[inline]
-    pure fn add_f(&&value:float) -> Vec3 {
+    pure fn add_f(value: float) -> Vec3 {
         Vec3(self[0] + value,
              self[1] + value,
              self[2] + value)
     }
     
     #[inline]
-    pure fn sub_f(&&value:float) -> Vec3 {
+    pure fn sub_f(value: float) -> Vec3 {
         Vec3(self[0] - value,
              self[1] - value,
              self[2] - value)
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Vec3 {
+    pure fn mul_f(value: float) -> Vec3 {
         Vec3(self[0] * value,
              self[1] * value,
              self[2] * value)
     }
     
     #[inline]
-    pure fn div_f(&&value:float) -> Vec3 {
+    pure fn div_f(value: float) -> Vec3 {
         Vec3(self[0] / value,
              self[1] / value,
              self[2] / value)
     }
     
     #[inline]
-    pure fn add_v(&&other: Vec3) -> Vec3{
+    pure fn add_v(other: &Vec3) -> Vec3{
         Vec3(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2])
     }
     
     #[inline]
-    pure fn sub_v(&&other: Vec3) -> Vec3{
+    pure fn sub_v(other: &Vec3) -> Vec3{
         Vec3(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2])
     }
     
     #[inline]
-    pure fn dot(&&other: Vec3) -> float {
+    pure fn dot(other: &Vec3) -> float {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Vec3) -> bool {
+    pure fn exact_eq(other: &Vec3) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2]
@@ -380,8 +380,8 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn lerp(&&other:Vec3, &&value:float) -> Vec3 {
-        self.add_v((other.sub_v(self)).mul_f(value))
+    pure fn lerp(other: &Vec3, value: float) -> Vec3 {
+        self.add_v(&other.sub_v(&self).mul_f(value))
     }
     
     #[inline]
@@ -392,14 +392,14 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn min(&&other:Vec3) -> Vec3 {
+    pure fn min(other: &Vec3) -> Vec3 {
         Vec3(min(self[0], other[0]),
              min(self[1], other[1]),
              min(self[2], other[2]))
     }
     
     #[inline]
-    pure fn max(&&other:Vec3) -> Vec3 {
+    pure fn max(other: &Vec3) -> Vec3 {
         Vec3(max(self[0], other[0]),
              max(self[1], other[1]),
              max(self[2], other[2]))
@@ -471,13 +471,13 @@ pub const vec4_identity :Vec4 = Vec4 { data: [ 1f, 1f, 1f, 1f ] };
 //  Constructor
 //
 #[inline]
-pub pure fn Vec4(x:float, y:float, z:float, w:float) -> Vec4 {
+pub pure fn Vec4(x: float, y: float, z: float, w: float) -> Vec4 {
     Vec4 { data: [ x, y, z, w ] }
 }
 
 pub impl Vec4: Vector4<float> {
     // #[inline]
-    // static pure fn _new(x:float, y:float, z:float, w:float) -> Vec3 {
+    // static pure fn _new(x: float, y: float, z: float, w: float) -> Vec3 {
     //     Vec2 { data: [ x, y, z, w ] }
     // }
     
@@ -497,7 +497,7 @@ pub impl Vec4: Vector<float> {
     static pure fn dim() -> uint { 4 }
     
     #[inline]
-    pure fn add_f(&&value:float) -> Vec4 {
+    pure fn add_f(value: float) -> Vec4 {
         Vec4(self[0] + value,
              self[1] + value,
              self[2] + value,
@@ -505,7 +505,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn sub_f(&&value:float) -> Vec4 {
+    pure fn sub_f(value: float) -> Vec4 {
         Vec4(self[0] - value,
              self[1] - value,
              self[2] - value,
@@ -513,7 +513,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn mul_f(&&value:float) -> Vec4 {
+    pure fn mul_f(value: float) -> Vec4 {
         Vec4(self[0] * value,
              self[1] * value,
              self[2] * value,
@@ -521,7 +521,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn div_f(&&value:float) -> Vec4 {
+    pure fn div_f(value: float) -> Vec4 {
         Vec4(self[0] / value,
              self[1] / value,
              self[2] / value,
@@ -529,7 +529,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn add_v(&&other: Vec4) -> Vec4{
+    pure fn add_v(other: &Vec4) -> Vec4{
         Vec4(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
@@ -537,7 +537,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn sub_v(&&other: Vec4) -> Vec4{
+    pure fn sub_v(other: &Vec4) -> Vec4{
         Vec4(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
@@ -545,7 +545,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn dot(&&other:Vec4) -> float {
+    pure fn dot(other: &Vec4) -> float {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -553,7 +553,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn exact_eq(&&other:Vec4) -> bool {
+    pure fn exact_eq(other: &Vec4) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
@@ -580,8 +580,8 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn lerp(&&other:Vec4, &&value:float) -> Vec4 {
-        self.add_v((other.sub_v(self)).mul_f(value))
+    pure fn lerp(other: &Vec4, value: float) -> Vec4 {
+        self.add_v(&other.sub_v(&self).mul_f(value))
     }
     
     #[inline]
@@ -593,7 +593,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn min(&&other:Vec4) -> Vec4 {
+    pure fn min(other: &Vec4) -> Vec4 {
         Vec4(min(self[0], other[0]),
              min(self[1], other[1]),
              min(self[2], other[2]),
@@ -601,7 +601,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn max(&&other:Vec4) -> Vec4 {
+    pure fn max(other: &Vec4) -> Vec4 {
         Vec4(max(self[0], other[0]),
              max(self[1], other[1]),
              max(self[2], other[2]),
