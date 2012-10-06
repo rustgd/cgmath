@@ -77,7 +77,7 @@ pub pure fn Mat2(m00:float, m01:float,
 }
 
 //
-//  Conpub struct Mat2 from column vectors
+//  Construct Mat2 from column vectors
 //
 #[inline]
 pub pure fn Mat2_v(col0: &Vec2, col1: &Vec2) -> Mat2 {
@@ -244,7 +244,7 @@ pub pure fn Mat3(m00:float, m01:float, m02:float,
 }
 
 //
-//  Conpub struct Mat3 from column vectors
+//  Construct Mat3 from column vectors
 //
 #[inline]
 pub pure fn Mat3_v(col0: &Vec3, col1: &Vec3, col2: &Vec3) -> Mat3 {
@@ -498,7 +498,7 @@ pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 }
 
 //
-//  Conpub struct Mat4 from column vectors
+//  Construct Mat4 from column vectors
 //
 #[inline]
 pub pure fn Mat4_v(col0: &Vec4, col1: &Vec4, col2: &Vec4, col3: &Vec4) -> Mat4 {
