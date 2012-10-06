@@ -43,18 +43,18 @@ impl f64: Abs {
 //  Min
 //
 #[inline]
-pure fn min<T:Copy Ord>(&&a:T, &&b:T) -> T {
-    if a < b { a }
-    else     { b }
+pure fn min<T:Copy Ord>(a: &T, b: &T) -> T {
+    if a < b { *a }
+    else     { *b }
 }
 
 //
 //  Max
 //
 #[inline]
-pure fn max<T:Copy Ord>(&&a:T, &&b:T) -> T {
-    if a > b { a }
-    else     { b }
+pure fn max<T:Copy Ord>(a: &T, b: &T) -> T {
+    if a > b { *a }
+    else     { *b }
 }
 
 //

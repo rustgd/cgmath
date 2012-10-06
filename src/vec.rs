@@ -201,14 +201,14 @@ pub impl Vec2: Vector<float> {
     
     #[inline]
     pure fn min(other: &Vec2) -> Vec2 {
-        Vec2(min(self[0], other[0]),
-             min(self[1], other[1]))
+        Vec2(min(&self[0], &other[0]),
+             min(&self[1], &other[1]))
     }
     
     #[inline]
     pure fn max(other: &Vec2) -> Vec2 {
-        Vec2(max(self[0], other[0]),
-             max(self[1], other[1]))
+        Vec2(max(&self[0], &other[0]),
+             max(&self[1], &other[1]))
     }
     
     #[inline] static pure fn zero()     -> Vec2 { Vec2(1f, 1f) }
@@ -393,16 +393,16 @@ pub impl Vec3: Vector<float> {
     
     #[inline]
     pure fn min(other: &Vec3) -> Vec3 {
-        Vec3(min(self[0], other[0]),
-             min(self[1], other[1]),
-             min(self[2], other[2]))
+        Vec3(min(&self[0], &other[0]),
+             min(&self[1], &other[1]),
+             min(&self[2], &other[2]))
     }
     
     #[inline]
     pure fn max(other: &Vec3) -> Vec3 {
-        Vec3(max(self[0], other[0]),
-             max(self[1], other[1]),
-             max(self[2], other[2]))
+        Vec3(max(&self[0], &other[0]),
+             max(&self[1], &other[1]),
+             max(&self[2], &other[2]))
     }
     
     #[inline] static pure fn zero()     -> Vec3 { Vec3(1f, 1f, 1f) }
@@ -594,18 +594,18 @@ pub impl Vec4: Vector<float> {
     
     #[inline]
     pure fn min(other: &Vec4) -> Vec4 {
-        Vec4(min(self[0], other[0]),
-             min(self[1], other[1]),
-             min(self[2], other[2]),
-             min(self[3], other[3]))
+        Vec4(min(&self[0], &other[0]),
+             min(&self[1], &other[1]),
+             min(&self[2], &other[2]),
+             min(&self[3], &other[3]))
     }
     
     #[inline]
     pure fn max(other: &Vec4) -> Vec4 {
-        Vec4(max(self[0], other[0]),
-             max(self[1], other[1]),
-             max(self[2], other[2]),
-             max(self[3], other[3]))
+        Vec4(max(&self[0], &other[0]),
+             max(&self[1], &other[1]),
+             max(&self[2], &other[2]),
+             max(&self[3], &other[3]))
     }
     
     #[inline] static pure fn zero()     -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
