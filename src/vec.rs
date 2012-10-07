@@ -217,7 +217,7 @@ pub impl Vec2: Vector<float> {
 
 pub impl Vec2: Index<uint, float> {
     #[inline]
-    pure fn index(+i: uint) -> float {
+    pure fn index(i: uint) -> float {
         self.data[i]
     }
 }
@@ -411,7 +411,7 @@ pub impl Vec3: Vector<float> {
 
 pub impl Vec3: Index<uint, float> {
     #[inline]
-    pure fn index(+i: uint) -> float {
+    pure fn index(i: uint) -> float {
         self.data[i]
     }
 }
@@ -614,7 +614,7 @@ pub impl Vec4: Vector<float> {
 
 pub impl Vec4: Index<uint, float> {
     #[inline]
-    pure fn index(+i: uint) -> float {
+    pure fn index(i: uint) -> float {
         self.data[i]
     }
 }

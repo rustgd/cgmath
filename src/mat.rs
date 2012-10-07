@@ -182,7 +182,7 @@ pub impl Mat2: Matrix<float, Vec2> {
 
 pub impl Mat2: Index<uint, Vec2> {
     #[inline]
-    pure fn index(+i: uint) -> Vec2 {
+    pure fn index(i: uint) -> Vec2 {
         self.data[i]
     }
 }
@@ -431,7 +431,7 @@ pub impl Mat3: Matrix3<Vec3> {
 
 pub impl Mat3: Index<uint, Vec3> {
     #[inline]
-    pure fn index(+i: uint) -> Vec3 {
+    pure fn index(i: uint) -> Vec3 {
         self.data[i]
     }
 }
@@ -678,7 +678,7 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
 
 pub impl Mat4: Index<uint, Vec4> {
     #[inline]
-    pure fn index(+i: uint) -> Vec4 {
+    pure fn index(i: uint) -> Vec4 {
         self.data[i]
     }
 }

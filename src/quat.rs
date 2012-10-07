@@ -174,7 +174,7 @@ pub impl Quat: Quaternion<float> {
 
 pub impl Quat: Index<uint, float> {
     #[inline]
-    pure fn index(+i: uint) -> float {
+    pure fn index(i: uint) -> float {
         self.data[i]
     }
 }
