@@ -250,7 +250,7 @@ pub impl Vec2: FuzzyEq {
 }
 
 pub impl Vec2: ToStr {
-    fn to_str() -> ~str {
+    pure fn to_str() -> ~str {
         fmt!("Vec2[ %f, %f ]", self[0], self[1])
     }
 }
@@ -445,7 +445,7 @@ pub impl Vec3: FuzzyEq {
 }
 
 pub impl Vec3: ToStr {
-    fn to_str() -> ~str {
+    pure fn to_str() -> ~str {
         fmt!("Vec3[ %f, %f, %f ]", self[0], self[1], self[2])
     }
 }
@@ -649,7 +649,7 @@ pub impl Vec4: FuzzyEq {
 }
 
 pub impl Vec4: ToStr {
-    fn to_str() -> ~str {
+    pure fn to_str() -> ~str {
         fmt!("Vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
     }
 }

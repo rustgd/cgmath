@@ -212,7 +212,7 @@ pub impl Quat: FuzzyEq {
 //  Convert To String
 //
 pub impl Quat: ToStr {
-    fn to_str() -> ~str {
+    pure fn to_str() -> ~str {
         fmt!("Quat[ %f, %f, %f, %f ]", self.w(), self.x(), self.y(), self.z())
     }
 }
