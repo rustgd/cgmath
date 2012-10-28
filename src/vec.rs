@@ -1,8 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::{Neg, Index};
 use math::{Abs, abs, min, max, Sqrt};
-use to_str::ToStr;
 
 //
 //  N-dimensional Vector
@@ -234,10 +232,6 @@ pub impl Vec3: Vector3<float> {
              (self[2] * other[0]) - (self[0] * other[2]),
              (self[0] * other[1]) - (self[1] * other[0]))
     }
-    
-    // #[inline] static pure fn unit_x() -> Vec3 { Vec3(1f, 0f, 0f) }
-    // #[inline] static pure fn unit_y() -> Vec3 { Vec3(0f, 1f, 0f) }
-    // #[inline] static pure fn unit_z() -> Vec3 { Vec3(0f, 0f, 1f) }
 }
 
 pub impl Vec3: Vector<float> {

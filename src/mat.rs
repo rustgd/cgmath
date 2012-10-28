@@ -1,7 +1,5 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::{Neg, Index};
-// use to_str::ToStr;
 use math::Sqrt;
 use quat::Quat;
 use vec::*;
@@ -47,7 +45,7 @@ pub trait Matrix3<V3> {
 //  4x4 Matrix
 //
 pub trait Matrix4<V3, V4> {
-    pure fn scale(vec: &V3) -> self;      // I don't like the use of `Vec3` here
+    pure fn scale(vec: &V3) -> self;
     pure fn translate(vec: &V3) -> self;
 }
 
@@ -475,22 +473,22 @@ pub impl Mat3: FuzzyEq {
 pub struct Mat4 { data:[Vec4 * 4] }
 
 pub const mat4_zero     :Mat4 = Mat4 { data: [ vec4_zero,
-                                           vec4_zero,
-                                           vec4_zero,
-                                           vec4_zero ] };
+                                               vec4_zero,
+                                               vec4_zero,
+                                               vec4_zero ] };
 pub const mat4_identity :Mat4 = Mat4 { data: [ vec4_unit_x,
-                                           vec4_unit_y,
-                                           vec4_unit_z,
-                                           vec4_unit_w ] };
+                                               vec4_unit_y,
+                                               vec4_unit_z,
+                                               vec4_unit_w ] };
 
 //
 //  Mat4 Constructor
 //
 #[inline]
 pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
-             m10:float, m11:float, m12:float, m13:float,
-             m20:float, m21:float, m22:float, m23:float,
-             m30:float, m31:float, m32:float, m33:float) -> Mat4 {
+                 m10:float, m11:float, m12:float, m13:float,
+                 m20:float, m21:float, m22:float, m23:float,
+                 m30:float, m31:float, m32:float, m33:float) -> Mat4 {
     Mat4 { data: [ Vec4(m00, m01, m02, m03),
                    Vec4(m10, m11, m12, m13),
                    Vec4(m20, m21, m22, m23),

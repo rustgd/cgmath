@@ -1,12 +1,8 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use ops::{Neg, Index};
-use to_str::ToStr;
 use math::Sqrt;
 use mat::{Mat3, Mat4};
 use vec::Vec3;
-
-// TODO: Unittests
 
 //
 //  Quaternion
@@ -204,9 +200,6 @@ pub impl Quat: FuzzyEq {
     }
 }
 
-//
-//  Convert To String
-//
 pub impl Quat: ToStr {
     pure fn to_str() -> ~str {
         fmt!("Quat[ %f, %f, %f, %f ]", self.w, self.x, self.y, self.z)
