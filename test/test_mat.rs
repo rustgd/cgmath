@@ -5,10 +5,10 @@ use omath::vec::*;
 
 #[test]
 fn test_Mat2() {
-    let a = Mat2 { data: [ Vec2 { data: [ 1f, 3f ] },
-                           Vec2 { data: [ 2f, 4f ] } ] };
-    let b = Mat2 { data: [ Vec2 { data: [ 2f, 4f ] },
-                           Vec2 { data: [ 3f, 5f ] } ] };
+    let a = Mat2 { data: [ Vec2 { x: 1f, y: 3f },
+                           Vec2 { x: 2f, y: 4f } ] };
+    let b = Mat2 { data: [ Vec2 { x: 2f, y: 4f },
+                           Vec2 { x: 3f, y: 5f } ] };
     let v1 = Vec2(1f, 2f);
     let f1 = 0.5f;
     
@@ -69,12 +69,12 @@ fn test_Mat2() {
 
 #[test]
 fn test_Mat3() {
-    let a = Mat3 { data: [ Vec3 { data: [ 1f, 4f, 7f ] },
-                           Vec3 { data: [ 2f, 5f, 8f ] },
-                           Vec3 { data: [ 3f, 6f, 9f ] } ] };
-    let b = Mat3 { data: [ Vec3 { data: [ 2f, 5f,  8f ] },
-                           Vec3 { data: [ 3f, 6f,  9f ] },
-                           Vec3 { data: [ 4f, 7f, 10f ] } ] };
+    let a = Mat3 { data: [ Vec3 { x: 1f, y: 4f, z:  7f },
+                           Vec3 { x: 2f, y: 5f, z:  8f },
+                           Vec3 { x: 3f, y: 6f, z:  9f } ] };
+    let b = Mat3 { data: [ Vec3 { x: 2f, y: 5f, z:  8f },
+                           Vec3 { x: 3f, y: 6f, z:  9f },
+                           Vec3 { x: 4f, y: 7f, z: 10f } ] };
     let v1 = Vec3(1f, 2f, 3f);
     let f1 = 0.5f;
     
@@ -154,14 +154,14 @@ fn test_Mat3() {
 
 #[test]
 fn test_Mat4() {
-    let a = Mat4 { data: [ Vec4 { data: [ 1f, 5f,  9f, 13f ] },
-                           Vec4 { data: [ 2f, 6f, 10f, 14f ] },
-                           Vec4 { data: [ 3f, 7f, 11f, 15f ] },
-                           Vec4 { data: [ 4f, 8f, 12f, 16f ] } ] };
-    let b = Mat4 { data: [ Vec4 { data: [ 2f, 6f, 10f, 14f ] },
-                           Vec4 { data: [ 3f, 7f, 11f, 15f ] },
-                           Vec4 { data: [ 4f, 8f, 12f, 16f ] },
-                           Vec4 { data: [ 5f, 9f, 13f, 17f ] } ] };
+    let a = Mat4 { data: [ Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
+                           Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
+                           Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
+                           Vec4 { x: 4f, y: 8f, z: 12f, w: 16f } ] };
+    let b = Mat4 { data: [ Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
+                           Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
+                           Vec4 { x: 4f, y: 8f, z: 12f, w: 16f },
+                           Vec4 { x: 5f, y: 9f, z: 13f, w: 17f } ] };
     let v1 = Vec4(1f, 2f, 3f, 4f);
     let f1 = 0.5f;
     

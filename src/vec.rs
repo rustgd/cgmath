@@ -41,45 +41,8 @@ pub trait Vector<T> {
 
 
 
-pub trait Vector2<T> {
-    // static pure fn _new(x: float, y: float) -> self;
-    
-    // This is where I wish rust had properties ;)
-    pure fn x() -> T;
-    pure fn y() -> T;
-    
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-}
-
 pub trait Vector3<T> {
-    // error: duplicate function definition
-    // static pure fn _new(x: float, y: float, z: float) -> self;
-    
-    pure fn x() -> T;
-    pure fn y() -> T;
-    pure fn z() -> T;
-    
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-    // static pure fn unit_z() -> self;
-    
     fn cross(other: &self) -> self;
-}
-
-pub trait Vector4<T> {
-    // error: duplicate function definition
-    // static pure fn _new(x: float, y: float, z: float, w: float) -> self;
-    
-    pure fn x() -> T;
-    pure fn y() -> T;
-    pure fn z() -> T;
-    pure fn w() -> T;
-    
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-    // static pure fn unit_z() -> self;
-    // static pure fn unit_w() -> self;
 }
 
 
@@ -90,33 +53,19 @@ pub trait Vector4<T> {
 //
 //  Vec2
 //
-pub struct Vec2 { data:[float * 2] }
+pub struct Vec2 { x: float, y: float }
 
-pub const vec2_zero     :Vec2 = Vec2 { data: [ 0f, 0f ] };
-pub const vec2_unit_x   :Vec2 = Vec2 { data: [ 1f, 0f ] };
-pub const vec2_unit_y   :Vec2 = Vec2 { data: [ 0f, 1f ] };
-pub const vec2_identity :Vec2 = Vec2 { data: [ 1f, 1f ] };
+pub const vec2_zero     :Vec2 = Vec2 { x: 0f, y: 0f };
+pub const vec2_unit_x   :Vec2 = Vec2 { x: 1f, y: 0f };
+pub const vec2_unit_y   :Vec2 = Vec2 { x: 0f, y: 1f };
+pub const vec2_identity :Vec2 = Vec2 { x: 1f, y: 1f };
 
 //
 //  Constructor
 //
 #[inline]
 pub pure fn Vec2(x: float, y: float) -> Vec2 {
-    Vec2 { data: [ x, y ] }
-}
-
-pub impl Vec2: Vector2<float> {
-    // #[inline]
-    // static pure fn _new(x: float, y: float) -> Vec2 {
-    //     Vec2 { data: [ x, y ] }
-    // }
-    
-    #[inline] pure fn x() -> float { self.data[0] }
-    #[inline] pure fn y() -> float { self.data[1] }
-    
-    // #[inline] static pure fn unit_x() -> Vec2 { Vec2(1f, 0f) }
-    // #[inline] static pure fn unit_y() -> Vec2 { Vec2(0f, 1f) }
-    // #[inline] static pure fn unit_z() -> Vec2 { Vec2(0f, 0f) }
+    Vec2 { x: x, y: y }
 }
 
 pub impl Vec2: Vector<float> {
@@ -218,7 +167,11 @@ pub impl Vec2: Vector<float> {
 pub impl Vec2: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        self.data[i]
+        match i {
+            0 => self.x,
+            1 => self.y,
+            _ => fail(~"Vector index out of bounds.")
+        }
     }
 }
 
@@ -263,32 +216,23 @@ pub impl Vec2: ToStr {
 //
 //  Vec3
 //
-pub struct Vec3 { data:[float * 3] }
+pub struct Vec3 { x: float, y: float, z: float }
 
-pub const vec3_zero     :Vec3 = Vec3 { data: [ 0f, 0f, 0f ] };
-pub const vec3_unit_x   :Vec3 = Vec3 { data: [ 1f, 0f, 0f ] };
-pub const vec3_unit_y   :Vec3 = Vec3 { data: [ 0f, 1f, 0f ] };
-pub const vec3_unit_z   :Vec3 = Vec3 { data: [ 0f, 0f, 1f ] };
-pub const vec3_identity :Vec3 = Vec3 { data: [ 1f, 1f, 1f ] };
+pub const vec3_zero     :Vec3 = Vec3 { x: 0f, y: 0f, z: 0f };
+pub const vec3_unit_x   :Vec3 = Vec3 { x: 1f, y: 0f, z: 0f };
+pub const vec3_unit_y   :Vec3 = Vec3 { x: 0f, y: 1f, z: 0f };
+pub const vec3_unit_z   :Vec3 = Vec3 { x: 0f, y: 0f, z: 1f };
+pub const vec3_identity :Vec3 = Vec3 { x: 1f, y: 1f, z: 1f };
 
 //
 //  Constructor
 //
 #[inline]
 pub pure fn Vec3(x: float, y: float, z: float) -> Vec3 {
-    Vec3 { data: [ x, y, z ] }
+    Vec3 { x: x, y: y, z: z }
 }
 
 pub impl Vec3: Vector3<float> {
-    // #[inline]
-    // static pure fn _new(x: float, y: float, z: float) -> Vec3 {
-    //     Vec2 { data: [ x, y, z ] }
-    // }
-    
-    #[inline] pure fn x() -> float { self.data[0] }
-    #[inline] pure fn y() -> float { self.data[1] }
-    #[inline] pure fn z() -> float { self.data[2] }
-    
     #[inline]
     fn cross(other: &Vec3) -> Vec3 {
         Vec3((self[1] * other[2]) - (self[2] * other[1]),
@@ -412,7 +356,12 @@ pub impl Vec3: Vector<float> {
 pub impl Vec3: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        self.data[i]
+        match i {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            _ => fail(~"Vector index out of bounds.")
+        }
     }
 }
 
@@ -458,38 +407,21 @@ pub impl Vec3: ToStr {
 //
 //  Vec4
 //
-pub struct Vec4 { data:[float * 4] }
+pub struct Vec4 { x: float, y: float, z: float, w: float }
 
-pub const vec4_zero     :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 0f ] };
-pub const vec4_unit_x   :Vec4 = Vec4 { data: [ 1f, 0f, 0f, 0f ] };
-pub const vec4_unit_y   :Vec4 = Vec4 { data: [ 0f, 1f, 0f, 0f ] };
-pub const vec4_unit_z   :Vec4 = Vec4 { data: [ 0f, 0f, 1f, 0f ] };
-pub const vec4_unit_w   :Vec4 = Vec4 { data: [ 0f, 0f, 0f, 1f ] };
-pub const vec4_identity :Vec4 = Vec4 { data: [ 1f, 1f, 1f, 1f ] };
+pub const vec4_zero     :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 0f };
+pub const vec4_unit_x   :Vec4 = Vec4 { x: 1f, y: 0f, z: 0f, w: 0f };
+pub const vec4_unit_y   :Vec4 = Vec4 { x: 0f, y: 1f, z: 0f, w: 0f };
+pub const vec4_unit_z   :Vec4 = Vec4 { x: 0f, y: 0f, z: 1f, w: 0f };
+pub const vec4_unit_w   :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 1f };
+pub const vec4_identity :Vec4 = Vec4 { x: 1f, y: 1f, z: 1f, w: 1f };
 
 //
 //  Constructor
 //
 #[inline]
 pub pure fn Vec4(x: float, y: float, z: float, w: float) -> Vec4 {
-    Vec4 { data: [ x, y, z, w ] }
-}
-
-pub impl Vec4: Vector4<float> {
-    // #[inline]
-    // static pure fn _new(x: float, y: float, z: float, w: float) -> Vec3 {
-    //     Vec2 { data: [ x, y, z, w ] }
-    // }
-    
-    #[inline] pure fn x() -> float { self.data[0] }
-    #[inline] pure fn y() -> float { self.data[1] }
-    #[inline] pure fn z() -> float { self.data[2] }
-    #[inline] pure fn w() -> float { self.data[3] }
-    
-    // #[inline] static pure fn unit_x() -> Vec4 { Vec4(1f, 0f, 0f, 0f) }
-    // #[inline] static pure fn unit_y() -> Vec4 { Vec4(0f, 1f, 0f, 0f) }
-    // #[inline] static pure fn unit_z() -> Vec4 { Vec4(0f, 0f, 1f, 0f) }
-    // #[inline] static pure fn unit_w() -> Vec4 { Vec4(0f, 0f, 0f, 1f) }
+    Vec4 { x: x, y: y, z: z, w: w }
 }
 
 pub impl Vec4: Vector<float> {
@@ -615,7 +547,13 @@ pub impl Vec4: Vector<float> {
 pub impl Vec4: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        self.data[i]
+        match i {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            3 => self.w,
+            _ => fail(~"Vector index out of bounds.")
+        }
     }
 }
 

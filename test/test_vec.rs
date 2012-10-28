@@ -7,8 +7,8 @@ use omath::vec::*;
 fn test_Vec2() {
     // assert Vec2::dim == 2;
     
-    let a = Vec2 { data: [ 1f, 2f ] };
-    let b = Vec2 { data: [ 3f, 4f ] };
+    let a = Vec2 { x: 1f, y: 2f };
+    let b = Vec2 { x: 3f, y: 4f };
     let f1 = 1.5f;
     let f2 = 0.5f;
     
@@ -19,10 +19,10 @@ fn test_Vec2() {
     assert vec2_unit_y   == Vec2(0f, 1f);
     assert vec2_identity == Vec2(1f, 1f);
     
+    assert a.x == 1f;
+    assert a.y == 2f;
     assert a[0] == 1f;
     assert a[1] == 2f;
-    assert a.x() == 1f;
-    assert a.y() == 2f;
     
     assert -a      == Vec2(-1f, -2f);
     assert a.neg() == Vec2(-1f, -2f);
@@ -56,8 +56,8 @@ fn test_Vec2() {
 fn test_Vec3() {
     // assert Vec3::dim == 3;
     
-    let a = Vec3 { data: [ 1f, 2f, 3f ] };
-    let b = Vec3 { data: [ 4f, 5f, 6f ] };
+    let a = Vec3 { x: 1f, y: 2f, z: 3f };
+    let b = Vec3 { x: 4f, y: 5f, z: 6f };
     let f1 = 1.5f;
     let f2 = 0.5f;
     
@@ -69,12 +69,12 @@ fn test_Vec3() {
     assert vec3_unit_z   == Vec3(0f, 0f, 1f);
     assert vec3_identity == Vec3(1f, 1f, 1f);
     
+    assert a.x == 1f;
+    assert a.y == 2f;
+    assert a.z == 3f;
     assert a[0] == 1f;
     assert a[1] == 2f;
     assert a[2] == 3f;
-    assert a.x() == 1f;
-    assert a.y() == 2f;
-    assert a.z() == 3f;
     
     assert a.cross(&b) == Vec3(-3f, 6f, -3f);
     
@@ -110,8 +110,8 @@ fn test_Vec3() {
 fn test_Vec4() {
     // assert Vec4::dim == 4;
     
-    let a = Vec4 { data: [ 1f, 2f, 3f, 4f ] };
-    let b = Vec4 { data: [ 5f, 6f, 7f, 8f ] };
+    let a = Vec4 { x: 1f, y: 2f, z: 3f, w: 4f };
+    let b = Vec4 { x: 5f, y: 6f, z: 7f, w: 8f };
     let f1 = 1.5f;
     let f2 = 0.5f;
     
@@ -124,14 +124,14 @@ fn test_Vec4() {
     assert vec4_unit_w   == Vec4(0f, 0f, 0f, 1f);
     assert vec4_identity == Vec4(1f, 1f, 1f, 1f);
     
+    assert a.x == 1f;
+    assert a.y == 2f;
+    assert a.z == 3f;
+    assert a.w == 4f;
     assert a[0] == 1f;
     assert a[1] == 2f;
     assert a[2] == 3f;
     assert a[3] == 4f;
-    assert a.x() == 1f;
-    assert a.y() == 2f;
-    assert a.z() == 3f;
-    assert a.w() == 4f;
     
     assert -a      == Vec4(-1f, -2f, -3f, -4f);
     assert a.neg() == Vec4(-1f, -2f, -3f, -4f);

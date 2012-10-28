@@ -14,11 +14,6 @@ use vec::Vec3;
 pub trait Quaternion<T> {
     pure fn dim() -> uint;
     
-    pure fn w() -> T;
-    pure fn x() -> T;
-    pure fn y() -> T;
-    pure fn z() -> T;
-    
     pure fn mul_f(value: T) -> self;
     pure fn div_f(value: T) -> self;
     
@@ -47,17 +42,17 @@ pub trait Quaternion<T> {
 //
 //  Quat struct definition
 //
-pub struct Quat { data:[float * 4] }
+pub struct Quat { w: float, x: float, y: float, z: float }
 
-pub const quat_zero     :Quat = Quat { data: [ 0f, 0f, 0f, 0f ] };
-pub const quat_identity :Quat = Quat { data: [ 1f, 0f, 0f, 0f ] };
+pub const quat_zero     :Quat = Quat { w: 0f, x: 0f, y: 0f, z: 0f };
+pub const quat_identity :Quat = Quat { w: 1f, x: 0f, y: 0f, z: 0f };
 
 //
 //  Quat Constructor
 //
 #[inline]
 pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
-    Quat { data: [ w, x, y, z ] }
+    Quat { w: w, x: x, y: y, z: z }
 }
 
 //
@@ -66,11 +61,6 @@ pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
 pub impl Quat: Quaternion<float> {
     #[inline]
     pure fn dim() -> uint { 4 }
-    
-    #[inline] pure fn w() -> float { self.data[0] }
-    #[inline] pure fn x() -> float { self.data[1] }
-    #[inline] pure fn y() -> float { self.data[2] }
-    #[inline] pure fn z() -> float { self.data[3] }
     
     #[inline]
     pure fn mul_f(value: float) -> Quat {
@@ -106,10 +96,10 @@ pub impl Quat: Quaternion<float> {
     
     #[inline]
     pure fn mul_q(other: &Quat) -> Quat {
-        Quat(self.w()*other.w() - self.x()*other.x() - self.y()*other.y() - self.z()*other.z(),
-             self.w()*other.x() + self.x()*other.w() + self.y()*other.z() - self.z()*other.y(),
-             self.w()*other.y() + self.y()*other.w() + self.z()*other.x() - self.x()*other.z(),
-             self.w()*other.z() + self.z()*other.w() + self.x()*other.y() - self.y()*other.x())
+        Quat(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
+             self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
+             self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
+             self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
     }
     
     #[inline]
@@ -122,7 +112,7 @@ pub impl Quat: Quaternion<float> {
     
     #[inline]
     pure fn conjugate() -> Quat {
-        Quat(self.w(), -self.x(), -self.y(), -self.z())
+        Quat(self.w, -self.x, -self.y, -self.z)
     }
     
     #[inline]
@@ -132,10 +122,10 @@ pub impl Quat: Quaternion<float> {
     
     #[inline]
     pure fn magnitude2() -> float {
-        self.w() * self.w() +
-        self.x() * self.x() +
-        self.y() * self.y() +
-        self.z() * self.z()
+        self.w * self.w +
+        self.x * self.x +
+        self.y * self.y +
+        self.z * self.z
     }
     
     #[inline]
@@ -145,21 +135,21 @@ pub impl Quat: Quaternion<float> {
     
     #[inline]
     pure fn to_Mat3() -> Mat3 {
-        let x2 = self.x() + self.x();
-        let y2 = self.y() + self.y();
-        let z2 = self.z() + self.z();
+        let x2 = self.x + self.x;
+        let y2 = self.y + self.y;
+        let z2 = self.z + self.z;
         
-        let xx2 = x2 * self.x();
-        let xy2 = x2 * self.y();
-        let xz2 = x2 * self.z();
+        let xx2 = x2 * self.x;
+        let xy2 = x2 * self.y;
+        let xz2 = x2 * self.z;
         
-        let yy2 = y2 * self.y();
-        let yz2 = y2 * self.z();
-        let zz2 = z2 * self.z();
+        let yy2 = y2 * self.y;
+        let yz2 = y2 * self.z;
+        let zz2 = z2 * self.z;
         
-        let wy2 = y2 * self.w();
-        let wz2 = z2 * self.w();
-        let wx2 = x2 * self.w();
+        let wy2 = y2 * self.w;
+        let wz2 = z2 * self.w;
+        let wx2 = x2 * self.w;
         
         return Mat3(1f - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
                          xy2 + wz2, 1f - xx2 - zz2,      yz2 - wx2,
@@ -175,7 +165,13 @@ pub impl Quat: Quaternion<float> {
 pub impl Quat: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        self.data[i]
+        match i {
+            0 => self.w,
+            1 => self.x,
+            2 => self.y,
+            3 => self.z,
+            _ => fail(~"Vector index out of bounds.")
+        }
     }
 }
 
@@ -213,6 +209,6 @@ pub impl Quat: FuzzyEq {
 //
 pub impl Quat: ToStr {
     pure fn to_str() -> ~str {
-        fmt!("Quat[ %f, %f, %f, %f ]", self.w(), self.x(), self.y(), self.z())
+        fmt!("Quat[ %f, %f, %f, %f ]", self.w, self.x, self.y, self.z)
     }
 }

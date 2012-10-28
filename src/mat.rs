@@ -375,9 +375,9 @@ pub impl Mat3: Matrix<float, Vec3> {
 pub impl Mat3: Matrix3<Vec3> {
     #[inline]
     pure fn scale(vec: &Vec3) -> Mat3 {
-        self.mul_m(&Mat3(vec.x(),      0f,      0f,
-                              0f, vec.y(),      0f,
-                              0f,      0f, vec.z()))
+        self.mul_m(&Mat3(vec.x,    0f,    0f,
+                            0f, vec.y,    0f,
+                            0f,    0f, vec.z))
     }
     
     #[inline]
@@ -658,10 +658,10 @@ pub impl Mat4: Matrix<float, Vec4> {
 pub impl Mat4: Matrix4<Vec3, Vec4> {
     #[inline]
     pure fn scale(vec: &Vec3) -> Mat4 {
-        self.mul_m(&Mat4(vec.x(),      0f,      0f, 0f,
-                              0f, vec.y(),      0f, 0f,
-                              0f,      0f, vec.z(), 0f,
-                              0f,      0f,      0f, 1f))
+        self.mul_m(&Mat4(vec.x,    0f,    0f, 0f,
+                            0f, vec.y,    0f, 0f,
+                            0f,    0f, vec.z, 0f,
+                            0f,    0f,    0f, 1f))
     }
     
     #[inline]
@@ -669,9 +669,9 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
         Mat4_v(&self[0],
                &self[1],
                &self[2],
-               &Vec4(self[3][0] + vec.x(),
-                     self[3][1] + vec.y(),
-                     self[3][2] + vec.z(),
+               &Vec4(self[3][0] + vec.x,
+                     self[3][1] + vec.y,
+                     self[3][2] + vec.z,
                      self[3][3]))
     }
 }
