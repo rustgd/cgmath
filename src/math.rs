@@ -7,6 +7,43 @@ trait Abs {
     pure fn abs() -> self;
 }
 
+#[inline]
+pure fn abs<T: Abs>(x: T) -> T {
+    x.abs()
+}
+
+impl i8: Abs {
+    #[inline]
+    pure fn abs() -> i8 {
+        if self >= 0 { self }
+        else         {-self }
+    }
+}
+
+impl i16: Abs {
+    #[inline]
+    pure fn abs() -> i16 {
+        if self >= 0 { self }
+        else         {-self }
+    }
+}
+
+impl i32: Abs {
+    #[inline]
+    pure fn abs() -> i32 {
+        if self >= 0 { self }
+        else         {-self }
+    }
+}
+
+impl i64: Abs {
+    #[inline]
+    pure fn abs() -> i64 {
+        if self >= 0 { self }
+        else         {-self }
+    }
+}
+
 impl int: Abs {
     #[inline]
     pure fn abs() -> int {
