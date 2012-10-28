@@ -6,26 +6,25 @@ SRC_DIR        = $(ROOT_DIR)/src
 SRC_CRATE      = $(TARGET).rc
 BUILD_DIR      = $(ROOT_DIR)/lib
 
-TEST           = test_$(TARGET)
-TEST_DIR 	   = $(ROOT_DIR)/test
-TEST_BUILD_DIR = $(TEST_DIR)/build
-TEST_CRATE     = $(TEST).rc
+TEST           = $(TARGET)
+TEST_BUILD_DIR = $(ROOT_DIR)/test
+
+.PHONY: test
 
 $(TARGET):
-	@echo "Building $(TARGET)"
+	@echo "building $(TARGET)"
 	@mkdir -p $(BUILD_DIR)
-	@rustc $(SRC_DIR)/$(SRC_CRATE) --lib -g --out-dir=$(BUILD_DIR)
+	@rustc $(SRC_DIR)/$(SRC_CRATE) --out-dir=$(BUILD_DIR)
 	@echo "Success! \o/"
-
+	
 all: $(TARGET)
 
-test: all
-	@echo "..."
-	@echo "Building $(TEST)"
+test:
+	@echo "building tests"
 	@mkdir -p $(TEST_BUILD_DIR)
-	@rustc --test -L lib $(TEST_DIR)/$(TEST_CRATE) -g --out-dir=$(TEST_BUILD_DIR)
+	@rustc $(SRC_DIR)/$(SRC_CRATE) --test --out-dir=$(TEST_BUILD_DIR)
 	@echo "Success! \o/"
-	@$(TEST_BUILD_DIR)/$(TEST)
+	@$(TEST_BUILD_DIR)/$(TARGET)
 
 clean:
 	rm -R -f $(BUILD_DIR)

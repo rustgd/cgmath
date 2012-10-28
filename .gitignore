@@ -1,4 +1,5 @@
 .DS_Store
-build
 lib
-*.sublime-workspace
+sublime
+test
+!src/test

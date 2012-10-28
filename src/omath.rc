@@ -12,3 +12,12 @@ pub mod math;
 pub mod projection;
 pub mod quat;
 pub mod vec;
+
+#[test]
+pub mod test {
+    pub mod test_mat;
+    pub mod test_math;
+    pub mod test_projection;
+    pub mod test_quat;
+    pub mod test_vec;
+}

@@ -1,6 +1,6 @@
-use omath::mat::*;
-use omath::quat::*;
-use omath::vec::*;
+use mat::*;
+use quat::*;
+use vec::*;
 
 // TODO
 

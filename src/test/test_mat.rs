@@ -1,5 +1,5 @@
-use omath::mat::*;
-use omath::vec::*;
+use mat::*;
+use vec::*;
 
 // TODO
 

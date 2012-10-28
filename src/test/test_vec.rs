@@ -1,5 +1,5 @@
 use std::cmp::FuzzyEq;
-use omath::vec::*;
+use vec::*;
 
 // TODO
 
