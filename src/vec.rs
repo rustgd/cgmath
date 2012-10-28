@@ -1,7 +1,7 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
 use ops::{Neg, Index};
-use math::{Abs, min, max, Sqrt};
+use math::{Abs, abs, min, max, Sqrt};
 use to_str::ToStr;
 
 //
@@ -27,19 +27,12 @@ pub trait Vector<T> {
     pure fn normalize() -> self;
     
     pure fn lerp(other: &self, value: T) -> self;
-    pure fn abs() -> self;
     pure fn min(other: &self) -> self;
     pure fn max(other: &self) -> self;
     
     static pure fn zero() -> self;
     static pure fn identity() -> self;
 }
-
-
-
-
-
-
 
 pub trait Vector3<T> {
     fn cross(other: &self) -> self;
@@ -143,12 +136,6 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn abs() -> Vec2 {
-        Vec2(self[0].abs(),
-             self[1].abs())
-    }
-    
-    #[inline]
     pure fn min(other: &Vec2) -> Vec2 {
         Vec2(min(&self[0], &other[0]),
              min(&self[1], &other[1]))
@@ -172,6 +159,14 @@ pub impl Vec2: Index<uint, float> {
             1 => self.y,
             _ => fail(~"Vector index out of bounds.")
         }
+    }
+}
+
+pub impl Vec2: Abs {
+    #[inline]
+    pure fn abs() -> Vec2 {
+        Vec2(abs(self[0]),
+             abs(self[1]))
     }
 }
 
@@ -329,13 +324,6 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn abs() -> Vec3 {
-        Vec3(self[0].abs(),
-             self[1].abs(),
-             self[2].abs())
-    }
-    
-    #[inline]
     pure fn min(other: &Vec3) -> Vec3 {
         Vec3(min(&self[0], &other[0]),
              min(&self[1], &other[1]),
@@ -362,6 +350,15 @@ pub impl Vec3: Index<uint, float> {
             2 => self.z,
             _ => fail(~"Vector index out of bounds.")
         }
+    }
+}
+
+pub impl Vec3: Abs {
+    #[inline]
+    pure fn abs() -> Vec3 {
+        Vec3(abs(self[0]),
+             abs(self[1]),
+             abs(self[2]))
     }
 }
 
@@ -517,14 +514,6 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn abs() -> Vec4 {
-        Vec4(self[0].abs(),
-             self[1].abs(),
-             self[2].abs(),
-             self[3].abs())
-    }
-    
-    #[inline]
     pure fn min(other: &Vec4) -> Vec4 {
         Vec4(min(&self[0], &other[0]),
              min(&self[1], &other[1]),
@@ -554,6 +543,16 @@ pub impl Vec4: Index<uint, float> {
             3 => self.w,
             _ => fail(~"Vector index out of bounds.")
         }
+    }
+}
+
+pub impl Vec4: Abs {
+    #[inline]
+    pure fn abs() -> Vec4 {
+        Vec4(abs(self[0]),
+             abs(self[1]),
+             abs(self[2]),
+             abs(self[3]))
     }
 }
 
