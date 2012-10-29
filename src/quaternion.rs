@@ -43,15 +43,17 @@ pub trait Quaternion<T> {
 //
 pub struct Quat { w: float, x: float, y: float, z: float }
 
-pub const quat_zero     :Quat = Quat { w: 0f, x: 0f, y: 0f, z: 0f };
-pub const quat_identity :Quat = Quat { w: 1f, x: 0f, y: 0f, z: 0f };
-
 //
 //  Quat Constructor
 //
 #[inline]
 pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
     Quat { w: w, x: x, y: y, z: z }
+}
+
+pub mod Quat {
+    pub const zero     :Quat = Quat { w: 0f, x: 0f, y: 0f, z: 0f };
+    pub const identity :Quat = Quat { w: 1f, x: 0f, y: 0f, z: 0f };
 }
 
 //

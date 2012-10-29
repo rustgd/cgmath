@@ -14,10 +14,10 @@ fn test_Vec2() {
     
     assert a == Vec2(1f, 2f);
     
-    assert vec2_zero     == Vec2(0f, 0f);
-    assert vec2_unit_x   == Vec2(1f, 0f);
-    assert vec2_unit_y   == Vec2(0f, 1f);
-    assert vec2_identity == Vec2(1f, 1f);
+    assert Vec2::zero     == Vec2(0f, 0f);
+    assert Vec2::unit_x   == Vec2(1f, 0f);
+    assert Vec2::unit_y   == Vec2(0f, 1f);
+    assert Vec2::identity == Vec2(1f, 1f);
     
     assert a.x == 1f;
     assert a.y == 2f;
@@ -63,11 +63,11 @@ fn test_Vec3() {
     
     assert a == Vec3(1f, 2f, 3f);
     
-    assert vec3_zero     == Vec3(0f, 0f, 0f);
-    assert vec3_unit_x   == Vec3(1f, 0f, 0f);
-    assert vec3_unit_y   == Vec3(0f, 1f, 0f);
-    assert vec3_unit_z   == Vec3(0f, 0f, 1f);
-    assert vec3_identity == Vec3(1f, 1f, 1f);
+    assert Vec3::zero     == Vec3(0f, 0f, 0f);
+    assert Vec3::unit_x   == Vec3(1f, 0f, 0f);
+    assert Vec3::unit_y   == Vec3(0f, 1f, 0f);
+    assert Vec3::unit_z   == Vec3(0f, 0f, 1f);
+    assert Vec3::identity == Vec3(1f, 1f, 1f);
     
     assert a.x == 1f;
     assert a.y == 2f;
@@ -117,12 +117,12 @@ fn test_Vec4() {
     
     assert a == Vec4(1f, 2f, 3f, 4f);
     
-    assert vec4_zero     == Vec4(0f, 0f, 0f, 0f);
-    assert vec4_unit_x   == Vec4(1f, 0f, 0f, 0f);
-    assert vec4_unit_y   == Vec4(0f, 1f, 0f, 0f);
-    assert vec4_unit_z   == Vec4(0f, 0f, 1f, 0f);
-    assert vec4_unit_w   == Vec4(0f, 0f, 0f, 1f);
-    assert vec4_identity == Vec4(1f, 1f, 1f, 1f);
+    assert Vec4::zero     == Vec4(0f, 0f, 0f, 0f);
+    assert Vec4::unit_x   == Vec4(1f, 0f, 0f, 0f);
+    assert Vec4::unit_y   == Vec4(0f, 1f, 0f, 0f);
+    assert Vec4::unit_z   == Vec4(0f, 0f, 1f, 0f);
+    assert Vec4::unit_w   == Vec4(0f, 0f, 0f, 1f);
+    assert Vec4::identity == Vec4(1f, 1f, 1f, 1f);
     
     assert a.x == 1f;
     assert a.y == 2f;

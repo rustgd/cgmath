@@ -2,7 +2,7 @@ use std::cmp::FuzzyEq;
 use cmp::Eq;
 use math::Sqrt;
 use quaternion::Quat;
-use vector::*;
+use vector::{Vec2, Vec3, Vec4};
 
 //
 //  NxN Matrix
@@ -59,10 +59,10 @@ pub trait Matrix4<V3, V4> {
 //
 pub struct Mat2 { data:[Vec2 * 2] }
 
-pub const mat2_zero     :Mat2 = Mat2 { data: [ vec2_zero,
-                                               vec2_zero ] };
-pub const mat2_identity :Mat2 = Mat2 { data: [ vec2_unit_x,
-                                               vec2_unit_y ] };
+pub const mat2_zero     :Mat2 = Mat2 { data: [ Vec2::zero,
+                                               Vec2::zero ] };
+pub const mat2_identity :Mat2 = Mat2 { data: [ Vec2::unit_x,
+                                               Vec2::unit_y ] };
 
 //
 //  Mat2 Constructor
@@ -80,6 +80,13 @@ pub pure fn Mat2(m00:float, m01:float,
 #[inline]
 pub pure fn Mat2_v(col0: &Vec2, col1: &Vec2) -> Mat2 {
     Mat2 { data: [ *col0, *col1 ] }
+}
+
+pub mod Mat2 {
+    pub const zero     :Mat2 = Mat2 { data: [ Vec2::zero,
+                                              Vec2::zero ] };
+    pub const identity :Mat2 = Mat2 { data: [ Vec2::unit_x,
+                                              Vec2::unit_y ] };
 }
 
 //
@@ -157,7 +164,7 @@ pub impl Mat2: Matrix<float, Vec2> {
     
     #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&mat2_identity)
+        self.fuzzy_eq(&Mat2::identity)
     }
     
     #[inline]
@@ -174,7 +181,7 @@ pub impl Mat2: Matrix<float, Vec2> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&mat2_identity)
+        !self.fuzzy_eq(&Mat2::identity)
     }
 }
 
@@ -222,13 +229,6 @@ pub impl Mat2: FuzzyEq {
 //
 pub struct Mat3 { data:[Vec3 * 3] }
 
-pub const mat3_zero     :Mat3 = Mat3 { data: [ vec3_zero,
-                                               vec3_zero,
-                                               vec3_zero ] };
-pub const mat3_identity :Mat3 = Mat3 { data: [ vec3_unit_x,
-                                               vec3_unit_y,
-                                               vec3_unit_z ] };
-
 //
 //  Mat3 Constructor
 //
@@ -247,6 +247,15 @@ pub pure fn Mat3(m00:float, m01:float, m02:float,
 #[inline]
 pub pure fn Mat3_v(col0: &Vec3, col1: &Vec3, col2: &Vec3) -> Mat3 {
     Mat3 { data: [ *col0, *col1, *col2 ] }
+}
+
+pub mod Mat3 {
+    pub const zero     :Mat3 = Mat3 { data: [ Vec3::zero,
+                                              Vec3::zero,
+                                              Vec3::zero ] };
+    pub const identity :Mat3 = Mat3 { data: [ Vec3::unit_x,
+                                              Vec3::unit_y,
+                                              Vec3::unit_z ] };
 }
 
 //
@@ -337,7 +346,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&mat3_identity)
+        self.fuzzy_eq(&Mat3::identity)
     }
     
     #[inline]
@@ -366,7 +375,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&mat3_identity)
+        !self.fuzzy_eq(&Mat3::identity)
     }
 }
 
@@ -472,15 +481,6 @@ pub impl Mat3: FuzzyEq {
 //
 pub struct Mat4 { data:[Vec4 * 4] }
 
-pub const mat4_zero     :Mat4 = Mat4 { data: [ vec4_zero,
-                                               vec4_zero,
-                                               vec4_zero,
-                                               vec4_zero ] };
-pub const mat4_identity :Mat4 = Mat4 { data: [ vec4_unit_x,
-                                               vec4_unit_y,
-                                               vec4_unit_z,
-                                               vec4_unit_w ] };
-
 //
 //  Mat4 Constructor
 //
@@ -501,6 +501,17 @@ pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 #[inline]
 pub pure fn Mat4_v(col0: &Vec4, col1: &Vec4, col2: &Vec4, col3: &Vec4) -> Mat4 {
     Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
+}
+
+pub mod Mat4 {
+    pub const zero     :Mat4 = Mat4 { data: [ Vec4::zero,
+                                              Vec4::zero,
+                                              Vec4::zero,
+                                              Vec4::zero ] };
+    pub const identity :Mat4 = Mat4 { data: [ Vec4::unit_x,
+                                              Vec4::unit_y,
+                                              Vec4::unit_z,
+                                              Vec4::unit_w ] };
 }
 
 //
@@ -606,7 +617,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&mat4_identity)
+        self.fuzzy_eq(&Mat4::identity)
     }
     
     #[inline]
@@ -649,7 +660,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&mat4_identity)
+        !self.fuzzy_eq(&Mat4::identity)
     }
 }
 

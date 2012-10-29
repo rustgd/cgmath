@@ -49,10 +49,6 @@ pub trait Vector3<T> {
 //
 pub struct Vec2 { x: float, y: float }
 
-pub const vec2_zero     :Vec2 = Vec2 { x: 0f, y: 0f };
-pub const vec2_unit_x   :Vec2 = Vec2 { x: 1f, y: 0f };
-pub const vec2_unit_y   :Vec2 = Vec2 { x: 0f, y: 1f };
-pub const vec2_identity :Vec2 = Vec2 { x: 1f, y: 1f };
 
 //
 //  Constructor
@@ -60,6 +56,13 @@ pub const vec2_identity :Vec2 = Vec2 { x: 1f, y: 1f };
 #[inline]
 pub pure fn Vec2(x: float, y: float) -> Vec2 {
     Vec2 { x: x, y: y }
+}
+
+pub mod Vec2 {
+    pub const zero     :Vec2 = Vec2 { x: 0f, y: 0f };
+    pub const unit_x   :Vec2 = Vec2 { x: 1f, y: 0f };
+    pub const unit_y   :Vec2 = Vec2 { x: 0f, y: 1f };
+    pub const identity :Vec2 = Vec2 { x: 1f, y: 1f };
 }
 
 pub impl Vec2: Vector<float> {
@@ -166,8 +169,8 @@ pub impl Vec2: Index<uint, float> {
 pub impl Vec2: Abs {
     #[inline]
     pure fn abs() -> Vec2 {
-        Vec2(abs(self[0]),
-             abs(self[1]))
+        Vec2(abs(&self[0]),
+             abs(&self[1]))
     }
 }
 
@@ -214,18 +217,20 @@ pub impl Vec2: ToStr {
 //
 pub struct Vec3 { x: float, y: float, z: float }
 
-pub const vec3_zero     :Vec3 = Vec3 { x: 0f, y: 0f, z: 0f };
-pub const vec3_unit_x   :Vec3 = Vec3 { x: 1f, y: 0f, z: 0f };
-pub const vec3_unit_y   :Vec3 = Vec3 { x: 0f, y: 1f, z: 0f };
-pub const vec3_unit_z   :Vec3 = Vec3 { x: 0f, y: 0f, z: 1f };
-pub const vec3_identity :Vec3 = Vec3 { x: 1f, y: 1f, z: 1f };
-
 //
 //  Constructor
 //
 #[inline]
 pub pure fn Vec3(x: float, y: float, z: float) -> Vec3 {
     Vec3 { x: x, y: y, z: z }
+}
+
+pub mod Vec3 {
+    pub const zero     :Vec3 = Vec3 { x: 0f, y: 0f, z: 0f };
+    pub const unit_x   :Vec3 = Vec3 { x: 1f, y: 0f, z: 0f };
+    pub const unit_y   :Vec3 = Vec3 { x: 0f, y: 1f, z: 0f };
+    pub const unit_z   :Vec3 = Vec3 { x: 0f, y: 0f, z: 1f };
+    pub const identity :Vec3 = Vec3 { x: 1f, y: 1f, z: 1f };
 }
 
 pub impl Vec3: Vector3<float> {
@@ -351,9 +356,9 @@ pub impl Vec3: Index<uint, float> {
 pub impl Vec3: Abs {
     #[inline]
     pure fn abs() -> Vec3 {
-        Vec3(abs(self[0]),
-             abs(self[1]),
-             abs(self[2]))
+        Vec3(abs(&self[0]),
+             abs(&self[1]),
+             abs(&self[2]))
     }
 }
 
@@ -401,12 +406,14 @@ pub impl Vec3: ToStr {
 //
 pub struct Vec4 { x: float, y: float, z: float, w: float }
 
-pub const vec4_zero     :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 0f };
-pub const vec4_unit_x   :Vec4 = Vec4 { x: 1f, y: 0f, z: 0f, w: 0f };
-pub const vec4_unit_y   :Vec4 = Vec4 { x: 0f, y: 1f, z: 0f, w: 0f };
-pub const vec4_unit_z   :Vec4 = Vec4 { x: 0f, y: 0f, z: 1f, w: 0f };
-pub const vec4_unit_w   :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 1f };
-pub const vec4_identity :Vec4 = Vec4 { x: 1f, y: 1f, z: 1f, w: 1f };
+pub mod Vec4 {
+    pub const zero     :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 0f };
+    pub const unit_x   :Vec4 = Vec4 { x: 1f, y: 0f, z: 0f, w: 0f };
+    pub const unit_y   :Vec4 = Vec4 { x: 0f, y: 1f, z: 0f, w: 0f };
+    pub const unit_z   :Vec4 = Vec4 { x: 0f, y: 0f, z: 1f, w: 0f };
+    pub const unit_w   :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 1f };
+    pub const identity :Vec4 = Vec4 { x: 1f, y: 1f, z: 1f, w: 1f };
+}
 
 //
 //  Constructor
@@ -542,10 +549,10 @@ pub impl Vec4: Index<uint, float> {
 pub impl Vec4: Abs {
     #[inline]
     pure fn abs() -> Vec4 {
-        Vec4(abs(self[0]),
-             abs(self[1]),
-             abs(self[2]),
-             abs(self[3]))
+        Vec4(abs(&self[0]),
+             abs(&self[1]),
+             abs(&self[2]),
+             abs(&self[3]))
     }
 }
 
