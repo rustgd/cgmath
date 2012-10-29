@@ -1,6 +1,9 @@
-use std::cmp::FuzzyEq;
+use cast::transmute;
+use core::vec::raw::buf_as_slice; // for some reason we need to specify the core module here
+use ptr::to_unsafe_ptr;
 use cmp::Eq;
-use math::Sqrt;
+use std::cmp::FuzzyEq;
+use math::*;
 use mat::{Mat3, Mat4};
 use vec::Vec3;
 
@@ -161,12 +164,10 @@ pub impl Quat: Quaternion<float> {
 pub impl Quat: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        match i {
-            0 => self.w,
-            1 => self.x,
-            2 => self.y,
-            3 => self.z,
-            _ => fail(~"Vector index out of bounds.")
+        unsafe {
+            do buf_as_slice(
+                transmute::<*Quat, *float>(
+                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
     }
 }

@@ -1,6 +1,9 @@
-use std::cmp::FuzzyEq;
+use cast::transmute;
+use core::vec::raw::buf_as_slice; // for some reason we need to specify the core module here
+use ptr::to_unsafe_ptr;
 use cmp::Eq;
-use math::{Abs, abs, min, max, Sqrt};
+use std::cmp::FuzzyEq;
+use math::*;
 
 //
 //  N-dimensional Vector
@@ -152,10 +155,10 @@ pub impl Vec2: Vector<float> {
 pub impl Vec2: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        match i {
-            0 => self.x,
-            1 => self.y,
-            _ => fail(~"Vector index out of bounds.")
+        unsafe {
+            do buf_as_slice(
+                transmute::<*Vec2, *float>(
+                    to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
     }
 }
@@ -338,11 +341,9 @@ pub impl Vec3: Vector<float> {
 pub impl Vec3: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        match i {
-            0 => self.x,
-            1 => self.y,
-            2 => self.z,
-            _ => fail(~"Vector index out of bounds.")
+        unsafe { do buf_as_slice(
+            transmute::<*Vec3, *float>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
     }
 }
@@ -530,12 +531,10 @@ pub impl Vec4: Vector<float> {
 pub impl Vec4: Index<uint, float> {
     #[inline]
     pure fn index(i: uint) -> float {
-        match i {
-            0 => self.x,
-            1 => self.y,
-            2 => self.z,
-            3 => self.w,
-            _ => fail(~"Vector index out of bounds.")
+        unsafe {
+            do buf_as_slice(
+                transmute::<*Vec4, *float>(
+                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
     }
 }
