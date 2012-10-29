@@ -1,5 +1,5 @@
-use mat::*;
-use vec::*;
+use matrix::*;
+use vector::*;
 
 // TODO
 

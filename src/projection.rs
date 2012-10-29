@@ -1,6 +1,6 @@
 use float::consts::pi;
 use float::tan;
-use mat::Mat4;
+use matrix::Mat4;
 
 //
 //  Create a perspective projection matrix

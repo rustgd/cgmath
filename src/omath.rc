@@ -7,17 +7,17 @@
 
 extern mod std;
 
-pub mod mat;
+pub mod matrix;
 pub mod math;
 pub mod projection;
-pub mod quat;
-pub mod vec;
+pub mod quaternion;
+pub mod vector;
 
 #[test]
 pub mod test {
-    pub mod test_mat;
+    pub mod test_matrix;
     pub mod test_math;
     pub mod test_projection;
-    pub mod test_quat;
-    pub mod test_vec;
+    pub mod test_quaternion;
+    pub mod test_vector;
 }

@@ -1,5 +1,5 @@
 use cast::transmute;
-use core::vec::raw::buf_as_slice; // for some reason we need to specify the core module here
+use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use cmp::Eq;
 use std::cmp::FuzzyEq;

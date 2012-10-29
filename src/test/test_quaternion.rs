@@ -1,6 +1,6 @@
-use mat::*;
-use quat::*;
-use vec::*;
+use matrix::*;
+use quaternion::*;
+use vector::*;
 
 // TODO
 

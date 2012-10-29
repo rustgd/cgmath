@@ -1,8 +1,8 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
 use math::Sqrt;
-use quat::Quat;
-use vec::*;
+use quaternion::Quat;
+use vector::*;
 
 //
 //  NxN Matrix
