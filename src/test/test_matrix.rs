@@ -31,7 +31,7 @@ fn test_Mat2() {
                            -2f, -4f);
     assert -a == a.neg();
     
-    assert a.mul_f(f1) == Mat2(0.5f, 1.5f,
+    assert a.mul_t(f1) == Mat2(0.5f, 1.5f,
                                1.0f, 2.0f);
     assert a.mul_v(&v1) == Vec2(5f, 11f);
     
@@ -103,7 +103,7 @@ fn test_Mat3() {
                            -3f, -6f, -9f);
     assert -a == a.neg();
     
-    assert a.mul_f(f1) == Mat3(0.5f, 2.0f, 3.5f,
+    assert a.mul_t(f1) == Mat3(0.5f, 2.0f, 3.5f,
                                1.0f, 2.5f, 4.0f,
                                1.5f, 3.0f, 4.5f);
     assert a.mul_v(&v1) == Vec3(14f, 32f, 50f);
@@ -196,7 +196,7 @@ fn test_Mat4() {
                            -4f, -8f, -12f, -16f);
     assert -a == a.neg();
     
-    assert a.mul_f(f1) == Mat4(0.5f, 2.5f, 4.5f, 6.5f,
+    assert a.mul_t(f1) == Mat4(0.5f, 2.5f, 4.5f, 6.5f,
                                1.0f, 3.0f, 5.0f, 7.0f,
                                1.5f, 3.5f, 5.5f, 7.5f,
                                2.0f, 4.0f, 6.0f, 8.0f);

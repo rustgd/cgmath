@@ -15,7 +15,7 @@ pub trait Matrix<T, V> {
     pure fn row(i: uint) -> V;
     pure fn col(i: uint) -> V;
     
-    pure fn mul_f(value: T) -> self;
+    pure fn mul_t(value: T) -> self;
     pure fn mul_v(other: &V) -> V;
     pure fn add_m(other: &self) -> self;
     pure fn sub_m(other: &self) -> self;
@@ -112,9 +112,9 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     #[inline(always)]
-    pure fn mul_f(value: float) -> Mat2 {
-        Mat2_v(&self[0].mul_f(value),
-               &self[1].mul_f(value))
+    pure fn mul_t(value: float) -> Mat2 {
+        Mat2_v(&self[0].mul_t(value),
+               &self[1].mul_t(value))
     }
     
     #[inline(always)]
@@ -291,10 +291,10 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     #[inline(always)]
-    pure fn mul_f(value: float) -> Mat3 {
-        Mat3_v(&self[0].mul_f(value),
-               &self[1].mul_f(value),
-               &self[2].mul_f(value))
+    pure fn mul_t(value: float) -> Mat3 {
+        Mat3_v(&self[0].mul_t(value),
+               &self[1].mul_t(value),
+               &self[2].mul_t(value))
     }
     
     #[inline(always)]
@@ -557,11 +557,11 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline(always)]
-    pure fn mul_f(value: float) -> Mat4 {
-        Mat4_v(&self[0].mul_f(value),
-               &self[1].mul_f(value),
-               &self[2].mul_f(value),
-               &self[3].mul_f(value))
+    pure fn mul_t(value: float) -> Mat4 {
+        Mat4_v(&self[0].mul_t(value),
+               &self[1].mul_t(value),
+               &self[2].mul_t(value),
+               &self[3].mul_t(value))
     }
     
     #[inline(always)]

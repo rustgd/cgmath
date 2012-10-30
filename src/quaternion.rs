@@ -13,8 +13,8 @@ use vector::Vec3;
 pub trait Quaternion<T> {
     pure fn dim() -> uint;
     
-    pure fn mul_f(value: T) -> self;
-    pure fn div_f(value: T) -> self;
+    pure fn mul_t(value: T) -> self;
+    pure fn div_t(value: T) -> self;
     
     // pure fn mul_v(other: &Vec3) -> Vec3;
     
@@ -62,7 +62,7 @@ pub impl Quat: Quaternion<float> {
     pure fn dim() -> uint { 4 }
     
     #[inline(always)]
-    pure fn mul_f(value: float) -> Quat {
+    pure fn mul_t(value: float) -> Quat {
         Quat(self[0] * value,
              self[1] * value,
              self[2] * value,
@@ -70,7 +70,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn div_f(value: float) -> Quat {
+    pure fn div_t(value: float) -> Quat {
         Quat(self[0] / value,
              self[1] / value,
              self[2] / value,
@@ -108,7 +108,7 @@ pub impl Quat: Quaternion<float> {
     
     #[inline(always)]
     pure fn inverse() -> Quat {
-        self.conjugate().mul_f((1f / self.magnitude2()))
+        self.conjugate().mul_t((1f / self.magnitude2()))
     }
     
     #[inline(always)]

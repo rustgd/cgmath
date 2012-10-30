@@ -27,10 +27,10 @@ fn test_Vec2() {
     assert -a      == Vec2(-1f, -2f);
     assert a.neg() == Vec2(-1f, -2f);
     
-    assert a.add_f(f1) == Vec2( 2.5f, 3.5f);
-    assert a.sub_f(f1) == Vec2(-0.5f, 0.5f);
-    assert a.mul_f(f1) == Vec2( 1.5f, 3.0f);
-    assert a.div_f(f2) == Vec2( 2.0f, 4.0f);
+    assert a.add_t(f1) == Vec2( 2.5f, 3.5f);
+    assert a.sub_t(f1) == Vec2(-0.5f, 0.5f);
+    assert a.mul_t(f1) == Vec2( 1.5f, 3.0f);
+    assert a.div_t(f2) == Vec2( 2.0f, 4.0f);
     
     assert a.add_v(&b) == Vec2( 4f,  6f);
     assert a.sub_v(&b) == Vec2(-2f, -2f);
@@ -81,10 +81,10 @@ fn test_Vec3() {
     assert -a      == Vec3(-1f, -2f, -3f);
     assert a.neg() == Vec3(-1f, -2f, -3f);
     
-    assert a.add_f(f1) == Vec3( 2.5f, 3.5f, 4.5f);
-    assert a.sub_f(f1) == Vec3(-0.5f, 0.5f, 1.5f);
-    assert a.mul_f(f1) == Vec3( 1.5f, 3.0f, 4.5f);
-    assert a.div_f(f2) == Vec3( 2.0f, 4.0f, 6.0f);
+    assert a.add_t(f1) == Vec3( 2.5f, 3.5f, 4.5f);
+    assert a.sub_t(f1) == Vec3(-0.5f, 0.5f, 1.5f);
+    assert a.mul_t(f1) == Vec3( 1.5f, 3.0f, 4.5f);
+    assert a.div_t(f2) == Vec3( 2.0f, 4.0f, 6.0f);
     
     assert a.add_v(&b) == Vec3( 5f,  7f,  9f);
     assert a.sub_v(&b) == Vec3(-3f, -3f, -3f);
@@ -136,10 +136,10 @@ fn test_Vec4() {
     assert -a      == Vec4(-1f, -2f, -3f, -4f);
     assert a.neg() == Vec4(-1f, -2f, -3f, -4f);
     
-    assert a.add_f(f1) == Vec4( 2.5f, 3.5f, 4.5f, 5.5f);
-    assert a.sub_f(f1) == Vec4(-0.5f, 0.5f, 1.5f, 2.5f);
-    assert a.mul_f(f1) == Vec4( 1.5f, 3.0f, 4.5f, 6.0f);
-    assert a.div_f(f2) == Vec4( 2.0f, 4.0f, 6.0f, 8.0f);
+    assert a.add_t(f1) == Vec4( 2.5f, 3.5f, 4.5f, 5.5f);
+    assert a.sub_t(f1) == Vec4(-0.5f, 0.5f, 1.5f, 2.5f);
+    assert a.mul_t(f1) == Vec4( 1.5f, 3.0f, 4.5f, 6.0f);
+    assert a.div_t(f2) == Vec4( 2.0f, 4.0f, 6.0f, 8.0f);
     
     assert a.add_v(&b) == Vec4( 6f,  8f, 10f, 12f);
     assert a.sub_v(&b) == Vec4(-4f, -4f, -4f, -4f);
