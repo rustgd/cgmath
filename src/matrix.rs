@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use math::{ExactEq, Sqrt};
+use math::{ToPtr, ExactEq, Sqrt};
 use quaternion::Quat;
 use vector::{Vec2, Vec3, Vec4};
 
@@ -216,6 +216,13 @@ pub impl Mat2: FuzzyEq {
     pure fn fuzzy_eq(other: &Mat2) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
+    }
+}
+
+pub impl Mat2: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        self[0].to_ptr()
     }
 }
 
@@ -473,6 +480,13 @@ pub impl Mat3: FuzzyEq {
     }
 }
 
+pub impl Mat3: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        self[0].to_ptr()
+    }
+}
+
 
 
 
@@ -722,5 +736,12 @@ pub impl Mat4: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl Mat4: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        self[0].to_ptr()
     }
 }

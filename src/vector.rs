@@ -3,7 +3,7 @@ use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use cmp::Eq;
 use std::cmp::FuzzyEq;
-use math::{Abs, abs, ExactEq, max, min, Sqrt};
+use math::{ToPtr, Abs, abs, ExactEq, max, min, Sqrt};
 
 //
 //  N-dimensional Vector
@@ -201,6 +201,13 @@ pub impl Vec2: FuzzyEq {
     }
 }
 
+pub impl Vec2: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        to_unsafe_ptr(&self[0])
+    }
+}
+
 pub impl Vec2: ToStr {
     pure fn to_str() -> ~str {
         fmt!("Vec2[ %f, %f ]", self[0], self[1])
@@ -389,6 +396,13 @@ pub impl Vec3: FuzzyEq {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
+    }
+}
+
+pub impl Vec3: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        to_unsafe_ptr(&self[0])
     }
 }
 
@@ -586,6 +600,13 @@ pub impl Vec4: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl Vec4: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        to_unsafe_ptr(&self[0])
     }
 }
 

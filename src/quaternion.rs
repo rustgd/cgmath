@@ -3,7 +3,7 @@ use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use cmp::Eq;
 use std::cmp::FuzzyEq;
-use math::{ExactEq, Sqrt};
+use math::{ToPtr, ExactEq, Sqrt};
 use matrix::{Mat3, Mat4};
 use vector::Vec3;
 
@@ -200,6 +200,13 @@ pub impl Quat: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl Quat: ToPtr<float> {
+    #[inline(always)]
+    pure fn to_ptr() -> *float {
+        to_unsafe_ptr(&self[0])
     }
 }
 
