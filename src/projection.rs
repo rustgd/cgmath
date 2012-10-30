@@ -8,6 +8,7 @@ use matrix::Mat4;
 //  fov is in degrees
 //  http://www.opengl.org/wiki/GluPerspective_code
 //
+#[inline(always)]
 pure fn perspective(fovy:float, aspectRatio:float, near:float, far:float) -> Mat4 {
     let ymax = near * tan(fovy * pi / 360f);
     let xmax = ymax * aspectRatio;
@@ -21,6 +22,7 @@ pure fn perspective(fovy:float, aspectRatio:float, near:float, far:float) -> Mat
 //
 //  TODO: double check algorithm
 //
+#[inline(always)]
 pure fn frustum(left:float, right:float, bottom:float, top:float, near:float, far:float) -> Mat4 {
     let m00 = (2f * near) / (right - left);
     let m01 = 0f;

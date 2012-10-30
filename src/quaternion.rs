@@ -44,7 +44,7 @@ pub struct Quat { w: float, x: float, y: float, z: float }
 //
 //  Quat Constructor
 //
-#[inline]
+#[inline(always)]
 pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
     Quat { w: w, x: x, y: y, z: z }
 }
@@ -58,10 +58,10 @@ pub mod Quat {
 //  Quaternion Implementation
 //
 pub impl Quat: Quaternion<float> {
-    #[inline]
+    #[inline(always)]
     pure fn dim() -> uint { 4 }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_f(value: float) -> Quat {
         Quat(self[0] * value,
              self[1] * value,
@@ -69,7 +69,7 @@ pub impl Quat: Quaternion<float> {
              self[3] * value)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn div_f(value: float) -> Quat {
         Quat(self[0] / value,
              self[1] / value,
@@ -77,7 +77,7 @@ pub impl Quat: Quaternion<float> {
              self[3] / value)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn add_q(other: &Quat) -> Quat{
         Quat(self[0] + other[0],
              self[1] + other[1],
@@ -85,7 +85,7 @@ pub impl Quat: Quaternion<float> {
              self[3] + other[3])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn sub_q(other: &Quat) -> Quat{
         Quat(self[0] - other[0],
              self[1] - other[1],
@@ -93,7 +93,7 @@ pub impl Quat: Quaternion<float> {
              self[3] - other[3])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_q(other: &Quat) -> Quat {
         Quat(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
              self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
@@ -101,17 +101,17 @@ pub impl Quat: Quaternion<float> {
              self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn conjugate() -> Quat {
         Quat(self.w, -self.x, -self.y, -self.z)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn inverse() -> Quat {
         self.conjugate().mul_f((1f / self.magnitude2()))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn magnitude2() -> float {
         self.w * self.w +
         self.x * self.x +
@@ -119,12 +119,12 @@ pub impl Quat: Quaternion<float> {
         self.z * self.z
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn magnitude() -> float {
         self.magnitude2().sqrt()
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn to_Mat3() -> Mat3 {
         let x2 = self.x + self.x;
         let y2 = self.y + self.y;
@@ -147,14 +147,14 @@ pub impl Quat: Quaternion<float> {
                          xz2 - wy2,      yz2 + wx2, 1f - xx2 - yy2);
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn to_Mat4() -> Mat4 {
         self.to_Mat3().to_Mat4()
     }
 }
 
 pub impl Quat: Index<uint, float> {
-    #[inline]
+    #[inline(always)]
     pure fn index(i: uint) -> float {
         unsafe {
             do buf_as_slice(
@@ -165,26 +165,26 @@ pub impl Quat: Index<uint, float> {
 }
 
 pub impl Quat: Neg<Quat> {
-    #[inline]
+    #[inline(always)]
     pure fn neg() -> Quat {
         Quat(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
 pub impl Quat: Eq {
-    #[inline]
+    #[inline(always)]
     pure fn eq(other: &Quat) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn ne(other: &Quat) -> bool {
         !(self == *other)
     }
 }
 
 impl Quat: ExactEq {
-    #[inline]
+    #[inline(always)]
     pure fn exact_eq(other: &Quat) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
@@ -194,7 +194,7 @@ impl Quat: ExactEq {
 }
 
 pub impl Quat: FuzzyEq {
-    #[inline]
+    #[inline(always)]
     pure fn fuzzy_eq(other: &Quat) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&

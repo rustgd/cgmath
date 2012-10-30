@@ -65,7 +65,7 @@ pub const mat2_identity :Mat2 = Mat2 { data: [ Vec2::unit_x,
 //
 //  Mat2 Constructor
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat2(m00:float, m01:float,
                  m10:float, m11:float) -> Mat2 {
     Mat2 { data: [ Vec2(m00, m01),
@@ -75,7 +75,7 @@ pub pure fn Mat2(m00:float, m01:float,
 //
 //  Construct Mat2 from column vectors
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat2_v(col0: &Vec2, col1: &Vec2) -> Mat2 {
     Mat2 { data: [ *col0, *col1 ] }
 }
@@ -91,51 +91,51 @@ pub mod Mat2 {
 //  Matrix2x2 Implementation
 //
 pub impl Mat2: Matrix<float, Vec2> {
-    #[inline]
+    #[inline(always)]
     pure fn rows() -> uint { 2 }
     
-    #[inline]
+    #[inline(always)]
     pure fn cols() -> uint { 2 }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_col_major() -> bool { true }
     
-    #[inline]
+    #[inline(always)]
     pure fn row(i: uint) -> Vec2 {
         Vec2(self[0][i],
              self[1][i])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn col(i: uint) -> Vec2 {
         self.data[i]
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_f(value: float) -> Mat2 {
         Mat2_v(&self[0].mul_f(value),
                &self[1].mul_f(value))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_v(other: &Vec2) -> Vec2 {
         Vec2(self[0][0]*other[0] + self[1][0]*other[1],
              self[0][1]*other[0] + self[1][1]*other[1])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn add_m(other: &Mat2) -> Mat2 {
         Mat2_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn sub_m(other: &Mat2) -> Mat2 {
         Mat2_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_m(other: &Mat2) -> Mat2 {
         Mat2(self[0][0]*other[0][0] + self[1][0]*other[0][1],
              self[0][1]*other[0][0] + self[1][1]*other[0][1],
@@ -145,66 +145,66 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     // TODO - inversion is harrrd D:
-    // #[inline]
+    // #[inline(always)]
     // pure fn invert(other: &Mat2) -> Mat2 {}
     
-    #[inline]
+    #[inline(always)]
     pure fn transpose() -> Mat2 {
         Mat2(self[0][0], self[1][0],
              self[0][1], self[1][1])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat2::identity)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_symmetric() -> bool {
         self[0][1].fuzzy_eq(&self[1][0]) &&
         self[1][0].fuzzy_eq(&self[0][1])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_diagonal() -> bool {
         self[0][1].fuzzy_eq(&0f) &&
         self[1][0].fuzzy_eq(&0f)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat2::identity)
     }
 }
 
 pub impl Mat2: Index<uint, Vec2> {
-    #[inline]
+    #[inline(always)]
     pure fn index(i: uint) -> Vec2 {
         self.data[i]
     }
 }
 
 pub impl Mat2: Neg<Mat2> {
-    #[inline]
+    #[inline(always)]
     pure fn neg() -> Mat2 {
         Mat2_v(&-self[0], &-self[1])
     }
 }
 
 pub impl Mat2: Eq {
-    #[inline]
+    #[inline(always)]
     pure fn eq(other: &Mat2) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn ne(other: &Mat2) -> bool {
         !(self == *other)
     }
 }
 
 impl Mat2: ExactEq {
-    #[inline]
+    #[inline(always)]
     pure fn exact_eq(other: &Mat2) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1])
@@ -212,7 +212,7 @@ impl Mat2: ExactEq {
 }
 
 pub impl Mat2: FuzzyEq {
-    #[inline]
+    #[inline(always)]
     pure fn fuzzy_eq(other: &Mat2) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
@@ -232,7 +232,7 @@ pub struct Mat3 { data:[Vec3 * 3] }
 //
 //  Mat3 Constructor
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat3(m00:float, m01:float, m02:float,
                  m10:float, m11:float, m12:float,
                  m20:float, m21:float, m22:float) -> Mat3 {
@@ -244,7 +244,7 @@ pub pure fn Mat3(m00:float, m01:float, m02:float,
 //
 //  Construct Mat3 from column vectors
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat3_v(col0: &Vec3, col1: &Vec3, col2: &Vec3) -> Mat3 {
     Mat3 { data: [ *col0, *col1, *col2 ] }
 }
@@ -262,56 +262,56 @@ pub mod Mat3 {
 //  Matrix3x3 Implementation
 //
 pub impl Mat3: Matrix<float, Vec3> {
-    #[inline]
+    #[inline(always)]
     pure fn rows() -> uint { 3 }
     
-    #[inline]
+    #[inline(always)]
     pure fn cols() -> uint { 3 }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_col_major() -> bool { true }
     
-    #[inline]
+    #[inline(always)]
     pure fn row(i: uint) -> Vec3 {
         Vec3(self[0][i],
              self[1][i],
              self[2][i])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn col(i: uint) -> Vec3 {
         self.data[i]
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_f(value: float) -> Mat3 {
         Mat3_v(&self[0].mul_f(value),
                &self[1].mul_f(value),
                &self[2].mul_f(value))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_v(other: &Vec3) -> Vec3 {
         Vec3(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2],
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2],
              self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn add_m(other: &Mat3) -> Mat3 {
         Mat3_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]),
                &self[2].add_v(&other[2]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn sub_m(other: &Mat3) -> Mat3 {
         Mat3_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]),
                &self[2].sub_v(&other[2]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_m(other: &Mat3) -> Mat3 {
         Mat3(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2],
              self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2],
@@ -327,22 +327,22 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     // TODO - inversion is harrrd D:
-    // #[inline]
+    // #[inline(always)]
     // pure fn invert(other: &Mat3) -> Mat3 {}
     
-    #[inline]
+    #[inline(always)]
     pure fn transpose() -> Mat3 {
         Mat3(self[0][0], self[1][0], self[2][0],
              self[0][1], self[1][1], self[2][1],
              self[0][2], self[1][2], self[2][2])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat3::identity)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_symmetric() -> bool {
         self[0][1].fuzzy_eq(&self[1][0]) &&
         self[0][2].fuzzy_eq(&self[2][0]) &&
@@ -354,7 +354,7 @@ pub impl Mat3: Matrix<float, Vec3> {
         self[2][1].fuzzy_eq(&self[1][2])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_diagonal() -> bool {
         self[0][1].fuzzy_eq(&0f) &&
         self[0][2].fuzzy_eq(&0f) &&
@@ -366,21 +366,21 @@ pub impl Mat3: Matrix<float, Vec3> {
         self[2][1].fuzzy_eq(&0f)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat3::identity)
     }
 }
 
 pub impl Mat3: Matrix3<Vec3> {
-    #[inline]
+    #[inline(always)]
     pure fn scale(vec: &Vec3) -> Mat3 {
         self.mul_m(&Mat3(vec.x,    0f,    0f,
                             0f, vec.y,    0f,
                             0f,    0f, vec.z))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn to_Mat4() -> Mat4 {
         Mat4(self[0][0], self[0][1], self[0][2],  0f,
              self[1][0], self[1][1], self[1][2],  0f,
@@ -430,33 +430,33 @@ pub impl Mat3: Matrix3<Vec3> {
 }
 
 pub impl Mat3: Index<uint, Vec3> {
-    #[inline]
+    #[inline(always)]
     pure fn index(i: uint) -> Vec3 {
         self.data[i]
     }
 }
 
 pub impl Mat3: Neg<Mat3> {
-    #[inline]
+    #[inline(always)]
     pure fn neg() -> Mat3 {
         Mat3_v(&-self[0], &-self[1], &-self[2])
     }
 }
 
 pub impl Mat3: Eq {
-    #[inline]
+    #[inline(always)]
     pure fn eq(other: &Mat3) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn ne(other: &Mat3) -> bool {
         !(self == *other)
     }
 }
 
 impl Mat3: ExactEq {
-    #[inline]
+    #[inline(always)]
     pure fn exact_eq(other: &Mat3) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1]) &&
@@ -465,7 +465,7 @@ impl Mat3: ExactEq {
 }
 
 pub impl Mat3: FuzzyEq {
-    #[inline]
+    #[inline(always)]
     pure fn fuzzy_eq(other: &Mat3) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
@@ -486,7 +486,7 @@ pub struct Mat4 { data:[Vec4 * 4] }
 //
 //  Mat4 Constructor
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
                  m10:float, m11:float, m12:float, m13:float,
                  m20:float, m21:float, m22:float, m23:float,
@@ -500,7 +500,7 @@ pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 //
 //  Construct Mat4 from column vectors
 //
-#[inline]
+#[inline(always)]
 pub pure fn Mat4_v(col0: &Vec4, col1: &Vec4, col2: &Vec4, col3: &Vec4) -> Mat4 {
     Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
 }
@@ -520,16 +520,16 @@ pub mod Mat4 {
 //  Matrix4x4 Implementation
 //
 pub impl Mat4: Matrix<float, Vec4> {
-    #[inline]
+    #[inline(always)]
     pure fn rows() -> uint { 4 }
     
-    #[inline]
+    #[inline(always)]
     pure fn cols() -> uint { 4 }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_col_major() -> bool { true }
     
-    #[inline]
+    #[inline(always)]
     pure fn row(i: uint) -> Vec4 {
         Vec4(self[0][i],
              self[1][i],
@@ -537,12 +537,12 @@ pub impl Mat4: Matrix<float, Vec4> {
              self[3][i])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn col(i: uint) -> Vec4 {
         self.data[i]
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_f(value: float) -> Mat4 {
         Mat4_v(&self[0].mul_f(value),
                &self[1].mul_f(value),
@@ -550,7 +550,7 @@ pub impl Mat4: Matrix<float, Vec4> {
                &self[3].mul_f(value))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_v(other: &Vec4) -> Vec4 {
         Vec4(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2] + self[3][0]*other[3],
              self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2] + self[3][1]*other[3],
@@ -558,7 +558,7 @@ pub impl Mat4: Matrix<float, Vec4> {
              self[0][3]*other[0] + self[1][3]*other[1] + self[2][3]*other[2] + self[3][3]*other[3])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn add_m(other: &Mat4) -> Mat4 {
         Mat4_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]),
@@ -566,7 +566,7 @@ pub impl Mat4: Matrix<float, Vec4> {
                &self[3].add_v(&other[3]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn sub_m(other: &Mat4) -> Mat4 {
         Mat4_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]),
@@ -574,7 +574,7 @@ pub impl Mat4: Matrix<float, Vec4> {
                &self[3].sub_v(&other[3]))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn mul_m(other: &Mat4) -> Mat4 {
         Mat4(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2] + self[3][0]*other[0][3],
              self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2] + self[3][1]*other[0][3],
@@ -598,10 +598,10 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     // TODO - inversion is harrrd D:
-    // #[inline]
+    // #[inline(always)]
     // pure fn invert(other: &Mat4) -> Mat4 {}
     
-    #[inline]
+    #[inline(always)]
     pure fn transpose() -> Mat4 {
         Mat4(self[0][0], self[1][0], self[2][0], self[3][0],
              self[0][1], self[1][1], self[2][1], self[3][1],
@@ -609,12 +609,12 @@ pub impl Mat4: Matrix<float, Vec4> {
              self[0][3], self[1][3], self[2][3], self[3][3])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat4::identity)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_symmetric() -> bool {
         self[0][1].fuzzy_eq(&self[1][0]) &&
         self[0][2].fuzzy_eq(&self[2][0]) &&
@@ -633,7 +633,7 @@ pub impl Mat4: Matrix<float, Vec4> {
         self[3][2].fuzzy_eq(&self[2][3])
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_diagonal() -> bool {
         self[0][1].fuzzy_eq(&0f) &&
         self[0][2].fuzzy_eq(&0f) &&
@@ -652,14 +652,14 @@ pub impl Mat4: Matrix<float, Vec4> {
         self[3][2].fuzzy_eq(&0f)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat4::identity)
     }
 }
 
 pub impl Mat4: Matrix4<Vec3, Vec4> {
-    #[inline]
+    #[inline(always)]
     pure fn scale(vec: &Vec3) -> Mat4 {
         self.mul_m(&Mat4(vec.x,    0f,    0f, 0f,
                             0f, vec.y,    0f, 0f,
@@ -667,7 +667,7 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
                             0f,    0f,    0f, 1f))
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn translate(vec: &Vec3) -> Mat4 {
         Mat4_v(&self[0],
                &self[1],
@@ -680,33 +680,33 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
 }
 
 pub impl Mat4: Index<uint, Vec4> {
-    #[inline]
+    #[inline(always)]
     pure fn index(i: uint) -> Vec4 {
         self.data[i]
     }
 }
 
 pub impl Mat4: Neg<Mat4> {
-    #[inline]
+    #[inline(always)]
     pure fn neg() -> Mat4 {
         Mat4_v(&-self[0], &-self[1], &-self[2], &-self[3])
     }
 }
 
 pub impl Mat4: Eq {
-    #[inline]
+    #[inline(always)]
     pure fn eq(other: &Mat4) -> bool {
         self.fuzzy_eq(other)
     }
     
-    #[inline]
+    #[inline(always)]
     pure fn ne(other: &Mat4) -> bool {
         !(self == *other)
     }
 }
 
 impl Mat4: ExactEq {
-    #[inline]
+    #[inline(always)]
     pure fn exact_eq(other: &Mat4) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1]) &&
@@ -716,7 +716,7 @@ impl Mat4: ExactEq {
 }
 
 pub impl Mat4: FuzzyEq {
-    #[inline]
+    #[inline(always)]
     pure fn fuzzy_eq(other: &Mat4) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
