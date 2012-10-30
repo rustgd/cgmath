@@ -3,7 +3,7 @@ use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use cmp::Eq;
 use std::cmp::FuzzyEq;
-use math::*;
+use math::{Abs, abs, ExactEq, max, min, Sqrt};
 
 //
 //  N-dimensional Vector
@@ -20,8 +20,6 @@ pub trait Vector<T> {
     pure fn sub_v(other: &self) -> self;
     
     pure fn dot(other: &self) -> T;
-    
-    pure fn exact_eq(other:&self) -> bool;
     
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
@@ -112,12 +110,6 @@ pub impl Vec2: Vector<float> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Vec2) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1]
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1]
@@ -190,6 +182,14 @@ pub impl Vec2: Eq {
     #[inline]
     pure fn ne(other: &Vec2) -> bool {
         !(self == *other)
+    }
+}
+
+impl Vec2: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Vec2) -> bool {
+        self[0] == other[0] &&
+        self[1] == other[1]
     }
 }
 
@@ -296,13 +296,6 @@ pub impl Vec3: Vector<float> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Vec3) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2]
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
@@ -378,6 +371,15 @@ pub impl Vec3: Eq {
     #[inline]
     pure fn ne(other: &Vec3) -> bool {
         !(self == *other)
+    }
+}
+
+impl Vec3: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Vec3) -> bool {
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2]
     }
 }
 
@@ -484,14 +486,6 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Vec4) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
-    }
-    
-    #[inline]
     pure fn magnitude2() -> float {
         self[0] * self[0] +
         self[1] * self[1] +
@@ -572,6 +566,16 @@ pub impl Vec4: Eq {
     #[inline]
     pure fn ne(other: &Vec4) -> bool {
         !(self == *other)
+    }
+}
+
+impl Vec4: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Vec4) -> bool {
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2] &&
+        self[3] == other[3]
     }
 }
 

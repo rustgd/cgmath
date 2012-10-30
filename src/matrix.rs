@@ -1,6 +1,6 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use math::Sqrt;
+use math::{ExactEq, Sqrt};
 use quaternion::Quat;
 use vector::{Vec2, Vec3, Vec4};
 
@@ -23,8 +23,6 @@ pub trait Matrix<T, V> {
     
     // pure fn invert(other: &self) -> self;
     pure fn transpose() -> self;
-    
-    pure fn exact_eq(other: &self) -> bool;
     
     pure fn is_identity() -> bool;
     pure fn is_symmetric() -> bool;
@@ -157,12 +155,6 @@ pub impl Mat2: Matrix<float, Vec2> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Mat2) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1])
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat2::identity)
     }
@@ -208,6 +200,14 @@ pub impl Mat2: Eq {
     #[inline]
     pure fn ne(other: &Mat2) -> bool {
         !(self == *other)
+    }
+}
+
+impl Mat2: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Mat2) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1])
     }
 }
 
@@ -338,13 +338,6 @@ pub impl Mat3: Matrix<float, Vec3> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Mat3) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1]) &&
-        self[2].exact_eq(&other[2])
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat3::identity)
     }
@@ -459,6 +452,15 @@ pub impl Mat3: Eq {
     #[inline]
     pure fn ne(other: &Mat3) -> bool {
         !(self == *other)
+    }
+}
+
+impl Mat3: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Mat3) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1]) &&
+        self[2].exact_eq(&other[2])
     }
 }
 
@@ -608,14 +610,6 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Mat4) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1]) &&
-        self[2].exact_eq(&other[2]) &&
-        self[3].exact_eq(&other[3])
-    }
-    
-    #[inline]
     pure fn is_identity() -> bool {
         self.fuzzy_eq(&Mat4::identity)
     }
@@ -708,6 +702,16 @@ pub impl Mat4: Eq {
     #[inline]
     pure fn ne(other: &Mat4) -> bool {
         !(self == *other)
+    }
+}
+
+impl Mat4: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Mat4) -> bool {
+        self[0].exact_eq(&other[0]) &&
+        self[1].exact_eq(&other[1]) &&
+        self[2].exact_eq(&other[2]) &&
+        self[3].exact_eq(&other[3])
     }
 }
 

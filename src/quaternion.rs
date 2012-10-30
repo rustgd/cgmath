@@ -3,7 +3,7 @@ use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use cmp::Eq;
 use std::cmp::FuzzyEq;
-use math::*;
+use math::{ExactEq, Sqrt};
 use matrix::{Mat3, Mat4};
 use vector::Vec3;
 
@@ -21,8 +21,6 @@ pub trait Quaternion<T> {
     pure fn add_q(other: &self) -> self;
     pure fn sub_q(other: &self) -> self;
     pure fn mul_q(other: &self) -> self;
-    
-    pure fn exact_eq(other: &self) -> bool;
     
     pure fn conjugate() -> self;
     pure fn inverse() -> self;
@@ -104,14 +102,6 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline]
-    pure fn exact_eq(other: &Quat) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
-    }
-    
-    #[inline]
     pure fn conjugate() -> Quat {
         Quat(self.w, -self.x, -self.y, -self.z)
     }
@@ -190,6 +180,16 @@ pub impl Quat: Eq {
     #[inline]
     pure fn ne(other: &Quat) -> bool {
         !(self == *other)
+    }
+}
+
+impl Quat: ExactEq {
+    #[inline]
+    pure fn exact_eq(other: &Quat) -> bool {
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2] &&
+        self[3] == other[3]
     }
 }
 
