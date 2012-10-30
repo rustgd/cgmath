@@ -35,7 +35,7 @@ trait Abs {
 }
 
 #[inline]
-pure fn abs<T: Abs>(x: T) -> T {
+pure fn abs<T: Abs>(x: &T) -> T {
     x.abs()
 }
 
