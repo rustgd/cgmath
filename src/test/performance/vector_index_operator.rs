@@ -1,3 +1,8 @@
+/**
+ * Index operator performance test. For best results, compile with the optimise
+ * flag (-O). It seems like VecBufSlice is the fastest version.
+ */
+
 extern mod std;
 use std::time::precise_time_ns;
 use cast::{reinterpret_cast, transmute};
