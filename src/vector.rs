@@ -28,9 +28,6 @@ pub trait Vector<T> {
     pure fn lerp(other: &self, value: T) -> self;
     pure fn min(other: &self) -> self;
     pure fn max(other: &self) -> self;
-    
-    static pure fn zero() -> self;
-    static pure fn identity() -> self;
 }
 
 pub trait Vector3<T> {
@@ -142,9 +139,6 @@ pub impl Vec2: Vector<float> {
         Vec2(max(&self[0], &other[0]),
              max(&self[1], &other[1]))
     }
-    
-    #[inline(always)] static pure fn zero()     -> Vec2 { Vec2(0f, 0f) }
-    #[inline(always)] static pure fn identity() -> Vec2 { Vec2(1f, 1f) }
 }
 
 pub impl Vec2: Index<uint, float> {
@@ -338,9 +332,6 @@ pub impl Vec3: Vector<float> {
              max(&self[1], &other[1]),
              max(&self[2], &other[2]))
     }
-    
-    #[inline(always)] static pure fn zero()     -> Vec3 { Vec3(0f, 0f, 0f) }
-    #[inline(always)] static pure fn identity() -> Vec3 { Vec3(1f, 1f, 1f) }
 }
 
 pub impl Vec3: Index<uint, float> {
@@ -538,9 +529,6 @@ pub impl Vec4: Vector<float> {
              max(&self[2], &other[2]),
              max(&self[3], &other[3]))
     }
-    
-    #[inline(always)] static pure fn zero()     -> Vec4 { Vec4(0f, 0f, 0f, 0f) }
-    #[inline(always)] static pure fn identity() -> Vec4 { Vec4(1f, 1f, 1f, 1f) }
 }
 
 pub impl Vec4: Index<uint, float> {
