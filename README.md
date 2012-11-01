@@ -1,18 +1,3 @@
-~~~
-
-              /|___
-             / .__/
-            |  |
-   ________/   \
-  /            \
- /|   |       \
-  |   |       |
-  /  /////|  |
-  | |      | |       || _  _  _  
-   ||       ||       ||(_||||(_|
-
-~~~
-
 # Llama
 
 Llama is generic linear algebra library for Rust. There is still much to do, unittests to write, bugs to fix, and performance enhancements to make. Help is much appreaciated, so don't hesite to send me a pull request!
