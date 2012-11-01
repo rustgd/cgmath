@@ -1,6 +1,9 @@
-use std::cmp::FuzzyEq;
+use cast::transmute;
 use cmp::Eq;
 use num::from_int;
+use ptr::to_unsafe_ptr;
+use vec::raw::buf_as_slice;
+use std::cmp::FuzzyEq;
 
 use math::*;
 use num_util::*;
@@ -15,8 +18,8 @@ pub trait Matrix<T, V> {
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
     
-    pure fn row(i: uint) -> V;
     pure fn col(i: uint) -> V;
+    pure fn row(i: uint) -> V;
     
     pure fn mul_t(value: T) -> self;
     pure fn mul_v(other: &V) -> V;
@@ -57,7 +60,7 @@ pub trait Matrix4<T> {
 //
 //  Mat2: A 2x2, column major matrix
 //
-pub struct Mat2<T> { data:[Vec2<T> * 2] }
+pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 pub mod Mat2 {
     
@@ -70,19 +73,20 @@ pub mod Mat2 {
 
     #[inline(always)]
     pub pure fn from_cols<T:Copy>(col0: &Vec2<T>, col1: &Vec2<T>) -> Mat2<T> {
-        Mat2 { data: [ *col0, *col1 ] }
+        Mat2 { x: *col0,
+               y: *col1 }
     }
     
     #[inline(always)]
     pub pure fn zero<T:Copy Num>() -> Mat2<T> {
-        Mat2 { data: [ Vec2::zero(),
-                       Vec2::zero() ] }
+        Mat2 { x: Vec2::zero(),
+               y: Vec2::zero() }
     }
     
     #[inline(always)]
     pub pure fn identity<T:Copy Num>() -> Mat2<T> {
-        Mat2 { data: [ Vec2::unit_x(),
-                       Vec2::unit_y() ] }
+        Mat2 { x: Vec2::unit_x(),
+               y: Vec2::unit_y() }
     }
 }
 
@@ -97,14 +101,12 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
+    pure fn col(i: uint) -> Vec2<T> { self[i] }
+    
+    #[inline(always)]
     pure fn row(i: uint) -> Vec2<T> {
         Vec2::new(self[0][i],
                   self[1][i])
-    }
-    
-    #[inline(always)]
-    pure fn col(i: uint) -> Vec2<T> {
-        self.data[i]
     }
     
     #[inline(always)]
@@ -176,7 +178,10 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
 pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     #[inline(always)]
     pure fn index(i: uint) -> Vec2<T> {
-        self.data[i]
+        unsafe { do buf_as_slice(
+            transmute::<*Mat2<T>, *Vec2<T>>(
+                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
+        }
     }
 }
 
@@ -224,7 +229,7 @@ pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
 //
 //  Mat3: A 3x3, column major matrix
 //
-pub struct Mat3<T> { data:[Vec3<T> * 3] }
+pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 pub mod Mat3 {
     
@@ -239,21 +244,23 @@ pub mod Mat3 {
     
     #[inline(always)]
     pub pure fn from_cols<T:Copy>(col0: &Vec3<T>, col1: &Vec3<T>, col2: &Vec3<T>) -> Mat3<T> {
-        Mat3 { data: [ *col0, *col1, *col2 ] }
+        Mat3 { x: *col0,
+               y: *col1,
+               z: *col2 }
     }
     
     #[inline(always)]
     pub pure fn zero<T:Num>() -> Mat3<T> {
-        Mat3 { data: [ Vec3::zero(),
-                       Vec3::zero(),
-                       Vec3::zero() ] }
+        Mat3 { x: Vec3::zero(),
+               y: Vec3::zero(),
+               z: Vec3::zero() }
     }
     
     #[inline(always)]
     pub pure fn identity<T:Num>() -> Mat3<T> {
-        Mat3 { data: [ Vec3::unit_x(),
-                       Vec3::unit_y(),
-                       Vec3::unit_z() ] }
+        Mat3 { x: Vec3::unit_x(),
+               y: Vec3::unit_y(),
+               z: Vec3::unit_z() }
     }
 }
 
@@ -268,15 +275,13 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
+    pure fn col(i: uint) -> Vec3<T> { self[i] }
+    
+    #[inline(always)]
     pure fn row(i: uint) -> Vec3<T> {
         Vec3::new(self[0][i],
                   self[1][i],
                   self[2][i])
-    }
-    
-    #[inline(always)]
-    pure fn col(i: uint) -> Vec3<T> {
-        self.data[i]
     }
     
     #[inline(always)]
@@ -431,7 +436,10 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
 pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     #[inline(always)]
     pure fn index(i: uint) -> Vec3<T> {
-        self.data[i]
+        unsafe { do buf_as_slice(
+            transmute::<*Mat3<T>, *Vec3<T>>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
     }
 }
 
@@ -488,7 +496,7 @@ pub impl<T:Copy> Mat3<T>: ToPtr<T> {
 //
 //  Mat4: A 4x4, column major matrix
 //
-pub struct Mat4<T> { data:[Vec4<T> * 4] }
+pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 pub mod Mat4 {
     
@@ -505,23 +513,26 @@ pub mod Mat4 {
     
     #[inline(always)]
     pub pure fn from_cols<T:Copy>(col0: &Vec4<T>, col1: &Vec4<T>, col2: &Vec4<T>, col3: &Vec4<T>) -> Mat4<T> {
-        Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
+        Mat4 { x: *col0,
+               y: *col1,
+               z: *col2,
+               w: *col3 }
     }
     
     #[inline(always)]
     pub pure fn zero<T:Num>() -> Mat4<T> {
-        Mat4 { data: [ Vec4::zero(),
-                       Vec4::zero(),
-                       Vec4::zero(),
-                       Vec4::zero() ] }
+        Mat4 { x: Vec4::zero(),
+               y: Vec4::zero(),
+               z: Vec4::zero(),
+               w: Vec4::zero() }
     }
     
     #[inline(always)]
     pub pure fn identity<T:Num>() -> Mat4<T> {
-        Mat4 { data: [ Vec4::unit_x(),
-                       Vec4::unit_y(),
-                       Vec4::unit_z(),
-                       Vec4::unit_w() ] }
+        Mat4 { x: Vec4::unit_x(),
+               y: Vec4::unit_y(),
+               z: Vec4::unit_z(),
+               w: Vec4::unit_w() }
     }
 }
 
@@ -536,16 +547,14 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
+    pure fn col(i: uint) -> Vec4<T> { self[i] }
+    
+    #[inline(always)]
     pure fn row(i: uint) -> Vec4<T> {
         Vec4::new(self[0][i],
                   self[1][i],
                   self[2][i],
                   self[3][i])
-    }
-    
-    #[inline(always)]
-    pure fn col(i: uint) -> Vec4<T> {
-        self.data[i]
     }
     
     #[inline(always)]
@@ -688,7 +697,10 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
 pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
     #[inline(always)]
     pure fn index(i: uint) -> Vec4<T> {
-        self.data[i]
+        unsafe { do buf_as_slice(
+            transmute::<*Mat4<T>, *Vec4<T>>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
     }
 }
 
