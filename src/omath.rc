@@ -1,8 +1,9 @@
 #[link(name = "omath",
        vers = "0.1",
-       author = "Brendan Zabarauskas")];
+       author = "Brendan Zabarauskas",
+       url = "https://github.com/bjz/omath-rs")];
 
-#[comment = "Linear algebra library for Rust. Incomplete and probably buggy."];
+#[comment = "A generic linear algebra library."];
 #[license = "APL2"];
 #[crate_type = "lib"];
 
