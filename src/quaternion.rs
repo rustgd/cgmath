@@ -42,74 +42,66 @@ pub trait ToQuat<T> {
 
 
 
-//
-//  Quat struct definition
-//
 pub struct Quat<T> { w: T, x: T, y: T, z: T }
 
-//
-//  Quat Constructor
-//
-#[inline(always)]
-pub pure fn Quat<T:Copy>(w: T, x: T, y: T, z: T) -> Quat<T> {
-    Quat { w: move w, x: move x, y: move y, z: move z }
-}
-
 pub mod Quat {
+    
+    #[inline(always)]
+    pub pure fn new<T:Copy>(w: T, x: T, y: T, z: T) -> Quat<T> {
+        Quat { w: w, x: x, y: y, z: z }
+    }
+    
     #[inline(always)] pub pure fn zero     <T: Num>() -> Quat<T> { Quat { w: from_int(0), x: from_int(0), y: from_int(0), z: from_int(0) } }
     #[inline(always)] pub pure fn identity <T: Num>() -> Quat<T> { Quat { w: from_int(1), x: from_int(0), y: from_int(0), z: from_int(0) } }
 }
 
-//
-//  Quaternion Implementation
-//
 pub impl<T:Copy Num Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Quat<T> {
-        Quat(self[0] * value,
-             self[1] * value,
-             self[2] * value,
-             self[3] * value)
+        Quat::new(self[0] * value,
+                  self[1] * value,
+                  self[2] * value,
+                  self[3] * value)
     }
     
     #[inline(always)]
     pure fn div_t(value: T) -> Quat<T> {
-        Quat(self[0] / value,
-             self[1] / value,
-             self[2] / value,
-             self[3] / value)
+        Quat::new(self[0] / value,
+                  self[1] / value,
+                  self[2] / value,
+                  self[3] / value)
     }
     
     #[inline(always)]
     pure fn add_q(other: &Quat<T>) -> Quat<T> {
-        Quat(self[0] + other[0],
-             self[1] + other[1],
-             self[2] + other[2],
-             self[3] + other[3])
+        Quat::new(self[0] + other[0],
+                  self[1] + other[1],
+                  self[2] + other[2],
+                  self[3] + other[3])
     }
     
     #[inline(always)]
     pure fn sub_q(other: &Quat<T>) -> Quat<T> {
-        Quat(self[0] - other[0],
-             self[1] - other[1],
-             self[2] - other[2],
-             self[3] - other[3])
+        Quat::new(self[0] - other[0],
+                  self[1] - other[1],
+                  self[2] - other[2],
+                  self[3] - other[3])
     }
     
     #[inline(always)]
     pure fn mul_q(other: &Quat<T>) -> Quat<T> {
-        Quat(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
-             self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
-             self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
-             self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
+        Quat::new(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
+                  self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
+                  self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
+                  self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
     }
     
     #[inline(always)]
     pure fn conjugate() -> Quat<T> {
-        Quat(self.w, -self.x, -self.y, -self.z)
+        Quat::new(self.w, -self.x, -self.y, -self.z)
     }
     
     #[inline(always)]
@@ -152,9 +144,9 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
         
         let _1: T = from_int(1);
         
-        Mat3(_1 - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
-                  xy2 + wz2, _1 - xx2 - zz2,      yz2 - wx2,
-                  xz2 - wy2,      yz2 + wx2, _1 - xx2 - yy2)
+        Mat3::new(_1 - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
+                       xy2 + wz2, _1 - xx2 - zz2,      yz2 - wx2,
+                       xz2 - wy2,      yz2 + wx2, _1 - xx2 - yy2)
     }
     
     #[inline(always)]
@@ -177,7 +169,7 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
 pub impl<T:Copy Neg<T>> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
     pure fn neg() -> Quat<T> {
-        Quat(-self[0], -self[1], -self[2], -self[3])
+        Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

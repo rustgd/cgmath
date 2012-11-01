@@ -43,8 +43,8 @@ pure fn frustum<T:Copy NumCast Neg<T>>(left: float, right: float, bottom: float,
     let m32 = cast(-(2f * far * near) / (far - near));
     let m33 = cast(0f);
     
-    return Mat4(m00, m01, m02, m03,
-                m10, m11, m12, m13,
-                m20, m21, m22, m23,
-                m30, m31, m32, m33);
+    return Mat4::new(m00, m01, m02, m03,
+                     m10, m11, m12, m13,
+                     m20, m21, m22, m23,
+                     m30, m31, m32, m33);
 }

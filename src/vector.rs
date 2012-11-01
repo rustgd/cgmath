@@ -42,16 +42,13 @@ pub trait Vector3<T> {
 //
 pub struct Vec2<T> { x: T, y: T }
 
-
-//
-//  Constructor
-//
-#[inline(always)]
-pub pure fn Vec2<T:Copy>(x: T, y: T) -> Vec2<T> {
-    Vec2 { x: move x, y: move y }
-}
-
 pub mod Vec2 {
+    
+    #[inline(always)]
+    pub pure fn new<T:Copy>(x: T, y: T) -> Vec2<T> {
+        Vec2 { x: x, y: y }
+    }
+    
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(0) } }
     #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(1), y: from_int(0) } }
     #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(1) } }
@@ -64,38 +61,38 @@ pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
     
     #[inline(always)]
     pure fn add_t(value: T) -> Vec2<T> {
-        Vec2(self[0] + value,
-             self[1] + value)
+        Vec2::new(self[0] + value,
+                  self[1] + value)
     }
     
     #[inline(always)]
     pure fn sub_t(value: T) -> Vec2<T> {
-        Vec2(self[0] - value,
-             self[1] - value)
+        Vec2::new(self[0] - value,
+                  self[1] - value)
     }
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec2<T> {
-        Vec2(self[0] * value,
-             self[1] * value)
+        Vec2::new(self[0] * value,
+                  self[1] * value)
     }
     
     #[inline(always)]
     pure fn div_t(value: T) -> Vec2<T> {
-        Vec2(self[0] / value,
-             self[1] / value)
+        Vec2::new(self[0] / value,
+                  self[1] / value)
     }
     
     #[inline(always)]
     pure fn add_v(other: &Vec2<T>) -> Vec2<T> {
-        Vec2(self[0] + other[0],
-             self[1] + other[1])
+        Vec2::new(self[0] + other[0],
+                  self[1] + other[1])
     }
     
     #[inline(always)]
     pure fn sub_v(other: &Vec2<T>) -> Vec2<T> {
-        Vec2(self[0] - other[0],
-             self[1] - other[1])
+        Vec2::new(self[0] - other[0],
+                  self[1] - other[1])
     }
     
     #[inline(always)]
@@ -141,29 +138,29 @@ pub impl<T:Copy> Vec2<T>: Index<uint, T> {
 pub impl<T:Copy MinMax> Vec2<T>: MinMax {
     #[inline(always)]
     pure fn min(other: &Vec2<T>) -> Vec2<T> {
-        Vec2(min(&self[0], &other[0]),
-             min(&self[1], &other[1]))
+        Vec2::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]))
     }
     
     #[inline(always)]
     pure fn max(other: &Vec2<T>) -> Vec2<T> {
-        Vec2(max(&self[0], &other[0]),
-             max(&self[1], &other[1]))
+        Vec2::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]))
     }
 }
 
 pub impl<T:Copy Abs> Vec2<T>: Abs {
     #[inline(always)]
     pure fn abs() -> Vec2<T> {
-        Vec2(abs(&self[0]),
-             abs(&self[1]))
+        Vec2::new(abs(&self[0]),
+                  abs(&self[1]))
     }
 }
 
 pub impl<T:Copy Neg<T>> Vec2<T>: Neg<Vec2<T>> {
     #[inline(always)]
     pure fn neg() -> Vec2<T> {
-        Vec2(-self[0], -self[1])
+        Vec2::new(-self[0], -self[1])
     }
 }
 
@@ -213,15 +210,13 @@ pub impl<T:Copy> Vec2<T>: ToPtr<T> {
 //
 pub struct Vec3<T> { x: T, y: T, z: T }
 
-//
-//  Constructor
-//
-#[inline(always)]
-pub pure fn Vec3<T:Copy>(x: T, y: T, z: T) -> Vec3<T> {
-    Vec3 { x: move x, y: move y, z: move z }
-}
-
 pub mod Vec3 {
+    
+    #[inline(always)]
+    pub pure fn new<T:Copy>(x: T, y: T, z: T) -> Vec3<T> {
+        Vec3 { x: x, y: y, z: z }
+    }
+
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(0) } }
     #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(1), y: from_int(0), z: from_int(0) } }
     #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(1), z: from_int(0) } }
@@ -232,9 +227,9 @@ pub mod Vec3 {
 pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     #[inline(always)]
     fn cross(other: &Vec3<T>) -> Vec3<T> {
-        Vec3((self[1] * other[2]) - (self[2] * other[1]),
-             (self[2] * other[0]) - (self[0] * other[2]),
-             (self[0] * other[1]) - (self[1] * other[0]))
+        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
+                  (self[2] * other[0]) - (self[0] * other[2]),
+                  (self[0] * other[1]) - (self[1] * other[0]))
     }
 }
 
@@ -244,44 +239,44 @@ pub impl<T:Copy Num Sqrt> Vec3<T>: Vector<T> {
     
     #[inline(always)]
     pure fn add_t(value: T) -> Vec3<T> {
-        Vec3(self[0] + value,
-             self[1] + value,
-             self[2] + value)
+        Vec3::new(self[0] + value,
+                  self[1] + value,
+                  self[2] + value)
     }
     
     #[inline(always)]
     pure fn sub_t(value: T) -> Vec3<T> {
-        Vec3(self[0] - value,
-             self[1] - value,
-             self[2] - value)
+        Vec3::new(self[0] - value,
+                  self[1] - value,
+                  self[2] - value)
     }
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec3<T> {
-        Vec3(self[0] * value,
-             self[1] * value,
-             self[2] * value)
+        Vec3::new(self[0] * value,
+                  self[1] * value,
+                  self[2] * value)
     }
     
     #[inline(always)]
     pure fn div_t(value: T) -> Vec3<T> {
-        Vec3(self[0] / value,
-             self[1] / value,
-             self[2] / value)
+        Vec3::new(self[0] / value,
+                  self[1] / value,
+                  self[2] / value)
     }
     
     #[inline(always)]
     pure fn add_v(other: &Vec3<T>) -> Vec3<T>{
-        Vec3(self[0] + other[0],
-             self[1] + other[1],
-             self[2] + other[2])
+        Vec3::new(self[0] + other[0],
+                  self[1] + other[1],
+                  self[2] + other[2])
     }
     
     #[inline(always)]
     pure fn sub_v(other: &Vec3<T>) -> Vec3<T>{
-        Vec3(self[0] - other[0],
-             self[1] - other[1],
-             self[2] - other[2])
+        Vec3::new(self[0] - other[0],
+                  self[1] - other[1],
+                  self[2] - other[2])
     }
     
     #[inline(always)]
@@ -329,32 +324,32 @@ pub impl<T:Copy> Vec3<T>: Index<uint, T> {
 pub impl<T:Copy MinMax> Vec3<T>: MinMax {
     #[inline(always)]
     pure fn min(other: &Vec3<T>) -> Vec3<T> {
-        Vec3(min(&self[0], &other[0]),
-             min(&self[1], &other[1]),
-             min(&self[2], &other[2]))
+        Vec3::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]),
+                  min(&self[2], &other[2]))
     }
     
     #[inline(always)]
     pure fn max(other: &Vec3<T>) -> Vec3<T> {
-        Vec3(max(&self[0], &other[0]),
-             max(&self[1], &other[1]),
-             max(&self[2], &other[2]))
+        Vec3::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]),
+                  max(&self[2], &other[2]))
     }
 }
 
 pub impl<T:Copy Abs> Vec3<T>: Abs {
     #[inline(always)]
     pure fn abs() -> Vec3<T> {
-        Vec3(abs(&self[0]),
-             abs(&self[1]),
-             abs(&self[2]))
+        Vec3::new(abs(&self[0]),
+                  abs(&self[1]),
+                  abs(&self[2]))
     }
 }
 
 pub impl<T:Copy Neg<T>> Vec3<T>: Neg<Vec3<T>> {
     #[inline(always)]
     pure fn neg() -> Vec3<T> {
-        Vec3(-self[0], -self[1], -self[2])
+        Vec3::new(-self[0], -self[1], -self[2])
     }
 }
 
@@ -407,6 +402,12 @@ pub impl<T:Copy> Vec3<T>: ToPtr<T> {
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub mod Vec4 {
+    
+    #[inline(always)]
+    pub pure fn new<T:Copy>(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
+    }
+
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(0) } }
     #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(0), z: from_int(0), w: from_int(0) } }
     #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(1), z: from_int(0), w: from_int(0) } }
@@ -415,64 +416,56 @@ pub mod Vec4 {
     #[inline(always)] pub pure fn identity <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(1), z: from_int(1), w: from_int(1) } }
 }
 
-//
-//  Constructor
-//
-#[inline(always)]
-pub pure fn Vec4<T:Copy>(x: T, y: T, z: T, w: T) -> Vec4<T> {
-    Vec4 { x: move x, y: move y, z: move z, w: move w }
-}
-
 pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     pure fn add_t(value: T) -> Vec4<T> {
-        Vec4(self[0] + value,
-             self[1] + value,
-             self[2] + value,
-             self[3] + value)
+        Vec4::new(self[0] + value,
+                  self[1] + value,
+                  self[2] + value,
+                  self[3] + value)
     }
     
     #[inline(always)]
     pure fn sub_t(value: T) -> Vec4<T> {
-        Vec4(self[0] - value,
-             self[1] - value,
-             self[2] - value,
-             self[3] - value)
+        Vec4::new(self[0] - value,
+                  self[1] - value,
+                  self[2] - value,
+                  self[3] - value)
     }
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec4<T> {
-        Vec4(self[0] * value,
-             self[1] * value,
-             self[2] * value,
-             self[3] * value)
+        Vec4::new(self[0] * value,
+                  self[1] * value,
+                  self[2] * value,
+                  self[3] * value)
     }
     
     #[inline(always)]
     pure fn div_t(value: T) -> Vec4<T> {
-        Vec4(self[0] / value,
-             self[1] / value,
-             self[2] / value,
-             self[3] / value)
+        Vec4::new(self[0] / value,
+                  self[1] / value,
+                  self[2] / value,
+                  self[3] / value)
     }
     
     #[inline(always)]
     pure fn add_v(other: &Vec4<T>) -> Vec4<T> {
-        Vec4(self[0] + other[0],
-             self[1] + other[1],
-             self[2] + other[2],
-             self[3] + other[3])
+        Vec4::new(self[0] + other[0],
+                  self[1] + other[1],
+                  self[2] + other[2],
+                  self[3] + other[3])
     }
     
     #[inline(always)]
     pure fn sub_v(other: &Vec4<T>) -> Vec4<T> {
-        Vec4(self[0] - other[0],
-             self[1] - other[1],
-             self[2] - other[2],
-             self[3] - other[3])
+        Vec4::new(self[0] - other[0],
+                  self[1] - other[1],
+                  self[2] - other[2],
+                  self[3] - other[3])
     }
     
     #[inline(always)]
@@ -523,35 +516,35 @@ pub impl<T:Copy> Vec4<T>: Index<uint, T> {
 pub impl<T:Copy MinMax> Vec4<T>: MinMax {
     #[inline(always)]
     pure fn min(other: &Vec4<T>) -> Vec4<T> {
-        Vec4(min(&self[0], &other[0]),
-             min(&self[1], &other[1]),
-             min(&self[2], &other[2]),
-             min(&self[3], &other[3]))
+        Vec4::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]),
+                  min(&self[2], &other[2]),
+                  min(&self[3], &other[3]))
     }
     
     #[inline(always)]
     pure fn max(other: &Vec4<T>) -> Vec4<T> {
-        Vec4(max(&self[0], &other[0]),
-             max(&self[1], &other[1]),
-             max(&self[2], &other[2]),
-             max(&self[3], &other[3]))
+        Vec4::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]),
+                  max(&self[2], &other[2]),
+                  max(&self[3], &other[3]))
     }
 }
 
 pub impl<T:Copy Abs> Vec4<T>: Abs {
     #[inline(always)]
     pure fn abs() -> Vec4<T> {
-        Vec4(abs(&self[0]),
-             abs(&self[1]),
-             abs(&self[2]),
-             abs(&self[3]))
+        Vec4::new(abs(&self[0]),
+                  abs(&self[1]),
+                  abs(&self[2]),
+                  abs(&self[3]))
     }
 }
 
 pub impl<T:Copy Neg<T>> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
     pure fn neg() -> Vec4<T> {
-        Vec4(-self[0], -self[1], -self[2], -self[3])
+        Vec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

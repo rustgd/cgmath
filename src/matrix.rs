@@ -59,41 +59,33 @@ pub trait Matrix4<T> {
 //
 pub struct Mat2<T> { data:[Vec2<T> * 2] }
 
-//
-//  Mat2 Constructor
-//
-#[inline(always)]
-pub pure fn Mat2<T:Copy>(m00: T, m01: T,
-                         m10: T, m11: T) -> Mat2<T> {
-    Mat2 { data: [ Vec2(m00, m01),
-                   Vec2(m10, m11) ] }
-}
-
-//
-//  Construct Mat2 from column vectors
-//
-#[inline(always)]
-pub pure fn Mat2_v<T:Copy>(col0: &Vec2<T>, col1: &Vec2<T>) -> Mat2<T> {
-    Mat2 { data: [ *move col0, *move col1 ] }
-}
-
 pub mod Mat2 {
+    
     #[inline(always)]
-    pub pure fn zero<T: Num>() -> Mat2<T> {
-        Mat2 { data: [ Vec2::zero(),
-                       Vec2::zero() ] } 
+    pub pure fn new<T:Copy>(m00: T, m01: T,
+                            m10: T, m11: T) -> Mat2<T> {
+        Mat2::from_cols(&Vec2::new(m00, m01),
+                        &Vec2::new(m10, m11))
+    }
+
+    #[inline(always)]
+    pub pure fn from_cols<T:Copy>(col0: &Vec2<T>, col1: &Vec2<T>) -> Mat2<T> {
+        Mat2 { data: [ *col0, *col1 ] }
     }
     
     #[inline(always)]
-    pub pure fn identity<T: Num>() -> Mat2<T> {
+    pub pure fn zero<T:Copy Num>() -> Mat2<T> {
+        Mat2 { data: [ Vec2::zero(),
+                       Vec2::zero() ] }
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy Num>() -> Mat2<T> {
         Mat2 { data: [ Vec2::unit_x(),
                        Vec2::unit_y() ] }
     }
 }
 
-//
-//  Matrix2x2 Implementation
-//
 pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
@@ -106,8 +98,8 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn row(i: uint) -> Vec2<T> {
-        Vec2(self[0][i],
-             self[1][i])
+        Vec2::new(self[0][i],
+                  self[1][i])
     }
     
     #[inline(always)]
@@ -117,35 +109,35 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat2<T> {
-        Mat2_v(&self[0].mul_t(value),
-               &self[1].mul_t(value))
+        Mat2::from_cols(&self[0].mul_t(value),
+                        &self[1].mul_t(value))
     }
     
     #[inline(always)]
     pure fn mul_v(other: &Vec2<T>) -> Vec2<T> {
-        Vec2(self[0][0] * other[0] + self[1][0] * other[1],
-             self[0][1] * other[0] + self[1][1] * other[1])
+        Vec2::new(self[0][0] * other[0] + self[1][0] * other[1],
+                  self[0][1] * other[0] + self[1][1] * other[1])
     }
     
     #[inline(always)]
     pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2_v(&self[0].add_v(&other[0]),
-               &self[1].add_v(&other[1]))
+        Mat2::from_cols(&self[0].add_v(&other[0]),
+                        &self[1].add_v(&other[1]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2_v(&self[0].sub_v(&other[0]),
-               &self[1].sub_v(&other[1]))
+        Mat2::from_cols(&self[0].sub_v(&other[0]),
+                        &self[1].sub_v(&other[1]))
     }
     
     #[inline(always)]
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2(self[0][0] * other[0][0] + self[1][0] * other[0][1],
-             self[0][1] * other[0][0] + self[1][1] * other[0][1],
-             
-             self[0][0] * other[1][0] + self[1][0] * other[1][1],
-             self[0][1] * other[1][0] + self[1][1] * other[1][1])
+        Mat2::new(self[0][0] * other[0][0] + self[1][0] * other[0][1],
+                  self[0][1] * other[0][0] + self[1][1] * other[0][1],
+                  
+                  self[0][0] * other[1][0] + self[1][0] * other[1][1],
+                  self[0][1] * other[1][0] + self[1][1] * other[1][1])
     }
     
     // TODO - inversion is harrrd D:
@@ -154,8 +146,8 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn transpose() -> Mat2<T> {
-        Mat2(self[0][0], self[1][0],
-             self[0][1], self[1][1])
+        Mat2::new(self[0][0], self[1][0],
+                  self[0][1], self[1][1])
     }
     
     #[inline(always)]
@@ -191,7 +183,7 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
 pub impl<T:Copy Neg<T>> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
     pure fn neg() -> Mat2<T> {
-        Mat2_v(&-self[0], &-self[1])
+        Mat2::from_cols(&-self[0], &-self[1])
     }
 }
 
@@ -234,45 +226,37 @@ pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
 //
 pub struct Mat3<T> { data:[Vec3<T> * 3] }
 
-//
-//  Mat3 Constructor
-//
-#[inline(always)]
-pub pure fn Mat3<T:Copy>(m00:T, m01:T, m02:T,
-                         m10:T, m11:T, m12:T,
-                         m20:T, m21:T, m22:T) -> Mat3<T> {
-    Mat3 { data: [ Vec3(m00, m01, m02),
-                   Vec3(m10, m11, m12),
-                   Vec3(m20, m21, m22) ] }
-}
-
-//
-//  Construct Mat3 from column vectors
-//
-#[inline(always)]
-pub pure fn Mat3_v<T:Copy>(col0: &Vec3<T>, col1: &Vec3<T>, col2: &Vec3<T>) -> Mat3<T> {
-    Mat3 { data: [ *move col0, *move col1, *move col2 ] }
-}
-
 pub mod Mat3 {
+    
     #[inline(always)]
-    pub pure fn zero<T: Num>() -> Mat3<T> {
-        Mat3 { data: [ Vec3::zero(),
-                       Vec3::zero(),
-                       Vec3::zero() ] } 
+    pub pure fn new<T:Copy>(m00:T, m01:T, m02:T,
+                            m10:T, m11:T, m12:T,
+                            m20:T, m21:T, m22:T) -> Mat3<T> {
+        Mat3::from_cols(&Vec3::new(m00, m01, m02),
+                        &Vec3::new(m10, m11, m12),
+                        &Vec3::new(m20, m21, m22))
     }
     
     #[inline(always)]
-    pub pure fn identity<T: Num>() -> Mat3<T> {
+    pub pure fn from_cols<T:Copy>(col0: &Vec3<T>, col1: &Vec3<T>, col2: &Vec3<T>) -> Mat3<T> {
+        Mat3 { data: [ *col0, *col1, *col2 ] }
+    }
+    
+    #[inline(always)]
+    pub pure fn zero<T:Num>() -> Mat3<T> {
+        Mat3 { data: [ Vec3::zero(),
+                       Vec3::zero(),
+                       Vec3::zero() ] }
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Num>() -> Mat3<T> {
         Mat3 { data: [ Vec3::unit_x(),
                        Vec3::unit_y(),
                        Vec3::unit_z() ] }
     }
 }
 
-//
-//  Matrix3x3 Implementation
-//
 pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
@@ -285,9 +269,9 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn row(i: uint) -> Vec3<T> {
-        Vec3(self[0][i],
-             self[1][i],
-             self[2][i])
+        Vec3::new(self[0][i],
+                  self[1][i],
+                  self[2][i])
     }
     
     #[inline(always)]
@@ -297,45 +281,45 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat3<T> {
-        Mat3_v(&self[0].mul_t(value),
-               &self[1].mul_t(value),
-               &self[2].mul_t(value))
+        Mat3::from_cols(&self[0].mul_t(value),
+                        &self[1].mul_t(value),
+                        &self[2].mul_t(value))
     }
     
     #[inline(always)]
     pure fn mul_v(other: &Vec3<T>) -> Vec3<T> {
-        Vec3(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2],
-             self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2],
-             self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2])
+        Vec3::new(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2],
+                  self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2],
+                  self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2])
     }
     
     #[inline(always)]
     pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3_v(&self[0].add_v(&other[0]),
-               &self[1].add_v(&other[1]),
-               &self[2].add_v(&other[2]))
+        Mat3::from_cols(&self[0].add_v(&other[0]),
+                        &self[1].add_v(&other[1]),
+                        &self[2].add_v(&other[2]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3_v(&self[0].sub_v(&other[0]),
-               &self[1].sub_v(&other[1]),
-               &self[2].sub_v(&other[2]))
+        Mat3::from_cols(&self[0].sub_v(&other[0]),
+                        &self[1].sub_v(&other[1]),
+                        &self[2].sub_v(&other[2]))
     }
     
     #[inline(always)]
     pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2],
-             self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2],
-             self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2],
-            
-             self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2],
-             self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2],
-             self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2],
-            
-             self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2],
-             self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2],
-             self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2])
+        Mat3::new(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2],
+                  self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2],
+                  self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2],
+                  
+                  self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2],
+                  self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2],
+                  self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2],
+                  
+                  self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2],
+                  self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2],
+                  self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2])
     }
     
     // TODO - inversion is harrrd D:
@@ -344,9 +328,9 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn transpose() -> Mat3<T> {
-        Mat3(self[0][0], self[1][0], self[2][0],
-             self[0][1], self[1][1], self[2][1],
-             self[0][2], self[1][2], self[2][2])
+        Mat3::new(self[0][0], self[1][0], self[2][0],
+                  self[0][1], self[1][1], self[2][1],
+                  self[0][2], self[1][2], self[2][2])
     }
     
     #[inline(always)]
@@ -387,17 +371,17 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
 pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
     #[inline(always)]
     pure fn scale(vec: &Vec3<T>) -> Mat3<T> {
-        self.mul_m(&Mat3(      vec.x, from_int(0), from_int(0),
-                         from_int(0),       vec.y, from_int(0),
-                         from_int(0), from_int(0),      vec.z))
+        self.mul_m(&Mat3::new(      vec.x, from_int(0), from_int(0),
+                              from_int(0),       vec.y, from_int(0),
+                              from_int(0), from_int(0),      vec.z))
     }
     
     #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
-        Mat4( self[0][0],  self[0][1],   self[0][2], from_int(0),
-              self[1][0],  self[1][1],   self[1][2], from_int(0),
-              self[2][0],  self[2][1],   self[2][2], from_int(0),
-             from_int(0), from_int(0),  from_int(0), from_int(1))
+        Mat4::new( self[0][0],  self[0][1],   self[0][2], from_int(0),
+                   self[1][0],  self[1][1],   self[1][2], from_int(0),
+                   self[2][0],  self[2][1],   self[2][2], from_int(0),
+                  from_int(0), from_int(0),  from_int(0), from_int(1))
     }
 }
 
@@ -440,7 +424,7 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
             z = (self[0][1] - self[1][0]).cast::<float>() * s;
         }
         
-        Quat(from(w), from(x), from(y), from(z))
+        Quat::new(cast(w), cast(x), cast(y), cast(z))
     }
 }
 
@@ -454,7 +438,7 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
 pub impl<T:Copy Neg<T>> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
     pure fn neg() -> Mat3<T> {
-        Mat3_v(&-self[0], &-self[1], &-self[2])
+        Mat3::from_cols(&-self[0], &-self[1], &-self[2])
     }
 }
 
@@ -506,39 +490,34 @@ pub impl<T:Copy> Mat3<T>: ToPtr<T> {
 //
 pub struct Mat4<T> { data:[Vec4<T> * 4] }
 
-//
-//  Mat4 Constructor
-//
-#[inline(always)]
-pub pure fn Mat4<T:Copy>(m00: T, m01: T, m02: T, m03: T,
-                         m10: T, m11: T, m12: T, m13: T,
-                         m20: T, m21: T, m22: T, m23: T,
-                         m30: T, m31: T, m32: T, m33: T) -> Mat4<T>  {
-    Mat4 { data: [ Vec4(m00, m01, m02, m03),
-                   Vec4(m10, m11, m12, m13),
-                   Vec4(m20, m21, m22, m23),
-                   Vec4(m30, m31, m32, m33) ] }
-}
-
-//
-//  Construct Mat4 from column vectors
-//
-#[inline(always)]
-pub pure fn Mat4_v<T:Copy>(col0: &Vec4<T>, col1: &Vec4<T>, col2: &Vec4<T>, col3: &Vec4<T>) -> Mat4<T> {
-    Mat4 { data: [ *move col0, *move col1, *move col2, *move col3 ] }
-}
-
 pub mod Mat4 {
+    
     #[inline(always)]
-    pub pure fn zero<T: Num>() -> Mat4<T> {
-        Mat4 { data: [ Vec4::zero(),
-                       Vec4::zero(),
-                       Vec4::zero(),
-                       Vec4::zero() ] } 
+    pub pure fn new<T:Copy>(m00: T, m01: T, m02: T, m03: T,
+                            m10: T, m11: T, m12: T, m13: T,
+                            m20: T, m21: T, m22: T, m23: T,
+                            m30: T, m31: T, m32: T, m33: T) -> Mat4<T>  {
+        Mat4::from_cols(&Vec4::new(m00, m01, m02, m03),
+                        &Vec4::new(m10, m11, m12, m13),
+                        &Vec4::new(m20, m21, m22, m23),
+                        &Vec4::new(m30, m31, m32, m33))
     }
     
     #[inline(always)]
-    pub pure fn identity<T: Num>() -> Mat4<T> {
+    pub pure fn from_cols<T:Copy>(col0: &Vec4<T>, col1: &Vec4<T>, col2: &Vec4<T>, col3: &Vec4<T>) -> Mat4<T> {
+        Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
+    }
+    
+    #[inline(always)]
+    pub pure fn zero<T:Num>() -> Mat4<T> {
+        Mat4 { data: [ Vec4::zero(),
+                       Vec4::zero(),
+                       Vec4::zero(),
+                       Vec4::zero() ] }
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Num>() -> Mat4<T> {
         Mat4 { data: [ Vec4::unit_x(),
                        Vec4::unit_y(),
                        Vec4::unit_z(),
@@ -546,9 +525,6 @@ pub mod Mat4 {
     }
 }
 
-//
-//  Matrix4x4 Implementation
-//
 pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
@@ -561,10 +537,10 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn row(i: uint) -> Vec4<T> {
-        Vec4(self[0][i],
-             self[1][i],
-             self[2][i],
-             self[3][i])
+        Vec4::new(self[0][i],
+                  self[1][i],
+                  self[2][i],
+                  self[3][i])
     }
     
     #[inline(always)]
@@ -574,57 +550,57 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat4<T> {
-        Mat4_v(&self[0].mul_t(value),
-               &self[1].mul_t(value),
-               &self[2].mul_t(value),
-               &self[3].mul_t(value))
+        Mat4::from_cols(&self[0].mul_t(value),
+                        &self[1].mul_t(value),
+                        &self[2].mul_t(value),
+                        &self[3].mul_t(value))
     }
     
     #[inline(always)]
     pure fn mul_v(other: &Vec4<T>) -> Vec4<T> {
-        Vec4(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2] + self[3][0] * other[3],
-             self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2] + self[3][1] * other[3],
-             self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2] + self[3][2] * other[3],
-             self[0][3] * other[0] + self[1][3] * other[1] + self[2][3] * other[2] + self[3][3] * other[3])
+        Vec4::new(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2] + self[3][0] * other[3],
+                  self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2] + self[3][1] * other[3],
+                  self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2] + self[3][2] * other[3],
+                  self[0][3] * other[0] + self[1][3] * other[1] + self[2][3] * other[2] + self[3][3] * other[3])
     }
     
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4_v(&self[0].add_v(&other[0]),
-               &self[1].add_v(&other[1]),
-               &self[2].add_v(&other[2]),
-               &self[3].add_v(&other[3]))
+        Mat4::from_cols(&self[0].add_v(&other[0]),
+                        &self[1].add_v(&other[1]),
+                        &self[2].add_v(&other[2]),
+                        &self[3].add_v(&other[3]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4_v(&self[0].sub_v(&other[0]),
-               &self[1].sub_v(&other[1]),
-               &self[2].sub_v(&other[2]),
-               &self[3].sub_v(&other[3]))
+        Mat4::from_cols(&self[0].sub_v(&other[0]),
+                        &self[1].sub_v(&other[1]),
+                        &self[2].sub_v(&other[2]),
+                        &self[3].sub_v(&other[3]))
     }
     
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2] + self[3][0] * other[0][3],
-             self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2] + self[3][1] * other[0][3],
-             self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2] + self[3][2] * other[0][3],
-             self[0][3] * other[0][0] + self[1][3] * other[0][1] + self[2][3] * other[0][2] + self[3][3] * other[0][3],
-            
-             self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2] + self[3][0] * other[1][3],
-             self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2] + self[3][1] * other[1][3],
-             self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2] + self[3][2] * other[1][3],
-             self[0][3] * other[1][0] + self[1][3] * other[1][1] + self[2][3] * other[1][2] + self[3][3] * other[1][3],
-            
-             self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2] + self[3][0] * other[2][3],
-             self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2] + self[3][1] * other[2][3],
-             self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2] + self[3][2] * other[2][3],
-             self[0][3] * other[2][0] + self[1][3] * other[2][1] + self[2][3] * other[2][2] + self[3][3] * other[2][3],
-            
-             self[0][0] * other[3][0] + self[1][0] * other[3][1] + self[2][0] * other[3][2] + self[3][0] * other[3][3],
-             self[0][1] * other[3][0] + self[1][1] * other[3][1] + self[2][1] * other[3][2] + self[3][1] * other[3][3],
-             self[0][2] * other[3][0] + self[1][2] * other[3][1] + self[2][2] * other[3][2] + self[3][2] * other[3][3],
-             self[0][3] * other[3][0] + self[1][3] * other[3][1] + self[2][3] * other[3][2] + self[3][3] * other[3][3])
+        Mat4::new(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2] + self[3][0] * other[0][3],
+                  self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2] + self[3][1] * other[0][3],
+                  self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2] + self[3][2] * other[0][3],
+                  self[0][3] * other[0][0] + self[1][3] * other[0][1] + self[2][3] * other[0][2] + self[3][3] * other[0][3],
+                  
+                  self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2] + self[3][0] * other[1][3],
+                  self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2] + self[3][1] * other[1][3],
+                  self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2] + self[3][2] * other[1][3],
+                  self[0][3] * other[1][0] + self[1][3] * other[1][1] + self[2][3] * other[1][2] + self[3][3] * other[1][3],
+                  
+                  self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2] + self[3][0] * other[2][3],
+                  self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2] + self[3][1] * other[2][3],
+                  self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2] + self[3][2] * other[2][3],
+                  self[0][3] * other[2][0] + self[1][3] * other[2][1] + self[2][3] * other[2][2] + self[3][3] * other[2][3],
+                  
+                  self[0][0] * other[3][0] + self[1][0] * other[3][1] + self[2][0] * other[3][2] + self[3][0] * other[3][3],
+                  self[0][1] * other[3][0] + self[1][1] * other[3][1] + self[2][1] * other[3][2] + self[3][1] * other[3][3],
+                  self[0][2] * other[3][0] + self[1][2] * other[3][1] + self[2][2] * other[3][2] + self[3][2] * other[3][3],
+                  self[0][3] * other[3][0] + self[1][3] * other[3][1] + self[2][3] * other[3][2] + self[3][3] * other[3][3])
     }
     
     // TODO - inversion is harrrd D:
@@ -633,10 +609,10 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn transpose() -> Mat4<T> {
-        Mat4(self[0][0], self[1][0], self[2][0], self[3][0],
-             self[0][1], self[1][1], self[2][1], self[3][1],
-             self[0][2], self[1][2], self[2][2], self[3][2],
-             self[0][3], self[1][3], self[2][3], self[3][3])
+        Mat4::new(self[0][0], self[1][0], self[2][0], self[3][0],
+                  self[0][1], self[1][1], self[2][1], self[3][1],
+                  self[0][2], self[1][2], self[2][2], self[3][2],
+                  self[0][3], self[1][3], self[2][3], self[3][3])
     }
     
     #[inline(always)]
@@ -691,21 +667,21 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
 pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
     #[inline(always)]
     pure fn scale(vec: &Vec3<T>) -> Mat4<T> {
-        self.mul_m(&Mat4(      vec.x, from_int(0), from_int(0), from_int(0),
-                         from_int(0),       vec.y, from_int(0), from_int(0),
-                         from_int(0), from_int(0),       vec.z, from_int(0),
-                         from_int(0), from_int(0), from_int(0), from_int(1)))
+        self.mul_m(&Mat4::new(      vec.x, from_int(0), from_int(0), from_int(0),
+                              from_int(0),       vec.y, from_int(0), from_int(0),
+                              from_int(0), from_int(0),       vec.z, from_int(0),
+                              from_int(0), from_int(0), from_int(0), from_int(1)))
     }
     
     #[inline(always)]
     pure fn translate(vec: &Vec3<T>) -> Mat4<T> {
-        Mat4_v(&self[0],
-               &self[1],
-               &self[2],
-               &Vec4(self[3][0] + vec.x,
-                     self[3][1] + vec.y,
-                     self[3][2] + vec.z,
-                     self[3][3]))
+        Mat4::from_cols(&self[0],
+                        &self[1],
+                        &self[2],
+                        &Vec4::new(self[3][0] + vec.x,
+                                   self[3][1] + vec.y,
+                                   self[3][2] + vec.z,
+                                   self[3][3]))
     }
 }
 
@@ -719,7 +695,7 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
 pub impl<T:Copy Neg<T>> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
     pure fn neg() -> Mat4<T> {
-        Mat4_v(&-self[0], &-self[1], &-self[2], &-self[3])
+        Mat4::from_cols(&-self[0], &-self[1], &-self[2], &-self[3])
     }
 }
 
