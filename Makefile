@@ -1,4 +1,4 @@
-TARGET = omath
+TARGET = llama
 
 ROOT_DIR = .
 

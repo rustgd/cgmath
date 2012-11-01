@@ -1,7 +1,24 @@
-#[link(name = "omath",
+/*
+
+
+              /|___
+             / .__/
+            |  |
+   ________/   \
+  /            \
+ /|   |       \
+  |   |       |
+  /  /////|  |
+  | |      | |       || _  _  _  
+   ||       ||       ||(_||||(_|
+
+
+*/
+
+#[link(name = "llama",
        vers = "0.1",
        author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/omath-rs")];
+       url = "https://github.com/bjz/llama-rs")];
 
 #[comment = "A generic linear algebra library."];
 #[license = "APL2"];
