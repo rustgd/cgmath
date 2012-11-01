@@ -65,16 +65,16 @@ pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 pub mod Mat2 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(m00: T, m01: T,
-                            m10: T, m11: T) -> Mat2<T> {
-        Mat2::from_cols(&Vec2::new(m00, m01),
-                        &Vec2::new(m10, m11))
+    pub pure fn new<T:Copy>(c0r0: T, c0r1: T,
+                            c1r0: T, c1r1: T) -> Mat2<T> {
+        Mat2::from_cols(&Vec2::new(c0r0, c0r1),
+                        &Vec2::new(c1r0, c1r1))
     }
 
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(col0: &Vec2<T>, col1: &Vec2<T>) -> Mat2<T> {
-        Mat2 { x: *col0,
-               y: *col1 }
+    pub pure fn from_cols<T:Copy>(c0: &Vec2<T>, c1: &Vec2<T>) -> Mat2<T> {
+        Mat2 { x: *c0,
+               y: *c1 }
     }
     
     #[inline(always)]
@@ -234,19 +234,19 @@ pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 pub mod Mat3 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(m00:T, m01:T, m02:T,
-                            m10:T, m11:T, m12:T,
-                            m20:T, m21:T, m22:T) -> Mat3<T> {
-        Mat3::from_cols(&Vec3::new(m00, m01, m02),
-                        &Vec3::new(m10, m11, m12),
-                        &Vec3::new(m20, m21, m22))
+    pub pure fn new<T:Copy>(c0r0:T, c0r1:T, c0r2:T,
+                            c1r0:T, c1r1:T, c1r2:T,
+                            c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
+        Mat3::from_cols(&Vec3::new(c0r0, c0r1, c0r2),
+                        &Vec3::new(c1r0, c1r1, c1r2),
+                        &Vec3::new(c2r0, c2r1, c2r2))
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(col0: &Vec3<T>, col1: &Vec3<T>, col2: &Vec3<T>) -> Mat3<T> {
-        Mat3 { x: *col0,
-               y: *col1,
-               z: *col2 }
+    pub pure fn from_cols<T:Copy>(c0: &Vec3<T>, c1: &Vec3<T>, c2: &Vec3<T>) -> Mat3<T> {
+        Mat3 { x: *c0,
+               y: *c1,
+               z: *c2 }
     }
     
     #[inline(always)]
@@ -501,22 +501,22 @@ pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 pub mod Mat4 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(m00: T, m01: T, m02: T, m03: T,
-                            m10: T, m11: T, m12: T, m13: T,
-                            m20: T, m21: T, m22: T, m23: T,
-                            m30: T, m31: T, m32: T, m33: T) -> Mat4<T>  {
-        Mat4::from_cols(&Vec4::new(m00, m01, m02, m03),
-                        &Vec4::new(m10, m11, m12, m13),
-                        &Vec4::new(m20, m21, m22, m23),
-                        &Vec4::new(m30, m31, m32, m33))
+    pub pure fn new<T:Copy>(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+                            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+                            c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+                            c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
+        Mat4::from_cols(&Vec4::new(c0r0, c0r1, c0r2, c0r3),
+                        &Vec4::new(c1r0, c1r1, c1r2, c1r3),
+                        &Vec4::new(c2r0, c2r1, c2r2, c2r3),
+                        &Vec4::new(c3r0, c3r1, c3r2, c3r3))
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(col0: &Vec4<T>, col1: &Vec4<T>, col2: &Vec4<T>, col3: &Vec4<T>) -> Mat4<T> {
-        Mat4 { x: *col0,
-               y: *col1,
-               z: *col2,
-               w: *col3 }
+    pub pure fn from_cols<T:Copy>(c0: &Vec4<T>, c1: &Vec4<T>, c2: &Vec4<T>, c3: &Vec4<T>) -> Mat4<T> {
+        Mat4 { x: *c0,
+               y: *c1,
+               z: *c2,
+               w: *c3 }
     }
     
     #[inline(always)]
