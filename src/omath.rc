@@ -3,6 +3,7 @@
        author = "Brendan Zabarauskas")];
 
 #[comment = "Linear algebra library for Rust. Incomplete and probably buggy."];
+#[license = "APL2"];
 #[crate_type = "lib"];
 
 extern mod std;
