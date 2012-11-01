@@ -10,11 +10,15 @@
 extern mod std;
 
 pub mod matrix;
-pub mod math;
-pub mod num_util;
 pub mod projection;
 pub mod quaternion;
 pub mod vector;
+
+use common::*;
+pub mod common {
+    pub mod math;
+    pub mod num_util;
+}
 
 #[test]
 pub mod test {
