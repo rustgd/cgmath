@@ -20,29 +20,72 @@ trait MinMax {
 #[inline(always)] pure fn min<T:MinMax>(a: &T, b: &T) -> T { a.min(b) }
 #[inline(always)] pure fn max<T:MinMax>(a: &T, b: &T) -> T { a.max(b) }
 
+impl u8: MinMax {
+    #[inline(always)] pure fn min(other: &u8) -> u8 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u8) -> u8 { if self > *other { self } else { *other } }
+}
+
+impl u16: MinMax {
+    #[inline(always)] pure fn min(other: &u16) -> u16 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u16) -> u16 { if self > *other { self } else { *other } }
+}
+
+impl u32: MinMax {
+    #[inline(always)] pure fn min(other: &u32) -> u32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u32) -> u32 { if self > *other { self } else { *other } }
+}
+
+impl u64: MinMax {
+    #[inline(always)] pure fn min(other: &u64) -> u64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u64) -> u64 { if self > *other { self } else { *other } }
+}
+
+impl uint: MinMax {
+    #[inline(always)] pure fn min(other: &uint) -> uint { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &uint) -> uint { if self > *other { self } else { *other } }
+}
+
+impl i8: MinMax {
+    #[inline(always)] pure fn min(other: &i8) -> i8 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i8) -> i8 { if self > *other { self } else { *other } }
+}
+
+impl i16: MinMax {
+    #[inline(always)] pure fn min(other: &i16) -> i16 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i16) -> i16 { if self > *other { self } else { *other } }
+}
+
+impl i32: MinMax {
+    #[inline(always)] pure fn min(other: &i32) -> i32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i32) -> i32 { if self > *other { self } else { *other } }
+}
+
+impl i64: MinMax {
+    #[inline(always)] pure fn min(other: &i64) -> i64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i64) -> i64 { if self > *other { self } else { *other } }
+}
+
+impl int: MinMax {
+    #[inline(always)] pure fn min(other: &int) -> int { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &int) -> int { if self > *other { self } else { *other } }
+}
+
+impl f32: MinMax {
+    #[inline(always)] pure fn min(other: &f32) -> f32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &f32) -> f32 { if self > *other { self } else { *other } }
+}
+
+impl f64: MinMax {
+    #[inline(always)] pure fn min(other: &f64) -> f64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &f64) -> f64 { if self > *other { self } else { *other } }
+}
+
 impl float: MinMax {
-    pure fn min(other: &float) -> float {
-        if self < *other { self   }
-        else             { *other }
-    }
-    
-    pure fn max(other: &float) -> float {
-        if self > *other { self   }
-        else             { *other }
-    }
-    
+    #[inline(always)] pure fn min(other: &float) -> float { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &float) -> float { if self > *other { self } else { *other } }
 }
 
 
-
-// #[inline(always)]
-// pure fn abs<T:Copy Num Ord>(x: &T) -> T {
-//     if x >= &from_int(0) { *x } else {-x }
-// }
-
-//
-//  Abs
-//
 trait Abs {
     pure fn abs() -> self;
 }
@@ -116,9 +159,7 @@ impl float: Abs {
     }
 }
 
-//
-//  Sqrt
-//
+
 trait Sqrt {
     pure fn sqrt() -> self;
 }
