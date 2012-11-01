@@ -78,13 +78,13 @@ pub mod Mat2 {
     }
     
     #[inline(always)]
-    pub pure fn zero<T:Copy Num>() -> Mat2<T> {
+    pub pure fn zero<T:Num>() -> Mat2<T> {
         Mat2 { x: Vec2::zero(),
                y: Vec2::zero() }
     }
     
     #[inline(always)]
-    pub pure fn identity<T:Copy Num>() -> Mat2<T> {
+    pub pure fn identity<T:Num>() -> Mat2<T> {
         Mat2 { x: Vec2::unit_x(),
                y: Vec2::unit_y() }
     }
