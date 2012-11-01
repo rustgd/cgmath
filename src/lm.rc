@@ -1,21 +1,4 @@
-/*
-
-
-              /|___
-             / .__/
-            |  |
-   ________/   \
-  /            \
- /|   |       \
-  |   |       |
-  /  /////|  |
-  | |      | |       || _  _  _  
-   ||       ||       ||(_||||(_|
-
-
-*/
-
-#[link(name = "llama",
+#[link(name = "lm",
        vers = "0.1",
        author = "Brendan Zabarauskas",
        url = "https://github.com/bjz/llama-rs")];

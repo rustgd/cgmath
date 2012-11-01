@@ -1,4 +1,4 @@
-TARGET = llama
+TARGET = lm
 
 ROOT_DIR = .
 
@@ -12,18 +12,18 @@ TEST_BUILD_DIR = $(ROOT_DIR)/test
 .PHONY: test
 
 $(TARGET):
-	@echo "building $(TARGET)"
+	@echo "Building $(TARGET)..."
 	@mkdir -p $(BUILD_DIR)
 	@rustc $(SRC_DIR)/$(SRC_CRATE) --out-dir=$(BUILD_DIR)
-	@echo "Success! \o/"
+	@echo "Success"
 	
 all: $(TARGET)
 
 test:
-	@echo "building tests"
+	@echo "Building unit tests for $(TARGET)..."
 	@mkdir -p $(TEST_BUILD_DIR)
 	@rustc $(SRC_DIR)/$(SRC_CRATE) --test --out-dir=$(TEST_BUILD_DIR)
-	@echo "Success! \o/"
+	@echo "Success"
 	@$(TEST_BUILD_DIR)/$(TARGET)
 
 clean:
