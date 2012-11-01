@@ -1,7 +1,10 @@
 use std::cmp::FuzzyEq;
 use cmp::Eq;
-use math::{ToPtr, ExactEq, Sqrt};
-use quaternion::Quat;
+use num::from_int;
+
+use math::*;
+use num_util::*;
+use quaternion::{Quat, ToQuat};
 use vector::{Vec2, Vec3, Vec4};
 
 //
@@ -33,18 +36,17 @@ pub trait Matrix<T, V> {
 //
 //  3x3 Matrix
 //
-pub trait Matrix3<V3> {
-    pure fn scale(vec: &V3) -> self;
-    pure fn to_Mat4() -> Mat4;
-    pure fn to_Quat() -> Quat;
+pub trait Matrix3<T> {
+    pure fn scale(vec: &Vec3<T>) -> self;
+    pure fn to_Mat4() -> Mat4<T>;
 }
 
 //
 //  4x4 Matrix
 //
-pub trait Matrix4<V3, V4> {
-    pure fn scale(vec: &V3) -> self;
-    pure fn translate(vec: &V3) -> self;
+pub trait Matrix4<T> {
+    pure fn scale(vec: &Vec3<T>) -> self;
+    pure fn translate(vec: &Vec3<T>) -> self;
 }
 
 
@@ -55,19 +57,14 @@ pub trait Matrix4<V3, V4> {
 //
 //  Mat2: A 2x2, column major matrix
 //
-pub struct Mat2 { data:[Vec2 * 2] }
-
-pub const mat2_zero     :Mat2 = Mat2 { data: [ Vec2::zero,
-                                               Vec2::zero ] };
-pub const mat2_identity :Mat2 = Mat2 { data: [ Vec2::unit_x,
-                                               Vec2::unit_y ] };
+pub struct Mat2<T> { data:[Vec2<T> * 2] }
 
 //
 //  Mat2 Constructor
 //
 #[inline(always)]
-pub pure fn Mat2(m00:float, m01:float,
-                 m10:float, m11:float) -> Mat2 {
+pub pure fn Mat2<T:Copy>(m00: T, m01: T,
+                         m10: T, m11: T) -> Mat2<T> {
     Mat2 { data: [ Vec2(m00, m01),
                    Vec2(m10, m11) ] }
 }
@@ -76,21 +73,28 @@ pub pure fn Mat2(m00:float, m01:float,
 //  Construct Mat2 from column vectors
 //
 #[inline(always)]
-pub pure fn Mat2_v(col0: &Vec2, col1: &Vec2) -> Mat2 {
-    Mat2 { data: [ *col0, *col1 ] }
+pub pure fn Mat2_v<T:Copy>(col0: &Vec2<T>, col1: &Vec2<T>) -> Mat2<T> {
+    Mat2 { data: [ *move col0, *move col1 ] }
 }
 
 pub mod Mat2 {
-    pub const zero     :Mat2 = Mat2 { data: [ Vec2::zero,
-                                              Vec2::zero ] };
-    pub const identity :Mat2 = Mat2 { data: [ Vec2::unit_x,
-                                              Vec2::unit_y ] };
+    #[inline(always)]
+    pub pure fn zero<T: Num>() -> Mat2<T> {
+        Mat2 { data: [ Vec2::zero(),
+                       Vec2::zero() ] } 
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T: Num>() -> Mat2<T> {
+        Mat2 { data: [ Vec2::unit_x(),
+                       Vec2::unit_y() ] }
+    }
 }
 
 //
 //  Matrix2x2 Implementation
 //
-pub impl Mat2: Matrix<float, Vec2> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -101,62 +105,62 @@ pub impl Mat2: Matrix<float, Vec2> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec2 {
+    pure fn row(i: uint) -> Vec2<T> {
         Vec2(self[0][i],
              self[1][i])
     }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec2 {
+    pure fn col(i: uint) -> Vec2<T> {
         self.data[i]
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Mat2 {
+    pure fn mul_t(value: T) -> Mat2<T> {
         Mat2_v(&self[0].mul_t(value),
                &self[1].mul_t(value))
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec2) -> Vec2 {
-        Vec2(self[0][0]*other[0] + self[1][0]*other[1],
-             self[0][1]*other[0] + self[1][1]*other[1])
+    pure fn mul_v(other: &Vec2<T>) -> Vec2<T> {
+        Vec2(self[0][0] * other[0] + self[1][0] * other[1],
+             self[0][1] * other[0] + self[1][1] * other[1])
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat2) -> Mat2 {
+    pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]))
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat2) -> Mat2 {
+    pure fn sub_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]))
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat2) -> Mat2 {
-        Mat2(self[0][0]*other[0][0] + self[1][0]*other[0][1],
-             self[0][1]*other[0][0] + self[1][1]*other[0][1],
+    pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
+        Mat2(self[0][0] * other[0][0] + self[1][0] * other[0][1],
+             self[0][1] * other[0][0] + self[1][1] * other[0][1],
              
-             self[0][0]*other[1][0] + self[1][0]*other[1][1],
-             self[0][1]*other[1][0] + self[1][1]*other[1][1])
+             self[0][0] * other[1][0] + self[1][0] * other[1][1],
+             self[0][1] * other[1][0] + self[1][1] * other[1][1])
     }
     
     // TODO - inversion is harrrd D:
     // #[inline(always)]
-    // pure fn invert(other: &Mat2) -> Mat2 {}
+    // pure fn invert(other: &Mat2<T>) -> Mat2<T> {}
     
     #[inline(always)]
-    pure fn transpose() -> Mat2 {
+    pure fn transpose() -> Mat2<T> {
         Mat2(self[0][0], self[1][0],
              self[0][1], self[1][1])
     }
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat2::identity)
+        self.fuzzy_eq(&Mat2::identity())
     }
     
     #[inline(always)]
@@ -167,62 +171,56 @@ pub impl Mat2: Matrix<float, Vec2> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0f) &&
-        self[1][0].fuzzy_eq(&0f)
+        self[0][1].fuzzy_eq(&from_int(0)) &&
+        self[1][0].fuzzy_eq(&from_int(0))
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat2::identity)
+        !self.fuzzy_eq(&Mat2::identity())
     }
 }
 
-pub impl Mat2: Index<uint, Vec2> {
+pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec2 {
+    pure fn index(i: uint) -> Vec2<T> {
         self.data[i]
     }
 }
 
-pub impl Mat2: Neg<Mat2> {
+pub impl<T:Copy Neg<T>> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
-    pure fn neg() -> Mat2 {
+    pure fn neg() -> Mat2<T> {
         Mat2_v(&-self[0], &-self[1])
     }
 }
 
-pub impl Mat2: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Mat2<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Mat2) -> bool {
+    pure fn eq(other: &Mat2<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Mat2) -> bool {
+    pure fn ne(other: &Mat2<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Mat2: ExactEq {
+impl<T:Copy Eq> Mat2<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Mat2) -> bool {
+    pure fn exact_eq(other: &Mat2<T>) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1])
     }
 }
 
-pub impl Mat2: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Mat2) -> bool {
+    pure fn fuzzy_eq(other: &Mat2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
-    }
-}
-
-pub impl Mat2: ToPtr<float> {
-    #[inline(always)]
-    pure fn to_ptr() -> *float {
-        self[0].to_ptr()
     }
 }
 
@@ -234,15 +232,15 @@ pub impl Mat2: ToPtr<float> {
 //
 //  Mat3: A 3x3, column major matrix
 //
-pub struct Mat3 { data:[Vec3 * 3] }
+pub struct Mat3<T> { data:[Vec3<T> * 3] }
 
 //
 //  Mat3 Constructor
 //
 #[inline(always)]
-pub pure fn Mat3(m00:float, m01:float, m02:float,
-                 m10:float, m11:float, m12:float,
-                 m20:float, m21:float, m22:float) -> Mat3 {
+pub pure fn Mat3<T:Copy>(m00:T, m01:T, m02:T,
+                         m10:T, m11:T, m12:T,
+                         m20:T, m21:T, m22:T) -> Mat3<T> {
     Mat3 { data: [ Vec3(m00, m01, m02),
                    Vec3(m10, m11, m12),
                    Vec3(m20, m21, m22) ] }
@@ -252,23 +250,30 @@ pub pure fn Mat3(m00:float, m01:float, m02:float,
 //  Construct Mat3 from column vectors
 //
 #[inline(always)]
-pub pure fn Mat3_v(col0: &Vec3, col1: &Vec3, col2: &Vec3) -> Mat3 {
-    Mat3 { data: [ *col0, *col1, *col2 ] }
+pub pure fn Mat3_v<T:Copy>(col0: &Vec3<T>, col1: &Vec3<T>, col2: &Vec3<T>) -> Mat3<T> {
+    Mat3 { data: [ *move col0, *move col1, *move col2 ] }
 }
 
 pub mod Mat3 {
-    pub const zero     :Mat3 = Mat3 { data: [ Vec3::zero,
-                                              Vec3::zero,
-                                              Vec3::zero ] };
-    pub const identity :Mat3 = Mat3 { data: [ Vec3::unit_x,
-                                              Vec3::unit_y,
-                                              Vec3::unit_z ] };
+    #[inline(always)]
+    pub pure fn zero<T: Num>() -> Mat3<T> {
+        Mat3 { data: [ Vec3::zero(),
+                       Vec3::zero(),
+                       Vec3::zero() ] } 
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T: Num>() -> Mat3<T> {
+        Mat3 { data: [ Vec3::unit_x(),
+                       Vec3::unit_y(),
+                       Vec3::unit_z() ] }
+    }
 }
 
 //
 //  Matrix3x3 Implementation
 //
-pub impl Mat3: Matrix<float, Vec3> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -279,58 +284,58 @@ pub impl Mat3: Matrix<float, Vec3> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec3 {
+    pure fn row(i: uint) -> Vec3<T> {
         Vec3(self[0][i],
              self[1][i],
              self[2][i])
     }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec3 {
+    pure fn col(i: uint) -> Vec3<T> {
         self.data[i]
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Mat3 {
+    pure fn mul_t(value: T) -> Mat3<T> {
         Mat3_v(&self[0].mul_t(value),
                &self[1].mul_t(value),
                &self[2].mul_t(value))
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec3) -> Vec3 {
-        Vec3(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2],
-             self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2],
-             self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2])
+    pure fn mul_v(other: &Vec3<T>) -> Vec3<T> {
+        Vec3(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2],
+             self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2],
+             self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2])
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat3) -> Mat3 {
+    pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]),
                &self[2].add_v(&other[2]))
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat3) -> Mat3 {
+    pure fn sub_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]),
                &self[2].sub_v(&other[2]))
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat3) -> Mat3 {
-        Mat3(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2],
-             self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2],
-             self[0][2]*other[0][0] + self[1][2]*other[0][1] + self[2][2]*other[0][2],
+    pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
+        Mat3(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2],
+             self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2],
+             self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2],
             
-             self[0][0]*other[1][0] + self[1][0]*other[1][1] + self[2][0]*other[1][2],
-             self[0][1]*other[1][0] + self[1][1]*other[1][1] + self[2][1]*other[1][2],
-             self[0][2]*other[1][0] + self[1][2]*other[1][1] + self[2][2]*other[1][2],
+             self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2],
+             self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2],
+             self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2],
             
-             self[0][0]*other[2][0] + self[1][0]*other[2][1] + self[2][0]*other[2][2],
-             self[0][1]*other[2][0] + self[1][1]*other[2][1] + self[2][1]*other[2][2],
-             self[0][2]*other[2][0] + self[1][2]*other[2][1] + self[2][2]*other[2][2])
+             self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2],
+             self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2],
+             self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2])
     }
     
     // TODO - inversion is harrrd D:
@@ -338,7 +343,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     // pure fn invert(other: &Mat3) -> Mat3 {}
     
     #[inline(always)]
-    pure fn transpose() -> Mat3 {
+    pure fn transpose() -> Mat3<T> {
         Mat3(self[0][0], self[1][0], self[2][0],
              self[0][1], self[1][1], self[2][1],
              self[0][2], self[1][2], self[2][2])
@@ -346,7 +351,7 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat3::identity)
+        self.fuzzy_eq(&Mat3::identity())
     }
     
     #[inline(always)]
@@ -363,126 +368,130 @@ pub impl Mat3: Matrix<float, Vec3> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0f) &&
-        self[0][2].fuzzy_eq(&0f) &&
+        self[0][1].fuzzy_eq(&from_int(0)) &&
+        self[0][2].fuzzy_eq(&from_int(0)) &&
         
-        self[1][0].fuzzy_eq(&0f) &&
-        self[1][2].fuzzy_eq(&0f) &&
+        self[1][0].fuzzy_eq(&from_int(0)) &&
+        self[1][2].fuzzy_eq(&from_int(0)) &&
         
-        self[2][0].fuzzy_eq(&0f) &&
-        self[2][1].fuzzy_eq(&0f)
+        self[2][0].fuzzy_eq(&from_int(0)) &&
+        self[2][1].fuzzy_eq(&from_int(0))
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat3::identity)
+        !self.fuzzy_eq(&Mat3::identity())
     }
 }
 
-pub impl Mat3: Matrix3<Vec3> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
     #[inline(always)]
-    pure fn scale(vec: &Vec3) -> Mat3 {
-        self.mul_m(&Mat3(vec.x,    0f,    0f,
-                            0f, vec.y,    0f,
-                            0f,    0f, vec.z))
+    pure fn scale(vec: &Vec3<T>) -> Mat3<T> {
+        self.mul_m(&Mat3(      vec.x, from_int(0), from_int(0),
+                         from_int(0),       vec.y, from_int(0),
+                         from_int(0), from_int(0),      vec.z))
     }
     
     #[inline(always)]
-    pure fn to_Mat4() -> Mat4 {
-        Mat4(self[0][0], self[0][1], self[0][2],  0f,
-             self[1][0], self[1][1], self[1][2],  0f,
-             self[2][0], self[2][1], self[2][2],  0f,
-                     0f,         0f,         0f,  1f)
+    pure fn to_Mat4() -> Mat4<T> {
+        Mat4( self[0][0],  self[0][1],   self[0][2], from_int(0),
+              self[1][0],  self[1][1],   self[1][2], from_int(0),
+              self[2][0],  self[2][1],   self[2][2], from_int(0),
+             from_int(0), from_int(0),  from_int(0), from_int(1))
     }
-    
-    pure fn to_Quat() -> Quat {
+}
+
+pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
+    pure fn to_Quat() -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         
-        let mut s:float;
-        let w:float, x:float, y:float, z:float;
-        let trace:float = self[0][0] + self[1][1] + self[2][2];
+        let mut s: float;
+        let w: float, x: float, y: float, z: float;
+        let trace: float = cast(self[0][0] + self[1][1] + self[2][2]);
         
-        if trace >= 0f {
+        if trace >= from_int(0) {
             s = (trace + 1f).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
-            x = self[1][2] - self[2][1] * s;
-            y = self[2][0] - self[0][2] * s;
-            z = self[0][1] - self[1][0] * s;
+            x = (self[1][2] - self[2][1]).cast::<float>() * s;
+            y = (self[2][0] - self[0][2]).cast::<float>() * s;
+            z = (self[0][1] - self[1][0]).cast::<float>() * s;
         } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = (1f + self[0][0] - self[1][1] - self[2][2]).sqrt();
+            s = (1f + (self[0][0] - self[1][1] - self[2][2]).cast::<float>()).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
-            x = self[0][1] - self[1][0] * s;
-            y = self[2][0] - self[0][2] * s;
-            z = self[1][2] - self[2][1] * s;
+            x = (self[0][1] - self[1][0]).cast::<float>() * s;
+            y = (self[2][0] - self[0][2]).cast::<float>() * s;
+            z = (self[1][2] - self[2][1]).cast::<float>() * s;
         } else if self[1][1] > self[2][2] {
-            s = (1f + self[1][1] - self[0][0] - self[2][2]).sqrt();
+            s = (1f + (self[1][1] - self[0][0] - self[2][2]).cast::<float>()).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
-            x = self[0][1] - self[1][0] * s;
-            y = self[1][2] - self[2][1] * s;
-            z = self[2][0] - self[0][2] * s;
+            x = (self[0][1] - self[1][0]).cast::<float>() * s;
+            y = (self[1][2] - self[2][1]).cast::<float>() * s;
+            z = (self[2][0] - self[0][2]).cast::<float>() * s;
         } else {
-            s = (1f + self[2][2] - self[0][0] - self[1][1]).sqrt();
+            s = (1f + (self[2][2] - self[0][0] - self[1][1]).cast::<float>()).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;
-            x = self[2][0] - self[0][2] * s;
-            y = self[1][2] - self[2][1] * s;
-            z = self[0][1] - self[1][0] * s;
+            x = (self[2][0] - self[0][2]).cast::<float>() * s;
+            y = (self[1][2] - self[2][1]).cast::<float>() * s;
+            z = (self[0][1] - self[1][0]).cast::<float>() * s;
         }
-        return Quat(w, x, y, z);
+        
+        Quat(from(w), from(x), from(y), from(z))
     }
 }
 
-pub impl Mat3: Index<uint, Vec3> {
+pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec3 {
+    pure fn index(i: uint) -> Vec3<T> {
         self.data[i]
     }
 }
 
-pub impl Mat3: Neg<Mat3> {
+pub impl<T:Copy Neg<T>> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
-    pure fn neg() -> Mat3 {
+    pure fn neg() -> Mat3<T> {
         Mat3_v(&-self[0], &-self[1], &-self[2])
     }
 }
 
-pub impl Mat3: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Mat3<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Mat3) -> bool {
+    pure fn eq(other: &Mat3<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Mat3) -> bool {
+    pure fn ne(other: &Mat3<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Mat3: ExactEq {
+pub impl<T:Copy Eq> Mat3<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Mat3) -> bool {
+    pure fn exact_eq(other: &Mat3<T>) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1]) &&
         self[2].exact_eq(&other[2])
     }
 }
 
-pub impl Mat3: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Mat3<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Mat3) -> bool {
+    pure fn fuzzy_eq(other: &Mat3<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
     }
 }
 
-pub impl Mat3: ToPtr<float> {
+pub impl<T:Copy> Mat3<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         self[0].to_ptr()
     }
 }
@@ -495,16 +504,16 @@ pub impl Mat3: ToPtr<float> {
 //
 //  Mat4: A 4x4, column major matrix
 //
-pub struct Mat4 { data:[Vec4 * 4] }
+pub struct Mat4<T> { data:[Vec4<T> * 4] }
 
 //
 //  Mat4 Constructor
 //
 #[inline(always)]
-pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
-                 m10:float, m11:float, m12:float, m13:float,
-                 m20:float, m21:float, m22:float, m23:float,
-                 m30:float, m31:float, m32:float, m33:float) -> Mat4 {
+pub pure fn Mat4<T:Copy>(m00: T, m01: T, m02: T, m03: T,
+                         m10: T, m11: T, m12: T, m13: T,
+                         m20: T, m21: T, m22: T, m23: T,
+                         m30: T, m31: T, m32: T, m33: T) -> Mat4<T>  {
     Mat4 { data: [ Vec4(m00, m01, m02, m03),
                    Vec4(m10, m11, m12, m13),
                    Vec4(m20, m21, m22, m23),
@@ -515,25 +524,32 @@ pub pure fn Mat4(m00:float, m01:float, m02:float, m03:float,
 //  Construct Mat4 from column vectors
 //
 #[inline(always)]
-pub pure fn Mat4_v(col0: &Vec4, col1: &Vec4, col2: &Vec4, col3: &Vec4) -> Mat4 {
-    Mat4 { data: [ *col0, *col1, *col2, *col3 ] }
+pub pure fn Mat4_v<T:Copy>(col0: &Vec4<T>, col1: &Vec4<T>, col2: &Vec4<T>, col3: &Vec4<T>) -> Mat4<T> {
+    Mat4 { data: [ *move col0, *move col1, *move col2, *move col3 ] }
 }
 
 pub mod Mat4 {
-    pub const zero     :Mat4 = Mat4 { data: [ Vec4::zero,
-                                              Vec4::zero,
-                                              Vec4::zero,
-                                              Vec4::zero ] };
-    pub const identity :Mat4 = Mat4 { data: [ Vec4::unit_x,
-                                              Vec4::unit_y,
-                                              Vec4::unit_z,
-                                              Vec4::unit_w ] };
+    #[inline(always)]
+    pub pure fn zero<T: Num>() -> Mat4<T> {
+        Mat4 { data: [ Vec4::zero(),
+                       Vec4::zero(),
+                       Vec4::zero(),
+                       Vec4::zero() ] } 
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T: Num>() -> Mat4<T> {
+        Mat4 { data: [ Vec4::unit_x(),
+                       Vec4::unit_y(),
+                       Vec4::unit_z(),
+                       Vec4::unit_w() ] }
+    }
 }
 
 //
 //  Matrix4x4 Implementation
 //
-pub impl Mat4: Matrix<float, Vec4> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -544,7 +560,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     pure fn is_col_major() -> bool { true }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec4 {
+    pure fn row(i: uint) -> Vec4<T> {
         Vec4(self[0][i],
              self[1][i],
              self[2][i],
@@ -552,12 +568,12 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec4 {
+    pure fn col(i: uint) -> Vec4<T> {
         self.data[i]
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Mat4 {
+    pure fn mul_t(value: T) -> Mat4<T> {
         Mat4_v(&self[0].mul_t(value),
                &self[1].mul_t(value),
                &self[2].mul_t(value),
@@ -565,15 +581,15 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec4) -> Vec4 {
-        Vec4(self[0][0]*other[0] + self[1][0]*other[1] + self[2][0]*other[2] + self[3][0]*other[3],
-             self[0][1]*other[0] + self[1][1]*other[1] + self[2][1]*other[2] + self[3][1]*other[3],
-             self[0][2]*other[0] + self[1][2]*other[1] + self[2][2]*other[2] + self[3][2]*other[3],
-             self[0][3]*other[0] + self[1][3]*other[1] + self[2][3]*other[2] + self[3][3]*other[3])
+    pure fn mul_v(other: &Vec4<T>) -> Vec4<T> {
+        Vec4(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2] + self[3][0] * other[3],
+             self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2] + self[3][1] * other[3],
+             self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2] + self[3][2] * other[3],
+             self[0][3] * other[0] + self[1][3] * other[1] + self[2][3] * other[2] + self[3][3] * other[3])
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat4) -> Mat4 {
+    pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4_v(&self[0].add_v(&other[0]),
                &self[1].add_v(&other[1]),
                &self[2].add_v(&other[2]),
@@ -581,7 +597,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat4) -> Mat4 {
+    pure fn sub_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4_v(&self[0].sub_v(&other[0]),
                &self[1].sub_v(&other[1]),
                &self[2].sub_v(&other[2]),
@@ -589,34 +605,34 @@ pub impl Mat4: Matrix<float, Vec4> {
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat4) -> Mat4 {
-        Mat4(self[0][0]*other[0][0] + self[1][0]*other[0][1] + self[2][0]*other[0][2] + self[3][0]*other[0][3],
-             self[0][1]*other[0][0] + self[1][1]*other[0][1] + self[2][1]*other[0][2] + self[3][1]*other[0][3],
-             self[0][2]*other[0][0] + self[1][2]*other[0][1] + self[2][2]*other[0][2] + self[3][2]*other[0][3],
-             self[0][3]*other[0][0] + self[1][3]*other[0][1] + self[2][3]*other[0][2] + self[3][3]*other[0][3],
+    pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
+        Mat4(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2] + self[3][0] * other[0][3],
+             self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2] + self[3][1] * other[0][3],
+             self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2] + self[3][2] * other[0][3],
+             self[0][3] * other[0][0] + self[1][3] * other[0][1] + self[2][3] * other[0][2] + self[3][3] * other[0][3],
             
-             self[0][0]*other[1][0] + self[1][0]*other[1][1] + self[2][0]*other[1][2] + self[3][0]*other[1][3],
-             self[0][1]*other[1][0] + self[1][1]*other[1][1] + self[2][1]*other[1][2] + self[3][1]*other[1][3],
-             self[0][2]*other[1][0] + self[1][2]*other[1][1] + self[2][2]*other[1][2] + self[3][2]*other[1][3],
-             self[0][3]*other[1][0] + self[1][3]*other[1][1] + self[2][3]*other[1][2] + self[3][3]*other[1][3],
+             self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2] + self[3][0] * other[1][3],
+             self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2] + self[3][1] * other[1][3],
+             self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2] + self[3][2] * other[1][3],
+             self[0][3] * other[1][0] + self[1][3] * other[1][1] + self[2][3] * other[1][2] + self[3][3] * other[1][3],
             
-             self[0][0]*other[2][0] + self[1][0]*other[2][1] + self[2][0]*other[2][2] + self[3][0]*other[2][3],
-             self[0][1]*other[2][0] + self[1][1]*other[2][1] + self[2][1]*other[2][2] + self[3][1]*other[2][3],
-             self[0][2]*other[2][0] + self[1][2]*other[2][1] + self[2][2]*other[2][2] + self[3][2]*other[2][3],
-             self[0][3]*other[2][0] + self[1][3]*other[2][1] + self[2][3]*other[2][2] + self[3][3]*other[2][3],
+             self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2] + self[3][0] * other[2][3],
+             self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2] + self[3][1] * other[2][3],
+             self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2] + self[3][2] * other[2][3],
+             self[0][3] * other[2][0] + self[1][3] * other[2][1] + self[2][3] * other[2][2] + self[3][3] * other[2][3],
             
-             self[0][0]*other[3][0] + self[1][0]*other[3][1] + self[2][0]*other[3][2] + self[3][0]*other[3][3],
-             self[0][1]*other[3][0] + self[1][1]*other[3][1] + self[2][1]*other[3][2] + self[3][1]*other[3][3],
-             self[0][2]*other[3][0] + self[1][2]*other[3][1] + self[2][2]*other[3][2] + self[3][2]*other[3][3],
-             self[0][3]*other[3][0] + self[1][3]*other[3][1] + self[2][3]*other[3][2] + self[3][3]*other[3][3])
+             self[0][0] * other[3][0] + self[1][0] * other[3][1] + self[2][0] * other[3][2] + self[3][0] * other[3][3],
+             self[0][1] * other[3][0] + self[1][1] * other[3][1] + self[2][1] * other[3][2] + self[3][1] * other[3][3],
+             self[0][2] * other[3][0] + self[1][2] * other[3][1] + self[2][2] * other[3][2] + self[3][2] * other[3][3],
+             self[0][3] * other[3][0] + self[1][3] * other[3][1] + self[2][3] * other[3][2] + self[3][3] * other[3][3])
     }
     
     // TODO - inversion is harrrd D:
     // #[inline(always)]
-    // pure fn invert(other: &Mat4) -> Mat4 {}
+    // pure fn invert(other: &Mat4<T>) -> Mat4<T> {}
     
     #[inline(always)]
-    pure fn transpose() -> Mat4 {
+    pure fn transpose() -> Mat4<T> {
         Mat4(self[0][0], self[1][0], self[2][0], self[3][0],
              self[0][1], self[1][1], self[2][1], self[3][1],
              self[0][2], self[1][2], self[2][2], self[3][2],
@@ -625,7 +641,7 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat4::identity)
+        self.fuzzy_eq(&Mat4::identity())
     }
     
     #[inline(always)]
@@ -649,40 +665,40 @@ pub impl Mat4: Matrix<float, Vec4> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&0f) &&
-        self[0][2].fuzzy_eq(&0f) &&
-        self[0][3].fuzzy_eq(&0f) &&
+        self[0][1].fuzzy_eq(&from_int(0)) &&
+        self[0][2].fuzzy_eq(&from_int(0)) &&
+        self[0][3].fuzzy_eq(&from_int(0)) &&
         
-        self[1][0].fuzzy_eq(&0f) &&
-        self[1][2].fuzzy_eq(&0f) &&
-        self[1][3].fuzzy_eq(&0f) &&
+        self[1][0].fuzzy_eq(&from_int(0)) &&
+        self[1][2].fuzzy_eq(&from_int(0)) &&
+        self[1][3].fuzzy_eq(&from_int(0)) &&
         
-        self[2][0].fuzzy_eq(&0f) &&
-        self[2][1].fuzzy_eq(&0f) &&
-        self[2][3].fuzzy_eq(&0f) &&
+        self[2][0].fuzzy_eq(&from_int(0)) &&
+        self[2][1].fuzzy_eq(&from_int(0)) &&
+        self[2][3].fuzzy_eq(&from_int(0)) &&
         
-        self[3][0].fuzzy_eq(&0f) &&
-        self[3][1].fuzzy_eq(&0f) &&
-        self[3][2].fuzzy_eq(&0f)
+        self[3][0].fuzzy_eq(&from_int(0)) &&
+        self[3][1].fuzzy_eq(&from_int(0)) &&
+        self[3][2].fuzzy_eq(&from_int(0))
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat4::identity)
+        !self.fuzzy_eq(&Mat4::identity())
     }
 }
 
-pub impl Mat4: Matrix4<Vec3, Vec4> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
     #[inline(always)]
-    pure fn scale(vec: &Vec3) -> Mat4 {
-        self.mul_m(&Mat4(vec.x,    0f,    0f, 0f,
-                            0f, vec.y,    0f, 0f,
-                            0f,    0f, vec.z, 0f,
-                            0f,    0f,    0f, 1f))
+    pure fn scale(vec: &Vec3<T>) -> Mat4<T> {
+        self.mul_m(&Mat4(      vec.x, from_int(0), from_int(0), from_int(0),
+                         from_int(0),       vec.y, from_int(0), from_int(0),
+                         from_int(0), from_int(0),       vec.z, from_int(0),
+                         from_int(0), from_int(0), from_int(0), from_int(1)))
     }
     
     #[inline(always)]
-    pure fn translate(vec: &Vec3) -> Mat4 {
+    pure fn translate(vec: &Vec3<T>) -> Mat4<T> {
         Mat4_v(&self[0],
                &self[1],
                &self[2],
@@ -693,35 +709,36 @@ pub impl Mat4: Matrix4<Vec3, Vec4> {
     }
 }
 
-pub impl Mat4: Index<uint, Vec4> {
+pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec4 {
+    pure fn index(i: uint) -> Vec4<T> {
         self.data[i]
     }
 }
 
-pub impl Mat4: Neg<Mat4> {
+pub impl<T:Copy Neg<T>> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
-    pure fn neg() -> Mat4 {
+    pure fn neg() -> Mat4<T> {
         Mat4_v(&-self[0], &-self[1], &-self[2], &-self[3])
     }
 }
 
-pub impl Mat4: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Mat4<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Mat4) -> bool {
+    pure fn eq(other: &Mat4<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Mat4) -> bool {
+    pure fn ne(other: &Mat4<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Mat4: ExactEq {
+pub impl<T:Copy Eq> Mat4<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Mat4) -> bool {
+    pure fn exact_eq(other: &Mat4<T>) -> bool {
         self[0].exact_eq(&other[0]) &&
         self[1].exact_eq(&other[1]) &&
         self[2].exact_eq(&other[2]) &&
@@ -729,9 +746,9 @@ impl Mat4: ExactEq {
     }
 }
 
-pub impl Mat4: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Mat4<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Mat4) -> bool {
+    pure fn fuzzy_eq(other: &Mat4<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
@@ -739,9 +756,9 @@ pub impl Mat4: FuzzyEq {
     }
 }
 
-pub impl Mat4: ToPtr<float> {
+pub impl<T:Copy> Mat4<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         self[0].to_ptr()
     }
 }

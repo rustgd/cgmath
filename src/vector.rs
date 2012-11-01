@@ -1,9 +1,11 @@
 use cast::transmute;
 use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
-use cmp::Eq;
+use cmp::{Eq, Ord};
+use num::from_int;
 use std::cmp::FuzzyEq;
-use math::{ToPtr, Abs, abs, ExactEq, max, min, Sqrt};
+
+use math::*;
 
 //
 //  N-dimensional Vector
@@ -26,8 +28,6 @@ pub trait Vector<T> {
     pure fn normalize() -> self;
     
     pure fn lerp(other: &self, value: T) -> self;
-    pure fn min(other: &self) -> self;
-    pure fn max(other: &self) -> self;
 }
 
 pub trait Vector3<T> {
@@ -37,174 +37,169 @@ pub trait Vector3<T> {
 
 
 
-
-
 //
 //  Vec2
 //
-pub struct Vec2 { x: float, y: float }
+pub struct Vec2<T> { x: T, y: T }
 
 
 //
 //  Constructor
 //
 #[inline(always)]
-pub pure fn Vec2(x: float, y: float) -> Vec2 {
-    Vec2 { x: x, y: y }
+pub pure fn Vec2<T:Copy>(x: T, y: T) -> Vec2<T> {
+    Vec2 { x: move x, y: move y }
 }
 
 pub mod Vec2 {
-    pub const zero     :Vec2 = Vec2 { x: 0f, y: 0f };
-    pub const unit_x   :Vec2 = Vec2 { x: 1f, y: 0f };
-    pub const unit_y   :Vec2 = Vec2 { x: 0f, y: 1f };
-    pub const identity :Vec2 = Vec2 { x: 1f, y: 1f };
+    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(0) } }
+    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(1), y: from_int(0) } }
+    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(1) } }
+    #[inline(always)] pub pure fn identity <T: Num>() -> Vec2<T> { Vec2 { x: from_int(1), y: from_int(1) } }
 }
 
-pub impl Vec2: Vector<float> {
+pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
     
     #[inline(always)]
-    pure fn add_t(value: float) -> Vec2 {
+    pure fn add_t(value: T) -> Vec2<T> {
         Vec2(self[0] + value,
              self[1] + value)
     }
     
     #[inline(always)]
-    pure fn sub_t(value: float) -> Vec2 {
+    pure fn sub_t(value: T) -> Vec2<T> {
         Vec2(self[0] - value,
              self[1] - value)
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Vec2 {
+    pure fn mul_t(value: T) -> Vec2<T> {
         Vec2(self[0] * value,
              self[1] * value)
     }
     
     #[inline(always)]
-    pure fn div_t(value: float) -> Vec2 {
+    pure fn div_t(value: T) -> Vec2<T> {
         Vec2(self[0] / value,
              self[1] / value)
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec2) -> Vec2{
+    pure fn add_v(other: &Vec2<T>) -> Vec2<T> {
         Vec2(self[0] + other[0],
              self[1] + other[1])
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec2) -> Vec2{
+    pure fn sub_v(other: &Vec2<T>) -> Vec2<T> {
         Vec2(self[0] - other[0],
              self[1] - other[1])
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec2) -> float {
+    pure fn dot(other: &Vec2<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1]
     }
     
     #[inline(always)]
-    pure fn magnitude2() -> float {
+    pure fn magnitude2() -> T {
         self[0] * self[0] +
         self[1] * self[1]
     }
     
     #[inline(always)]
-    pure fn magnitude() -> float {
+    pure fn magnitude() -> T {
         self.magnitude2().sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec2 {
-        let n = 1f / self.magnitude();
+    pure fn normalize() -> Vec2<T> {
+        let mut n: T = from_int(1); 
+        n /= self.magnitude();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec2, value: float) -> Vec2 {
+    pure fn lerp(other: &Vec2<T>, value: T) -> Vec2<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
     }
-    
+}
+
+pub impl<T:Copy> Vec2<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn min(other: &Vec2) -> Vec2 {
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Vec2<T>, *T>(
+                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
+        }
+    }
+}
+
+pub impl<T:Copy MinMax> Vec2<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec2<T>) -> Vec2<T> {
         Vec2(min(&self[0], &other[0]),
              min(&self[1], &other[1]))
     }
     
     #[inline(always)]
-    pure fn max(other: &Vec2) -> Vec2 {
+    pure fn max(other: &Vec2<T>) -> Vec2<T> {
         Vec2(max(&self[0], &other[0]),
              max(&self[1], &other[1]))
     }
 }
 
-pub impl Vec2: Index<uint, float> {
+pub impl<T:Copy Abs> Vec2<T>: Abs {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
-        unsafe {
-            do buf_as_slice(
-                transmute::<*Vec2, *float>(
-                    to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl Vec2: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec2 {
+    pure fn abs() -> Vec2<T> {
         Vec2(abs(&self[0]),
              abs(&self[1]))
     }
 }
 
-pub impl Vec2: Neg<Vec2> {
+pub impl<T:Copy Neg<T>> Vec2<T>: Neg<Vec2<T>> {
     #[inline(always)]
-    pure fn neg() -> Vec2 {
+    pure fn neg() -> Vec2<T> {
         Vec2(-self[0], -self[1])
     }
 }
 
-pub impl Vec2: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Vec2<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec2) -> bool {
+    pure fn eq(other: &Vec2<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec2) -> bool {
+    pure fn ne(other: &Vec2<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Vec2: ExactEq {
+impl<T:Copy Eq> Vec2<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Vec2) -> bool {
+    pure fn exact_eq(other: &Vec2<T>) -> bool {
         self[0] == other[0] &&
         self[1] == other[1]
     }
 }
 
-pub impl Vec2: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Vec2) -> bool {
+    pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
     }
 }
 
-pub impl Vec2: ToPtr<float> {
+pub impl<T:Copy> Vec2<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         to_unsafe_ptr(&self[0])
-    }
-}
-
-pub impl Vec2: ToStr {
-    pure fn to_str() -> ~str {
-        fmt!("Vec2[ %f, %f ]", self[0], self[1])
     }
 }
 
@@ -216,190 +211,188 @@ pub impl Vec2: ToStr {
 //
 //  Vec3
 //
-pub struct Vec3 { x: float, y: float, z: float }
+pub struct Vec3<T> { x: T, y: T, z: T }
 
 //
 //  Constructor
 //
 #[inline(always)]
-pub pure fn Vec3(x: float, y: float, z: float) -> Vec3 {
-    Vec3 { x: x, y: y, z: z }
+pub pure fn Vec3<T:Copy>(x: T, y: T, z: T) -> Vec3<T> {
+    Vec3 { x: move x, y: move y, z: move z }
 }
 
 pub mod Vec3 {
-    pub const zero     :Vec3 = Vec3 { x: 0f, y: 0f, z: 0f };
-    pub const unit_x   :Vec3 = Vec3 { x: 1f, y: 0f, z: 0f };
-    pub const unit_y   :Vec3 = Vec3 { x: 0f, y: 1f, z: 0f };
-    pub const unit_z   :Vec3 = Vec3 { x: 0f, y: 0f, z: 1f };
-    pub const identity :Vec3 = Vec3 { x: 1f, y: 1f, z: 1f };
+    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(0) } }
+    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(1), y: from_int(0), z: from_int(0) } }
+    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(1), z: from_int(0) } }
+    #[inline(always)] pub pure fn unit_z   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(1) } }
+    #[inline(always)] pub pure fn identity <T: Num>() -> Vec3<T> { Vec3 { x: from_int(1), y: from_int(1), z: from_int(1) } }
 }
 
-pub impl Vec3: Vector3<float> {
+pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     #[inline(always)]
-    fn cross(other: &Vec3) -> Vec3 {
+    fn cross(other: &Vec3<T>) -> Vec3<T> {
         Vec3((self[1] * other[2]) - (self[2] * other[1]),
              (self[2] * other[0]) - (self[0] * other[2]),
              (self[0] * other[1]) - (self[1] * other[0]))
     }
 }
 
-pub impl Vec3: Vector<float> {
+pub impl<T:Copy Num Sqrt> Vec3<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
-    pure fn add_t(value: float) -> Vec3 {
+    pure fn add_t(value: T) -> Vec3<T> {
         Vec3(self[0] + value,
              self[1] + value,
              self[2] + value)
     }
     
     #[inline(always)]
-    pure fn sub_t(value: float) -> Vec3 {
+    pure fn sub_t(value: T) -> Vec3<T> {
         Vec3(self[0] - value,
              self[1] - value,
              self[2] - value)
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Vec3 {
+    pure fn mul_t(value: T) -> Vec3<T> {
         Vec3(self[0] * value,
              self[1] * value,
              self[2] * value)
     }
     
     #[inline(always)]
-    pure fn div_t(value: float) -> Vec3 {
+    pure fn div_t(value: T) -> Vec3<T> {
         Vec3(self[0] / value,
              self[1] / value,
              self[2] / value)
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec3) -> Vec3{
+    pure fn add_v(other: &Vec3<T>) -> Vec3<T>{
         Vec3(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2])
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec3) -> Vec3{
+    pure fn sub_v(other: &Vec3<T>) -> Vec3<T>{
         Vec3(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2])
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec3) -> float {
+    pure fn dot(other: &Vec3<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
     }
     
     #[inline(always)]
-    pure fn magnitude2() -> float {
+    pure fn magnitude2() -> T {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2]
     }
     
     #[inline(always)]
-    pure fn magnitude() -> float {
+    pure fn magnitude() -> T {
         self.magnitude2().sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec3 {
-        let n = 1f / self.magnitude();
+    pure fn normalize() -> Vec3<T> {
+        let mut n: T = from_int(1);
+        n /= self.magnitude();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec3, value: float) -> Vec3 {
+    pure fn lerp(other: &Vec3<T>, value: T) -> Vec3<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
     }
-    
+}
+
+pub impl<T:Copy> Vec3<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn min(other: &Vec3) -> Vec3 {
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Vec3<T>, *T>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
+    }
+}
+
+pub impl<T:Copy MinMax> Vec3<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec3<T>) -> Vec3<T> {
         Vec3(min(&self[0], &other[0]),
              min(&self[1], &other[1]),
              min(&self[2], &other[2]))
     }
     
     #[inline(always)]
-    pure fn max(other: &Vec3) -> Vec3 {
+    pure fn max(other: &Vec3<T>) -> Vec3<T> {
         Vec3(max(&self[0], &other[0]),
              max(&self[1], &other[1]),
              max(&self[2], &other[2]))
     }
 }
 
-pub impl Vec3: Index<uint, float> {
+pub impl<T:Copy Abs> Vec3<T>: Abs {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec3, *float>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl Vec3: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec3 {
+    pure fn abs() -> Vec3<T> {
         Vec3(abs(&self[0]),
              abs(&self[1]),
              abs(&self[2]))
     }
 }
 
-pub impl Vec3: Neg<Vec3> {
+pub impl<T:Copy Neg<T>> Vec3<T>: Neg<Vec3<T>> {
     #[inline(always)]
-    pure fn neg() -> Vec3 {
+    pure fn neg() -> Vec3<T> {
         Vec3(-self[0], -self[1], -self[2])
     }
 }
 
-pub impl Vec3: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Vec3<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec3) -> bool {
+    pure fn eq(other: &Vec3<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec3) -> bool {
+    pure fn ne(other: &Vec3<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Vec3: ExactEq {
+pub impl<T:Copy Eq> Vec3<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Vec3) -> bool {
+    pure fn exact_eq(other: &Vec3<T>) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2]
     }
 }
 
-pub impl Vec3: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Vec3) -> bool {
+    pure fn fuzzy_eq(other: &Vec3<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
     }
 }
 
-pub impl Vec3: ToPtr<float> {
+pub impl<T:Copy> Vec3<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         to_unsafe_ptr(&self[0])
-    }
-}
-
-pub impl Vec3: ToStr {
-    pure fn to_str() -> ~str {
-        fmt!("Vec3[ %f, %f, %f ]", self[0], self[1], self[2])
     }
 }
 
@@ -411,31 +404,31 @@ pub impl Vec3: ToStr {
 //
 //  Vec4
 //
-pub struct Vec4 { x: float, y: float, z: float, w: float }
+pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub mod Vec4 {
-    pub const zero     :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 0f };
-    pub const unit_x   :Vec4 = Vec4 { x: 1f, y: 0f, z: 0f, w: 0f };
-    pub const unit_y   :Vec4 = Vec4 { x: 0f, y: 1f, z: 0f, w: 0f };
-    pub const unit_z   :Vec4 = Vec4 { x: 0f, y: 0f, z: 1f, w: 0f };
-    pub const unit_w   :Vec4 = Vec4 { x: 0f, y: 0f, z: 0f, w: 1f };
-    pub const identity :Vec4 = Vec4 { x: 1f, y: 1f, z: 1f, w: 1f };
+    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(0) } }
+    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(0), z: from_int(0), w: from_int(0) } }
+    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(1), z: from_int(0), w: from_int(0) } }
+    #[inline(always)] pub pure fn unit_z   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(1), w: from_int(0) } }
+    #[inline(always)] pub pure fn unit_w   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(1) } }
+    #[inline(always)] pub pure fn identity <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(1), z: from_int(1), w: from_int(1) } }
 }
 
 //
 //  Constructor
 //
 #[inline(always)]
-pub pure fn Vec4(x: float, y: float, z: float, w: float) -> Vec4 {
-    Vec4 { x: x, y: y, z: z, w: w }
+pub pure fn Vec4<T:Copy>(x: T, y: T, z: T, w: T) -> Vec4<T> {
+    Vec4 { x: move x, y: move y, z: move z, w: move w }
 }
 
-pub impl Vec4: Vector<float> {
+pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
-    pure fn add_t(value: float) -> Vec4 {
+    pure fn add_t(value: T) -> Vec4<T> {
         Vec4(self[0] + value,
              self[1] + value,
              self[2] + value,
@@ -443,7 +436,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn sub_t(value: float) -> Vec4 {
+    pure fn sub_t(value: T) -> Vec4<T> {
         Vec4(self[0] - value,
              self[1] - value,
              self[2] - value,
@@ -451,7 +444,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Vec4 {
+    pure fn mul_t(value: T) -> Vec4<T> {
         Vec4(self[0] * value,
              self[1] * value,
              self[2] * value,
@@ -459,7 +452,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn div_t(value: float) -> Vec4 {
+    pure fn div_t(value: T) -> Vec4<T> {
         Vec4(self[0] / value,
              self[1] / value,
              self[2] / value,
@@ -467,7 +460,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec4) -> Vec4{
+    pure fn add_v(other: &Vec4<T>) -> Vec4<T> {
         Vec4(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
@@ -475,7 +468,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec4) -> Vec4{
+    pure fn sub_v(other: &Vec4<T>) -> Vec4<T> {
         Vec4(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
@@ -483,7 +476,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec4) -> float {
+    pure fn dot(other: &Vec4<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -491,7 +484,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn magnitude2() -> float {
+    pure fn magnitude2() -> T {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2] +
@@ -499,23 +492,37 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn magnitude() -> float {
+    pure fn magnitude() -> T {
         self.magnitude2().sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec4 {
-        let n = 1f / self.magnitude();
+    pure fn normalize() -> Vec4<T> {
+        let mut n: T = from_int(1);
+        n /= self.magnitude();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec4, value: float) -> Vec4 {
+    pure fn lerp(other: &Vec4<T>, value: T) -> Vec4<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
     }
-    
+}
+
+pub impl<T:Copy> Vec4<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn min(other: &Vec4) -> Vec4 {
+    pure fn index(i: uint) -> T {
+        unsafe {
+            do buf_as_slice(
+                transmute::<*Vec4<T>, *T>(
+                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
+    }
+}
+
+pub impl<T:Copy MinMax> Vec4<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec4<T>) -> Vec4<T> {
         Vec4(min(&self[0], &other[0]),
              min(&self[1], &other[1]),
              min(&self[2], &other[2]),
@@ -523,7 +530,7 @@ pub impl Vec4: Vector<float> {
     }
     
     #[inline(always)]
-    pure fn max(other: &Vec4) -> Vec4 {
+    pure fn max(other: &Vec4<T>) -> Vec4<T> {
         Vec4(max(&self[0], &other[0]),
              max(&self[1], &other[1]),
              max(&self[2], &other[2]),
@@ -531,20 +538,9 @@ pub impl Vec4: Vector<float> {
     }
 }
 
-pub impl Vec4: Index<uint, float> {
+pub impl<T:Copy Abs> Vec4<T>: Abs {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
-        unsafe {
-            do buf_as_slice(
-                transmute::<*Vec4, *float>(
-                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl Vec4: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec4 {
+    pure fn abs() -> Vec4<T> {
         Vec4(abs(&self[0]),
              abs(&self[1]),
              abs(&self[2]),
@@ -552,28 +548,29 @@ pub impl Vec4: Abs {
     }
 }
 
-pub impl Vec4: Neg<Vec4> {
+pub impl<T:Copy Neg<T>> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
-    pure fn neg() -> Vec4 {
+    pure fn neg() -> Vec4<T> {
         Vec4(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl Vec4: Eq {
+pub impl<T:Copy FuzzyEq> Vec4<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec4) -> bool {
+    pure fn eq(other: &Vec4<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec4) -> bool {
+    pure fn ne(other: &Vec4<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Vec4: ExactEq {
+// TODO: make work for T:Integer
+pub impl<T:Copy Eq> Vec4<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Vec4) -> bool {
+    pure fn exact_eq(other: &Vec4<T>) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
@@ -581,9 +578,9 @@ impl Vec4: ExactEq {
     }
 }
 
-pub impl Vec4: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Vec4) -> bool {
+    pure fn fuzzy_eq(other: &Vec4<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
@@ -591,15 +588,9 @@ pub impl Vec4: FuzzyEq {
     }
 }
 
-pub impl Vec4: ToPtr<float> {
+pub impl<T:Copy> Vec4<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         to_unsafe_ptr(&self[0])
-    }
-}
-
-pub impl Vec4: ToStr {
-    pure fn to_str() -> ~str {
-        fmt!("Vec4[ %f, %f, %f, %f ]", self[0], self[1], self[2], self[3])
     }
 }

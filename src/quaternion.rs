@@ -1,8 +1,10 @@
 use cast::transmute;
-use vec::raw::buf_as_slice;
-use ptr::to_unsafe_ptr;
 use cmp::Eq;
+use num::from_int;
+use ptr::to_unsafe_ptr;
+use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
+
 use math::{ToPtr, ExactEq, Sqrt};
 use matrix::{Mat3, Mat4};
 use vector::Vec3;
@@ -27,8 +29,12 @@ pub trait Quaternion<T> {
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
     
-    pure fn to_Mat3() -> Mat3;
-    pure fn to_Mat4() -> Mat4;
+    pure fn to_Mat3() -> Mat3<T>;
+    pure fn to_Mat4() -> Mat4<T>;
+}
+
+pub trait ToQuat<T> {
+    pure fn to_Quat() -> Quat<T>;
 }
 
 
@@ -39,30 +45,30 @@ pub trait Quaternion<T> {
 //
 //  Quat struct definition
 //
-pub struct Quat { w: float, x: float, y: float, z: float }
+pub struct Quat<T> { w: T, x: T, y: T, z: T }
 
 //
 //  Quat Constructor
 //
 #[inline(always)]
-pub pure fn Quat(w: float, x: float, y: float, z: float) -> Quat {
-    Quat { w: w, x: x, y: y, z: z }
+pub pure fn Quat<T:Copy>(w: T, x: T, y: T, z: T) -> Quat<T> {
+    Quat { w: move w, x: move x, y: move y, z: move z }
 }
 
 pub mod Quat {
-    pub const zero     :Quat = Quat { w: 0f, x: 0f, y: 0f, z: 0f };
-    pub const identity :Quat = Quat { w: 1f, x: 0f, y: 0f, z: 0f };
+    #[inline(always)] pub pure fn zero     <T: Num>() -> Quat<T> { Quat { w: from_int(0), x: from_int(0), y: from_int(0), z: from_int(0) } }
+    #[inline(always)] pub pure fn identity <T: Num>() -> Quat<T> { Quat { w: from_int(1), x: from_int(0), y: from_int(0), z: from_int(0) } }
 }
 
 //
 //  Quaternion Implementation
 //
-pub impl Quat: Quaternion<float> {
+pub impl<T:Copy Num Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     
     #[inline(always)]
-    pure fn mul_t(value: float) -> Quat {
+    pure fn mul_t(value: T) -> Quat<T> {
         Quat(self[0] * value,
              self[1] * value,
              self[2] * value,
@@ -70,7 +76,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn div_t(value: float) -> Quat {
+    pure fn div_t(value: T) -> Quat<T> {
         Quat(self[0] / value,
              self[1] / value,
              self[2] / value,
@@ -78,7 +84,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn add_q(other: &Quat) -> Quat{
+    pure fn add_q(other: &Quat<T>) -> Quat<T> {
         Quat(self[0] + other[0],
              self[1] + other[1],
              self[2] + other[2],
@@ -86,7 +92,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn sub_q(other: &Quat) -> Quat{
+    pure fn sub_q(other: &Quat<T>) -> Quat<T> {
         Quat(self[0] - other[0],
              self[1] - other[1],
              self[2] - other[2],
@@ -94,7 +100,7 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn mul_q(other: &Quat) -> Quat {
+    pure fn mul_q(other: &Quat<T>) -> Quat<T> {
         Quat(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
              self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
              self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
@@ -102,17 +108,19 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn conjugate() -> Quat {
+    pure fn conjugate() -> Quat<T> {
         Quat(self.w, -self.x, -self.y, -self.z)
     }
     
     #[inline(always)]
-    pure fn inverse() -> Quat {
-        self.conjugate().mul_t((1f / self.magnitude2()))
+    pure fn inverse() -> Quat<T> {
+        let mut n: T = from_int(1);
+        n /= self.magnitude2();
+        self.conjugate().mul_t(n)
     }
     
     #[inline(always)]
-    pure fn magnitude2() -> float {
+    pure fn magnitude2() -> T {
         self.w * self.w +
         self.x * self.x +
         self.y * self.y +
@@ -120,12 +128,12 @@ pub impl Quat: Quaternion<float> {
     }
     
     #[inline(always)]
-    pure fn magnitude() -> float {
+    pure fn magnitude() -> T {
         self.magnitude2().sqrt()
     }
     
     #[inline(always)]
-    pure fn to_Mat3() -> Mat3 {
+    pure fn to_Mat3() -> Mat3<T> {
         let x2 = self.x + self.x;
         let y2 = self.y + self.y;
         let z2 = self.z + self.z;
@@ -142,50 +150,53 @@ pub impl Quat: Quaternion<float> {
         let wz2 = z2 * self.w;
         let wx2 = x2 * self.w;
         
-        return Mat3(1f - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
-                         xy2 + wz2, 1f - xx2 - zz2,      yz2 - wx2,
-                         xz2 - wy2,      yz2 + wx2, 1f - xx2 - yy2);
+        let _1: T = from_int(1);
+        
+        Mat3(_1 - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
+                  xy2 + wz2, _1 - xx2 - zz2,      yz2 - wx2,
+                  xz2 - wy2,      yz2 + wx2, _1 - xx2 - yy2)
     }
     
     #[inline(always)]
-    pure fn to_Mat4() -> Mat4 {
+    pure fn to_Mat4() -> Mat4<T> {
         self.to_Mat3().to_Mat4()
     }
 }
 
-pub impl Quat: Index<uint, float> {
+pub impl<T:Copy> Quat<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
+    pure fn index(i: uint) -> T {
         unsafe {
             do buf_as_slice(
-                transmute::<*Quat, *float>(
+                transmute::<*Quat<T>, *T>(
                     to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
     }
 }
 
-pub impl Quat: Neg<Quat> {
+pub impl<T:Copy Neg<T>> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
-    pure fn neg() -> Quat {
+    pure fn neg() -> Quat<T> {
         Quat(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl Quat: Eq {
+// TODO: make work for T:Integer
+pub impl<T:Copy FuzzyEq> Quat<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Quat) -> bool {
+    pure fn eq(other: &Quat<T>) -> bool {
         self.fuzzy_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Quat) -> bool {
+    pure fn ne(other: &Quat<T>) -> bool {
         !(self == *other)
     }
 }
 
-impl Quat: ExactEq {
+pub impl<T:Copy Eq> Quat<T>: ExactEq {
     #[inline(always)]
-    pure fn exact_eq(other: &Quat) -> bool {
+    pure fn exact_eq(other: &Quat<T>) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
@@ -193,9 +204,9 @@ impl Quat: ExactEq {
     }
 }
 
-pub impl Quat: FuzzyEq {
+pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Quat) -> bool {
+    pure fn fuzzy_eq(other: &Quat<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
@@ -203,15 +214,9 @@ pub impl Quat: FuzzyEq {
     }
 }
 
-pub impl Quat: ToPtr<float> {
+pub impl<T:Copy> Quat<T>: ToPtr<T> {
     #[inline(always)]
-    pure fn to_ptr() -> *float {
+    pure fn to_ptr() -> *T {
         to_unsafe_ptr(&self[0])
-    }
-}
-
-pub impl Quat: ToStr {
-    pure fn to_str() -> ~str {
-        fmt!("Quat[ %f, %f, %f, %f ]", self.w, self.x, self.y, self.z)
     }
 }
