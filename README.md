@@ -1,6 +1,6 @@
-# lm-rs
+# Lmath-rs
 
-lm-rs is generic linear algebra library for Rust. There is still much to do, unit tests to write, bugs to fix, and performance enhancements to make. Help is much appreciated, so please don't hesitate to send me a pull request.
+Lmath is generic linear algebra library for Rust. There is still much to do, unit tests to write, bugs to fix, and performance enhancements to make. Help is much appreciated, so please don't hesitate to send me a pull request.
 
 ## Todo:
 

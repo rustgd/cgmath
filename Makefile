@@ -1,4 +1,4 @@
-TARGET = lm
+TARGET = lmath
 
 ROOT_DIR = .
 
