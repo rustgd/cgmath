@@ -1,4 +1,17 @@
-<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Llama_de_Bolivia_%28pixinn.net%29.jpg/399px-Llama_de_Bolivia_%28pixinn.net%29.jpg" alt="Generic llama, courtesy of WikiMedia" title="Llama" align="left" width="300px" />
+~~~
+
+              /|___
+             / .__/
+            |  |
+   ________/   \
+  /            \
+ /|   |       \
+  |   |       |
+  /  /////|  |
+  | |      | |       || _  _  _  
+   ||       ||       ||(_||||(_|
+
+~~~
 
 # Llama
 
