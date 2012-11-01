@@ -47,8 +47,8 @@ pub struct Quat<T> { w: T, x: T, y: T, z: T }
 pub mod Quat {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(w: T, x: T, y: T, z: T) -> Quat<T> {
-        Quat { w: w, x: x, y: y, z: z }
+    pub pure fn new<T>(w: T, x: T, y: T, z: T) -> Quat<T> {
+        Quat { w: move w, x: move x, y: move y, z: move z }
     }
     
     #[inline(always)] pub pure fn zero     <T: Num>() -> Quat<T> { Quat { w: from_int(0), x: from_int(0), y: from_int(0), z: from_int(0) } }

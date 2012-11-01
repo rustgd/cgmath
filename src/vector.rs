@@ -1,8 +1,8 @@
 use cast::transmute;
-use vec::raw::buf_as_slice;
-use ptr::to_unsafe_ptr;
 use cmp::{Eq, Ord};
 use num::from_int;
+use vec::raw::buf_as_slice;
+use ptr::to_unsafe_ptr;
 use std::cmp::FuzzyEq;
 
 use math::*;
@@ -45,8 +45,8 @@ pub struct Vec2<T> { x: T, y: T }
 pub mod Vec2 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(x: T, y: T) -> Vec2<T> {
-        Vec2 { x: x, y: y }
+    pub pure fn new<T>(x: T, y: T) -> Vec2<T> {
+        Vec2 { x: move x, y: move y }
     }
     
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(0) } }
@@ -213,8 +213,8 @@ pub struct Vec3<T> { x: T, y: T, z: T }
 pub mod Vec3 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(x: T, y: T, z: T) -> Vec3<T> {
-        Vec3 { x: x, y: y, z: z }
+    pub pure fn new<T>(x: T, y: T, z: T) -> Vec3<T> {
+        Vec3 { x: move x, y: move y, z: move z }
     }
 
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(0) } }
@@ -404,8 +404,8 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 pub mod Vec4 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(x: T, y: T, z: T, w: T) -> Vec4<T> {
-        Vec4 { x: x, y: y, z: z, w: w }
+    pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: move x, y: move y, z: move z, w: move w }
     }
 
     #[inline(always)] pub pure fn zero     <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(0) } }
