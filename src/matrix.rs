@@ -65,16 +65,16 @@ pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 pub mod Mat2 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(c0r0: T, c0r1: T,
-                            c1r0: T, c1r1: T) -> Mat2<T> {
-        Mat2::from_cols(&Vec2::new(c0r0, c0r1),
-                        &Vec2::new(c1r0, c1r1))
+    pub pure fn new<T>(c0r0: T, c0r1: T,
+                       c1r0: T, c1r1: T) -> Mat2<T> {
+        Mat2::from_cols(Vec2::new(move c0r0, move c0r1),
+                        Vec2::new(move c1r0, move c1r1))
     }
 
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(c0: &Vec2<T>, c1: &Vec2<T>) -> Mat2<T> {
-        Mat2 { x: *c0,
-               y: *c1 }
+    pub pure fn from_cols<T>(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
+        Mat2 { x: move c0,
+               y: move c1 }
     }
     
     #[inline(always)]
@@ -111,8 +111,8 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat2<T> {
-        Mat2::from_cols(&self[0].mul_t(value),
-                        &self[1].mul_t(value))
+        Mat2::from_cols(self[0].mul_t(value),
+                        self[1].mul_t(value))
     }
     
     #[inline(always)]
@@ -123,14 +123,14 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_cols(&self[0].add_v(&other[0]),
-                        &self[1].add_v(&other[1]))
+        Mat2::from_cols(self[0].add_v(&other[0]),
+                        self[1].add_v(&other[1]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_cols(&self[0].sub_v(&other[0]),
-                        &self[1].sub_v(&other[1]))
+        Mat2::from_cols(self[0].sub_v(&other[0]),
+                        self[1].sub_v(&other[1]))
     }
     
     #[inline(always)]
@@ -188,7 +188,7 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
 pub impl<T:Copy Neg<T>> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
     pure fn neg() -> Mat2<T> {
-        Mat2::from_cols(&-self[0], &-self[1])
+        Mat2::from_cols(-self[0], -self[1])
     }
 }
 
@@ -234,19 +234,19 @@ pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 pub mod Mat3 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(c0r0:T, c0r1:T, c0r2:T,
-                            c1r0:T, c1r1:T, c1r2:T,
-                            c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
-        Mat3::from_cols(&Vec3::new(c0r0, c0r1, c0r2),
-                        &Vec3::new(c1r0, c1r1, c1r2),
-                        &Vec3::new(c2r0, c2r1, c2r2))
+    pub pure fn new<T>(c0r0:T, c0r1:T, c0r2:T,
+                       c1r0:T, c1r1:T, c1r2:T,
+                       c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
+        Mat3::from_cols(Vec3::new(move c0r0, move c0r1, move c0r2),
+                        Vec3::new(move c1r0, move c1r1, move c1r2),
+                        Vec3::new(move c2r0, move c2r1, move c2r2))
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(c0: &Vec3<T>, c1: &Vec3<T>, c2: &Vec3<T>) -> Mat3<T> {
-        Mat3 { x: *c0,
-               y: *c1,
-               z: *c2 }
+    pub pure fn from_cols<T>(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
+        Mat3 { x: move c0,
+               y: move c1,
+               z: move c2 }
     }
     
     #[inline(always)]
@@ -286,9 +286,9 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat3<T> {
-        Mat3::from_cols(&self[0].mul_t(value),
-                        &self[1].mul_t(value),
-                        &self[2].mul_t(value))
+        Mat3::from_cols(self[0].mul_t(value),
+                        self[1].mul_t(value),
+                        self[2].mul_t(value))
     }
     
     #[inline(always)]
@@ -300,16 +300,16 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_cols(&self[0].add_v(&other[0]),
-                        &self[1].add_v(&other[1]),
-                        &self[2].add_v(&other[2]))
+        Mat3::from_cols(self[0].add_v(&other[0]),
+                        self[1].add_v(&other[1]),
+                        self[2].add_v(&other[2]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_cols(&self[0].sub_v(&other[0]),
-                        &self[1].sub_v(&other[1]),
-                        &self[2].sub_v(&other[2]))
+        Mat3::from_cols(self[0].sub_v(&other[0]),
+                        self[1].sub_v(&other[1]),
+                        self[2].sub_v(&other[2]))
     }
     
     #[inline(always)]
@@ -446,7 +446,7 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
 pub impl<T:Copy Neg<T>> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
     pure fn neg() -> Mat3<T> {
-        Mat3::from_cols(&-self[0], &-self[1], &-self[2])
+        Mat3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
@@ -501,22 +501,22 @@ pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 pub mod Mat4 {
     
     #[inline(always)]
-    pub pure fn new<T:Copy>(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
-                            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
-                            c2r0: T, c2r1: T, c2r2: T, c2r3: T,
-                            c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
-        Mat4::from_cols(&Vec4::new(c0r0, c0r1, c0r2, c0r3),
-                        &Vec4::new(c1r0, c1r1, c1r2, c1r3),
-                        &Vec4::new(c2r0, c2r1, c2r2, c2r3),
-                        &Vec4::new(c3r0, c3r1, c3r2, c3r3))
+    pub pure fn new<T>(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+                       c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+                       c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+                       c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
+        Mat4::from_cols(Vec4::new(move c0r0, move c0r1, move c0r2, move c0r3),
+                        Vec4::new(move c1r0, move c1r1, move c1r2, move c1r3),
+                        Vec4::new(move c2r0, move c2r1, move c2r2, move c2r3),
+                        Vec4::new(move c3r0, move c3r1, move c3r2, move c3r3))
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T:Copy>(c0: &Vec4<T>, c1: &Vec4<T>, c2: &Vec4<T>, c3: &Vec4<T>) -> Mat4<T> {
-        Mat4 { x: *c0,
-               y: *c1,
-               z: *c2,
-               w: *c3 }
+    pub pure fn from_cols<T>(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
+        Mat4 { x: move c0,
+               y: move c1,
+               z: move c2,
+               w: move c3 }
     }
     
     #[inline(always)]
@@ -559,10 +559,10 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat4<T> {
-        Mat4::from_cols(&self[0].mul_t(value),
-                        &self[1].mul_t(value),
-                        &self[2].mul_t(value),
-                        &self[3].mul_t(value))
+        Mat4::from_cols(self[0].mul_t(value),
+                        self[1].mul_t(value),
+                        self[2].mul_t(value),
+                        self[3].mul_t(value))
     }
     
     #[inline(always)]
@@ -575,18 +575,18 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(&self[0].add_v(&other[0]),
-                        &self[1].add_v(&other[1]),
-                        &self[2].add_v(&other[2]),
-                        &self[3].add_v(&other[3]))
+        Mat4::from_cols(self[0].add_v(&other[0]),
+                        self[1].add_v(&other[1]),
+                        self[2].add_v(&other[2]),
+                        self[3].add_v(&other[3]))
     }
     
     #[inline(always)]
     pure fn sub_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(&self[0].sub_v(&other[0]),
-                        &self[1].sub_v(&other[1]),
-                        &self[2].sub_v(&other[2]),
-                        &self[3].sub_v(&other[3]))
+        Mat4::from_cols(self[0].sub_v(&other[0]),
+                        self[1].sub_v(&other[1]),
+                        self[2].sub_v(&other[2]),
+                        self[3].sub_v(&other[3]))
     }
     
     #[inline(always)]
@@ -684,13 +684,13 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
     
     #[inline(always)]
     pure fn translate(vec: &Vec3<T>) -> Mat4<T> {
-        Mat4::from_cols(&self[0],
-                        &self[1],
-                        &self[2],
-                        &Vec4::new(self[3][0] + vec.x,
-                                   self[3][1] + vec.y,
-                                   self[3][2] + vec.z,
-                                   self[3][3]))
+        Mat4::from_cols(self[0],
+                        self[1],
+                        self[2],
+                        Vec4::new(self[3][0] + vec.x,
+                                  self[3][1] + vec.y,
+                                  self[3][2] + vec.z,
+                                  self[3][3]))
     }
 }
 
@@ -707,7 +707,7 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
 pub impl<T:Copy Neg<T>> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
     pure fn neg() -> Mat4<T> {
-        Mat4::from_cols(&-self[0], &-self[1], &-self[2], &-self[3])
+        Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

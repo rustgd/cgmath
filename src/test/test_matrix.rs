@@ -15,8 +15,8 @@ fn test_Mat2() {
     assert a == Mat2::new(1f, 3f,
                           2f, 4f);
     
-    assert a == Mat2::from_cols(&Vec2::new(1f, 3f),
-                                &Vec2::new(2f, 4f));
+    assert a == Mat2::from_cols(Vec2::new(1f, 3f),
+                                Vec2::new(2f, 4f));
     
     assert a[0] == Vec2::new(1f, 3f);
     assert a[1] == Vec2::new(2f, 4f);
@@ -82,9 +82,9 @@ fn test_Mat3() {
                           2f, 5f, 8f,
                           3f, 6f, 9f);
     
-    assert a == Mat3::from_cols(&Vec3::new(1f, 4f, 7f),
-                                &Vec3::new(2f, 5f, 8f),
-                                &Vec3::new(3f, 6f, 9f));
+    assert a == Mat3::from_cols(Vec3::new(1f, 4f, 7f),
+                                Vec3::new(2f, 5f, 8f),
+                                Vec3::new(3f, 6f, 9f));
     
     assert a[0] == Vec3::new(1f, 4f, 7f);
     assert a[1] == Vec3::new(2f, 5f, 8f);
@@ -170,10 +170,10 @@ fn test_Mat4() {
                           3f, 7f, 11f, 15f,
                           4f, 8f, 12f, 16f);
     
-    assert a == Mat4::from_cols(&Vec4::new(1f, 5f,  9f, 13f),
-                                &Vec4::new(2f, 6f, 10f, 14f),
-                                &Vec4::new(3f, 7f, 11f, 15f),
-                                &Vec4::new(4f, 8f, 12f, 16f));
+    assert a == Mat4::from_cols(Vec4::new(1f, 5f,  9f, 13f),
+                                Vec4::new(2f, 6f, 10f, 14f),
+                                Vec4::new(3f, 7f, 11f, 15f),
+                                Vec4::new(4f, 8f, 12f, 16f));
     
     assert a[0] == Vec4::new(1f, 5f,  9f, 13f);
     assert a[1] == Vec4::new(2f, 6f, 10f, 14f);
