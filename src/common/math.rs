@@ -1,5 +1,5 @@
 use cmp::Ord;
-use num::{Num, from_int};
+use num::*;
 
 use ncast::*;
 
@@ -12,6 +12,11 @@ pub trait ExactEq {
     pure fn exact_eq(other: &self) -> bool;
 }
 
+/**
+ * TODO: This trait will be implemented for <T:Num Ord> when generic trait
+ * support is improved. At the moment this would cause a conflict between the
+ * implementations in lmath::vector.
+ */
 trait MinMax {
     pure fn min(other: &self) -> self;
     pure fn max(other: &self) -> self;
@@ -85,7 +90,11 @@ impl float: MinMax {
     #[inline(always)] pure fn max(other: &float) -> float { if self > *other { self } else { *other } }
 }
 
-
+/**
+ * TODO: This trait will be implemented for <T:NumCast Ord> when generic trait
+ * support is improved. At the moment this would cause a conflict between the
+ * implementations in lmath::vector.
+ */
 trait Abs {
     pure fn abs() -> self;
 }
