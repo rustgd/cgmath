@@ -2,7 +2,7 @@ use float::consts::pi;
 use float::tan;
 
 use matrix::Mat4;
-use num_util::*;
+use ncast::*;
 
 //
 //  Create a perspective projection matrix

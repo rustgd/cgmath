@@ -17,7 +17,8 @@ pub mod vector;
 use common::*;
 pub mod common {
     pub mod math;
-    pub mod num_util;
+    pub mod ncast;
+    pub mod ntrait;
 }
 
 #[test]

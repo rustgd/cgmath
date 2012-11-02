@@ -6,7 +6,7 @@ use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
 use math::*;
-use num_util::*;
+use ncast::*;
 use quaternion::{Quat, ToQuat};
 use vector::{Vec2, Vec3, Vec4};
 

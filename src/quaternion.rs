@@ -5,7 +5,7 @@ use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
-use math::{ToPtr, ExactEq, Sqrt};
+use math::*;
 use matrix::{Mat3, Mat4};
 use vector::Vec3;
 

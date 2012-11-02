@@ -1,7 +1,7 @@
 use cmp::Ord;
 use num::{Num, from_int};
 
-use num_util::*;
+use ncast::*;
 
 // TODO: move to a more appropriate module
 pub trait ToPtr<T> {
