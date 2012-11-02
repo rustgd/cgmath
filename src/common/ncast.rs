@@ -26,11 +26,11 @@ trait NumCast {
 }
 
 #[inline(always)]
-pub pure fn cast<T:NumCast, U:NumCast>(n: T) -> U { n.cast() }
+pub pure fn cast<T:NumCast, U:NumCast>(n: T) -> U { move n.cast() }
 
 pub impl u8: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u8 { n.to_u8() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u8 { move n.to_u8() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self          }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -50,8 +50,8 @@ pub impl u8: NumCast {
 }
 
 pub impl u16: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u16 { n.to_u16() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u16 { move n.to_u16() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self          }
@@ -71,8 +71,8 @@ pub impl u16: NumCast {
 }
 
 pub impl u32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u32 { n.to_u32() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u32 { move n.to_u32() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -92,8 +92,8 @@ pub impl u32: NumCast {
 }
 
 pub impl u64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u64 { n.to_u64() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u64 { move n.to_u64() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -113,8 +113,8 @@ pub impl u64: NumCast {
 }
 
 pub impl uint: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> uint { n.to_uint() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> uint { move n.to_uint() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -134,8 +134,8 @@ pub impl uint: NumCast {
 }
 
 pub impl i8: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i8 { n.to_i8() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i8 { move n.to_i8() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -155,8 +155,8 @@ pub impl i8: NumCast {
 }
 
 pub impl i16: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i16 { n.to_i16() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i16 { move n.to_i16() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -176,8 +176,8 @@ pub impl i16: NumCast {
 }
 
 pub impl i32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i32 { n.to_i32() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i32 { move n.to_i32() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -197,8 +197,8 @@ pub impl i32: NumCast {
 }
 
 pub impl i64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i64 { n.to_i64() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i64 { move n.to_i64() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -218,8 +218,8 @@ pub impl i64: NumCast {
 }
 
 pub impl int: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> int { n.to_int() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> int { move n.to_int() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -239,8 +239,8 @@ pub impl int: NumCast {
 }
 
 pub impl f32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f32 { n.to_f32() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f32 { move n.to_f32() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -260,8 +260,8 @@ pub impl f32: NumCast {
 }
 
 pub impl f64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f64 { n.to_f64() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f64 { move n.to_f64() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
@@ -281,8 +281,8 @@ pub impl f64: NumCast {
 }
 
 pub impl float: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> float { n.to_float() }
-    #[inline(always)] pure fn cast<T:NumCast>() -> T { from(self) }
+    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> float { move n.to_float() }
+    #[inline(always)] pure fn cast<T:NumCast>() -> T { move from(self) }
     
     #[inline(always)] pure fn to_u8()    -> u8    { self as u8    }
     #[inline(always)] pure fn to_u16()   -> u16   { self as u16   }
