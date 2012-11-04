@@ -210,7 +210,7 @@ pub trait Trig {
 #[inline(always)] pub pure fn tanh<T:Trig>(n: T) -> T { n.tanh() }
 #[inline(always)] pub pure fn atan2<T:Trig>(a: T, b: T) -> T { a.atan2(move b) }
 
-pub impl<T: NumCast> T: Trig {
+pub impl<T:NumCast> T: Trig {
     #[inline(always)] pure fn sin() -> T { f64::sin(self.cast()).cast() }
     #[inline(always)] pure fn cos() -> T { f64::cos(self.cast()).cast() }
     #[inline(always)] pure fn tan() -> T { f64::tan(self.cast()).cast() }
@@ -221,4 +221,18 @@ pub impl<T: NumCast> T: Trig {
     #[inline(always)] pure fn cosh() -> T { f64::cosh(self.cast()).cast() }
     #[inline(always)] pure fn tanh() -> T { f64::tanh(self.cast()).cast() }
     #[inline(always)] pure fn atan2(n: T) -> T { f64::atan2(self.cast(), move n.cast()).cast() }
+}
+
+
+pub trait AngleUnits {
+    pure fn to_radians() -> self;
+    pure fn to_degrees() -> self;
+}
+
+#[inline(always)] pub pure fn radians<T:AngleUnits>(degrees: T) -> T { degrees.to_radians() }
+#[inline(always)] pub pure fn degrees<T:AngleUnits>(radians: T) -> T { radians.to_degrees() }
+
+pub impl<T:Num NumCast> T: AngleUnits {
+    #[inline(always)] pure fn to_radians() -> T { self * cast(f64::consts::pi / 180f64) }
+    #[inline(always)] pure fn to_degrees() -> T { self * cast(180f64 / f64::consts::pi) }
 }
