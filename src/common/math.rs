@@ -100,74 +100,18 @@ trait Abs {
 }
 
 #[inline(always)]
-pure fn abs<T: Abs>(x: &T) -> T {
+pure fn abs<T:Abs>(x: &T) -> T {
     x.abs()
 }
 
-impl i8: Abs {
-    #[inline(always)]
-    pure fn abs() -> i8 {
-        if self >= 0 { self }
-        else         {-self }
-    }
-}
-
-impl i16: Abs {
-    #[inline(always)]
-    pure fn abs() -> i16 {
-        if self >= 0 { self }
-        else         {-self }
-    }
-}
-
-impl i32: Abs {
-    #[inline(always)]
-    pure fn abs() -> i32 {
-        if self >= 0 { self }
-        else         {-self }
-    }
-}
-
-impl i64: Abs {
-    #[inline(always)]
-    pure fn abs() -> i64 {
-        if self >= 0 { self }
-        else         {-self }
-    }
-}
-
-impl int: Abs {
-    #[inline(always)]
-    pure fn abs() -> int {
-        if self >= 0 { self }
-        else         {-self }
-    }
-}
-
-impl f32: Abs {
-    #[inline(always)]
-    pure fn abs() -> f32 {
-        if self >= 0f32 { self }
-        else            {-self }
-    }
-}
-
-impl f64: Abs {
-    #[inline(always)]
-    pure fn abs() -> f64 {
-        if self >= 0f64 { self }
-        else            {-self }
-    }
-}
-
-impl float: Abs {
-    #[inline(always)]
-    pure fn abs() -> float {
-        if self >= 0f { self }
-        else          {-self }
-    }
-}
-
+impl i8:    Abs { #[inline(always)] pure fn abs() -> i8    { if self >= 0    { self } else {-self } } }
+impl i16:   Abs { #[inline(always)] pure fn abs() -> i16   { if self >= 0    { self } else {-self } } }
+impl i32:   Abs { #[inline(always)] pure fn abs() -> i32   { if self >= 0    { self } else {-self } } }
+impl i64:   Abs { #[inline(always)] pure fn abs() -> i64   { if self >= 0    { self } else {-self } } }
+impl int:   Abs { #[inline(always)] pure fn abs() -> int   { if self >= 0    { self } else {-self } } }
+impl f32:   Abs { #[inline(always)] pure fn abs() -> f32   { if self >= 0f32 { self } else {-self } } }
+impl f64:   Abs { #[inline(always)] pure fn abs() -> f64   { if self >= 0f64 { self } else {-self } } }
+impl float: Abs { #[inline(always)] pure fn abs() -> float { if self >= 0f   { self } else {-self } } }
 
 pub trait Sqrt {
     pure fn sqrt() -> self;
@@ -222,7 +166,6 @@ pub impl<T:NumCast> T: Trig {
     #[inline(always)] pure fn tanh() -> T { f64::tanh(self.cast()).cast() }
     #[inline(always)] pure fn atan2(n: T) -> T { f64::atan2(self.cast(), move n.cast()).cast() }
 }
-
 
 pub trait AngleUnits {
     pure fn to_radians() -> self;
