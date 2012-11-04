@@ -78,19 +78,29 @@ pub mod Mat2 {
     }
     
     #[inline(always)]
-    pub pure fn zero<T:Num>() -> Mat2<T> {
-        Mat2 { x: Vec2::zero(),
-               y: Vec2::zero() }
+    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat2<T> {
+        let _0 = cast(0);
+        Mat2::new(value,    _0,
+                     _0, value)
     }
     
     #[inline(always)]
-    pub pure fn identity<T:Num>() -> Mat2<T> {
-        Mat2 { x: Vec2::unit_x(),
-               y: Vec2::unit_y() }
+    pub pure fn zero<T:Copy NumCast>() -> Mat2<T> {
+        let _0 = cast(0);
+        Mat2::new(_0, _0,
+                  _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Mat2<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat2::new(_1, _0,
+                  _0, _1)
     }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -250,21 +260,32 @@ pub mod Mat3 {
     }
     
     #[inline(always)]
-    pub pure fn zero<T:Num>() -> Mat3<T> {
-        Mat3 { x: Vec3::zero(),
-               y: Vec3::zero(),
-               z: Vec3::zero() }
+    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat3<T> {
+        let _0 = cast(0);
+        Mat3::new(value,    _0,    _0,
+                     _0, value,    _0,
+                     _0,    _0, value)
     }
     
     #[inline(always)]
-    pub pure fn identity<T:Num>() -> Mat3<T> {
-        Mat3 { x: Vec3::unit_x(),
-               y: Vec3::unit_y(),
-               z: Vec3::unit_z() }
+    pub pure fn zero<T:Copy NumCast>() -> Mat3<T> {
+        let _0 = cast(0);
+        Mat3::new(_0, _0, _0,
+                  _0, _0, _0,
+                  _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Mat3<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat3::new(_1, _0, _0,
+                  _0, _1, _0,
+                  _0, _0, _1)
     }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -373,20 +394,18 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
     #[inline(always)]
     pure fn scale(vec: &Vec3<T>) -> Mat3<T> {
-        self.mul_m(&Mat3::new(      vec.x, from_int(0), from_int(0),
-                              from_int(0),       vec.y, from_int(0),
-                              from_int(0), from_int(0),      vec.z))
+        let _0 = cast(0);
+        self.mul_m(&Mat3::new(vec.x,    _0,    _0,
+                                 _0, vec.y,    _0,
+                                 _0,    _0, vec.z))
     }
     
     #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
-        Mat4::new( self[0][0],  self[0][1],   self[0][2], from_int(0),
-                   self[1][0],  self[1][1],   self[1][2], from_int(0),
-                   self[2][0],  self[2][1],   self[2][2], from_int(0),
-                  from_int(0), from_int(0),  from_int(0), from_int(1))
+        Mat4::from_Mat3(&self)
     }
 }
 
@@ -520,23 +539,44 @@ pub mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn zero<T:Num>() -> Mat4<T> {
-        Mat4 { x: Vec4::zero(),
-               y: Vec4::zero(),
-               z: Vec4::zero(),
-               w: Vec4::zero() }
+    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat4<T> {
+        let _0 = cast(0);
+        Mat4::new(value,    _0,    _0,    _0,
+                     _0, value,    _0,    _0,
+                     _0,    _0, value,    _0,
+                     _0,    _0,    _0, value)
     }
     
     #[inline(always)]
-    pub pure fn identity<T:Num>() -> Mat4<T> {
-        Mat4 { x: Vec4::unit_x(),
-               y: Vec4::unit_y(),
-               z: Vec4::unit_z(),
-               w: Vec4::unit_w() }
+    pub pure fn from_Mat3<T:Copy NumCast>(m: &Mat3<T>) -> Mat4<T> {
+        let _0 = cast(0);
+        Mat4::new(m[0][0], m[0][1], m[0][2],     _0,
+                  m[1][0], m[1][1], m[1][2],     _0,
+                  m[2][0], m[2][1], m[2][2],     _0,
+                       _0,      _0,      _0, cast(1))
+    }
+    
+    #[inline(always)]
+    pub pure fn zero<T:Copy NumCast>() -> Mat4<T> {
+        let _0 = cast(0);
+        Mat4::new(_0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Mat4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat4::new(_1, _0, _0, _0,
+                  _0, _1, _0, _0,
+                  _0, _0, _1, _0,
+                  _0, _0, _0, _1)
     }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -673,13 +713,14 @@ pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
     #[inline(always)]
     pure fn scale(vec: &Vec3<T>) -> Mat4<T> {
-        self.mul_m(&Mat4::new(      vec.x, from_int(0), from_int(0), from_int(0),
-                              from_int(0),       vec.y, from_int(0), from_int(0),
-                              from_int(0), from_int(0),       vec.z, from_int(0),
-                              from_int(0), from_int(0), from_int(0), from_int(1)))
+        let _0 = cast(0);
+        self.mul_m(&Mat4::new(vec.x,    _0,    _0,     _0,
+                                 _0, vec.y,    _0,     _0,
+                                 _0,    _0, vec.z,     _0,
+                                 _0,    _0,    _0, cast(1)))
     }
     
     #[inline(always)]
