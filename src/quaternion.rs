@@ -51,11 +51,25 @@ pub mod Quat {
         Quat { w: move w, x: move x, y: move y, z: move z }
     }
     
-    #[inline(always)] pub pure fn zero     <T: Num>() -> Quat<T> { Quat { w: from_int(0), x: from_int(0), y: from_int(0), z: from_int(0) } }
-    #[inline(always)] pub pure fn identity <T: Num>() -> Quat<T> { Quat { w: from_int(1), x: from_int(0), y: from_int(0), z: from_int(0) } }
+    #[inline(always)]
+    pub pure fn from_sv<T:Copy>(s: T, v: Vec3<T>) -> Quat<T> {
+        Quat::new(s, v.x, v.y, v.z)
+    }
+    
+    #[inline(always)]
+    pub pure fn zero <T:Copy NumCast>() -> Quat<T> {
+        let _0 = cast(0);
+        Quat::new(_0, _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity <T:Copy NumCast>() -> Quat<T> {
+        let _0 = cast(0);
+        Quat::new(cast(1), _0, _0, _0)
+    }
 }
 
-pub impl<T:Copy Num Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     

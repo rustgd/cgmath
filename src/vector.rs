@@ -49,10 +49,31 @@ pub mod Vec2 {
         Vec2 { x: move x, y: move y }
     }
     
-    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(0) } }
-    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(1), y: from_int(0) } }
-    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec2<T> { Vec2 { x: from_int(0), y: from_int(1) } }
-    #[inline(always)] pub pure fn identity <T: Num>() -> Vec2<T> { Vec2 { x: from_int(1), y: from_int(1) } }
+    #[inline(always)]
+    pub pure fn zero<T:Copy NumCast>() -> Vec2<T> {
+        let _0 = cast(0);
+        Vec2::new(_0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_x<T:Copy NumCast>() -> Vec2<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec2::new(_1, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_y<T:Copy NumCast>() -> Vec2<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec2::new(_0, _1)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Vec2<T> {
+        let _1 = cast(1);
+        Vec2::new(_1, _1)
+    }
 }
 
 pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
@@ -216,12 +237,39 @@ pub mod Vec3 {
     pub pure fn new<T>(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: move x, y: move y, z: move z }
     }
-
-    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(0) } }
-    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(1), y: from_int(0), z: from_int(0) } }
-    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(1), z: from_int(0) } }
-    #[inline(always)] pub pure fn unit_z   <T: Num>() -> Vec3<T> { Vec3 { x: from_int(0), y: from_int(0), z: from_int(1) } }
-    #[inline(always)] pub pure fn identity <T: Num>() -> Vec3<T> { Vec3 { x: from_int(1), y: from_int(1), z: from_int(1) } }
+    
+    #[inline(always)]
+    pub pure fn zero<T:Copy NumCast>() -> Vec3<T> {
+        let _0 = cast(0);
+        Vec3::new(_0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_x<T:Copy NumCast>() -> Vec3<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec3::new(_1, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_y<T:Copy NumCast>() -> Vec3<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec3::new(_0, _1, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_z<T:Copy NumCast>() -> Vec3<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec3::new(_0, _0, _1)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Vec3<T> {
+        let _1 = cast(1);
+        Vec3::new(_1, _1, _1)
+    }
 }
 
 pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
@@ -407,13 +455,46 @@ pub mod Vec4 {
     pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
     }
-
-    #[inline(always)] pub pure fn zero     <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(0) } }
-    #[inline(always)] pub pure fn unit_x   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(0), z: from_int(0), w: from_int(0) } }
-    #[inline(always)] pub pure fn unit_y   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(1), z: from_int(0), w: from_int(0) } }
-    #[inline(always)] pub pure fn unit_z   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(1), w: from_int(0) } }
-    #[inline(always)] pub pure fn unit_w   <T: Num>() -> Vec4<T> { Vec4 { x: from_int(0), y: from_int(0), z: from_int(0), w: from_int(1) } }
-    #[inline(always)] pub pure fn identity <T: Num>() -> Vec4<T> { Vec4 { x: from_int(1), y: from_int(1), z: from_int(1), w: from_int(1) } }
+    
+    #[inline(always)]
+    pub pure fn zero<T:Copy NumCast>() -> Vec4<T> {
+        let _0 = cast(0);
+        Vec4::new(_0, _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_x<T:Copy NumCast>() -> Vec4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec4::new(_1, _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_y<T:Copy NumCast>() -> Vec4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec4::new(_0, _1, _0, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_z<T:Copy NumCast>() -> Vec4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec4::new(_0, _0, _1, _0)
+    }
+    
+    #[inline(always)]
+    pub pure fn unit_w<T:Copy NumCast>() -> Vec4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Vec4::new(_0, _0, _0, _1)
+    }
+    
+    #[inline(always)]
+    pub pure fn identity<T:Copy NumCast>() -> Vec4<T> {
+        let _1 = cast(1);
+        Vec4::new(_1, _1, _1, _1)
+    }
 }
 
 pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
