@@ -37,6 +37,14 @@ pub trait Matrix<T, V> {
 }
 
 //
+//  2x2 Matrix
+//
+pub trait Matrix2<T> {
+    pure fn to_Mat3() -> Mat3<T>;
+    pure fn to_Mat4() -> Mat4<T>;
+}
+
+//
 //  3x3 Matrix
 //
 pub trait Matrix3<T> {
@@ -185,6 +193,18 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     }
 }
 
+pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix2<T> {
+    #[inline(always)]
+    pure fn to_Mat3() -> Mat3<T> {
+        Mat3::from_Mat2(&self)
+    }
+    
+    #[inline(always)]
+    pure fn to_Mat4() -> Mat4<T> {
+        Mat4::from_Mat2(&self)
+    }
+}
+
 pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     #[inline(always)]
     pure fn index(i: uint) -> Vec2<T> {
@@ -265,6 +285,14 @@ pub mod Mat3 {
         Mat3::new(value,    _0,    _0,
                      _0, value,    _0,
                      _0,    _0, value)
+    }
+    
+    #[inline(always)]
+    pub pure fn from_Mat2<T:Copy NumCast>(m: &Mat2<T>) -> Mat3<T> {
+        let _0 = cast(0);
+        Mat3::new(m[0][0], m[0][1],     _0,
+                  m[1][0], m[1][1],     _0,
+                       _0,      _0, cast(1))
     }
     
     #[inline(always)]
@@ -545,6 +573,16 @@ pub mod Mat4 {
                      _0, value,    _0,    _0,
                      _0,    _0, value,    _0,
                      _0,    _0,    _0, value)
+    }
+    
+    #[inline(always)]
+    pub pure fn from_Mat2<T:Copy NumCast>(m: &Mat2<T>) -> Mat4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat4::new(m[0][0], m[0][1], _0, _0,
+                  m[1][0], m[1][1], _0, _0,
+                       _0,      _0, _1, _0,
+                       _0,      _0, _0, _1)
     }
     
     #[inline(always)]
