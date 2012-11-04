@@ -169,13 +169,13 @@ impl float: Abs {
 }
 
 
-trait Sqrt {
+pub trait Sqrt {
     pure fn sqrt() -> self;
 }
 
 #[inline(always)]
-pure fn sqrt<T: Sqrt>(x: T) -> T {
-    x.sqrt()
+pure fn sqrt<T:Sqrt>(n: T) -> T {
+    n.sqrt()
 }
 
 pub impl<T: NumCast> T: Sqrt {
@@ -183,4 +183,42 @@ pub impl<T: NumCast> T: Sqrt {
     pure fn sqrt() -> T {
         f64::sqrt(self.cast()).cast()
     }
+}
+
+
+pub trait Trig {
+    pure fn sin() -> self;
+    pure fn cos() -> self;
+    pure fn tan() -> self;
+    pure fn asin() -> self;
+    pure fn acos() -> self;
+    pure fn atan() -> self;
+    pure fn sinh() -> self;
+    pure fn cosh() -> self;
+    pure fn tanh() -> self;
+    pure fn atan2(n: self) -> self;
+}
+
+#[inline(always)] pub pure fn sin<T:Trig>(n: T) -> T { n.sin() }
+#[inline(always)] pub pure fn cos<T:Trig>(n: T) -> T { n.cos() }
+#[inline(always)] pub pure fn tan<T:Trig>(n: T) -> T { n.tan() }
+#[inline(always)] pub pure fn asin<T:Trig>(n: T) -> T { n.asin() }
+#[inline(always)] pub pure fn acos<T:Trig>(n: T) -> T { n.acos() }
+#[inline(always)] pub pure fn atan<T:Trig>(n: T) -> T { n.atan() }
+#[inline(always)] pub pure fn sinh<T:Trig>(n: T) -> T { n.sinh() }
+#[inline(always)] pub pure fn cosh<T:Trig>(n: T) -> T { n.cosh() }
+#[inline(always)] pub pure fn tanh<T:Trig>(n: T) -> T { n.tanh() }
+#[inline(always)] pub pure fn atan2<T:Trig>(a: T, b: T) -> T { a.atan2(move b) }
+
+pub impl<T: NumCast> T: Trig {
+    #[inline(always)] pure fn sin() -> T { f64::sin(self.cast()).cast() }
+    #[inline(always)] pure fn cos() -> T { f64::cos(self.cast()).cast() }
+    #[inline(always)] pure fn tan() -> T { f64::tan(self.cast()).cast() }
+    #[inline(always)] pure fn asin() -> T { f64::asin(self.cast()).cast() }
+    #[inline(always)] pure fn acos() -> T { f64::acos(self.cast()).cast() }
+    #[inline(always)] pure fn atan() -> T { f64::atan(self.cast()).cast() }
+    #[inline(always)] pure fn sinh() -> T { f64::sinh(self.cast()).cast() }
+    #[inline(always)] pure fn cosh() -> T { f64::cosh(self.cast()).cast() }
+    #[inline(always)] pure fn tanh() -> T { f64::tanh(self.cast()).cast() }
+    #[inline(always)] pure fn atan2(n: T) -> T { f64::atan2(self.cast(), move n.cast()).cast() }
 }
