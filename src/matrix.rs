@@ -48,7 +48,6 @@ pub trait Matrix2<T> {
 //  3x3 Matrix
 //
 pub trait Matrix3<T> {
-    pure fn scale(vec: &Vec3<T>) -> self;
     pure fn to_Mat4() -> Mat4<T>;
 }
 
@@ -56,8 +55,7 @@ pub trait Matrix3<T> {
 //  4x4 Matrix
 //
 pub trait Matrix4<T> {
-    pure fn scale(vec: &Vec3<T>) -> self;
-    pure fn translate(vec: &Vec3<T>) -> self;
+    
 }
 
 
@@ -424,14 +422,6 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
 
 pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
     #[inline(always)]
-    pure fn scale(vec: &Vec3<T>) -> Mat3<T> {
-        let _0 = cast(0);
-        self.mul_m(&Mat3::new(vec.x,    _0,    _0,
-                                 _0, vec.y,    _0,
-                                 _0,    _0, vec.z))
-    }
-    
-    #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
         Mat4::from_Mat3(&self)
     }
@@ -751,26 +741,8 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix4<T> {
-    #[inline(always)]
-    pure fn scale(vec: &Vec3<T>) -> Mat4<T> {
-        let _0 = cast(0);
-        self.mul_m(&Mat4::new(vec.x,    _0,    _0,     _0,
-                                 _0, vec.y,    _0,     _0,
-                                 _0,    _0, vec.z,     _0,
-                                 _0,    _0,    _0, cast(1)))
-    }
+pub impl<T> Mat4<T>: Matrix4<T> {
     
-    #[inline(always)]
-    pure fn translate(vec: &Vec3<T>) -> Mat4<T> {
-        Mat4::from_cols(self[0],
-                        self[1],
-                        self[2],
-                        Vec4::new(self[3][0] + vec.x,
-                                  self[3][1] + vec.y,
-                                  self[3][2] + vec.z,
-                                  self[3][3]))
-    }
 }
 
 pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
