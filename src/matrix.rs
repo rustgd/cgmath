@@ -181,8 +181,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&from_int(0)) &&
-        self[1][0].fuzzy_eq(&from_int(0))
+        let _0 = cast(0);
+        self[0][1].fuzzy_eq(&_0) &&
+        self[1][0].fuzzy_eq(&_0)
     }
     
     #[inline(always)]
@@ -288,9 +289,10 @@ pub mod Mat3 {
     #[inline(always)]
     pub pure fn from_Mat2<T:Copy NumCast>(m: &Mat2<T>) -> Mat3<T> {
         let _0 = cast(0);
-        Mat3::new(m[0][0], m[0][1],     _0,
-                  m[1][0], m[1][1],     _0,
-                       _0,      _0, cast(1))
+        let _1 = cast(1);
+        Mat3::new(m[0][0], m[0][1], _0,
+                  m[1][0], m[1][1], _0,
+                       _0,      _0, _1)
     }
     
     #[inline(always)]
@@ -404,14 +406,15 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&from_int(0)) &&
-        self[0][2].fuzzy_eq(&from_int(0)) &&
+        let _0 = cast(0);
+        self[0][1].fuzzy_eq(&_0) &&
+        self[0][2].fuzzy_eq(&_0) &&
         
-        self[1][0].fuzzy_eq(&from_int(0)) &&
-        self[1][2].fuzzy_eq(&from_int(0)) &&
+        self[1][0].fuzzy_eq(&_0) &&
+        self[1][2].fuzzy_eq(&_0) &&
         
-        self[2][0].fuzzy_eq(&from_int(0)) &&
-        self[2][1].fuzzy_eq(&from_int(0))
+        self[2][0].fuzzy_eq(&_0) &&
+        self[2][1].fuzzy_eq(&_0)
     }
     
     #[inline(always)]
@@ -578,10 +581,11 @@ pub mod Mat4 {
     #[inline(always)]
     pub pure fn from_Mat3<T:Copy NumCast>(m: &Mat3<T>) -> Mat4<T> {
         let _0 = cast(0);
-        Mat4::new(m[0][0], m[0][1], m[0][2],     _0,
-                  m[1][0], m[1][1], m[1][2],     _0,
-                  m[2][0], m[2][1], m[2][2],     _0,
-                       _0,      _0,      _0, cast(1))
+        let _1 = cast(1);
+        Mat4::new(m[0][0], m[0][1], m[0][2], _0,
+                  m[1][0], m[1][1], m[1][2], _0,
+                  m[2][0], m[2][1], m[2][2], _0,
+                       _0,      _0,      _0, _1)
     }
     
     #[inline(always)]
@@ -718,21 +722,22 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
-        self[0][1].fuzzy_eq(&from_int(0)) &&
-        self[0][2].fuzzy_eq(&from_int(0)) &&
-        self[0][3].fuzzy_eq(&from_int(0)) &&
+        let _0 = cast(0);
+        self[0][1].fuzzy_eq(&_0) &&
+        self[0][2].fuzzy_eq(&_0) &&
+        self[0][3].fuzzy_eq(&_0) &&
         
-        self[1][0].fuzzy_eq(&from_int(0)) &&
-        self[1][2].fuzzy_eq(&from_int(0)) &&
-        self[1][3].fuzzy_eq(&from_int(0)) &&
+        self[1][0].fuzzy_eq(&_0) &&
+        self[1][2].fuzzy_eq(&_0) &&
+        self[1][3].fuzzy_eq(&_0) &&
         
-        self[2][0].fuzzy_eq(&from_int(0)) &&
-        self[2][1].fuzzy_eq(&from_int(0)) &&
-        self[2][3].fuzzy_eq(&from_int(0)) &&
+        self[2][0].fuzzy_eq(&_0) &&
+        self[2][1].fuzzy_eq(&_0) &&
+        self[2][3].fuzzy_eq(&_0) &&
         
-        self[3][0].fuzzy_eq(&from_int(0)) &&
-        self[3][1].fuzzy_eq(&from_int(0)) &&
-        self[3][2].fuzzy_eq(&from_int(0))
+        self[3][0].fuzzy_eq(&_0) &&
+        self[3][1].fuzzy_eq(&_0) &&
+        self[3][2].fuzzy_eq(&_0)
     }
     
     #[inline(always)]
