@@ -40,8 +40,8 @@ fn test_Vec2() {
     // fuzzy_eq
     // eq
     
-    assert a.magnitude2().fuzzy_eq(&5f);
-    assert a.magnitude().fuzzy_eq(&2.236068f);
+    assert a.length2().fuzzy_eq(&5f);
+    assert a.length().fuzzy_eq(&2.236068f);
     
     let c = Vec2::new(-2.0f, -1.0f);
     let d = Vec2::new( 1.0f,  0.0f);
@@ -111,8 +111,8 @@ fn test_Vec3() {
     // fuzzy_eq
     // eq
     
-    assert a.magnitude2().fuzzy_eq(&14f);
-    assert a.magnitude().fuzzy_eq(&3.74165738677f);
+    assert a.length2().fuzzy_eq(&14f);
+    assert a.length().fuzzy_eq(&3.74165738677f);
     
     let c = Vec3::new(-2.0f, -1.0f, 1.0f);
     let d = Vec3::new( 1.0f,  0.0f, 0.5f);
@@ -185,8 +185,8 @@ fn test_Vec4() {
     // fuzzy_eq
     // eq
     
-    assert a.magnitude2().fuzzy_eq(&30f);
-    assert a.magnitude().fuzzy_eq(&5.477226f);
+    assert a.length2().fuzzy_eq(&30f);
+    assert a.length().fuzzy_eq(&5.477226f);
     
     let c = Vec4::new(-2.0f, -1.0f, 1.0f, 2.0f);
     let d = Vec4::new( 1.0f,  0.0f, 0.5f, 1.0f);

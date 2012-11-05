@@ -48,8 +48,8 @@ pub trait NumericVector<T> {
 }
 
 pub trait GeometricVector<T> {
-    pure fn magnitude2() -> T;
-    pure fn magnitude() -> T;
+    pure fn length2() -> T;
+    pure fn length() -> T;
     pure fn normalize() -> self;
     pure fn lerp(other: &self, value: T) -> self;
 }
@@ -175,20 +175,20 @@ pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
     
 pub impl<T:Copy Num Sqrt> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn magnitude2() -> T {
+    pure fn length2() -> T {
         self[0] * self[0] +
         self[1] * self[1]
     }
     
     #[inline(always)]
-    pure fn magnitude() -> T {
-        self.magnitude2().sqrt()
+    pure fn length() -> T {
+        self.length2().sqrt()
     }
     
     #[inline(always)]
     pure fn normalize() -> Vec2<T> {
         let mut n: T = from_int(1); 
-        n /= self.magnitude();
+        n /= self.length();
         return self.mul_t(n);
     }
     
@@ -410,21 +410,21 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
 
 pub impl<T:Copy Num Sqrt> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn magnitude2() -> T {
+    pure fn length2() -> T {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2]
     }
     
     #[inline(always)]
-    pure fn magnitude() -> T {
-        self.magnitude2().sqrt()
+    pure fn length() -> T {
+        self.length2().sqrt()
     }
     
     #[inline(always)]
     pure fn normalize() -> Vec3<T> {
         let mut n: T = from_int(1);
-        n /= self.magnitude();
+        n /= self.length();
         return self.mul_t(n);
     }
     
@@ -656,7 +656,7 @@ pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
 
 pub impl<T:Copy Num Sqrt> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn magnitude2() -> T {
+    pure fn length2() -> T {
         self[0] * self[0] +
         self[1] * self[1] +
         self[2] * self[2] +
@@ -664,14 +664,14 @@ pub impl<T:Copy Num Sqrt> Vec4<T>: GeometricVector<T> {
     }
     
     #[inline(always)]
-    pure fn magnitude() -> T {
-        self.magnitude2().sqrt()
+    pure fn length() -> T {
+        self.length2().sqrt()
     }
     
     #[inline(always)]
     pure fn normalize() -> Vec4<T> {
         let mut n: T = from_int(1);
-        n /= self.magnitude();
+        n /= self.length();
         return self.mul_t(n);
     }
     
