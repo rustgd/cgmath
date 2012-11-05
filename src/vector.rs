@@ -54,12 +54,6 @@ pub trait GeometricVector<T> {
     pure fn lerp(other: &self, value: T) -> self;
 }
 
-pub trait BooleanVector {
-    pub fn any() -> bool;
-    pub fn all() -> bool;
-    pub fn not() -> self;
-}
-
 pub trait Vector2<T> {
     // pub static pure fn new(x: T, y: T) -> self;
     // pub static pure fn from_value(value: T) -> self;
@@ -195,20 +189,6 @@ pub impl<T:Copy Num Sqrt> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec2<T>, value: T) -> Vec2<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
-    }
-}
-
-pub impl Vec2<bool>: BooleanVector {
-    pub fn any() -> bool {
-        self[0] || self[1]
-    }
-    
-    pub fn all() -> bool {
-        self[0] && self[1]
-    }
-    
-    pub fn not() -> Vec2<bool> { 
-        Vec2::new(!self[0], !self[1])
     }
 }
 
@@ -431,20 +411,6 @@ pub impl<T:Copy Num Sqrt> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec3<T>, value: T) -> Vec3<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
-    }
-}
-
-pub impl Vec3<bool>: BooleanVector {
-    pub fn any() -> bool {
-        self[0] || self[1] || self[2]
-    }
-    
-    pub fn all() -> bool {
-        self[0] && self[1] && self[2]
-    }
-    
-    pub fn not() -> Vec3<bool> { 
-        Vec3::new(!self[0], !self[1], !self[2])
     }
 }
 
@@ -678,20 +644,6 @@ pub impl<T:Copy Num Sqrt> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec4<T>, value: T) -> Vec4<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
-    }
-}
-
-pub impl Vec4<bool>: BooleanVector {
-    pub fn any() -> bool {
-        self[0] || self[1] || self[2] || self[3]
-    }
-    
-    pub fn all() -> bool {
-        self[0] && self[1] && self[2] && self[3]
-    }
-    
-    pub fn not() -> Vec4<bool> { 
-        Vec4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
 

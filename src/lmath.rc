@@ -15,6 +15,14 @@ pub mod projection;
 pub mod quaternion;
 pub mod vector;
 
+#[test]
+mod test {
+    mod test_matrix;
+    mod test_projection;
+    mod test_quaternion;
+    mod test_vector;
+}
+
 use common::*;
 pub mod common {
     pub mod math;
@@ -22,11 +30,11 @@ pub mod common {
     pub mod ntrait;
 }
 
-#[test]
-pub mod test {
-    pub mod test_matrix;
-    pub mod test_math;
-    pub mod test_projection;
-    pub mod test_quaternion;
-    pub mod test_vector;
+pub mod functions {
+  pub mod relational;
+  
+  #[test]
+  mod test {
+    mod test_relational;
+  }
 }
