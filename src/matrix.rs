@@ -167,8 +167,8 @@ pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     
     #[inline(always)]
     pure fn mul_v(other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self[0][0] * other[0] + self[1][0] * other[1],
-                  self[0][1] * other[0] + self[1][1] * other[1])
+        Vec2::new(self.row(0).dot(other),
+                  self.row(1).dot(other))
     }
 }
 
@@ -381,9 +381,9 @@ pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     
     #[inline(always)]
     pure fn mul_v(other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2],
-                  self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2],
-                  self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2])
+        Vec3::new(self.row(0).dot(other),
+                  self.row(1).dot(other),
+                  self.row(2).dot(other))
     }
 }
 
@@ -683,10 +683,10 @@ pub impl<T:Copy Num NumCast> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     
     #[inline(always)]
     pure fn mul_v(other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self[0][0] * other[0] + self[1][0] * other[1] + self[2][0] * other[2] + self[3][0] * other[3],
-                  self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2] + self[3][1] * other[3],
-                  self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2] + self[3][2] * other[3],
-                  self[0][3] * other[0] + self[1][3] * other[1] + self[2][3] * other[2] + self[3][3] * other[3])
+        Vec4::new(self.row(0).dot(other),
+                  self.row(1).dot(other),
+                  self.row(2).dot(other),
+                  self.row(3).dot(other))
     }
 }
 
