@@ -18,8 +18,8 @@ fn test_Mat2() {
     assert a == Mat2::from_cols(Vec2::new(1f, 3f),
                                 Vec2::new(2f, 4f));
     
-    assert Mat2::from_value::<f64>(4f64) == Mat2::new::<f64>(4f64, 0f64,
-                                                             0f64, 4f64);
+    assert Mat2::from_value(4f64) == Mat2::new(4f64, 0f64,
+                                               0f64, 4f64);
     
     assert a[0] == Vec2::new(1f, 3f);
     assert a[1] == Vec2::new(2f, 4f);
