@@ -7,6 +7,29 @@ use std::cmp::FuzzyEq;
 
 use math::*;
 
+
+// GLSL equivalent type aliases
+
+type vec2  = Vec2<f32>;         /// a two-component single-precision floating-point vector
+type vec3  = Vec3<f32>;         /// a three-component single-precision floating-point vector
+type vec4  = Vec4<f32>;         /// a four-component single-precision floating-point vector
+
+type dvec2 = Vec2<f64>;         /// a two-component double-precision floating-point vector
+type dvec3 = Vec3<f64>;         /// a three-component double-precision floating-point vector
+type dvec4 = Vec4<f64>;         /// a four-component double-precision floating-point vector
+
+type bvec2 = Vec2<bool>;        /// a two-component Boolean vector
+type bvec3 = Vec3<bool>;        /// a three-component Boolean vector
+type bvec4 = Vec4<bool>;        /// a four-component Boolean vector
+
+type ivec2 = Vec2<i32>;         /// a two-component signed integer vector
+type ivec3 = Vec3<i32>;         /// a three-component signed integer vector
+type ivec4 = Vec4<i32>;         /// a four-component signed integer vector
+
+type uvec2 = Vec2<u32>;         /// a two-component unsigned integer vector
+type uvec3 = Vec3<u32>;         /// a three-component unsigned integer vector
+type uvec4 = Vec4<u32>;         /// a four-component unsigned integer vector
+
 //
 //  N-dimensional Vector
 //
