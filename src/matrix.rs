@@ -39,19 +39,24 @@ type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
 // type dmat4x3 =                   /// a double-precision floating-point matrix with 4 columns and 3 rows
 type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
-//
-//  NxN Matrix
-//
-pub trait Matrix<T, V> {
+
+pub trait Matrix<T, ColV, RowV> {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
+    pure fn is_square() -> bool;
     
-    pure fn col(i: uint) -> V;
-    pure fn row(i: uint) -> V;
+    pure fn col(i: uint) -> ColV;
+    pure fn row(i: uint) -> RowV;
     
     pure fn mul_t(value: T) -> self;
-    pure fn mul_v(other: &V) -> V;
+    pure fn mul_v(other: &ColV) -> ColV;
+}
+
+//
+//  NxN Matrix
+//
+pub trait SquareMatrix<T, V> {
     pure fn add_m(other: &self) -> self;
     pure fn sub_m(other: &self) -> self;
     pure fn mul_m(other: &self) -> self;
@@ -135,7 +140,7 @@ pub mod Mat2 {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
+pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -144,6 +149,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_col_major() -> bool { true }
+    
+    #[inline(always)]
+    pure fn is_square() -> bool { true }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec2<T> { self[i] }
@@ -165,7 +173,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix<T, Vec2<T>> {
         Vec2::new(self[0][0] * other[0] + self[1][0] * other[1],
                   self[0][1] * other[0] + self[1][1] * other[1])
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self[0].add_v(&other[0]),
@@ -342,7 +352,7 @@ pub mod Mat3 {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
+pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -351,6 +361,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_col_major() -> bool { true }
+    
+    #[inline(always)]
+    pure fn is_square() -> bool { true }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec3<T> { self[i] }
@@ -375,7 +388,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix<T, Vec3<T>> {
                   self[0][1] * other[0] + self[1][1] * other[1] + self[2][1] * other[2],
                   self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2])
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self[0].add_v(&other[0]),
@@ -637,7 +652,7 @@ pub mod Mat4 {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -646,6 +661,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn is_col_major() -> bool { true }
+    
+    #[inline(always)]
+    pure fn is_square() -> bool { true }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec4<T> { self[i] }
@@ -673,7 +691,9 @@ pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>> {
                   self[0][2] * other[0] + self[1][2] * other[1] + self[2][2] * other[2] + self[3][2] * other[3],
                   self[0][3] * other[0] + self[1][3] * other[1] + self[2][3] * other[2] + self[3][3] * other[3])
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
