@@ -30,12 +30,12 @@ type uvec2 = Vec2<u32>;         /// a two-component unsigned integer vector
 type uvec3 = Vec3<u32>;         /// a three-component unsigned integer vector
 type uvec4 = Vec4<u32>;         /// a four-component unsigned integer vector
 
-//
-//  N-dimensional Vector
-//
-pub trait Vector<T> {
+
+pub trait Vector {
     static pure fn dim() -> uint;
-    
+}
+
+pub trait NumericVector<T> {
     pure fn add_t(value: T) -> self;
     pure fn sub_t(value: T) -> self;
     pure fn mul_t(value: T) -> self;
@@ -45,12 +45,23 @@ pub trait Vector<T> {
     pure fn sub_v(other: &self) -> self;
     
     pure fn dot(other: &self) -> T;
-    
+}
+
+pub trait GeometricVector<T> {
     pure fn magnitude2() -> T;
     pure fn magnitude() -> T;
     pure fn normalize() -> self;
-    
     pure fn lerp(other: &self, value: T) -> self;
+}
+
+pub trait BooleanVector {
+    pub fn any() -> bool;
+    pub fn all() -> bool;
+    pub fn not() -> self;
+}
+
+pub trait Vector2<T> {
+    
 }
 
 pub trait Vector3<T> {
@@ -104,10 +115,12 @@ pub mod Vec2 {
     }
 }
 
-pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
+pub impl<T> Vec2<T>: Vector {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
+}
     
+pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
     #[inline(always)]
     pure fn add_t(value: T) -> Vec2<T> {
         Vec2::new(self[0] + value,
@@ -149,7 +162,9 @@ pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
         self[0] * other[0] +
         self[1] * other[1]
     }
+}
     
+pub impl<T:Copy Num Sqrt> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn magnitude2() -> T {
         self[0] * self[0] +
@@ -171,6 +186,20 @@ pub impl<T:Copy Num Sqrt> Vec2<T>: Vector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec2<T>, value: T) -> Vec2<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
+    }
+}
+
+pub impl Vec2<bool>: BooleanVector {
+    pub fn any() -> bool {
+        self[0] || self[1]
+    }
+    
+    pub fn all() -> bool {
+        self[0] && self[1]
+    }
+    
+    pub fn not() -> Vec2<bool> { 
+        Vec2::new(!self[0], !self[1])
     }
 }
 
@@ -314,10 +343,12 @@ pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     }
 }
 
-pub impl<T:Copy Num Sqrt> Vec3<T>: Vector<T> {
+pub impl<T> Vec3<T>: Vector {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
-    
+}
+
+pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
     #[inline(always)]
     pure fn add_t(value: T) -> Vec3<T> {
         Vec3::new(self[0] + value,
@@ -366,7 +397,9 @@ pub impl<T:Copy Num Sqrt> Vec3<T>: Vector<T> {
         self[1] * other[1] +
         self[2] * other[2]
     }
-    
+}
+
+pub impl<T:Copy Num Sqrt> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn magnitude2() -> T {
         self[0] * self[0] +
@@ -389,6 +422,20 @@ pub impl<T:Copy Num Sqrt> Vec3<T>: Vector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec3<T>, value: T) -> Vec3<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
+    }
+}
+
+pub impl Vec3<bool>: BooleanVector {
+    pub fn any() -> bool {
+        self[0] || self[1] || self[2]
+    }
+    
+    pub fn all() -> bool {
+        self[0] && self[1] && self[2]
+    }
+    
+    pub fn not() -> Vec3<bool> { 
+        Vec3::new(!self[0], !self[1], !self[2])
     }
 }
 
@@ -535,10 +582,12 @@ pub mod Vec4 {
     }
 }
 
-pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
+pub impl<T> Vec4<T>: Vector {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
-    
+}
+
+pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
     #[inline(always)]
     pure fn add_t(value: T) -> Vec4<T> {
         Vec4::new(self[0] + value,
@@ -594,7 +643,9 @@ pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
         self[2] * other[2] +
         self[3] * other[3]
     }
-    
+}
+
+pub impl<T:Copy Num Sqrt> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn magnitude2() -> T {
         self[0] * self[0] +
@@ -618,6 +669,20 @@ pub impl<T:Copy Num Sqrt> Vec4<T>: Vector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec4<T>, value: T) -> Vec4<T> {
         self.add_v(&other.sub_v(&self).mul_t(value))
+    }
+}
+
+pub impl Vec4<bool>: BooleanVector {
+    pub fn any() -> bool {
+        self[0] || self[1] || self[2] || self[3]
+    }
+    
+    pub fn all() -> bool {
+        self[0] && self[1] && self[2] && self[3]
+    }
+    
+    pub fn not() -> Vec4<bool> { 
+        Vec4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
 
