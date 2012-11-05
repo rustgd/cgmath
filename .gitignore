@@ -3,3 +3,4 @@ lib
 sublime
 test
 !src/test
+!src/*/test
