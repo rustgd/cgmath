@@ -50,6 +50,11 @@ pub mod Vec2 {
     }
     
     #[inline(always)]
+    pub pure fn from_value<T:Copy>(value: T) -> Vec2<T> {
+        Vec2::new(value, value)
+    }
+    
+    #[inline(always)]
     pub pure fn zero<T:Copy NumCast>() -> Vec2<T> {
         let _0 = cast(0);
         Vec2::new(_0, _0)
@@ -236,6 +241,11 @@ pub mod Vec3 {
     #[inline(always)]
     pub pure fn new<T>(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: move x, y: move y, z: move z }
+    }
+    
+    #[inline(always)]
+    pub pure fn from_value<T:Copy>(value: T) -> Vec3<T> {
+        Vec3::new(value, value, value)
     }
     
     #[inline(always)]
@@ -454,6 +464,11 @@ pub mod Vec4 {
     #[inline(always)]
     pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
+    }
+    
+    #[inline(always)]
+    pub pure fn from_value<T:Copy>(value: T) -> Vec4<T> {
+        Vec4::new(value, value, value, value)
     }
     
     #[inline(always)]
