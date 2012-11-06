@@ -183,11 +183,8 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
     
     #[inline(always)]
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
-        Mat2::new(self[0][0] * other[0][0] + self[1][0] * other[0][1],
-                  self[0][1] * other[0][0] + self[1][1] * other[0][1],
-                  
-                  self[0][0] * other[1][0] + self[1][0] * other[1][1],
-                  self[0][1] * other[1][0] + self[1][1] * other[1][1])
+        Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
+                  self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
     }
     
     // TODO - inversion is harrrd D:
@@ -402,17 +399,9 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
     
     #[inline(always)]
     pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
-        Mat3::new(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2],
-                  self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2],
-                  self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2],
-                  
-                  self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2],
-                  self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2],
-                  self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2],
-                  
-                  self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2],
-                  self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2],
-                  self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2])
+        Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
+                  self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)),
+                  self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
     }
     
     // TODO - inversion is harrrd D:
@@ -709,25 +698,10 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T> {
     
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
-        Mat4::new(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2] + self[3][0] * other[0][3],
-                  self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2] + self[3][1] * other[0][3],
-                  self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2] + self[3][2] * other[0][3],
-                  self[0][3] * other[0][0] + self[1][3] * other[0][1] + self[2][3] * other[0][2] + self[3][3] * other[0][3],
-                  
-                  self[0][0] * other[1][0] + self[1][0] * other[1][1] + self[2][0] * other[1][2] + self[3][0] * other[1][3],
-                  self[0][1] * other[1][0] + self[1][1] * other[1][1] + self[2][1] * other[1][2] + self[3][1] * other[1][3],
-                  self[0][2] * other[1][0] + self[1][2] * other[1][1] + self[2][2] * other[1][2] + self[3][2] * other[1][3],
-                  self[0][3] * other[1][0] + self[1][3] * other[1][1] + self[2][3] * other[1][2] + self[3][3] * other[1][3],
-                  
-                  self[0][0] * other[2][0] + self[1][0] * other[2][1] + self[2][0] * other[2][2] + self[3][0] * other[2][3],
-                  self[0][1] * other[2][0] + self[1][1] * other[2][1] + self[2][1] * other[2][2] + self[3][1] * other[2][3],
-                  self[0][2] * other[2][0] + self[1][2] * other[2][1] + self[2][2] * other[2][2] + self[3][2] * other[2][3],
-                  self[0][3] * other[2][0] + self[1][3] * other[2][1] + self[2][3] * other[2][2] + self[3][3] * other[2][3],
-                  
-                  self[0][0] * other[3][0] + self[1][0] * other[3][1] + self[2][0] * other[3][2] + self[3][0] * other[3][3],
-                  self[0][1] * other[3][0] + self[1][1] * other[3][1] + self[2][1] * other[3][2] + self[3][1] * other[3][3],
-                  self[0][2] * other[3][0] + self[1][2] * other[3][1] + self[2][2] * other[3][2] + self[3][2] * other[3][3],
-                  self[0][3] * other[3][0] + self[1][3] * other[3][1] + self[2][3] * other[3][2] + self[3][3] * other[3][3])
+        Mat4::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)), self.row(3).dot(&other.col(0)),
+                  self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)), self.row(3).dot(&other.col(1)),
+                  self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)), self.row(3).dot(&other.col(2)),
+                  self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
     }
     
     // TODO - inversion is harrrd D:
