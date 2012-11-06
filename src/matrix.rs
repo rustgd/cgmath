@@ -14,31 +14,31 @@ use vector::{Vec2, Vec3, Vec4};
 
 // GLSL equivalent type aliases
 
-type mat2 = Mat2<f32>;              /// a 2×2 single-precision floating-point matrix
-type mat3 = Mat3<f32>;              /// a 3×3 single-precision floating-point matrix
-type mat4 = Mat4<f32>;              /// a 4×4 single-precision floating-point matrix
-type mat2x2 = Mat2<f32>;            /// same as a `mat2`
-// type mat2x3 =                    /// a single-precision floating-point matrix with 2 columns and 3 rows
-// type mat2x4 =                    /// a single-precision floating-point matrix with 2 columns and 4 rows
-// type mat3x2 =                    /// a single-precision floating-point matrix with 3 columns and 2 rows
-type mat3x3 = Mat3<f32>;            /// same as a `mat3`
-// type mat3x4 =                    /// a single-precision floating-point matrix with 3 columns and 4 rows
-// type mat4x2 =                    /// a single-precision floating-point matrix with 4 columns and 2 rows
-// type mat4x3 =                    /// a single-precision floating-point matrix with 4 columns and 3 rows
-type mat4x4 = Mat4<f32>;            /// same as a `mat4`
+pub type mat2 = Mat2<f32>;              /// a 2×2 single-precision floating-point matrix
+pub type mat3 = Mat3<f32>;              /// a 3×3 single-precision floating-point matrix
+pub type mat4 = Mat4<f32>;              /// a 4×4 single-precision floating-point matrix
+pub type mat2x2 = Mat2<f32>;            /// same as a `mat2`
+// pub type mat2x3 =                    /// a single-precision floating-point matrix with 2 columns and 3 rows
+// pub type mat2x4 =                    /// a single-precision floating-point matrix with 2 columns and 4 rows
+// pub type mat3x2 =                    /// a single-precision floating-point matrix with 3 columns and 2 rows
+pub type mat3x3 = Mat3<f32>;            /// same as a `mat3`
+// pub type mat3x4 =                    /// a single-precision floating-point matrix with 3 columns and 4 rows
+// pub type mat4x2 =                    /// a single-precision floating-point matrix with 4 columns and 2 rows
+// pub type mat4x3 =                    /// a single-precision floating-point matrix with 4 columns and 3 rows
+pub type mat4x4 = Mat4<f32>;            /// same as a `mat4`
 
-type dmat2 = Mat2<f64>;             /// a 2×2 double-precision floating-point matrix
-type dmat3 = Mat3<f64>;             /// a 3×3 double-precision floating-point matrix
-type dmat4 = Mat4<f64>;             /// a 4×4 double-precision floating-point matrix
-type dmat2x2 = Mat2<f64>;           /// same as a `dmat2`
-// type dmat2x3 =                   /// a double-precision floating-point matrix with 2 columns and 3 rows
-// type dmat2x4 =                   /// a double-precision floating-point matrix with 2 columns and 4 rows
-// type dmat3x2 =                   /// a double-precision floating-point matrix with 3 columns and 2 rows
-type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
-// type dmat3x4 =                   /// a double-precision floating-point matrix with 3 columns and 4 rows
-// type dmat4x2 =                   /// a double-precision floating-point matrix with 4 columns and 2 rows
-// type dmat4x3 =                   /// a double-precision floating-point matrix with 4 columns and 3 rows
-type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
+pub type dmat2 = Mat2<f64>;             /// a 2×2 double-precision floating-point matrix
+pub type dmat3 = Mat3<f64>;             /// a 3×3 double-precision floating-point matrix
+pub type dmat4 = Mat4<f64>;             /// a 4×4 double-precision floating-point matrix
+pub type dmat2x2 = Mat2<f64>;           /// same as a `dmat2`
+// pub type dmat2x3 =                   /// a double-precision floating-point matrix with 2 columns and 3 rows
+// pub type dmat2x4 =                   /// a double-precision floating-point matrix with 2 columns and 4 rows
+// pub type dmat3x2 =                   /// a double-precision floating-point matrix with 3 columns and 2 rows
+pub type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
+// pub type dmat3x4 =                   /// a double-precision floating-point matrix with 3 columns and 4 rows
+// pub type dmat4x2 =                   /// a double-precision floating-point matrix with 4 columns and 2 rows
+// pub type dmat4x3 =                   /// a double-precision floating-point matrix with 4 columns and 3 rows
+pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
 
 pub trait Matrix<T, ColV, RowV> {

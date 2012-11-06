@@ -15,8 +15,8 @@ use vector::Vec3;
 // These quaternion type aliases are not actually specified in the GLSL spec
 // but they follow the same nomenclature
 
-type quat4  = Quat<f32>;         /// a single-precision floating-point quaternion
-type dquat4 = Quat<f64>;         /// a double-precision floating-point quaternion
+pub type quat4  = Quat<f32>;         /// a single-precision floating-point quaternion
+pub type dquat4 = Quat<f64>;         /// a double-precision floating-point quaternion
 
 //
 //  Quaternion
