@@ -41,17 +41,19 @@ pub type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
 pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
 
-pub trait Matrix<T, ColV, RowV> {
+pub trait Matrix<T, ColVec, RowVec> {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
     pure fn is_square() -> bool;
     
-    pure fn col(i: uint) -> ColV;
-    pure fn row(i: uint) -> RowV;
-    
+    pure fn col(i: uint) -> ColVec;
+    pure fn row(i: uint) -> RowVec;
+}
+
+pub trait NumericMatrix<T, ColVec> {
     pure fn mul_t(value: T) -> self;
-    pure fn mul_v(other: &ColV) -> ColV;
+    pure fn mul_v(other: &ColVec) -> ColVec;
 }
 
 pub trait SquareMatrix<T> {
@@ -68,24 +70,15 @@ pub trait SquareMatrix<T> {
     pure fn is_rotated() -> bool;
 }
 
-//
-//  2x2 Matrix
-//
 pub trait Matrix2<T> {
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
 }
 
-//
-//  3x3 Matrix
-//
 pub trait Matrix3<T> {
     pure fn to_Mat4() -> Mat4<T>;
 }
 
-//
-//  4x4 Matrix
-//
 pub trait Matrix4<T> {
     
 }
@@ -138,7 +131,7 @@ pub mod Mat2 {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -159,7 +152,9 @@ pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
         Vec2::new(self[0][i],
                   self[1][i])
     }
-    
+}
+
+pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat2<T> {
         Mat2::from_cols(self[0].mul_t(value),
@@ -350,7 +345,7 @@ pub mod Mat3 {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -372,7 +367,9 @@ pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
                   self[1][i],
                   self[2][i])
     }
-    
+}
+
+pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat3<T> {
         Mat3::from_cols(self[0].mul_t(value),
@@ -650,7 +647,7 @@ pub mod Mat4 {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -673,7 +670,9 @@ pub impl<T:Copy Num NumCast> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
                   self[2][i],
                   self[3][i])
     }
-    
+}
+
+pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat4<T> {
         Mat4::from_cols(self[0].mul_t(value),
