@@ -1,8 +1,8 @@
 use vector::*;
-use relational::*;
+use boolv::*;
 
 #[test]
-fn test_BooleanVec2_trait() {
+fn test_boolv2() {
     let tf = Vec2::new(true, false);
     let ff = Vec2::new(false, false);
     let tt = Vec2::new(true, true);
@@ -21,7 +21,7 @@ fn test_BooleanVec2_trait() {
 }
 
 #[test]
-fn test_BooleanVec3_trait() {
+fn test_boolv3() {
     let tft = Vec3::new(true, false, true);
     let fff = Vec3::new(false, false, false);
     let ttt = Vec3::new(true, true, true);
@@ -40,7 +40,7 @@ fn test_BooleanVec3_trait() {
 }
 
 #[test]
-fn test_BooleanVec4_trait() {
+fn test_boolv4() {
     let tftf = Vec4::new(true, false, true, false);
     let ffff = Vec4::new(false, false, false, false);
     let tttt = Vec4::new(true, true, true, true);
@@ -59,7 +59,7 @@ fn test_BooleanVec4_trait() {
 }
 
 #[test]
-fn test_BooleanVec_fns() {
+fn test_boolv_fns() {
     let tf = Vec2::new(true, false);
     let ftf = Vec3::new(false, true, false);
     let tftf = Vec4::new(true, false, true, false);

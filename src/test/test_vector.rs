@@ -48,9 +48,9 @@ fn test_Vec2() {
     let f3 = 0.75f;
     
     assert c.lerp(&d, f3) == Vec2::new(0.250f, -0.250f);
-    assert c.abs()       == Vec2::new( 2.0f,  1.0f);
-    assert c.min(&d)      == Vec2::new(-2.0f, -1.0f);
-    assert c.max(&d)      == Vec2::new( 1.0f,  0.0f);
+    // assert c.abs()       == Vec2::new( 2.0f,  1.0f);
+    // assert c.min(&d)      == Vec2::new(-2.0f, -1.0f);
+    // assert c.max(&d)      == Vec2::new( 1.0f,  0.0f);
 }
 
 #[test]
@@ -103,9 +103,9 @@ fn test_Vec3() {
     let f3 = 0.75f;
     
     assert c.lerp(&d, f3) == Vec3::new(0.250f, -0.250f, 0.625f);
-    assert c.abs()        == Vec3::new( 2.0f,  1.0f, 1.0f);
-    assert c.min(&d)      == Vec3::new(-2.0f, -1.0f, 0.5f);
-    assert c.max(&d)      == Vec3::new( 1.0f,  0.0f, 1.0f);
+    // assert c.abs()        == Vec3::new( 2.0f,  1.0f, 1.0f);
+    // assert c.min(&d)      == Vec3::new(-2.0f, -1.0f, 0.5f);
+    // assert c.max(&d)      == Vec3::new( 1.0f,  0.0f, 1.0f);
 }
 
 #[test]
@@ -161,7 +161,7 @@ fn test_Vec4() {
     let f3 = 0.75f;
     
     assert c.lerp(&d, f3) == Vec4::new(0.250f, -0.250f, 0.625f, 1.250f);
-    assert c.abs()        == Vec4::new( 2.0f,  1.0f, 1.0f, 2.0f);
-    assert c.min(&d)      == Vec4::new(-2.0f, -1.0f, 0.5f, 1.0f);
-    assert c.max(&d)      == Vec4::new( 1.0f,  0.0f, 1.0f, 2.0f);
+    // assert c.abs()        == Vec4::new( 2.0f,  1.0f, 1.0f, 2.0f);
+    // assert c.min(&d)      == Vec4::new(-2.0f, -1.0f, 0.5f, 1.0f);
+    // assert c.max(&d)      == Vec4::new( 1.0f,  0.0f, 1.0f, 2.0f);
 }

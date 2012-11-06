@@ -30,11 +30,15 @@ pub mod common {
     pub mod ntrait;
 }
 
-pub mod functions {
-  pub mod relational;
+pub mod funs {
+  pub mod boolv;
+  pub mod common;
+  pub mod exp;
+  pub mod relv;
+  pub mod trig;
   
   #[test]
   mod test {
-    mod test_relational;
+    mod test_boolv;
   }
 }

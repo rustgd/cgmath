@@ -5,8 +5,9 @@ use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use std::cmp::FuzzyEq;
 
+use funs::exp::Exp;
+use ncast::*;
 use math::*;
-
 
 // GLSL equivalent type aliases
 
@@ -167,7 +168,7 @@ pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
     }
 }
     
-pub impl<T:Copy Num Sqrt> Vec2<T>: GeometricVector<T> {
+pub impl<T:Copy Num Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -199,28 +200,6 @@ pub impl<T:Copy> Vec2<T>: Index<uint, T> {
             transmute::<*Vec2<T>, *T>(
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy MinMax> Vec2<T>: MinMax {
-    #[inline(always)]
-    pure fn min(other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(min(&self[0], &other[0]),
-                  min(&self[1], &other[1]))
-    }
-    
-    #[inline(always)]
-    pure fn max(other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(max(&self[0], &other[0]),
-                  max(&self[1], &other[1]))
-    }
-}
-
-pub impl<T:Copy Abs> Vec2<T>: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec2<T> {
-        Vec2::new(abs(&self[0]),
-                  abs(&self[1]))
     }
 }
 
@@ -388,7 +367,7 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num Sqrt> Vec3<T>: GeometricVector<T> {
+pub impl<T:Copy Num Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -421,31 +400,6 @@ pub impl<T:Copy> Vec3<T>: Index<uint, T> {
             transmute::<*Vec3<T>, *T>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy MinMax> Vec3<T>: MinMax {
-    #[inline(always)]
-    pure fn min(other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(min(&self[0], &other[0]),
-                  min(&self[1], &other[1]),
-                  min(&self[2], &other[2]))
-    }
-    
-    #[inline(always)]
-    pure fn max(other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(max(&self[0], &other[0]),
-                  max(&self[1], &other[1]),
-                  max(&self[2], &other[2]))
-    }
-}
-
-pub impl<T:Copy Abs> Vec3<T>: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec3<T> {
-        Vec3::new(abs(&self[0]),
-                  abs(&self[1]),
-                  abs(&self[2]))
     }
 }
 
@@ -620,7 +574,7 @@ pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num Sqrt> Vec4<T>: GeometricVector<T> {
+pub impl<T:Copy Num Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -655,34 +609,6 @@ pub impl<T:Copy> Vec4<T>: Index<uint, T> {
                 transmute::<*Vec4<T>, *T>(
                     to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy MinMax> Vec4<T>: MinMax {
-    #[inline(always)]
-    pure fn min(other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(min(&self[0], &other[0]),
-                  min(&self[1], &other[1]),
-                  min(&self[2], &other[2]),
-                  min(&self[3], &other[3]))
-    }
-    
-    #[inline(always)]
-    pure fn max(other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(max(&self[0], &other[0]),
-                  max(&self[1], &other[1]),
-                  max(&self[2], &other[2]),
-                  max(&self[3], &other[3]))
-    }
-}
-
-pub impl<T:Copy Abs> Vec4<T>: Abs {
-    #[inline(always)]
-    pure fn abs() -> Vec4<T> {
-        Vec4::new(abs(&self[0]),
-                  abs(&self[1]),
-                  abs(&self[2]),
-                  abs(&self[3]))
     }
 }
 

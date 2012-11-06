@@ -5,6 +5,7 @@ use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
+use funs::exp::Exp;
 use math::*;
 use ncast::*;
 use quaternion::{Quat, ToQuat};
@@ -228,7 +229,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat2<T>: Matrix2<T> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: Matrix2<T> {
     #[inline(always)]
     pure fn to_Mat3() -> Mat3<T> {
         Mat3::from_Mat2(&self)
@@ -464,7 +465,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Mat3<T>: Matrix3<T> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: Matrix3<T> {
     #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
         Mat4::from_Mat3(&self)

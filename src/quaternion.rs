@@ -5,8 +5,10 @@ use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
+use funs::exp::Exp;
 use math::*;
 use matrix::{Mat3, Mat4};
+use ncast::*;
 use vector::Vec3;
 
 
@@ -76,7 +78,7 @@ pub mod Quat {
     }
 }
 
-pub impl<T:Copy Num NumCast Sqrt FuzzyEq> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     
