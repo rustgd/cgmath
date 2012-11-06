@@ -56,13 +56,13 @@ pub trait GeometricVector<T> {
 }
 
 pub trait Vector2<T> {
-    // pub static pure fn new(x: T, y: T) -> self;
-    // pub static pure fn from_value(value: T) -> self;
+    // static pure fn new(x: T, y: T) -> self;
+    // static pure fn from_value(value: T) -> self;
 }
 
 pub trait Vector3<T> {
-    // pub static pure fn new(x: T, y: T, z: T) -> self;
-    // pub static pure fn from_value(value: T) -> self;
+    // static pure fn new(x: T, y: T, z: T) -> self;
+    // static pure fn from_value(value: T) -> self;
     
     fn cross(other: &self) -> self;
 }

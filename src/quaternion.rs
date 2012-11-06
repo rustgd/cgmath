@@ -66,13 +66,13 @@ pub mod Quat {
     }
     
     #[inline(always)]
-    pub pure fn zero <T:Copy NumCast>() -> Quat<T> {
+    pub pure fn zero<T:Copy NumCast>() -> Quat<T> {
         let _0 = cast(0);
         Quat::new(_0, _0, _0, _0)
     }
     
     #[inline(always)]
-    pub pure fn identity <T:Copy NumCast>() -> Quat<T> {
+    pub pure fn identity<T:Copy NumCast>() -> Quat<T> {
         let _0 = cast(0);
         Quat::new(cast(1), _0, _0, _0)
     }

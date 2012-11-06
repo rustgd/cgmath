@@ -1,8 +1,8 @@
 /**
- * This trait allows you to easily cast between the built in numeric types,
- * going above and beyond the static 'to_int' function found in the Num trait.
- * I've found that it is especially handy in generic functions when you need to
- * mix floating point and integer values.
+ * This trait allows for the easy casting between each of thethe built in
+ * numeric types, going above and beyond the static 'to_int' function found in
+ * the Num trait. I've found that it is especially handy in generic functions
+ * when you need to mix floating point and integer values.
  */
 trait NumCast {
     static pure fn from<T:NumCast>(n: T) -> self;
