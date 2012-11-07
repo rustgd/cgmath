@@ -4,7 +4,7 @@ use funs::exp::*;
 use funs::trig::*;
 use matrix::Mat4;
 
-fn mat4_from_rotation<T:Copy Num NumCast Exp Trig>(axis: Vec3<T>, angle: T) -> Mat4<T> {
+pub fn mat4_from_rotation<T:Copy Num NumCast Exp Trig>(angle: T, axis: Vec3<T>) -> Mat4<T> {
     let angle_rad = radians(&angle);
     let c = cos(&angle_rad);
     let s = sin(&angle_rad);
