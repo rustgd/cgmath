@@ -11,14 +11,12 @@
 extern mod std;
 
 pub mod matrix;
-pub mod projection;
 pub mod quaternion;
 pub mod vector;
 
 #[test]
 mod test {
     mod test_matrix;
-    mod test_projection;
     mod test_quaternion;
     mod test_vector;
 }
@@ -34,6 +32,7 @@ pub mod funs {
   pub mod boolv;
   pub mod common;
   pub mod exp;
+  pub mod projection;
   pub mod relv;
   pub mod transform;
   pub mod trig;
