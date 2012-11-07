@@ -698,6 +698,9 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T> {
     
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
+        // Surprisingly when building with optimisation turned on this is actually
+        // faster than writing out the matrix multiplication in expanded form.
+        // If you don't believe me, see ./test/performance/matrix_mul.rs
         Mat4::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)), self.row(3).dot(&other.col(0)),
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)), self.row(3).dot(&other.col(1)),
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)), self.row(3).dot(&other.col(2)),
