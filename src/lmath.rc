@@ -35,6 +35,7 @@ pub mod funs {
   pub mod common;
   pub mod exp;
   pub mod relv;
+  pub mod transform;
   pub mod trig;
   
   #[test]
