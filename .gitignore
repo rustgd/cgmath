@@ -1,3 +1,4 @@
+*.dSYM
 .DS_Store
 lib
 sublime
