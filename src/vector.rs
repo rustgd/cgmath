@@ -50,7 +50,7 @@ pub trait GeometricVector<T> {
     pure fn length2() -> T;
     pure fn length() -> T;
     pure fn normalize() -> self;
-    pure fn lerp(other: &self, value: T) -> self;
+    pure fn lerp(other: &self, amount: T) -> self;
 }
 
 pub trait Vector2<T> {
@@ -175,8 +175,8 @@ pub impl<T:Copy Num Exp> Vec2<T>: GeometricVector<T> {
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec2<T>, value: T) -> Vec2<T> {
-        self.add_v(&other.sub_v(&self).mul_t(value))
+    pure fn lerp(other: &Vec2<T>, amount: T) -> Vec2<T> {
+        self.add_v(&other.sub_v(&self).mul_t(amount))
     }
 }
 
@@ -361,8 +361,8 @@ pub impl<T:Copy Num Exp> Vec3<T>: GeometricVector<T> {
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec3<T>, value: T) -> Vec3<T> {
-        self.add_v(&other.sub_v(&self).mul_t(value))
+    pure fn lerp(other: &Vec3<T>, amount: T) -> Vec3<T> {
+        self.add_v(&other.sub_v(&self).mul_t(amount))
     }
 }
 
@@ -553,8 +553,8 @@ pub impl<T:Copy Num Exp> Vec4<T>: GeometricVector<T> {
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec4<T>, value: T) -> Vec4<T> {
-        self.add_v(&other.sub_v(&self).mul_t(value))
+    pure fn lerp(other: &Vec4<T>, amount: T) -> Vec4<T> {
+        self.add_v(&other.sub_v(&self).mul_t(amount))
     }
 }
 
