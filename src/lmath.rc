@@ -40,5 +40,6 @@ pub mod funs {
   #[test]
   mod test {
     mod test_boolv;
+    mod test_transform;
   }
 }
