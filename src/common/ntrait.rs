@@ -42,11 +42,11 @@ pub impl i64:  Integer {}
 pub impl int:  Integer {}
 
 
-trait FloatingPoint {} // TODO: implement trait inheritence
+trait Float {} // TODO: implement trait inheritence
 
-pub impl f32:   FloatingPoint {}
-pub impl f64:   FloatingPoint {}
-pub impl float: FloatingPoint {}
+pub impl f32:   Float {}
+pub impl f64:   Float {}
+pub impl float: Float {}
 
 
 pub impl u8    : Add<u8,u8>        { #[inline(always)] pure fn add(rhs: &u8)    -> u8    { self + *rhs } }
