@@ -4,7 +4,7 @@ Lmath is generic linear algebra library for Rust. There is still much to do, uni
 
 ## Todo:
 
-- Matrix inversion
+- ~~Matrix inversion~~
 - ~~Matrix rotation~~
 - ~~Angle types (degrees/radians)~~
 - N x M matrices

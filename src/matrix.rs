@@ -49,8 +49,6 @@ pub trait Matrix<T, ColVec, RowVec> {
     
     pure fn col(i: uint) -> ColVec;
     pure fn row(i: uint) -> RowVec;
-
-    pure fn det() -> T;
 }
 
 pub trait NumericMatrix<T, ColVec> {
@@ -62,6 +60,8 @@ pub trait SquareMatrix<T> {
     pure fn add_m(other: &self) -> self;
     pure fn sub_m(other: &self) -> self;
     pure fn mul_m(other: &self) -> self;
+    
+    pure fn det() -> T;
     
     pure fn invert() -> Option<self>;
     pure fn transpose() -> self;
@@ -134,7 +134,7 @@ pub mod Mat2 {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -154,10 +154,6 @@ pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     pure fn row(i: uint) -> Vec2<T> {
         Vec2::new(self[0][i],
                   self[1][i])
-    }
-
-    pure fn det() -> T {
-       self[0][0]*self[1][1] - self[1][0]*self[0][1]
     }
 }
 
@@ -194,6 +190,10 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
     }
     
+    pure fn det() -> T {
+       self[0][0]*self[1][1] - self[1][0]*self[0][1]
+    }
+
     #[inline(always)]
     pure fn invert() -> Option<Mat2<T>> {
         let _0 = cast(0);
@@ -363,7 +363,7 @@ pub mod Mat3 {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -384,10 +384,6 @@ pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
         Vec3::new(self[0][i],
                   self[1][i],
                   self[2][i])
-    }
-
-    pure fn det() -> T {
-        self.col(0).dot(&self.col(1).cross(&self.col(2)))
     }
 }
 
@@ -429,6 +425,10 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
     }
     
+    pure fn det() -> T {
+        self.col(0).dot(&self.col(1).cross(&self.col(2)))
+    }
+
     // #[inline(always)]
     pure fn invert() -> Option<Mat3<T>> {
         let d = self.det();
@@ -677,7 +677,7 @@ pub mod Mat4 {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -701,20 +701,6 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
                   self[3][i])
     }
 
-    pure fn det() -> T {
-        self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
-                             self[1][2], self[2][2], self[3][2],
-                             self[1][3], self[2][3], self[3][3]).det() -
-        self[1][0]*Mat3::new(self[0][1], self[2][1], self[3][1],
-                             self[0][2], self[2][2], self[3][2],
-                             self[0][3], self[2][3], self[3][3]).det() +
-        self[2][0]*Mat3::new(self[0][1], self[1][1], self[3][1],
-                             self[0][2], self[1][2], self[3][2],
-                             self[0][3], self[1][3], self[3][3]).det() -
-        self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
-                             self[0][2], self[1][2], self[2][2],
-                             self[0][3], self[1][3], self[2][3]).det()
-    }
 }
 
 pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: NumericMatrix<T, Vec4<T>> {
@@ -763,6 +749,21 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
     }
     
+    pure fn det() -> T {
+        self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
+                             self[1][2], self[2][2], self[3][2],
+                             self[1][3], self[2][3], self[3][3]).det() -
+        self[1][0]*Mat3::new(self[0][1], self[2][1], self[3][1],
+                             self[0][2], self[2][2], self[3][2],
+                             self[0][3], self[2][3], self[3][3]).det() +
+        self[2][0]*Mat3::new(self[0][1], self[1][1], self[3][1],
+                             self[0][2], self[1][2], self[3][2],
+                             self[0][3], self[1][3], self[3][3]).det() -
+        self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
+                             self[0][2], self[1][2], self[2][2],
+                             self[0][3], self[1][3], self[2][3]).det()
+    }
+
     pure fn invert() -> Option<Mat4<T>> {
         let d = self.det();
         let _0 = cast(0);

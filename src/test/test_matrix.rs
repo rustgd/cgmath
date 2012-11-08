@@ -50,7 +50,6 @@ fn test_Mat2() {
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
 
-    io::println(#fmt("%?", option::unwrap(a.invert())));
     assert option::unwrap(a.invert()) == Mat2::new(-2f,  1.5f,
                                                     1f, -0.5f);
 
