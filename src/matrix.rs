@@ -157,7 +157,7 @@ pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     }
 
     pure fn det() -> T {
-       self[0][0] * self[1][1]
+       self[0][0]*self[1][1] - self[1][0]*self[0][1]
     }
 }
 
