@@ -37,8 +37,6 @@ pub trait Vector {
 }
 
 pub trait NumericVector<T> {
-    pure fn add_t(value: T) -> self;
-    pure fn sub_t(value: T) -> self;
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -64,13 +62,14 @@ pub trait Vector3<T> {
     // static pure fn new(x: T, y: T, z: T) -> self;
     // static pure fn from_value(value: T) -> self;
     
-    fn cross(other: &self) -> self;
+    pure fn cross(other: &self) -> self;
 }
 
 pub trait Vector4<T> {
     // pub static pure fn new(x: T, y: T, z: T, w: T) -> self;
     // pub static pure fn from_value(value: T) -> self;
 }
+
 
 
 
@@ -125,18 +124,6 @@ pub impl<T> Vec2<T>: Vector {
 }
     
 pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
-    #[inline(always)]
-    pure fn add_t(value: T) -> Vec2<T> {
-        Vec2::new(self[0] + value,
-                  self[1] + value)
-    }
-    
-    #[inline(always)]
-    pure fn sub_t(value: T) -> Vec2<T> {
-        Vec2::new(self[0] - value,
-                  self[1] - value)
-    }
-    
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec2<T> {
         Vec2::new(self[0] * value,
@@ -304,7 +291,7 @@ pub mod Vec3 {
 
 pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     #[inline(always)]
-    fn cross(other: &Vec3<T>) -> Vec3<T> {
+    pure fn cross(other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
                   (self[2] * other[0]) - (self[0] * other[2]),
                   (self[0] * other[1]) - (self[1] * other[0]))
@@ -317,20 +304,6 @@ pub impl<T> Vec3<T>: Vector {
 }
 
 pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
-    #[inline(always)]
-    pure fn add_t(value: T) -> Vec3<T> {
-        Vec3::new(self[0] + value,
-                  self[1] + value,
-                  self[2] + value)
-    }
-    
-    #[inline(always)]
-    pure fn sub_t(value: T) -> Vec3<T> {
-        Vec3::new(self[0] - value,
-                  self[1] - value,
-                  self[2] - value)
-    }
-    
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec3<T> {
         Vec3::new(self[0] * value,
@@ -517,22 +490,6 @@ pub impl<T> Vec4<T>: Vector {
 }
 
 pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
-    #[inline(always)]
-    pure fn add_t(value: T) -> Vec4<T> {
-        Vec4::new(self[0] + value,
-                  self[1] + value,
-                  self[2] + value,
-                  self[3] + value)
-    }
-    
-    #[inline(always)]
-    pure fn sub_t(value: T) -> Vec4<T> {
-        Vec4::new(self[0] - value,
-                  self[1] - value,
-                  self[2] - value,
-                  self[3] - value)
-    }
-    
     #[inline(always)]
     pure fn mul_t(value: T) -> Vec4<T> {
         Vec4::new(self[0] * value,

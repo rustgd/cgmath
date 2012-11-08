@@ -28,8 +28,6 @@ fn test_Vec2() {
     assert -a      == Vec2::new(-1f, -2f);
     assert a.neg() == Vec2::new(-1f, -2f);
     
-    assert a.add_t(f1) == Vec2::new( 2.5f, 3.5f);
-    assert a.sub_t(f1) == Vec2::new(-0.5f, 0.5f);
     assert a.mul_t(f1) == Vec2::new( 1.5f, 3.0f);
     assert a.div_t(f2) == Vec2::new( 2.0f, 4.0f);
     
@@ -83,8 +81,6 @@ fn test_Vec3() {
     assert -a      == Vec3::new(-1f, -2f, -3f);
     assert a.neg() == Vec3::new(-1f, -2f, -3f);
     
-    assert a.add_t(f1) == Vec3::new( 2.5f, 3.5f, 4.5f);
-    assert a.sub_t(f1) == Vec3::new(-0.5f, 0.5f, 1.5f);
     assert a.mul_t(f1) == Vec3::new( 1.5f, 3.0f, 4.5f);
     assert a.div_t(f2) == Vec3::new( 2.0f, 4.0f, 6.0f);
     
@@ -139,8 +135,6 @@ fn test_Vec4() {
     assert -a      == Vec4::new(-1f, -2f, -3f, -4f);
     assert a.neg() == Vec4::new(-1f, -2f, -3f, -4f);
     
-    assert a.add_t(f1) == Vec4::new( 2.5f, 3.5f, 4.5f, 5.5f);
-    assert a.sub_t(f1) == Vec4::new(-0.5f, 0.5f, 1.5f, 2.5f);
     assert a.mul_t(f1) == Vec4::new( 1.5f, 3.0f, 4.5f, 6.0f);
     assert a.div_t(f2) == Vec4::new( 2.0f, 4.0f, 6.0f, 8.0f);
     
