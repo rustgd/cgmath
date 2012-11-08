@@ -56,7 +56,7 @@ pub trait NumericMatrix<T, ColVec> {
     pure fn mul_v(other: &ColVec) -> ColVec;
 }
 
-pub trait SquareMatrix<T> {
+pub trait NumericMatrix_NxN<T> {
     pure fn add_m(other: &self) -> self;
     pure fn sub_m(other: &self) -> self;
     pure fn mul_m(other: &self) -> self;
@@ -171,7 +171,7 @@ pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T> {
     #[inline(always)]
     pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self[0].add_v(&other[0]),
@@ -403,7 +403,7 @@ pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T> {
     #[inline(always)]
     pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self[0].add_v(&other[0]),
@@ -721,7 +721,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: NumericMatrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: SquareMatrix<T> {
+pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
