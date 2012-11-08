@@ -29,6 +29,8 @@ fn test_Mat2() {
     
     assert a.col(0) == Vec2::new(1f, 3f);
     assert a.col(1) == Vec2::new(2f, 4f);
+
+    assert a.det() == 4f;
     
     assert a.neg() == Mat2::new(-1f, -3f,
                                 -2f, -4f);
@@ -47,6 +49,12 @@ fn test_Mat2() {
     
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
+
+    assert option::unwrap(a.invert()) == Mat2::new(1f,     -0.5f,
+                                                   -0.75f, 0.25f);
+
+    assert Mat2::new(0f, 2f,
+                     3f, 5f).invert().is_none();
     
     // exact_eq
     // fuzzy_eq
@@ -56,11 +64,13 @@ fn test_Mat2() {
     assert Mat2::identity::<float>().is_symmetric();
     assert Mat2::identity::<float>().is_diagonal();
     assert !Mat2::identity::<float>().is_rotated();
+    assert Mat2::identity::<float>().is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
     assert !a.is_diagonal();
     assert a.is_rotated();
+    assert a.is_invertible();
     
     let c = Mat2::new(2f, 1f,
                       1f, 2f);
@@ -68,6 +78,7 @@ fn test_Mat2() {
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
+    assert c.is_invertible();
     
     assert Mat2::from_value(6f).is_diagonal();
     
@@ -120,6 +131,8 @@ fn test_Mat3() {
     assert a.col(0) == Vec3::new(1f, 4f, 7f);
     assert a.col(1) == Vec3::new(2f, 5f, 8f);
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
+
+    assert a.det() == 0f;
     
     assert a.neg() == Mat3::new(-1f, -4f, -7f,
                                 -2f, -5f, -8f,
@@ -144,7 +157,18 @@ fn test_Mat3() {
     assert a.transpose() == Mat3::new(1f, 2f, 3f,
                                       4f, 5f, 6f,
                                       7f, 8f, 9f);
+
+    assert a.invert().is_none();
+
+    assert option::unwrap(Mat3::identity::<float>().invert())
+        == Mat3::identity::<float>();
     
+    assert option::unwrap(Mat3::new(2f, 4f, 6f,
+                                    0f, 2f, 4f,
+                                    0f, 0f, 1f).invert())
+        == Mat3::new(0.5f,  -1f,  1f,
+                       0f, 0.5f, -2f,
+                       0f,   0f,  1f);
     // exact_eq
     // fuzzy_eq
     // eq
@@ -153,11 +177,13 @@ fn test_Mat3() {
     assert Mat3::identity::<float>().is_symmetric();
     assert Mat3::identity::<float>().is_diagonal();
     assert !Mat3::identity::<float>().is_rotated();
+    assert Mat3::identity::<float>().is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
     assert !a.is_diagonal();
     assert a.is_rotated();
+    assert !a.is_invertible();
     
     let c = Mat3::new(3f, 2f, 1f,
                       2f, 3f, 2f,
@@ -166,6 +192,7 @@ fn test_Mat3() {
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
+    assert c.is_invertible();
     
     assert Mat3::from_value(6f).is_diagonal();
     
@@ -187,6 +214,10 @@ fn test_Mat4() {
                    y: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
                    z: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f },
                    w: Vec4 { x: 5f, y: 9f, z: 13f, w: 17f } };
+    let c = Mat4 { x: Vec4 { x: 3f, y: 2f, z:  1f, w:  1f },
+                   y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
+                   z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
+                   w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
     let v1 = Vec4::new(1f, 2f, 3f, 4f);
     let f1 = 0.5f;
     
@@ -232,6 +263,8 @@ fn test_Mat4() {
     assert a.col(1) == Vec4::new(2f, 6f, 10f, 14f);
     assert a.col(2) == Vec4::new(3f, 7f, 11f, 15f);
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
+
+    assert a.det() == 0f;
     
     assert a.neg() == Mat4::new(-1f, -5f,  -9f, -13f,
                                 -2f, -6f, -10f, -14f,
@@ -262,6 +295,15 @@ fn test_Mat4() {
                                        5f,  6f,  7f,  8f,
                                        9f, 10f, 11f, 12f,
                                       13f, 14f, 15f, 16f);
+
+    assert option::unwrap(c.invert())
+        == Mat4::new( 5f, -4f,  1f,  0f,
+                     -4f,  8f, -4f,  0f,
+                      4f, -8f,  4f,  8f,
+                     -3f,  4f,  1f, -8f).mul_t(0.125f);
+
+    assert option::unwrap(Mat4::identity::<float>().invert())
+        == Mat4::identity::<float>();
     
     // exact_eq
     // fuzzy_eq
@@ -271,11 +313,13 @@ fn test_Mat4() {
     assert Mat4::identity::<float>().is_symmetric();
     assert Mat4::identity::<float>().is_diagonal();
     assert !Mat4::identity::<float>().is_rotated();
+    assert Mat4::identity::<float>().is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
     assert !a.is_diagonal();
     assert a.is_rotated();
+    assert !a.is_invertible();
     
     let c = Mat4::new(4f, 3f, 2f, 1f,
                       3f, 4f, 3f, 2f,
@@ -285,6 +329,7 @@ fn test_Mat4() {
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
+    assert c.is_invertible();
     
     assert Mat4::from_value(6f).is_diagonal();
 }

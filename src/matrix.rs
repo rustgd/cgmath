@@ -49,6 +49,8 @@ pub trait Matrix<T, ColVec, RowVec> {
     
     pure fn col(i: uint) -> ColVec;
     pure fn row(i: uint) -> RowVec;
+
+    pure fn det() -> T;
 }
 
 pub trait NumericMatrix<T, ColVec> {
@@ -61,13 +63,14 @@ pub trait SquareMatrix<T> {
     pure fn sub_m(other: &self) -> self;
     pure fn mul_m(other: &self) -> self;
     
-    // pure fn invert(other: &self) -> self;
+    pure fn invert() -> Option<self>;
     pure fn transpose() -> self;
     
     pure fn is_identity() -> bool;
     pure fn is_symmetric() -> bool;
     pure fn is_diagonal() -> bool;
     pure fn is_rotated() -> bool;
+    pure fn is_invertible() -> bool;
 }
 
 pub trait Matrix2<T> {
@@ -131,7 +134,7 @@ pub mod Mat2 {
     }
 }
 
-pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy Num NumCast> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 2 }
     
@@ -152,9 +155,13 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
         Vec2::new(self[0][i],
                   self[1][i])
     }
+
+    pure fn det() -> T {
+       self[0][0] * self[1][1]
+    }
 }
 
-pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>> {
+pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat2<T> {
         Mat2::from_cols(self[0].mul_t(value),
@@ -187,9 +194,17 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
     }
     
-    // TODO - inversion is harrrd D:
-    // #[inline(always)]
-    // pure fn invert(other: &Mat2<T>) -> Mat2<T> {}
+    #[inline(always)]
+    pure fn invert() -> Option<Mat2<T>> {
+        let _0 = cast(0);
+        let d = self.det();
+        if d.fuzzy_eq(&_0) {
+            None
+        } else {
+            Some(Mat2::new(self[1][1]/d, -self[1][0]/d,
+                           -self[0][1]/d, self[0][0]/d))
+        }
+    }
     
     #[inline(always)]
     pure fn transpose() -> Mat2<T> {
@@ -218,6 +233,12 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
     #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat2::identity())
+    }
+
+    #[inline(always)]
+    pure fn is_invertible() -> bool {
+        let _0 = cast(0);
+        !self.det().fuzzy_eq(&_0)
     }
 }
 
@@ -342,7 +363,7 @@ pub mod Mat3 {
     }
 }
 
-pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy Num NumCast> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 3 }
     
@@ -364,9 +385,13 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
                   self[1][i],
                   self[2][i])
     }
+
+    pure fn det() -> T {
+        self.col(0).dot(&self.col(1).cross(&self.col(2)))
+    }
 }
 
-pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>> {
+pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat3<T> {
         Mat3::from_cols(self[0].mul_t(value),
@@ -404,9 +429,19 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
     }
     
-    // TODO - inversion is harrrd D:
     // #[inline(always)]
-    // pure fn invert(other: &Mat3) -> Mat3 {}
+    pure fn invert() -> Option<Mat3<T>> {
+        let d = self.det();
+        let _0 = cast(0);
+        if d.fuzzy_eq(&_0) {
+            None
+        } else {
+            Some(Mat3::from_cols(self[1].cross(&self[2]).div_t(d),
+                                 self[2].cross(&self[0]).div_t(d),
+                                 self[0].cross(&self[1]).div_t(d))
+            .transpose())
+        }
+    }
     
     #[inline(always)]
     pure fn transpose() -> Mat3<T> {
@@ -448,6 +483,12 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: SquareMatrix<T> {
     #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat3::identity())
+    }
+
+    #[inline(always)]
+    pure fn is_invertible() -> bool {
+        let _0 = cast(0);
+        !self.det().fuzzy_eq(&_0)
     }
 }
 
@@ -636,7 +677,7 @@ pub mod Mat4 {
     }
 }
 
-pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     pure fn rows() -> uint { 4 }
     
@@ -659,9 +700,24 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
                   self[2][i],
                   self[3][i])
     }
+
+    pure fn det() -> T {
+        self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
+                             self[1][2], self[2][2], self[3][2],
+                             self[1][3], self[2][3], self[3][3]).det() -
+        self[1][0]*Mat3::new(self[0][1], self[2][1], self[3][1],
+                             self[0][2], self[2][2], self[3][2],
+                             self[0][3], self[2][3], self[3][3]).det() +
+        self[2][0]*Mat3::new(self[0][1], self[1][1], self[3][1],
+                             self[0][2], self[1][2], self[3][2],
+                             self[0][3], self[1][3], self[3][3]).det() -
+        self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
+                             self[0][2], self[1][2], self[2][2],
+                             self[0][3], self[1][3], self[2][3]).det()
+    }
 }
 
-pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: NumericMatrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat4<T> {
         Mat4::from_cols(self[0].mul_t(value),
@@ -679,7 +735,7 @@ pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T> {
+pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: SquareMatrix<T> {
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
@@ -707,9 +763,74 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T> {
                   self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
     }
     
-    // TODO - inversion is harrrd D:
-    // #[inline(always)]
-    // pure fn invert(other: &Mat4<T>) -> Mat4<T> {}
+    pure fn invert() -> Option<Mat4<T>> {
+        let d = self.det();
+        let _0 = cast(0);
+        if d.fuzzy_eq(&_0) {
+            None
+        } else {
+
+            // Gauss Jordan Elimination with partial pivoting
+
+            let mut a = self.transpose();
+            let mut inv = Mat4::identity::<T>();
+
+            // Find largest pivot column j among rows j..3
+            uint::range(0, 4, |j| {
+                let mut i1 = j;
+                uint::range(j + 1, 4, |i| {
+                    // There should really be a generic abs function
+                    let one = a[i][j];
+                    let two = a[i1][j];
+                    if one < _0 && two < _0 && -one > -two {
+                        i1 = i;
+                    } else if one > _0 && two > _0 && one > two {
+                        i1 = i;
+                    } else if one < _0 && two > _0 && -one > two {
+                        i1 = i;
+                    } else if one > _0 && two < _0 && one > -two {
+                        i1 = i;
+                    }
+                    true
+                });
+
+                // Swap rows i1 and j in a and inv to
+                // put pivot on diagonal
+                let c = [mut a.x, a.y, a.z, a.w];
+                c[i1] <-> c[j];
+                a = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+                let c = [mut inv.x, inv.y, inv.z, inv.w];
+                c[i1] <-> c[j];
+                inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+
+                // Scale row j to have a unit diagonal
+                let c = [mut inv.x, inv.y, inv.z, inv.w];
+                c[j] = c[j].div_t(a[j][j]);
+                inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+                let c = [mut a.x, a.y, a.z, a.w];
+                c[j] = c[j].div_t(a[j][j]);
+                a = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+
+                // Eliminate off-diagonal elems in col j of a,
+                // doing identical ops to inv
+                uint::range(0, 4, |i| {
+                    if i != j {
+                        let c = [mut inv.x, inv.y, inv.z, inv.w];
+                        c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
+                        inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+
+                        let c = [mut a.x, a.y, a.z, a.w];
+                        c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
+                        a = Mat4::from_cols(c[0], c[1], c[2], c[3]); 
+                    }
+                    true
+                });
+
+                true
+            });
+            Some(inv.transpose())
+        }
+    }
     
     #[inline(always)]
     pure fn transpose() -> Mat4<T> {
@@ -766,6 +887,12 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: SquareMatrix<T> {
     #[inline(always)]
     pure fn is_rotated() -> bool {
         !self.fuzzy_eq(&Mat4::identity())
+    }
+
+    #[inline(always)]
+    pure fn is_invertible() -> bool {
+        let _0 = cast(0);
+        !self.det().fuzzy_eq(&_0)
     }
 }
 
