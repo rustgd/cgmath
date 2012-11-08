@@ -201,8 +201,8 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: SquareMatrix<T> {
         if d.fuzzy_eq(&_0) {
             None
         } else {
-            Some(Mat2::new(self[1][1]/d, -self[1][0]/d,
-                           -self[0][1]/d, self[0][0]/d))
+            Some(Mat2::new(self[1][1]/d, -self[0][1]/d,
+                           -self[1][0]/d, self[0][0]/d))
         }
     }
     

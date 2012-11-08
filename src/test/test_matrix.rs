@@ -30,7 +30,7 @@ fn test_Mat2() {
     assert a.col(0) == Vec2::new(1f, 3f);
     assert a.col(1) == Vec2::new(2f, 4f);
 
-    assert a.det() == 4f;
+    assert a.det() == -2f;
     
     assert a.neg() == Mat2::new(-1f, -3f,
                                 -2f, -4f);
@@ -50,11 +50,12 @@ fn test_Mat2() {
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
 
-    assert option::unwrap(a.invert()) == Mat2::new(1f,     -0.5f,
-                                                   -0.75f, 0.25f);
+    io::println(#fmt("%?", option::unwrap(a.invert())));
+    assert option::unwrap(a.invert()) == Mat2::new(-2f,  1.5f,
+                                                    1f, -0.5f);
 
     assert Mat2::new(0f, 2f,
-                     3f, 5f).invert().is_none();
+                     0f, 5f).invert().is_none();
     
     // exact_eq
     // fuzzy_eq
