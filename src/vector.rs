@@ -561,10 +561,9 @@ pub impl<T:Copy Num Exp> Vec4<T>: GeometricVector<T> {
 pub impl<T:Copy> Vec4<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe {
-            do buf_as_slice(
-                transmute::<*Vec4<T>, *T>(
-                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        unsafe { do buf_as_slice(
+            transmute::<*Vec4<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
     }
 }

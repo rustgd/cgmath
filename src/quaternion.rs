@@ -181,10 +181,9 @@ pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
 pub impl<T:Copy> Quat<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe {
-            do buf_as_slice(
-                transmute::<*Quat<T>, *T>(
-                    to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        unsafe { do buf_as_slice(
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
     }
 }
