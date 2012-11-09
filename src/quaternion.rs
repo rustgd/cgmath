@@ -33,6 +33,8 @@ pub trait Quaternion<T> {
     pure fn sub_q(other: &self) -> self;
     pure fn mul_q(other: &self) -> self;
     
+    pure fn dot(other: &self) -> T;
+    
     pure fn conjugate() -> self;
     pure fn inverse() -> self;
     pure fn length2() -> T;
@@ -120,6 +122,14 @@ pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
                   self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
                   self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
                   self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
+    }
+    
+    #[inline(always)]
+    pure fn dot(other: &Quat<T>) -> T {
+        self.w * other.w +
+        self.x * other.x +
+        self.y * other.y +
+        self.z * other.z
     }
     
     #[inline(always)]
