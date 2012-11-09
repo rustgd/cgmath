@@ -39,6 +39,7 @@ pub trait Quaternion<T> {
     pure fn inverse() -> self;
     pure fn length2() -> T;
     pure fn length() -> T;
+    pure fn normalize() -> self;
     
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
@@ -155,6 +156,13 @@ pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn length() -> T {
         self.length2().sqrt()
+    }
+    
+    #[inline(always)]
+    pure fn normalize() -> Quat<T> {
+        let mut n: T = cast(1);
+        n /= self.length();
+        return self.mul_t(n);
     }
     
     #[inline(always)]
