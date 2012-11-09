@@ -5,7 +5,9 @@ use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
-use funs::exp::Exp;
+use funs::exp::*;
+use funs::trig::*;
+use funs::common::*;
 use math::*;
 use matrix::{Mat3, Mat4};
 use ncast::*;
@@ -40,6 +42,9 @@ pub trait Quaternion<T> {
     pure fn length2() -> T;
     pure fn length() -> T;
     pure fn normalize() -> self;
+    
+    pure fn nlerp(other: &self, amount: T) -> self;
+    pure fn slerp(other: &self, amount: T) -> self;
     
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
@@ -81,7 +86,7 @@ pub mod Quat {
     }
 }
 
-pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
     
@@ -163,6 +168,46 @@ pub impl<T:Copy Num NumCast Exp FuzzyEq> Quat<T>: Quaternion<T> {
         let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
+    }
+    
+    #[inline(always)]
+    pure fn nlerp(other: &Quat<T>, amount: T) -> Quat<T> {
+        let _1: T = cast(1);
+        self.mul_t(_1 - amount).add_q(&other.mul_t(amount)).normalize()
+    }
+    
+    /**
+     * Spherical Linear Intoperlation
+     *
+     * Both quaternions should be normalized first, or else strange things will
+     * will happen...
+     *
+     * Note: The `acos` used in `slerp` is an expensive operation, so unless your
+     * quarternions a far away from each other it's generally more advisable to
+     * use nlerp when you know your rotations are going to be small.
+     *
+     * See *[Understanding Slerp, Then Not Using It]
+     * (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)*
+     * for more information. The [Arcsynthesis OpenGL tutorial]
+     * (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
+     * also provides a good explanation.
+     */
+    #[inline(always)]
+    pure fn slerp(other: &Quat<T>, amount: T) -> Quat<T> {
+        let dot: T = cast(self.dot(other));
+        
+        // if quaternions are close together use `nlerp`
+        let dot_threshold = cast(0.9995);
+        if dot > dot_threshold { return self.nlerp(other, amount) }
+        
+        let robust_dot = dot.clamp(&-cast(1), &cast(1));    // stay within the domain of acos()
+        let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
+        let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
+        
+        let q = other.sub_q(&self.mul_t(robust_dot))
+                     .normalize();
+        
+        self.mul_t(cos(&theta)).add_q(&q.mul_t(sin(&theta)))
     }
     
     #[inline(always)]
