@@ -1,73 +1,137 @@
 use ncast::*;
-use ntrait::Float;
 use vector::{Vec3, Vec2, Vec4};
 
-pub enum Radians<ThetaT: Float> = ThetaT;
+pub trait AngleConv {
+    pure fn to_degrees() -> self;
+    pure fn to_radians() -> self;
+}
 
-pub impl<ThetaT:Num NumCast Float> Radians<ThetaT> {
+#[inline(always)] pub pure fn degrees<T:AngleConv>(theta: &T) -> T { theta.to_degrees() }
+#[inline(always)] pub pure fn radians<T:AngleConv>(theta: &T) -> T { theta.to_radians() }
+
+pub impl f32: AngleConv {
+    #[inline(always)] pure fn to_degrees() -> f32 { self * (180f32 / f32::consts::pi) }
+    #[inline(always)] pure fn to_radians() -> f32 { self * (f32::consts::pi / 180f32) }
+}
+
+pub impl f64: AngleConv {
+    #[inline(always)] pure fn to_degrees() -> f64 { self * (180f64 / f64::consts::pi) }
+    #[inline(always)] pure fn to_radians() -> f64 { self * (f64::consts::pi / 180f64) }
+}
+
+pub impl float: AngleConv {
+    #[inline(always)] pure fn to_degrees() -> float { self * (180f / float::consts::pi) }
+    #[inline(always)] pure fn to_radians() -> float { self * (float::consts::pi / 180f) }
+}
+
+pub impl<T:Copy AngleConv> Vec2<T>: AngleConv {
     #[inline(always)]
-    pure fn to_degrees() -> Degrees<ThetaT> {
-        Degrees(*self * cast(180f64 / f64::consts::pi))
+    pure fn to_degrees() -> Vec2<T> {
+        Vec2::new(degrees(&self[0]),
+                  degrees(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn to_radians() -> Vec2<T> {
+        Vec2::new(radians(&self[0]),
+                  radians(&self[1]))
     }
 }
 
-pub enum Degrees<ThetaT: Float> = ThetaT;
-
-pub impl<ThetaT:Num NumCast Float> Degrees<ThetaT> {
+pub impl<T:Copy AngleConv> Vec3<T>: AngleConv {
     #[inline(always)]
-    pure fn to_radians() -> Radians<ThetaT> {
-        Radians(*self * cast(f64::consts::pi / 180f64))
+    pure fn to_degrees() -> Vec3<T> {
+        Vec3::new(degrees(&self[0]),
+                  degrees(&self[1]),
+                  degrees(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn to_radians() -> Vec3<T> {
+        Vec3::new(radians(&self[0]),
+                  radians(&self[1]),
+                  radians(&self[2]))
     }
 }
 
-/**
- * Angle and Trigonometry Functions
- */
-pub trait Trig<Result> {
-    pure fn sin()  -> Result;
-    pure fn cos()  -> Result;
-    pure fn tan()  -> Result;
-    pure fn asin() -> Result;
-    pure fn acos() -> Result;
-    pure fn atan() -> Result;
-    pure fn sinh() -> Result;
-    pure fn cosh() -> Result;
-    pure fn tanh() -> Result;
+pub impl<T:Copy AngleConv> Vec4<T>: AngleConv {
+    #[inline(always)]
+    pure fn to_degrees() -> Vec4<T> {
+        Vec4::new(degrees(&self[0]),
+                  degrees(&self[1]),
+                  degrees(&self[2]),
+                  degrees(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn to_radians() -> Vec4<T> {
+        Vec4::new(radians(&self[0]),
+                  radians(&self[1]),
+                  radians(&self[2]),
+                  radians(&self[3]))
+    }
 }
 
-pub impl
-<
-    ThetaT:Copy NumCast Float,
-    Result:NumCast
->
-Radians<ThetaT>: Trig<Result> {
-    #[inline(always)] pure fn sin()  -> Result { cast(f64::sin (cast(*self))) }
-    #[inline(always)] pure fn cos()  -> Result { cast(f64::cos (cast(*self))) }
-    #[inline(always)] pure fn tan()  -> Result { cast(f64::tan (cast(*self))) }
-    #[inline(always)] pure fn asin() -> Result { cast(f64::asin(cast(*self))) }
-    #[inline(always)] pure fn acos() -> Result { cast(f64::acos(cast(*self))) }
-    #[inline(always)] pure fn atan() -> Result { cast(f64::atan(cast(*self))) }
-    #[inline(always)] pure fn sinh() -> Result { cast(f64::sinh(cast(*self))) }
-    #[inline(always)] pure fn cosh() -> Result { cast(f64::cosh(cast(*self))) }
-    #[inline(always)] pure fn tanh() -> Result { cast(f64::tanh(cast(*self))) }
+
+pub trait Trig {
+    pure fn sin()  -> self;
+    pure fn cos()  -> self;
+    pure fn tan()  -> self;
+    pure fn asin() -> self;
+    pure fn acos() -> self;
+    pure fn atan() -> self;
+    pure fn sinh() -> self;
+    pure fn cosh() -> self;
+    pure fn tanh() -> self;
 }
 
-#[inline(always)] pub pure fn sin<T:Trig <Result>, Result:NumCast>(angle: &T) -> Result { angle.sin() }
-#[inline(always)] pub pure fn cos<T:Trig <Result>, Result:NumCast>(angle: &T) -> Result { angle.cos() }
-#[inline(always)] pub pure fn tan<T:Trig <Result>, Result:NumCast>(angle: &T) -> Result { angle.tan() }
-#[inline(always)] pub pure fn asin<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.asin() }
-#[inline(always)] pub pure fn acos<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.acos() }
-#[inline(always)] pub pure fn atan<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.atan() }
-#[inline(always)] pub pure fn sinh<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.sinh() }
-#[inline(always)] pub pure fn cosh<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.cosh() }
-#[inline(always)] pub pure fn tanh<T:Trig<Result>, Result:NumCast>(x: &T)     -> Result { x.tanh() }
+#[inline(always)] pub pure fn sin<T:Trig>(theta: &T) -> T { theta.sin() }
+#[inline(always)] pub pure fn cos<T:Trig>(theta: &T) -> T { theta.cos() }
+#[inline(always)] pub pure fn tan<T:Trig>(theta: &T) -> T { theta.tan() }
+#[inline(always)] pub pure fn asin<T:Trig>(x: &T)    -> T { x.asin() }
+#[inline(always)] pub pure fn acos<T:Trig>(x: &T)    -> T { x.acos() }
+#[inline(always)] pub pure fn atan<T:Trig>(x: &T)    -> T { x.atan() }
+#[inline(always)] pub pure fn sinh<T:Trig>(x: &T)    -> T { x.sinh() }
+#[inline(always)] pub pure fn cosh<T:Trig>(x: &T)    -> T { x.cosh() }
+#[inline(always)] pub pure fn tanh<T:Trig>(x: &T)    -> T { x.tanh() }
 
-pub impl
-<
-    ThetaT:Copy Trig<T>,
-    T:NumCast
->
-Vec2<ThetaT>: Trig<Vec2<T>> {
+pub impl f32: Trig {
+    #[inline(always)] pure fn sin()  -> f32 { f32::sin (self) }
+    #[inline(always)] pure fn cos()  -> f32 { f32::cos (self) }
+    #[inline(always)] pure fn tan()  -> f32 { f32::tan (self) }
+    #[inline(always)] pure fn asin() -> f32 { f32::asin(self) }
+    #[inline(always)] pure fn acos() -> f32 { f32::acos(self) }
+    #[inline(always)] pure fn atan() -> f32 { f32::atan(self) }
+    #[inline(always)] pure fn sinh() -> f32 { f32::sinh(self) }
+    #[inline(always)] pure fn cosh() -> f32 { f32::cosh(self) }
+    #[inline(always)] pure fn tanh() -> f32 { f32::tanh(self) }
+}
+
+pub impl f64: Trig {
+    #[inline(always)] pure fn sin()  -> f64 { f64::sin (self) }
+    #[inline(always)] pure fn cos()  -> f64 { f64::cos (self) }
+    #[inline(always)] pure fn tan()  -> f64 { f64::tan (self) }
+    #[inline(always)] pure fn asin() -> f64 { f64::asin(self) }
+    #[inline(always)] pure fn acos() -> f64 { f64::acos(self) }
+    #[inline(always)] pure fn atan() -> f64 { f64::atan(self) }
+    #[inline(always)] pure fn sinh() -> f64 { f64::sinh(self) }
+    #[inline(always)] pure fn cosh() -> f64 { f64::cosh(self) }
+    #[inline(always)] pure fn tanh() -> f64 { f64::tanh(self) }
+}
+
+pub impl float: Trig {
+    #[inline(always)] pure fn sin()  -> float { cast(f64::sin (cast(self))) }
+    #[inline(always)] pure fn cos()  -> float { cast(f64::cos (cast(self))) }
+    #[inline(always)] pure fn tan()  -> float { cast(f64::tan (cast(self))) }
+    #[inline(always)] pure fn asin() -> float { cast(f64::asin(cast(self))) }
+    #[inline(always)] pure fn acos() -> float { cast(f64::acos(cast(self))) }
+    #[inline(always)] pure fn atan() -> float { cast(f64::atan(cast(self))) }
+    #[inline(always)] pure fn sinh() -> float { cast(f64::sinh(cast(self))) }
+    #[inline(always)] pure fn cosh() -> float { cast(f64::cosh(cast(self))) }
+    #[inline(always)] pure fn tanh() -> float { cast(f64::tanh(cast(self))) }
+}
+
+pub impl <T:Copy Trig> Vec2<T>: Trig {
     #[inline(always)]
     pure fn sin() -> Vec2<T> {
         Vec2::new(sin(&self[0]),
@@ -123,12 +187,7 @@ Vec2<ThetaT>: Trig<Vec2<T>> {
     }
 }
 
-pub impl
-<
-    ThetaT:Copy Trig<T>,
-    T:NumCast
->
-Vec3<ThetaT>: Trig<Vec3<T>> {
+pub impl <T:Copy Trig> Vec3<T>: Trig {
     #[inline(always)]
     pure fn sin() -> Vec3<T> {
         Vec3::new(sin(&self[0]),
@@ -193,12 +252,7 @@ Vec3<ThetaT>: Trig<Vec3<T>> {
     }
 }
 
-pub impl
-<
-    ThetaT:Copy Trig<T>,
-    T:NumCast
->
-Vec4<ThetaT>: Trig<Vec4<T>>  {
+pub impl <T:Copy Trig> Vec4<T>: Trig  {
     #[inline(always)]
     pure fn sin() -> Vec4<T> {
         Vec4::new(sin(&self[0]),

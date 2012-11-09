@@ -5,14 +5,10 @@ use funs::exp::Exp;
 use funs::trig::*;
 use matrix::Mat4;
 
-pub fn mat4_from_rotation
-<
-    ThetaT:NumCast Float,
-    T:Copy Num NumCast
->
-(theta: Radians<ThetaT>, axis: Vec3<T>) -> Mat4<T> {
-    let c:  T = cos(&theta);
-    let s:  T = sin(&theta);
+pub fn mat4_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis: Vec3<T>) -> Mat4<T> {
+    let rad = radians(&theta);
+    let c:  T = cos(&rad);
+    let s:  T = sin(&rad);
     let _0: T = cast(0);
     let _1: T = cast(1);
     let t:  T = _1 - c;
