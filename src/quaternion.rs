@@ -29,7 +29,7 @@ pub trait Quaternion<T> {
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
-    // pure fn mul_v(other: &Vec3) -> Vec3;
+    pure fn mul_v(vec: &Vec3<T>) -> Vec3<T>;
     
     pure fn add_q(other: &self) -> self;
     pure fn sub_q(other: &self) -> self;
@@ -62,7 +62,6 @@ pub trait ToQuat<T> {
 pub struct Quat<T> { w: T, x: T, y: T, z: T }
 
 pub mod Quat {
-    
     #[inline(always)]
     pub pure fn new<T>(w: T, x: T, y: T, z: T) -> Quat<T> {
         Quat { w: move w, x: move x, y: move y, z: move z }
@@ -71,6 +70,12 @@ pub mod Quat {
     #[inline(always)]
     pub pure fn from_sv<T:Copy>(s: T, v: Vec3<T>) -> Quat<T> {
         Quat::new(s, v.x, v.y, v.z)
+    }
+
+    #[inline(always)]
+    pub pure fn from_axis_angle<T:Copy Num NumCast Trig AngleConv>(axis: Vec3<T>, theta: T) -> Quat<T> {
+        let half = radians(&theta) / cast(2);
+        from_sv(cos(&half), axis.mul_t(sin(&half)))
     }
     
     #[inline(always)]
@@ -104,6 +109,13 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> 
                   self[1] / value,
                   self[2] / value,
                   self[3] / value)
+    }
+
+    #[inline(always)]
+    pure fn mul_v(vec: &Vec3<T>) -> Vec3<T>  {
+        let base = Vec3{ x:self.x, y:self.y, z:self.z };
+        let tmp = base.cross(vec).add_v(&vec.mul_t(self.w));
+        base.cross(&tmp).mul_t(cast(2)).add_v(vec)
     }
     
     #[inline(always)]
