@@ -1,6 +1,5 @@
 use cast::transmute;
 use cmp::Eq;
-use num::from_int;
 use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
@@ -508,7 +507,7 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
         let w: float, x: float, y: float, z: float;
         let trace: float = cast(self[0][0] + self[1][1] + self[2][2]);
         
-        if trace >= from_int(0) {
+        if trace >= cast(0) {
             s = (trace + 1f).sqrt();
             w = 0.5 * s;
             s = 0.5 / s;

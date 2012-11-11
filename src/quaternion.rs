@@ -157,7 +157,7 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> 
     
     #[inline(always)]
     pure fn inverse() -> Quat<T> {
-        let mut n: T = from_int(1);
+        let mut n: T = cast(1);
         n /= self.length2();
         self.conjugate().mul_t(n)
     }

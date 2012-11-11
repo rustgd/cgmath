@@ -1,6 +1,5 @@
 use cast::transmute;
 use cmp::{Eq, Ord};
-use num::from_int;
 use vec::raw::buf_as_slice;
 use ptr::to_unsafe_ptr;
 use std::cmp::FuzzyEq;
@@ -155,7 +154,7 @@ pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
     }
 }
     
-pub impl<T:Copy Num Exp> Vec2<T>: GeometricVector<T> {
+pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -169,7 +168,7 @@ pub impl<T:Copy Num Exp> Vec2<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize() -> Vec2<T> {
-        let mut n: T = from_int(1); 
+        let mut n: T = cast(1); 
         n /= self.length();
         return self.mul_t(n);
     }
@@ -340,7 +339,7 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num Exp> Vec3<T>: GeometricVector<T> {
+pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -355,7 +354,7 @@ pub impl<T:Copy Num Exp> Vec3<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize() -> Vec3<T> {
-        let mut n: T = from_int(1);
+        let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
     }
@@ -531,7 +530,7 @@ pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num Exp> Vec4<T>: GeometricVector<T> {
+pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
         self[0] * self[0] +
@@ -547,7 +546,7 @@ pub impl<T:Copy Num Exp> Vec4<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize() -> Vec4<T> {
-        let mut n: T = from_int(1);
+        let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
     }
