@@ -159,56 +159,68 @@ pub impl float: Signed {
 /**
  * Common Functions for floating point types
  */
-
-pub trait Float<B> {
+pub trait Float {
     pure fn floor() -> self;
     pure fn trunc() -> self;
     pure fn round() -> self;
     // pure fn roundEven() -> self;
     pure fn ceil() -> self;
     // pure fn fract() -> self;
-    pure fn mix(y: &self, a: &self) -> self;
-    pure fn mixb(y: &self, a: &B) -> self;
 }
 
-#[inline(always)] pub pure fn floor<T:Float<B>, B>(x: T) -> T { x.floor() }
-#[inline(always)] pub pure fn trunc<T:Float<B>, B>(x: T) -> T { x.trunc() }
-#[inline(always)] pub pure fn round<T:Float<B>, B>(x: T) -> T { x.round() }
-// #[inline(always)] pub pure fn roundEven<T:Float<B>, B>(x: T) -> T { x.roundEven() }
-#[inline(always)] pub pure fn ceil<T:Float<B>, B>(x: T) -> T { x.ceil() }
-// #[inline(always)] pub pure fn fract<T:Float<B>, B>(x: T) -> T { x.fract() }
-#[inline(always)] pub pure fn mix<T:Float<B>, B>(x: &T, y: &T, a: &T) -> T { x.mix(y, a) }
-#[inline(always)] pub pure fn mixb<T:Float<B>, B>(x: &T, y: &T, a: &B) -> T { x.mixb(y, a) }
+#[inline(always)] pub pure fn floor<T:Float>(x: T) -> T { x.floor() }
+#[inline(always)] pub pure fn trunc<T:Float>(x: T) -> T { x.trunc() }
+#[inline(always)] pub pure fn round<T:Float>(x: T) -> T { x.round() }
+// #[inline(always)] pub pure fn roundEven<T:Float>(x: T) -> T { x.roundEven() }
+#[inline(always)] pub pure fn ceil<T:Float>(x: T) -> T { x.ceil() }
+// #[inline(always)] pub pure fn fract<T:Float>(x: T) -> T { x.fract() }
 
-pub impl f32: Float<bool> {
+pub impl f32: Float {
     #[inline(always)] pure fn floor() -> f32 { f32::floor(self) }
     #[inline(always)] pure fn trunc() -> f32 { f32::trunc(self) }
     #[inline(always)] pure fn round() -> f32 { f32::round(self) }
     // #[inline(always)] pure fn roundEven() -> f32 {}
     #[inline(always)] pure fn ceil() -> f32 { f32::ceil(self) }
     // #[inline(always)] pure fn fract() -> f32 {}
-    #[inline(always)] pure fn mix(y: &f32, a: &f32) -> f32 { self * (1f32 - (*a)) + y * (*a) }
-    #[inline(always)] pure fn mixb(y: &f32, a: &bool) -> f32 { if *a { *y } else { self } }
 }
 
-pub impl f64: Float<bool> {
+pub impl f64: Float {
     #[inline(always)] pure fn floor() -> f64 { f64::floor(self) }
     #[inline(always)] pure fn trunc() -> f64 { f64::trunc(self) }
     #[inline(always)] pure fn round() -> f64 { f64::round(self) }
     // #[inline(always)] pure fn roundEven() -> f64 {}
     #[inline(always)] pure fn ceil() -> f64 { f64::ceil(self) }
     // #[inline(always)] pure fn fract() -> f64 {}
-    #[inline(always)] pure fn mix(y: &f64, a: &f64) -> f64 { self * (1f64 - (*a)) + y * (*a) }
-    #[inline(always)] pure fn mixb(y: &f64, a: &bool) -> f64 { if *a { *y } else { self } }
 }
 
-pub impl float: Float<bool> {
+pub impl float: Float {
     #[inline(always)] pure fn floor() -> float { cast(float::floor(cast(self))) }
     #[inline(always)] pure fn trunc() -> float { cast(float::trunc(cast(self))) }
     #[inline(always)] pure fn round() -> float { cast(float::round(cast(self))) }
     // #[inline(always)] pure fn roundEven() -> float {}
     #[inline(always)] pure fn ceil() -> float { cast(float::ceil(cast(self))) }
     // #[inline(always)] pure fn fract() -> float {}
+}
+
+pub trait Mix<B> {
+    pure fn mix(y: &self, a: &self) -> self;
+    pure fn mixb(y: &self, a: &B) -> self;
+}
+
+#[inline(always)] pub pure fn mix<T:Mix<B>, B>(x: &T, y: &T, a: &T) -> T { x.mix(y, a) }
+#[inline(always)] pub pure fn mixb<T:Mix<B>, B>(x: &T, y: &T, a: &B) -> T { x.mixb(y, a) }
+
+pub impl f32: Mix<bool> {
+    #[inline(always)] pure fn mix(y: &f32, a: &f32) -> f32 { self * (1f32 - (*a)) + y * (*a) }
+    #[inline(always)] pure fn mixb(y: &f32, a: &bool) -> f32 { if *a { *y } else { self } }
+}
+
+pub impl f64: Mix<bool> {
+    #[inline(always)] pure fn mix(y: &f64, a: &f64) -> f64 { self * (1f64 - (*a)) + y * (*a) }
+    #[inline(always)] pure fn mixb(y: &f64, a: &bool) -> f64 { if *a { *y } else { self } }
+}
+
+pub impl float: Mix<bool> {
     #[inline(always)] pure fn mix(y: &float, a: &float) -> float { self * (1f - (*a)) + y * (*a) }
     #[inline(always)] pure fn mixb(y: &float, a: &bool) -> float { if *a { *y } else { self } }
 }
