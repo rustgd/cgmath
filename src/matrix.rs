@@ -4,6 +4,7 @@ use ptr::to_unsafe_ptr;
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
+use funs::common::*;
 use funs::exp::Exp;
 use math::*;
 use ncast::*;
@@ -720,7 +721,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: NumericMatrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
+pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T> {
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
@@ -779,16 +780,7 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
             for uint::range(0, 4) |j| {
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    // There should really be a generic abs function
-                    let one = a[i][j];
-                    let two = a[i1][j];
-                    if one < _0 && two < _0 && -one > -two {
-                        i1 = i;
-                    } else if one > _0 && two > _0 && one > two {
-                        i1 = i;
-                    } else if one < _0 && two > _0 && -one > two {
-                        i1 = i;
-                    } else if one > _0 && two < _0 && one > -two {
+                    if abs(&a[i][j]) > abs(&a[i1][j]) {
                         i1 = i;
                     }
                 }
