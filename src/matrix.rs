@@ -776,9 +776,9 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
             let mut inv = Mat4::identity::<T>();
 
             // Find largest pivot column j among rows j..3
-            uint::range(0, 4, |j| {
+            for uint::range(0, 4) |j| {
                 let mut i1 = j;
-                uint::range(j + 1, 4, |i| {
+                for uint::range(j + 1, 4) |i| {
                     // There should really be a generic abs function
                     let one = a[i][j];
                     let two = a[i1][j];
@@ -791,8 +791,7 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
                     } else if one > _0 && two < _0 && one > -two {
                         i1 = i;
                     }
-                    true
-                });
+                }
 
                 // Swap rows i1 and j in a and inv to
                 // put pivot on diagonal
@@ -813,7 +812,7 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
 
                 // Eliminate off-diagonal elems in col j of a,
                 // doing identical ops to inv
-                uint::range(0, 4, |i| {
+                for uint::range(0, 4) |i| {
                     if i != j {
                         let c = [mut inv.x, inv.y, inv.z, inv.w];
                         c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
@@ -823,11 +822,8 @@ pub impl<T:Copy Num NumCast FuzzyEq Ord> Mat4<T>: NumericMatrix_NxN<T> {
                         c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
                         a = Mat4::from_cols(c[0], c[1], c[2], c[3]); 
                     }
-                    true
-                });
-
-                true
-            });
+                }
+            }
             Some(inv.transpose())
         }
     }
