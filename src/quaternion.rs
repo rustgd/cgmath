@@ -23,7 +23,7 @@ pub type dquat4 = Quat<f64>;         /// a double-precision floating-point quate
 //
 //  Quaternion
 //
-pub trait Quaternion<T> {
+pub trait Quaternion<T>: Eq, Index<uint, T>, ToPtr<T> {
     pure fn dim() -> uint;
     
     pure fn mul_t(value: T) -> self;

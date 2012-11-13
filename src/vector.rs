@@ -31,11 +31,11 @@ pub type uvec3 = Vec3<u32>;         /// a three-component unsigned integer vecto
 pub type uvec4 = Vec4<u32>;         /// a four-component unsigned integer vector
 
 
-pub trait Vector {
+pub trait Vector<T>: Eq, Index<uint, T>, ToPtr<T> {
     static pure fn dim() -> uint;
 }
 
-pub trait NumericVector<T> {
+pub trait NumericVector<T>: Vector<T> {
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -45,26 +45,26 @@ pub trait NumericVector<T> {
     pure fn dot(other: &self) -> T;
 }
 
-pub trait GeometricVector<T> {
+pub trait GeometricVector<T>: NumericVector<T> {
     pure fn length2() -> T;
     pure fn length() -> T;
     pure fn normalize() -> self;
     pure fn lerp(other: &self, amount: T) -> self;
 }
 
-pub trait Vector2<T> {
+pub trait Vector2<T>: Vector<T> {
     // static pure fn new(x: T, y: T) -> self;
     // static pure fn from_value(value: T) -> self;
 }
 
-pub trait Vector3<T> {
+pub trait Vector3<T>: Vector<T> {
     // static pure fn new(x: T, y: T, z: T) -> self;
     // static pure fn from_value(value: T) -> self;
     
     pure fn cross(other: &self) -> self;
 }
 
-pub trait Vector4<T> {
+pub trait Vector4<T>: Vector<T> {
     // pub static pure fn new(x: T, y: T, z: T, w: T) -> self;
     // pub static pure fn from_value(value: T) -> self;
 }
@@ -117,7 +117,7 @@ pub mod Vec2 {
     }
 }
 
-pub impl<T> Vec2<T>: Vector {
+pub impl<T> Vec2<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
 }
@@ -297,7 +297,7 @@ pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     }
 }
 
-pub impl<T> Vec3<T>: Vector {
+pub impl<T> Vec3<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
 }
@@ -483,7 +483,7 @@ pub mod Vec4 {
     }
 }
 
-pub impl<T> Vec4<T>: Vector {
+pub impl<T> Vec4<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
 }
