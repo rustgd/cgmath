@@ -1,6 +1,6 @@
-use vector::{Vec2, Vec3, Vec4};
+use vector::{Vector, Vec2, Vec3, Vec4};
 
-pub trait BooleanVector {
+pub trait BooleanVector: Vector<bool> {
     pure fn any() -> bool;
     pure fn all() -> bool;
     pure fn not() -> self;
