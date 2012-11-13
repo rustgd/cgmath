@@ -101,59 +101,49 @@ pub impl float: Extent {
 pub trait Signed {
     pure fn abs() -> self;
     pure fn sign() -> self;
-    pure fn mod_(y: &self) -> self;
 }
 
 #[inline(always)] pub pure fn abs<T:Signed>(x: &T) -> T { x.abs() }
 #[inline(always)] pub pure fn sign<T:Signed>(x: &T) -> T { x.sign() }
-#[inline(always)] pub pure fn mod_<T:Signed>(x: &T, y: &T) -> T { x.mod_(y) }
 
 pub impl i8: Signed {
     #[inline(always)] pure fn abs() -> i8 { if self >= 0 { self } else {-self } }
     #[inline(always)] pure fn sign() -> i8 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
-    #[inline(always)] pure fn mod_(y: &i8) -> i8 { self % *y }
 }
 
 pub impl i16: Signed {
     #[inline(always)] pure fn abs() -> i16 { if self >= 0 { self } else {-self } }
     #[inline(always)] pure fn sign() -> i16 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
-    #[inline(always)] pure fn mod_(y: &i16) -> i16 { self % *y }
 }
 
 pub impl i32: Signed {
     #[inline(always)] pure fn abs() -> i32 { if self >= 0 { self } else {-self } }
     #[inline(always)] pure fn sign() -> i32 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
-    #[inline(always)] pure fn mod_(y: &i32) -> i32 { self % *y }
 }
 
 pub impl i64: Signed {
     #[inline(always)] pure fn abs() -> i64 { if self >= 0 { self } else {-self } }
     #[inline(always)] pure fn sign() -> i64 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
-    #[inline(always)] pure fn mod_(y: &i64) -> i64 { self % *y }
 }
 
 pub impl int: Signed {
     #[inline(always)] pure fn abs() -> int { if self >= 0 { self } else {-self } }
     #[inline(always)] pure fn sign() -> int { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
-    #[inline(always)] pure fn mod_(y: &int) -> int { self % *y }
 }
 
 pub impl f32: Signed {
     #[inline(always)] pure fn abs() -> f32 { if self >= 0f32 { self } else {-self } }
     #[inline(always)] pure fn sign() -> f32 { if self > 0f32 { 1f32 } else if self == 0f32 { 0f32 } else { -1f32 } }
-    #[inline(always)] pure fn mod_(y: &f32) -> f32 { self % *y }
 }
 
 pub impl f64: Signed {
     #[inline(always)] pure fn abs() -> f64 { if self >= 0f64 { self } else {-self } }
     #[inline(always)] pure fn sign() -> f64 { if self > 0f64 { 1f64 } else if self == 0f64 { 0f64 } else { -1f64 } }
-    #[inline(always)] pure fn mod_(y: &f64) -> f64 { self % *y }
 }
 
 pub impl float: Signed {
     #[inline(always)] pure fn abs() -> float { if self >= 0f { self } else {-self } }
     #[inline(always)] pure fn sign() -> float { if self > 0f { 1f } else if self == 0f { 0f } else { -1f } }
-    #[inline(always)] pure fn mod_(y: &float) -> float { self % *y }
 }
 
 /**
