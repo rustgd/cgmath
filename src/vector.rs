@@ -1,7 +1,7 @@
 use cast::transmute;
 use cmp::{Eq, Ord};
 use vec::raw::buf_as_slice;
-use ptr::to_unsafe_ptr;
+use ptr::{addr_of, to_unsafe_ptr};
 use std::cmp::FuzzyEq;
 
 use funs::exp::Exp;
@@ -228,7 +228,7 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
 pub impl<T:Copy> Vec2<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        to_unsafe_ptr(&self[0])
+        ptr::addr_of(&self[0])
     }
 }
 
@@ -416,7 +416,7 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
 pub impl<T:Copy> Vec3<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        to_unsafe_ptr(&self[0])
+        addr_of(&self[0])
     }
 }
 
@@ -610,6 +610,6 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
 pub impl<T:Copy> Vec4<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        to_unsafe_ptr(&self[0])
+        addr_of(&self[0])
     }
 }

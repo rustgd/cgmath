@@ -1,7 +1,7 @@
 use cast::transmute;
 use cmp::Eq;
 use num::from_int;
-use ptr::to_unsafe_ptr;
+use ptr::{addr_of, to_unsafe_ptr};
 use vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
@@ -306,6 +306,6 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
 pub impl<T:Copy> Quat<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        to_unsafe_ptr(&self[0])
+        addr_of(&self[0])
     }
 }
