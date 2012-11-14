@@ -54,11 +54,11 @@ pub trait Matrix<T, ColVec, RowVec>: Eq, Index<uint, T>, ToPtr<T> {
 pub trait NumericMatrix<T, ColVec, RowVec>: Matrix<T, ColVec, RowVec>, Neg<self> {
     pure fn mul_t(value: T) -> self;
     pure fn mul_v(other: &ColVec) -> ColVec;
+    pure fn add_m(other: &self) -> self;
+    pure fn sub_m(other: &self) -> self;
 }
 
 pub trait NumericMatrix_NxN<T, Vec>: NumericMatrix<T, Vec, Vec> {
-    pure fn add_m(other: &self) -> self;
-    pure fn sub_m(other: &self) -> self;
     pure fn mul_m(other: &self) -> self;
     
     pure fn det() -> T;
@@ -170,7 +170,7 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     pure fn neg() -> Mat2<T> {
         Mat2::from_cols(-self[0], -self[1])
@@ -187,9 +187,7 @@ pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
         Vec2::new(self.row(0).dot(other),
                   self.row(1).dot(other))
     }
-}
-
-pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
+    
     #[inline(always)]
     pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self[0].add_v(&other[0]),
@@ -201,7 +199,9 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
         Mat2::from_cols(self[0].sub_v(&other[0]),
                         self[1].sub_v(&other[1]))
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
@@ -420,9 +420,7 @@ pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
                   self.row(1).dot(other),
                   self.row(2).dot(other))
     }
-}
-
-pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
+    
     #[inline(always)]
     pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self[0].add_v(&other[0]),
@@ -436,7 +434,9 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
                         self[1].sub_v(&other[1]),
                         self[2].sub_v(&other[2]))
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
@@ -731,9 +731,7 @@ pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
                   self.row(2).dot(other),
                   self.row(3).dot(other))
     }
-}
-
-pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
+    
     #[inline(always)]
     pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
@@ -749,7 +747,9 @@ pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Ve
                         self[2].sub_v(&other[2]),
                         self[3].sub_v(&other[3]))
     }
-    
+}
+
+pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
         // Surprisingly when building with optimisation turned on this is actually
