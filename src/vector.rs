@@ -130,6 +130,11 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
     }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        ptr::addr_of(&self[0])
+    }
 }
     
 pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
@@ -235,13 +240,6 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy> Vec2<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        ptr::addr_of(&self[0])
-    }
-}
-
 
 
 
@@ -317,6 +315,11 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
             transmute::<*Vec3<T>, *T>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        addr_of(&self[0])
     }
 }
 
@@ -431,13 +434,6 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy> Vec3<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        addr_of(&self[0])
-    }
-}
-
 
 
 
@@ -511,6 +507,11 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        addr_of(&self[0])
     }
 }
 
@@ -630,12 +631,5 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
-    }
-}
-
-pub impl<T:Copy> Vec4<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        addr_of(&self[0])
     }
 }

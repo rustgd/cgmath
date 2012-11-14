@@ -96,6 +96,11 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> 
     pure fn dim() -> uint { 4 }
     
     #[inline(always)]
+    pure fn to_ptr() -> *T {
+        addr_of(&self[0])
+    }
+    
+    #[inline(always)]
     pure fn neg() -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
@@ -298,12 +303,5 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
-    }
-}
-
-pub impl<T:Copy> Quat<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        addr_of(&self[0])
     }
 }

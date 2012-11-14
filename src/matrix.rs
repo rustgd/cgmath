@@ -163,6 +163,11 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
     }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        self[0].to_ptr()
+    }
 }
 
 pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
@@ -296,13 +301,6 @@ pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy> Mat2<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        self[0].to_ptr()
-    }
-}
-
 
 
 
@@ -395,6 +393,11 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
             transmute::<*Mat3<T>, *Vec3<T>>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        self[0].to_ptr()
     }
 }
 
@@ -589,13 +592,6 @@ pub impl<T:Copy FuzzyEq> Mat3<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy> Mat3<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        self[0].to_ptr()
-    }
-}
-
 
 
 
@@ -706,6 +702,11 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr() -> *T {
+        self[0].to_ptr()
     }
 }
 
@@ -929,12 +930,5 @@ pub impl<T:Copy FuzzyEq> Mat4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
-    }
-}
-
-pub impl<T:Copy> Mat4<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        self[0].to_ptr()
     }
 }
