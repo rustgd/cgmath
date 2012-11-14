@@ -25,6 +25,7 @@ use common::*;
 pub mod common {
     pub mod math;
     pub mod ncast;
+    pub mod nconsts;
     pub mod ntrait;
 }
 
