@@ -41,24 +41,24 @@ pub type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
 pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
 
-pub trait Matrix<T, ColVec, RowVec>: Eq, Index<uint, T>, ToPtr<T> {
+pub trait Matrix<T, Col, Row>: Eq, Index<uint, T>, ToPtr<T> {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
     pure fn is_square() -> bool;
     
-    pure fn col(i: uint) -> ColVec;
-    pure fn row(i: uint) -> RowVec;
+    pure fn col(i: uint) -> Col;
+    pure fn row(i: uint) -> Row;
 }
 
-pub trait NumericMatrix<T, ColVec, RowVec>: Matrix<T, ColVec, RowVec>, Neg<self> {
+pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
     pure fn mul_t(value: T) -> self;
-    pure fn mul_v(other: &ColVec) -> ColVec;
+    pure fn mul_v(other: &Col) -> Col;
     pure fn add_m(other: &self) -> self;
     pure fn sub_m(other: &self) -> self;
 }
 
-pub trait NumericMatrix_NxN<T, Vec>: NumericMatrix<T, Vec, Vec> {
+pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     pure fn mul_m(other: &self) -> self;
     
     pure fn det() -> T;
