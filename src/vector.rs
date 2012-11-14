@@ -48,6 +48,8 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
 pub trait GeometricVector<T>: NumericVector<T> {
     pure fn length2() -> T;
     pure fn length() -> T;
+    pure fn distance2(other: &self) -> T;
+    pure fn distance(other: &self) -> T;
     pure fn normalize() -> self;
     pure fn lerp(other: &self, amount: T) -> self;
 }
@@ -177,6 +179,18 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length() -> T {
         self.length2().sqrt()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance2(other: &Vec2<T>) -> T {
+        other.sub_v(&self).length2()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance(other: &Vec2<T>) -> T {
+        other.distance2(&self).sqrt()
     }
     
     #[inline(always)]
@@ -359,6 +373,18 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length() -> T {
         self.length2().sqrt()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance2(other: &Vec3<T>) -> T {
+        other.sub_v(&self).length2()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance(other: &Vec3<T>) -> T {
+        other.distance2(&self).sqrt()
     }
     
     #[inline(always)]
@@ -547,6 +573,18 @@ pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length() -> T {
         self.length2().sqrt()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance2(other: &Vec4<T>) -> T {
+        other.sub_v(&self).length2()
+    }
+    
+    // TODO: tests
+    #[inline(always)]
+    pure fn distance(other: &Vec4<T>) -> T {
+        other.distance2(&self).sqrt()
     }
     
     #[inline(always)]
