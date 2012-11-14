@@ -38,17 +38,30 @@ fn test_Vec2() {
     // fuzzy_eq
     // eq
     
-    assert a.length2().fuzzy_eq(&5f);
-    assert a.length().fuzzy_eq(&2.236068f);
-    
-    let c = Vec2::new(-2.0f, -1.0f);
-    let d = Vec2::new( 1.0f,  0.0f);
-    let f3 = 0.75f;
-    
-    assert c.lerp(&d, f3) == Vec2::new(0.250f, -0.250f);
     // assert c.abs()       == Vec2::new( 2.0f,  1.0f);
     // assert c.min(&d)      == Vec2::new(-2.0f, -1.0f);
     // assert c.max(&d)      == Vec2::new( 1.0f,  0.0f);
+}
+
+#[test]
+fn test_Vec2_geometric() {
+    let a = Vec2::new(5f, 12f); // (5, 12, 13) Pythagorean triple
+    let b0 = Vec2::new(3f, 4f); // (3, 4, 5) Pythagorean triple
+    let b = a.add_v(&b0);
+    
+    assert a.length() == 13f;
+    assert a.length2() == 13f * 13f;
+    
+    assert b0.length() == 5f;
+    assert b0.length2() == 5f * 5f;
+    
+    assert a.distance(&b) == 5f;
+    assert a.distance2(&b) == 5f * 5f;
+    
+    let c = Vec2::new(-2.0f, -1.0f);
+    let d = Vec2::new( 1.0f,  0.0f);
+    
+    assert c.lerp(&d, 0.75f) == Vec2::new(0.250f, -0.250f);
 }
 
 #[test]
@@ -91,17 +104,30 @@ fn test_Vec3() {
     // fuzzy_eq
     // eq
     
-    assert a.length2().fuzzy_eq(&14f);
-    assert a.length().fuzzy_eq(&3.74165738677f);
-    
-    let c = Vec3::new(-2.0f, -1.0f, 1.0f);
-    let d = Vec3::new( 1.0f,  0.0f, 0.5f);
-    let f3 = 0.75f;
-    
-    assert c.lerp(&d, f3) == Vec3::new(0.250f, -0.250f, 0.625f);
     // assert c.abs()        == Vec3::new( 2.0f,  1.0f, 1.0f);
     // assert c.min(&d)      == Vec3::new(-2.0f, -1.0f, 0.5f);
     // assert c.max(&d)      == Vec3::new( 1.0f,  0.0f, 1.0f);
+}
+
+#[test]
+fn test_Vec3_geometric() {
+    let a = Vec3::new(2f, 3f, 6f); // (2, 3, 6, 7) Pythagorean quadruple
+    let b0 = Vec3::new(1f, 4f, 8f); // (1, 4, 8, 9) Pythagorean quadruple
+    let b = a.add_v(&b0);
+    
+    assert a.length() == 7f;
+    assert a.length2() == 7f * 7f;
+    
+    assert b0.length() == 9f;
+    assert b0.length2() == 9f * 9f;
+    
+    assert a.distance(&b) == 9f;
+    assert a.distance2(&b) == 9f * 9f;
+    
+    let c = Vec3::new(-2.0f, -1.0f, 1.0f);
+    let d = Vec3::new( 1.0f,  0.0f, 0.5f);
+    
+    assert c.lerp(&d, 0.75f) == Vec3::new(0.250f, -0.250f, 0.625f);
 }
 
 #[test]
@@ -147,15 +173,28 @@ fn test_Vec4() {
     // fuzzy_eq
     // eq
     
-    assert a.length2().fuzzy_eq(&30f);
-    assert a.length().fuzzy_eq(&5.477226f);
-    
-    let c = Vec4::new(-2.0f, -1.0f, 1.0f, 2.0f);
-    let d = Vec4::new( 1.0f,  0.0f, 0.5f, 1.0f);
-    let f3 = 0.75f;
-    
-    assert c.lerp(&d, f3) == Vec4::new(0.250f, -0.250f, 0.625f, 1.250f);
     // assert c.abs()        == Vec4::new( 2.0f,  1.0f, 1.0f, 2.0f);
     // assert c.min(&d)      == Vec4::new(-2.0f, -1.0f, 0.5f, 1.0f);
     // assert c.max(&d)      == Vec4::new( 1.0f,  0.0f, 1.0f, 2.0f);
+}
+
+#[test]
+fn test_Vec4_geometric() {
+    let a = Vec4::new(1f, 2f, 4f, 10f); // (1, 2, 4, 10, 11) Pythagorean quintuple
+    let b0 = Vec4::new(1f, 2f, 8f, 10f); // (1, 2, 8, 10, 13) Pythagorean quintuple
+    let b = a.add_v(&b0);
+    
+    assert a.length() == 11f;
+    assert a.length2() == 11f * 11f;
+    
+    assert b0.length() == 13f;
+    assert b0.length2() == 13f * 13f;
+    
+    assert a.distance(&b) == 13f;
+    assert a.distance2(&b) == 13f * 13f;
+
+    let c = Vec4::new(-2.0f, -1.0f, 1.0f, 2.0f);
+    let d = Vec4::new( 1.0f,  0.0f, 0.5f, 1.0f);
+    
+    assert c.lerp(&d, 0.75f) == Vec4::new(0.250f, -0.250f, 0.625f, 1.250f);
 }

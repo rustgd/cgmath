@@ -185,13 +185,11 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
         self.length2().sqrt()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance2(other: &Vec2<T>) -> T {
         other.sub_v(&self).length2()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance(other: &Vec2<T>) -> T {
         other.distance2(&self).sqrt()
@@ -375,13 +373,11 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
         self.length2().sqrt()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance2(other: &Vec3<T>) -> T {
         other.sub_v(&self).length2()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance(other: &Vec3<T>) -> T {
         other.distance2(&self).sqrt()
@@ -442,7 +438,6 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub mod Vec4 {
-    
     #[inline(always)]
     pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
@@ -570,13 +565,11 @@ pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
         self.length2().sqrt()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance2(other: &Vec4<T>) -> T {
         other.sub_v(&self).length2()
     }
     
-    // TODO: tests
     #[inline(always)]
     pure fn distance(other: &Vec4<T>) -> T {
         other.distance2(&self).sqrt()
