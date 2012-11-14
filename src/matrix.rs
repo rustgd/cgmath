@@ -155,6 +155,14 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
         Vec2::new(self[0][i],
                   self[1][i])
     }
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> Vec2<T> {
+        unsafe { do buf_as_slice(
+            transmute::<*Mat2<T>, *Vec2<T>>(
+                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
+        }
+    }
 }
 
 pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
@@ -256,16 +264,6 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: Matrix2<T> {
     #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
         Mat4::from_Mat2(&self)
-    }
-}
-
-pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
-    #[inline(always)]
-    pure fn index(i: uint) -> Vec2<T> {
-        unsafe { do buf_as_slice(
-            transmute::<*Mat2<T>, *Vec2<T>>(
-                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
-        }
     }
 }
 
@@ -389,6 +387,14 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
         Vec3::new(self[0][i],
                   self[1][i],
                   self[2][i])
+    }
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> Vec3<T> {
+        unsafe { do buf_as_slice(
+            transmute::<*Mat3<T>, *Vec3<T>>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
     }
 }
 
@@ -552,16 +558,6 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
     }
 }
 
-pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
-    #[inline(always)]
-    pure fn index(i: uint) -> Vec3<T> {
-        unsafe { do buf_as_slice(
-            transmute::<*Mat3<T>, *Vec3<T>>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
-    }
-}
-
 // TODO: make work for T:Integer
 pub impl<T:Copy FuzzyEq> Mat3<T>: Eq {
     #[inline(always)]
@@ -703,7 +699,14 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
                   self[2][i],
                   self[3][i])
     }
-
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> Vec4<T> {
+        unsafe { do buf_as_slice(
+            transmute::<*Mat4<T>, *Vec4<T>>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
+    }
 }
 
 pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
@@ -894,16 +897,6 @@ pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Ve
 
 pub impl<T> Mat4<T>: Matrix4<T> {
     
-}
-
-pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
-    #[inline(always)]
-    pure fn index(i: uint) -> Vec4<T> {
-        unsafe { do buf_as_slice(
-            transmute::<*Mat4<T>, *Vec4<T>>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
-    }
 }
 
 // TODO: make work for T:Integer

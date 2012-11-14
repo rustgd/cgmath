@@ -117,9 +117,17 @@ pub mod Vec2 {
     }
 }
 
-pub impl<T> Vec2<T>: Vector<T> {
+pub impl<T:Copy> Vec2<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Vec2<T>, *T>(
+                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
+        }
+    }
 }
     
 pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
@@ -181,16 +189,6 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(&self).mul_t(amount))
-    }
-}
-
-pub impl<T:Copy> Vec2<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec2<T>, *T>(
-                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
-        }
     }
 }
 
@@ -295,9 +293,17 @@ pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
     }
 }
 
-pub impl<T> Vec3<T>: Vector<T> {
+pub impl<T:Copy> Vec3<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Vec3<T>, *T>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
+    }
 }
 
 pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
@@ -365,16 +371,6 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(&self).mul_t(amount))
-    }
-}
-
-pub impl<T:Copy> Vec3<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec3<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
     }
 }
 
@@ -479,9 +475,17 @@ pub mod Vec4 {
     }
 }
 
-pub impl<T> Vec4<T>: Vector<T> {
+pub impl<T:Copy> Vec4<T>: Vector<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Vec4<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
+    }
 }
 
 pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
@@ -555,16 +559,6 @@ pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(&self).mul_t(amount))
-    }
-}
-
-pub impl<T:Copy> Vec4<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec4<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
     }
 }
 
