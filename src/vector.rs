@@ -35,7 +35,7 @@ pub trait Vector<T>: Eq, Index<uint, T>, ToPtr<T> {
     static pure fn dim() -> uint;
 }
 
-pub trait NumericVector<T>: Vector<T> {
+pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -124,6 +124,11 @@ pub impl<T> Vec2<T>: Vector<T> {
     
 pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
     #[inline(always)]
+    pure fn neg() -> Vec2<T> {
+        Vec2::new(-self[0], -self[1])
+    }
+    
+    #[inline(always)]
     pure fn mul_t(value: T) -> Vec2<T> {
         Vec2::new(self[0] * value,
                   self[1] * value)
@@ -186,13 +191,6 @@ pub impl<T:Copy> Vec2<T>: Index<uint, T> {
             transmute::<*Vec2<T>, *T>(
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Vec2<T>: Neg<Vec2<T>> {
-    #[inline(always)]
-    pure fn neg() -> Vec2<T> {
-        Vec2::new(-self[0], -self[1])
     }
 }
 
@@ -304,6 +302,11 @@ pub impl<T> Vec3<T>: Vector<T> {
 
 pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
     #[inline(always)]
+    pure fn neg() -> Vec3<T> {
+        Vec3::new(-self[0], -self[1], -self[2])
+    }
+    
+    #[inline(always)]
     pure fn mul_t(value: T) -> Vec3<T> {
         Vec3::new(self[0] * value,
                   self[1] * value,
@@ -372,13 +375,6 @@ pub impl<T:Copy> Vec3<T>: Index<uint, T> {
             transmute::<*Vec3<T>, *T>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Vec3<T>: Neg<Vec3<T>> {
-    #[inline(always)]
-    pure fn neg() -> Vec3<T> {
-        Vec3::new(-self[0], -self[1], -self[2])
     }
 }
 
@@ -490,6 +486,11 @@ pub impl<T> Vec4<T>: Vector<T> {
 
 pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
     #[inline(always)]
+    pure fn neg() -> Vec4<T> {
+        Vec4::new(-self[0], -self[1], -self[2], -self[3])
+    }
+    
+    #[inline(always)]
     pure fn mul_t(value: T) -> Vec4<T> {
         Vec4::new(self[0] * value,
                   self[1] * value,
@@ -564,13 +565,6 @@ pub impl<T:Copy> Vec4<T>: Index<uint, T> {
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Vec4<T>: Neg<Vec4<T>> {
-    #[inline(always)]
-    pure fn neg() -> Vec4<T> {
-        Vec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

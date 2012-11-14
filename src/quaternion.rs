@@ -23,7 +23,7 @@ pub type dquat4 = Quat<f64>;         /// a double-precision floating-point quate
 //
 //  Quaternion
 //
-pub trait Quaternion<T>: Eq, Index<uint, T>, ToPtr<T> {
+pub trait Quaternion<T>: Eq, Index<uint, T>, Neg<self>, ToPtr<T> {
     pure fn dim() -> uint;
     
     pure fn mul_t(value: T) -> self;
@@ -94,6 +94,11 @@ pub mod Quat {
 pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    pure fn neg() -> Quat<T> {
+        Quat::new(-self[0], -self[1], -self[2], -self[3])
+    }
     
     #[inline(always)]
     pure fn mul_t(value: T) -> Quat<T> {
@@ -260,13 +265,6 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
             transmute::<*Quat<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Quat<T>: Neg<Quat<T>> {
-    #[inline(always)]
-    pure fn neg() -> Quat<T> {
-        Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

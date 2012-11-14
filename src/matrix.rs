@@ -51,7 +51,7 @@ pub trait Matrix<T, ColVec, RowVec>: Eq, Index<uint, T>, ToPtr<T> {
     pure fn row(i: uint) -> RowVec;
 }
 
-pub trait NumericMatrix<T, ColVec, RowVec>: Matrix<T, ColVec, RowVec> {
+pub trait NumericMatrix<T, ColVec, RowVec>: Matrix<T, ColVec, RowVec>, Neg<self> {
     pure fn mul_t(value: T) -> self;
     pure fn mul_v(other: &ColVec) -> ColVec;
 }
@@ -159,6 +159,11 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
 
 pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
+    pure fn neg() -> Mat2<T> {
+        Mat2::from_cols(-self[0], -self[1])
+    }
+    
+    #[inline(always)]
     pure fn mul_t(value: T) -> Mat2<T> {
         Mat2::from_cols(self[0].mul_t(value),
                         self[1].mul_t(value))
@@ -261,13 +266,6 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
             transmute::<*Mat2<T>, *Vec2<T>>(
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Mat2<T>: Neg<Mat2<T>> {
-    #[inline(always)]
-    pure fn neg() -> Mat2<T> {
-        Mat2::from_cols(-self[0], -self[1])
     }
 }
 
@@ -394,7 +392,12 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
+    #[inline(always)]
+    pure fn neg() -> Mat3<T> {
+        Mat3::from_cols(-self[0], -self[1], -self[2])
+    }
+    
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat3<T> {
         Mat3::from_cols(self[0].mul_t(value),
@@ -559,13 +562,6 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Neg<T>> Mat3<T>: Neg<Mat3<T>> {
-    #[inline(always)]
-    pure fn neg() -> Mat3<T> {
-        Mat3::from_cols(-self[0], -self[1], -self[2])
-    }
-}
-
 // TODO: make work for T:Integer
 pub impl<T:Copy FuzzyEq> Mat3<T>: Eq {
     #[inline(always)]
@@ -710,7 +706,12 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
 
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
+    #[inline(always)]
+    pure fn neg() -> Mat4<T> {
+        Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
+    }
+    
     #[inline(always)]
     pure fn mul_t(value: T) -> Mat4<T> {
         Mat4::from_cols(self[0].mul_t(value),
@@ -902,13 +903,6 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Neg<T>> Mat4<T>: Neg<Mat4<T>> {
-    #[inline(always)]
-    pure fn neg() -> Mat4<T> {
-        Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
