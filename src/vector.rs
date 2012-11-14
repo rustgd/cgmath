@@ -177,8 +177,7 @@ pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
 pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
-        self[0] * self[0] +
-        self[1] * self[1]
+        self.dot(&self)
     }
     
     #[inline(always)]
@@ -368,9 +367,7 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
 pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
-        self[0] * self[0] +
-        self[1] * self[1] +
-        self[2] * self[2]
+        self.dot(&self)
     }
     
     #[inline(always)]
@@ -565,10 +562,7 @@ pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
 pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2() -> T {
-        self[0] * self[0] +
-        self[1] * self[1] +
-        self[2] * self[2] +
-        self[3] * self[3]
+        self.dot(&self)
     }
     
     #[inline(always)]
