@@ -6,47 +6,55 @@
  * trait inheritence is implemented.
  */
 
-trait UnSigned {} // TODO: implement trait inheritence
+use cmp::{Eq, Ord};
+use std::cmp::FuzzyEq;
+use ncast::*;
+use nconsts::{IntConsts, FloatConsts};
 
-pub impl u8:   UnSigned {}
-pub impl u16:  UnSigned {}
-pub impl u32:  UnSigned {}
-pub impl u64:  UnSigned {}
-pub impl uint: UnSigned {}
+trait NumExt: Copy, Eq, Num, NumCast, Ord {}
 
+trait UnSignedNum: NumExt {}
 
-trait Signed {} // TODO: implement trait inheritence
-
-pub impl i8:    Signed {}
-pub impl i16:   Signed {}
-pub impl i32:   Signed {}
-pub impl i64:   Signed {}
-pub impl int:   Signed {}
-
-pub impl f32:   Signed {}
-pub impl f64:   Signed {}
-pub impl float: Signed {}
-
-trait Integer {} // TODO: implement trait inheritence
-
-pub impl u8:   Integer {}
-pub impl u16:  Integer {}
-pub impl u32:  Integer {}
-pub impl u64:  Integer {}
-pub impl uint: Integer {}
-
-pub impl i8:   Integer {}
-pub impl i16:  Integer {}
-pub impl i32:  Integer {}
-pub impl i64:  Integer {}
-pub impl int:  Integer {}
+pub impl u8:   UnSignedNum {}
+pub impl u16:  UnSignedNum {}
+pub impl u32:  UnSignedNum {}
+pub impl u64:  UnSignedNum {}
+pub impl uint: UnSignedNum {}
 
 
-trait Float {} // TODO: implement trait inheritence
+trait SignedNum: NumExt {}
 
-pub impl f32:   Float {}
-pub impl f64:   Float {}
-pub impl float: Float {}
+pub impl i8:    SignedNum {}
+pub impl i16:   SignedNum {}
+pub impl i32:   SignedNum {}
+pub impl i64:   SignedNum {}
+pub impl int:   SignedNum {}
+
+pub impl f32:   SignedNum {}
+pub impl f64:   SignedNum {}
+pub impl float: SignedNum {}
+
+
+trait IntegerNum: NumExt, IntConsts {}
+
+pub impl u8:   IntegerNum {}
+pub impl u16:  IntegerNum {}
+pub impl u32:  IntegerNum {}
+pub impl u64:  IntegerNum {}
+pub impl uint: IntegerNum {}
+
+pub impl i8:   IntegerNum {}
+pub impl i16:  IntegerNum {}
+pub impl i32:  IntegerNum {}
+pub impl i64:  IntegerNum {}
+pub impl int:  IntegerNum {}
+
+
+trait FloatNum: NumExt, FloatConsts, FuzzyEq {}
+
+pub impl f32:   FloatNum {}
+pub impl f64:   FloatNum {}
+pub impl float: FloatNum {}
 
 
 pub impl u8    : Add<u8,u8>        { #[inline(always)] pure fn add(rhs: &u8)    -> u8    { self + *rhs } }

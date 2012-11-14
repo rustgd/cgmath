@@ -1,6 +1,5 @@
 use num::Num;
 use ncast::*;
-use ntrait::Float;
 use funs::exp::Exp;
 use funs::trig::*;
 use matrix::Mat4;
