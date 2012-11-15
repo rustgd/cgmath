@@ -1,4 +1,4 @@
-use vector::{Vector, Vec2, Vec3, Vec4};
+use vec::{Vector, Vec2, Vec3, Vec4};
 
 pub trait BooleanVector: Vector<bool> {
     pure fn any() -> bool;

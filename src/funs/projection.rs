@@ -1,8 +1,8 @@
-use core::float::consts::pi;
-use core::float::tan;
-
-use matrix::Mat4;
-use num::cast::*;
+use funs::trig::*;
+use mat::Mat4;
+use num::cast::cast;
+use num::consts::pi;
+use num::ext::FloatExt;
 
 //
 //  Create a perspective projection matrix
@@ -11,8 +11,8 @@ use num::cast::*;
 //  http://www.opengl.org/wiki/GluPerspective_code
 //
 #[inline(always)]
-pure fn perspective<T:Copy NumCast Neg<T>>(fovy: float, aspectRatio: float, near: float, far: float) -> Mat4<T> {
-    let ymax = near * tan(fovy * pi / 360f);
+pure fn perspective<T:Copy FloatExt Trig>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+    let ymax = near * tan(&(fovy * pi() / cast(360)));
     let xmax = ymax * aspectRatio;
     return frustum(-xmax, xmax, -ymax, ymax, near, far);
 }
@@ -25,24 +25,26 @@ pure fn perspective<T:Copy NumCast Neg<T>>(fovy: float, aspectRatio: float, near
 //  TODO: double check algorithm
 //
 #[inline(always)]
-pure fn frustum<T:Copy NumCast Neg<T>>(left: float, right: float, bottom: float, top: float, near: float, far: float) -> Mat4<T> {
-    let _0 = cast(0);
+pure fn frustum<T:Copy FloatExt>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+    let _0: T = cast(0);
+    let _2: T = cast(2);
+    let neg_1 = cast(-1);
     
-    let c0r0 = cast((2f * near) / (right - left));
+    let c0r0 = (_2 * near) / (right - left);
     let c0r1 = _0;
     let c0r2 = _0;
     let c0r3 = _0;
     let c1r0 = _0;
-    let c1r1 = cast((2f * near) / (top - bottom));
+    let c1r1 = (_2 * near) / (top - bottom);
     let c1r2 = _0;
     let c1r3 = _0;
-    let c2r0 = cast((right + left) / (right - left));
-    let c2r1 = cast((top + bottom) / (top - bottom));
-    let c2r2 = cast(-(far + near) / (far - near));
-    let c2r3 = cast(-1);
+    let c2r0 = (right + left) / (right - left);
+    let c2r1 = (top + bottom) / (top - bottom);
+    let c2r2 = -(far + near) / (far - near);
+    let c2r3 = neg_1;
     let c3r0 = _0;
     let c3r1 = _0;
-    let c3r2 = cast(-(2f * far * near) / (far - near));
+    let c3r2 = -(_2 * far * near) / (far - near);
     let c3r3 = _0;
     
     return Mat4::new(c0r0, c0r1, c0r2, c0r3,

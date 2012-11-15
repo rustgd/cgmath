@@ -1,7 +1,7 @@
 use core::cmp::{Eq, Ord};
 
 use num::cast::*;
-use vector::{Vec2, Vec3, Vec4};
+use vec::{Vec2, Vec3, Vec4};
 
 /**
  * Common Functions for all numeric types

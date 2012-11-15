@@ -1,6 +1,6 @@
 use funs::transform::*;
-use matrix::Mat4;
-use vector::{Vec3, Vec4};
+use mat::Mat4;
+use vec::{Vec3, Vec4};
 
 #[test]
 fn test_mat4_from_rotation() {

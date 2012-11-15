@@ -10,15 +10,16 @@
 
 extern mod std;
 
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
+pub mod dim;
+pub mod mat;
+pub mod quat;
+pub mod vec;
 
 #[test]
 mod test {
-    mod test_matrix;
-    mod test_quaternion;
-    mod test_vector;
+    mod test_mat;
+    mod test_quat;
+    mod test_vec;
 }
 
 use common::*;
@@ -29,7 +30,7 @@ pub mod common {
 pub mod num {
     pub mod cast;
     pub mod consts;
-    pub mod traits;
+    pub mod ext;
 }
 
 pub mod funs {

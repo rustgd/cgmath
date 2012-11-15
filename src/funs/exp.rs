@@ -2,7 +2,7 @@
  * Exponential Functions
  */
 use num::cast::*;
-use vector::{Vec2, Vec3, Vec4};
+use vec::{Vec2, Vec3, Vec4};
 
 pub trait Exp {
     pure fn pow<N:NumCast>(n: &N) -> self;

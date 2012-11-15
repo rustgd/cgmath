@@ -1,4 +1,4 @@
-use vector::*;
+use vec::*;
 use boolv::*;
 
 #[test]

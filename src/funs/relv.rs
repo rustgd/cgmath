@@ -4,7 +4,7 @@
 
 use core::cmp::{Eq, Ord};
 
-use vector::{Vec2, Vec3, Vec4};
+use vec::{Vec2, Vec3, Vec4};
 
 pub trait RelVector<BVec> {
     pure fn less_than(y: &self) -> BVec;
