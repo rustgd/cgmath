@@ -1,13 +1,14 @@
-use cast::transmute;
-use cmp::Eq;
-use ptr::to_unsafe_ptr;
-use vec::raw::buf_as_slice;
+use core::cast::transmute;
+use core::cmp::Eq;
+use core::ptr::to_unsafe_ptr;
+use core::vec::raw::buf_as_slice;
+
 use std::cmp::FuzzyEq;
 
 use funs::common::*;
-use funs::exp::Exp;
+use funs::exp::*;
 use math::*;
-use ncast::*;
+use num::cast::*;
 use quaternion::{Quat, ToQuat};
 use vector::{Vec2, Vec3, Vec4};
 

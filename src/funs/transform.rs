@@ -1,8 +1,6 @@
-use num::Num;
-use ncast::*;
-use funs::exp::Exp;
 use funs::trig::*;
 use matrix::{Mat3, Mat4};
+use num::cast::*;
 
 pub pure fn mat3_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis: Vec3<T>) -> Mat3<T> {
     let rad = radians(&theta);

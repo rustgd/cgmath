@@ -1,6 +1,3 @@
-use cmp::Ord;
-use num::*;
-
 // TODO: move to a more appropriate module
 pub trait ToPtr<T> {
     pure fn to_ptr() -> *T;

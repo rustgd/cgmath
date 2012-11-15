@@ -2,7 +2,7 @@
  * Vector Relational Functions
  */
 
-use cmp::{Eq, Ord};
+use core::cmp::{Eq, Ord};
 
 use vector::{Vec2, Vec3, Vec4};
 

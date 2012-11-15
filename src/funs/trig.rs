@@ -1,4 +1,4 @@
-use ncast::*;
+use num::cast::*;
 use vector::{Vec3, Vec2, Vec4};
 
 pub trait AngleConv {

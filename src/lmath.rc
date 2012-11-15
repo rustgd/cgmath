@@ -24,9 +24,12 @@ mod test {
 use common::*;
 pub mod common {
     pub mod math;
-    pub mod ncast;
-    pub mod nconsts;
-    pub mod ntrait;
+}
+
+pub mod num {
+    pub mod cast;
+    pub mod consts;
+    pub mod traits;
 }
 
 pub mod funs {

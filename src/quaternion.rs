@@ -1,8 +1,8 @@
-use cast::transmute;
-use cmp::Eq;
-use num::from_int;
-use ptr::{addr_of, to_unsafe_ptr};
-use vec::raw::buf_as_slice;
+use core::cast::transmute;
+use core::cmp::Eq;
+use core::ptr::{addr_of, to_unsafe_ptr};
+use core::vec::raw::buf_as_slice;
+
 use std::cmp::FuzzyEq;
 
 use funs::exp::*;
@@ -10,7 +10,7 @@ use funs::trig::*;
 use funs::common::*;
 use math::*;
 use matrix::{Mat3, Mat4};
-use ncast::*;
+use num::cast::*;
 use vector::Vec3;
 
 
@@ -250,7 +250,7 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> 
         let wz2 = z2 * self.w;
         let wx2 = x2 * self.w;
         
-        let _1: T = from_int(1);
+        let _1: T = cast(1);
         
         Mat3::new(_1 - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
                        xy2 + wz2, _1 - xx2 - zz2,      yz2 - wx2,

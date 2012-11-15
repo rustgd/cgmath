@@ -1,12 +1,13 @@
-use cast::transmute;
-use cmp::{Eq, Ord};
-use vec::raw::buf_as_slice;
-use ptr::{addr_of, to_unsafe_ptr};
+use core::cast::transmute;
+use core::cmp::Eq;
+use core::ptr::{addr_of, to_unsafe_ptr};
+use core::vec::raw::buf_as_slice;
+
 use std::cmp::FuzzyEq;
 
 use funs::exp::Exp;
-use ncast::*;
 use math::*;
+use num::cast::*;
 
 // GLSL equivalent type aliases
 

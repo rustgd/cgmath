@@ -1,8 +1,8 @@
-use float::consts::pi;
-use float::tan;
+use core::float::consts::pi;
+use core::float::tan;
 
 use matrix::Mat4;
-use ncast::*;
+use num::cast::*;
 
 //
 //  Create a perspective projection matrix
