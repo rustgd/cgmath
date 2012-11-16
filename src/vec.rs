@@ -10,28 +10,6 @@ use funs::exp::Exp;
 use math::*;
 use num::cast::*;
 
-// GLSL equivalent type aliases
-
-pub type vec2  = Vec2<f32>;         /// a two-component single-precision floating-point vector
-pub type vec3  = Vec3<f32>;         /// a three-component single-precision floating-point vector
-pub type vec4  = Vec4<f32>;         /// a four-component single-precision floating-point vector
-
-pub type dvec2 = Vec2<f64>;         /// a two-component double-precision floating-point vector
-pub type dvec3 = Vec3<f64>;         /// a three-component double-precision floating-point vector
-pub type dvec4 = Vec4<f64>;         /// a four-component double-precision floating-point vector
-
-pub type bvec2 = Vec2<bool>;        /// a two-component Boolean vector
-pub type bvec3 = Vec3<bool>;        /// a three-component Boolean vector
-pub type bvec4 = Vec4<bool>;        /// a four-component Boolean vector
-
-pub type ivec2 = Vec2<i32>;         /// a two-component signed integer vector
-pub type ivec3 = Vec3<i32>;         /// a three-component signed integer vector
-pub type ivec4 = Vec4<i32>;         /// a four-component signed integer vector
-
-pub type uvec2 = Vec2<u32>;         /// a two-component unsigned integer vector
-pub type uvec3 = Vec3<u32>;         /// a three-component unsigned integer vector
-pub type uvec4 = Vec4<u32>;         /// a four-component unsigned integer vector
-
 
 pub trait Vector<T>: Dimensional<T>, Eq {}
 
