@@ -55,8 +55,13 @@ pub type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
 pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
 
+// Quaternion types
+
 // These quaternion type aliases are not actually specified in the GLSL spec
 // but they follow the same nomenclature
 
 pub type quat4  = Quat<f32>;             /// a single-precision floating-point quaternion
 pub type dquat4 = Quat<f64>;             /// a double-precision floating-point quaternion
+
+// prevents "error: expected item"
+priv fn hack() {}
