@@ -99,113 +99,113 @@ pub impl float: Extent {
  */
 pub trait Signed {
     pure fn abs() -> self;
-    pure fn sign() -> self;
+    pure fn sgn() -> self;
 }
 
 #[inline(always)] pub pure fn abs<T:Signed>(x: &T) -> T { x.abs() }
-#[inline(always)] pub pure fn sign<T:Signed>(x: &T) -> T { x.sign() }
+#[inline(always)] pub pure fn sgn<T:Signed>(x: &T) -> T { x.sgn() }
 
 pub impl i8: Signed {
     #[inline(always)] pure fn abs() -> i8 { if self >= 0 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> i8 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
+    #[inline(always)] pure fn sgn() -> i8 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
 }
 
 pub impl i16: Signed {
     #[inline(always)] pure fn abs() -> i16 { if self >= 0 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> i16 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
+    #[inline(always)] pure fn sgn() -> i16 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
 }
 
 pub impl i32: Signed {
     #[inline(always)] pure fn abs() -> i32 { if self >= 0 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> i32 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
+    #[inline(always)] pure fn sgn() -> i32 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
 }
 
 pub impl i64: Signed {
     #[inline(always)] pure fn abs() -> i64 { if self >= 0 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> i64 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
+    #[inline(always)] pure fn sgn() -> i64 { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
 }
 
 pub impl int: Signed {
     #[inline(always)] pure fn abs() -> int { if self >= 0 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> int { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
+    #[inline(always)] pure fn sgn() -> int { if self > 0 { 1 } else if self == 0 { 0 } else { -1 } }
 }
 
 pub impl f32: Signed {
     #[inline(always)] pure fn abs() -> f32 { if self >= 0f32 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> f32 { if self > 0f32 { 1f32 } else if self == 0f32 { 0f32 } else { -1f32 } }
+    #[inline(always)] pure fn sgn() -> f32 { if self > 0f32 { 1f32 } else if self == 0f32 { 0f32 } else { -1f32 } }
 }
 
 pub impl f64: Signed {
     #[inline(always)] pure fn abs() -> f64 { if self >= 0f64 { self } else {-self } }
-    #[inline(always)] pure fn sign() -> f64 { if self > 0f64 { 1f64 } else if self == 0f64 { 0f64 } else { -1f64 } }
+    #[inline(always)] pure fn sgn() -> f64 { if self > 0f64 { 1f64 } else if self == 0f64 { 0f64 } else { -1f64 } }
 }
 
 pub impl float: Signed {
     #[inline(always)] pure fn abs() -> float { if self >= 0f { self } else {-self } }
-    #[inline(always)] pure fn sign() -> float { if self > 0f { 1f } else if self == 0f { 0f } else { -1f } }
+    #[inline(always)] pure fn sgn() -> float { if self > 0f { 1f } else if self == 0f { 0f } else { -1f } }
 }
 
 /**
  * Common Functions for floating point types
  */
-pub trait Float {
+pub trait Approx {
     pure fn floor() -> self;
     pure fn trunc() -> self;
     pure fn round() -> self;
     // pure fn roundEven() -> self;
-    pure fn ceil() -> self;
+    pure fn ceil()  -> self;
     // pure fn fract() -> self;
 }
 
-#[inline(always)] pub pure fn floor<T:Float>(x: T) -> T { x.floor() }
-#[inline(always)] pub pure fn trunc<T:Float>(x: T) -> T { x.trunc() }
-#[inline(always)] pub pure fn round<T:Float>(x: T) -> T { x.round() }
-// #[inline(always)] pub pure fn roundEven<T:Float>(x: T) -> T { x.roundEven() }
-#[inline(always)] pub pure fn ceil<T:Float>(x: T) -> T { x.ceil() }
-// #[inline(always)] pub pure fn fract<T:Float>(x: T) -> T { x.fract() }
+#[inline(always)] pub pure fn floor<T:Approx>(x: T) -> T { x.floor() }
+#[inline(always)] pub pure fn trunc<T:Approx>(x: T) -> T { x.trunc() }
+#[inline(always)] pub pure fn round<T:Approx>(x: T) -> T { x.round() }
+// #[inline(always)] pub pure fn roundEven<T:Approx>(x: T) -> T { x.roundEven() }
+#[inline(always)] pub pure fn ceil<T:Approx>(x: T)  -> T { x.ceil() }
+// #[inline(always)] pub pure fn fract<T:Approx>(x: T) -> T { x.fract() }
 
-pub impl f32: Float {
-    #[inline(always)] pure fn floor() -> f32 { f32::floor(self) }
-    #[inline(always)] pure fn trunc() -> f32 { f32::trunc(self) }
-    #[inline(always)] pure fn round() -> f32 { f32::round(self) }
+pub impl f32: Approx {
+    #[inline(always)] pure fn floor() -> f32 { cast(cmath::c_float_utils::floor(self)) }
+    #[inline(always)] pure fn trunc() -> f32 { cast(cmath::c_float_utils::trunc(self)) }
+    #[inline(always)] pure fn round() -> f32 { cast(cmath::c_float_utils::round(self)) }
     // #[inline(always)] pure fn roundEven() -> f32 {}
-    #[inline(always)] pure fn ceil() -> f32 { f32::ceil(self) }
+    #[inline(always)] pure fn ceil()  -> f32 { cast(cmath::c_float_utils::ceil(self)) }
     // #[inline(always)] pure fn fract() -> f32 {}
 }
 
-pub impl f64: Float {
-    #[inline(always)] pure fn floor() -> f64 { f64::floor(self) }
-    #[inline(always)] pure fn trunc() -> f64 { f64::trunc(self) }
-    #[inline(always)] pure fn round() -> f64 { f64::round(self) }
+pub impl f64: Approx {
+    #[inline(always)] pure fn floor() -> f64 { cast(cmath::c_double_utils::floor(self)) }
+    #[inline(always)] pure fn trunc() -> f64 { cast(cmath::c_double_utils::trunc(self)) }
+    #[inline(always)] pure fn round() -> f64 { cast(cmath::c_double_utils::round(self)) }
     // #[inline(always)] pure fn roundEven() -> f64 {}
-    #[inline(always)] pure fn ceil() -> f64 { f64::ceil(self) }
+    #[inline(always)] pure fn ceil()  -> f64 { cast(cmath::c_double_utils::ceil(self)) }
     // #[inline(always)] pure fn fract() -> f64 {}
 }
 
-pub impl float: Float {
-    #[inline(always)] pure fn floor() -> float { cast(float::floor(cast(self))) }
-    #[inline(always)] pure fn trunc() -> float { cast(float::trunc(cast(self))) }
-    #[inline(always)] pure fn round() -> float { cast(float::round(cast(self))) }
+pub impl float: Approx {
+    #[inline(always)] pure fn floor() -> float { cast(cmath::c_float_utils::floor(cast(self))) }
+    #[inline(always)] pure fn trunc() -> float { cast(cmath::c_float_utils::trunc(cast(self))) }
+    #[inline(always)] pure fn round() -> float { cast(cmath::c_float_utils::round(cast(self))) }
     // #[inline(always)] pure fn roundEven() -> float {}
-    #[inline(always)] pure fn ceil() -> float { cast(float::ceil(cast(self))) }
+    #[inline(always)] pure fn ceil()  -> float { cast(cmath::c_float_utils::ceil(cast(self))) }
     // #[inline(always)] pure fn fract() -> float {}
 }
 
 pub trait Mix<B> {
     pure fn mix(y: &self, a: &self) -> self;
-    pure fn mixb(y: &self, a: &B) -> self;
+    pure fn mixb(y: &self, a: &B)   -> self;
 }
 
-#[inline(always)] pub pure fn mix<T:Mix<B>, B>(x: &T, y: &T, a: &T) -> T { x.mix(y, a) }
+#[inline(always)] pub pure fn mix<T:Mix<B>, B>(x: &T, y: &T, a: &T)  -> T { x.mix(y, a) }
 #[inline(always)] pub pure fn mixb<T:Mix<B>, B>(x: &T, y: &T, a: &B) -> T { x.mixb(y, a) }
 
 pub impl f32: Mix<bool> {
-    #[inline(always)] pure fn mix(y: &f32, a: &f32) -> f32 { self * (1f32 - (*a)) + (*y) * (*a) }
+    #[inline(always)] pure fn mix(y: &f32, a: &f32)   -> f32 { self * (1f32 - (*a)) + (*y) * (*a) }
     #[inline(always)] pure fn mixb(y: &f32, a: &bool) -> f32 { if *a { *y } else { self } }
 }
 
 pub impl f64: Mix<bool> {
-    #[inline(always)] pure fn mix(y: &f64, a: &f64) -> f64 { self * (1f64 - (*a)) + (*y) * (*a) }
+    #[inline(always)] pure fn mix(y: &f64, a: &f64)   -> f64 { self * (1f64 - (*a)) + (*y) * (*a) }
     #[inline(always)] pure fn mixb(y: &f64, a: &bool) -> f64 { if *a { *y } else { self } }
 }
 
