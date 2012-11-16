@@ -11,6 +11,7 @@
 extern mod std;
 
 pub mod dim;
+pub mod gltypes;
 pub mod mat;
 pub mod quat;
 pub mod vec;
