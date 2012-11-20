@@ -12,13 +12,14 @@ use funs::common::*;
 use math::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
+use num::default_eq::DefaultEq;
 use vec::Vec3;
 
 
 //
 //  Quaternion
 //
-pub trait Quaternion<T>: Dimensional<T>, Eq, Neg<self> {
+pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -266,26 +267,15 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
     }
 }
 
-// TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Quat<T>: Eq {
+pub impl<T:Copy DefaultEq> Quat<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Quat<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
     pure fn ne(other: &Quat<T>) -> bool {
         !(self == *other)
-    }
-}
-
-pub impl<T:Copy Eq> Quat<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Quat<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
     }
 }
 
@@ -296,5 +286,15 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Quat<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Quat<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1]) &&
+        self[2].default_eq(&other[2]) &&
+        self[3].default_eq(&other[3])
     }
 }

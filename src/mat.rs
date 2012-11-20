@@ -10,11 +10,12 @@ use funs::common::*;
 use funs::exp::*;
 use math::*;
 use num::cast::*;
+use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};
 use vec::{Vec2, Vec3, Vec4};
 
 
-pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq {
+pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
     pure fn is_col_major() -> bool;
@@ -177,7 +178,7 @@ pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
@@ -192,7 +193,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     pure fn invert() -> Option<Mat2<T>> {
         let _0 = cast(0);
         let d = self.det();
-        if d.fuzzy_eq(&_0) {
+        if d.default_eq(&_0) {
             None
         } else {
             Some(Mat2::new(self[1][1]/d, -self[0][1]/d,
@@ -208,31 +209,31 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat2::identity())
+        self.default_eq(&Mat2::identity())
     }
     
     #[inline(always)]
     pure fn is_symmetric() -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[1][0].fuzzy_eq(&self[0][1])
+        self[0][1].default_eq(&self[1][0]) &&
+        self[1][0].default_eq(&self[0][1])
     }
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
         let _0 = cast(0);
-        self[0][1].fuzzy_eq(&_0) &&
-        self[1][0].fuzzy_eq(&_0)
+        self[0][1].default_eq(&_0) &&
+        self[1][0].default_eq(&_0)
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat2::identity())
+        !self.default_eq(&Mat2::identity())
     }
 
     #[inline(always)]
     pure fn is_invertible() -> bool {
         let _0 = cast(0);
-        !self.det().fuzzy_eq(&_0)
+        !self.det().default_eq(&_0)
     }
 }
 
@@ -249,10 +250,10 @@ pub impl<T:Copy NumCast> Mat2<T>: Matrix2<T> {
 }
 
 // TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Mat2<T>: Eq {
+pub impl<T:Copy DefaultEq> Mat2<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat2<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
@@ -261,19 +262,19 @@ pub impl<T:Copy FuzzyEq> Mat2<T>: Eq {
     }
 }
 
-impl<T:Copy Eq> Mat2<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Mat2<T>) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1])
-    }
-}
-
 pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Mat2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Mat2<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Mat2<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1])
     }
 }
 
@@ -415,7 +416,7 @@ pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
@@ -431,7 +432,7 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     pure fn invert() -> Option<Mat3<T>> {
         let d = self.det();
         let _0 = cast(0);
-        if d.fuzzy_eq(&_0) {
+        if d.default_eq(&_0) {
             None
         } else {
             Some(Mat3::from_cols(self[1].cross(&self[2]).div_t(d),
@@ -450,43 +451,43 @@ pub impl<T:Copy Num NumCast FuzzyEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat3::identity())
+        self.default_eq(&Mat3::identity())
     }
     
     #[inline(always)]
     pure fn is_symmetric() -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[0][2].fuzzy_eq(&self[2][0]) &&
+        self[0][1].default_eq(&self[1][0]) &&
+        self[0][2].default_eq(&self[2][0]) &&
         
-        self[1][0].fuzzy_eq(&self[0][1]) &&
-        self[1][2].fuzzy_eq(&self[2][1]) &&
+        self[1][0].default_eq(&self[0][1]) &&
+        self[1][2].default_eq(&self[2][1]) &&
         
-        self[2][0].fuzzy_eq(&self[0][2]) &&
-        self[2][1].fuzzy_eq(&self[1][2])
+        self[2][0].default_eq(&self[0][2]) &&
+        self[2][1].default_eq(&self[1][2])
     }
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
         let _0 = cast(0);
-        self[0][1].fuzzy_eq(&_0) &&
-        self[0][2].fuzzy_eq(&_0) &&
+        self[0][1].default_eq(&_0) &&
+        self[0][2].default_eq(&_0) &&
         
-        self[1][0].fuzzy_eq(&_0) &&
-        self[1][2].fuzzy_eq(&_0) &&
+        self[1][0].default_eq(&_0) &&
+        self[1][2].default_eq(&_0) &&
         
-        self[2][0].fuzzy_eq(&_0) &&
-        self[2][1].fuzzy_eq(&_0)
+        self[2][0].default_eq(&_0) &&
+        self[2][1].default_eq(&_0)
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat3::identity())
+        !self.default_eq(&Mat3::identity())
     }
 
     #[inline(always)]
     pure fn is_invertible() -> bool {
         let _0 = cast(0);
-        !self.det().fuzzy_eq(&_0)
+        !self.det().default_eq(&_0)
     }
 }
 
@@ -541,24 +542,15 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
 }
 
 // TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Mat3<T>: Eq {
+pub impl<T:Copy DefaultEq> Mat3<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat3<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
     pure fn ne(other: &Mat3<T>) -> bool {
         !(self == *other)
-    }
-}
-
-pub impl<T:Copy Eq> Mat3<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Mat3<T>) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1]) &&
-        self[2].exact_eq(&other[2])
     }
 }
 
@@ -568,6 +560,15 @@ pub impl<T:Copy FuzzyEq> Mat3<T>: FuzzyEq {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Mat3<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Mat3<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1]) &&
+        self[2].default_eq(&other[2])
     }
 }
 
@@ -731,7 +732,7 @@ pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
         // Surprisingly when building with optimisation turned on this is actually
@@ -761,7 +762,7 @@ pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Ve
     pure fn invert() -> Option<Mat4<T>> {
         let d = self.det();
         let _0 = cast(0);
-        if d.fuzzy_eq(&_0) {
+        if d.default_eq(&_0) {
             None
         } else {
 
@@ -824,57 +825,57 @@ pub impl<T:Copy Num NumCast FuzzyEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Ve
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.fuzzy_eq(&Mat4::identity())
+        self.default_eq(&Mat4::identity())
     }
     
     #[inline(always)]
     pure fn is_symmetric() -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[0][2].fuzzy_eq(&self[2][0]) &&
-        self[0][3].fuzzy_eq(&self[3][0]) &&
+        self[0][1].default_eq(&self[1][0]) &&
+        self[0][2].default_eq(&self[2][0]) &&
+        self[0][3].default_eq(&self[3][0]) &&
         
-        self[1][0].fuzzy_eq(&self[0][1]) &&
-        self[1][2].fuzzy_eq(&self[2][1]) &&
-        self[1][3].fuzzy_eq(&self[3][1]) &&
+        self[1][0].default_eq(&self[0][1]) &&
+        self[1][2].default_eq(&self[2][1]) &&
+        self[1][3].default_eq(&self[3][1]) &&
         
-        self[2][0].fuzzy_eq(&self[0][2]) &&
-        self[2][1].fuzzy_eq(&self[1][2]) &&
-        self[2][3].fuzzy_eq(&self[3][2]) &&
+        self[2][0].default_eq(&self[0][2]) &&
+        self[2][1].default_eq(&self[1][2]) &&
+        self[2][3].default_eq(&self[3][2]) &&
         
-        self[3][0].fuzzy_eq(&self[0][3]) &&
-        self[3][1].fuzzy_eq(&self[1][3]) &&
-        self[3][2].fuzzy_eq(&self[2][3])
+        self[3][0].default_eq(&self[0][3]) &&
+        self[3][1].default_eq(&self[1][3]) &&
+        self[3][2].default_eq(&self[2][3])
     }
     
     #[inline(always)]
     pure fn is_diagonal() -> bool {
         let _0 = cast(0);
-        self[0][1].fuzzy_eq(&_0) &&
-        self[0][2].fuzzy_eq(&_0) &&
-        self[0][3].fuzzy_eq(&_0) &&
+        self[0][1].default_eq(&_0) &&
+        self[0][2].default_eq(&_0) &&
+        self[0][3].default_eq(&_0) &&
         
-        self[1][0].fuzzy_eq(&_0) &&
-        self[1][2].fuzzy_eq(&_0) &&
-        self[1][3].fuzzy_eq(&_0) &&
+        self[1][0].default_eq(&_0) &&
+        self[1][2].default_eq(&_0) &&
+        self[1][3].default_eq(&_0) &&
         
-        self[2][0].fuzzy_eq(&_0) &&
-        self[2][1].fuzzy_eq(&_0) &&
-        self[2][3].fuzzy_eq(&_0) &&
+        self[2][0].default_eq(&_0) &&
+        self[2][1].default_eq(&_0) &&
+        self[2][3].default_eq(&_0) &&
         
-        self[3][0].fuzzy_eq(&_0) &&
-        self[3][1].fuzzy_eq(&_0) &&
-        self[3][2].fuzzy_eq(&_0)
+        self[3][0].default_eq(&_0) &&
+        self[3][1].default_eq(&_0) &&
+        self[3][2].default_eq(&_0)
     }
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.fuzzy_eq(&Mat4::identity())
+        !self.default_eq(&Mat4::identity())
     }
 
     #[inline(always)]
     pure fn is_invertible() -> bool {
         let _0 = cast(0);
-        !self.det().fuzzy_eq(&_0)
+        !self.det().default_eq(&_0)
     }
 }
 
@@ -883,25 +884,15 @@ pub impl<T> Mat4<T>: Matrix4<T> {
 }
 
 // TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Mat4<T>: Eq {
+pub impl<T:Copy DefaultEq> Mat4<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat4<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
     pure fn ne(other: &Mat4<T>) -> bool {
         !(self == *other)
-    }
-}
-
-pub impl<T:Copy Eq> Mat4<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Mat4<T>) -> bool {
-        self[0].exact_eq(&other[0]) &&
-        self[1].exact_eq(&other[1]) &&
-        self[2].exact_eq(&other[2]) &&
-        self[3].exact_eq(&other[3])
     }
 }
 
@@ -912,5 +903,15 @@ pub impl<T:Copy FuzzyEq> Mat4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Mat4<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Mat4<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1]) &&
+        self[2].default_eq(&other[2]) &&
+        self[3].default_eq(&other[3])
     }
 }

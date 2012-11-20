@@ -9,9 +9,10 @@ use dim::Dimensional;
 use funs::exp::Exp;
 use math::*;
 use num::cast::*;
+use num::default_eq::DefaultEq;
 
 
-pub trait Vector<T>: Dimensional<T>, Eq {}
+pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {}
 
 pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn mul_t(value: T) -> self;
@@ -187,10 +188,10 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
 }
 
 // TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Vec2<T>: Eq {
+pub impl<T:Copy DefaultEq> Vec2<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Vec2<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
@@ -199,19 +200,19 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: Eq {
     }
 }
 
-impl<T:Copy Eq> Vec2<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Vec2<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1]
-    }
-}
-
 pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Vec2<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1])
     }
 }
 
@@ -375,24 +376,15 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
 }
 
 // TODO: make work for T:Integer
-pub impl<T:Copy FuzzyEq> Vec3<T>: Eq {
+pub impl<T:Copy DefaultEq> Vec3<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Vec3<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
     pure fn ne(other: &Vec3<T>) -> bool {
         !(self == *other)
-    }
-}
-
-pub impl<T:Copy Eq> Vec3<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Vec3<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2]
     }
 }
 
@@ -402,6 +394,15 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Vec3<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1]) &&
+        self[2].default_eq(&other[2])
     }
 }
 
@@ -566,26 +567,15 @@ pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Vec4<T>: Eq {
+pub impl<T:Copy DefaultEq> Vec4<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Vec4<T>) -> bool {
-        self.fuzzy_eq(other)
+        self.default_eq(other)
     }
     
     #[inline(always)]
     pure fn ne(other: &Vec4<T>) -> bool {
         !(self == *other)
-    }
-}
-
-// TODO: make work for T:Integer
-pub impl<T:Copy Eq> Vec4<T>: ExactEq {
-    #[inline(always)]
-    pure fn exact_eq(other: &Vec4<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
     }
 }
 
@@ -596,5 +586,15 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl<T:Copy DefaultEq> Vec4<T>: DefaultEq {
+    #[inline(always)]
+    pure fn default_eq(other: &Vec4<T>) -> bool {
+        self[0].default_eq(&other[0]) &&
+        self[1].default_eq(&other[1]) &&
+        self[2].default_eq(&other[2]) &&
+        self[3].default_eq(&other[3])
     }
 }

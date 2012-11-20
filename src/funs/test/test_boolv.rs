@@ -9,15 +9,15 @@ fn test_boolv2() {
     
     assert tf.any() == true;
     assert tf.all() == false;
-    assert tf.not().exact_eq(&Vec2::new(false, true));
+    assert tf.not() == Vec2::new(false, true);
     
     assert ff.any() == false;
     assert ff.all() == false;
-    assert ff.not().exact_eq(&Vec2::new(true, true));
+    assert ff.not() == Vec2::new(true, true);
     
     assert tt.any() == true;
     assert tt.all() == true;
-    assert tt.not().exact_eq(&Vec2::new(false, false));
+    assert tt.not() == Vec2::new(false, false);
 }
 
 #[test]
@@ -28,15 +28,15 @@ fn test_boolv3() {
     
     assert tft.any() == true;
     assert tft.all() == false;
-    assert tft.not().exact_eq(&Vec3::new(false, true, false));
+    assert tft.not() == Vec3::new(false, true, false);
     
     assert fff.any() == false;
     assert fff.all() == false;
-    assert fff.not().exact_eq(&Vec3::new(true, true, true));
+    assert fff.not() == Vec3::new(true, true, true);
     
     assert ttt.any() == true;
     assert ttt.all() == true;
-    assert ttt.not().exact_eq(&Vec3::new(false, false, false));
+    assert ttt.not() == Vec3::new(false, false, false);
 }
 
 #[test]
@@ -47,15 +47,15 @@ fn test_boolv4() {
     
     assert tftf.any() == true;
     assert tftf.all() == false;
-    assert tftf.not().exact_eq(&Vec4::new(false, true, false, true));
+    assert tftf.not() == Vec4::new(false, true, false, true);
     
     assert ffff.any() == false;
     assert ffff.all() == false;
-    assert ffff.not().exact_eq(&Vec4::new(true, true, true, true));
+    assert ffff.not() == Vec4::new(true, true, true, true);
     
     assert tttt.any() == true;
     assert tttt.all() == true;
-    assert tttt.not().exact_eq(&Vec4::new(false, false, false, false));
+    assert tttt.not() == Vec4::new(false, false, false, false);
 }
 
 #[test]
@@ -66,5 +66,5 @@ fn test_boolv_fns() {
     
     assert any(&tf) == true;
     assert all(&ftf) == false;
-    assert not(&tftf).exact_eq(&Vec4::new(false, true, false, true));
+    assert not(&tftf) == Vec4::new(false, true, false, true);
 }
