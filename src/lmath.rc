@@ -23,11 +23,6 @@ mod test {
     mod test_vec;
 }
 
-use common::*;
-pub mod common {
-    pub mod math;
-}
-
 pub mod num {
     pub mod cast;
     pub mod consts;

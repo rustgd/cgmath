@@ -7,7 +7,6 @@ use std::cmp::FuzzyEq;
 
 use dim::Dimensional;
 use funs::exp::Exp;
-use math::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 

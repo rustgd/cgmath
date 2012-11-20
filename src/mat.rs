@@ -8,7 +8,6 @@ use std::cmp::FuzzyEq;
 use dim::Dimensional;
 use funs::common::*;
 use funs::exp::*;
-use math::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};

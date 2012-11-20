@@ -9,7 +9,6 @@ use dim::Dimensional;
 use funs::exp::*;
 use funs::trig::*;
 use funs::common::*;
-use math::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 use num::default_eq::DefaultEq;
