@@ -11,7 +11,21 @@ use num::cast::*;
 use num::default_eq::DefaultEq;
 
 
-pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {}
+pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {
+    static pure fn from_value(value: T) -> self;
+}
+
+// pub trait Vector2<T>: Vector<T> {
+//     static pure fn new(x: T, y: T) -> self;
+// }
+
+// pub trait Vector3<T>: Vector<T> {
+//     static pure fn new(x: T, y: T, z: T) -> self;
+// }
+
+// pub trait Vector4<T>: Vector<T> {
+//     static pure fn new(x: T, y: T, z: T, w: T) -> self;
+// }
 
 pub trait NumericVector<T>: Vector<T>, Neg<self>{
     static pure fn identity() -> self;
@@ -26,6 +40,25 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn dot(other: &self) -> T;
 }
 
+// pub trait NumericVector2<T>: Vector<T> {
+//     static pure fn unit_x() -> self;
+//     static pure fn unit_y() -> self;
+// }
+
+pub trait NumericVector3<T>: Vector<T> {
+//     static pure fn unit_x() -> self;
+//     static pure fn unit_y() -> self;
+//     static pure fn unit_z() -> self;
+    pure fn cross(other: &self) -> self;
+}
+
+// pub trait NumericVector4<T>: Vector<T> {
+//     static pure fn unit_x() -> self;
+//     static pure fn unit_y() -> self;
+//     static pure fn unit_z() -> self;
+//     static pure fn unit_w() -> self;
+// }
+
 pub trait GeometricVector<T>: NumericVector<T> {
     pure fn length2() -> T;
     pure fn length() -> T;
@@ -33,23 +66,6 @@ pub trait GeometricVector<T>: NumericVector<T> {
     pure fn distance(other: &self) -> T;
     pure fn normalize() -> self;
     pure fn lerp(other: &self, amount: T) -> self;
-}
-
-pub trait Vector2<T>: Vector<T> {
-    // static pure fn new(x: T, y: T) -> self;
-    // static pure fn from_value(value: T) -> self;
-}
-
-pub trait Vector3<T>: Vector<T> {
-    // static pure fn new(x: T, y: T, z: T) -> self;
-    // static pure fn from_value(value: T) -> self;
-    
-    pure fn cross(other: &self) -> self;
-}
-
-pub trait Vector4<T>: Vector<T> {
-    // pub static pure fn new(x: T, y: T, z: T, w: T) -> self;
-    // pub static pure fn from_value(value: T) -> self;
 }
 
 
@@ -61,46 +77,19 @@ pub trait Vector4<T>: Vector<T> {
 //
 pub struct Vec2<T> { x: T, y: T }
 
-pub mod Vec2 {
-    
+pub impl<T> Vec2<T>/*: Vector2<T>*/ {
     #[inline(always)]
-    pub pure fn new<T>(x: T, y: T) -> Vec2<T> {
+    static pure fn new(x: T, y: T ) -> Vec2<T> {
         Vec2 { x: move x, y: move y }
-    }
-    
-    #[inline(always)]
-    pub pure fn from_value<T:Copy>(value: T) -> Vec2<T> {
-        Vec2::new(value, value)
-    }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Vec2<T> {
-        let _0 = cast(0);
-        Vec2::new(_0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_x<T:Copy NumCast>() -> Vec2<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec2::new(_1, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_y<T:Copy NumCast>() -> Vec2<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec2::new(_0, _1)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Vec2<T> {
-        let _1 = cast(1);
-        Vec2::new(_1, _1)
     }
 }
 
 pub impl<T:Copy> Vec2<T>: Vector<T> {
+    #[inline(always)]
+    static pure fn from_value(value: T) -> Vec2<T> {
+        Vec2::new(value, value)
+    }
+    
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
     
@@ -239,62 +228,19 @@ pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
 //
 pub struct Vec3<T> { x: T, y: T, z: T }
 
-pub mod Vec3 {
-    
+pub impl<T> Vec3<T>/*: Vector3<T>*/ {
     #[inline(always)]
-    pub pure fn new<T>(x: T, y: T, z: T) -> Vec3<T> {
+    static pure fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: move x, y: move y, z: move z }
-    }
-    
-    #[inline(always)]
-    pub pure fn from_value<T:Copy>(value: T) -> Vec3<T> {
-        Vec3::new(value, value, value)
-    }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Vec3<T> {
-        let _0 = cast(0);
-        Vec3::new(_0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_x<T:Copy NumCast>() -> Vec3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec3::new(_1, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_y<T:Copy NumCast>() -> Vec3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec3::new(_0, _1, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_z<T:Copy NumCast>() -> Vec3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec3::new(_0, _0, _1)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Vec3<T> {
-        let _1 = cast(1);
-        Vec3::new(_1, _1, _1)
-    }
-}
-
-pub impl<T:Copy Num> Vec3<T>: Vector3<T> {
-    #[inline(always)]
-    pure fn cross(other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
-                  (self[2] * other[0]) - (self[0] * other[2]),
-                  (self[0] * other[1]) - (self[1] * other[0]))
     }
 }
 
 pub impl<T:Copy> Vec3<T>: Vector<T> {
+    #[inline(always)]
+    static pure fn from_value(value: T) -> Vec3<T> {
+        Vec3::new(value, value, value)
+    }
+    
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
@@ -365,6 +311,15 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
+    }
+}
+
+pub impl<T:Copy Num> Vec3<T>: NumericVector3<T> {
+    #[inline(always)]
+    pure fn cross(other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
+                  (self[2] * other[0]) - (self[0] * other[2]),
+                  (self[0] * other[1]) - (self[1] * other[0]))
     }
 }
 
@@ -442,59 +397,19 @@ pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
 //
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-pub mod Vec4 {
+pub impl<T> Vec4<T>/*: Vector4<T>*/ {
     #[inline(always)]
-    pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
+    static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
-    }
-    
-    #[inline(always)]
-    pub pure fn from_value<T:Copy>(value: T) -> Vec4<T> {
-        Vec4::new(value, value, value, value)
-    }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Vec4<T> {
-        let _0 = cast(0);
-        Vec4::new(_0, _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_x<T:Copy NumCast>() -> Vec4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec4::new(_1, _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_y<T:Copy NumCast>() -> Vec4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec4::new(_0, _1, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_z<T:Copy NumCast>() -> Vec4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec4::new(_0, _0, _1, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn unit_w<T:Copy NumCast>() -> Vec4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Vec4::new(_0, _0, _0, _1)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Vec4<T> {
-        let _1 = cast(1);
-        Vec4::new(_1, _1, _1, _1)
     }
 }
 
 pub impl<T:Copy> Vec4<T>: Vector<T> {
+    #[inline(always)]
+    static pure fn from_value(value: T) -> Vec4<T> {
+        Vec4::new(value, value, value, value)
+    }
+    
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
