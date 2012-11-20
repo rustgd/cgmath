@@ -26,6 +26,48 @@ pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn row(i: uint) -> Row;
 }
 
+// /// A 2 x N matrix
+// pub trait Matrix2<T, Col, Row>: Matrix<T, Col, Row> {
+//     /// Construct the matrix from two column vectors
+//     static pure fn from_cols(c0: Col, c1: Col) -> self;
+// }
+
+// /// A 2 x 2 square matrix
+// pub trait Matrix2x2<T, ColRow>: Matrix2<T, ColRow> {
+//     /// Construct the matrix from a column major series of elements
+//     static pure fn new(c0r0: T, c0r1: T,
+//                        c1r0: T, c1r1: T) -> self;
+// }
+
+// /// A 3 x N matrix
+// pub trait Matrix3<T, Col, Row>: Matrix<T, Col, Row> {
+//     /// Construct the matrix from three column vectors
+//     static pure fn from_cols(c0: Col, c1: Col, c2: Col) -> self;
+// }
+
+// /// A 3 x 3 square matrix
+// pub trait Matrix3x3<T, ColRow>: Matrix3<T, ColRow> {
+//     /// Construct the matrix from a column major series of elements
+//     static pure fn new(c0r0: T, c0r1: T, c0r2: T,
+//                        c1r0: T, c1r1: T, c1r2: T,
+//                        c2r0: T, c2r1: T, c2r2: T) -> self;
+// }
+
+// /// A 4 x N matrix
+// pub trait Matrix4<T, Col, Row>: Matrix<T, Col, Row> {
+//     /// Construct the matrix from four column vectors
+//     static pure fn from_cols(c0: Col, c1: Col, c2: Col, c3: Col) -> self;
+// }
+
+// /// A 4 x 4 square matrix
+// pub trait Matrix4x4<T, ColRow>: Matrix4<T, ColRow, ColRow> {
+//     /// Construct the matrix from a column major series of elements
+//     static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+//                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+//                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+//                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> self;
+// }
+
 ///
 /// A matrix with numeric elements
 ///
@@ -84,23 +126,22 @@ pub trait NumericMatrix4x4<T>: NumericMatrix_NxN<T, Mat4<T>> {
 //
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-pub mod Mat2 {
-    
+pub impl<T:Copy NumCast> Mat2<T> {
     #[inline(always)]
-    pub pure fn new<T>(c0r0: T, c0r1: T,
+    static pure fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Mat2<T> {
         Mat2::from_cols(Vec2::new(move c0r0, move c0r1),
                         Vec2::new(move c1r0, move c1r1))
     }
 
     #[inline(always)]
-    pub pure fn from_cols<T>(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
+    static pure fn from_cols(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: move c0,
                y: move c1 }
     }
     
     #[inline(always)]
-    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat2<T> {
+    static pure fn from_value(value: T) -> Mat2<T> {
         let _0 = cast(0);
         Mat2::new(value,    _0,
                      _0, value)
@@ -298,10 +339,9 @@ pub impl<T:Copy DefaultEq> Mat2<T>: DefaultEq {
 //
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-pub mod Mat3 {
-    
+pub impl<T:Copy NumCast> Mat3<T> {
     #[inline(always)]
-    pub pure fn new<T>(c0r0:T, c0r1:T, c0r2:T,
+    static pure fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
                        c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
         Mat3::from_cols(Vec3::new(move c0r0, move c0r1, move c0r2),
@@ -310,14 +350,14 @@ pub mod Mat3 {
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T>(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
+    static pure fn from_cols(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: move c0,
                y: move c1,
                z: move c2 }
     }
     
     #[inline(always)]
-    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat3<T> {
+    static pure fn from_value(value: T) -> Mat3<T> {
         let _0 = cast(0);
         Mat3::new(value,    _0,    _0,
                      _0, value,    _0,
@@ -325,7 +365,7 @@ pub mod Mat3 {
     }
     
     #[inline(always)]
-    pub pure fn from_Mat2<T:Copy NumCast>(m: &Mat2<T>) -> Mat3<T> {
+    static pure fn from_Mat2(m: &Mat2<T>) -> Mat3<T> {
         let _0 = cast(0);
         let _1 = cast(1);
         Mat3::new(m[0][0], m[0][1], _0,
@@ -588,10 +628,9 @@ pub impl<T:Copy DefaultEq> Mat3<T>: DefaultEq {
 //
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-pub mod Mat4 {
-    
+pub impl<T:Copy NumCast> Mat4<T> {
     #[inline(always)]
-    pub pure fn new<T>(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+    static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
@@ -602,7 +641,7 @@ pub mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn from_cols<T>(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
+    static pure fn from_cols(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
         Mat4 { x: move c0,
                y: move c1,
                z: move c2,
@@ -610,7 +649,7 @@ pub mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn from_value<T:Copy NumCast>(value: T) -> Mat4<T> {
+    static pure fn from_value(value: T) -> Mat4<T> {
         let _0 = cast(0);
         Mat4::new(value,    _0,    _0,    _0,
                      _0, value,    _0,    _0,
@@ -619,7 +658,7 @@ pub mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn from_Mat2<T:Copy NumCast>(m: &Mat2<T>) -> Mat4<T> {
+    static pure fn from_Mat2(m: &Mat2<T>) -> Mat4<T> {
         let _0 = cast(0);
         let _1 = cast(1);
         Mat4::new(m[0][0], m[0][1], _0, _0,
@@ -629,7 +668,7 @@ pub mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn from_Mat3<T:Copy NumCast>(m: &Mat3<T>) -> Mat4<T> {
+    static pure fn from_Mat3(m: &Mat3<T>) -> Mat4<T> {
         let _0 = cast(0);
         let _1 = cast(1);
         Mat4::new(m[0][0], m[0][1], m[0][2], _0,
