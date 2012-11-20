@@ -12,10 +12,16 @@ use std::cmp::FuzzyEq;
 
 use num::cast::*;
 use num::consts::*;
+use num::default_eq::*;
 
-trait NumExt: Copy, Eq, Num, NumCast, Ord {}
 
-trait UnSignedExt: NumExt {}
+pub trait TypeExt: TypeConsts, DefaultEq {}
+
+
+pub trait NumExt: Copy, TypeExt, Eq, Num, NumCast, Ord {}
+
+
+pub trait UnSignedExt: NumExt {}
 
 pub impl u8:   UnSignedExt {}
 pub impl u16:  UnSignedExt {}
@@ -24,7 +30,7 @@ pub impl u64:  UnSignedExt {}
 pub impl uint: UnSignedExt {}
 
 
-trait SignedExt: NumExt {}
+pub trait SignedExt: NumExt {}
 
 pub impl i8:    SignedExt {}
 pub impl i16:   SignedExt {}
@@ -37,7 +43,7 @@ pub impl f64:   SignedExt {}
 pub impl float: SignedExt {}
 
 
-trait IntegerExt: NumExt, IntConsts {}
+pub trait IntegerExt: NumExt, IntConsts {}
 
 pub impl u8:   IntegerExt {}
 pub impl u16:  IntegerExt {}
@@ -52,7 +58,7 @@ pub impl i64:  IntegerExt {}
 pub impl int:  IntegerExt {}
 
 
-trait FloatExt: NumExt, FloatConsts, FuzzyEq {}
+pub trait FloatExt: NumExt, FloatConsts, FuzzyEq {}
 
 pub impl f32:   FloatExt {}
 pub impl f64:   FloatExt {}
