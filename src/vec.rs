@@ -186,7 +186,6 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     }
 }
 
-// TODO: make work for T:Integer
 pub impl<T:Copy DefaultEq> Vec2<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Vec2<T>) -> bool {
@@ -374,7 +373,6 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     }
 }
 
-// TODO: make work for T:Integer
 pub impl<T:Copy DefaultEq> Vec3<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Vec3<T>) -> bool {

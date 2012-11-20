@@ -248,7 +248,6 @@ pub impl<T:Copy NumCast> Mat2<T>: Matrix2<T> {
     }
 }
 
-// TODO: make work for T:Integer
 pub impl<T:Copy DefaultEq> Mat2<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat2<T>) -> bool {
@@ -540,7 +539,6 @@ pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
     }
 }
 
-// TODO: make work for T:Integer
 pub impl<T:Copy DefaultEq> Mat3<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat3<T>) -> bool {
@@ -882,7 +880,6 @@ pub impl<T> Mat4<T>: Matrix4<T> {
     
 }
 
-// TODO: make work for T:Integer
 pub impl<T:Copy DefaultEq> Mat4<T>: Eq {
     #[inline(always)]
     pure fn eq(other: &Mat4<T>) -> bool {
