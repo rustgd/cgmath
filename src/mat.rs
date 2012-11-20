@@ -50,16 +50,16 @@ pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     pure fn is_invertible() -> bool;
 }
 
-pub trait Matrix2<T>: Matrix<T, Mat2<T>, Mat2<T>> {
+pub trait NumericMatrix2x2<T>: NumericMatrix_NxN<T, Mat2<T>> {
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
 }
 
-pub trait Matrix3<T>: Matrix<T, Mat3<T>, Mat3<T>> {
+pub trait NumericMatrix3x3<T>: NumericMatrix_NxN<T, Mat3<T>> {
     pure fn to_Mat4() -> Mat4<T>;
 }
 
-pub trait Matrix4<T>: Matrix<T, Mat4<T>, Mat4<T>> {
+pub trait NumericMatrix4x4<T>: NumericMatrix_NxN<T, Mat4<T>> {
     
 }
 
@@ -237,7 +237,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy NumCast> Mat2<T>: Matrix2<T> {
+pub impl<T:Copy NumCast> Mat2<T>: NumericMatrix2x2<T> {
     #[inline(always)]
     pure fn to_Mat3() -> Mat3<T> {
         Mat3::from_Mat2(&self)
@@ -487,7 +487,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy NumCast> Mat3<T>: Matrix3<T> {
+pub impl<T:Copy NumCast> Mat3<T>: NumericMatrix3x3<T> {
     #[inline(always)]
     pure fn to_Mat4() -> Mat4<T> {
         Mat4::from_Mat3(&self)
@@ -871,7 +871,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
     }
 }
 
-pub impl<T> Mat4<T>: Matrix4<T> {
+pub impl<T> Mat4<T>: NumericMatrix4x4<T> {
     
 }
 
