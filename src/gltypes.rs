@@ -147,9 +147,9 @@ pub impl uvec4 {
 
 // Matrix aliases
 
-pub type mat2 = Mat2<f32>;              /// a 2×2 single-precision floating-point matrix
-pub type mat3 = Mat3<f32>;              /// a 3×3 single-precision floating-point matrix
-pub type mat4 = Mat4<f32>;              /// a 4×4 single-precision floating-point matrix
+pub type mat2 = mat2x2;                 /// a 2×2 single-precision floating-point matrix
+pub type mat3 = mat3x3;                 /// a 3×3 single-precision floating-point matrix
+pub type mat4 = mat4x4;                 /// a 4×4 single-precision floating-point matrix
 pub type mat2x2 = Mat2<f32>;            /// same as a `mat2`
 // pub type mat2x3 =                    /// a single-precision floating-point matrix with 2 columns and 3 rows
 // pub type mat2x4 =                    /// a single-precision floating-point matrix with 2 columns and 4 rows
@@ -160,9 +160,9 @@ pub type mat3x3 = Mat3<f32>;            /// same as a `mat3`
 // pub type mat4x3 =                    /// a single-precision floating-point matrix with 4 columns and 3 rows
 pub type mat4x4 = Mat4<f32>;            /// same as a `mat4`
 
-pub type dmat2 = Mat2<f64>;             /// a 2×2 double-precision floating-point matrix
-pub type dmat3 = Mat3<f64>;             /// a 3×3 double-precision floating-point matrix
-pub type dmat4 = Mat4<f64>;             /// a 4×4 double-precision floating-point matrix
+pub type dmat2 = dmat2x2;               /// a 2×2 double-precision floating-point matrix
+pub type dmat3 = dmat3x3;               /// a 3×3 double-precision floating-point matrix
+pub type dmat4 = dmat4x4;               /// a 4×4 double-precision floating-point matrix
 pub type dmat2x2 = Mat2<f64>;           /// same as a `dmat2`
 // pub type dmat2x3 =                   /// a double-precision floating-point matrix with 2 columns and 3 rows
 // pub type dmat2x4 =                   /// a double-precision floating-point matrix with 2 columns and 4 rows
@@ -181,35 +181,65 @@ pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 // as opposed to: let m: dmat4 = NumericMatrix_NxN::identity();
 //
 
-pub impl mat2  {
-    #[inline(always)] static pure fn identity() -> mat2 { NumericMatrix_NxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat2  { NumericMatrix::zero() }
+pub impl mat2 {
+    #[inline(always)] static pure fn identity() -> mat2 { mat2x2::identity() }
+    #[inline(always)] static pure fn zero() -> mat2 { mat2x2::zero() }
 }
 
-pub impl mat3  {
-    #[inline(always)] static pure fn identity() -> mat3 { NumericMatrix_NxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat3  { NumericMatrix::zero() }
+pub impl mat3 {
+    #[inline(always)] static pure fn identity() -> mat3 { mat3x3::identity() }
+    #[inline(always)] static pure fn zero() -> mat3 { mat3x3::zero() }
 }
 
-pub impl mat4  {
-    #[inline(always)] static pure fn identity() -> mat4 { NumericMatrix_NxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat4  { NumericMatrix::zero() }
+pub impl mat4 {
+    #[inline(always)] static pure fn identity() -> mat4 { mat4x4::identity() }
+    #[inline(always)] static pure fn zero() -> mat4 { mat4x4::zero() }
+}
+
+pub impl mat2x2 {
+    #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
+}
+
+pub impl mat3x3 {
+    #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
+}
+
+pub impl mat4x4 {
+    #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
 }
 
 
 pub impl dmat2 {
-    #[inline(always)] static pure fn identity() -> dmat2 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> dmat2 { dmat2x2::identity() }
     #[inline(always)] static pure fn zero() -> dmat2 { NumericMatrix::zero() }
 }
 
 pub impl dmat3 {
-    #[inline(always)] static pure fn identity() -> dmat3 { NumericMatrix_NxN::identity() }
-    #[inline(always)] static pure fn zero() -> dmat3 { NumericMatrix::zero() }
+    #[inline(always)] static pure fn identity() -> dmat3 { dmat3x3::identity() }
+    #[inline(always)] static pure fn zero() -> dmat3 { dmat3x3::zero() }
 }
 
 pub impl dmat4 {
-    #[inline(always)] static pure fn identity() -> dmat4 { NumericMatrix_NxN::identity() }
-    #[inline(always)] static pure fn zero() -> dmat4 { NumericMatrix::zero() }
+    #[inline(always)] static pure fn identity() -> dmat4 { dmat4x4::identity() }
+    #[inline(always)] static pure fn zero() -> dmat4 { dmat4x4::zero() }
+}
+
+pub impl dmat2x2 {
+    #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
+}
+
+pub impl dmat3x3 {
+    #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
+}
+
+pub impl dmat4x4 {
+    #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
 }
 
 
