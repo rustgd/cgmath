@@ -60,11 +60,13 @@ fn test_Mat2() {
     // fuzzy_eq
     // eq
     
-    assert Mat2::identity::<float>().is_identity();
-    assert Mat2::identity::<float>().is_symmetric();
-    assert Mat2::identity::<float>().is_diagonal();
-    assert !Mat2::identity::<float>().is_rotated();
-    assert Mat2::identity::<float>().is_invertible();
+    let ident: Mat2<float> = NumericMatrix_NxN::identity();
+    
+    assert ident.is_identity();
+    assert ident.is_symmetric();
+    assert ident.is_diagonal();
+    assert !ident.is_rotated();
+    assert ident.is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
@@ -159,9 +161,6 @@ fn test_Mat3() {
                                       7f, 8f, 9f);
 
     assert a.invert().is_none();
-
-    assert option::unwrap(Mat3::identity::<float>().invert())
-        == Mat3::identity::<float>();
     
     assert option::unwrap(Mat3::new(2f, 4f, 6f,
                                     0f, 2f, 4f,
@@ -169,15 +168,20 @@ fn test_Mat3() {
         == Mat3::new(0.5f,  -1f,  1f,
                        0f, 0.5f, -2f,
                        0f,   0f,  1f);
+    
+    let ident: Mat3<float> = NumericMatrix_NxN::identity();
+
+    assert option::unwrap(ident.invert()) == ident;
+    
     // exact_eq
     // fuzzy_eq
     // eq
     
-    assert Mat3::identity::<float>().is_identity();
-    assert Mat3::identity::<float>().is_symmetric();
-    assert Mat3::identity::<float>().is_diagonal();
-    assert !Mat3::identity::<float>().is_rotated();
-    assert Mat3::identity::<float>().is_invertible();
+    assert ident.is_identity();
+    assert ident.is_symmetric();
+    assert ident.is_diagonal();
+    assert !ident.is_rotated();
+    assert ident.is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();
@@ -301,19 +305,20 @@ fn test_Mat4() {
                      -4f,  8f, -4f,  0f,
                       4f, -8f,  4f,  8f,
                      -3f,  4f,  1f, -8f).mul_t(0.125f);
+    
+    let ident: Mat4<float> = NumericMatrix_NxN::identity();
 
-    assert option::unwrap(Mat4::identity::<float>().invert())
-        == Mat4::identity::<float>();
+    assert option::unwrap(ident.invert()) == ident;
     
     // exact_eq
     // fuzzy_eq
     // eq
     
-    assert Mat4::identity::<float>().is_identity();
-    assert Mat4::identity::<float>().is_symmetric();
-    assert Mat4::identity::<float>().is_diagonal();
-    assert !Mat4::identity::<float>().is_rotated();
-    assert Mat4::identity::<float>().is_invertible();
+    assert ident.is_identity();
+    assert ident.is_symmetric();
+    assert ident.is_diagonal();
+    assert !ident.is_rotated();
+    assert ident.is_invertible();
     
     assert !a.is_identity();
     assert !a.is_symmetric();

@@ -94,21 +94,6 @@ pub mod Mat2 {
         Mat2::new(value,    _0,
                      _0, value)
     }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Mat2<T> {
-        let _0 = cast(0);
-        Mat2::new(_0, _0,
-                  _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Mat2<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Mat2::new(_1, _0,
-                  _0, _1)
-    }
 }
 
 pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
@@ -224,7 +209,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&Mat2::identity())
+        self.default_eq(&NumericMatrix_NxN::identity())
     }
     
     #[inline(always)]
@@ -242,7 +227,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&Mat2::identity())
+        !self.default_eq(&NumericMatrix_NxN::identity())
     }
 
     #[inline(always)]
@@ -335,23 +320,6 @@ pub mod Mat3 {
         Mat3::new(m[0][0], m[0][1], _0,
                   m[1][0], m[1][1], _0,
                        _0,      _0, _1)
-    }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Mat3<T> {
-        let _0 = cast(0);
-        Mat3::new(_0, _0, _0,
-                  _0, _0, _0,
-                  _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Mat3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Mat3::new(_1, _0, _0,
-                  _0, _1, _0,
-                  _0, _0, _1)
     }
 }
 
@@ -479,7 +447,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&Mat3::identity())
+        self.default_eq(&NumericMatrix_NxN::identity())
     }
     
     #[inline(always)]
@@ -509,7 +477,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&Mat3::identity())
+        !self.default_eq(&NumericMatrix_NxN::identity())
     }
 
     #[inline(always)]
@@ -658,25 +626,6 @@ pub mod Mat4 {
                   m[2][0], m[2][1], m[2][2], _0,
                        _0,      _0,      _0, _1)
     }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Mat4<T> {
-        let _0 = cast(0);
-        Mat4::new(_0, _0, _0, _0,
-                  _0, _0, _0, _0,
-                  _0, _0, _0, _0,
-                  _0, _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Mat4::new(_1, _0, _0, _0,
-                  _0, _1, _0, _0,
-                  _0, _0, _1, _0,
-                  _0, _0, _0, _1)
-    }
 }
 
 pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
@@ -812,7 +761,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
             // Gauss Jordan Elimination with partial pivoting
 
             let mut a = self.transpose();
-            let mut inv = Mat4::identity::<T>();
+            let mut inv: Mat4<T> = NumericMatrix_NxN::identity();
 
             // Find largest pivot column j among rows j..3
             for uint::range(0, 4) |j| {
@@ -868,7 +817,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&Mat4::identity())
+        self.default_eq(&NumericMatrix_NxN::identity())
     }
     
     #[inline(always)]
@@ -912,7 +861,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&Mat4::identity())
+        !self.default_eq(&NumericMatrix_NxN::identity())
     }
 
     #[inline(always)]
