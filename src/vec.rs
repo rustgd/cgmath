@@ -10,23 +10,32 @@ use funs::exp::Exp;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 
-
+///
+/// The base vector trait
+///
 pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {
+    /// Construct the vector from a single value, copying it to each component
     static pure fn from_value(value: T) -> self;
 }
 
+// /// A 2-dimensional vector
 // pub trait Vector2<T>: Vector<T> {
 //     static pure fn new(x: T, y: T) -> self;
 // }
 
+// /// A 3-dimensional vector
 // pub trait Vector3<T>: Vector<T> {
 //     static pure fn new(x: T, y: T, z: T) -> self;
 // }
 
+// /// A 4-dimensional vector
 // pub trait Vector4<T>: Vector<T> {
 //     static pure fn new(x: T, y: T, z: T, w: T) -> self;
 // }
 
+///
+/// A vector with numeric components
+///
 pub trait NumericVector<T>: Vector<T>, Neg<self>{
     static pure fn identity() -> self;
     static pure fn zero() -> self;
@@ -40,11 +49,13 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn dot(other: &self) -> T;
 }
 
+// /// A 2-dimensional vector with numeric components
 // pub trait NumericVector2<T>: Vector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 // }
 
+/// A 3-dimensional vector with numeric components
 pub trait NumericVector3<T>: Vector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
@@ -52,6 +63,7 @@ pub trait NumericVector3<T>: Vector<T> {
     pure fn cross(other: &self) -> self;
 }
 
+// /// A 4-dimensional vector with numeric components
 // pub trait NumericVector4<T>: Vector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
@@ -59,6 +71,9 @@ pub trait NumericVector3<T>: Vector<T> {
 //     static pure fn unit_w() -> self;
 // }
 
+///
+/// A vector with geometric properties
+///
 pub trait GeometricVector<T>: NumericVector<T> {
     pure fn length2() -> T;
     pure fn length() -> T;

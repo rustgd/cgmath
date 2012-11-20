@@ -13,7 +13,9 @@ use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 
-
+///
+/// The base Matrix trait
+///
 pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
@@ -24,6 +26,9 @@ pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn row(i: uint) -> Row;
 }
 
+///
+/// A matrix with numeric elements
+///
 pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
     static pure fn zero() -> self;
     
@@ -33,6 +38,9 @@ pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
     pure fn sub_m(other: &self) -> self;
 }
 
+///
+/// A square matrix with numeric elements
+///
 pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     static pure fn identity() -> self;
     
@@ -50,15 +58,18 @@ pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     pure fn is_invertible() -> bool;
 }
 
+/// A 2 x 2 square matrix with numeric elements
 pub trait NumericMatrix2x2<T>: NumericMatrix_NxN<T, Mat2<T>> {
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
 }
 
+/// A 3 x 3 square matrix with numeric elements
 pub trait NumericMatrix3x3<T>: NumericMatrix_NxN<T, Mat3<T>> {
     pure fn to_Mat4() -> Mat4<T>;
 }
 
+/// A 4 x 4 square matrix with numeric elements
 pub trait NumericMatrix4x4<T>: NumericMatrix_NxN<T, Mat4<T>> {
     
 }

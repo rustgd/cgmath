@@ -15,9 +15,9 @@ use num::default_eq::DefaultEq;
 use vec::Vec3;
 
 
-//
-//  Quaternion
-//
+///
+/// The base quaternion trait
+///
 pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
     static pure fn identity() -> self;
     static pure fn zero() -> self;
