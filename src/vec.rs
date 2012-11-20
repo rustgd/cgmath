@@ -14,6 +14,9 @@ use num::default_eq::DefaultEq;
 pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {}
 
 pub trait NumericVector<T>: Vector<T>, Neg<self>{
+    static pure fn identity() -> self;
+    static pure fn zero() -> self;
+    
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -115,7 +118,19 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     }
 }
     
-pub impl<T:Copy Num> Vec2<T>: NumericVector<T> {
+pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
+    #[inline(always)]
+    static pure fn identity() -> Vec2<T> {
+        Vec2::new(NumCast::one(),
+                  NumCast::one())
+    }
+    
+    #[inline(always)]
+    static pure fn zero() -> Vec2<T> {
+        Vec2::new(NumCast::zero(),
+                  NumCast::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Vec2<T> {
         Vec2::new(-self[0], -self[1])
@@ -297,7 +312,21 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     }
 }
 
-pub impl<T:Copy Num> Vec3<T>: NumericVector<T> {
+pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
+    #[inline(always)]
+    static pure fn identity() -> Vec3<T> {
+        Vec3::new(NumCast::one(),
+                  NumCast::one(),
+                  NumCast::one())
+    }
+    
+    #[inline(always)]
+    static pure fn zero() -> Vec3<T> {
+        Vec3::new(NumCast::zero(),
+                  NumCast::zero(),
+                  NumCast::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Vec3<T> {
         Vec3::new(-self[0], -self[1], -self[2])
@@ -483,7 +512,23 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     }
 }
 
-pub impl<T:Copy Num> Vec4<T>: NumericVector<T> {
+pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
+    #[inline(always)]
+    static pure fn identity() -> Vec4<T> {
+        Vec4::new(NumCast::one(),
+                  NumCast::one(),
+                  NumCast::one(),
+                  NumCast::one())
+    }
+    
+    #[inline(always)]
+    static pure fn zero() -> Vec4<T> {
+        Vec4::new(NumCast::zero(),
+                  NumCast::zero(),
+                  NumCast::zero(),
+                  NumCast::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Vec4<T> {
         Vec4::new(-self[0], -self[1], -self[2], -self[3])

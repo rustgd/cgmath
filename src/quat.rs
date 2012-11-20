@@ -19,6 +19,9 @@ use vec::Vec3;
 //  Quaternion
 //
 pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
+    static pure fn identity() -> self;
+    static pure fn zero() -> self;
+    
     pure fn mul_t(value: T) -> self;
     pure fn div_t(value: T) -> self;
     
@@ -85,6 +88,22 @@ pub mod Quat {
 }
 
 pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> {
+    #[inline(always)]
+    static pure fn identity() -> Quat<T> {
+        Quat::new(NumCast::one(),
+                  NumCast::one(),
+                  NumCast::one(),
+                  NumCast::one())
+    }
+    
+    #[inline(always)]
+    static pure fn zero() -> Quat<T> {
+        Quat::new(NumCast::zero(),
+                  NumCast::zero(),
+                  NumCast::zero(),
+                  NumCast::zero())
+    }
+    
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     

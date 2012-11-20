@@ -11,7 +11,7 @@ use funs::exp::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};
-use vec::{Vec2, Vec3, Vec4};
+use vec::{NumericVector, Vec2, Vec3, Vec4};
 
 
 pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
@@ -25,6 +25,8 @@ pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
 }
 
 pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
+    static pure fn zero() -> self;
+    
     pure fn mul_t(value: T) -> self;
     pure fn mul_v(other: &Col) -> Col;
     pure fn add_m(other: &self) -> self;
@@ -32,6 +34,8 @@ pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
 }
 
 pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
+    static pure fn identity() -> self;
+    
     pure fn mul_m(other: &self) -> self;
     
     pure fn det() -> T;
@@ -146,7 +150,13 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
+    #[inline(always)]
+    static pure fn zero() -> Mat2<T> {
+        Mat2::from_cols(NumericVector::zero(),
+                        NumericVector::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Mat2<T> {
         Mat2::from_cols(-self[0], -self[1])
@@ -178,6 +188,12 @@ pub impl<T:Copy Num> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
 }
 
 pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
+    #[inline(always)]
+    static pure fn identity() -> Mat2<T> {
+        Mat2::new(NumCast::one() , NumCast::zero(),
+                  NumCast::zero(), NumCast::one())
+    }
+    
     #[inline(always)]
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
@@ -379,7 +395,14 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
+    #[inline(always)]
+    static pure fn zero() -> Mat3<T> {
+        Mat3::from_cols(NumericVector::zero(),
+                        NumericVector::zero(),
+                        NumericVector::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Mat3<T> {
         Mat3::from_cols(-self[0], -self[1], -self[2])
@@ -415,6 +438,13 @@ pub impl<T:Copy Num> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
 }
 
 pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
+    #[inline(always)]
+    static pure fn identity() -> Mat3<T> {
+        Mat3::new(NumCast::one() , NumCast::zero(), NumCast::zero(),
+                  NumCast::zero(), NumCast::one() , NumCast::zero(),
+                  NumCast::zero(), NumCast::zero(), NumCast::one())
+    }
+    
     #[inline(always)]
     pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
         Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
@@ -690,7 +720,15 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
+    #[inline(always)]
+    static pure fn zero() -> Mat4<T> {
+        Mat4::from_cols(NumericVector::zero(),
+                        NumericVector::zero(),
+                        NumericVector::zero(),
+                        NumericVector::zero())
+    }
+    
     #[inline(always)]
     pure fn neg() -> Mat4<T> {
         Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
@@ -730,6 +768,14 @@ pub impl<T:Copy Num> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
 }
 
 pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
+    #[inline(always)]
+    static pure fn identity() -> Mat4<T> {
+        Mat4::new(NumCast::one() , NumCast::zero(), NumCast::zero(), NumCast::zero(),
+                  NumCast::zero(), NumCast::one() , NumCast::zero(), NumCast::zero(),
+                  NumCast::zero(), NumCast::zero(), NumCast::one() , NumCast::zero(),
+                  NumCast::zero(), NumCast::zero(), NumCast::zero(), NumCast::one())
+    }
+    
     #[inline(always)]
     pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
         // Surprisingly when building with optimisation turned on this is actually
