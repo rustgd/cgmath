@@ -57,37 +57,19 @@ pub trait ToQuat<T> {
 
 pub struct Quat<T> { w: T, x: T, y: T, z: T }
 
-pub mod Quat {
+pub impl<T:Copy> Quat<T> {
     #[inline(always)]
-    pub pure fn new<T>(w: T, x: T, y: T, z: T) -> Quat<T> {
+    static pure fn new(w: T, x: T, y: T, z: T) -> Quat<T> {
         Quat { w: move w, x: move x, y: move y, z: move z }
     }
     
     #[inline(always)]
-    pub pure fn from_sv<T:Copy>(s: T, v: Vec3<T>) -> Quat<T> {
-        Quat::new(s, v.x, v.y, v.z)
-    }
-
-    #[inline(always)]
-    pub pure fn from_axis_angle<T:Copy Num NumCast Trig AngleConv>(axis: Vec3<T>, theta: T) -> Quat<T> {
-        let half = radians(&theta) / cast(2);
-        from_sv(cos(&half), axis.mul_t(sin(&half)))
-    }
-    
-    #[inline(always)]
-    pub pure fn zero<T:Copy NumCast>() -> Quat<T> {
-        let _0 = cast(0);
-        Quat::new(_0, _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    pub pure fn identity<T:Copy NumCast>() -> Quat<T> {
-        let _0 = cast(0);
-        Quat::new(cast(1), _0, _0, _0)
+    static pure fn from_sv(s: T, v: &Vec3<T>) -> Quat<T> {
+        Quat::new(move s, v.x, v.y, v.z)
     }
 }
 
-pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(NumCast::one(),
@@ -242,6 +224,12 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord FuzzyEq> Quat<T>: Quaternion<T> 
                      .normalize();
         
         self.mul_t(cos(&theta)).add_q(&q.mul_t(sin(&theta)))
+    }
+
+    #[inline(always)]
+    pub pure fn from_axis_angle(axis: Vec3<T>, theta: T) -> Quat<T> {
+        let half = radians(&theta) / cast(2);
+        Quat::from_sv(cos(&half), &axis.mul_t(sin(&half)))
     }
     
     #[inline(always)]
