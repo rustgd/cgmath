@@ -852,7 +852,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, V
 
             // Gauss Jordan Elimination with partial pivoting
 
-            let mut a = self.transpose();
+            let mut a = copy self;
             let mut inv: Mat4<T> = NumericMatrixNxN::identity();
 
             // Find largest pivot column j among rows j..3
@@ -895,7 +895,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, V
                     }
                 }
             }
-            Some(inv.transpose())
+            Some(inv)
         }
     }
     
