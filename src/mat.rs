@@ -98,6 +98,7 @@ pub trait NumericMatrixNxN<T, ColRow>: MatrixNxN<T, ColRow>,
     static pure fn identity() -> self;
     
     pure fn mul_m(other: &self) -> self;
+    pure fn dot(other: &self) -> T;
     
     pure fn det() -> T;
     pure fn trace() -> T;
@@ -261,6 +262,10 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
+    }
+
+    pure fn dot(other: &Mat2<T>) -> T {
+        other.transpose().mul_m(&self).trace()
     }
     
     pure fn det() -> T {
@@ -509,6 +514,10 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
     }
     
+    pure fn dot(other: &Mat3<T>) -> T {
+        other.transpose().mul_m(&self).trace()
+    }
+
     pure fn det() -> T {
         self.col(0).dot(&self.col(1).cross(&self.col(2)))
     }
@@ -837,6 +846,10 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, V
                   self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
     }
     
+    pure fn dot(other: &Mat4<T>) -> T {
+        other.transpose().mul_m(&self).trace()
+    }
+
     pure fn det() -> T {
         self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
                              self[1][2], self[2][2], self[3][2],

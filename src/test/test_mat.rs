@@ -47,6 +47,7 @@ fn test_Mat2() {
                                     -1f, -1f);
     assert a.mul_m(&b) == Mat2::new(10.0, 22.0,
                                     13.0, 29.0);
+    assert a.dot(&b) == 40f; 
     
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
@@ -157,6 +158,7 @@ fn test_Mat3() {
     assert a.mul_m(&b) == Mat3::new(36f,  81f, 126f,
                                     42f,  96f, 150f,
                                     48f, 111f, 174f);
+    assert a.dot(&b) == 330f;
     
     assert a.transpose() == Mat3::new(1f, 2f, 3f,
                                       4f, 5f, 6f,
@@ -297,6 +299,7 @@ fn test_Mat4() {
                                     110f, 254f, 398f, 542f,
                                     120f, 280f, 440f, 600f,
                                     130f, 306f, 482f, 658f);
+    assert a.dot(&b) == 1632f;
     
     assert a.transpose() == Mat4::new( 1f,  2f,  3f,  4f,
                                        5f,  6f,  7f,  8f,
