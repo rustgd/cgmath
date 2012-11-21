@@ -55,17 +55,17 @@ pub trait ToQuat<T> {
 
 
 
-pub struct Quat<T> { w: T, x: T, y: T, z: T }
+pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy> Quat<T> {
+pub impl<T> Quat<T> {
     #[inline(always)]
-    static pure fn new(w: T, x: T, y: T, z: T) -> Quat<T> {
-        Quat { w: move w, x: move x, y: move y, z: move z }
+    static pure fn new(s: T, vx: T, vy: T, vz: T) -> Quat<T> {
+        Quat::from_sv(move s, move Vec3::new(move vx, move vy, move vz))
     }
     
     #[inline(always)]
-    static pure fn from_sv(s: T, v: &Vec3<T>) -> Quat<T> {
-        Quat::new(move s, v.x, v.y, v.z)
+    static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
+        Quat { s: move s, v: move v }
     }
 }
 
@@ -96,7 +96,7 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     
     #[inline(always)]
     pure fn neg() -> Quat<T> {
-        Quat::new(-self[0], -self[1], -self[2], -self[3])
+        Quat::from_sv(-self.s, -self.v)
     }
     
     #[inline(always)]
@@ -117,9 +117,8 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
 
     #[inline(always)]
     pure fn mul_v(vec: &Vec3<T>) -> Vec3<T>  {
-        let base = Vec3{ x:self.x, y:self.y, z:self.z };
-        let tmp = base.cross(vec).add_v(&vec.mul_t(self.w));
-        base.cross(&tmp).mul_t(cast(2)).add_v(vec)
+        let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
+        self.v.cross(&tmp).mul_t(cast(2)).add_v(vec)
     }
     
     #[inline(always)]
@@ -140,38 +139,30 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     
     #[inline(always)]
     pure fn mul_q(other: &Quat<T>) -> Quat<T> {
-        Quat::new(self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z,
-                  self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y, 
-                  self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z, 
-                  self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x) 
+        Quat::new(self.s * other.s   - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
+                  self.s * other.v.x + self.v.x * other.s   + self.v.y * other.v.z - self.v.z * other.v.y, 
+                  self.s * other.v.y + self.v.y * other.s   + self.v.z * other.v.x - self.v.x * other.v.z, 
+                  self.s * other.v.z + self.v.z * other.s   + self.v.x * other.v.y - self.v.y * other.v.x) 
     }
     
     #[inline(always)]
     pure fn dot(other: &Quat<T>) -> T {
-        self.w * other.w +
-        self.x * other.x +
-        self.y * other.y +
-        self.z * other.z
+        self.s * other.s + self.v.dot(&other.v)
     }
     
     #[inline(always)]
     pure fn conjugate() -> Quat<T> {
-        Quat::new(self.w, -self.x, -self.y, -self.z)
+        Quat::from_sv(self.s, -self.v)
     }
     
     #[inline(always)]
     pure fn inverse() -> Quat<T> {
-        let mut n: T = cast(1);
-        n /= self.length2();
-        self.conjugate().mul_t(n)
+        self.conjugate().div_t(self.length2())
     }
     
     #[inline(always)]
     pure fn length2() -> T {
-        self.w * self.w +
-        self.x * self.x +
-        self.y * self.y +
-        self.z * self.z
+        self.s * self.s + self.v.length2()
     }
     
     #[inline(always)]
@@ -229,32 +220,32 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     #[inline(always)]
     pub pure fn from_axis_angle(axis: Vec3<T>, theta: T) -> Quat<T> {
         let half = radians(&theta) / cast(2);
-        Quat::from_sv(cos(&half), &axis.mul_t(sin(&half)))
+        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
     }
     
     #[inline(always)]
     pure fn to_Mat3() -> Mat3<T> {
-        let x2 = self.x + self.x;
-        let y2 = self.y + self.y;
-        let z2 = self.z + self.z;
+        let x2 = self.v.x + self.v.x;
+        let y2 = self.v.y + self.v.y;
+        let z2 = self.v.z + self.v.z;
         
-        let xx2 = x2 * self.x;
-        let xy2 = x2 * self.y;
-        let xz2 = x2 * self.z;
+        let xx2 = x2 * self.v.x;
+        let xy2 = x2 * self.v.y;
+        let xz2 = x2 * self.v.z;
         
-        let yy2 = y2 * self.y;
-        let yz2 = y2 * self.z;
-        let zz2 = z2 * self.z;
+        let yy2 = y2 * self.v.y;
+        let yz2 = y2 * self.v.z;
+        let zz2 = z2 * self.v.z;
         
-        let wy2 = y2 * self.w;
-        let wz2 = z2 * self.w;
-        let wx2 = x2 * self.w;
+        let sy2 = y2 * self.s;
+        let sz2 = z2 * self.s;
+        let sx2 = x2 * self.s;
         
         let _1: T = cast(1);
         
-        Mat3::new(_1 - yy2 - zz2,      xy2 - wz2,      xz2 + wy2,
-                       xy2 + wz2, _1 - xx2 - zz2,      yz2 - wx2,
-                       xz2 - wy2,      yz2 + wx2, _1 - xx2 - yy2)
+        Mat3::new(_1 - yy2 - zz2,      xy2 - sz2,      xz2 + sy2,
+                       xy2 + sz2, _1 - xx2 - zz2,      yz2 - sx2,
+                       xz2 - sy2,      yz2 + sx2, _1 - xx2 - yy2)
     }
     
     #[inline(always)]
