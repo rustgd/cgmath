@@ -31,6 +31,7 @@ fn test_Mat2() {
     assert a.col(1) == Vec2::new(2f, 4f);
 
     assert a.det() == -2f;
+    assert a.trace() == 5f;
     
     assert a.neg() == Mat2::new(-1f, -3f,
                                 -2f, -4f);
@@ -135,6 +136,7 @@ fn test_Mat3() {
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
 
     assert a.det() == 0f;
+    assert a.trace() == 15f;
     
     assert a.neg() == Mat3::new(-1f, -4f, -7f,
                                 -2f, -5f, -8f,
@@ -269,6 +271,7 @@ fn test_Mat4() {
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
 
     assert a.det() == 0f;
+    assert a.trace() == 34f;
     
     assert a.neg() == Mat4::new(-1f, -5f,  -9f, -13f,
                                 -2f, -6f, -10f, -14f,

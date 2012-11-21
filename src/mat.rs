@@ -100,6 +100,7 @@ pub trait NumericMatrixNxN<T, ColRow>: MatrixNxN<T, ColRow>,
     pure fn mul_m(other: &self) -> self;
     
     pure fn det() -> T;
+    pure fn trace() -> T;
     
     pure fn invert() -> Option<self>;
     pure fn transpose() -> self;
@@ -264,6 +265,10 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     
     pure fn det() -> T {
        self[0][0] * self[1][1] - self[1][0] * self[0][1]
+    }
+
+    pure fn trace() -> T {
+        self[0][0] + self[1][1]
     }
 
     #[inline(always)]
@@ -508,6 +513,10 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
         self.col(0).dot(&self.col(1).cross(&self.col(2)))
     }
 
+    pure fn trace() -> T {
+        self[0][0] + self[1][1] + self[2][2]
+    }
+
     // #[inline(always)]
     pure fn invert() -> Option<Mat3<T>> {
         let d = self.det();
@@ -566,14 +575,14 @@ pub impl<T:Copy NumCast> Mat3<T>: NumericMatrix3x3<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast Ord> Mat3<T>: ToQuat<T> {
+pub impl<T:Copy Num NumCast Ord DefaultEq> Mat3<T>: ToQuat<T> {
     pure fn to_Quat() -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         
         let mut s: float;
         let w: float, x: float, y: float, z: float;
-        let trace: float = cast(self[0][0] + self[1][1] + self[2][2]);
+        let trace: float = cast(self.trace());
         
         if trace >= cast(0) {
             s = (trace + 1f).sqrt();
@@ -841,6 +850,10 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, V
         self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
                              self[0][2], self[1][2], self[2][2],
                              self[0][3], self[1][3], self[2][3]).det()
+    }
+
+    pure fn trace() -> T {
+        self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
     pure fn invert() -> Option<Mat4<T>> {
