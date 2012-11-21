@@ -18,20 +18,20 @@ pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {
     static pure fn from_value(value: T) -> self;
 }
 
-// /// A 2-dimensional vector
-// pub trait Vector2<T>: Vector<T> {
+/// A 2-dimensional vector
+pub trait Vector2<T>: Vector<T> {
 //     static pure fn new(x: T, y: T) -> self;
-// }
+}
 
-// /// A 3-dimensional vector
-// pub trait Vector3<T>: Vector<T> {
+/// A 3-dimensional vector
+pub trait Vector3<T>: Vector<T> {
 //     static pure fn new(x: T, y: T, z: T) -> self;
-// }
+}
 
-// /// A 4-dimensional vector
-// pub trait Vector4<T>: Vector<T> {
+/// A 4-dimensional vector
+pub trait Vector4<T>: Vector<T> {
 //     static pure fn new(x: T, y: T, z: T, w: T) -> self;
-// }
+}
 
 ///
 /// A vector with numeric components
@@ -49,27 +49,27 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn dot(other: &self) -> T;
 }
 
-// /// A 2-dimensional vector with numeric components
-// pub trait NumericVector2<T>: Vector<T> {
+/// A 2-dimensional vector with numeric components
+pub trait NumericVector2<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
-// }
+}
 
 /// A 3-dimensional vector with numeric components
-pub trait NumericVector3<T>: Vector<T> {
+pub trait NumericVector3<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 //     static pure fn unit_z() -> self;
     pure fn cross(other: &self) -> self;
 }
 
-// /// A 4-dimensional vector with numeric components
-// pub trait NumericVector4<T>: Vector<T> {
+/// A 4-dimensional vector with numeric components
+pub trait NumericVector4<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 //     static pure fn unit_z() -> self;
 //     static pure fn unit_w() -> self;
-// }
+}
 
 ///
 /// A vector with geometric properties

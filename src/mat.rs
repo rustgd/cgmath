@@ -26,47 +26,47 @@ pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn row(i: uint) -> Row;
 }
 
-// /// A 2 x N matrix
-// pub trait Matrix2<T, Col, Row>: Matrix<T, Col, Row> {
+/// A 2 x N matrix
+pub trait Matrix2<T, Col, Row>: Matrix<T, Col, Row> {
 //     /// Construct the matrix from two column vectors
 //     static pure fn from_cols(c0: Col, c1: Col) -> self;
-// }
+}
 
-// /// A 2 x 2 square matrix
-// pub trait Matrix2x2<T, ColRow>: Matrix2<T, ColRow> {
+/// A 3 x N matrix
+pub trait Matrix3<T, Col, Row>: Matrix<T, Col, Row> {
+//     /// Construct the matrix from three column vectors
+//     static pure fn from_cols(c0: Col, c1: Col, c2: Col) -> self;
+}
+
+/// A 4 x N matrix
+pub trait Matrix4<T, Col, Row>: Matrix<T, Col, Row> {
+//     /// Construct the matrix from four column vectors
+//     static pure fn from_cols(c0: Col, c1: Col, c2: Col, c3: Col) -> self;
+}
+
+/// A 2 x 2 square matrix
+pub trait Matrix2x2<T, ColRow>: Matrix2<T, ColRow, ColRow> {
 //     /// Construct the matrix from a column major series of elements
 //     static pure fn new(c0r0: T, c0r1: T,
 //                        c1r0: T, c1r1: T) -> self;
-// }
+}
 
-// /// A 3 x N matrix
-// pub trait Matrix3<T, Col, Row>: Matrix<T, Col, Row> {
-//     /// Construct the matrix from three column vectors
-//     static pure fn from_cols(c0: Col, c1: Col, c2: Col) -> self;
-// }
-
-// /// A 3 x 3 square matrix
-// pub trait Matrix3x3<T, ColRow>: Matrix3<T, ColRow> {
+/// A 3 x 3 square matrix
+pub trait Matrix3x3<T, ColRow>: Matrix3<T, ColRow, ColRow> {
 //     /// Construct the matrix from a column major series of elements
 //     static pure fn new(c0r0: T, c0r1: T, c0r2: T,
 //                        c1r0: T, c1r1: T, c1r2: T,
 //                        c2r0: T, c2r1: T, c2r2: T) -> self;
-// }
+}
 
-// /// A 4 x N matrix
-// pub trait Matrix4<T, Col, Row>: Matrix<T, Col, Row> {
-//     /// Construct the matrix from four column vectors
-//     static pure fn from_cols(c0: Col, c1: Col, c2: Col, c3: Col) -> self;
-// }
-
-// /// A 4 x 4 square matrix
-// pub trait Matrix4x4<T, ColRow>: Matrix4<T, ColRow, ColRow> {
+/// A 4 x 4 square matrix
+pub trait Matrix4x4<T, ColRow>: Matrix4<T, ColRow, ColRow> {
 //     /// Construct the matrix from a column major series of elements
 //     static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
 //                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
 //                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
 //                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> self;
-// }
+}
 
 ///
 /// A matrix with numeric elements
