@@ -1,11 +1,10 @@
 ///
-/// This module contains various type aliases and static function wrappers to
-/// make working with OpenGL cleaner and safer than working with the lmath types
-/// directly. This is especially important when working with type-sensitive OpenGL
-/// functions (such as `glVertexAttribPointer` and `glUniformMatrix4fv`) where a
-/// simple mistake such writing `Vec3::new(1, 2, 3)` or `Vec3::new(1f, 2f, 3f)`
-/// as opposed to `Vec3::new(1f32, 2f32, 3f32)` could cause you an afternoon of
-/// pain ("Where's my triangle!" he shouts in fustration).
+/// This module contains various type aliases and method wrappers to make working
+/// with OpenGL cleaner and safer than working with the lmath types directly.
+/// This is especially important when working with type-sensitive OpenGL functions
+/// such as `glVertexAttribPointer` and `glUniformMatrix4fv`) where a simple mistake
+/// such writing `Vec3::new(1, 2, 3)` or `Vec3::new(1f, 2f, 3f)` as opposed to
+/// `Vec3::new(1f32, 2f32, 3f32)` could cause you an afternoon of pain.
 ///
 /// To give you an example of how using the wrapper methods can clean up your
 /// code and make debugging far easier, instead of writing:
@@ -14,7 +13,7 @@
 /// let v: Mat4<f64> = NumericMatrixNxN::identity();
 /// ~~~
 ///
-/// `lmath::gltypes` allows you to write:
+/// you can write:
 ///
 /// ~~~
 /// let v = dmat4::identity();
