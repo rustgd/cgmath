@@ -7,13 +7,26 @@
 /// as opposed to `Vec3::new(1f32, 2f32, 3f32)` could cause you an afternoon of
 /// pain ("Where's my triangle!" he shouts in fustration).
 ///
+/// To give you an example of how using the wrapper methods can clean up your
+/// code and make debugging far easier, instead of writing:
+///
+/// ~~~
+/// let v: Mat4<f64> = NumericMatrix_NxN::identity();
+/// ~~~
+///
+/// `lmath::gltypes` allows you to write:
+///
+/// ~~~
+/// let v = dmat4::identity();
+/// ~~~
+///
+/// Isn't that a *huge* step forward in terms of clarity and type safety?
+///
 
-pub use mat::{Mat2, Mat3, Mat4};
-pub use vec::{Vec2, Vec3, Vec4};
-pub use quat::Quat;
+use mat::{NumericMatrix, NumericMatrix_NxN, Mat2, Mat3, Mat4};
+use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
+use quat::{/*Quaternion, */Quat};
 
-use vec::{Vector, NumericVector};
-use mat::{NumericMatrix, NumericMatrix_NxN};
 
 // Vector aliases
 
@@ -38,12 +51,7 @@ pub type uvec3 = Vec3<u32>;             /// a three-component unsigned integer v
 pub type uvec4 = Vec4<u32>;             /// a four-component unsigned integer vector
 
 
-//
-// Wrappers to make working with static functions cleaner
-//
-// For example:   let v = dvec::identity();
-// as opposed to: let v: dvec4 = NumericVector::identity();
-//
+// Vector method wrappers
 
 pub impl vec2 {
     #[inline(always)] static pure fn new(x: f32, y: f32) -> vec2 { Vec2::new(x, y) }
@@ -184,12 +192,7 @@ pub type dmat3x3 = Mat3<f64>;           /// same as a `dmat3`
 pub type dmat4x4 = Mat4<f64>;           /// same as a `dmat4`
 
 
-//
-// Wrappers to make working with static functions cleaner
-//
-// For example:   let m = dmat::identity();
-// as opposed to: let m: dmat4 = NumericMatrix_NxN::identity();
-//
+// Matrix method wrappers
 
 pub impl mat2 {
     #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
