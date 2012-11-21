@@ -83,7 +83,7 @@ pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
 ///
 /// A square matrix with numeric elements
 ///
-pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
+pub trait NumericMatrixNxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     static pure fn identity() -> self;
     
     pure fn mul_m(other: &self) -> self;
@@ -94,25 +94,24 @@ pub trait NumericMatrix_NxN<T, ColRow>: NumericMatrix<T, ColRow, ColRow> {
     pure fn transpose() -> self;
     
     pure fn is_identity() -> bool;
-    pure fn is_symmetric() -> bool;
     pure fn is_diagonal() -> bool;
     pure fn is_rotated() -> bool;
     pure fn is_invertible() -> bool;
 }
 
 /// A 2 x 2 square matrix with numeric elements
-pub trait NumericMatrix2x2<T>: NumericMatrix_NxN<T, Mat2<T>> {
+pub trait NumericMatrix2x2<T>: NumericMatrixNxN<T, Mat2<T>> {
     pure fn to_Mat3() -> Mat3<T>;
     pure fn to_Mat4() -> Mat4<T>;
 }
 
 /// A 3 x 3 square matrix with numeric elements
-pub trait NumericMatrix3x3<T>: NumericMatrix_NxN<T, Mat3<T>> {
+pub trait NumericMatrix3x3<T>: NumericMatrixNxN<T, Mat3<T>> {
     pure fn to_Mat4() -> Mat4<T>;
 }
 
 /// A 4 x 4 square matrix with numeric elements
-pub trait NumericMatrix4x4<T>: NumericMatrix_NxN<T, Mat4<T>> {
+pub trait NumericMatrix4x4<T>: NumericMatrixNxN<T, Mat4<T>> {
     
 }
 
@@ -224,7 +223,7 @@ pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
         Mat2::new(NumCast::one() , NumCast::zero(),
@@ -238,7 +237,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     }
     
     pure fn det() -> T {
-       self[0][0]*self[1][1] - self[1][0]*self[0][1]
+       self[0][0] * self[1][1] - self[1][0] * self[0][1]
     }
 
     #[inline(always)]
@@ -248,8 +247,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
         if d.default_eq(&_0) {
             None
         } else {
-            Some(Mat2::new(self[1][1]/d, -self[0][1]/d,
-                           -self[1][0]/d, self[0][0]/d))
+            Some(Mat2::new( self[1][1]/d, -self[0][1]/d,
+                           -self[1][0]/d,  self[0][0]/d))
         }
     }
     
@@ -261,7 +260,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&NumericMatrix_NxN::identity())
+        self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
@@ -279,7 +278,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix_NxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&NumericMatrix_NxN::identity())
+        !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]
@@ -456,7 +455,7 @@ pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
         Mat3::new(NumCast::one() , NumCast::zero(), NumCast::zero(),
@@ -498,7 +497,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&NumericMatrix_NxN::identity())
+        self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
@@ -528,7 +527,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix_NxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&NumericMatrix_NxN::identity())
+        !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]
@@ -766,7 +765,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, Vec4<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
         Mat4::new(NumCast::one() , NumCast::zero(), NumCast::zero(), NumCast::zero(),
@@ -811,7 +810,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
             // Gauss Jordan Elimination with partial pivoting
 
             let mut a = self.transpose();
-            let mut inv: Mat4<T> = NumericMatrix_NxN::identity();
+            let mut inv: Mat4<T> = NumericMatrixNxN::identity();
 
             // Find largest pivot column j among rows j..3
             for uint::range(0, 4) |j| {
@@ -867,7 +866,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
     
     #[inline(always)]
     pure fn is_identity() -> bool {
-        self.default_eq(&NumericMatrix_NxN::identity())
+        self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
@@ -911,7 +910,7 @@ pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrix_NxN<T, 
     
     #[inline(always)]
     pure fn is_rotated() -> bool {
-        !self.default_eq(&NumericMatrix_NxN::identity())
+        !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]

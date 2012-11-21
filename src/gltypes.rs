@@ -11,7 +11,7 @@
 /// code and make debugging far easier, instead of writing:
 ///
 /// ~~~
-/// let v: Mat4<f64> = NumericMatrix_NxN::identity();
+/// let v: Mat4<f64> = NumericMatrixNxN::identity();
 /// ~~~
 ///
 /// `lmath::gltypes` allows you to write:
@@ -20,10 +20,8 @@
 /// let v = dmat4::identity();
 /// ~~~
 ///
-/// Isn't that a *huge* step forward in terms of clarity and type safety?
-///
 
-use mat::{NumericMatrix, NumericMatrix_NxN, Mat2, Mat3, Mat4};
+use mat::{NumericMatrix, NumericMatrixNxN, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
 
@@ -226,7 +224,7 @@ pub impl mat2x2 {
         -> mat2x2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
         -> mat2x2 { Mat2::from_cols(move c0, move c1) }
-    #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
 }
 
@@ -235,7 +233,7 @@ pub impl mat3x3 {
         -> mat3x3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] static pure fn from_cols(c0: vec3, c1: vec3, c2: vec3)
         -> mat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
-    #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
 }
 
@@ -244,7 +242,7 @@ pub impl mat4x4 {
         -> mat4x4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
-    #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
 }
 
@@ -281,7 +279,7 @@ pub impl dmat2x2 {
         -> dmat2x2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2x2 { Mat2::from_cols(move c0, move c1) }
-    #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
 }
 
@@ -290,7 +288,7 @@ pub impl dmat3x3 {
         -> dmat3x3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] static pure fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)
         -> dmat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
-    #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
 }
 
@@ -299,7 +297,7 @@ pub impl dmat4x4 {
         -> dmat4x4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
         -> dmat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
-    #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrix_NxN::identity() }
+    #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
 }
 
