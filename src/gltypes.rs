@@ -196,6 +196,7 @@ pub impl mat2 {
         -> mat2 { mat2x2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
         -> mat2 { mat2x2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat2 { mat2x2::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat2 { mat2x2::identity() }
     #[inline(always)] static pure fn zero() -> mat2 { mat2x2::zero() }
 }
@@ -205,6 +206,7 @@ pub impl mat3 {
         -> mat3 { mat3x3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] static pure fn from_cols(c0: vec3, c1: vec3, c2: vec3)
         -> mat3 { mat3x3::from_cols(move c0, move c1, move c2) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat3 { mat3x3::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat3 { mat3x3::identity() }
     #[inline(always)] static pure fn zero() -> mat3 { mat3x3::zero() }
 }
@@ -214,6 +216,7 @@ pub impl mat4 {
         -> mat4 { mat4x4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4 { mat4x4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat4 { mat4x4::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat4 { mat4x4::identity() }
     #[inline(always)] static pure fn zero() -> mat4 { mat4x4::zero() }
 }
@@ -223,6 +226,7 @@ pub impl mat2x2 {
         -> mat2x2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
         -> mat2x2 { Mat2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat2x2 { Mat2::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
 }
@@ -232,6 +236,7 @@ pub impl mat3x3 {
         -> mat3x3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] static pure fn from_cols(c0: vec3, c1: vec3, c2: vec3)
         -> mat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat3x3 { Mat3::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
 }
@@ -241,6 +246,7 @@ pub impl mat4x4 {
         -> mat4x4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat4x4 { Mat4::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
 }
@@ -251,6 +257,7 @@ pub impl dmat2 {
         -> dmat2 { dmat2x2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2 { dmat2x2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { dmat2x2::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat2 { dmat2x2::identity() }
     #[inline(always)] static pure fn zero() -> dmat2 { NumericMatrix::zero() }
 }
@@ -278,6 +285,7 @@ pub impl dmat2x2 {
         -> dmat2x2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2x2 { Mat2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat2x2 { Mat2::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
 }
@@ -287,6 +295,7 @@ pub impl dmat3x3 {
         -> dmat3x3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] static pure fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)
         -> dmat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat3x3 { Mat3::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
 }
@@ -296,6 +305,7 @@ pub impl dmat4x4 {
         -> dmat4x4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
         -> dmat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat4x4 { Mat4::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
 }
