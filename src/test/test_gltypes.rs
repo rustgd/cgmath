@@ -2,13 +2,19 @@ use gltypes::*;
 
 #[test]
 fn test_vec() {
-    assert vec2::zero()     == vec2::new(0f32, 0f32);
-    assert vec3::zero()     == vec3::new(0f32, 0f32, 0f32);
-    assert vec4::zero()     == vec4::new(0f32, 0f32, 0f32, 0f32);
     assert vec2::identity() == vec2::from_value(1f32);
     assert vec3::identity() == vec3::from_value(1f32);
     assert vec4::identity() == vec4::from_value(1f32);
+    assert vec2::identity() == vec2::new(1f32, 1f32);
+    assert vec3::identity() == vec3::new(1f32, 1f32, 1f32);
+    assert vec4::identity() == vec4::new(1f32, 1f32, 1f32, 1f32);
+    assert vec2::zero()     == vec2::new(0f32, 0f32);
+    assert vec3::zero()     == vec3::new(0f32, 0f32, 0f32);
+    assert vec4::zero()     == vec4::new(0f32, 0f32, 0f32, 0f32);
     
+    assert dvec2::identity() == dvec2::from_value(1f64);
+    assert dvec3::identity() == dvec3::from_value(1f64);
+    assert dvec4::identity() == dvec4::from_value(1f64);
     assert dvec2::identity() == dvec2::new(1f64, 1f64);
     assert dvec3::identity() == dvec3::new(1f64, 1f64, 1f64);
     assert dvec4::identity() == dvec4::new(1f64, 1f64, 1f64, 1f64);
@@ -16,6 +22,9 @@ fn test_vec() {
     assert dvec3::zero()     == dvec3::new(0f64, 0f64, 0f64);
     assert dvec4::zero()     == dvec4::new(0f64, 0f64, 0f64, 0f64);
     
+    assert ivec2::identity() == ivec2::from_value(1i32);
+    assert ivec3::identity() == ivec3::from_value(1i32);
+    assert ivec4::identity() == ivec4::from_value(1i32);
     assert ivec2::identity() == ivec2::new(1i32, 1i32);
     assert ivec2::identity() == ivec2::new(1i32, 1i32);
     assert ivec3::identity() == ivec3::new(1i32, 1i32, 1i32);
@@ -23,6 +32,9 @@ fn test_vec() {
     assert ivec2::zero()     == ivec2::new(0i32, 0i32);
     assert ivec3::zero()     == ivec3::new(0i32, 0i32, 0i32);
     assert ivec4::zero()     == ivec4::new(0i32, 0i32, 0i32, 0i32);
+    assert ivec2::identity() == ivec2::from_value(1);
+    assert ivec3::identity() == ivec3::from_value(1);
+    assert ivec4::identity() == ivec4::from_value(1);
     assert ivec2::identity() == ivec2::new(1, 1);
     assert ivec2::identity() == ivec2::new(1, 1);
     assert ivec3::identity() == ivec3::new(1, 1, 1);
@@ -31,6 +43,9 @@ fn test_vec() {
     assert ivec3::zero()     == ivec3::new(0, 0, 0);
     assert ivec4::zero()     == ivec4::new(0, 0, 0, 0);
     
+    assert uvec2::identity() == uvec2::from_value(1u32);
+    assert uvec3::identity() == uvec3::from_value(1u32);
+    assert uvec4::identity() == uvec4::from_value(1u32);
     assert uvec2::identity() == uvec2::new(1u32, 1u32);
     assert uvec2::identity() == uvec2::new(1u32, 1u32);
     assert uvec3::identity() == uvec3::new(1u32, 1u32, 1u32);
@@ -38,6 +53,9 @@ fn test_vec() {
     assert uvec2::zero()     == uvec2::new(0u32, 0u32);
     assert uvec3::zero()     == uvec3::new(0u32, 0u32, 0u32);
     assert uvec4::zero()     == uvec4::new(0u32, 0u32, 0u32, 0u32);
+    assert uvec2::identity() == uvec2::from_value(1);
+    assert uvec3::identity() == uvec3::from_value(1);
+    assert uvec4::identity() == uvec4::from_value(1);
     assert uvec2::identity() == uvec2::new(1, 1);
     assert uvec2::identity() == uvec2::new(1, 1);
     assert uvec3::identity() == uvec3::new(1, 1, 1);
