@@ -42,8 +42,8 @@ pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
     pure fn nlerp(other: &self, amount: T) -> self;
     pure fn slerp(other: &self, amount: T) -> self;
     
-    pure fn to_Mat3() -> Mat3<T>;
-    pure fn to_Mat4() -> Mat4<T>;
+    pure fn to_mat3() -> Mat3<T>;
+    pure fn to_mat4() -> Mat4<T>;
 }
 
 pub trait ToQuat<T> {
@@ -224,7 +224,7 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     }
     
     #[inline(always)]
-    pure fn to_Mat3() -> Mat3<T> {
+    pure fn to_mat3() -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
         let z2 = self.v.z + self.v.z;
@@ -249,8 +249,8 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     }
     
     #[inline(always)]
-    pure fn to_Mat4() -> Mat4<T> {
-        self.to_Mat3().to_Mat4()
+    pure fn to_mat4() -> Mat4<T> {
+        self.to_mat3().to_mat4()
     }
 }
 

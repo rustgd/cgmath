@@ -115,8 +115,8 @@ pub trait NumericMatrix2x2<T, ColRow2>: Matrix2x2<T, ColRow2>,
                                         NumericMatrixNxN<T, ColRow2> {
    // static pure fn from_value(value: T) -> self;
     
-    pure fn to_Mat3() -> Mat3<T>;
-    pure fn to_Mat4() -> Mat4<T>;
+    pure fn to_mat3() -> Mat3<T>;
+    pure fn to_mat4() -> Mat4<T>;
 }
 
 /// A 3 x 3 square matrix with numeric elements
@@ -124,7 +124,7 @@ pub trait NumericMatrix3x3<T, ColRow3>: Matrix3x3<T, ColRow3>,
                                         NumericMatrixNxN<T, ColRow3> {
    // static pure fn from_value(value: T) -> self;
     
-    pure fn to_Mat4() -> Mat4<T>;
+    pure fn to_mat4() -> Mat4<T>;
 }
 
 /// A 4 x 4 square matrix with numeric elements
@@ -310,12 +310,12 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
 
 pub impl<T:Copy NumCast> Mat2<T>: NumericMatrix2x2<T, Vec2<T>> {
     #[inline(always)]
-    pure fn to_Mat3() -> Mat3<T> {
+    pure fn to_mat3() -> Mat3<T> {
         Mat3::from_Mat2(&self)
     }
     
     #[inline(always)]
-    pure fn to_Mat4() -> Mat4<T> {
+    pure fn to_mat4() -> Mat4<T> {
         Mat4::from_Mat2(&self)
     }
 }
@@ -561,7 +561,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
 
 pub impl<T:Copy NumCast> Mat3<T>: NumericMatrix3x3<T, Vec3<T>> {
     #[inline(always)]
-    pure fn to_Mat4() -> Mat4<T> {
+    pure fn to_mat4() -> Mat4<T> {
         Mat4::from_Mat3(&self)
     }
 }

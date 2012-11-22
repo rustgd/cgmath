@@ -16,5 +16,5 @@ pub pure fn mat3_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis
 }
 
 pub pure fn mat4_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis: Vec3<T>) -> Mat4<T> {
-  mat3_from_rotation(theta, axis).to_Mat4()
+  mat3_from_rotation(theta, axis).to_mat4()
 }

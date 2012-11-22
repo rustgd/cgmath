@@ -84,11 +84,11 @@ fn test_Mat2() {
     
     assert Mat2::from_value(6f).is_diagonal();
     
-    assert a.to_Mat3() == Mat3::new(1f, 3f, 0f,
+    assert a.to_mat3() == Mat3::new(1f, 3f, 0f,
                                     2f, 4f, 0f,
                                     0f, 0f, 1f);
     
-    assert a.to_Mat4() == Mat4::new(1f, 3f, 0f, 0f,
+    assert a.to_mat4() == Mat4::new(1f, 3f, 0f, 0f,
                                     2f, 4f, 0f, 0f,
                                     0f, 0f, 1f, 0f,
                                     0f, 0f, 0f, 1f);
@@ -200,7 +200,7 @@ fn test_Mat3() {
     
     assert Mat3::from_value(6f).is_diagonal();
     
-    assert a.to_Mat4() == Mat4::new(1f, 4f, 7f, 0f,
+    assert a.to_mat4() == Mat4::new(1f, 4f, 7f, 0f,
                                     2f, 5f, 8f, 0f,
                                     3f, 6f, 9f, 0f,
                                     0f, 0f, 0f, 1f);
