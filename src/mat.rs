@@ -1,13 +1,14 @@
 use core::cast::transmute;
-use core::cmp::Eq;
+use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
 use dim::Dimensional;
-use funs::common::*;
 use funs::exp::*;
+use funs::extent::*;
+use funs::sign::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};
@@ -826,7 +827,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq Signed Ord> Mat4<T>: NumericMatrixNxN<T, Vec4<T>> {
+pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec4<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
         Mat4::new(NumCast::one() , NumCast::zero(), NumCast::zero(), NumCast::zero(),

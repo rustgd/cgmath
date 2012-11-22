@@ -1,5 +1,5 @@
 use core::cast::transmute;
-use core::cmp::Eq;
+use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
@@ -7,8 +7,8 @@ use std::cmp::FuzzyEq;
 
 use dim::Dimensional;
 use funs::exp::*;
+use funs::extent::*;
 use funs::trig::*;
-use funs::common::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 use num::default_eq::DefaultEq;

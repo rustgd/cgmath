@@ -32,11 +32,14 @@ pub mod num {
 }
 
 pub mod funs {
+  pub mod approx;
   pub mod boolv;
-  pub mod common;
   pub mod exp;
+  pub mod extent;
+  pub mod mix;
   pub mod projection;
   pub mod relv;
+  pub mod sign;
   pub mod transform;
   pub mod trig;
   
