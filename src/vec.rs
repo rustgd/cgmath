@@ -1,6 +1,6 @@
 use core::cast::transmute;
 use core::cmp::Eq;
-use core::ptr::{addr_of, to_unsafe_ptr};
+use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -118,7 +118,7 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        ptr::addr_of(&self[0])
+        ptr::to_unsafe_ptr(&self[0])
     }
 }
     
@@ -269,7 +269,7 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        addr_of(&self[0])
+        to_unsafe_ptr(&self[0])
     }
 }
 
@@ -438,7 +438,7 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        addr_of(&self[0])
+        to_unsafe_ptr(&self[0])
     }
 }
 

@@ -1,6 +1,6 @@
 use core::cast::transmute;
 use core::cmp::Eq;
-use core::ptr::{addr_of, to_unsafe_ptr};
+use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -91,7 +91,7 @@ pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T
     
     #[inline(always)]
     pure fn to_ptr() -> *T {
-        addr_of(&self[0])
+        to_unsafe_ptr(&self[0])
     }
     
     #[inline(always)]
