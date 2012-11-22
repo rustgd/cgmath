@@ -31,6 +31,7 @@ fn test_Mat2() {
     assert a.col(1) == Vec2::new(2f, 4f);
 
     assert a.det() == -2f;
+    assert a.trace() == 5f;
     
     assert a.neg() == Mat2::new(-1f, -3f,
                                 -2f, -4f);
@@ -46,6 +47,7 @@ fn test_Mat2() {
                                     -1f, -1f);
     assert a.mul_m(&b) == Mat2::new(10.0, 22.0,
                                     13.0, 29.0);
+    assert a.dot(&b) == 40f; 
     
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
@@ -135,6 +137,7 @@ fn test_Mat3() {
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
 
     assert a.det() == 0f;
+    assert a.trace() == 15f;
     
     assert a.neg() == Mat3::new(-1f, -4f, -7f,
                                 -2f, -5f, -8f,
@@ -155,6 +158,7 @@ fn test_Mat3() {
     assert a.mul_m(&b) == Mat3::new(36f,  81f, 126f,
                                     42f,  96f, 150f,
                                     48f, 111f, 174f);
+    assert a.dot(&b) == 330f;
     
     assert a.transpose() == Mat3::new(1f, 2f, 3f,
                                       4f, 5f, 6f,
@@ -269,6 +273,7 @@ fn test_Mat4() {
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
 
     assert a.det() == 0f;
+    assert a.trace() == 34f;
     
     assert a.neg() == Mat4::new(-1f, -5f,  -9f, -13f,
                                 -2f, -6f, -10f, -14f,
@@ -294,6 +299,7 @@ fn test_Mat4() {
                                     110f, 254f, 398f, 542f,
                                     120f, 280f, 440f, 600f,
                                     130f, 306f, 482f, 658f);
+    assert a.dot(&b) == 1632f;
     
     assert a.transpose() == Mat4::new( 1f,  2f,  3f,  4f,
                                        5f,  6f,  7f,  8f,
