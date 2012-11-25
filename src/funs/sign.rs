@@ -1,3 +1,5 @@
+use vec::{Vec2, Vec3, Vec4};
+
 /// Should only be implemented on signed types.
 pub trait Sign {
     pure fn abs() -> self;
@@ -48,4 +50,54 @@ pub impl f64: Sign {
 pub impl float: Sign {
     #[inline(always)] pure fn abs()  -> float { if self >= 0f { self } else {-self } }
     #[inline(always)] pure fn sign() -> float { if self > 0f { 1f } else if self == 0f { 0f } else { -1f } }
+}
+
+
+
+pub impl<T:Copy Sign> Vec2<T>: Sign {
+    #[inline(always)]
+    pure fn abs() -> Vec2<T> {
+        Vec2::new(abs(&self[0]),
+                  abs(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn sign() -> Vec2<T> {
+        Vec2::new(sign(&self[0]),
+                  sign(&self[1]))
+    }
+}
+
+pub impl<T:Copy Sign> Vec3<T>: Sign {
+    #[inline(always)]
+    pure fn abs() -> Vec3<T> {
+        Vec3::new(abs(&self[0]),
+                  abs(&self[1]),
+                  abs(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn sign() -> Vec3<T> {
+        Vec3::new(sign(&self[0]),
+                  sign(&self[1]),
+                  sign(&self[2]))
+    }
+}
+
+pub impl<T:Copy Sign> Vec4<T>: Sign {
+    #[inline(always)]
+    pure fn abs() -> Vec4<T> {
+        Vec4::new(abs(&self[0]),
+                  abs(&self[1]),
+                  abs(&self[2]),
+                  abs(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn sign() -> Vec4<T> {
+        Vec4::new(sign(&self[0]),
+                  sign(&self[1]),
+                  sign(&self[2]),
+                  sign(&self[3]))
+    }
 }

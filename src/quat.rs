@@ -69,7 +69,7 @@ pub impl<T> Quat<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Trig Exp Extent Ord AngleConv> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Trig Exp Clamp Ord AngleConv> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(NumCast::one(),

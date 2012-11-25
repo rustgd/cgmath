@@ -1,89 +1,194 @@
 use num::cast::cast;
+use vec::{Vec2, Vec3, Vec4};
 
-pub trait Extent {
-    pure fn min(y: &self) -> self;
-    pure fn max(y: &self) -> self;
-    pure fn clamp(minv: &self, maxv: &self) -> self;
+pub trait MinMax {
+    pure fn min(other: &self) -> self;
+    pure fn max(other: &self) -> self;
 }
 
-#[inline(always)] pub pure fn min<T:Extent>(x: &T, y: &T) -> T { x.min(y) }
-#[inline(always)] pub pure fn max<T:Extent>(x: &T, y: &T) -> T { x.max(y) }
-#[inline(always)] pub pure fn clamp<T:Extent>(x: &T, minv: &T, maxv: &T) -> T { x.clamp(minv, maxv) }
+#[inline(always)] pub pure fn min<T:MinMax>(a: &T, b: &T) -> T { a.min(b) }
+#[inline(always)] pub pure fn max<T:MinMax>(a: &T, b: &T) -> T { a.max(b) }
 
-pub impl u8: Extent {
-    #[inline(always)] pure fn min(y: &u8) -> u8 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &u8) -> u8 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &u8, maxv: &u8) -> u8 { min(&max(&self, minv), maxv) }
+pub impl u8: MinMax {
+    #[inline(always)] pure fn min(other: &u8) -> u8 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u8) -> u8 { if self > *other { self } else { *other } }
 }
 
-pub impl u16: Extent {
-    #[inline(always)] pure fn min(y: &u16) -> u16 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &u16) -> u16 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &u16, maxv: &u16) -> u16 { min(&max(&self, minv), maxv) }
+pub impl u16: MinMax {
+    #[inline(always)] pure fn min(other: &u16) -> u16 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u16) -> u16 { if self > *other { self } else { *other } }
 }
 
-pub impl u32: Extent {
-    #[inline(always)] pure fn min(y: &u32) -> u32 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &u32) -> u32 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &u32, maxv: &u32) -> u32 { min(&max(&self, minv), maxv) }
+pub impl u32: MinMax {
+    #[inline(always)] pure fn min(other: &u32) -> u32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u32) -> u32 { if self > *other { self } else { *other } }
 }
 
-pub impl u64: Extent {
-    #[inline(always)] pure fn min(y: &u64) -> u64 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &u64) -> u64 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &u64, maxv: &u64) -> u64 { min(&max(&self, minv), maxv) }
+pub impl u64: MinMax {
+    #[inline(always)] pure fn min(other: &u64) -> u64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &u64) -> u64 { if self > *other { self } else { *other } }
 }
 
-pub impl uint: Extent {
-    #[inline(always)] pure fn min(y: &uint) -> uint { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &uint) -> uint { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &uint, maxv: &uint) -> uint { min(&max(&self, minv), maxv) }
+pub impl uint: MinMax {
+    #[inline(always)] pure fn min(other: &uint) -> uint { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &uint) -> uint { if self > *other { self } else { *other } }
 }
 
-pub impl i8: Extent {
-    #[inline(always)] pure fn min(y: &i8) -> i8 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &i8) -> i8 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &i8, maxv: &i8) -> i8 { min(&max(&self, minv), maxv) }
+pub impl i8: MinMax {
+    #[inline(always)] pure fn min(other: &i8) -> i8 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i8) -> i8 { if self > *other { self } else { *other } }
 }
 
-pub impl i16: Extent {
-    #[inline(always)] pure fn min(y: &i16) -> i16 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &i16) -> i16 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &i16, maxv: &i16) -> i16 { min(&max(&self, minv), maxv) }
+pub impl i16: MinMax {
+    #[inline(always)] pure fn min(other: &i16) -> i16 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i16) -> i16 { if self > *other { self } else { *other } }
 }
 
-pub impl i32: Extent {
-    #[inline(always)] pure fn min(y: &i32) -> i32 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &i32) -> i32 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &i32, maxv: &i32) -> i32 { min(&max(&self, minv), maxv) }
+pub impl i32: MinMax {
+    #[inline(always)] pure fn min(other: &i32) -> i32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i32) -> i32 { if self > *other { self } else { *other } }
 }
 
-pub impl i64: Extent {
-    #[inline(always)] pure fn min(y: &i64) -> i64 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &i64) -> i64 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &i64, maxv: &i64) -> i64 { min(&max(&self, minv), maxv) }
+pub impl i64: MinMax {
+    #[inline(always)] pure fn min(other: &i64) -> i64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &i64) -> i64 { if self > *other { self } else { *other } }
 }
 
-pub impl int: Extent {
-    #[inline(always)] pure fn min(y: &int) -> int { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &int) -> int { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &int, maxv: &int) -> int { min(&max(&self, minv), maxv) }
+pub impl int: MinMax {
+    #[inline(always)] pure fn min(other: &int) -> int { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &int) -> int { if self > *other { self } else { *other } }
 }
 
-pub impl f32: Extent {
-    #[inline(always)] pure fn min(y: &f32) -> f32 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &f32) -> f32 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &f32, maxv: &f32) -> f32 { min(&max(&self, minv), maxv) }
+pub impl f32: MinMax {
+    #[inline(always)] pure fn min(other: &f32) -> f32 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &f32) -> f32 { if self > *other { self } else { *other } }
 }
 
-pub impl f64: Extent {
-    #[inline(always)] pure fn min(y: &f64) -> f64 { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &f64) -> f64 { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &f64, maxv: &f64) -> f64 { min(&max(&self, minv), maxv) }
+pub impl f64: MinMax {
+    #[inline(always)] pure fn min(other: &f64) -> f64 { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &f64) -> f64 { if self > *other { self } else { *other } }
 }
 
-pub impl float: Extent {
-    #[inline(always)] pure fn min(y: &float) -> float { if self < *y { self } else { *y } }
-    #[inline(always)] pure fn max(y: &float) -> float { if self > *y { self } else { *y } }
-    #[inline(always)] pure fn clamp(minv: &float, maxv: &float) -> float { min(&max(&self, minv), maxv) }
+pub impl float: MinMax {
+    #[inline(always)] pure fn min(other: &float) -> float { if self < *other { self } else { *other } }
+    #[inline(always)] pure fn max(other: &float) -> float { if self > *other { self } else { *other } }
+}
+
+pub impl<T:Copy MinMax> Vec2<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]))
+    }
+    
+    #[inline(always)]
+    pure fn max(other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]))
+    }
+}
+
+pub impl<T:Copy MinMax> Vec3<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]),
+                  min(&self[2], &other[2]))
+    }
+    
+    #[inline(always)]
+    pure fn max(other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]),
+                  max(&self[2], &other[2]))
+    }
+}
+
+pub impl<T:Copy MinMax> Vec4<T>: MinMax {
+    #[inline(always)]
+    pure fn min(other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(min(&self[0], &other[0]),
+                  min(&self[1], &other[1]),
+                  min(&self[2], &other[2]),
+                  min(&self[3], &other[3]))
+    }
+    
+    #[inline(always)]
+    pure fn max(other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(max(&self[0], &other[0]),
+                  max(&self[1], &other[1]),
+                  max(&self[2], &other[2]),
+                  max(&self[3], &other[3]))
+    }
+}
+
+pub trait Clamp {
+    pure fn clamp(mn: &self, mx: &self) -> self;
+}
+
+pub impl u8:    Clamp { #[inline(always)] pure fn clamp(mn: &u8,    mx: &u8)    -> u8    { min(&max(&self, mn), mx) } }
+pub impl u16:   Clamp { #[inline(always)] pure fn clamp(mn: &u16,   mx: &u16)   -> u16   { min(&max(&self, mn), mx) } }
+pub impl u32:   Clamp { #[inline(always)] pure fn clamp(mn: &u32,   mx: &u32)   -> u32   { min(&max(&self, mn), mx) } }
+pub impl u64:   Clamp { #[inline(always)] pure fn clamp(mn: &u64,   mx: &u64)   -> u64   { min(&max(&self, mn), mx) } }
+pub impl uint:  Clamp { #[inline(always)] pure fn clamp(mn: &uint,  mx: &uint)  -> uint  { min(&max(&self, mn), mx) } }
+pub impl i8:    Clamp { #[inline(always)] pure fn clamp(mn: &i8,    mx: &i8)    -> i8    { min(&max(&self, mn), mx) } }
+pub impl i16:   Clamp { #[inline(always)] pure fn clamp(mn: &i16,   mx: &i16)   -> i16   { min(&max(&self, mn), mx) } }
+pub impl i32:   Clamp { #[inline(always)] pure fn clamp(mn: &i32,   mx: &i32)   -> i32   { min(&max(&self, mn), mx) } }
+pub impl i64:   Clamp { #[inline(always)] pure fn clamp(mn: &i64,   mx: &i64)   -> i64   { min(&max(&self, mn), mx) } }
+pub impl int:   Clamp { #[inline(always)] pure fn clamp(mn: &int,   mx: &int)   -> int   { min(&max(&self, mn), mx) } }
+pub impl f32:   Clamp { #[inline(always)] pure fn clamp(mn: &f32,   mx: &f32)   -> f32   { min(&max(&self, mn), mx) } }
+pub impl f64:   Clamp { #[inline(always)] pure fn clamp(mn: &f64,   mx: &f64)   -> f64   { min(&max(&self, mn), mx) } }
+pub impl float: Clamp { #[inline(always)] pure fn clamp(mn: &float, mx: &float) -> float { min(&max(&self, mn), mx) } }
+
+pub trait ClampV<T> {
+    pure fn clamp(mn: &T, mx: &T) -> self;
+    pure fn clamp_v(mn: &self, mx: &self) -> self;
+}
+
+pub impl<T:Copy Clamp> Vec2<T>: ClampV<T> {
+    #[inline(always)]
+    pure fn clamp(mn: &T, mx: &T) -> Vec2<T> {
+        Vec2::new(self[0].clamp(mn, mx),
+                  self[1].clamp(mn, mx))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_v(mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self[0].clamp(&mn[0], &mx[0]),
+                  self[1].clamp(&mn[1], &mx[1]))
+    }
+}
+
+pub impl<T:Copy Clamp> Vec3<T>: ClampV<T> {
+    #[inline(always)]
+    pure fn clamp(mn: &T, mx: &T) -> Vec3<T> {
+        Vec3::new(self[0].clamp(mn, mx),
+                  self[1].clamp(mn, mx),
+                  self[2].clamp(mn, mx))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_v(mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(self[0].clamp(&mn[0], &mx[0]),
+                  self[1].clamp(&mn[1], &mx[1]),
+                  self[2].clamp(&mn[2], &mx[2]))
+    }
+}
+
+pub impl<T:Copy Clamp> Vec4<T>: ClampV<T> {
+    #[inline(always)]
+    pure fn clamp(mn: &T, mx: &T) -> Vec4<T> {
+        Vec4::new(self[0].clamp(mn, mx),
+                  self[1].clamp(mn, mx),
+                  self[2].clamp(mn, mx),
+                  self[3].clamp(mn, mx))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_v(mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self[0].clamp(&mn[0], &mx[0]),
+                  self[1].clamp(&mn[1], &mx[1]),
+                  self[2].clamp(&mn[2], &mx[2]),
+                  self[3].clamp(&mn[3], &mx[3]))
+    }
 }
