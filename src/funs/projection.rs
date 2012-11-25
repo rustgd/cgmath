@@ -1,4 +1,5 @@
 use funs::trig::*;
+use angle::Angle;
 use mat::Mat4;
 use num::cast::cast;
 use num::consts::pi;
@@ -11,8 +12,8 @@ use num::ext::FloatExt;
 //  http://www.opengl.org/wiki/GluPerspective_code
 //
 #[inline(always)]
-pure fn perspective<T:Copy FloatExt Trig>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let ymax = near * tan(&(fovy * pi() / cast(360)));
+pure fn perspective<T:Copy FloatExt>(fovy: Angle<T>, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+    let ymax = near * tan(&fovy);
     let xmax = ymax * aspectRatio;
     return frustum(-xmax, xmax, -ymax, ymax, near, far);
 }

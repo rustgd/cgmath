@@ -70,7 +70,7 @@ pub impl<T> Quat<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Trig Exp Clamp Ord AngleConv> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Num NumCast Exp Clamp Ord InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(NumCast::one(),
@@ -222,8 +222,8 @@ pub impl<T:Copy Num NumCast Trig Exp Clamp Ord AngleConv> Quat<T>: Quaternion<T>
     }
 
     #[inline(always)]
-    pub pure fn from_axis_angle(axis: Vec3<T>, theta: T) -> Quat<T> {
-        let half = radians(&theta) / cast(2);
+    pub pure fn from_axis_angle(axis: Vec3<T>, theta: Angle<T>) -> Quat<T> {
+        let half = theta / cast(2);
         Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
     }
     
