@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -88,6 +89,9 @@ pub impl<T:Copy Num NumCast Trig Exp Clamp Ord AngleConv> Quat<T>: Quaternion<T>
     
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Quat<T>>() }
     
     #[inline(always)]
     pure fn to_ptr() -> *T {

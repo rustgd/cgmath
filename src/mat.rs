@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -171,6 +172,9 @@ pub impl<T:Copy NumCast> Mat2<T> {
 pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Mat2<T>>() }
     
     #[inline(always)]
     pure fn rows() -> uint { 2 }
@@ -407,6 +411,9 @@ pub impl<T:Copy NumCast> Mat3<T> {
 pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Mat3<T>>() }
     
     #[inline(always)]
     pure fn rows() -> uint { 3 }
@@ -721,6 +728,9 @@ pub impl<T:Copy NumCast> Mat4<T> {
 pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Mat4<T>>() }
     
     #[inline(always)]
     pure fn rows() -> uint { 4 }

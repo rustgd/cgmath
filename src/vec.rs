@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -107,6 +108,9 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Vec2<T>>() }
     
     #[inline(always)]
     pure fn index(i: uint) -> T {
@@ -258,6 +262,9 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Vec3<T>>() }
     
     #[inline(always)]
     pure fn index(i: uint) -> T {
@@ -427,6 +434,9 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Vec4<T>>() }
     
     #[inline(always)]
     pure fn index(i: uint) -> T {
