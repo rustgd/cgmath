@@ -5,7 +5,7 @@ use num::cast::*;
 use vec::{Vec2, Vec3, Vec4};
 
 pub trait Exp {
-    pure fn pow<N:NumCast>(n: &N) -> self;
+    pure fn pow(n: &self) -> self;
     pure fn exp()      -> self;
     pure fn log_()     -> self;
     pure fn exp2()     -> self;
@@ -14,49 +14,49 @@ pub trait Exp {
     pure fn inv_sqrt() -> self;
 }
 
-#[inline(always)] pub pure fn pow<T:Exp, N:NumCast>(x: &T, n: &N) -> T { x.pow(n) }
-#[inline(always)] pub pure fn exp<T:Exp>(x: &T)                   -> T { x.exp()  }
-#[inline(always)] pub pure fn log_<T:Exp>(x: &T)                  -> T { x.log_() }
-#[inline(always)] pub pure fn exp2<T:Exp>(x: &T)                  -> T { x.exp2() }
-#[inline(always)] pub pure fn log2<T:Exp>(x: &T)                  -> T { x.log2() }
-#[inline(always)] pub pure fn sqrt<T:Exp>(x: &T)                  -> T { x.sqrt() }
-#[inline(always)] pub pure fn inv_sqrt<T:Exp>(x: &T)              -> T { x.inv_sqrt() }
+#[inline(always)] pub pure fn pow<T:Exp>(x: &T, n: &T)  -> T { x.pow(n) }
+#[inline(always)] pub pure fn exp<T:Exp>(x: &T)         -> T { x.exp()  }
+#[inline(always)] pub pure fn log_<T:Exp>(x: &T)        -> T { x.log_() }
+#[inline(always)] pub pure fn exp2<T:Exp>(x: &T)        -> T { x.exp2() }
+#[inline(always)] pub pure fn log2<T:Exp>(x: &T)        -> T { x.log2() }
+#[inline(always)] pub pure fn sqrt<T:Exp>(x: &T)        -> T { x.sqrt() }
+#[inline(always)] pub pure fn inv_sqrt<T:Exp>(x: &T)    -> T { x.inv_sqrt() }
 
 pub impl f32: Exp {
-    #[inline(always)] pure fn pow<N:NumCast>(n: &N) -> f32 { cast(cmath::c_float_utils::pow(self, n.cast())) }
-    #[inline(always)] pure fn exp()                 -> f32 { cast(cmath::c_float_utils::exp(self))  }
-    #[inline(always)] pure fn log_()                -> f32 { cast(cmath::c_float_utils::ln(self))   }
-    #[inline(always)] pure fn exp2()                -> f32 { cast(cmath::c_float_utils::exp2(self)) }
-    #[inline(always)] pure fn log2()                -> f32 { cast(cmath::c_float_utils::log2(self)) }
-    #[inline(always)] pure fn sqrt()                -> f32 { cast(cmath::c_float_utils::sqrt(self)) }
-    #[inline(always)] pure fn inv_sqrt()            -> f32 { 1f32 / self.sqrt() }  // TODO: optimise? need a wizard
+    #[inline(always)] pure fn pow(n: &f32)      -> f32 { cast(cmath::c_float_utils::pow(self, n.cast())) }
+    #[inline(always)] pure fn exp()             -> f32 { cast(cmath::c_float_utils::exp(self)) }
+    #[inline(always)] pure fn log_()            -> f32 { cast(cmath::c_float_utils::ln(self)) }
+    #[inline(always)] pure fn exp2()            -> f32 { cast(cmath::c_float_utils::exp2(self)) }
+    #[inline(always)] pure fn log2()            -> f32 { cast(cmath::c_float_utils::log2(self)) }
+    #[inline(always)] pure fn sqrt()            -> f32 { cast(cmath::c_float_utils::sqrt(self)) }
+    #[inline(always)] pure fn inv_sqrt()        -> f32 { 1f32 / self.sqrt() }  // TODO: optimise? need a wizard
 }
 
 pub impl f64: Exp {
-    #[inline(always)] pure fn pow<N:NumCast>(n: &N) -> f64 { cast(cmath::c_double_utils::pow(self, n.cast())) }
-    #[inline(always)] pure fn exp()                 -> f64 { cast(cmath::c_double_utils::exp(self))  }
-    #[inline(always)] pure fn log_()                -> f64 { cast(cmath::c_double_utils::ln(self))   }
-    #[inline(always)] pure fn exp2()                -> f64 { cast(cmath::c_double_utils::exp2(self)) }
-    #[inline(always)] pure fn log2()                -> f64 { cast(cmath::c_double_utils::log2(self)) }
-    #[inline(always)] pure fn sqrt()                -> f64 { cast(cmath::c_double_utils::sqrt(self)) }
-    #[inline(always)] pure fn inv_sqrt()            -> f64 { 1f64 / self.sqrt() }  // TODO: optimise? need a wizard
+    #[inline(always)] pure fn pow(n: &f64)      -> f64 { cast(cmath::c_double_utils::pow(self, n.cast())) }
+    #[inline(always)] pure fn exp()             -> f64 { cast(cmath::c_double_utils::exp(self)) }
+    #[inline(always)] pure fn log_()            -> f64 { cast(cmath::c_double_utils::ln(self)) }
+    #[inline(always)] pure fn exp2()            -> f64 { cast(cmath::c_double_utils::exp2(self)) }
+    #[inline(always)] pure fn log2()            -> f64 { cast(cmath::c_double_utils::log2(self)) }
+    #[inline(always)] pure fn sqrt()            -> f64 { cast(cmath::c_double_utils::sqrt(self)) }
+    #[inline(always)] pure fn inv_sqrt()        -> f64 { 1f64 / self.sqrt() }  // TODO: optimise? need a wizard
 }
 
 pub impl float: Exp {
-    #[inline(always)] pure fn pow<N:NumCast>(n: &N) -> float { cast(cmath::c_float_utils::pow(cast(self), n.cast())) }
-    #[inline(always)] pure fn exp()                 -> float { cast(cmath::c_float_utils::exp(cast(self)))  }
-    #[inline(always)] pure fn log_()                -> float { cast(cmath::c_float_utils::ln(cast(self)))   }
-    #[inline(always)] pure fn exp2()                -> float { cast(cmath::c_float_utils::exp2(cast(self))) }
-    #[inline(always)] pure fn log2()                -> float { cast(cmath::c_float_utils::log2(cast(self))) }
-    #[inline(always)] pure fn sqrt()                -> float { cast(cmath::c_float_utils::sqrt(cast(self))) }
-    #[inline(always)] pure fn inv_sqrt()            -> float { 1f / self.sqrt() }  // TODO: optimise? need a wizard
+    #[inline(always)] pure fn pow(n: &float)    -> float { cast(cmath::c_float_utils::pow(cast(self), n.cast())) }
+    #[inline(always)] pure fn exp()             -> float { cast(cmath::c_float_utils::exp(cast(self))) }
+    #[inline(always)] pure fn log_()            -> float { cast(cmath::c_float_utils::ln(cast(self))) }
+    #[inline(always)] pure fn exp2()            -> float { cast(cmath::c_float_utils::exp2(cast(self))) }
+    #[inline(always)] pure fn log2()            -> float { cast(cmath::c_float_utils::log2(cast(self))) }
+    #[inline(always)] pure fn sqrt()            -> float { cast(cmath::c_float_utils::sqrt(cast(self))) }
+    #[inline(always)] pure fn inv_sqrt()        -> float { 1f / self.sqrt() }  // TODO: optimise? need a wizard
 }
 
 pub impl<T:Copy Exp> Vec2<T>: Exp {
     #[inline(always)]
-    pure fn pow<N:NumCast>(n: &N) -> Vec2<T> {
-        Vec2::new(pow(&self[0], n),
-                  pow(&self[1], n))
+    pure fn pow(n: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(pow(&self[0], &n[0]),
+                  pow(&self[1], &n[1]))
     }
     
     #[inline(always)]
@@ -98,10 +98,10 @@ pub impl<T:Copy Exp> Vec2<T>: Exp {
 
 pub impl<T:Copy Exp> Vec3<T>: Exp {
     #[inline(always)]
-    pure fn pow<N:NumCast>(n: &N) -> Vec3<T> {
-        Vec3::new(pow(&self[0], n),
-                  pow(&self[1], n),
-                  pow(&self[2], n))
+    pure fn pow(n: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(pow(&self[0], &n[0]),
+                  pow(&self[1], &n[1]),
+                  pow(&self[2], &n[2]))
     }
     
     #[inline(always)]
@@ -149,11 +149,11 @@ pub impl<T:Copy Exp> Vec3<T>: Exp {
 
 pub impl<T:Copy Exp> Vec4<T>: Exp {
     #[inline(always)]
-    pure fn pow<N:NumCast>(n: &N) -> Vec4<T> {
-        Vec4::new(pow(&self[0], n),
-                  pow(&self[1], n),
-                  pow(&self[2], n),
-                  pow(&self[3], n))
+    pure fn pow(n: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(pow(&self[0], &n[0]),
+                  pow(&self[1], &n[1]),
+                  pow(&self[2], &n[2]),
+                  pow(&self[3], &n[3]))
     }
     
     #[inline(always)]
