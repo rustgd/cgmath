@@ -3,7 +3,7 @@ use angle::Angle;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 
-pub pure fn mat3_from_rotation<T:Copy Num NumCast>(theta: Angle<T>, axis: Vec3<T>) -> Mat3<T> {
+pub pure fn mat3_from_rotation<T:Copy Num NumCast>(theta: Radians<T>, axis: Vec3<T>) -> Mat3<T> {
     let c:  T = cos(&theta);
     let s:  T = sin(&theta);
     let _0: T = cast(0);
@@ -15,6 +15,6 @@ pub pure fn mat3_from_rotation<T:Copy Num NumCast>(theta: Angle<T>, axis: Vec3<T
               t * axis.x * axis.z - s - axis.y, t * axis.y * axis.z - s * axis.x, t * axis.z * axis.z + c)
 }
 
-pub pure fn mat4_from_rotation<T:Copy Num NumCast>(theta: Angle<T>, axis: Vec3<T>) -> Mat4<T> {
+pub pure fn mat4_from_rotation<T:Copy Num NumCast>(theta: Radians<T>, axis: Vec3<T>) -> Mat4<T> {
   mat3_from_rotation(theta, axis).to_mat4()
 }

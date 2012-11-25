@@ -1,94 +1,52 @@
+use core::f64::consts::pi;
 use num::cast::*;
 use vec::Vec3;
 
-pub enum Angle<T> {
-    degrees(T),
-    radians(T),
+pub trait Angle<T>: Add<self,self>
+                  , Sub<self,self>
+                  , Mul<T,self>
+                  , Div<T,self>
+                  , Modulo<T,self>
+                  , Neg<self> {
+    pure fn to_radians() -> Radians<T>;
+    pure fn to_degrees() -> Degrees<T>;
 }
 
-pub impl<T:Copy Num NumCast> Angle<T> {
-    pure fn degrees() -> T {
-        match self {
-            degrees(theta) => theta,
-            radians(theta) => theta * cast(180f64 / f64::consts::pi)
-        }
-    }
+pub enum Radians<T> = T;
+
+pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
+    #[inline(always)] pure fn to_radians() -> Radians<T> { self }
+    #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
     
-    pure fn radians() -> T {
-        match self {
-            degrees(theta) => theta * cast(f64::consts::pi / 180f64),
-            radians(theta) => theta
-        }
-    }
+    #[inline(always)] pure fn add(rhs: &Radians<T>) -> Radians<T> { self + *rhs }
+    #[inline(always)] pure fn sub(rhs: &Radians<T>) -> Radians<T> { self - *rhs }
+    #[inline(always)] pure fn mul(rhs: &T)          -> Radians<T> { self * *rhs }
+    #[inline(always)] pure fn div(rhs: &T)          -> Radians<T> { self / *rhs }
+    #[inline(always)] pure fn modulo(rhs: &T)       -> Radians<T> { self % *rhs }
+    #[inline(always)] pure fn neg()                 -> Radians<T> {-self }
 }
 
-pub impl<T:Copy Num> Angle<T>: Add<T,Angle<T>> {
-    #[inline(always)]
-    pure fn add(rhs: &T) -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(theta + *rhs),
-            radians(theta) => radians(theta + *rhs)
-        }
-    }
-}
+pub enum Degrees<T> = T;
 
-pub impl<T:Copy Num> Angle<T>: Sub<T,Angle<T>> {
-    #[inline(always)]
-    pure fn sub(rhs: &T) -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(theta - *rhs),
-            radians(theta) => radians(theta - *rhs)
-        }
-    }
-}
-
-pub impl<T:Copy Num> Angle<T>: Mul<T,Angle<T>> {
-    #[inline(always)]
-    pure fn mul(rhs: &T) -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(theta * *rhs),
-            radians(theta) => radians(theta * *rhs)
-        }
-    }
-}
-
-pub impl<T:Copy Num> Angle<T>: Div<T,Angle<T>> {
-    #[inline(always)]
-    pure fn div(rhs: &T) -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(theta / *rhs),
-            radians(theta) => radians(theta / *rhs)
-        }
-    }
-}
-
-pub impl<T:Copy Num> Angle<T>: Modulo<T,Angle<T>> {
-    #[inline(always)]
-    pure fn modulo(rhs: &T) -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(theta % *rhs),
-            radians(theta) => radians(theta % *rhs)
-        }
-    }
-}
-
-pub impl<T:Copy Num> Angle<T>: Neg<Angle<T>> {
-    #[inline(always)]
-    pure fn neg() -> Angle<T> {
-        match self {
-            degrees(theta) => degrees(-theta),
-            radians(theta) => radians(-theta)
-        }
-    }
+pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
+    #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
+    #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
+    
+    #[inline(always)] pure fn add(rhs: &Degrees<T>) -> Degrees<T> { self + *rhs }
+    #[inline(always)] pure fn sub(rhs: &Degrees<T>) -> Degrees<T> { self - *rhs }
+    #[inline(always)] pure fn mul(rhs: &T)          -> Degrees<T> { self * *rhs }
+    #[inline(always)] pure fn div(rhs: &T)          -> Degrees<T> { self / *rhs }
+    #[inline(always)] pure fn modulo(rhs: &T)       -> Degrees<T> { self % *rhs }
+    #[inline(always)] pure fn neg()                 -> Degrees<T> {-self }
 }
 
 pub struct AxisRotation<T> {
     axis: Vec3<T>,
-    theta: Angle<T>,
+    theta: Radians<T>,
 }
 
 pub struct Euler<T> {
-    x: T,   // pitch
-    y: T,   // yaw
-    z: T,   // roll
+    x: Radians<T>,   // pitch
+    y: Radians<T>,   // yaw
+    z: Radians<T>,   // roll
 }

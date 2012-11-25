@@ -17,10 +17,10 @@ priv trait Trig<T> {
 #[inline(always)] pub pure fn cos<T:Trig<R>, R>(theta: &T) -> R { theta.cos() }
 #[inline(always)] pub pure fn tan<T:Trig<R>, R>(theta: &T) -> R { theta.tan() }
 
-priv impl<T:Copy Num NumCast> Angle<T>: Trig<T> {
-    #[inline(always)] pure fn sin() -> T { cast(f64::sin(cast(self.radians()))) }
-    #[inline(always)] pure fn cos() -> T { cast(f64::cos(cast(self.radians()))) }
-    #[inline(always)] pure fn tan() -> T { cast(f64::tan(cast(self.radians()))) }
+priv impl<T:Copy Num NumCast> Radians<T>: Trig<T> {
+    #[inline(always)] pure fn sin() -> T { cast(f64::sin(cast(*self))) }
+    #[inline(always)] pure fn cos() -> T { cast(f64::cos(cast(*self))) }
+    #[inline(always)] pure fn tan() -> T { cast(f64::tan(cast(*self))) }
 }
 
 ///
@@ -29,31 +29,31 @@ priv impl<T:Copy Num NumCast> Angle<T>: Trig<T> {
 /// http://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 ///
 pub trait InvTrig {
-    pure fn asin() -> Angle<self>;
-    pure fn acos() -> Angle<self>;
-    pure fn atan() -> Angle<self>;
+    pure fn asin() -> Radians<self>;
+    pure fn acos() -> Radians<self>;
+    pure fn atan() -> Radians<self>;
 }
 
-#[inline(always)] pub pure fn asin<T:InvTrig>(x: &T) -> Angle<T> { x.asin() }
-#[inline(always)] pub pure fn acos<T:InvTrig>(x: &T) -> Angle<T> { x.acos() }
-#[inline(always)] pub pure fn atan<T:InvTrig>(x: &T) -> Angle<T> { x.atan() }
+#[inline(always)] pub pure fn asin<T:InvTrig>(x: &T) -> Radians<T> { x.asin() }
+#[inline(always)] pub pure fn acos<T:InvTrig>(x: &T) -> Radians<T> { x.acos() }
+#[inline(always)] pub pure fn atan<T:InvTrig>(x: &T) -> Radians<T> { x.atan() }
 
 pub impl f32: InvTrig {
-    #[inline(always)] pure fn asin() -> Angle<f32> { radians(f32::asin(self)) }
-    #[inline(always)] pure fn acos() -> Angle<f32> { radians(f32::acos(self)) }
-    #[inline(always)] pure fn atan() -> Angle<f32> { radians(f32::atan(self)) }
+    #[inline(always)] pure fn asin() -> Radians<f32> { Radians(f32::asin(self)) }
+    #[inline(always)] pure fn acos() -> Radians<f32> { Radians(f32::acos(self)) }
+    #[inline(always)] pure fn atan() -> Radians<f32> { Radians(f32::atan(self)) }
 }
 
 pub impl f64: InvTrig {
-    #[inline(always)] pure fn asin() -> Angle<f64> { radians(f64::asin(self)) }
-    #[inline(always)] pure fn acos() -> Angle<f64> { radians(f64::acos(self)) }
-    #[inline(always)] pure fn atan() -> Angle<f64> { radians(f64::atan(self)) }
+    #[inline(always)] pure fn asin() -> Radians<f64> { Radians(f64::asin(self)) }
+    #[inline(always)] pure fn acos() -> Radians<f64> { Radians(f64::acos(self)) }
+    #[inline(always)] pure fn atan() -> Radians<f64> { Radians(f64::atan(self)) }
 }
 
 pub impl float: InvTrig {
-    #[inline(always)] pure fn asin() -> Angle<float> { radians(f64::asin(cast(self)).to_float()) }
-    #[inline(always)] pure fn acos() -> Angle<float> { radians(f64::acos(cast(self)).to_float()) }
-    #[inline(always)] pure fn atan() -> Angle<float> { radians(f64::atan(cast(self)).to_float()) }
+    #[inline(always)] pure fn asin() -> Radians<float> { Radians(f64::asin(cast(self)).to_float()) }
+    #[inline(always)] pure fn acos() -> Radians<float> { Radians(f64::acos(cast(self)).to_float()) }
+    #[inline(always)] pure fn atan() -> Radians<float> { Radians(f64::atan(cast(self)).to_float()) }
 }
 
 ///

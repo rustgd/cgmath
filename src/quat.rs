@@ -222,7 +222,7 @@ pub impl<T:Copy Num NumCast Exp Clamp Ord InvTrig> Quat<T>: Quaternion<T> {
     }
 
     #[inline(always)]
-    pub pure fn from_axis_angle(axis: Vec3<T>, theta: Angle<T>) -> Quat<T> {
+    pub pure fn from_axis_angle(axis: Vec3<T>, theta: Radians<T>) -> Quat<T> {
         let half = theta / cast(2);
         Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
     }

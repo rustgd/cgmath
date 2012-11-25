@@ -1,5 +1,5 @@
 use funs::transform::*;
-use angle::degrees;
+use angle::Degrees;
 use mat::Mat4;
 use vec::{Vec3, Vec4};
 
@@ -8,7 +8,7 @@ fn test_mat4_from_rotation() {
     {
         let pos = Vec4::new(1f32, 0f32, 0f32, 1f32);
         // let tform = mat4_from_rotation(180f32, Vec3::unit_z());
-        let tform = mat4_from_rotation(degrees(180f32), Vec3::new(0f32, 0f32, 1f32));
+        let tform = mat4_from_rotation(Degrees(180f32).to_radians(), Vec3::new(0f32, 0f32, 1f32));
         let newpos = tform.mul_v(&pos);
         
         let expected = Vec4::new(-1f32, 0f32, 0f32, 1f32);
@@ -20,8 +20,8 @@ fn test_mat4_from_rotation() {
         
         // let tform_a = mat4_from_rotation(90f32,  Vec3::unit_y());
         // let tform_b = mat4_from_rotation(90f32, -Vec3::unit_y());
-        let tform_a = mat4_from_rotation(degrees(90f32),  Vec3::new(0f32, 1f32, 0f32));
-        let tform_b = mat4_from_rotation(degrees(90f32), -Vec3::new(0f32, 1f32, 0f32));
+        let tform_a = mat4_from_rotation(Degrees(90f32).to_radians(),  Vec3::new(0f32, 1f32, 0f32));
+        let tform_b = mat4_from_rotation(Degrees(90f32).to_radians(), -Vec3::new(0f32, 1f32, 0f32));
         let newpos_a = tform_a.mul_v(&pos);
         let newpos_b = tform_b.mul_v(&pos);
         
