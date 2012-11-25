@@ -20,6 +20,8 @@
 /// ~~~
 ///
 
+use core::sys::size_of;
+
 use mat::{NumericMatrix, NumericMatrixNxN, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
@@ -55,6 +57,9 @@ pub impl vec2 {
     #[inline(always)] static pure fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec2>() }
 }
 
 pub impl vec3 {
@@ -62,6 +67,9 @@ pub impl vec3 {
     #[inline(always)] static pure fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec3>() }
 }
 
 pub impl vec4 {
@@ -69,6 +77,9 @@ pub impl vec4 {
     #[inline(always)] static pure fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec4>() }
 }
 
 
@@ -77,6 +88,9 @@ pub impl dvec2 {
     #[inline(always)] static pure fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec2>() }
 }
 
 pub impl dvec3 {
@@ -84,6 +98,9 @@ pub impl dvec3 {
     #[inline(always)] static pure fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec3>() }
 }
 
 pub impl dvec4 {
@@ -91,6 +108,9 @@ pub impl dvec4 {
     #[inline(always)] static pure fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec4>() }
 }
 
 
@@ -99,6 +119,9 @@ pub impl bvec2 {
     #[inline(always)] static pure fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
     // #[inline(always)] static pure fn identity() -> bvec2 { NumericVector::identity() }
     // #[inline(always)] static pure fn zero() -> bvec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec2>() }
 }
 
 pub impl bvec3 {
@@ -106,6 +129,9 @@ pub impl bvec3 {
     #[inline(always)] static pure fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
     // #[inline(always)] static pure fn identity() -> bvec3 { NumericVector::identity() }
     // #[inline(always)] static pure fn zero() -> bvec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec3>() }
 }
 
 pub impl bvec4 {
@@ -113,6 +139,9 @@ pub impl bvec4 {
     #[inline(always)] static pure fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
     // #[inline(always)] static pure fn identity() -> bvec4 { NumericVector::identity() }
     // #[inline(always)] static pure fn zero() -> bvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec4>() }
 }
 
 
@@ -121,6 +150,9 @@ pub impl ivec2 {
     #[inline(always)] static pure fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec2>() }
 }
 
 pub impl ivec3 {
@@ -128,6 +160,9 @@ pub impl ivec3 {
     #[inline(always)] static pure fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec3>() }
 }
 
 pub impl ivec4 {
@@ -135,6 +170,9 @@ pub impl ivec4 {
     #[inline(always)] static pure fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec4>() }
 }
 
 
@@ -143,6 +181,9 @@ pub impl uvec2 {
     #[inline(always)] static pure fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec2>() }
 }
 
 pub impl uvec3 {
@@ -150,6 +191,9 @@ pub impl uvec3 {
     #[inline(always)] static pure fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec3>() }
 }
 
 pub impl uvec4 {
@@ -157,6 +201,9 @@ pub impl uvec4 {
     #[inline(always)] static pure fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec4>() }
 }
 
 
@@ -199,6 +246,11 @@ pub impl mat2 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat2 { mat2x2::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat2 { mat2x2::identity() }
     #[inline(always)] static pure fn zero() -> mat2 { mat2x2::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { mat2x2::dim() }
+    #[inline(always)] static pure fn rows() -> uint { mat2x2::rows() }
+    #[inline(always)] static pure fn cols() -> uint { mat2x2::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { mat2x2::size_of() }
 }
 
 pub impl mat3 {
@@ -209,6 +261,11 @@ pub impl mat3 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat3 { mat3x3::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat3 { mat3x3::identity() }
     #[inline(always)] static pure fn zero() -> mat3 { mat3x3::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { mat3x3::dim() }
+    #[inline(always)] static pure fn rows() -> uint { mat3x3::rows() }
+    #[inline(always)] static pure fn cols() -> uint { mat3x3::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { mat3x3::size_of() }
 }
 
 pub impl mat4 {
@@ -219,6 +276,11 @@ pub impl mat4 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat4 { mat4x4::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat4 { mat4x4::identity() }
     #[inline(always)] static pure fn zero() -> mat4 { mat4x4::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { mat4x4::dim() }
+    #[inline(always)] static pure fn rows() -> uint { mat4x4::rows() }
+    #[inline(always)] static pure fn cols() -> uint { mat4x4::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { mat4x4::size_of() }
 }
 
 pub impl mat2x2 {
@@ -229,6 +291,11 @@ pub impl mat2x2 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat2x2 { Mat2::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn rows() -> uint { 2 }
+    #[inline(always)] static pure fn cols() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat2x2>() }
 }
 
 pub impl mat3x3 {
@@ -239,6 +306,11 @@ pub impl mat3x3 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat3x3 { Mat3::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn rows() -> uint { 3 }
+    #[inline(always)] static pure fn cols() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat3x3>() }
 }
 
 pub impl mat4x4 {
@@ -249,6 +321,11 @@ pub impl mat4x4 {
     #[inline(always)] static pure fn from_value(v: f32) -> mat4x4 { Mat4::from_value(v) }
     #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn rows() -> uint { 4 }
+    #[inline(always)] static pure fn cols() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat4x4>() }
 }
 
 
@@ -260,6 +337,11 @@ pub impl dmat2 {
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { dmat2x2::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat2 { dmat2x2::identity() }
     #[inline(always)] static pure fn zero() -> dmat2 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { dmat2x2::dim() }
+    #[inline(always)] static pure fn rows() -> uint { dmat2x2::rows() }
+    #[inline(always)] static pure fn cols() -> uint { dmat2x2::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { dmat2x2::size_of() }
 }
 
 pub impl dmat3 {
@@ -269,6 +351,11 @@ pub impl dmat3 {
         -> dmat3 { dmat3x3::from_cols(move c0, move c1, move c2) }
     #[inline(always)] static pure fn identity() -> dmat3 { dmat3x3::identity() }
     #[inline(always)] static pure fn zero() -> dmat3 { dmat3x3::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { dmat3x3::dim() }
+    #[inline(always)] static pure fn rows() -> uint { dmat3x3::rows() }
+    #[inline(always)] static pure fn cols() -> uint { dmat3x3::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { dmat3x3::size_of() }
 }
 
 pub impl dmat4 {
@@ -278,6 +365,11 @@ pub impl dmat4 {
         -> dmat4 { dmat4x4::from_cols(move c0, move c1, move c2, move c3) }
     #[inline(always)] static pure fn identity() -> dmat4 { dmat4x4::identity() }
     #[inline(always)] static pure fn zero() -> dmat4 { dmat4x4::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { dmat4x4::dim() }
+    #[inline(always)] static pure fn rows() -> uint { dmat4x4::rows() }
+    #[inline(always)] static pure fn cols() -> uint { dmat4x4::cols() }
+    #[inline(always)] static pure fn size_of() -> uint { dmat4x4::size_of() }
 }
 
 pub impl dmat2x2 {
@@ -288,6 +380,11 @@ pub impl dmat2x2 {
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2x2 { Mat2::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn rows() -> uint { 2 }
+    #[inline(always)] static pure fn cols() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat2x2>() }
 }
 
 pub impl dmat3x3 {
@@ -298,6 +395,11 @@ pub impl dmat3x3 {
     #[inline(always)] static pure fn from_value(v: f64) -> dmat3x3 { Mat3::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn rows() -> uint { 3 }
+    #[inline(always)] static pure fn cols() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat3x3>() }
 }
 
 pub impl dmat4x4 {
@@ -308,6 +410,11 @@ pub impl dmat4x4 {
     #[inline(always)] static pure fn from_value(v: f64) -> dmat4x4 { Mat4::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrixNxN::identity() }
     #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn rows() -> uint { 4 }
+    #[inline(always)] static pure fn cols() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat4x4>() }
 }
 
 
