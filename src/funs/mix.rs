@@ -5,6 +5,8 @@ pub trait Mix {
     pure fn mix(other: &self, value: &self) -> self;
 }
 
+#[inline(always)] pub pure fn mix<T:Mix>(a: &T, b: &T, value: &T) -> T { a.mix(b, value) }
+
 pub impl f32: Mix {
     #[inline(always)]
     pure fn mix(other: &f32, value: &f32) -> f32 {
@@ -26,54 +28,26 @@ pub impl float: Mix {
     }
 }
 
-
-
-pub trait MixV<T> {
-    pure fn mix(other: &self, value: &T) -> self;
-    pure fn mix_v(other: &self, values: &self) -> self;
-}
-
-pub impl<T:Copy Mix> Vec2<T>: MixV<T> {
+pub impl<T:Copy Mix> Vec2<T>: Mix {
     #[inline(always)]
-    pure fn mix(other: &Vec2<T>, value: &T) -> Vec2<T> {
-        Vec2::new(self[0].mix(&other[0], value),
-                  self[1].mix(&other[1], value))
-    }
-    
-    #[inline(always)]
-    pure fn mix_v(other: &Vec2<T>, values: &Vec2<T>) -> Vec2<T> {
+    pure fn mix(other: &Vec2<T>, values: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].mix(&other[0], &values[0]),
                   self[1].mix(&other[1], &values[1]))
     }
 }
 
-pub impl<T:Copy Mix> Vec3<T>: MixV<T> {
+pub impl<T:Copy Mix> Vec3<T>: Mix {
     #[inline(always)]
-    pure fn mix(other: &Vec3<T>, value: &T) -> Vec3<T> {
-        Vec3::new(self[0].mix(&other[0], value),
-                  self[1].mix(&other[1], value),
-                  self[2].mix(&other[2], value))
-    }
-    
-    #[inline(always)]
-    pure fn mix_v(other: &Vec3<T>, values: &Vec3<T>) -> Vec3<T> {
+    pure fn mix(other: &Vec3<T>, values: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].mix(&other[0], &values[0]),
                   self[1].mix(&other[1], &values[1]),
                   self[2].mix(&other[2], &values[2]))
     }
 }
 
-pub impl<T:Copy Mix> Vec4<T>: MixV<T> {
+pub impl<T:Copy Mix> Vec4<T>: Mix {
     #[inline(always)]
-    pure fn mix(other: &Vec4<T>, value: &T) -> Vec4<T> {
-        Vec4::new(self[0].mix(&other[0], value),
-                  self[1].mix(&other[1], value),
-                  self[2].mix(&other[2], value),
-                  self[3].mix(&other[3], value))
-    }
-    
-    #[inline(always)]
-    pure fn mix_v(other: &Vec4<T>, values: &Vec4<T>) -> Vec4<T> {
+    pure fn mix(other: &Vec4<T>, values: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].mix(&other[0], &values[0]),
                   self[1].mix(&other[1], &values[1]),
                   self[2].mix(&other[2], &values[2]),

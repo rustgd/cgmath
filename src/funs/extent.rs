@@ -126,6 +126,8 @@ pub trait Clamp {
     pure fn clamp(mn: &self, mx: &self) -> self;
 }
 
+#[inline(always)] pub pure fn clamp<T:Clamp>(x: &T, mn: &T, mx: &T) -> T { x.clamp(mn, mx) }
+
 pub impl u8:    Clamp { #[inline(always)] pure fn clamp(mn: &u8,    mx: &u8)    -> u8    { min(&max(&self, mn), mx) } }
 pub impl u16:   Clamp { #[inline(always)] pure fn clamp(mn: &u16,   mx: &u16)   -> u16   { min(&max(&self, mn), mx) } }
 pub impl u32:   Clamp { #[inline(always)] pure fn clamp(mn: &u32,   mx: &u32)   -> u32   { min(&max(&self, mn), mx) } }
@@ -140,52 +142,26 @@ pub impl f32:   Clamp { #[inline(always)] pure fn clamp(mn: &f32,   mx: &f32)   
 pub impl f64:   Clamp { #[inline(always)] pure fn clamp(mn: &f64,   mx: &f64)   -> f64   { min(&max(&self, mn), mx) } }
 pub impl float: Clamp { #[inline(always)] pure fn clamp(mn: &float, mx: &float) -> float { min(&max(&self, mn), mx) } }
 
-pub trait ClampV<T> {
-    pure fn clamp(mn: &T, mx: &T) -> self;
-    pure fn clamp_v(mn: &self, mx: &self) -> self;
-}
-
-pub impl<T:Copy Clamp> Vec2<T>: ClampV<T> {
+pub impl<T:Copy Clamp> Vec2<T>: Clamp {
     #[inline(always)]
-    pure fn clamp(mn: &T, mx: &T) -> Vec2<T> {
-        Vec2::new(self[0].clamp(mn, mx),
-                  self[1].clamp(mn, mx))
-    }
-    
-    #[inline(always)]
-    pure fn clamp_v(mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
+    pure fn clamp(mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]))
     }
 }
 
-pub impl<T:Copy Clamp> Vec3<T>: ClampV<T> {
+pub impl<T:Copy Clamp> Vec3<T>: Clamp {
     #[inline(always)]
-    pure fn clamp(mn: &T, mx: &T) -> Vec3<T> {
-        Vec3::new(self[0].clamp(mn, mx),
-                  self[1].clamp(mn, mx),
-                  self[2].clamp(mn, mx))
-    }
-    
-    #[inline(always)]
-    pure fn clamp_v(mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
+    pure fn clamp(mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]),
                   self[2].clamp(&mn[2], &mx[2]))
     }
 }
 
-pub impl<T:Copy Clamp> Vec4<T>: ClampV<T> {
+pub impl<T:Copy Clamp> Vec4<T>: Clamp {
     #[inline(always)]
-    pure fn clamp(mn: &T, mx: &T) -> Vec4<T> {
-        Vec4::new(self[0].clamp(mn, mx),
-                  self[1].clamp(mn, mx),
-                  self[2].clamp(mn, mx),
-                  self[3].clamp(mn, mx))
-    }
-    
-    #[inline(always)]
-    pure fn clamp_v(mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
+    pure fn clamp(mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]),
                   self[2].clamp(&mn[2], &mx[2]),
