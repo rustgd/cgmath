@@ -10,6 +10,7 @@
 
 extern mod std;
 
+pub mod angle;
 pub mod dim;
 pub mod gltypes;
 pub mod mat;

@@ -1,9 +1,10 @@
 use funs::trig::*;
+use angle::Angle;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 
-pub pure fn mat3_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis: Vec3<T>) -> Mat3<T> {
-    let rad = radians(&theta);
+pub pure fn mat3_from_rotation<T:Copy Num NumCast Trig>(theta: Angle<T>, axis: Vec3<T>) -> Mat3<T> {
+    let rad = theta.radians();
     let c:  T = cos(&rad);
     let s:  T = sin(&rad);
     let _0: T = cast(0);
@@ -15,6 +16,6 @@ pub pure fn mat3_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis
               t * axis.x * axis.z - s - axis.y, t * axis.y * axis.z - s * axis.x, t * axis.z * axis.z + c)
 }
 
-pub pure fn mat4_from_rotation<T:Copy Num NumCast AngleConv Trig>(theta: T, axis: Vec3<T>) -> Mat4<T> {
+pub pure fn mat4_from_rotation<T:Copy Num NumCast Trig>(theta: Angle<T>, axis: Vec3<T>) -> Mat4<T> {
   mat3_from_rotation(theta, axis).to_mat4()
 }
