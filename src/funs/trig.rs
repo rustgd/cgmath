@@ -23,6 +23,75 @@ priv impl<T:Copy Num NumCast> Radians<T>: Trig<T> {
     #[inline(always)] pure fn tan() -> T { cast(f64::tan(cast(*self))) }
 }
 
+pub impl<T:Copy Num NumCast> Vec2<Radians<T>>: Trig<Vec2<T>>  {
+    #[inline(always)]
+    pure fn sin() -> Vec2<T> {
+        Vec2::new(sin(&self[0]),
+                  sin(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn cos() -> Vec2<T> {
+        Vec2::new(cos(&self[0]),
+                  cos(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn tan() -> Vec2<T> {
+        Vec2::new(tan(&self[0]),
+                  tan(&self[1]))
+    }
+}
+
+pub impl<T:Copy Num NumCast> Vec3<Radians<T>>: Trig<Vec3<T>>  {
+    #[inline(always)]
+    pure fn sin() -> Vec3<T> {
+        Vec3::new(sin(&self[0]),
+                  sin(&self[1]),
+                  sin(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn cos() -> Vec3<T> {
+        Vec3::new(cos(&self[0]),
+                  cos(&self[1]),
+                  cos(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn tan() -> Vec3<T> {
+        Vec3::new(tan(&self[0]),
+                  tan(&self[1]),
+                  tan(&self[2]))
+    }
+}
+
+pub impl<T:Copy Num NumCast> Vec4<Radians<T>>: Trig<Vec4<T>>  {
+    #[inline(always)]
+    pure fn sin() -> Vec4<T> {
+        Vec4::new(sin(&self[0]),
+                  sin(&self[1]),
+                  sin(&self[2]),
+                  sin(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn cos() -> Vec4<T> {
+        Vec4::new(cos(&self[0]),
+                  cos(&self[1]),
+                  cos(&self[2]),
+                  cos(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn tan() -> Vec4<T> {
+        Vec4::new(tan(&self[0]),
+                  tan(&self[1]),
+                  tan(&self[2]),
+                  tan(&self[3]))
+    }
+}
+
 ///
 /// Inverse triganomic functions
 ///
@@ -92,199 +161,71 @@ pub impl float: Hyp {
     #[inline(always)] pure fn tanh() -> float { cast(f64::tanh(cast(self))) }
 }
 
+pub impl <T:Copy Hyp> Vec2<T>: Hyp {
+    #[inline(always)]
+    pure fn sinh() -> Vec2<T> {
+        Vec2::new(sinh(&self[0]),
+                  sinh(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn cosh() -> Vec2<T> {
+        Vec2::new(cosh(&self[0]),
+                  cosh(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn tanh() -> Vec2<T> {
+        Vec2::new(tanh(&self[0]),
+                  tanh(&self[1]))
+    }
+}
 
+pub impl <T:Copy Hyp> Vec3<T>: Hyp {
+    #[inline(always)]
+    pure fn sinh() -> Vec3<T> {
+        Vec3::new(sinh(&self[0]),
+                  sinh(&self[1]),
+                  sinh(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn cosh() -> Vec3<T> {
+        Vec3::new(cosh(&self[0]),
+                  cosh(&self[1]),
+                  cosh(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn tanh() -> Vec3<T> {
+        Vec3::new(tanh(&self[0]),
+                  tanh(&self[1]),
+                  tanh(&self[2]))
+    }
+}
 
-// pub impl <T:Copy Trig> Vec2<T>: Trig {
-//     #[inline(always)]
-//     pure fn sin() -> Vec2<T> {
-//         Vec2::new(sin(&self[0]),
-//                   sin(&self[1]))
-//     }
+pub impl <T:Copy Hyp> Vec4<T>: Hyp  {
+    #[inline(always)]
+    pure fn sinh() -> Vec4<T> {
+        Vec4::new(sinh(&self[0]),
+                  sinh(&self[1]),
+                  sinh(&self[2]),
+                  sinh(&self[3]))
+    }
     
-//     #[inline(always)]
-//     pure fn cos() -> Vec2<T> {
-//         Vec2::new(cos(&self[0]),
-//                   cos(&self[1]))
-//     }
+    #[inline(always)]
+    pure fn cosh() -> Vec4<T> {
+        Vec4::new(cosh(&self[0]),
+                  cosh(&self[1]),
+                  cosh(&self[2]),
+                  cosh(&self[3]))
+    }
     
-//     #[inline(always)]
-//     pure fn tan() -> Vec2<T> {
-//         Vec2::new(tan(&self[0]),
-//                   tan(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn asin() -> Vec2<T> {
-//         Vec2::new(asin(&self[0]),
-//                   asin(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn acos() -> Vec2<T> {
-//         Vec2::new(acos(&self[0]),
-//                   acos(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn atan() -> Vec2<T> {
-//         Vec2::new(atan(&self[0]),
-//                   atan(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn sinh() -> Vec2<T> {
-//         Vec2::new(sinh(&self[0]),
-//                   sinh(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn cosh() -> Vec2<T> {
-//         Vec2::new(cosh(&self[0]),
-//                   cosh(&self[1]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn tanh() -> Vec2<T> {
-//         Vec2::new(tanh(&self[0]),
-//                   tanh(&self[1]))
-//     }
-// }
-
-// pub impl <T:Copy Trig> Vec3<T>: Trig {
-//     #[inline(always)]
-//     pure fn sin() -> Vec3<T> {
-//         Vec3::new(sin(&self[0]),
-//                   sin(&self[1]),
-//                   sin(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn cos() -> Vec3<T> {
-//         Vec3::new(cos(&self[0]),
-//                   cos(&self[1]),
-//                   cos(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn tan() -> Vec3<T> {
-//         Vec3::new(tan(&self[0]),
-//                   tan(&self[1]),
-//                   tan(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn asin() -> Vec3<T> {
-//         Vec3::new(asin(&self[0]),
-//                   asin(&self[1]),
-//                   asin(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn acos() -> Vec3<T> {
-//         Vec3::new(acos(&self[0]),
-//                   acos(&self[1]),
-//                   acos(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn atan() -> Vec3<T> {
-//         Vec3::new(atan(&self[0]),
-//                   atan(&self[1]),
-//                   atan(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn sinh() -> Vec3<T> {
-//         Vec3::new(sinh(&self[0]),
-//                   sinh(&self[1]),
-//                   sinh(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn cosh() -> Vec3<T> {
-//         Vec3::new(cosh(&self[0]),
-//                   cosh(&self[1]),
-//                   cosh(&self[2]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn tanh() -> Vec3<T> {
-//         Vec3::new(tanh(&self[0]),
-//                   tanh(&self[1]),
-//                   tanh(&self[2]))
-//     }
-// }
-
-// pub impl <T:Copy Trig> Vec4<T>: Trig  {
-//     #[inline(always)]
-//     pure fn sin() -> Vec4<T> {
-//         Vec4::new(sin(&self[0]),
-//                   sin(&self[1]),
-//                   sin(&self[2]),
-//                   sin(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn cos() -> Vec4<T> {
-//         Vec4::new(cos(&self[0]),
-//                   cos(&self[1]),
-//                   cos(&self[2]),
-//                   cos(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn tan() -> Vec4<T> {
-//         Vec4::new(tan(&self[0]),
-//                   tan(&self[1]),
-//                   tan(&self[2]),
-//                   tan(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn asin() -> Vec4<T> {
-//         Vec4::new(asin(&self[0]),
-//                   asin(&self[1]),
-//                   asin(&self[2]),
-//                   asin(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn acos() -> Vec4<T> {
-//         Vec4::new(acos(&self[0]),
-//                   acos(&self[1]),
-//                   acos(&self[2]),
-//                   acos(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn atan() -> Vec4<T> {
-//         Vec4::new(atan(&self[0]),
-//                   atan(&self[1]),
-//                   atan(&self[2]),
-//                   atan(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn sinh() -> Vec4<T> {
-//         Vec4::new(sinh(&self[0]),
-//                   sinh(&self[1]),
-//                   sinh(&self[2]),
-//                   sinh(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn cosh() -> Vec4<T> {
-//         Vec4::new(cosh(&self[0]),
-//                   cosh(&self[1]),
-//                   cosh(&self[2]),
-//                   cosh(&self[3]))
-//     }
-    
-//     #[inline(always)]
-//     pure fn tanh() -> Vec4<T> {
-//         Vec4::new(tanh(&self[0]),
-//                   tanh(&self[1]),
-//                   tanh(&self[2]),
-//                   tanh(&self[3]))
-//     }
-// }
+    #[inline(always)]
+    pure fn tanh() -> Vec4<T> {
+        Vec4::new(tanh(&self[0]),
+                  tanh(&self[1]),
+                  tanh(&self[2]),
+                  tanh(&self[3]))
+    }
+}
