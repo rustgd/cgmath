@@ -131,6 +131,84 @@ pub impl float: InvTrig {
     #[inline(always)] pure fn atan() -> Radians<float> { Radians(f64::atan(cast(self)).to_float()) }
 }
 
+// TODO: figure out how to merge with InvTrig
+pub trait InvTrigV<T> {
+    pure fn asin() -> T;
+    pure fn acos() -> T;
+    pure fn atan() -> T;
+}
+
+pub impl<T:Copy Num NumCast InvTrig> Vec2<T>: InvTrigV<Vec2<Radians<T>>>  {
+    #[inline(always)]
+    pure fn asin() -> Vec2<Radians<T>> {
+        Vec2::new(asin(&self[0]),
+                  asin(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn acos() -> Vec2<Radians<T>> {
+        Vec2::new(acos(&self[0]),
+                  acos(&self[1]))
+    }
+    
+    #[inline(always)]
+    pure fn atan() -> Vec2<Radians<T>> {
+        Vec2::new(atan(&self[0]),
+                  atan(&self[1]))
+    }
+}
+
+pub impl<T:Copy Num NumCast InvTrig> Vec3<T>: InvTrigV<Vec3<Radians<T>>>  {
+    #[inline(always)]
+    pure fn asin() -> Vec3<Radians<T>> {
+        Vec3::new(asin(&self[0]),
+                  asin(&self[1]),
+                  asin(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn acos() -> Vec3<Radians<T>> {
+        Vec3::new(acos(&self[0]),
+                  acos(&self[1]),
+                  acos(&self[2]))
+    }
+    
+    #[inline(always)]
+    pure fn atan() -> Vec3<Radians<T>> {
+        Vec3::new(atan(&self[0]),
+                  atan(&self[1]),
+                  atan(&self[2]))
+    }
+}
+
+pub impl<T:Copy Num NumCast InvTrig> Vec4<T>: InvTrigV<Vec4<Radians<T>>>  {
+    #[inline(always)]
+    pure fn asin() -> Vec4<Radians<T>> {
+        Vec4::new(asin(&self[0]),
+                  asin(&self[1]),
+                  asin(&self[2]),
+                  asin(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn acos() -> Vec4<Radians<T>> {
+        Vec4::new(acos(&self[0]),
+                  acos(&self[1]),
+                  acos(&self[2]),
+                  acos(&self[3]))
+    }
+    
+    #[inline(always)]
+    pure fn atan() -> Vec4<Radians<T>> {
+        Vec4::new(atan(&self[0]),
+                  atan(&self[1]),
+                  atan(&self[2]),
+                  atan(&self[3]))
+    }
+}
+
+
+
 ///
 /// Hyperbolic functions
 ///
