@@ -55,8 +55,8 @@ fn test_rotation() {
     {
         let pos = Vec4::new(1.0, 0.0, 0.0, 1.0);   // the position to transform
         let rot = Rotation {
-            axis:  Vec3::new(0.0, 0.0, 1.0),       // unit_z
             theta: Degrees(180.0).to_radians(),
+            axis:  Vec3::new(0.0, 0.0, 1.0),       // unit_z
         };
         
         let newpos = rot.to_mat4().mul_v(&pos);
@@ -68,13 +68,13 @@ fn test_rotation() {
         let pos = Vec4::new(4f32, 0f32, 0f32, 1f32);
         
         let rot_a = Rotation {
-            axis:  Vec3::new(0f32, 1f32, 0f32),     // unit_y
             theta: Degrees(90f32).to_radians(),
+            axis:  Vec3::new(0f32, 1f32, 0f32),     // unit_y
         };
         
         let rot_b = Rotation {
-            axis:  -Vec3::new(0f32, 1f32, 0f32),    // -unit_y
             theta: Degrees(90f32).to_radians(),
+            axis:  -Vec3::new(0f32, 1f32, 0f32),    // -unit_y
         };
         
         let newpos_a = rot_a.to_mat4().mul_v(&pos);
@@ -86,4 +86,6 @@ fn test_rotation() {
         assert newpos_a == expected_pos_a;
         assert newpos_b == expected_pos_b;
     }
+    
+    // TODO: test to_quat
 }

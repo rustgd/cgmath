@@ -76,11 +76,15 @@ pub impl<T:Copy Ord> Degrees<T>: Ord {
  * An angular rotation around an arbitary axis
  */
 pub struct Rotation<T> {
-    axis: Vec3<T>,
     theta: Radians<T>,
+    axis: Vec3<T>,
 }
 
 pub impl<T:Copy Num NumCast> Rotation<T> {
+    static pure fn new(theta: Radians<T>, axis: Vec3<T>) -> Rotation<T> {
+        Rotation { theta: move theta, axis: move axis }
+    }
+    
     pure fn to_mat3() -> Mat3<T> {
         let c:  T = cos(&self.theta);
         let s:  T = sin(&self.theta);
