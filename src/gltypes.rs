@@ -22,6 +22,7 @@
 
 use core::sys::size_of;
 
+use angle::{Radians, Degrees, Rotation, Euler};
 use mat::{NumericMatrix, NumericMatrixNxN, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
@@ -420,10 +421,50 @@ pub impl dmat4x4 {
 }
 
 
-// Quaternion types
+// Angle unit aliases. These are not present in the GLSL specification, but they
+// follow roughly the same nomenclature.
 
-// These quaternion type aliases are not actually specified in the GLSL spec
-// but they follow the same nomenclature
+pub type radians  = Radians<f32>;       /// a single-precision angle with floating-point radian units
+pub type dradians = Radians<f64>;       /// a double-precision angle with floating-point radian units
+pub type degrees  = Degrees<f32>;       /// a single-precision angle with floating-point degree units
+pub type ddegrees = Degrees<f64>;       /// a double-precision angle with floating-point degree units
+                                        //  TODO: not sure about 'ddegrees' - could be easy to mis-type
+
+
+// Angle unit constructors
+
+pub fn radians(theta: f32)  -> radians  { Radians(theta) }
+pub fn dradians(theta: f64) -> dradians { Radians(theta) }
+pub fn degrees(theta: f32)  -> degrees  { Degrees(theta) }
+pub fn ddegrees(theta: f64) -> ddegrees { Degrees(theta) }
+
+
+// Axis rotation aliases. These are not present in the GLSL specification, but
+// they follow roughly the same nomenclature.
+
+pub type rotation  = Rotation<f32>;       /// a single-precision floating-point axis rotation
+pub type drotation = Rotation<f64>;       /// a double-precision floating-point axis rotation
+
+pub impl rotation {
+    #[inline(always)] static pure fn new(theta: radians, axis: vec3) -> rotation { Rotation::new(move theta, move axis) }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<rotation>() }
+}
+
+pub impl drotation {
+    #[inline(always)] static pure fn new(theta: dradians, axis: dvec3) -> drotation { Rotation::new(move theta, move axis) }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<drotation>() }
+}
+
+
+// Axis rotation aliases. These are not present in the GLSL specification, but
+// they follow roughly the same nomenclature.
+
+pub type euler  = Euler<f32>;       /// single-precision floating-point euler angles (pitch/yaw/roll)
+pub type deuler = Euler<f64>;       /// double-precision floating-point euler angles (pitch/yaw/roll)
+
+
+// Quaternion aliases. These are not present in the GLSL specification, but
+// they follow roughly the same nomenclature.
 
 pub type quat4  = Quat<f32>;             /// a single-precision floating-point quaternion
 pub type dquat4 = Quat<f64>;             /// a double-precision floating-point quaternion
