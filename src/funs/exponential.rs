@@ -1,6 +1,10 @@
 /**
  * Exponential Functions
+ *
+ * This module corresponds to Section 8.2 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
+
 use num::cast::{NumCast, cast};
 use vec::{Vec2, Vec3, Vec4};
 

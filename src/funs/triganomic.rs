@@ -1,3 +1,9 @@
+/**
+ * Angle and Trigonometry Functions
+ *
+ * This module corresponds to Section 8.1 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+ */
 use num::cast::{NumCast, cast};
 use angle::Radians;
 use vec::{Vec3, Vec2, Vec4};

@@ -1,12 +1,15 @@
+/**
+ * Common Functions
+ *
+ * This module corresponds to Section 8.3 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+ */
+
 use num::cast::cast;
 use vec::{Vec2, Vec3, Vec4};
 
-/// Should only be implemented on signed types.
 pub trait Sign {
     pure fn abs() -> self;
-    
-    /// returns `-1` if the number is negative, `0` if the number is equal to 0,
-    /// and `1` if the number is positive
     pure fn sign() -> self;
 }
 

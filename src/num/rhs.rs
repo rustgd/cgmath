@@ -1,32 +1,33 @@
-/// These RHS operator traits would formalise the overloading of the RHS of the 
-/// Num operators (as described in [Refining Traits and Impls]
-/// (http:///smallcultfollowing.com/babysteps/blog/2012/10/04/refining-traits-slash-impls/)
-/// by nmatsakis). For example, if you wanted to achieve something like:
-///
-/// ~~~
-/// enum Radians<T> = T;
-///
-/// let half_rotation = Radians(float::consts::pi);
-/// let full_rotation = 2.0 * half_rotation;
-/// let quarter_rotation = half_rotation * 0.5;
-/// ~~~
-///
-/// All you'd have to implement is:
-///
-/// ~~~
-/// pub impl Radians<float>: float::MulRHS<Radians<float>> {
-///     pure fn int_add_rhs(lhs: &int) -> Radians<float> { Radians(lhs * (*self)) }
-/// }
-///
-/// pub impl<T:Copy Num> Radians<T>: Mul<T, Radians<T>> {
-///     pure fn mul(rhs: &T) -> Radians<T> { Radians((*self) * (*rhs)) }
-/// }
-/// ~~~
-///
-/// I may have got something wrong in my implementations, as I got some 'multiple
-/// applicable methods in scope' errors due to Num automatically being imported
-/// with core. If that's the case, apologies in advance!
-///
+/**
+ * These RHS operator traits would formalise the overloading of the RHS of the 
+ * Num operators (as described in [Refining Traits and Impls]
+ * (http://smallcultfollowing.com/babysteps/blog/2012/10/04/refining-traits-slash-impls/)
+ * by nmatsakis). For example, if you wanted to achieve something like:
+ *
+ * ~~~
+ * enum Radians<T> = T;
+ *
+ * let half_rotation = Radians(float::consts::pi);
+ * let full_rotation = 2.0 * half_rotation;
+ * let quarter_rotation = half_rotation * 0.5;
+ * ~~~
+ *
+ * All you'd have to implement is:
+ *
+ * ~~~
+ * pub impl Radians<float>: float::MulRHS<Radians<float>> {
+ *     pure fn int_add_rhs(lhs: &int) -> Radians<float> { Radians(lhs * (*self)) }
+ * }
+ *
+ * pub impl<T:Copy Num> Radians<T>: Mul<T, Radians<T>> {
+ *     pure fn mul(rhs: &T) -> Radians<T> { Radians((*self) * (*rhs)) }
+ * }
+ * ~~~
+ *
+ * I may have got something wrong in my implementations, as I got some 'multiple
+ * applicable methods in scope' errors due to Num automatically being imported
+ * with core. If that's the case, apologies in advance!
+ */
 
 use core::Num;
 

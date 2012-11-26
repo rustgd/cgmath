@@ -1,24 +1,24 @@
-///
-/// This module contains various type aliases and method wrappers to make working
-/// with OpenGL cleaner and safer than working with the lmath types directly.
-/// This is especially important when working with type-sensitive OpenGL functions
-/// such as `glVertexAttribPointer` and `glUniformMatrix4fv`) where a simple mistake
-/// such writing `Vec3::new(1, 2, 3)` or `Vec3::new(1f, 2f, 3f)` as opposed to
-/// `Vec3::new(1f32, 2f32, 3f32)` could cause you an afternoon of pain.
-///
-/// To give you an example of how using the wrapper methods can clean up your
-/// code and make debugging far easier, instead of writing:
-///
-/// ~~~
-/// let v: Mat4<f64> = NumericMatrixNxN::identity();
-/// ~~~
-///
-/// you can write:
-///
-/// ~~~
-/// let v = dmat4::identity();
-/// ~~~
-///
+/***
+ * This module contains various type aliases and method wrappers to make working
+ * with OpenGL cleaner and safer than working with the lmath types directly.
+ * This is especially important when working with type-sensitive OpenGL functions
+ * such as `glVertexAttribPointer` and `glUniformMatrix4fv`) where a simple mistake
+ * such writing `Vec3::new(1, 2, 3)` or `Vec3::new(1f, 2f, 3f)` as opposed to
+ * `Vec3::new(1f32, 2f32, 3f32)` could cause you an afternoon of pain.
+ *
+ * To give you an example of how using the wrapper methods can clean up your
+ * code and make debugging far easier, instead of writing:
+ *
+ * ~~~
+ * let v: Mat4<f64> = NumericMatrixNxN::identity();
+ * ~~~
+ *
+ * you can write:
+ *
+ * ~~~
+ * let v = dmat4::identity();
+ * ~~~
+ */
 
 use core::sys::size_of;
 
@@ -27,7 +27,8 @@ use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
 
 
-// Vector aliases
+// Vector aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
 pub type vec2  = Vec2<f32>;             /// a two-component single-precision floating-point vector
 pub type vec3  = Vec3<f32>;             /// a three-component single-precision floating-point vector
@@ -207,7 +208,8 @@ pub impl uvec4 {
 }
 
 
-// Matrix aliases
+// Matrix aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
 pub type mat2 = mat2x2;                 /// a 2×2 single-precision floating-point matrix
 pub type mat3 = mat3x3;                 /// a 3×3 single-precision floating-point matrix

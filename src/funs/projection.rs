@@ -5,12 +5,12 @@ use num::cast::cast;
 use num::consts::pi;
 use num::ext::FloatExt;
 
-//
-//  Create a perspective projection matrix
-//
-//  fov is in degrees
-//  http://www.opengl.org/wiki/GluPerspective_code
-//
+/**
+ * Create a perspective projection matrix
+ *
+ * This is the equivalent of the gluPerspective function, the algorithm of which
+ * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
+ */
 #[inline(always)]
 pure fn perspective<T:Copy FloatExt>(fovy: Radians<T>, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * tan(&fovy);
@@ -19,18 +19,16 @@ pure fn perspective<T:Copy FloatExt>(fovy: Radians<T>, aspectRatio: T, near: T, 
     frustum(-xmax, xmax, -ymax, ymax, near, far)
 }
 
-//
-//  Define a view frustrum
-//  http://www.felixgers.de/teaching/jogl/perspectiveProjection.html
-//  http://www.opengl.org/wiki/GluPerspective_code
-//
-//  TODO: double check algorithm
-//
+/**
+ * Define a view frustrum
+ *
+ * This is the equivalent of the now deprecated [glFrustrum]
+ * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
+ */
 #[inline(always)]
 pure fn frustum<T:Copy FloatExt>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = cast(0);
     let _2: T = cast(2);
-    let neg_1 = cast(-1);
     
     let c0r0 = (_2 * near) / (right - left);
     let c0r1 = _0;
@@ -43,7 +41,7 @@ pure fn frustum<T:Copy FloatExt>(left: T, right: T, bottom: T, top: T, near: T, 
     let c2r0 = (right + left) / (right - left);
     let c2r1 = (top + bottom) / (top - bottom);
     let c2r2 = -(far + near) / (far - near);
-    let c2r3 = neg_1;
+    let c2r3 = cast(-1);
     let c3r0 = _0;
     let c3r1 = _0;
     let c3r2 = -(_2 * far * near) / (far - near);

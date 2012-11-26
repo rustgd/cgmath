@@ -1,9 +1,11 @@
 /**
  * Vector Relational Functions
+ *
+ * This module corresponds to Section 8.7 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
 use core::cmp::{Eq, Ord};
-
 use vec::{Vector, Vec2, Vec3, Vec4};
 
 pub trait RelVector<BVec> {

@@ -1,11 +1,3 @@
-/**
- * Various traits intended to be used with the built in numeric types. These
- * allow one to be more specific with trait bounds when using generics.
- *
- * Note: These traits won't be able to be used to their full potential until
- * trait inheritence is implemented.
- */
-
 use core::cmp::{Eq, Ord};
 
 use std::cmp::FuzzyEq;
