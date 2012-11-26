@@ -31,6 +31,7 @@ pub mod num {
     pub mod consts;
     pub mod default_eq;
     pub mod ext;
+    pub mod rhs; // FIXME: see module description
 }
 
 pub mod funs {
