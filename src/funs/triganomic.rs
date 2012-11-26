@@ -1,5 +1,5 @@
-use num::cast::*;
-use angle::*;
+use num::cast::{NumCast, cast};
+use angle::Radians;
 use vec::{Vec3, Vec2, Vec4};
 
 ///

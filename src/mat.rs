@@ -7,9 +7,8 @@ use core::vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
 use dim::Dimensional;
-use funs::exp::*;
-use funs::extent::*;
-use funs::sign::*;
+use funs::common::*;
+use funs::exponential::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 use quat::{Quat, ToQuat};

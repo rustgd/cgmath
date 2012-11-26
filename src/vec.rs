@@ -7,7 +7,7 @@ use core::vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
 use dim::Dimensional;
-use funs::exp::Exp;
+use funs::exponential::Exp;
 use num::cast::*;
 use num::default_eq::DefaultEq;
 

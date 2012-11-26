@@ -35,22 +35,17 @@ pub mod num {
 }
 
 pub mod funs {
-  pub mod approx;
-  pub mod boolv;
-  pub mod exp;
-  pub mod extent;
-  pub mod mix;
+  pub mod common;
+  pub mod exponential;
   pub mod projection;
-  pub mod relv;
-  pub mod sign;
+  pub mod relational;
   pub mod transform;
-  pub mod trig;
+  pub mod triganomic;
   
   #[test]
   mod test {
-    mod test_boolv;
-    mod test_extent;
-    mod test_sign;
+    mod test_common;
+    mod test_relational;
     mod test_transform;
   }
 }

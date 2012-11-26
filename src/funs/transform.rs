@@ -1,7 +1,8 @@
-use funs::trig::*;
-use angle::Angle;
+use funs::triganomic::{cos, sin};
+use angle::Radians;
 use mat::{Mat3, Mat4};
-use num::cast::*;
+use num::cast::{NumCast, cast};
+use vec::Vec3;
 
 pub pure fn mat3_from_rotation<T:Copy Num NumCast>(theta: Radians<T>, axis: Vec3<T>) -> Mat3<T> {
     let c:  T = cos(&theta);

@@ -1,7 +1,7 @@
 /**
  * Exponential Functions
  */
-use num::cast::*;
+use num::cast::{NumCast, cast};
 use vec::{Vec2, Vec3, Vec4};
 
 pub trait Exp {

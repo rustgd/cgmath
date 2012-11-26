@@ -1,5 +1,5 @@
-use funs::trig::*;
-use angle::Angle;
+use funs::triganomic::tan;
+use angle::Radians;
 use mat::Mat4;
 use num::cast::cast;
 use num::consts::pi;
