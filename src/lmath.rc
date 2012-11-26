@@ -39,13 +39,11 @@ pub mod funs {
   pub mod exponential;
   pub mod projection;
   pub mod relational;
-  pub mod transform;
   pub mod triganomic;
   
   #[test]
   mod test {
     mod test_common;
     mod test_relational;
-    mod test_transform;
   }
 }

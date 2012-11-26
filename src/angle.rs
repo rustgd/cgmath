@@ -1,8 +1,14 @@
 use core::cmp::{Eq, Ord};
 use core::f64::consts::pi;
-use num::cast::*;
+use funs::triganomic::{cos, sin};
+use mat::{Mat3, Mat4};
+use num::cast::{NumCast, cast};
+use quat::Quat;
 use vec::Vec3;
 
+/**
+ * The base trait for anglular units
+ */
 pub trait Angle<T>: Add<self,self>
                   , Sub<self,self>
                   , Mul<T,self>
@@ -66,9 +72,39 @@ pub impl<T:Copy Ord> Degrees<T>: Ord {
     #[inline(always)] pure fn gt(other: &Degrees<T>) -> bool { *self >  **other }
 }
 
-pub struct AxialRotation<T> {
+/**
+ * An angular rotation around an arbitary axis
+ */
+pub struct Rotation<T> {
     axis: Vec3<T>,
     theta: Radians<T>,
+}
+
+pub impl<T:Copy Num NumCast> Rotation<T> {
+    pure fn to_mat3() -> Mat3<T> {
+        let c:  T = cos(&self.theta);
+        let s:  T = sin(&self.theta);
+        let _0: T = cast(0);
+        let _1: T = cast(1);
+        let t:  T = _1 - c;
+        
+        let x = self.axis.x;
+        let y = self.axis.y;
+        let z = self.axis.z;
+        
+        Mat3::new(t * x * x + c,       t * x * y + s * z,   t * x * z - s * y,
+                  t * x * y - s * z,   t * y * y + c,       t * y * z + s * x,
+                  t * x * z - s - y,   t * y * z - s * x,   t * z * z + c)
+    }
+    
+    pure fn to_mat4() -> Mat4<T> {
+        self.to_mat3().to_mat4()
+    }
+    
+    pure fn to_quat() -> Quat<T> {
+        let half = self.theta / cast(2);
+        Quat::from_sv(cos(&half), self.axis.mul_t(sin(&half)))
+    }
 }
 
 pub struct Euler<T> {

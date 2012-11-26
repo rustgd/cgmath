@@ -1,6 +1,8 @@
 use core::float::consts::pi;
 
 use angle::*;
+use mat::Mat4;
+use vec::{Vec3, Vec4};
 
 #[test]
 fn test_radians() {
@@ -44,4 +46,44 @@ fn test_degrees() {
     assert *(Degrees(180.0) / 2.0)              == *Degrees(90.0);
     assert *(Degrees(540.0) % (360.0))          == *Degrees(180.0);
     assert *(-Degrees(180.0))                   == *Degrees(-180.0);
+}
+
+
+
+#[test]
+fn test_rotation() {
+    {
+        let pos = Vec4::new(1.0, 0.0, 0.0, 1.0);   // the position to transform
+        let rot = Rotation {
+            axis:  Vec3::new(0.0, 0.0, 1.0),       // unit_z
+            theta: Degrees(180.0).to_radians(),
+        };
+        
+        let newpos = rot.to_mat4().mul_v(&pos);
+        let expected_pos = Vec4::new(-1.0, 0.0, 0.0, 1.0);
+        
+        assert newpos == expected_pos;
+    }
+    {
+        let pos = Vec4::new(4f32, 0f32, 0f32, 1f32);
+        
+        let rot_a = Rotation {
+            axis:  Vec3::new(0f32, 1f32, 0f32),     // unit_y
+            theta: Degrees(90f32).to_radians(),
+        };
+        
+        let rot_b = Rotation {
+            axis:  -Vec3::new(0f32, 1f32, 0f32),    // -unit_y
+            theta: Degrees(90f32).to_radians(),
+        };
+        
+        let newpos_a = rot_a.to_mat4().mul_v(&pos);
+        let newpos_b = rot_b.to_mat4().mul_v(&pos);
+        
+        let expected_pos_a = Vec4::new(0f32, 0f32, -4f32, 1f32);
+        let expected_pos_b = Vec4::new(0f32, 0f32,  4f32, 1f32);
+        
+        assert newpos_a == expected_pos_a;
+        assert newpos_b == expected_pos_b;
+    }
 }
