@@ -19,6 +19,7 @@ pub mod vec;
 
 #[test]
 mod test {
+    mod test_angle;
     mod test_gltypes;
     mod test_mat;
     mod test_quat;
