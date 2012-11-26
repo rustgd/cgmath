@@ -48,6 +48,7 @@ pub mod funs {
   mod test {
     mod test_boolv;
     mod test_extent;
+    mod test_sign;
     mod test_transform;
   }
 }
