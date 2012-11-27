@@ -219,3 +219,28 @@ fn test_mat_n() {
     assert dmat3::size_of()  == dmat3::rows() * dmat3::cols() * 8;
     assert dmat4::size_of()  == dmat4::rows() * dmat4::cols() * 8;
 }
+
+#[test]
+fn test_radians() {
+    // TODO: unit tests
+}
+
+#[test]
+fn test_degrees() {
+    // TODO: unit tests
+}
+
+#[test]
+fn test_rotation() {
+    // TODO: unit tests
+}
+
+#[test]
+fn test_euler() {
+    // TODO: unit tests
+}
+
+#[test]
+fn test_quat() {
+    // TODO: unit tests
+}
