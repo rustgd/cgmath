@@ -23,6 +23,7 @@ pub trait Angle<T>: Add<self,self>
     
     pure fn to_radians() -> Radians<T>;
     pure fn to_degrees() -> Degrees<T>;
+    pure fn wrap() -> self;
 }
 
 pub enum Radians<T> = T;
@@ -36,6 +37,7 @@ pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { self }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
     
+    #[inline(always)] pure fn wrap() -> Radians<T> { fail(~"Radians.wrap() not yet implemented") }
 }
     
 pub impl<T:Copy Num> Radians<T>: Add<Radians<T>, Radians<T>> {
@@ -85,6 +87,7 @@ pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
     
+    #[inline(always)] pure fn wrap() -> Degrees<T> { fail(~"Degrees.wrap() not yet implemented") }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
