@@ -36,12 +36,30 @@ pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { self }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
     
+}
+    
+pub impl<T:Copy Num> Radians<T>: Add<Radians<T>, Radians<T>> {
     #[inline(always)] pure fn add(rhs: &Radians<T>) -> Radians<T> { Radians(*self + **rhs) }
+}
+    
+pub impl<T:Copy Num> Radians<T>: Sub<Radians<T>, Radians<T>> {
     #[inline(always)] pure fn sub(rhs: &Radians<T>) -> Radians<T> { Radians(*self - **rhs) }
-    #[inline(always)] pure fn mul(rhs: &T)          -> Radians<T> { Radians(*self * *rhs) }
-    #[inline(always)] pure fn div(rhs: &T)          -> Radians<T> { Radians(*self / *rhs) }
-    #[inline(always)] pure fn modulo(rhs: &T)       -> Radians<T> { Radians(*self % *rhs) }
-    #[inline(always)] pure fn neg()                 -> Radians<T> { Radians(-*self) }
+}
+    
+pub impl<T:Copy Num> Radians<T>: Mul<T, Radians<T>> {
+    #[inline(always)] pure fn mul(rhs: &T) -> Radians<T> { Radians(*self * *rhs) }
+}
+    
+pub impl<T:Copy Num> Radians<T>: Div<T, Radians<T>> {
+    #[inline(always)] pure fn div(rhs: &T) -> Radians<T> { Radians(*self / *rhs) }
+}
+    
+pub impl<T:Copy Num> Radians<T>: Modulo<T, Radians<T>> {
+    #[inline(always)] pure fn modulo(rhs: &T) -> Radians<T> { Radians(*self % *rhs) }
+}
+    
+pub impl<T:Copy Num> Radians<T>: Neg<Radians<T>> {
+    #[inline(always)] pure fn neg() -> Radians<T> { Radians(-*self) }
 }
 
 pub impl<T:Copy Eq> Radians<T>: Eq {
@@ -67,12 +85,30 @@ pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
     
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
     #[inline(always)] pure fn add(rhs: &Degrees<T>) -> Degrees<T> { Degrees(*self + **rhs) }
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Sub<Degrees<T>, Degrees<T>> {
     #[inline(always)] pure fn sub(rhs: &Degrees<T>) -> Degrees<T> { Degrees(*self - **rhs) }
-    #[inline(always)] pure fn mul(rhs: &T)          -> Degrees<T> { Degrees(*self * *rhs) }
-    #[inline(always)] pure fn div(rhs: &T)          -> Degrees<T> { Degrees(*self / *rhs) }
-    #[inline(always)] pure fn modulo(rhs: &T)       -> Degrees<T> { Degrees(*self % *rhs) }
-    #[inline(always)] pure fn neg()                 -> Degrees<T> { Degrees(-*self) }
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Mul<T, Degrees<T>> {
+    #[inline(always)] pure fn mul(rhs: &T) -> Degrees<T> { Degrees(*self * *rhs) }
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Div<T, Degrees<T>> {
+    #[inline(always)] pure fn div(rhs: &T) -> Degrees<T> { Degrees(*self / *rhs) }
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Modulo<T, Degrees<T>> {
+    #[inline(always)] pure fn modulo(rhs: &T) -> Degrees<T> { Degrees(*self % *rhs) }
+}
+    
+pub impl<T:Copy Num> Degrees<T>: Neg<Degrees<T>> {
+    #[inline(always)] pure fn neg() -> Degrees<T> { Degrees(-*self) }
 }
 
 pub impl<T:Copy Eq> Degrees<T>: Eq {
