@@ -132,10 +132,12 @@ pub struct Rotation<T> {
 }
 
 pub impl<T:Copy Num NumCast> Rotation<T> {
+    #[inline(always)]
     static pure fn new(theta: Radians<T>, axis: Vec3<T>) -> Rotation<T> {
         Rotation { theta: move theta, axis: move axis }
     }
     
+    #[inline(always)]
     pure fn to_mat3() -> Mat3<T> {
         let c:  T = cos(&self.theta);
         let s:  T = sin(&self.theta);
@@ -152,10 +154,12 @@ pub impl<T:Copy Num NumCast> Rotation<T> {
                   t * x * z - s - y,   t * y * z - s * x,   t * z * z + c)
     }
     
+    #[inline(always)]
     pure fn to_mat4() -> Mat4<T> {
         self.to_mat3().to_mat4()
     }
     
+    #[inline(always)]
     pure fn to_quat() -> Quat<T> {
         let half = self.theta / cast(2);
         Quat::from_sv(cos(&half), self.axis.mul_t(sin(&half)))
