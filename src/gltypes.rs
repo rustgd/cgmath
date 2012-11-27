@@ -22,7 +22,7 @@
 
 use core::sys::size_of;
 
-use angle::{Radians, Degrees, Rotation, Euler};
+use angle::{Angle, Radians, Degrees, Rotation, Euler};
 use mat::{NumericMatrix, NumericMatrixNxN, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
@@ -437,6 +437,34 @@ pub fn radians(theta: f32)  -> radians  { Radians(theta) }
 pub fn dradians(theta: f64) -> dradians { Radians(theta) }
 pub fn degrees(theta: f32)  -> degrees  { Degrees(theta) }
 pub fn ddegrees(theta: f64) -> ddegrees { Degrees(theta) }
+
+pub impl radians {
+    #[inline(always)] static pure fn full_rotation()    -> radians { Angle::full_rotation()    }
+    #[inline(always)] static pure fn half_rotation()    -> radians { Angle::half_rotation()    }
+    #[inline(always)] static pure fn quarter_rotation() -> radians { Angle::quarter_rotation() }
+    #[inline(always)] static pure fn eighth_rotation()  -> radians { Angle::eighth_rotation()  }
+}
+
+pub impl dradians {
+    #[inline(always)] static pure fn full_rotation()    -> dradians { Angle::full_rotation()    }
+    #[inline(always)] static pure fn half_rotation()    -> dradians { Angle::half_rotation()    }
+    #[inline(always)] static pure fn quarter_rotation() -> dradians { Angle::quarter_rotation() }
+    #[inline(always)] static pure fn eighth_rotation()  -> dradians { Angle::eighth_rotation()  }
+}
+
+pub impl degrees {
+    #[inline(always)] static pure fn full_rotation()    -> degrees { Angle::full_rotation()    }
+    #[inline(always)] static pure fn half_rotation()    -> degrees { Angle::half_rotation()    }
+    #[inline(always)] static pure fn quarter_rotation() -> degrees { Angle::quarter_rotation() }
+    #[inline(always)] static pure fn eighth_rotation()  -> degrees { Angle::eighth_rotation()  }
+}
+
+pub impl ddegrees {
+    #[inline(always)] static pure fn full_rotation()    -> ddegrees { Angle::full_rotation()    }
+    #[inline(always)] static pure fn half_rotation()    -> ddegrees { Angle::half_rotation()    }
+    #[inline(always)] static pure fn quarter_rotation() -> ddegrees { Angle::quarter_rotation() }
+    #[inline(always)] static pure fn eighth_rotation()  -> ddegrees { Angle::eighth_rotation()  }
+}
 
 
 // Axis rotation aliases. These are not present in the GLSL specification, but
