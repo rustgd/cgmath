@@ -20,8 +20,6 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
 pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
     pure fn rows() -> uint;
     pure fn cols() -> uint;
-    pure fn is_col_major() -> bool;
-    pure fn is_square() -> bool;
     
     pure fn col(i: uint) -> Col;
     pure fn row(i: uint) -> Row;
@@ -98,6 +96,8 @@ pub trait NumericMatrixNxN<T, ColRow>: MatrixNxN<T, ColRow>,
                                        NumericMatrix<T, ColRow, ColRow> {
     static pure fn identity() -> self;
     
+    // static pure fn from_value(value: T) -> self;
+    
     pure fn mul_m(other: &self) -> self;
     pure fn dot(other: &self) -> T;
     
@@ -116,7 +116,6 @@ pub trait NumericMatrixNxN<T, ColRow>: MatrixNxN<T, ColRow>,
 /// A 2 x 2 square matrix with numeric elements
 pub trait NumericMatrix2x2<T, ColRow2>: Matrix2x2<T, ColRow2>,
                                         NumericMatrixNxN<T, ColRow2> {
-   // static pure fn from_value(value: T) -> self;
     
     pure fn to_mat3() -> Mat3<T>;
     pure fn to_mat4() -> Mat4<T>;
@@ -125,15 +124,12 @@ pub trait NumericMatrix2x2<T, ColRow2>: Matrix2x2<T, ColRow2>,
 /// A 3 x 3 square matrix with numeric elements
 pub trait NumericMatrix3x3<T, ColRow3>: Matrix3x3<T, ColRow3>,
                                         NumericMatrixNxN<T, ColRow3> {
-   // static pure fn from_value(value: T) -> self;
-    
     pure fn to_mat4() -> Mat4<T>;
 }
 
 /// A 4 x 4 square matrix with numeric elements
 pub trait NumericMatrix4x4<T, ColRow4>: Matrix4x4<T, ColRow4>,
                                         NumericMatrixNxN<T, ColRow4> {
-   // static pure fn from_value(value: T) -> self;
 }
 
 
@@ -176,16 +172,10 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     static pure fn size_of() -> uint { size_of::<Mat2<T>>() }
     
     #[inline(always)]
-    pure fn rows() -> uint { 2 }
-    
-    #[inline(always)]
     pure fn cols() -> uint { 2 }
     
     #[inline(always)]
-    pure fn is_col_major() -> bool { true }
-    
-    #[inline(always)]
-    pure fn is_square() -> bool { true }
+    pure fn rows() -> uint { 2 }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec2<T> { self[i] }
@@ -415,16 +405,10 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     static pure fn size_of() -> uint { size_of::<Mat3<T>>() }
     
     #[inline(always)]
-    pure fn rows() -> uint { 3 }
-    
-    #[inline(always)]
     pure fn cols() -> uint { 3 }
     
     #[inline(always)]
-    pure fn is_col_major() -> bool { true }
-    
-    #[inline(always)]
-    pure fn is_square() -> bool { true }
+    pure fn rows() -> uint { 3 }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec3<T> { self[i] }
@@ -732,16 +716,10 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     static pure fn size_of() -> uint { size_of::<Mat4<T>>() }
     
     #[inline(always)]
-    pure fn rows() -> uint { 4 }
-    
-    #[inline(always)]
     pure fn cols() -> uint { 4 }
     
     #[inline(always)]
-    pure fn is_col_major() -> bool { true }
-    
-    #[inline(always)]
-    pure fn is_square() -> bool { true }
+    pure fn rows() -> uint { 4 }
     
     #[inline(always)]
     pure fn col(i: uint) -> Vec4<T> { self[i] }
