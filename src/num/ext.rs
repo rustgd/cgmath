@@ -7,15 +7,7 @@ use num::consts::*;
 use num::default_eq::*;
 
 
-pub trait TypeExt: TypeConsts, DefaultEq {}
-
-
-pub trait BooleanExt: TypeExt {}
-
-pub impl bool: BooleanExt {}
-
-
-pub trait NumExt: Copy, TypeExt, Eq, Num, NumCast, Ord {}
+pub trait NumExt: Copy, Eq, Num, NumCast, Ord {}
 
 
 pub trait UnSignedExt: NumExt {}
