@@ -439,31 +439,35 @@ pub fn degrees(theta: f32)  -> degrees  { Degrees(theta) }
 pub fn ddegrees(theta: f64) -> ddegrees { Degrees(theta) }
 
 pub impl radians {
-    #[inline(always)] static pure fn full_rotation()    -> radians { Angle::full_rotation()    }
-    #[inline(always)] static pure fn half_rotation()    -> radians { Angle::half_rotation()    }
-    #[inline(always)] static pure fn quarter_rotation() -> radians { Angle::quarter_rotation() }
-    #[inline(always)] static pure fn eighth_rotation()  -> radians { Angle::eighth_rotation()  }
+    #[inline(always)] static pure fn full_turn() -> radians  { Angle::full_turn() }
+    #[inline(always)] static pure fn half_turn() -> radians  { Angle::half_turn() }
+    #[inline(always)] static pure fn quadrant()  -> radians  { Angle::quadrant()  }
+    #[inline(always)] static pure fn sextant()   -> radians  { Angle::sextant()   }
+    #[inline(always)] static pure fn octant()    -> radians  { Angle::octant()    }
 }
 
 pub impl dradians {
-    #[inline(always)] static pure fn full_rotation()    -> dradians { Angle::full_rotation()    }
-    #[inline(always)] static pure fn half_rotation()    -> dradians { Angle::half_rotation()    }
-    #[inline(always)] static pure fn quarter_rotation() -> dradians { Angle::quarter_rotation() }
-    #[inline(always)] static pure fn eighth_rotation()  -> dradians { Angle::eighth_rotation()  }
+    #[inline(always)] static pure fn full_turn() -> dradians { Angle::full_turn() }
+    #[inline(always)] static pure fn half_turn() -> dradians { Angle::half_turn() }
+    #[inline(always)] static pure fn quadrant()  -> dradians { Angle::quadrant()  }
+    #[inline(always)] static pure fn sextant()   -> dradians { Angle::sextant()   }
+    #[inline(always)] static pure fn octant()    -> dradians { Angle::octant()    }
 }
 
 pub impl degrees {
-    #[inline(always)] static pure fn full_rotation()    -> degrees { Angle::full_rotation()    }
-    #[inline(always)] static pure fn half_rotation()    -> degrees { Angle::half_rotation()    }
-    #[inline(always)] static pure fn quarter_rotation() -> degrees { Angle::quarter_rotation() }
-    #[inline(always)] static pure fn eighth_rotation()  -> degrees { Angle::eighth_rotation()  }
+    #[inline(always)] static pure fn full_turn() -> degrees  { Angle::full_turn() }
+    #[inline(always)] static pure fn half_turn() -> degrees  { Angle::half_turn() }
+    #[inline(always)] static pure fn quadrant()  -> degrees  { Angle::quadrant()  }
+    #[inline(always)] static pure fn sextant()   -> degrees  { Angle::sextant()   }
+    #[inline(always)] static pure fn octant()    -> degrees  { Angle::octant()    }
 }
 
 pub impl ddegrees {
-    #[inline(always)] static pure fn full_rotation()    -> ddegrees { Angle::full_rotation()    }
-    #[inline(always)] static pure fn half_rotation()    -> ddegrees { Angle::half_rotation()    }
-    #[inline(always)] static pure fn quarter_rotation() -> ddegrees { Angle::quarter_rotation() }
-    #[inline(always)] static pure fn eighth_rotation()  -> ddegrees { Angle::eighth_rotation()  }
+    #[inline(always)] static pure fn full_turn() -> ddegrees { Angle::full_turn() }
+    #[inline(always)] static pure fn half_turn() -> ddegrees { Angle::half_turn() }
+    #[inline(always)] static pure fn quadrant()  -> ddegrees { Angle::quadrant()  }
+    #[inline(always)] static pure fn sextant()   -> ddegrees { Angle::sextant()   }
+    #[inline(always)] static pure fn octant()    -> ddegrees { Angle::octant()    }
 }
 
 

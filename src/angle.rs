@@ -17,10 +17,11 @@ pub trait Angle<T>: Add<self,self>
                   , Modulo<T,self>
                   , Neg<self>
                   , Eq, Ord {
-    static pure fn full_rotation() -> self;
-    static pure fn half_rotation() -> self;
-    static pure fn quarter_rotation() -> self;
-    static pure fn eighth_rotation() -> self;
+    static pure fn full_turn() -> self;
+    static pure fn half_turn() -> self;
+    static pure fn quadrant()  -> self;
+    static pure fn sextant()   -> self;
+    static pure fn octant()    -> self;
     
     pure fn to_radians() -> Radians<T>;
     pure fn to_degrees() -> Degrees<T>;
@@ -34,10 +35,11 @@ pub trait Angle<T>: Add<self,self>
 pub enum Radians<T> = T;
 
 pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
-    #[inline(always)] static pure fn full_rotation()    -> Radians<T> { Radians(move cast(2.0 * pi)) }
-    #[inline(always)] static pure fn half_rotation()    -> Radians<T> { Radians(move cast(pi))       }
-    #[inline(always)] static pure fn quarter_rotation() -> Radians<T> { Radians(move cast(pi / 2.0)) }
-    #[inline(always)] static pure fn eighth_rotation()  -> Radians<T> { Radians(move cast(pi / 4.0)) }
+    #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(move cast(2.0 * pi)) }  // TODO: calculate absolute values
+    #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(move cast(pi))       }
+    #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(move cast(pi / 2.0)) }
+    #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(move cast(pi / 3.0)) }
+    #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(move cast(pi / 4.0)) }
     
     #[inline(always)] pure fn to_radians() -> Radians<T> { self }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
@@ -112,10 +114,11 @@ pub impl<T> Radians<T>: ToStr {
 pub enum Degrees<T> = T;
 
 pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
-    #[inline(always)] static pure fn full_rotation()    -> Degrees<T> { Degrees(move cast(360.0)) }
-    #[inline(always)] static pure fn half_rotation()    -> Degrees<T> { Degrees(move cast(180.0)) }
-    #[inline(always)] static pure fn quarter_rotation() -> Degrees<T> { Degrees(move cast(90.0))  }
-    #[inline(always)] static pure fn eighth_rotation()  -> Degrees<T> { Degrees(move cast(45.0))  }
+    #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(move cast(360.0)) }
+    #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(move cast(180.0)) }
+    #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(move cast(90.0))  }
+    #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(move cast(60.0))  }
+    #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(move cast(45.0))  }
     
     #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
