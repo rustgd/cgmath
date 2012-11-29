@@ -1,5 +1,6 @@
 use core::cmp::{Eq, Ord};
 use core::f64::consts::pi;
+
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
 use num::cast::{NumCast, cast};
@@ -100,6 +101,10 @@ pub impl<T:Copy Ord> Radians<T>: Ord {
     #[inline(always)] pure fn gt(&self, other: &Radians<T>) -> bool { **self >  **other }
 }
 
+pub impl<T> Radians<T>: ToStr {
+    pure fn to_str() -> ~str { fmt!("%? rad", *self) }
+}
+
 
 
 
@@ -172,6 +177,10 @@ pub impl<T:Copy Ord> Degrees<T>: Ord {
     #[inline(always)] pure fn le(&self, other: &Degrees<T>) -> bool { **self <= **other }
     #[inline(always)] pure fn ge(&self, other: &Degrees<T>) -> bool { **self >= **other }
     #[inline(always)] pure fn gt(&self, other: &Degrees<T>) -> bool { **self >  **other }
+}
+
+pub impl<T> Degrees<T>: ToStr {
+    pure fn to_str() -> ~str { fmt!("%?\xB0", *self) }
 }
 
 

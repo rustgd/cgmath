@@ -31,6 +31,8 @@ fn test_radians() {
     assert *(Radians(pi) / 2.0)                 == *Radians(pi / 2.0);
     assert *(Radians(3.0 * pi) % (2.0 * pi))    == *Radians(pi);
     assert *(-Radians(pi))                      == *Radians(-pi);
+    
+    assert fmt!("%s", Radians(1).to_str())      == ~"1 rad";
 }
 
 #[test]
@@ -60,6 +62,8 @@ fn test_degrees() {
     assert (Degrees(180.0) / 2.0)               == Degrees(90.0);
     assert (Degrees(540.0) % (360.0))           == Degrees(180.0);
     assert (-Degrees(180.0))                    == Degrees(-180.0);
+    
+    assert fmt!("%s", Degrees(180.0).to_str())  == ~"180°";
 }
 
 
