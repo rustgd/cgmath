@@ -6,6 +6,7 @@
  */
 
 use num::cast::cast;
+use angle::{Radians, Degrees};
 use vec::{Vec2, Vec3, Vec4};
 
 pub trait Sign {
@@ -54,6 +55,17 @@ pub impl f64: Sign {
 pub impl float: Sign {
     #[inline(always)] pure fn abs()  -> float { if self >= 0f { self } else {-self } }
     #[inline(always)] pure fn sign() -> float { if self > 0f { 1f } else if self == 0f { 0f } else { -1f } }
+}
+
+
+pub impl<T:Copy Sign> Radians<T>: Sign{
+    #[inline(always)] pure fn abs()  -> Radians<T> { Radians(abs(&*self)) }
+    #[inline(always)] pure fn sign() -> Radians<T> { Radians(sign(&*self)) }
+}
+
+pub impl<T:Copy Sign> Degrees<T>: Sign{
+    #[inline(always)] pure fn abs()  -> Degrees<T> { Degrees(abs(&*self)) }
+    #[inline(always)] pure fn sign() -> Degrees<T> { Degrees(sign(&*self)) }
 }
 
 
@@ -148,6 +160,26 @@ pub impl float: Approx {
     #[inline(always)] pure fn ceil()  -> float { cast(cmath::c_float_utils::ceil(cast(self))) }
     #[inline(always)] pure fn fract() -> float { self - floor(&self) }
 }
+
+
+pub impl<T:Copy Approx> Radians<T>: Approx{
+    #[inline(always)] pure fn floor() -> Radians<T> { Radians(floor(&*self)) }
+    #[inline(always)] pure fn trunc() -> Radians<T> { Radians(trunc(&*self)) }
+    #[inline(always)] pure fn round() -> Radians<T> { Radians(round(&*self)) }
+    // #[inline(always)] pure fn roundEven() -> Radians<T> { Radians(roundEven(&*self)) }
+    #[inline(always)] pure fn ceil()  -> Radians<T> { Radians(ceil(&*self)) }
+    #[inline(always)] pure fn fract() -> Radians<T> { Radians(fract(&*self)) }
+}
+
+pub impl<T:Copy Approx> Degrees<T>: Approx{
+    #[inline(always)] pure fn floor() -> Degrees<T> { Degrees(floor(&*self)) }
+    #[inline(always)] pure fn trunc() -> Degrees<T> { Degrees(trunc(&*self)) }
+    #[inline(always)] pure fn round() -> Degrees<T> { Degrees(round(&*self)) }
+    // #[inline(always)] pure fn roundEven() -> Degrees<T> { Degrees(roundEven(&*self)) }
+    #[inline(always)] pure fn ceil()  -> Degrees<T> { Degrees(ceil(&*self)) }
+    #[inline(always)] pure fn fract() -> Degrees<T> { Degrees(fract(&*self)) }
+}
+
 
 pub impl<T:Copy Approx> Vec2<T>: Approx {
     #[inline(always)]
@@ -357,6 +389,18 @@ pub impl float: MinMax {
     #[inline(always)] pure fn max(other: &float) -> float { if self > *other { self } else { *other } }
 }
 
+
+pub impl<T:Copy MinMax> Radians<T>: MinMax{
+    #[inline(always)] pure fn min(other: &Radians<T>) -> Radians<T> { Radians(min(&*self, &**other)) }
+    #[inline(always)] pure fn max(other: &Radians<T>) -> Radians<T> { Radians(max(&*self, &**other)) }
+}
+
+pub impl<T:Copy MinMax> Degrees<T>: MinMax{
+    #[inline(always)] pure fn min(other: &Degrees<T>) -> Degrees<T> { Degrees(min(&*self, &**other)) }
+    #[inline(always)] pure fn max(other: &Degrees<T>) -> Degrees<T> { Degrees(max(&*self, &**other)) }
+}
+
+
 pub impl<T:Copy MinMax> Vec2<T>: MinMax {
     #[inline(always)]
     pure fn min(other: &Vec2<T>) -> Vec2<T> {
@@ -424,6 +468,22 @@ pub impl int:   Clamp { #[inline(always)] pure fn clamp(mn: &int,   mx: &int)   
 pub impl f32:   Clamp { #[inline(always)] pure fn clamp(mn: &f32,   mx: &f32)   -> f32   { min(&max(&self, mn), mx) } }
 pub impl f64:   Clamp { #[inline(always)] pure fn clamp(mn: &f64,   mx: &f64)   -> f64   { min(&max(&self, mn), mx) } }
 pub impl float: Clamp { #[inline(always)] pure fn clamp(mn: &float, mx: &float) -> float { min(&max(&self, mn), mx) } }
+
+
+pub impl<T:Clamp> Radians<T>: Clamp {
+    #[inline(always)]
+    pure fn clamp(mn: &Radians<T>, mx: &Radians<T>) -> Radians<T> {
+        Radians((*self).clamp(&**mn, &**mx))
+    }
+}
+
+pub impl<T:Clamp> Degrees<T>: Clamp {
+    #[inline(always)]
+    pure fn clamp(mn: &Degrees<T>, mx: &Degrees<T>) -> Degrees<T> {
+        Degrees((*self).clamp(&**mn, &**mx))
+    }
+}
+
 
 pub impl<T:Copy Clamp> Vec2<T>: Clamp {
     #[inline(always)]
@@ -515,6 +575,25 @@ pub impl float: Mix {
         if self < *edge { 0.0 } else { 1.0 }
     }
 }
+
+
+pub impl<T:Mix> Radians<T>: Mix {
+    #[inline(always)]
+    pure fn mix(other: &Radians<T>, value: &Radians<T>) -> Radians<T> {
+        Radians((*self).mix(&**other, &**value))
+    }
+    
+    #[inline(always)]
+    pure fn smooth_step(edge0: &Radians<T>, edge1: &Radians<T>) -> Radians<T> {
+        Radians((*self).smooth_step(&**edge0, &**edge1))
+    }
+    
+    #[inline(always)]
+    pure fn step(edge: &Radians<T>) -> Radians<T> {
+        Radians((*self).step(&**edge))
+    }
+}
+
 
 pub impl<T:Copy Mix> Vec2<T>: Mix {
     #[inline(always)]

@@ -1,4 +1,5 @@
 use common::*;
+use angle::{Radians, Degrees};
 use vec::{Vec2, Vec3, Vec4};
 
 #[test]
@@ -16,6 +17,20 @@ fn test_abs() {
     assert abs(&0.0)    == 0.0;
     assert abs(&2.5)    == 2.5;
     assert abs(&-2.5)   == 2.5;
+    
+    assert Radians(0.0).abs()    == Radians(0.0);
+    assert Radians(2.5).abs()    == Radians(2.5);
+    assert (Radians(-2.5)).abs() == Radians(2.5);
+    assert abs(&Radians(0.0))    == Radians(0.0);
+    assert abs(&Radians(2.5))    == Radians(2.5);
+    assert abs(&Radians(-2.5))   == Radians(2.5);
+    
+    assert Degrees(0.0).abs()    == Degrees(0.0);
+    assert Degrees(2.5).abs()    == Degrees(2.5);
+    assert (Degrees(-2.5)).abs() == Degrees(2.5);
+    assert abs(&Degrees(0.0))    == Degrees(0.0);
+    assert abs(&Degrees(2.5))    == Degrees(2.5);
+    assert abs(&Degrees(-2.5))   == Degrees(2.5);
 }
 
 #[test]
@@ -33,6 +48,20 @@ fn test_sign() {
     assert sign(&0.0)   == 0.0;
     assert sign(&2.5)   == 1.0;
     assert sign(&-2.5)  == -1.0;
+    
+    assert Radians(0.0).sign()   == Radians(0.0);
+    assert Radians(2.5).sign()   == Radians(1.0);
+    assert (Radians(-2.5)).sign()== Radians(-1.0);
+    assert sign(&Radians(0.0))   == Radians(0.0);
+    assert sign(&Radians(2.5))   == Radians(1.0);
+    assert sign(&Radians(-2.5))  == Radians(-1.0);
+    
+    assert Degrees(0.0).sign()   == Degrees(0.0);
+    assert Degrees(2.5).sign()   == Degrees(1.0);
+    assert (Degrees(-2.5)).sign()== Degrees(-1.0);
+    assert sign(&Degrees(0.0))   == Degrees(0.0);
+    assert sign(&Degrees(2.5))   == Degrees(1.0);
+    assert sign(&Degrees(-2.5))  == Degrees(-1.0);
 }
 
 #[test]
@@ -92,6 +121,16 @@ fn test_min() {
     assert min(&2f, &1f)        == 1f;
     assert min(&2f32, &1f32)    == 1f32;
     assert min(&2f64, &1f64)    == 1f64;
+    
+    assert Radians(1).min(&Radians(2))   == Radians(1);
+    assert Radians(2).min(&Radians(1))   == Radians(1);
+    assert min(&Radians(1), &Radians(2)) == Radians(1);
+    assert min(&Radians(2), &Radians(1)) == Radians(1);
+    
+    assert Degrees(1).min(&Degrees(2))   == Degrees(1);
+    assert Degrees(2).min(&Degrees(1))   == Degrees(1);
+    assert min(&Degrees(1), &Degrees(2)) == Degrees(1);
+    assert min(&Degrees(2), &Degrees(1)) == Degrees(1);
     
     assert min(&Vec2::new(1, 2),        &Vec2::new(2, 1))       == Vec2::new(1, 1);
     assert min(&Vec3::new(1, 2, 3),     &Vec3::new(3, 2, 1))    == Vec3::new(1, 2, 1);
@@ -161,6 +200,16 @@ fn test_max() {
     assert max(&2f, &1f)        == 2f;
     assert max(&2f32, &1f32)    == 2f32;
     assert max(&2f64, &1f64)    == 2f64;
+    
+    assert Radians(1).max(&Radians(2))   == Radians(2);
+    assert Radians(2).max(&Radians(1))   == Radians(2);
+    assert max(&Radians(1), &Radians(2)) == Radians(2);
+    assert max(&Radians(2), &Radians(1)) == Radians(2);
+    
+    assert Degrees(1).max(&Degrees(2))   == Degrees(2);
+    assert Degrees(2).max(&Degrees(1))   == Degrees(2);
+    assert max(&Degrees(1), &Degrees(2)) == Degrees(2);
+    assert max(&Degrees(2), &Degrees(1)) == Degrees(2);
     
     assert max(&Vec2::new(1, 2),        &Vec2::new(2, 1))       == Vec2::new(2, 2);
     assert max(&Vec3::new(1, 2, 3),     &Vec3::new(3, 2, 1))    == Vec3::new(3, 2, 3);
