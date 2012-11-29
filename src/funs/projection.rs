@@ -1,5 +1,5 @@
 use funs::triganomic::tan;
-use angle::Radians;
+use angle::Angle;
 use mat::Mat4;
 use num::cast::cast;
 use num::consts::pi;
@@ -12,8 +12,8 @@ use num::ext::FloatExt;
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pure fn perspective<T:Copy FloatExt>(fovy: Radians<T>, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let ymax = near * tan(&fovy);
+pure fn perspective<T:Copy FloatExt, A:Angle<T>>(fovy: A, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+    let ymax = near * tan(&fovy.to_radians());
     let xmax = ymax * aspectRatio;
     
     frustum(-xmax, xmax, -ymax, ymax, near, far)
