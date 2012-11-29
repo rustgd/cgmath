@@ -18,6 +18,13 @@ fn test_radians() {
     assert *Radians(5.0 * pi).to_radians()      == *Radians(5.0 * pi);
     assert *Radians(-pi).to_radians()           == *Radians(-pi);
     
+    assert *Radians(pi).wrap()                  == *Radians(pi);
+    assert *Radians(3.0 * pi).wrap()            == *Radians(pi);
+    assert *Radians(2.0 * pi).wrap()            == *Radians(0.0);
+    assert *Radians(-pi).wrap()                 == *Radians(-pi);
+    assert *Radians(-3.0 * pi).wrap()           == *Radians(-pi);
+    assert *Radians(-2.0 * pi).wrap()           == *Radians(0.0);
+    
     assert *(Radians(pi) + Radians(pi))         == *Radians(2.0 * pi);
     assert *(Radians(2.0 * pi) - Radians(pi))   == *Radians(pi);
     assert *(Radians(pi) * 2.0)                 == *Radians(2.0 * pi);
@@ -39,6 +46,13 @@ fn test_degrees() {
     assert *Degrees(0.0).to_degrees()           == *Degrees(0.0);
     assert *Degrees(900.0).to_degrees()         == *Degrees(900.0);
     assert *Degrees(-180.0).to_degrees()        == *Degrees(-180.0);
+    
+    assert *Degrees(90.0).wrap()                == *Degrees(90.0);
+    assert *Degrees(450.0).wrap()               == *Degrees(90.0);
+    assert *Degrees(360.0).wrap()               == *Degrees(0.0);
+    assert *Degrees(-90.0).wrap()               == *Degrees(-90.0);
+    assert *Degrees(-450.0).wrap()              == *Degrees(-90.0);
+    assert *Degrees(-360.0).wrap()              == *Degrees(0.0);
     
     assert *(Degrees(180.0) + Degrees(180.0))   == *Degrees(360.0);
     assert *(Degrees(360.0) - Degrees(180.0))   == *Degrees(180.0);

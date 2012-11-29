@@ -37,7 +37,9 @@ pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { self }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
     
-    #[inline(always)] pure fn wrap() -> Radians<T> { fail(~"Radians.wrap() not yet implemented") }
+    #[inline(always)] pure fn wrap() -> Radians<T> {
+        self % cast(2.0 * pi)   // TODO: keep in the domain of 0 to two_pi
+    }
 }
     
 pub impl<T:Copy Num> Radians<T>: Add<Radians<T>, Radians<T>> {
@@ -87,7 +89,9 @@ pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
     #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
     #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
     
-    #[inline(always)] pure fn wrap() -> Degrees<T> { fail(~"Degrees.wrap() not yet implemented") }
+    #[inline(always)] pure fn wrap() -> Degrees<T> {
+        self % cast(360)   // TODO: keep in the domain of 0 to 360
+    }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
