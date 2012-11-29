@@ -58,12 +58,12 @@ pub impl float: Sign {
 }
 
 
-pub impl<T:Copy Sign> Radians<T>: Sign{
+pub impl<T:Sign> Radians<T>: Sign{
     #[inline(always)] pure fn abs()  -> Radians<T> { Radians(abs(&*self)) }
     #[inline(always)] pure fn sign() -> Radians<T> { Radians(sign(&*self)) }
 }
 
-pub impl<T:Copy Sign> Degrees<T>: Sign{
+pub impl<T:Sign> Degrees<T>: Sign{
     #[inline(always)] pure fn abs()  -> Degrees<T> { Degrees(abs(&*self)) }
     #[inline(always)] pure fn sign() -> Degrees<T> { Degrees(sign(&*self)) }
 }
@@ -162,7 +162,7 @@ pub impl float: Approx {
 }
 
 
-pub impl<T:Copy Approx> Radians<T>: Approx{
+pub impl<T:Approx> Radians<T>: Approx{
     #[inline(always)] pure fn floor() -> Radians<T> { Radians(floor(&*self)) }
     #[inline(always)] pure fn trunc() -> Radians<T> { Radians(trunc(&*self)) }
     #[inline(always)] pure fn round() -> Radians<T> { Radians(round(&*self)) }
@@ -171,7 +171,7 @@ pub impl<T:Copy Approx> Radians<T>: Approx{
     #[inline(always)] pure fn fract() -> Radians<T> { Radians(fract(&*self)) }
 }
 
-pub impl<T:Copy Approx> Degrees<T>: Approx{
+pub impl<T:Approx> Degrees<T>: Approx{
     #[inline(always)] pure fn floor() -> Degrees<T> { Degrees(floor(&*self)) }
     #[inline(always)] pure fn trunc() -> Degrees<T> { Degrees(trunc(&*self)) }
     #[inline(always)] pure fn round() -> Degrees<T> { Degrees(round(&*self)) }
