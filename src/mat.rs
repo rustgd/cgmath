@@ -327,7 +327,8 @@ pub impl<T:Copy NumCast> Mat2<T>: NumericMatrix2x2<T, Vec2<T>> {
 pub impl<T:Copy DefaultEq> Mat2<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat2<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1]
     }
     
     #[inline(always)]
@@ -621,7 +622,9 @@ pub impl<T:Copy Num NumCast Ord DefaultEq> Mat3<T>: ToQuat<T> {
 pub impl<T:Copy DefaultEq> Mat3<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat3<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2]
     }
     
     #[inline(always)]
@@ -965,7 +968,10 @@ pub impl<T> Mat4<T>: NumericMatrix4x4<T, Vec4<T>> {
 pub impl<T:Copy DefaultEq> Mat4<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat4<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2] &&
+        self[3] == other[3]
     }
     
     #[inline(always)]
