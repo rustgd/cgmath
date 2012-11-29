@@ -262,10 +262,13 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
     }
 }
 
-pub impl<T:Copy DefaultEq> Quat<T>: Eq {
+pub impl<T:Copy Eq> Quat<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Quat<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2] &&
+        self[3] == other[3]
     }
     
     #[inline(always)]
