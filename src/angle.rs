@@ -55,49 +55,49 @@ pub impl<T:Copy Num> Radians<T>: Add<Radians<T>, Radians<T>> {
     
 pub impl<T:Copy Num> Radians<T>: Sub<Radians<T>, Radians<T>> {
     #[inline(always)]
-    pure fn sub(rhs: &Radians<T>) -> Radians<T> {
-        Radians(*self - **rhs)
+    pure fn sub(&self, rhs: &Radians<T>) -> Radians<T> {
+        Radians(**self - **rhs)
     }
 }
     
 pub impl<T:Copy Num> Radians<T>: Mul<T, Radians<T>> {
     #[inline(always)]
-    pure fn mul(rhs: &T) -> Radians<T> {
-        Radians(*self * *rhs)
+    pure fn mul(&self, rhs: &T) -> Radians<T> {
+        Radians(**self * *rhs)
     }
 }
     
 pub impl<T:Copy Num> Radians<T>: Div<T, Radians<T>> {
     #[inline(always)]
-    pure fn div(rhs: &T) -> Radians<T> {
-        Radians(*self / *rhs)
+    pure fn div(&self, rhs: &T) -> Radians<T> {
+        Radians(**self / *rhs)
     }
 }
     
 pub impl<T:Copy Num> Radians<T>: Modulo<T, Radians<T>> {
     #[inline(always)]
-    pure fn modulo(rhs: &T) -> Radians<T> {
-        Radians(*self % *rhs)
+    pure fn modulo(&self, rhs: &T) -> Radians<T> {
+        Radians(**self % *rhs)
     }
 }
     
 pub impl<T:Copy Num> Radians<T>: Neg<Radians<T>> {
     #[inline(always)]
-    pure fn neg() -> Radians<T> {
-        Radians(-*self)
+    pure fn neg(&self) -> Radians<T> {
+        Radians(-**self)
     }
 }
 
 pub impl<T:Copy Eq> Radians<T>: Eq {
-    #[inline(always)] pure fn eq(other: &Radians<T>) -> bool { *self == **other }
-    #[inline(always)] pure fn ne(other: &Radians<T>) -> bool { *self != **other }
+    #[inline(always)] pure fn eq(&self, other: &Radians<T>) -> bool { **self == **other }
+    #[inline(always)] pure fn ne(&self, other: &Radians<T>) -> bool { **self != **other }
 }
 
 pub impl<T:Copy Ord> Radians<T>: Ord {
-    #[inline(always)] pure fn lt(other: &Radians<T>) -> bool { *self <  **other }
-    #[inline(always)] pure fn le(other: &Radians<T>) -> bool { *self <= **other }
-    #[inline(always)] pure fn ge(other: &Radians<T>) -> bool { *self >= **other }
-    #[inline(always)] pure fn gt(other: &Radians<T>) -> bool { *self >  **other }
+    #[inline(always)] pure fn lt(&self, other: &Radians<T>) -> bool { **self <  **other }
+    #[inline(always)] pure fn le(&self, other: &Radians<T>) -> bool { **self <= **other }
+    #[inline(always)] pure fn ge(&self, other: &Radians<T>) -> bool { **self >= **other }
+    #[inline(always)] pure fn gt(&self, other: &Radians<T>) -> bool { **self >  **other }
 }
 
 
@@ -129,45 +129,49 @@ pub impl<T:Copy Num> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
     
 pub impl<T:Copy Num> Degrees<T>: Sub<Degrees<T>, Degrees<T>> {
     #[inline(always)]
-    pure fn sub(rhs: &Degrees<T>) -> Degrees<T> {
-        Degrees(*self - **rhs)
+    pure fn sub(&self, rhs: &Degrees<T>) -> Degrees<T> {
+        Degrees(**self - **rhs)
     }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Mul<T, Degrees<T>> {
-    #[inline(always)] pure fn mul(rhs: &T) -> Degrees<T> {
-        Degrees(*self * *rhs)
+    #[inline(always)]
+    pure fn mul(&self, rhs: &T) -> Degrees<T> {
+        Degrees(**self * *rhs)
     }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Div<T, Degrees<T>> {
-    #[inline(always)] pure fn div(rhs: &T) -> Degrees<T> {
-        Degrees(*self / *rhs)
+    #[inline(always)]
+    pure fn div(&self, rhs: &T) -> Degrees<T> {
+        Degrees(**self / *rhs)
     }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Modulo<T, Degrees<T>> {
-    #[inline(always)] pure fn modulo(rhs: &T) -> Degrees<T> {
-        Degrees(*self % *rhs)
+    #[inline(always)]
+    pure fn modulo(&self, rhs: &T) -> Degrees<T> {
+        Degrees(**self % *rhs)
     }
 }
     
 pub impl<T:Copy Num> Degrees<T>: Neg<Degrees<T>> {
-    #[inline(always)] pure fn neg() -> Degrees<T> {
-        Degrees(-*self)
+    #[inline(always)]
+    pure fn neg(&self) -> Degrees<T> {
+        Degrees(-**self)
     }
 }
 
 pub impl<T:Copy Eq> Degrees<T>: Eq {
-    #[inline(always)] pure fn eq(other: &Degrees<T>) -> bool { *self == **other }
-    #[inline(always)] pure fn ne(other: &Degrees<T>) -> bool { *self != **other }
+    #[inline(always)] pure fn eq(&self, other: &Degrees<T>) -> bool { **self == **other }
+    #[inline(always)] pure fn ne(&self, other: &Degrees<T>) -> bool { **self != **other }
 }
 
 pub impl<T:Copy Ord> Degrees<T>: Ord {
-    #[inline(always)] pure fn lt(other: &Degrees<T>) -> bool { *self <  **other }
-    #[inline(always)] pure fn le(other: &Degrees<T>) -> bool { *self <= **other }
-    #[inline(always)] pure fn ge(other: &Degrees<T>) -> bool { *self >= **other }
-    #[inline(always)] pure fn gt(other: &Degrees<T>) -> bool { *self >  **other }
+    #[inline(always)] pure fn lt(&self, other: &Degrees<T>) -> bool { **self <  **other }
+    #[inline(always)] pure fn le(&self, other: &Degrees<T>) -> bool { **self <= **other }
+    #[inline(always)] pure fn ge(&self, other: &Degrees<T>) -> bool { **self >= **other }
+    #[inline(always)] pure fn gt(&self, other: &Degrees<T>) -> bool { **self >  **other }
 }
 
 

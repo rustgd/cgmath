@@ -211,13 +211,13 @@ pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
 
 pub impl<T:Copy DefaultEq> Vec2<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec2<T>) -> bool {
+    pure fn eq(&self, other: &Vec2<T>) -> bool {
         self.default_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec2<T>) -> bool {
-        !(self == *other)
+    pure fn ne(&self, other: &Vec2<T>) -> bool {
+        !(self == other)
     }
 }
 
@@ -381,13 +381,13 @@ pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
 
 pub impl<T:Copy DefaultEq> Vec3<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec3<T>) -> bool {
+    pure fn eq(&self, other: &Vec3<T>) -> bool {
         self.default_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec3<T>) -> bool {
-        !(self == *other)
+    pure fn ne(&self, other: &Vec3<T>) -> bool {
+        !(self == other)
     }
 }
 
@@ -551,13 +551,13 @@ pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
 
 pub impl<T:Copy DefaultEq> Vec4<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec4<T>) -> bool {
+    pure fn eq(&self, other: &Vec4<T>) -> bool {
         self.default_eq(other)
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec4<T>) -> bool {
-        !(self == *other)
+    pure fn ne(&self, other: &Vec4<T>) -> bool {
+        !(self == other)
     }
 }
 
