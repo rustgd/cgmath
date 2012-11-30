@@ -42,7 +42,7 @@ pub impl u16: Channel {
     #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u16 { val.to_channel_u16() }
     #[inline(always)] pure fn convert_channel<T:Channel>() -> T { from_channel(self) }
     
-    #[inline(always)] pure fn to_channel_u8()    -> u8    { self / 0x100 as u8 }
+    #[inline(always)] pure fn to_channel_u8()    -> u8    { (self >> 8) as u8 }    // this is the equivalent of `self/256`. Some folks prefer to do `self/257`
     #[inline(always)] pure fn to_channel_u16()   -> u16   { self }
     #[inline(always)] pure fn to_channel_u32()   -> u32   { (self as u32 << 16) | self as u32 }
     #[inline(always)] pure fn to_channel_u64()   -> u64   { (self.to_channel_u32() as u64 << 32) | self.to_channel_u32() as u64 }
@@ -59,8 +59,8 @@ pub impl u32: Channel {
     #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u32 { val.to_channel_u32() }
     #[inline(always)] pure fn convert_channel<T:Channel>() -> T { from_channel(self) }
     
-    #[inline(always)] pure fn to_channel_u8()    -> u8    { self / 0x1_0000_00 as u8 }
-    #[inline(always)] pure fn to_channel_u16()   -> u16   { self / 0x1_0000 as u16 }
+    #[inline(always)] pure fn to_channel_u8()    -> u8    { (self >> 24) as u8 }
+    #[inline(always)] pure fn to_channel_u16()   -> u16   { (self >> 16) as u16 }
     #[inline(always)] pure fn to_channel_u32()   -> u32   { self }
     #[inline(always)] pure fn to_channel_u64()   -> u64   { (self as u64 << 32) | self as u64 }
     #[inline(always)] pure fn to_channel_f32()   -> f32   { self / 0xFFFF_FFFF as f32   }
@@ -76,9 +76,9 @@ pub impl u64: Channel {
     #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u64 { val.to_channel_u64() }
     #[inline(always)] pure fn convert_channel<T:Channel>() -> T { from_channel(self) }
     
-    #[inline(always)] pure fn to_channel_u8()    -> u8    { self / 0x1_0000_0000_0000_00 as u8 }
-    #[inline(always)] pure fn to_channel_u16()   -> u16   { self / 0x1_0000_0000_0000 as u16 }
-    #[inline(always)] pure fn to_channel_u32()   -> u32   { self / 0x1_0000_0000 as u32 }
+    #[inline(always)] pure fn to_channel_u8()    -> u8    { (self >> 56) as u8 }
+    #[inline(always)] pure fn to_channel_u16()   -> u16   { (self >> 48) as u16 }
+    #[inline(always)] pure fn to_channel_u32()   -> u32   { (self >> 32) as u32 }
     #[inline(always)] pure fn to_channel_u64()   -> u64   { self }
     #[inline(always)] pure fn to_channel_f32()   -> f32   { self / 0xFFFF_FFFF_FFFF_FFFF_u64 as f32   }
     #[inline(always)] pure fn to_channel_f64()   -> f64   { self / 0xFFFF_FFFF_FFFF_FFFF_u64 as f64   }
@@ -94,8 +94,8 @@ pub impl f32: Channel {
     #[inline(always)] pure fn convert_channel<T:Channel>() -> T { from_channel(self) }
     
     
-    #[inline(always)] pure fn to_channel_u8()    -> u8    { self * (0xFFu8    as f32) as u8  }
-    #[inline(always)] pure fn to_channel_u16()   -> u16   { self * (0xFFFFu16 as f32) as u16 }
+    #[inline(always)] pure fn to_channel_u8()    -> u8    { self * (0xFF_u8         as f32) as u8  }
+    #[inline(always)] pure fn to_channel_u16()   -> u16   { self * (0xFFFF_u16      as f32) as u16 }
     #[inline(always)] pure fn to_channel_u32()   -> u32   { fail(~"to_channel_u32 not yet implemented for f32") }
     #[inline(always)] pure fn to_channel_u64()   -> u64   { fail(~"to_channel_u64 not yet implemented for f32") }
     #[inline(always)] pure fn to_channel_f32()   -> f32   { self }
