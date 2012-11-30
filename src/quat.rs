@@ -23,28 +23,28 @@ pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
     static pure fn identity() -> self;
     static pure fn zero() -> self;
     
-    pure fn mul_t(value: T) -> self;
-    pure fn div_t(value: T) -> self;
+    pure fn mul_t(&self, value: T) -> self;
+    pure fn div_t(&self, value: T) -> self;
     
-    pure fn mul_v(vec: &Vec3<T>) -> Vec3<T>;
+    pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>;
     
-    pure fn add_q(other: &self) -> self;
-    pure fn sub_q(other: &self) -> self;
-    pure fn mul_q(other: &self) -> self;
+    pure fn add_q(&self, other: &self) -> self;
+    pure fn sub_q(&self, other: &self) -> self;
+    pure fn mul_q(&self, other: &self) -> self;
     
-    pure fn dot(other: &self) -> T;
+    pure fn dot(&self, other: &self) -> T;
     
-    pure fn conjugate() -> self;
-    pure fn inverse() -> self;
-    pure fn length2() -> T;
-    pure fn length() -> T;
-    pure fn normalize() -> self;
+    pure fn conjugate(&self) -> self;
+    pure fn inverse(&self) -> self;
+    pure fn length2(&self) -> T;
+    pure fn length(&self) -> T;
+    pure fn normalize(&self) -> self;
     
-    pure fn nlerp(other: &self, amount: T) -> self;
-    pure fn slerp(other: &self, amount: T) -> self;
+    pure fn nlerp(&self, other: &self, amount: T) -> self;
+    pure fn slerp(&self, other: &self, amount: T) -> self;
     
-    pure fn to_mat3() -> Mat3<T>;
-    pure fn to_mat4() -> Mat4<T>;
+    pure fn to_mat3(&self) -> Mat3<T>;
+    pure fn to_mat4(&self) -> Mat4<T>;
 }
 
 pub trait ToQuat<T> {
@@ -104,7 +104,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Quat<T> {
+    pure fn mul_t(&self, value: T) -> Quat<T> {
         Quat::new(self[0] * value,
                   self[1] * value,
                   self[2] * value,
@@ -112,7 +112,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn div_t(value: T) -> Quat<T> {
+    pure fn div_t(&self, value: T) -> Quat<T> {
         Quat::new(self[0] / value,
                   self[1] / value,
                   self[2] / value,
@@ -120,13 +120,13 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
 
     #[inline(always)]
-    pure fn mul_v(vec: &Vec3<T>) -> Vec3<T>  {
+    pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
         self.v.cross(&tmp).mul_t(cast(2)).add_v(vec)
     }
     
     #[inline(always)]
-    pure fn add_q(other: &Quat<T>) -> Quat<T> {
+    pure fn add_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self[0] + other[0],
                   self[1] + other[1],
                   self[2] + other[2],
@@ -134,7 +134,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn sub_q(other: &Quat<T>) -> Quat<T> {
+    pure fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self[0] - other[0],
                   self[1] - other[1],
                   self[2] - other[2],
@@ -142,7 +142,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn mul_q(other: &Quat<T>) -> Quat<T> {
+    pure fn mul_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self.s * other.s   - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
                   self.s * other.v.x + self.v.x * other.s   + self.v.y * other.v.z - self.v.z * other.v.y, 
                   self.s * other.v.y + self.v.y * other.s   + self.v.z * other.v.x - self.v.x * other.v.z, 
@@ -150,39 +150,39 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn dot(other: &Quat<T>) -> T {
+    pure fn dot(&self, other: &Quat<T>) -> T {
         self.s * other.s + self.v.dot(&other.v)
     }
     
     #[inline(always)]
-    pure fn conjugate() -> Quat<T> {
+    pure fn conjugate(&self) -> Quat<T> {
         Quat::from_sv(self.s, -self.v)
     }
     
     #[inline(always)]
-    pure fn inverse() -> Quat<T> {
+    pure fn inverse(&self) -> Quat<T> {
         self.conjugate().div_t(self.length2())
     }
     
     #[inline(always)]
-    pure fn length2() -> T {
+    pure fn length2(&self) -> T {
         self.s * self.s + self.v.length2()
     }
     
     #[inline(always)]
-    pure fn length() -> T {
+    pure fn length(&self) -> T {
         self.length2().sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Quat<T> {
+    pure fn normalize(&self) -> Quat<T> {
         let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn nlerp(other: &Quat<T>, amount: T) -> Quat<T> {
+    pure fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let _1: T = cast(1);
         self.mul_t(_1 - amount).add_q(&other.mul_t(amount)).normalize()
     }
@@ -204,7 +204,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
      * also provides a good explanation.
      */
     #[inline(always)]
-    pure fn slerp(other: &Quat<T>, amount: T) -> Quat<T> {
+    pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot: T = cast(self.dot(other));
         
         // if quaternions are close together use `nlerp`
@@ -222,7 +222,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn to_mat3() -> Mat3<T> {
+    pure fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
         let z2 = self.v.z + self.v.z;
@@ -247,7 +247,7 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
     
     #[inline(always)]
-    pure fn to_mat4() -> Mat4<T> {
+    pure fn to_mat4(&self) -> Mat4<T> {
         self.to_mat3().to_mat4()
     }
 }

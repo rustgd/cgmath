@@ -18,11 +18,11 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
 /// The base Matrix trait
 ///
 pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
-    pure fn rows() -> uint;
-    pure fn cols() -> uint;
+    static pure fn rows() -> uint;
+    static pure fn cols() -> uint;
     
-    pure fn col(i: uint) -> Col;
-    pure fn row(i: uint) -> Row;
+    pure fn col(&self, i: uint) -> Col;
+    pure fn row(&self, i: uint) -> Row;
 }
 
 /// A 2 x N matrix
@@ -47,7 +47,7 @@ pub trait Matrix4<T, Col, Row>: Matrix<T, Col, Row> {
 /// A square matrix
 ///
 pub trait MatrixNxN<T, ColRow>: Matrix<T, ColRow, ColRow> {
-    pure fn is_symmetric() -> bool;
+    pure fn is_symmetric(&self) -> bool;
 }
 
 /// A 2 x 2 square matrix
@@ -83,10 +83,10 @@ pub trait Matrix4x4<T, ColRow>: MatrixNxN<T, ColRow>,
 pub trait NumericMatrix<T, Col, Row>: Matrix<T, Col, Row>, Neg<self> {
     static pure fn zero() -> self;
     
-    pure fn mul_t(value: T) -> self;
-    pure fn mul_v(other: &Col) -> Col;
-    pure fn add_m(other: &self) -> self;
-    pure fn sub_m(other: &self) -> self;
+    pure fn mul_t(&self, value: T) -> self;
+    pure fn mul_v(&self, other: &Col) -> Col;
+    pure fn add_m(&self, other: &self) -> self;
+    pure fn sub_m(&self, other: &self) -> self;
 }
 
 ///
@@ -98,33 +98,33 @@ pub trait NumericMatrixNxN<T, ColRow>: MatrixNxN<T, ColRow>,
     
     // static pure fn from_value(value: T) -> self;
     
-    pure fn mul_m(other: &self) -> self;
-    pure fn dot(other: &self) -> T;
+    pure fn mul_m(&self, other: &self) -> self;
+    pure fn dot(&self, other: &self) -> T;
     
-    pure fn det() -> T;
-    pure fn trace() -> T;
+    pure fn det(&self) -> T;
+    pure fn trace(&self) -> T;
     
-    pure fn invert() -> Option<self>;
-    pure fn transpose() -> self;
+    pure fn invert(&self) -> Option<self>;
+    pure fn transpose(&self) -> self;
     
-    pure fn is_identity() -> bool;
-    pure fn is_diagonal() -> bool;
-    pure fn is_rotated() -> bool;
-    pure fn is_invertible() -> bool;
+    pure fn is_identity(&self) -> bool;
+    pure fn is_diagonal(&self) -> bool;
+    pure fn is_rotated(&self) -> bool;
+    pure fn is_invertible(&self) -> bool;
 }
 
 /// A 2 x 2 square matrix with numeric elements
 pub trait NumericMatrix2x2<T, ColRow2>: Matrix2x2<T, ColRow2>,
                                         NumericMatrixNxN<T, ColRow2> {
     
-    pure fn to_mat3() -> Mat3<T>;
-    pure fn to_mat4() -> Mat4<T>;
+    pure fn to_mat3(&self) -> Mat3<T>;
+    pure fn to_mat4(&self) -> Mat4<T>;
 }
 
 /// A 3 x 3 square matrix with numeric elements
 pub trait NumericMatrix3x3<T, ColRow3>: Matrix3x3<T, ColRow3>,
                                         NumericMatrixNxN<T, ColRow3> {
-    pure fn to_mat4() -> Mat4<T>;
+    pure fn to_mat4(&self) -> Mat4<T>;
 }
 
 /// A 4 x 4 square matrix with numeric elements
@@ -172,16 +172,16 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     static pure fn size_of() -> uint { size_of::<Mat2<T>>() }
     
     #[inline(always)]
-    pure fn cols() -> uint { 2 }
+    static pure fn cols() -> uint { 2 }
     
     #[inline(always)]
-    pure fn rows() -> uint { 2 }
+    static pure fn rows() -> uint { 2 }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec2<T> { self[i] }
+    pure fn col(&self, i: uint) -> Vec2<T> { self[i] }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec2<T> {
+    pure fn row(&self, i: uint) -> Vec2<T> {
         Vec2::new(self[0][i],
                   self[1][i])
     }
@@ -195,14 +195,14 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         self[0].to_ptr()
     }
 }
 
 pub impl<T:Copy DefaultEq> Mat2<T>: MatrixNxN<T, Vec2<T>> {
     #[inline(always)]
-    pure fn is_symmetric() -> bool {
+    pure fn is_symmetric(&self) -> bool {
         self[0][1].default_eq(&self[1][0]) &&
         self[1][0].default_eq(&self[0][1])
     }
@@ -221,25 +221,25 @@ pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Mat2<T> {
+    pure fn mul_t(&self, value: T) -> Mat2<T> {
         Mat2::from_cols(self[0].mul_t(value),
                         self[1].mul_t(value))
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec2<T>) -> Vec2<T> {
+    pure fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self.row(0).dot(other),
                   self.row(1).dot(other))
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat2<T>) -> Mat2<T> {
+    pure fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self[0].add_v(&other[0]),
                         self[1].add_v(&other[1]))
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat2<T>) -> Mat2<T> {
+    pure fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self[0].sub_v(&other[0]),
                         self[1].sub_v(&other[1]))
     }
@@ -253,25 +253,25 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat2<T>) -> Mat2<T> {
+    pure fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
     }
 
-    pure fn dot(other: &Mat2<T>) -> T {
-        other.transpose().mul_m(&self).trace()
+    pure fn dot(&self, other: &Mat2<T>) -> T {
+        other.transpose().mul_m(self).trace()
     }
     
-    pure fn det() -> T {
+    pure fn det(&self) -> T {
        self[0][0] * self[1][1] - self[1][0] * self[0][1]
     }
 
-    pure fn trace() -> T {
+    pure fn trace(&self) -> T {
         self[0][0] + self[1][1]
     }
 
     #[inline(always)]
-    pure fn invert() -> Option<Mat2<T>> {
+    pure fn invert(&self) -> Option<Mat2<T>> {
         let _0 = cast(0);
         let d = self.det();
         if d.default_eq(&_0) {
@@ -283,30 +283,30 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     }
     
     #[inline(always)]
-    pure fn transpose() -> Mat2<T> {
+    pure fn transpose(&self) -> Mat2<T> {
         Mat2::new(self[0][0], self[1][0],
                   self[0][1], self[1][1])
     }
     
     #[inline(always)]
-    pure fn is_identity() -> bool {
+    pure fn is_identity(&self) -> bool {
         self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
-    pure fn is_diagonal() -> bool {
+    pure fn is_diagonal(&self) -> bool {
         let _0 = cast(0);
         self[0][1].default_eq(&_0) &&
         self[1][0].default_eq(&_0)
     }
     
     #[inline(always)]
-    pure fn is_rotated() -> bool {
+    pure fn is_rotated(&self) -> bool {
         !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]
-    pure fn is_invertible() -> bool {
+    pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
         !self.det().default_eq(&_0)
     }
@@ -314,13 +314,13 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
 
 pub impl<T:Copy NumCast> Mat2<T>: NumericMatrix2x2<T, Vec2<T>> {
     #[inline(always)]
-    pure fn to_mat3() -> Mat3<T> {
-        Mat3::from_Mat2(&self)
+    pure fn to_mat3(&self) -> Mat3<T> {
+        Mat3::from_Mat2(self)
     }
     
     #[inline(always)]
-    pure fn to_mat4() -> Mat4<T> {
-        Mat4::from_Mat2(&self)
+    pure fn to_mat4(&self) -> Mat4<T> {
+        Mat4::from_Mat2(self)
     }
 }
 
@@ -406,16 +406,16 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     static pure fn size_of() -> uint { size_of::<Mat3<T>>() }
     
     #[inline(always)]
-    pure fn cols() -> uint { 3 }
+    static pure fn cols() -> uint { 3 }
     
     #[inline(always)]
-    pure fn rows() -> uint { 3 }
+    static pure fn rows() -> uint { 3 }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec3<T> { self[i] }
+    pure fn col(&self, i: uint) -> Vec3<T> { self[i] }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec3<T> {
+    pure fn row(&self, i: uint) -> Vec3<T> {
         Vec3::new(self[0][i],
                   self[1][i],
                   self[2][i])
@@ -430,14 +430,14 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         self[0].to_ptr()
     }
 }
 
 pub impl<T:Copy DefaultEq> Mat3<T>: MatrixNxN<T, Vec3<T>> {
     #[inline(always)]
-    pure fn is_symmetric() -> bool {
+    pure fn is_symmetric(&self) -> bool {
         self[0][1].default_eq(&self[1][0]) &&
         self[0][2].default_eq(&self[2][0]) &&
         
@@ -463,28 +463,28 @@ pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Mat3<T> {
+    pure fn mul_t(&self, value: T) -> Mat3<T> {
         Mat3::from_cols(self[0].mul_t(value),
                         self[1].mul_t(value),
                         self[2].mul_t(value))
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec3<T>) -> Vec3<T> {
+    pure fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self.row(0).dot(other),
                   self.row(1).dot(other),
                   self.row(2).dot(other))
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat3<T>) -> Mat3<T> {
+    pure fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self[0].add_v(&other[0]),
                         self[1].add_v(&other[1]),
                         self[2].add_v(&other[2]))
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat3<T>) -> Mat3<T> {
+    pure fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self[0].sub_v(&other[0]),
                         self[1].sub_v(&other[1]),
                         self[2].sub_v(&other[2]))
@@ -500,26 +500,26 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat3<T>) -> Mat3<T> {
+    pure fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)),
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
     }
     
-    pure fn dot(other: &Mat3<T>) -> T {
-        other.transpose().mul_m(&self).trace()
+    pure fn dot(&self, other: &Mat3<T>) -> T {
+        other.transpose().mul_m(self).trace()
     }
 
-    pure fn det() -> T {
+    pure fn det(&self) -> T {
         self.col(0).dot(&self.col(1).cross(&self.col(2)))
     }
 
-    pure fn trace() -> T {
+    pure fn trace(&self) -> T {
         self[0][0] + self[1][1] + self[2][2]
     }
 
     // #[inline(always)]
-    pure fn invert() -> Option<Mat3<T>> {
+    pure fn invert(&self) -> Option<Mat3<T>> {
         let d = self.det();
         let _0 = cast(0);
         if d.default_eq(&_0) {
@@ -533,19 +533,19 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn transpose() -> Mat3<T> {
+    pure fn transpose(&self) -> Mat3<T> {
         Mat3::new(self[0][0], self[1][0], self[2][0],
                   self[0][1], self[1][1], self[2][1],
                   self[0][2], self[1][2], self[2][2])
     }
     
     #[inline(always)]
-    pure fn is_identity() -> bool {
+    pure fn is_identity(&self) -> bool {
         self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
-    pure fn is_diagonal() -> bool {
+    pure fn is_diagonal(&self) -> bool {
         let _0 = cast(0);
         self[0][1].default_eq(&_0) &&
         self[0][2].default_eq(&_0) &&
@@ -558,12 +558,12 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn is_rotated() -> bool {
+    pure fn is_rotated(&self) -> bool {
         !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]
-    pure fn is_invertible() -> bool {
+    pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
         !self.det().default_eq(&_0)
     }
@@ -571,8 +571,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
 
 pub impl<T:Copy NumCast> Mat3<T>: NumericMatrix3x3<T, Vec3<T>> {
     #[inline(always)]
-    pure fn to_mat4() -> Mat4<T> {
-        Mat4::from_Mat3(&self)
+    pure fn to_mat4(&self) -> Mat4<T> {
+        Mat4::from_Mat3(self)
     }
 }
 
@@ -719,16 +719,16 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     static pure fn size_of() -> uint { size_of::<Mat4<T>>() }
     
     #[inline(always)]
-    pure fn cols() -> uint { 4 }
+    static pure fn cols() -> uint { 4 }
     
     #[inline(always)]
-    pure fn rows() -> uint { 4 }
+    static pure fn rows() -> uint { 4 }
     
     #[inline(always)]
-    pure fn col(i: uint) -> Vec4<T> { self[i] }
+    pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec4<T> {
+    pure fn row(&self, i: uint) -> Vec4<T> {
         Vec4::new(self[0][i],
                   self[1][i],
                   self[2][i],
@@ -744,14 +744,14 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         self[0].to_ptr()
     }
 }
 
 pub impl<T:Copy DefaultEq> Mat4<T>: MatrixNxN<T, Vec4<T>> {
     #[inline(always)]
-    pure fn is_symmetric() -> bool {
+    pure fn is_symmetric(&self) -> bool {
         self[0][1].default_eq(&self[1][0]) &&
         self[0][2].default_eq(&self[2][0]) &&
         self[0][3].default_eq(&self[3][0]) &&
@@ -785,7 +785,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Mat4<T> {
+    pure fn mul_t(&self, value: T) -> Mat4<T> {
         Mat4::from_cols(self[0].mul_t(value),
                         self[1].mul_t(value),
                         self[2].mul_t(value),
@@ -793,7 +793,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_v(other: &Vec4<T>) -> Vec4<T> {
+    pure fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self.row(0).dot(other),
                   self.row(1).dot(other),
                   self.row(2).dot(other),
@@ -801,7 +801,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn add_m(other: &Mat4<T>) -> Mat4<T> {
+    pure fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].add_v(&other[0]),
                         self[1].add_v(&other[1]),
                         self[2].add_v(&other[2]),
@@ -809,7 +809,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn sub_m(other: &Mat4<T>) -> Mat4<T> {
+    pure fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self[0].sub_v(&other[0]),
                         self[1].sub_v(&other[1]),
                         self[2].sub_v(&other[2]),
@@ -827,7 +827,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     }
     
     #[inline(always)]
-    pure fn mul_m(other: &Mat4<T>) -> Mat4<T> {
+    pure fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
         // Surprisingly when building with optimisation turned on this is actually
         // faster than writing out the matrix multiplication in expanded form.
         // If you don't believe me, see ./test/performance/matrix_mul.rs
@@ -837,11 +837,11 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
                   self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
     }
     
-    pure fn dot(other: &Mat4<T>) -> T {
-        other.transpose().mul_m(&self).trace()
+    pure fn dot(&self, other: &Mat4<T>) -> T {
+        other.transpose().mul_m(self).trace()
     }
 
-    pure fn det() -> T {
+    pure fn det(&self) -> T {
         self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
                              self[1][2], self[2][2], self[3][2],
                              self[1][3], self[2][3], self[3][3]).det() -
@@ -856,11 +856,11 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
                              self[0][3], self[1][3], self[2][3]).det()
     }
 
-    pure fn trace() -> T {
+    pure fn trace(&self) -> T {
         self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
-    pure fn invert() -> Option<Mat4<T>> {
+    pure fn invert(&self) -> Option<Mat4<T>> {
         let d = self.det();
         let _0 = cast(0);
         if d.default_eq(&_0) {
@@ -869,7 +869,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
 
             // Gauss Jordan Elimination with partial pivoting
 
-            let mut a = copy self;
+            let mut a = *self;
             let mut inv: Mat4<T> = NumericMatrixNxN::identity();
 
             // Find largest pivot column j among rows j..3
@@ -917,7 +917,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     }
     
     #[inline(always)]
-    pure fn transpose() -> Mat4<T> {
+    pure fn transpose(&self) -> Mat4<T> {
         Mat4::new(self[0][0], self[1][0], self[2][0], self[3][0],
                   self[0][1], self[1][1], self[2][1], self[3][1],
                   self[0][2], self[1][2], self[2][2], self[3][2],
@@ -925,12 +925,12 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     }
     
     #[inline(always)]
-    pure fn is_identity() -> bool {
+    pure fn is_identity(&self) -> bool {
         self.default_eq(&NumericMatrixNxN::identity())
     }
     
     #[inline(always)]
-    pure fn is_diagonal() -> bool {
+    pure fn is_diagonal(&self) -> bool {
         let _0 = cast(0);
         self[0][1].default_eq(&_0) &&
         self[0][2].default_eq(&_0) &&
@@ -950,12 +950,12 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     }
     
     #[inline(always)]
-    pure fn is_rotated() -> bool {
+    pure fn is_rotated(&self) -> bool {
         !self.default_eq(&NumericMatrixNxN::identity())
     }
 
     #[inline(always)]
-    pure fn is_invertible() -> bool {
+    pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
         !self.det().default_eq(&_0)
     }

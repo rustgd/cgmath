@@ -41,13 +41,13 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
     static pure fn identity() -> self;
     static pure fn zero() -> self;
     
-    pure fn mul_t(value: T) -> self;
-    pure fn div_t(value: T) -> self;
+    pure fn mul_t(&self, value: T) -> self;
+    pure fn div_t(&self, value: T) -> self;
     
-    pure fn add_v(other: &self) -> self;
-    pure fn sub_v(other: &self) -> self;
+    pure fn add_v(&self, other: &self) -> self;
+    pure fn sub_v(&self, other: &self) -> self;
     
-    pure fn dot(other: &self) -> T;
+    pure fn dot(&self, other: &self) -> T;
 }
 
 /// A 2-dimensional vector with numeric components
@@ -61,7 +61,7 @@ pub trait NumericVector3<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 //     static pure fn unit_z() -> self;
-    pure fn cross(other: &self) -> self;
+    pure fn cross(&self, other: &self) -> self;
 }
 
 /// A 4-dimensional vector with numeric components
@@ -76,12 +76,12 @@ pub trait NumericVector4<T>: NumericVector<T> {
 /// A vector with geometric properties
 ///
 pub trait GeometricVector<T>: NumericVector<T> {
-    pure fn length2() -> T;
-    pure fn length() -> T;
-    pure fn distance2(other: &self) -> T;
-    pure fn distance(other: &self) -> T;
-    pure fn normalize() -> self;
-    pure fn lerp(other: &self, amount: T) -> self;
+    pure fn length2(&self) -> T;
+    pure fn length(&self) -> T;
+    pure fn distance2(&self, other: &self) -> T;
+    pure fn distance(&self, other: &self) -> T;
+    pure fn normalize(&self) -> self;
+    pure fn lerp(&self, other: &self, amount: T) -> self;
 }
 
 
@@ -121,7 +121,7 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         ptr::to_unsafe_ptr(&self[0])
     }
 }
@@ -145,31 +145,31 @@ pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Vec2<T> {
+    pure fn mul_t(&self, value: T) -> Vec2<T> {
         Vec2::new(self[0] * value,
                   self[1] * value)
     }
     
     #[inline(always)]
-    pure fn div_t(value: T) -> Vec2<T> {
+    pure fn div_t(&self, value: T) -> Vec2<T> {
         Vec2::new(self[0] / value,
                   self[1] / value)
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec2<T>) -> Vec2<T> {
+    pure fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0] + other[0],
                   self[1] + other[1])
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec2<T>) -> Vec2<T> {
+    pure fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0] - other[0],
                   self[1] - other[1])
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec2<T>) -> T {
+    pure fn dot(&self, other: &Vec2<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1]
     }
@@ -177,35 +177,35 @@ pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
     
 pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn length2() -> T {
-        self.dot(&self)
+    pure fn length2(&self) -> T {
+        self.dot(self)
     }
     
     #[inline(always)]
-    pure fn length() -> T {
+    pure fn length(&self) -> T {
         self.length2().sqrt()
     }
     
     #[inline(always)]
-    pure fn distance2(other: &Vec2<T>) -> T {
-        other.sub_v(&self).length2()
+    pure fn distance2(&self, other: &Vec2<T>) -> T {
+        other.sub_v(self).length2()
     }
     
     #[inline(always)]
-    pure fn distance(other: &Vec2<T>) -> T {
-        other.distance2(&self).sqrt()
+    pure fn distance(&self, other: &Vec2<T>) -> T {
+        other.distance2(self).sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec2<T> {
+    pure fn normalize(&self) -> Vec2<T> {
         let mut n: T = cast(1); 
         n /= self.length();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec2<T>, amount: T) -> Vec2<T> {
-        self.add_v(&other.sub_v(&self).mul_t(amount))
+    pure fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
     }
 }
 
@@ -275,7 +275,7 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         to_unsafe_ptr(&self[0])
     }
 }
@@ -301,35 +301,35 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Vec3<T> {
+    pure fn mul_t(&self, value: T) -> Vec3<T> {
         Vec3::new(self[0] * value,
                   self[1] * value,
                   self[2] * value)
     }
     
     #[inline(always)]
-    pure fn div_t(value: T) -> Vec3<T> {
+    pure fn div_t(&self, value: T) -> Vec3<T> {
         Vec3::new(self[0] / value,
                   self[1] / value,
                   self[2] / value)
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec3<T>) -> Vec3<T>{
+    pure fn add_v(&self, other: &Vec3<T>) -> Vec3<T>{
         Vec3::new(self[0] + other[0],
                   self[1] + other[1],
                   self[2] + other[2])
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec3<T>) -> Vec3<T>{
+    pure fn sub_v(&self, other: &Vec3<T>) -> Vec3<T>{
         Vec3::new(self[0] - other[0],
                   self[1] - other[1],
                   self[2] - other[2])
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec3<T>) -> T {
+    pure fn dot(&self, other: &Vec3<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
@@ -338,7 +338,7 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
 
 pub impl<T:Copy Num> Vec3<T>: NumericVector3<T> {
     #[inline(always)]
-    pure fn cross(other: &Vec3<T>) -> Vec3<T> {
+    pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
                   (self[2] * other[0]) - (self[0] * other[2]),
                   (self[0] * other[1]) - (self[1] * other[0]))
@@ -347,35 +347,35 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector3<T> {
 
 pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn length2() -> T {
-        self.dot(&self)
+    pure fn length2(&self) -> T {
+        self.dot(self)
     }
     
     #[inline(always)]
-    pure fn length() -> T {
+    pure fn length(&self) -> T {
         self.length2().sqrt()
     }
     
     #[inline(always)]
-    pure fn distance2(other: &Vec3<T>) -> T {
-        other.sub_v(&self).length2()
+    pure fn distance2(&self, other: &Vec3<T>) -> T {
+        other.sub_v(self).length2()
     }
     
     #[inline(always)]
-    pure fn distance(other: &Vec3<T>) -> T {
-        other.distance2(&self).sqrt()
+    pure fn distance(&self, other: &Vec3<T>) -> T {
+        other.distance2(self).sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec3<T> {
+    pure fn normalize(&self) -> Vec3<T> {
         let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec3<T>, amount: T) -> Vec3<T> {
-        self.add_v(&other.sub_v(&self).mul_t(amount))
+    pure fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
     }
 }
 
@@ -447,7 +447,7 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     }
     
     #[inline(always)]
-    pure fn to_ptr() -> *T {
+    pure fn to_ptr(&self) -> *T {
         to_unsafe_ptr(&self[0])
     }
 }
@@ -475,7 +475,7 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Vec4<T> {
+    pure fn mul_t(&self, value: T) -> Vec4<T> {
         Vec4::new(self[0] * value,
                   self[1] * value,
                   self[2] * value,
@@ -483,7 +483,7 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn div_t(value: T) -> Vec4<T> {
+    pure fn div_t(&self, value: T) -> Vec4<T> {
         Vec4::new(self[0] / value,
                   self[1] / value,
                   self[2] / value,
@@ -491,7 +491,7 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec4<T>) -> Vec4<T> {
+    pure fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0] + other[0],
                   self[1] + other[1],
                   self[2] + other[2],
@@ -499,7 +499,7 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn sub_v(other: &Vec4<T>) -> Vec4<T> {
+    pure fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0] - other[0],
                   self[1] - other[1],
                   self[2] - other[2],
@@ -507,7 +507,7 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec4<T>) -> T {
+    pure fn dot(&self, other: &Vec4<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -517,35 +517,35 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
 
 pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
-    pure fn length2() -> T {
-        self.dot(&self)
+    pure fn length2(&self) -> T {
+        self.dot(self)
     }
     
     #[inline(always)]
-    pure fn length() -> T {
+    pure fn length(&self) -> T {
         self.length2().sqrt()
     }
     
     #[inline(always)]
-    pure fn distance2(other: &Vec4<T>) -> T {
-        other.sub_v(&self).length2()
+    pure fn distance2(&self, other: &Vec4<T>) -> T {
+        other.sub_v(self).length2()
     }
     
     #[inline(always)]
-    pure fn distance(other: &Vec4<T>) -> T {
-        other.distance2(&self).sqrt()
+    pure fn distance(&self, other: &Vec4<T>) -> T {
+        other.distance2(self).sqrt()
     }
     
     #[inline(always)]
-    pure fn normalize() -> Vec4<T> {
+    pure fn normalize(&self) -> Vec4<T> {
         let mut n: T = cast(1);
         n /= self.length();
         return self.mul_t(n);
     }
     
     #[inline(always)]
-    pure fn lerp(other: &Vec4<T>, amount: T) -> Vec4<T> {
-        self.add_v(&other.sub_v(&self).mul_t(amount))
+    pure fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
     }
 }
 

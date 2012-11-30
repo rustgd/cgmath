@@ -23,9 +23,9 @@ pub trait Angle<T>: Add<self,self>
     static pure fn sextant()   -> self;
     static pure fn octant()    -> self;
     
-    pure fn to_radians() -> Radians<T>;
-    pure fn to_degrees() -> Degrees<T>;
-    pure fn wrap() -> self;
+    pure fn to_radians(&self) -> Radians<T>;
+    pure fn to_degrees(&self) -> Degrees<T>;
+    pure fn wrap(&self) -> self;
 }
 
 
@@ -41,11 +41,11 @@ pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(move cast(pi / 3.0)) }
     #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(move cast(pi / 4.0)) }
     
-    #[inline(always)] pure fn to_radians() -> Radians<T> { self }
-    #[inline(always)] pure fn to_degrees() -> Degrees<T> { Degrees(*self * cast(180.0 / pi)) }
+    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
+    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / pi)) }
     
-    #[inline(always)] pure fn wrap() -> Radians<T> {
-        self % cast(2.0 * pi)   // TODO: keep in the domain of 0 to two_pi
+    #[inline(always)] pure fn wrap(&self) -> Radians<T> {
+        (*self) % cast(2.0 * pi)   // TODO: keep in the domain of 0 to two_pi
     }
 }
     
@@ -120,11 +120,11 @@ pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
     #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(move cast(60.0))  }
     #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(move cast(45.0))  }
     
-    #[inline(always)] pure fn to_radians() -> Radians<T> { Radians(*self * cast(pi / 180.0)) }
-    #[inline(always)] pure fn to_degrees() -> Degrees<T> { self }
+    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * cast(pi / 180.0)) }
+    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { *self }
     
-    #[inline(always)] pure fn wrap() -> Degrees<T> {
-        self % cast(360)   // TODO: keep in the domain of 0 to 360
+    #[inline(always)] pure fn wrap(&self) -> Degrees<T> {
+        (*self) % cast(360)   // TODO: keep in the domain of 0 to 360
     }
 }
 
