@@ -28,10 +28,12 @@ mod test {
 
 pub mod color {
     pub mod channel;
+    pub mod color;
     
     #[test]
     mod test {
         mod test_channel;
+        mod test_color;
     }
 }
 
