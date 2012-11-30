@@ -21,9 +21,14 @@ fn test_radians() {
     assert *Radians(pi).wrap()                  == *Radians(pi);
     assert *Radians(3.0 * pi).wrap()            == *Radians(pi);
     assert *Radians(2.0 * pi).wrap()            == *Radians(0.0);
-    assert *Radians(-pi).wrap()                 == *Radians(-pi);
-    assert *Radians(-3.0 * pi).wrap()           == *Radians(-pi);
+    assert *Radians(-pi).wrap()                 == *Radians(-pi);   // FIXME: should be in the domain of 0 to two_pi
+    assert *Radians(-3.0 * pi).wrap()           == *Radians(-pi);   // FIXME: should be in the domain of 0 to two_pi
     assert *Radians(-2.0 * pi).wrap()           == *Radians(0.0);
+    
+    assert *Radians(0.0).opposite()             == *Radians(pi as float);
+    assert *Radians(pi / 2.0).opposite()        == *Radians((pi / 2.0) * 3.0);
+    assert *Radians(pi * 3.0).opposite()        == *Radians(0.0);
+    assert *Radians(-2.0 * pi).opposite()       == *Radians(-pi);   // FIXME: should be in the domain of 0 to two_pi
     
     assert *(Radians(pi) + Radians(pi))         == *Radians(2.0 * pi);
     assert *(Radians(2.0 * pi) - Radians(pi))   == *Radians(pi);
@@ -52,9 +57,14 @@ fn test_degrees() {
     assert Degrees(90.0).wrap()                 == Degrees(90.0);
     assert Degrees(450.0).wrap()                == Degrees(90.0);
     assert Degrees(360.0).wrap()                == Degrees(0.0);
-    assert Degrees(-90.0).wrap()                == Degrees(-90.0);
-    assert Degrees(-450.0).wrap()               == Degrees(-90.0);
+    assert Degrees(-90.0).wrap()                == Degrees(-90.0);   // FIXME: should be in the domain of 0 to 360
+    assert Degrees(-450.0).wrap()               == Degrees(-90.0);   // FIXME: should be in the domain of 0 to 360
     assert Degrees(-360.0).wrap()               == Degrees(0.0);
+    
+    assert Degrees(0.0).opposite()             == Degrees(180.0);
+    assert Degrees(90.0).opposite()            == Degrees(270.0);
+    assert Degrees(540.0).opposite()           == Degrees(0.0);
+    assert Degrees(-360.0).opposite()          == Degrees(-180.0);   // FIXME: should be in the domain of 0 to 360
     
     assert (Degrees(180.0) + Degrees(180.0))    == Degrees(360.0);
     assert (Degrees(360.0) - Degrees(180.0))    == Degrees(180.0);
