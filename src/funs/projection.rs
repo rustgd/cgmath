@@ -12,7 +12,7 @@ use num::ext::FloatExt;
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pure fn perspective<T:Copy FloatExt, A:Angle<T>>(fovy: A, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub pure fn perspective<T:Copy FloatExt, A:Angle<T>>(fovy: A, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * tan(&fovy.to_radians());
     let xmax = ymax * aspectRatio;
     
@@ -26,7 +26,7 @@ pure fn perspective<T:Copy FloatExt, A:Angle<T>>(fovy: A, aspectRatio: T, near: 
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
  */
 #[inline(always)]
-pure fn frustum<T:Copy FloatExt>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub pure fn frustum<T:Copy FloatExt>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = cast(0);
     let _2: T = cast(2);
     
