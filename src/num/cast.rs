@@ -4,7 +4,7 @@
  * the Num trait. I've found that it is especially handy in generic functions
  * when you need to mix floating point and integer values.
  */
-trait NumCast {
+pub trait NumCast {
     static pure fn from<T:NumCast>(n: T) -> self;
     pure fn cast<T:NumCast>() -> T;
     
