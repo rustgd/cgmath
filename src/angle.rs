@@ -35,7 +35,8 @@ pub trait Angle<T>: Add<self,self>
 
 pub enum Radians<T> = T;
 
-pub impl<T:Copy Num NumCast> Radians<T>: Angle<T> {
+// FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
+pub impl<T:Copy Num NumCast Eq Ord> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(move cast(2.0 * pi)) }  // TODO: calculate absolute values
     #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(move cast(pi))       }
     #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(move cast(pi / 2.0)) }
@@ -120,7 +121,8 @@ pub impl<T> Radians<T>: ToStr {
 
 pub enum Degrees<T> = T;
 
-pub impl<T:Copy Num NumCast> Degrees<T>: Angle<T> {
+// FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
+pub impl<T:Copy Num NumCast Eq Ord> Degrees<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(move cast(360.0)) }
     #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(move cast(180.0)) }
     #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(move cast(90.0))  }
