@@ -62,7 +62,8 @@ fn test_Mat2() {
     // fuzzy_eq
     // eq
     
-    let ident: Mat2<float> = NumericMatrixNxN::identity();
+    // let ident: Mat2<float> = NumericMatrixNxN::identity();     // FIXME: there's something wrong with static functions here!
+    let ident: Mat2<float> = Mat2::identity();
     
     assert ident.is_identity();
     assert ident.is_symmetric();
@@ -173,7 +174,8 @@ fn test_Mat3() {
                        0f, 0.5f, -2f,
                        0f,   0f,  1f);
     
-    let ident: Mat3<float> = NumericMatrixNxN::identity();
+    // let ident: Mat3<float> = NumericMatrixNxN::identity();     // FIXME: there's something wrong with static functions here!
+    let ident: Mat3<float> = Mat3::identity();
 
     assert option::unwrap(ident.invert()) == ident;
     
@@ -312,7 +314,8 @@ fn test_Mat4() {
                       4f, -8f,  4f,  8f,
                      -3f,  4f,  1f, -8f).mul_t(0.125f);
     
-    let ident: Mat4<float> = NumericMatrixNxN::identity();
+    // let ident: Mat4<float> = NumericMatrixNxN::identity();
+    let ident: Mat4<float> = Mat4::identity();
 
     assert option::unwrap(ident.invert()) == ident;
     

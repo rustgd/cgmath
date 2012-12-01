@@ -162,6 +162,23 @@ pub impl<T:Copy NumCast> Mat2<T> {
         Mat2::new(value,    _0,
                      _0, value)
     }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn identity() -> Mat2<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat2::new(_1, _0,
+                  _0, _1)
+    }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn zero() -> Mat2<T> {
+        let _0 = cast(0);
+        Mat2::new(_0, _0,
+                  _0, _0)
+    }
 }
 
 pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
@@ -217,8 +234,9 @@ pub impl<T:Copy DefaultEq> Mat2<T>: MatrixNxN<T, Vec2<T>> {
 pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
-        Mat2::from_cols(NumericVector::zero(),
-                        NumericVector::zero())
+        let _0 = cast(0);
+        Mat2::new(_0, _0,
+                  _0, _0)
     }
     
     #[inline(always)]
@@ -256,8 +274,10 @@ pub impl<T:Copy Num NumCast> Mat2<T>: Neg<Mat2<T>> {
 pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
-        Mat2::new(NumCast::one() , NumCast::zero(),
-                  NumCast::zero(), NumCast::one())
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat2::new(_1, _0,
+                  _0, _1)
     }
     
     #[inline(always)]
@@ -298,7 +318,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_identity(&self) -> bool {
-        self.default_eq(&NumericMatrixNxN::identity())
+        // self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        self.default_eq(&Mat2::identity())
     }
     
     #[inline(always)]
@@ -310,7 +331,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrixNxN<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_rotated(&self) -> bool {
-        !self.default_eq(&NumericMatrixNxN::identity())
+        // !self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        !self.default_eq(&Mat2::identity())
     }
 
     #[inline(always)]
@@ -404,6 +426,25 @@ pub impl<T:Copy NumCast> Mat3<T> {
                   m[1][0], m[1][1], _0,
                        _0,      _0, _1)
     }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn identity() -> Mat3<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat3::new(_1, _0, _0,
+                  _0, _1, _0,
+                  _0, _0, _1)
+    }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn zero() -> Mat3<T> {
+        let _0 = cast(0);
+        Mat3::new(_0, _0, _0,
+                  _0, _0, _0,
+                  _0, _0, _0)
+    }
 }
 
 pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
@@ -466,9 +507,10 @@ pub impl<T:Copy DefaultEq> Mat3<T>: MatrixNxN<T, Vec3<T>> {
 pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
-        Mat3::from_cols(NumericVector::zero(),
-                        NumericVector::zero(),
-                        NumericVector::zero())
+        let _0 = cast(0);
+        Mat3::new(_0, _0, _0,
+                  _0, _0, _0,
+                  _0, _0, _0)
     }
     
     #[inline(always)]
@@ -510,9 +552,11 @@ pub impl<T:Copy Num NumCast> Mat3<T>: Neg<Mat3<T>> {
 pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
-        Mat3::new(NumCast::one() , NumCast::zero(), NumCast::zero(),
-                  NumCast::zero(), NumCast::one() , NumCast::zero(),
-                  NumCast::zero(), NumCast::zero(), NumCast::one())
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat3::new(_1, _0, _0,
+                  _0, _1, _0,
+                  _0, _0, _1)
     }
     
     #[inline(always)]
@@ -557,7 +601,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_identity(&self) -> bool {
-        self.default_eq(&NumericMatrixNxN::identity())
+        // self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        self.default_eq(&Mat3::identity())
     }
     
     #[inline(always)]
@@ -575,7 +620,8 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrixNxN<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_rotated(&self) -> bool {
-        !self.default_eq(&NumericMatrixNxN::identity())
+        // !self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        !self.default_eq(&Mat3::identity())
     }
 
     #[inline(always)]
@@ -725,6 +771,27 @@ pub impl<T:Copy NumCast> Mat4<T> {
                   m[2][0], m[2][1], m[2][2], _0,
                        _0,      _0,      _0, _1)
     }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn identity() -> Mat4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat4::new(_1, _0, _0, _0,
+                  _0, _1, _0, _0,
+                  _0, _0, _1, _0,
+                  _0, _0, _0, _1)
+    }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn zero() -> Mat4<T> {
+        let _0 = cast(0);
+        Mat4::new(_0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0)
+    }
 }
 
 pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
@@ -795,10 +862,11 @@ pub impl<T:Copy DefaultEq> Mat4<T>: MatrixNxN<T, Vec4<T>> {
 pub impl<T:Copy Num NumCast DefaultEq> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
-        Mat4::from_cols(NumericVector::zero(),
-                        NumericVector::zero(),
-                        NumericVector::zero(),
-                        NumericVector::zero())
+        let _0 = cast(0);
+        Mat4::new(_0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0,
+                  _0, _0, _0, _0)
     }
     
     #[inline(always)]
@@ -844,10 +912,12 @@ pub impl<T:Copy Num NumCast> Mat4<T>: Neg<Mat4<T>> {
 pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec4<T>> {
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
-        Mat4::new(NumCast::one() , NumCast::zero(), NumCast::zero(), NumCast::zero(),
-                  NumCast::zero(), NumCast::one() , NumCast::zero(), NumCast::zero(),
-                  NumCast::zero(), NumCast::zero(), NumCast::one() , NumCast::zero(),
-                  NumCast::zero(), NumCast::zero(), NumCast::zero(), NumCast::one())
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat4::new(_1, _0, _0, _0,
+                  _0, _1, _0, _0,
+                  _0, _0, _1, _0,
+                  _0, _0, _0, _1)
     }
     
     #[inline(always)]
@@ -894,7 +964,8 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
             // Gauss Jordan Elimination with partial pivoting
 
             let mut a = *self;
-            let mut inv: Mat4<T> = NumericMatrixNxN::identity();
+            // let mut inv: Mat4<T> = NumericMatrixNxN::identity();     // FIXME: there's something wrong with static functions here!
+            let mut inv = Mat4::identity();
 
             // Find largest pivot column j among rows j..3
             for uint::range(0, 4) |j| {
@@ -950,7 +1021,8 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     
     #[inline(always)]
     pure fn is_identity(&self) -> bool {
-        self.default_eq(&NumericMatrixNxN::identity())
+        // self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        self.default_eq(&Mat4::identity())
     }
     
     #[inline(always)]
@@ -975,7 +1047,8 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: NumericMatrixNxN<T, Vec
     
     #[inline(always)]
     pure fn is_rotated(&self) -> bool {
-        !self.default_eq(&NumericMatrixNxN::identity())
+        // !self.default_eq(&NumericMatrixNxN::identity())     // FIXME: there's something wrong with static functions here!
+        !self.default_eq(&Mat4::identity())
     }
 
     #[inline(always)]

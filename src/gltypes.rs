@@ -293,8 +293,14 @@ pub impl mat2x2 {
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
         -> mat2x2 { Mat2::from_cols(move c0, move c1) }
     #[inline(always)] static pure fn from_value(v: f32) -> mat2x2 { Mat2::from_value(v) }
-    #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> mat2x2 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> mat2x2 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> mat2x2 { Mat2::identity() }
+    #[inline(always)] static pure fn zero() -> mat2x2 { Mat2::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn rows() -> uint { 2 }
@@ -308,8 +314,14 @@ pub impl mat3x3 {
     #[inline(always)] static pure fn from_cols(c0: vec3, c1: vec3, c2: vec3)
         -> mat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
     #[inline(always)] static pure fn from_value(v: f32) -> mat3x3 { Mat3::from_value(v) }
-    #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> mat3x3 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> mat3x3 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> mat3x3 { Mat3::identity() }
+    #[inline(always)] static pure fn zero() -> mat3x3 { Mat3::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn rows() -> uint { 3 }
@@ -323,8 +335,14 @@ pub impl mat4x4 {
     #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
     #[inline(always)] static pure fn from_value(v: f32) -> mat4x4 { Mat4::from_value(v) }
-    #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> mat4x4 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> mat4x4 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> mat4x4 { Mat4::identity() }
+    #[inline(always)] static pure fn zero() -> mat4x4 { Mat4::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn rows() -> uint { 4 }
@@ -340,7 +358,7 @@ pub impl dmat2 {
         -> dmat2 { dmat2x2::from_cols(move c0, move c1) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { dmat2x2::from_value(v) }
     #[inline(always)] static pure fn identity() -> dmat2 { dmat2x2::identity() }
-    #[inline(always)] static pure fn zero() -> dmat2 { NumericMatrix::zero() }
+    #[inline(always)] static pure fn zero() -> dmat2 { dmat2x2::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { dmat2x2::dim() }
     #[inline(always)] static pure fn rows() -> uint { dmat2x2::rows() }
@@ -382,8 +400,14 @@ pub impl dmat2x2 {
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2x2 { Mat2::from_cols(move c0, move c1) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2x2 { Mat2::from_value(v) }
-    #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> dmat2x2 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> dmat2x2 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> dmat2x2 { Mat2::identity() }
+    #[inline(always)] static pure fn zero() -> dmat2x2 { Mat2::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn rows() -> uint { 2 }
@@ -397,8 +421,14 @@ pub impl dmat3x3 {
     #[inline(always)] static pure fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)
         -> dmat3x3 { Mat3::from_cols(move c0, move c1, move c2) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat3x3 { Mat3::from_value(v) }
-    #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> dmat3x3 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> dmat3x3 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> dmat3x3 { Mat3::identity() }
+    #[inline(always)] static pure fn zero() -> dmat3x3 { Mat3::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn rows() -> uint { 3 }
@@ -412,8 +442,14 @@ pub impl dmat4x4 {
     #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
         -> dmat4x4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat4x4 { Mat4::from_value(v) }
-    #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrixNxN::identity() }
-    #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
+    
+    // FIXME: there's something wrong with static functions here!
+    // #[inline(always)] static pure fn identity() -> dmat4x4 { NumericMatrixNxN::identity() }
+    // #[inline(always)] static pure fn zero() -> dmat4x4 { NumericMatrix::zero() }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)] static pure fn identity() -> dmat4x4 { Mat4::identity() }
+    #[inline(always)] static pure fn zero() -> dmat4x4 { Mat4::zero() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn rows() -> uint { 4 }
