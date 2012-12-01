@@ -239,7 +239,7 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
 
 pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
     #[inline(always)]
-    pure fn default_eq(other: &Vec2<T>) -> bool {
+    pure fn default_eq(&self, other: &Vec2<T>) -> bool {
         self[0].default_eq(&other[0]) &&
         self[1].default_eq(&other[1])
     }
@@ -418,7 +418,7 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
 
 pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
     #[inline(always)]
-    pure fn default_eq(other: &Vec3<T>) -> bool {
+    pure fn default_eq(&self, other: &Vec3<T>) -> bool {
         self[0].default_eq(&other[0]) &&
         self[1].default_eq(&other[1]) &&
         self[2].default_eq(&other[2])
@@ -597,7 +597,7 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
 
 pub impl<T:Copy DefaultEq> Vec4<T>: DefaultEq {
     #[inline(always)]
-    pure fn default_eq(other: &Vec4<T>) -> bool {
+    pure fn default_eq(&self, other: &Vec4<T>) -> bool {
         self[0].default_eq(&other[0]) &&
         self[1].default_eq(&other[1]) &&
         self[2].default_eq(&other[2]) &&

@@ -295,7 +295,7 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
 
 pub impl<T:Copy DefaultEq> Quat<T>: DefaultEq {
     #[inline(always)]
-    pure fn default_eq(other: &Quat<T>) -> bool {
+    pure fn default_eq(&self, other: &Quat<T>) -> bool {
         self[0].default_eq(&other[0]) &&
         self[1].default_eq(&other[1]) &&
         self[2].default_eq(&other[2]) &&
