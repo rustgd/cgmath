@@ -70,6 +70,29 @@ pub impl<T> Quat<T> {
     }
 }
 
+pub impl<T:Copy> Quat<T>: Dimensional<T> {
+    #[inline(always)]
+    static pure fn dim() -> uint { 4 }
+    
+    #[inline(always)]
+    static pure fn size_of() -> uint { size_of::<Quat<T>>() }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> Quat<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
+    }
+}
+
 pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
@@ -85,22 +108,6 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
                   NumCast::zero(),
                   NumCast::zero(),
                   NumCast::zero())
-    }
-    
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Quat<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr() -> *T {
-        to_unsafe_ptr(&self[0])
-    }
-    
-    #[inline(always)]
-    pure fn neg() -> Quat<T> {
-        Quat::from_sv(-self.s, -self.v)
     }
     
     #[inline(always)]
@@ -252,13 +259,10 @@ pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
     }
 }
 
-pub impl<T:Copy> Quat<T>: Index<uint, T> {
+pub impl<T:Copy Num> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
+    pure fn neg(&self) -> Quat<T> {
+        Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

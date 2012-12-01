@@ -105,7 +105,9 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value, value)
     }
-    
+}
+
+pub impl<T:Copy> Vec2<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
     
@@ -113,16 +115,18 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     static pure fn size_of() -> uint { size_of::<Vec2<T>>() }
     
     #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        ptr::to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> Vec2<T>: Index<uint, T> {
+    #[inline(always)]
     pure fn index(i: uint) -> T {
         unsafe { do buf_as_slice(
             transmute::<*Vec2<T>, *T>(
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
-    }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
     }
 }
     
@@ -137,11 +141,6 @@ pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
     static pure fn zero() -> Vec2<T> {
         Vec2::new(NumCast::zero(),
                   NumCast::zero())
-    }
-    
-    #[inline(always)]
-    pure fn neg() -> Vec2<T> {
-        Vec2::new(-self[0], -self[1])
     }
     
     #[inline(always)]
@@ -172,6 +171,13 @@ pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
     pure fn dot(&self, other: &Vec2<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1]
+    }
+}
+
+pub impl<T:Copy Num> Vec2<T>: Neg<Vec2<T>> {
+    #[inline(always)]
+    pure fn neg(&self) -> Vec2<T> {
+        Vec2::new(-self[0], -self[1])
     }
 }
     
@@ -259,7 +265,9 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec3<T> {
         Vec3::new(value, value, value)
     }
-    
+}
+
+pub impl<T:Copy> Vec3<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
@@ -267,16 +275,18 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     static pure fn size_of() -> uint { size_of::<Vec3<T>>() }
     
     #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> Vec3<T>: Index<uint, T> {
+    #[inline(always)]
     pure fn index(i: uint) -> T {
         unsafe { do buf_as_slice(
             transmute::<*Vec3<T>, *T>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
-    }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
     }
 }
 
@@ -293,11 +303,6 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
         Vec3::new(NumCast::zero(),
                   NumCast::zero(),
                   NumCast::zero())
-    }
-    
-    #[inline(always)]
-    pure fn neg() -> Vec3<T> {
-        Vec3::new(-self[0], -self[1], -self[2])
     }
     
     #[inline(always)]
@@ -333,6 +338,13 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2]
+    }
+}
+
+pub impl<T:Copy Num> Vec3<T>: Neg<Vec3<T>> {
+    #[inline(always)]
+    pure fn neg(&self) -> Vec3<T> {
+        Vec3::new(-self[0], -self[1], -self[2])
     }
 }
 
@@ -431,7 +443,9 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value, value, value, value)
     }
-    
+}
+
+pub impl<T:Copy> Vec4<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
@@ -439,16 +453,18 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     static pure fn size_of() -> uint { size_of::<Vec4<T>>() }
     
     #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> Vec4<T>: Index<uint, T> {
+    #[inline(always)]
     pure fn index(i: uint) -> T {
         unsafe { do buf_as_slice(
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
-    }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
     }
 }
 
@@ -467,11 +483,6 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
                   NumCast::zero(),
                   NumCast::zero(),
                   NumCast::zero())
-    }
-    
-    #[inline(always)]
-    pure fn neg() -> Vec4<T> {
-        Vec4::new(-self[0], -self[1], -self[2], -self[3])
     }
     
     #[inline(always)]
@@ -512,6 +523,13 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
         self[1] * other[1] +
         self[2] * other[2] +
         self[3] * other[3]
+    }
+}
+
+pub impl<T:Copy Num> Vec4<T>: Neg<Vec4<T>> {
+    #[inline(always)]
+    pure fn neg(&self) -> Vec4<T> {
+        Vec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 

@@ -144,14 +144,6 @@ pub impl<T:Copy> RGB<T> {
 
 pub impl<T:Copy> RGB<T>: Dimensional<T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*RGB<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
-    }
-    
-    #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
@@ -162,6 +154,16 @@ pub impl<T:Copy> RGB<T>: Dimensional<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         ptr::to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> RGB<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*RGB<T>, *T>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
     }
 }
 
@@ -263,14 +265,6 @@ pub impl<T:Copy> RGBA<T> {
 
 pub impl<T:Copy> RGBA<T>: Dimensional<T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*RGBA<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
-    }
-    
-    #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
@@ -281,6 +275,16 @@ pub impl<T:Copy> RGBA<T>: Dimensional<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         ptr::to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> RGBA<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*RGBA<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
     }
 }
 
@@ -379,14 +383,6 @@ pub impl<T:Copy> HSV<T> {
 
 pub impl<T:Copy> HSV<T>: Dimensional<T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*HSV<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
-    }
-    
-    #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
@@ -397,6 +393,16 @@ pub impl<T:Copy> HSV<T>: Dimensional<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         ptr::to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> HSV<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*HSV<T>, *T>(
+                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+        }
     }
 }
 
@@ -474,14 +480,6 @@ pub impl<T:Copy> HSVA<T> {
 
 pub impl<T:Copy> HSVA<T>: Dimensional<T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*HSVA<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
-    }
-    
-    #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
@@ -492,6 +490,16 @@ pub impl<T:Copy> HSVA<T>: Dimensional<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         ptr::to_unsafe_ptr(&self[0])
+    }
+}
+
+pub impl<T:Copy> HSVA<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*HSVA<T>, *T>(
+                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+        }
     }
 }
 

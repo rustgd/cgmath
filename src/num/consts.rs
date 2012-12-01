@@ -69,9 +69,12 @@ pub impl int: IntConsts {
     #[inline(always)] static pure fn one()   -> int { 1 }
 }
 
-pub impl f32: FloatConsts {
+pub impl f32: IntConsts {
     #[inline(always)] static pure fn zero()             -> f32 { 0f32 }
     #[inline(always)] static pure fn one()              -> f32 { 1f32 }
+}
+
+pub impl f32: FloatConsts {
     #[inline(always)] static pure fn pi()               -> f32 { 3.14159265358979323846264338327950288_f32  }
     #[inline(always)] static pure fn frac_pi_2()        -> f32 { 1.57079632679489661923132169163975144_f32  }
     #[inline(always)] static pure fn frac_pi_4()        -> f32 { 0.785398163397448309615660845819875721_f32 }
@@ -87,9 +90,12 @@ pub impl f32: FloatConsts {
     #[inline(always)] static pure fn ln_10()            -> f32 { 2.30258509299404568401799145468436421_f32  }
 }
 
-pub impl f64: FloatConsts {
+pub impl f64: IntConsts {
     #[inline(always)] static pure fn zero()             -> f64 { 0f64 }
     #[inline(always)] static pure fn one()              -> f64 { 1f64 }
+}
+
+pub impl f64: FloatConsts {
     #[inline(always)] static pure fn pi()               -> f64 { 3.14159265358979323846264338327950288_f64  }
     #[inline(always)] static pure fn frac_pi_2()        -> f64 { 1.57079632679489661923132169163975144_f64  }
     #[inline(always)] static pure fn frac_pi_4()        -> f64 { 0.785398163397448309615660845819875721_f64 }
@@ -105,9 +111,12 @@ pub impl f64: FloatConsts {
     #[inline(always)] static pure fn ln_10()            -> f64 { 2.30258509299404568401799145468436421_f64  }
 }
 
-pub impl float: FloatConsts {
+pub impl float: IntConsts {
     #[inline(always)] static pure fn zero()             -> float { 0f }
     #[inline(always)] static pure fn one()              -> float { 1f }
+}
+
+pub impl float: FloatConsts {
     #[inline(always)] static pure fn pi()               -> float { 3.14159265358979323846264338327950288  }
     #[inline(always)] static pure fn frac_pi_2()        -> float { 1.57079632679489661923132169163975144  }
     #[inline(always)] static pure fn frac_pi_4()        -> float { 0.785398163397448309615660845819875721 }
