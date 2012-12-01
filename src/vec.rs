@@ -6,7 +6,7 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
-use dim::Dimensional;
+use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
 use num::cast::*;
 use num::default_eq::DefaultEq;
@@ -14,7 +14,7 @@ use num::default_eq::DefaultEq;
 ///
 /// The base vector trait
 ///
-pub trait Vector<T>: Dimensional<T>, Eq, DefaultEq {
+pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
     /// Construct the vector from a single value, copying it to each component
     static pure fn from_value(value: T) -> self;
 }
@@ -107,17 +107,12 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     }
 }
 
-pub impl<T:Copy> Vec2<T>: Dimensional<T> {
+pub impl<T> Vec2<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Vec2<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
-    }
 }
 
 pub impl<T:Copy> Vec2<T>: Index<uint, T> {
@@ -127,6 +122,13 @@ pub impl<T:Copy> Vec2<T>: Index<uint, T> {
             transmute::<*Vec2<T>, *T>(
                 to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Vec2<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        ptr::to_unsafe_ptr(&self[0])
     }
 }
     
@@ -267,17 +269,12 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     }
 }
 
-pub impl<T:Copy> Vec3<T>: Dimensional<T> {
+pub impl<T> Vec3<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Vec3<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
-    }
 }
 
 pub impl<T:Copy> Vec3<T>: Index<uint, T> {
@@ -287,6 +284,13 @@ pub impl<T:Copy> Vec3<T>: Index<uint, T> {
             transmute::<*Vec3<T>, *T>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Vec3<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        ptr::to_unsafe_ptr(&self[0])
     }
 }
 
@@ -445,17 +449,12 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     }
 }
 
-pub impl<T:Copy> Vec4<T>: Dimensional<T> {
+pub impl<T> Vec4<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Vec4<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
-    }
 }
 
 pub impl<T:Copy> Vec4<T>: Index<uint, T> {
@@ -465,6 +464,13 @@ pub impl<T:Copy> Vec4<T>: Index<uint, T> {
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Vec4<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        ptr::to_unsafe_ptr(&self[0])
     }
 }
 

@@ -6,7 +6,7 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
-use dim::Dimensional;
+use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::*;
@@ -19,7 +19,7 @@ use vec::Vec3;
 ///
 /// The base quaternion trait
 ///
-pub trait Quaternion<T>: Dimensional<T>, Eq, DefaultEq, Neg<self> {
+pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
     static pure fn identity() -> self;
     static pure fn zero() -> self;
     
@@ -70,17 +70,12 @@ pub impl<T> Quat<T> {
     }
 }
 
-pub impl<T:Copy> Quat<T>: Dimensional<T> {
+pub impl<T> Quat<T>: Dimensional<T> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Quat<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
-    }
 }
 
 pub impl<T:Copy> Quat<T>: Index<uint, T> {
@@ -90,6 +85,13 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
             transmute::<*Quat<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Quat<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        to_unsafe_ptr(&self[0])
     }
 }
 

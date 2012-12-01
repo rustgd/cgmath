@@ -6,7 +6,7 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
-use dim::Dimensional;
+use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
 use num::cast::*;
@@ -17,7 +17,7 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
 ///
 /// The base Matrix trait
 ///
-pub trait Matrix<T, Col, Row>: Dimensional<T>, Eq, DefaultEq {
+pub trait Matrix<T, Col, Row>: Dimensional<Col>, ToPtr<T>, Eq, DefaultEq {
     static pure fn rows() -> uint;
     static pure fn cols() -> uint;
     
@@ -181,17 +181,12 @@ pub impl<T:Copy> Mat2<T>: Matrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy> Mat2<T>: Dimensional<T> {
+pub impl<T:Copy> Mat2<T>: Dimensional<Vec2<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 2 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Mat2<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
-    }
 }
 
 pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
@@ -204,6 +199,13 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     }
 }
 
+pub impl<T:Copy> Mat2<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        self[0].to_ptr()
+    }
+}
+
 pub impl<T:Copy DefaultEq> Mat2<T>: MatrixNxN<T, Vec2<T>> {
     #[inline(always)]
     pure fn is_symmetric(&self) -> bool {
@@ -212,7 +214,7 @@ pub impl<T:Copy DefaultEq> Mat2<T>: MatrixNxN<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
         Mat2::from_cols(NumericVector::zero(),
@@ -244,7 +246,7 @@ pub impl<T:Copy Num NumCast> Mat2<T>: NumericMatrix<T, Vec2<T>, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat2<T>: Neg<Mat2<T>> {
+pub impl<T:Copy Num NumCast> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat2<T> {
         Mat2::from_cols(-self[0], -self[1])
@@ -422,17 +424,12 @@ pub impl<T:Copy> Mat3<T>: Matrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy> Mat3<T>: Dimensional<T> {
+pub impl<T:Copy> Mat3<T>: Dimensional<Vec3<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 3 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Mat3<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
-    }
 }
 
 pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
@@ -442,6 +439,13 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
             transmute::<*Mat3<T>, *Vec3<T>>(
                 to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Mat3<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        self[0].to_ptr()
     }
 }
 
@@ -459,7 +463,7 @@ pub impl<T:Copy DefaultEq> Mat3<T>: MatrixNxN<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
         Mat3::from_cols(NumericVector::zero(),
@@ -496,7 +500,7 @@ pub impl<T:Copy Num NumCast> Mat3<T>: NumericMatrix<T, Vec3<T>, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat3<T>: Neg<Mat3<T>> {
+pub impl<T:Copy Num NumCast> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat3<T> {
         Mat3::from_cols(-self[0], -self[1], -self[2])
@@ -742,17 +746,12 @@ pub impl<T:Copy> Mat4<T>: Matrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy> Mat4<T>: Dimensional<T> {
+pub impl<T> Mat4<T>: Dimensional<Vec4<T>> {
     #[inline(always)]
     static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
     static pure fn size_of() -> uint { size_of::<Mat4<T>>() }
-    
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
-    }
 }
 
 pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
@@ -762,6 +761,13 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
         }
+    }
+}
+
+pub impl<T:Copy> Mat4<T>: ToPtr<T> {
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        self[0].to_ptr()
     }
 }
 
@@ -786,7 +792,7 @@ pub impl<T:Copy DefaultEq> Mat4<T>: MatrixNxN<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
+pub impl<T:Copy Num NumCast DefaultEq> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
         Mat4::from_cols(NumericVector::zero(),
@@ -828,7 +834,7 @@ pub impl<T:Copy Num NumCast> Mat4<T>: NumericMatrix<T, Vec4<T>, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Num> Mat4<T>: Neg<Mat4<T>> {
+pub impl<T:Copy Num NumCast> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat4<T> {
         Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
