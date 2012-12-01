@@ -19,42 +19,63 @@ pub mod vec;
 
 #[test]
 mod test {
+    #[path = "test/test_angle.rs"]
     mod test_angle;
+    #[path = "test/test_gltypes.rs"]
     mod test_gltypes;
+    #[path = "test/test_mat.rs"]
     mod test_mat;
+    #[path = "test/test_quat.rs"]
     mod test_quat;
+    #[path = "test/test_vec.rs"]
     mod test_vec;
 }
 
 pub mod color {
+    #[path = "color/channel.rs"]
     pub mod channel;
+    #[path = "color/color.rs"]
     pub mod color;
     
     #[test]
     mod test {
+        #[path = "color/test/test_channel.rs"]
         mod test_channel;
+        #[path = "color/test/test_color.rs"]
         mod test_color;
     }
 }
 
 pub mod funs {
+    #[path = "funs/common.rs"]
     pub mod common;
+    #[path = "funs/exponential.rs"]
     pub mod exponential;
+    #[path = "funs/projection.rs"]
     pub mod projection;
+    #[path = "funs/relational.rs"]
     pub mod relational;
+    #[path = "funs/triganomic.rs"]
     pub mod triganomic;
     
     #[test]
     mod test {
+        #[path = "funs/test/test_common.rs"]
         mod test_common;
+        #[path = "funs/test/test_relational.rs"]
         mod test_relational;
     }
 }
 
 pub mod num {
+    #[path = "num/cast.rs"]
     pub mod cast;
+    #[path = "num/consts.rs"]
     pub mod consts;
+    #[path = "num/default_eq.rs"]
     pub mod default_eq;
+    #[path = "num/ext.rs"]
     pub mod ext;
+    #[path = "num/rhs.rs"]
     pub mod rhs; // FIXME: see module description
 }
