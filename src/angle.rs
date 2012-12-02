@@ -22,6 +22,7 @@ pub trait Angle<T>: Add<self,self>
     static pure fn quadrant()  -> self;
     static pure fn sextant()   -> self;
     static pure fn octant()    -> self;
+    static pure fn zero()      -> self;
     
     pure fn to_radians(&self) -> Radians<T>;
     pure fn to_degrees(&self) -> Degrees<T>;
@@ -37,11 +38,12 @@ pub enum Radians<T> = T;
 
 // FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
 pub impl<T:Copy Num NumCast Eq Ord> Radians<T>: Angle<T> {
-    #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(move cast(2.0 * pi)) }  // TODO: calculate absolute values
-    #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(move cast(pi))       }
-    #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(move cast(pi / 2.0)) }
-    #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(move cast(pi / 3.0)) }
-    #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(move cast(pi / 4.0)) }
+    #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(cast(2.0 * pi)) }  // TODO: calculate absolute values
+    #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(cast(pi))       }
+    #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(cast(pi / 2.0)) }
+    #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(cast(pi / 3.0)) }
+    #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(cast(pi / 4.0)) }
+    #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(cast(0.0))      }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / pi)) }
@@ -123,11 +125,12 @@ pub enum Degrees<T> = T;
 
 // FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
 pub impl<T:Copy Num NumCast Eq Ord> Degrees<T>: Angle<T> {
-    #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(move cast(360.0)) }
-    #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(move cast(180.0)) }
-    #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(move cast(90.0))  }
-    #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(move cast(60.0))  }
-    #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(move cast(45.0))  }
+    #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(cast(360.0)) }
+    #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(cast(180.0)) }
+    #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(cast(90.0))  }
+    #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(cast(60.0))  }
+    #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(cast(45.0))  }
+    #[inline(always)] static pure fn zero()         -> Degrees<T> { Degrees(cast(0.0))   }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * cast(pi / 180.0)) }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { *self }
