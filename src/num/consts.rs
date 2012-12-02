@@ -4,13 +4,13 @@ pub trait IntConsts {
 }
 
 pub trait FloatConsts: IntConsts {
-    static pure fn two_pi()         -> self;
-    static pure fn pi()             -> self;
-    static pure fn pi_2()           -> self;
-    static pure fn pi_3()           -> self;
-    static pure fn pi_4()           -> self;
-    static pure fn pi_6()           -> self;
-    static pure fn pi_8()           -> self;
+    static pure fn two_pi()         -> self;    // 2 * π
+    static pure fn pi()             -> self;    // π
+    static pure fn pi_2()           -> self;    // π / 2
+    static pure fn pi_3()           -> self;    // π / 3
+    static pure fn pi_4()           -> self;    // π / 4
+    static pure fn pi_6()           -> self;    // π / 6
+    static pure fn pi_8()           -> self;    // π / 8
     static pure fn frac_pi_2()      -> self;
     static pure fn frac_pi_4()      -> self;
     static pure fn frac_1_pi()      -> self;
