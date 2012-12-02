@@ -14,7 +14,9 @@ pub trait Angle<T>: Add<self,self>
                   , Sub<self,self>
                   , Mul<T,self>
                   , Div<T,self>
+                  // , Div<self,T>
                   , Modulo<T,self>
+                  // , Modulo<self,T>
                   , Neg<self>
                   , Eq, Ord {
     static pure fn full_turn() -> self;
@@ -50,7 +52,14 @@ pub impl<T:Copy Num NumCast Eq Ord> Radians<T>: Angle<T> {
     
     #[inline(always)]
     pure fn wrap(&self) -> Radians<T> {
-        (*self) % cast(2.0 * pi)   // TODO: keep in the domain of 0 to two_pi
+        let theta = (*self) % cast(2.0 * pi);
+        
+        // keep in the domain of 0 to 1 rad
+        if theta >= Angle::zero() {
+            theta
+        } else {
+            theta + Angle::full_turn()
+        }
     }
     
     #[inline(always)]
@@ -137,7 +146,14 @@ pub impl<T:Copy Num NumCast Eq Ord> Degrees<T>: Angle<T> {
     
     #[inline(always)]
     pure fn wrap(&self) -> Degrees<T> {
-        (*self) % cast(360)   // TODO: keep in the domain of 0 to 360
+        let theta = (*self) % cast(360);
+        
+        // keep in the domain of 0 to 360 degrees
+        if theta >= Angle::zero() {
+            theta
+        } else {
+            theta + Angle::full_turn()
+        }
     }
     
     #[inline(always)]
