@@ -27,7 +27,7 @@ pub trait Exp {
 #[inline(always)] pub pure fn inv_sqrt<T:Exp>(x: &T)    -> T { x.inv_sqrt() }
 
 pub impl f32: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f32)      -> f32 { cast(cmath::c_float_utils::pow(*self, n.cast())) }
+    #[inline(always)] pure fn pow(&self, n: &f32)    -> f32 { cast(cmath::c_float_utils::pow(*self, n.cast())) }
     #[inline(always)] pure fn exp(&self)             -> f32 { cast(cmath::c_float_utils::exp(*self)) }
     #[inline(always)] pure fn log_(&self)            -> f32 { cast(cmath::c_float_utils::ln(*self)) }
     #[inline(always)] pure fn exp2(&self)            -> f32 { cast(cmath::c_float_utils::exp2(*self)) }
@@ -37,7 +37,7 @@ pub impl f32: Exp {
 }
 
 pub impl f64: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f64)      -> f64 { cast(cmath::c_double_utils::pow(*self, n.cast())) }
+    #[inline(always)] pure fn pow(&self, n: &f64)    -> f64 { cast(cmath::c_double_utils::pow(*self, n.cast())) }
     #[inline(always)] pure fn exp(&self)             -> f64 { cast(cmath::c_double_utils::exp(*self)) }
     #[inline(always)] pure fn log_(&self)            -> f64 { cast(cmath::c_double_utils::ln(*self)) }
     #[inline(always)] pure fn exp2(&self)            -> f64 { cast(cmath::c_double_utils::exp2(*self)) }
@@ -47,7 +47,7 @@ pub impl f64: Exp {
 }
 
 pub impl float: Exp {
-    #[inline(always)] pure fn pow(&self, n: &float)    -> float { cast(cmath::c_float_utils::pow(cast(*self), n.cast())) }
+    #[inline(always)] pure fn pow(&self, n: &float)  -> float { cast(cmath::c_float_utils::pow(cast(*self), n.cast())) }
     #[inline(always)] pure fn exp(&self)             -> float { cast(cmath::c_float_utils::exp(cast(*self))) }
     #[inline(always)] pure fn log_(&self)            -> float { cast(cmath::c_float_utils::ln(cast(*self))) }
     #[inline(always)] pure fn exp2(&self)            -> float { cast(cmath::c_float_utils::exp2(cast(*self))) }
