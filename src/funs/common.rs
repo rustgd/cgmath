@@ -5,7 +5,6 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
-use num::cast::cast;
 use angle::{Radians, Degrees};
 use vec::{Vec2, Vec3, Vec4};
 
@@ -135,29 +134,29 @@ pub trait Approx {
 #[inline(always)] pub pure fn fract<T:Approx>(x: &T) -> T { x.fract() }
 
 pub impl f32: Approx {
-    #[inline(always)] pure fn floor(&self) -> f32 { cast(cmath::c_float_utils::floor(*self)) }
-    #[inline(always)] pure fn trunc(&self) -> f32 { cast(cmath::c_float_utils::trunc(*self)) }
-    #[inline(always)] pure fn round(&self) -> f32 { cast(cmath::c_float_utils::round(*self)) }
+    #[inline(always)] pure fn floor(&self) -> f32 { f32::floor(*self) }
+    #[inline(always)] pure fn trunc(&self) -> f32 { f32::trunc(*self) }
+    #[inline(always)] pure fn round(&self) -> f32 { f32::round(*self) }
     // #[inline(always)] pure fn roundEven(&self) -> f32 {}
-    #[inline(always)] pure fn ceil(&self)  -> f32 { cast(cmath::c_float_utils::ceil(*self)) }
+    #[inline(always)] pure fn ceil(&self)  -> f32 { f32::ceil(*self) }
     #[inline(always)] pure fn fract(&self) -> f32 { (*self) - floor(&*self) }
 }
 
 pub impl f64: Approx {
-    #[inline(always)] pure fn floor(&self) -> f64 { cast(cmath::c_double_utils::floor(*self)) }
-    #[inline(always)] pure fn trunc(&self) -> f64 { cast(cmath::c_double_utils::trunc(*self)) }
-    #[inline(always)] pure fn round(&self) -> f64 { cast(cmath::c_double_utils::round(*self)) }
+    #[inline(always)] pure fn floor(&self) -> f64 { f64::floor(*self) }
+    #[inline(always)] pure fn trunc(&self) -> f64 { f64::trunc(*self) }
+    #[inline(always)] pure fn round(&self) -> f64 { f64::round(*self) }
     // #[inline(always)] pure fn roundEven(&self) -> f64 {}
-    #[inline(always)] pure fn ceil(&self)  -> f64 { cast(cmath::c_double_utils::ceil(*self)) }
+    #[inline(always)] pure fn ceil(&self)  -> f64 { f64::ceil(*self) }
     #[inline(always)] pure fn fract(&self) -> f64 { (*self) - floor(&*self) }
 }
 
 pub impl float: Approx {
-    #[inline(always)] pure fn floor(&self) -> float { cast(cmath::c_float_utils::floor(cast(*self))) }
-    #[inline(always)] pure fn trunc(&self) -> float { cast(cmath::c_float_utils::trunc(cast(*self))) }
-    #[inline(always)] pure fn round(&self) -> float { cast(cmath::c_float_utils::round(cast(*self))) }
+    #[inline(always)] pure fn floor(&self) -> float { f64::floor(*self as f64) as float }
+    #[inline(always)] pure fn trunc(&self) -> float { f64::trunc(*self as f64) as float }
+    #[inline(always)] pure fn round(&self) -> float { f64::round(*self as f64) as float }
     // #[inline(always)] pure fn roundEven(&self) -> float {}
-    #[inline(always)] pure fn ceil(&self)  -> float { cast(cmath::c_float_utils::ceil(cast(*self))) }
+    #[inline(always)] pure fn ceil(&self)  -> float { f64::ceil(*self as f64) as float }
     #[inline(always)] pure fn fract(&self) -> float { (*self) - floor(&*self) }
 }
 

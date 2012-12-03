@@ -11,7 +11,6 @@ use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::*;
 use mat::{Mat3, Mat4};
-use num::cast::*;
 use num::default_eq::DefaultEq;
 use num::kinds::{Float, Number};
 use vec::Vec3;
@@ -21,8 +20,8 @@ use vec::Vec3;
 /// The base quaternion trait
 ///
 pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
-    static pure fn identity() -> self;
-    static pure fn zero() -> self;
+    static pure fn identity() -> self;      /// The multiplicative identity
+    static pure fn zero() -> self;          /// The additive identity
     
     pure fn mul_t(&self, value: T) -> self;
     pure fn div_t(&self, value: T) -> self;
@@ -99,18 +98,18 @@ pub impl<T:Copy> Quat<T>: ToPtr<T> {
 pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
-        Quat::new(Number::one(),
-                  Number::one(),
-                  Number::one(),
-                  Number::one())
+        Quat::new(Number::from(1),
+                  Number::from(0),
+                  Number::from(0),
+                  Number::from(0))
     }
     
     #[inline(always)]
     static pure fn zero() -> Quat<T> {
-        Quat::new(Number::zero(),
-                  Number::zero(),
-                  Number::zero(),
-                  Number::zero())
+        Quat::new(Number::from(0),
+                  Number::from(0),
+                  Number::from(0),
+                  Number::from(0))
     }
     
     #[inline(always)]
@@ -132,7 +131,7 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
-        self.v.cross(&tmp).mul_t(cast(2)).add_v(vec)
+        self.v.cross(&tmp).mul_t(Number::from(2)).add_v(vec)
     }
     
     #[inline(always)]
@@ -186,14 +185,14 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     
     #[inline(always)]
     pure fn normalize(&self) -> Quat<T> {
-        let mut n: T = cast(1);
+        let mut n: T = Number::from(1);
         n /= self.length();
         return self.mul_t(n);
     }
     
     #[inline(always)]
     pure fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        let _1: T = cast(1);
+        let _1: T = Number::from(1);
         self.mul_t(_1 - amount).add_q(&other.mul_t(amount)).normalize()
     }
     
@@ -215,13 +214,13 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
      */
     #[inline(always)]
     pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        let dot: T = cast(self.dot(other));
+        let dot: T = Number::from(self.dot(other));
         
         // if quaternions are close together use `nlerp`
-        let dot_threshold = cast(0.9995);
+        let dot_threshold = Number::from(0.9995);
         if dot > dot_threshold { return self.nlerp(other, amount) }
         
-        let robust_dot = dot.clamp(&-cast(1), &cast(1));    // stay within the domain of acos()
+        let robust_dot = dot.clamp(&-Number::from(1), &Number::from(1));    // stay within the domain of acos()
         let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
         let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
         

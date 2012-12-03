@@ -4,8 +4,9 @@
  * This module corresponds to Section 8.1 of the [GLSL 4.30.6 specification]
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
-use num::cast::{NumCast, cast};
 use angle::Radians;
+use num::cast::cast;
+use num::kinds::Number;
 use vec::{Vec3, Vec2, Vec4};
 
 /**
@@ -23,13 +24,13 @@ priv trait Trig<T> {
 #[inline(always)] pub pure fn cos<T:Trig<R>, R>(theta: &T) -> R { theta.cos() }
 #[inline(always)] pub pure fn tan<T:Trig<R>, R>(theta: &T) -> R { theta.tan() }
 
-priv impl<T:Copy Num NumCast> Radians<T>: Trig<T> {
+priv impl<T:Copy Number> Radians<T>: Trig<T> {
     #[inline(always)] pure fn sin(&self) -> T { cast(f64::sin(cast(**self))) }
     #[inline(always)] pure fn cos(&self) -> T { cast(f64::cos(cast(**self))) }
     #[inline(always)] pure fn tan(&self) -> T { cast(f64::tan(cast(**self))) }
 }
 
-pub impl<T:Copy Num NumCast> Vec2<Radians<T>>: Trig<Vec2<T>>  {
+pub impl<T:Copy Number> Vec2<Radians<T>>: Trig<Vec2<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec2<T> {
         Vec2::new(sin(&self[0]),
@@ -49,7 +50,7 @@ pub impl<T:Copy Num NumCast> Vec2<Radians<T>>: Trig<Vec2<T>>  {
     }
 }
 
-pub impl<T:Copy Num NumCast> Vec3<Radians<T>>: Trig<Vec3<T>>  {
+pub impl<T:Copy Number> Vec3<Radians<T>>: Trig<Vec3<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec3<T> {
         Vec3::new(sin(&self[0]),
@@ -72,7 +73,7 @@ pub impl<T:Copy Num NumCast> Vec3<Radians<T>>: Trig<Vec3<T>>  {
     }
 }
 
-pub impl<T:Copy Num NumCast> Vec4<Radians<T>>: Trig<Vec4<T>>  {
+pub impl<T:Copy Number> Vec4<Radians<T>>: Trig<Vec4<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec4<T> {
         Vec4::new(sin(&self[0]),
@@ -126,9 +127,9 @@ pub impl f64: InvTrig {
 }
 
 pub impl float: InvTrig {
-    #[inline(always)] pure fn asin(&self) -> Radians<float> { Radians(f64::asin(cast(*self)).to_float()) }
-    #[inline(always)] pure fn acos(&self) -> Radians<float> { Radians(f64::acos(cast(*self)).to_float()) }
-    #[inline(always)] pure fn atan(&self) -> Radians<float> { Radians(f64::atan(cast(*self)).to_float()) }
+    #[inline(always)] pure fn asin(&self) -> Radians<float> { Radians(f64::asin(*self as f64) as float) }
+    #[inline(always)] pure fn acos(&self) -> Radians<float> { Radians(f64::acos(*self as f64) as float) }
+    #[inline(always)] pure fn atan(&self) -> Radians<float> { Radians(f64::atan(*self as f64) as float) }
 }
 
 // TODO: figure out how to merge with InvTrig
@@ -138,7 +139,7 @@ pub trait InvTrigV<T> {
     pure fn atan(&self) -> T;
 }
 
-pub impl<T:Copy Num NumCast InvTrig> Vec2<T>: InvTrigV<Vec2<Radians<T>>>  {
+pub impl<T:Copy Number InvTrig> Vec2<T>: InvTrigV<Vec2<Radians<T>>>  {
     #[inline(always)]
     pure fn asin(&self) -> Vec2<Radians<T>> {
         Vec2::new(asin(&self[0]),
@@ -158,7 +159,7 @@ pub impl<T:Copy Num NumCast InvTrig> Vec2<T>: InvTrigV<Vec2<Radians<T>>>  {
     }
 }
 
-pub impl<T:Copy Num NumCast InvTrig> Vec3<T>: InvTrigV<Vec3<Radians<T>>>  {
+pub impl<T:Copy Number InvTrig> Vec3<T>: InvTrigV<Vec3<Radians<T>>>  {
     #[inline(always)]
     pure fn asin(&self) -> Vec3<Radians<T>> {
         Vec3::new(asin(&self[0]),
@@ -181,7 +182,7 @@ pub impl<T:Copy Num NumCast InvTrig> Vec3<T>: InvTrigV<Vec3<Radians<T>>>  {
     }
 }
 
-pub impl<T:Copy Num NumCast InvTrig> Vec4<T>: InvTrigV<Vec4<Radians<T>>>  {
+pub impl<T:Copy Number InvTrig> Vec4<T>: InvTrigV<Vec4<Radians<T>>>  {
     #[inline(always)]
     pure fn asin(&self) -> Vec4<Radians<T>> {
         Vec4::new(asin(&self[0]),
@@ -240,9 +241,9 @@ pub impl f64: Hyp {
 }
 
 pub impl float: Hyp {
-    #[inline(always)] pure fn sinh(&self) -> float { cast(f64::sinh(cast(*self))) }
-    #[inline(always)] pure fn cosh(&self) -> float { cast(f64::cosh(cast(*self))) }
-    #[inline(always)] pure fn tanh(&self) -> float { cast(f64::tanh(cast(*self))) }
+    #[inline(always)] pure fn sinh(&self) -> float { f64::sinh(*self as f64) as float }
+    #[inline(always)] pure fn cosh(&self) -> float { f64::cosh(*self as f64) as float }
+    #[inline(always)] pure fn tanh(&self) -> float { f64::tanh(*self as f64) as float }
 }
 
 pub impl <T:Copy Hyp> Vec2<T>: Hyp {

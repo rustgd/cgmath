@@ -5,7 +5,6 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
-use num::cast::{NumCast, cast};
 use vec::{Vec2, Vec3, Vec4};
 
 pub trait Exp {
@@ -27,32 +26,32 @@ pub trait Exp {
 #[inline(always)] pub pure fn inv_sqrt<T:Exp>(x: &T)    -> T { x.inv_sqrt() }
 
 pub impl f32: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f32)    -> f32 { cast(cmath::c_float_utils::pow(*self, n.cast())) }
-    #[inline(always)] pure fn exp(&self)             -> f32 { cast(cmath::c_float_utils::exp(*self)) }
-    #[inline(always)] pure fn log_(&self)            -> f32 { cast(cmath::c_float_utils::ln(*self)) }
-    #[inline(always)] pure fn exp2(&self)            -> f32 { cast(cmath::c_float_utils::exp2(*self)) }
-    #[inline(always)] pure fn log2(&self)            -> f32 { cast(cmath::c_float_utils::log2(*self)) }
-    #[inline(always)] pure fn sqrt(&self)            -> f32 { cast(cmath::c_float_utils::sqrt(*self)) }
+    #[inline(always)] pure fn pow(&self, n: &f32)    -> f32 { f32::pow(*self, *n) }
+    #[inline(always)] pure fn exp(&self)             -> f32 { f32::exp(*self) }
+    #[inline(always)] pure fn log_(&self)            -> f32 { f32::ln(*self) }
+    #[inline(always)] pure fn exp2(&self)            -> f32 { f32::exp2(*self) }
+    #[inline(always)] pure fn log2(&self)            -> f32 { f32::log2(*self) }
+    #[inline(always)] pure fn sqrt(&self)            -> f32 { f32::sqrt(*self) }
     #[inline(always)] pure fn inv_sqrt(&self)        -> f32 { 1f32 / self.sqrt() }  // TODO: optimise? need a wizard
 }
 
 pub impl f64: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f64)    -> f64 { cast(cmath::c_double_utils::pow(*self, n.cast())) }
-    #[inline(always)] pure fn exp(&self)             -> f64 { cast(cmath::c_double_utils::exp(*self)) }
-    #[inline(always)] pure fn log_(&self)            -> f64 { cast(cmath::c_double_utils::ln(*self)) }
-    #[inline(always)] pure fn exp2(&self)            -> f64 { cast(cmath::c_double_utils::exp2(*self)) }
-    #[inline(always)] pure fn log2(&self)            -> f64 { cast(cmath::c_double_utils::log2(*self)) }
-    #[inline(always)] pure fn sqrt(&self)            -> f64 { cast(cmath::c_double_utils::sqrt(*self)) }
+    #[inline(always)] pure fn pow(&self, n: &f64)    -> f64 { f64::pow(*self, *n) }
+    #[inline(always)] pure fn exp(&self)             -> f64 { f64::exp(*self) }
+    #[inline(always)] pure fn log_(&self)            -> f64 { f64::ln(*self) }
+    #[inline(always)] pure fn exp2(&self)            -> f64 { f64::exp2(*self) }
+    #[inline(always)] pure fn log2(&self)            -> f64 { f64::log2(*self) }
+    #[inline(always)] pure fn sqrt(&self)            -> f64 { f64::sqrt(*self) }
     #[inline(always)] pure fn inv_sqrt(&self)        -> f64 { 1f64 / self.sqrt() }  // TODO: optimise? need a wizard
 }
 
 pub impl float: Exp {
-    #[inline(always)] pure fn pow(&self, n: &float)  -> float { cast(cmath::c_float_utils::pow(cast(*self), n.cast())) }
-    #[inline(always)] pure fn exp(&self)             -> float { cast(cmath::c_float_utils::exp(cast(*self))) }
-    #[inline(always)] pure fn log_(&self)            -> float { cast(cmath::c_float_utils::ln(cast(*self))) }
-    #[inline(always)] pure fn exp2(&self)            -> float { cast(cmath::c_float_utils::exp2(cast(*self))) }
-    #[inline(always)] pure fn log2(&self)            -> float { cast(cmath::c_float_utils::log2(cast(*self))) }
-    #[inline(always)] pure fn sqrt(&self)            -> float { cast(cmath::c_float_utils::sqrt(cast(*self))) }
+    #[inline(always)] pure fn pow(&self, n: &float)  -> float { f64::pow(*self as f64, *n as f64) as float }
+    #[inline(always)] pure fn exp(&self)             -> float { f64::exp(*self as f64) as float }
+    #[inline(always)] pure fn log_(&self)            -> float { f64::ln(*self as f64) as float }
+    #[inline(always)] pure fn exp2(&self)            -> float { f64::exp2(*self as f64) as float }
+    #[inline(always)] pure fn log2(&self)            -> float { f64::log2(*self as f64) as float }
+    #[inline(always)] pure fn sqrt(&self)            -> float { f64::sqrt(*self as f64) as float }
     #[inline(always)] pure fn inv_sqrt(&self)        -> float { 1f / self.sqrt() }  // TODO: optimise? need a wizard
 }
 

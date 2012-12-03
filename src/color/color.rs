@@ -1,5 +1,5 @@
 use core::cast::transmute;
-use core::cmp::{Eq, Ord};
+use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
@@ -8,8 +8,7 @@ use angle::Degrees;
 use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
-use num::cast::{cast, NumCast};
-use num::kinds::Float;
+use num::kinds::{Float, Number};
 
 
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
@@ -65,18 +64,18 @@ pub pure fn to_hsv<T:Copy Float>(color: &RGB<T>) -> HSV<T> {
     // Algorithm taken from the Wikipedia article on HSL and HSV:
     // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
     
-    let _0 = Float::from_float(0f);
+    let _0 = Number::from(0f);
     
     let mx = [color.r, color.g, color.b].max();
     let mn = [color.r, color.g, color.b].min();
     let chr = mx - mn;
     
-    if chr != Float::from_float(0f) {
+    if chr != Number::from(0f) {
         let h = Degrees(
-            if      color.r == mx   { ((color.g - color.b) / chr) % Float::from_float(6f) }
-            else if color.g == mx   { ((color.b - color.r) / chr) + Float::from_float(2f) }
-            else /* color.b == mx */{ ((color.r - color.g) / chr) + Float::from_float(4f) }
-        * Float::from_float(60f));
+            if      color.r == mx   { ((color.g - color.b) / chr) % Number::from(6f) }
+            else if color.g == mx   { ((color.b - color.r) / chr) + Number::from(2f) }
+            else /* color.b == mx */{ ((color.r - color.g) / chr) + Number::from(4f) }
+        * Number::from(60f));
         
         let s = chr / mx;
         
@@ -95,24 +94,24 @@ pub pure fn to_rgb<T:Copy Float Sign>(color: &HSV<T>) -> RGB<T> {
     // Algorithm taken from the Wikipedia article on HSL and HSV:
     // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
     
-    let _0: T = Float::from_float(0f);
-    let _1: T = Float::from_float(1f);
-    let _2: T = Float::from_float(2f);
+    let _0: T = Number::from(0f);
+    let _1: T = Number::from(1f);
+    let _2: T = Number::from(2f);
     
     let chr = color.v * color.s;
-    let h_ = (* color.h) / Float::from_float(60f);  // TODO: it'd be nice if Degrees / Degrees returned a scalar
+    let h_ = (* color.h) / Number::from(60f);  // TODO: it'd be nice if Degrees / Degrees returned a scalar
     
     // the 2nd largest component
     let x = chr * (_1 - ((h_ % _2) - _1).abs());
     
     
     let mut color_rgb =
-        if      h_ < Float::from_float(1f) { RGB::new(chr,   x,  _0) }
-        else if h_ < Float::from_float(2f) { RGB::new(  x, chr,  _0) }
-        else if h_ < Float::from_float(3f) { RGB::new( _0, chr,   x) }
-        else if h_ < Float::from_float(4f) { RGB::new( _0,   x, chr) }
-        else if h_ < Float::from_float(5f) { RGB::new(  x,  _0, chr) }
-        else if h_ < Float::from_float(6f) { RGB::new(chr,  _0,   x) }
+        if      h_ < Number::from(1f) { RGB::new(chr,   x,  _0) }
+        else if h_ < Number::from(2f) { RGB::new(  x, chr,  _0) }
+        else if h_ < Number::from(3f) { RGB::new( _0, chr,   x) }
+        else if h_ < Number::from(4f) { RGB::new( _0,   x, chr) }
+        else if h_ < Number::from(5f) { RGB::new(  x,  _0, chr) }
+        else if h_ < Number::from(6f) { RGB::new(chr,  _0,   x) }
         else                               { RGB::new( _0,  _0,  _0) };
     
     // match the value by adding the same amount to each component
@@ -164,7 +163,7 @@ pub impl<T:Copy> RGB<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> RGB<T>: Color<T> {
+pub impl<T:Copy Number Channel> RGB<T>: Color<T> {
     #[inline(always)]
     pure fn inverse(&self) -> RGB<T> {
         RGB::new(self.r.inverse(),
@@ -218,7 +217,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> RGB<T>: Color<T> {
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> RGB<T>: Color3<T> {
+pub impl<T:Copy Number Channel> RGB<T>: Color3<T> {
     #[inline(always)] pure fn to_rgba_u8(&self, a: u8)   -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(),  a) }
     #[inline(always)] pure fn to_rgba_u16(&self, a: u16) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), a) }
     #[inline(always)] pure fn to_rgba_u32(&self, a: u32) -> RGBA<u32> { RGBA::from_rgb_a(&self.to_rgb_u32(), a) }
@@ -287,7 +286,7 @@ pub impl<T:Copy> RGBA<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> RGBA<T>: Color<T> {
+pub impl<T:Copy Number Channel> RGBA<T>: Color<T> {
     #[inline(always)]
     pure fn inverse(&self) -> RGBA<T> {
         RGBA::new(self.r.inverse(),
@@ -342,7 +341,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> RGBA<T>: Color<T> {
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> RGBA<T>: Color4<T> {
+pub impl<T:Copy Number Channel> RGBA<T>: Color4<T> {
     #[inline(always)] pure fn to_rgba_u8(&self)  -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(),  self.a.to_channel_u8()) }
     #[inline(always)] pure fn to_rgba_u16(&self) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), self.a.to_channel_u16()) }
     #[inline(always)] pure fn to_rgba_u32(&self) -> RGBA<u32> { RGBA::from_rgb_a(&self.to_rgb_u32(), self.a.to_channel_u32()) }

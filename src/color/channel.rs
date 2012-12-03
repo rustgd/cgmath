@@ -1,5 +1,3 @@
-use num::cast::{NumCast, cast};
-
 pub trait Channel {
     static pure fn channel_max() -> self;
     

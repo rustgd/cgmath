@@ -11,7 +11,7 @@ use funs::common::*;
 use funs::exponential::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
-use num::kinds::Float;
+use num::kinds::{Float, Number};
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 
@@ -122,15 +122,15 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat2::new(_1, _0,
                   _0, _1)
     }
     
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat2::new(_0, _0,
                   _0, _0)
     }
@@ -511,46 +511,49 @@ pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: ToQuat<T> {
+pub impl<T:Copy Float Exp> Mat3<T>: ToQuat<T> {
     pure fn to_Quat() -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         
-        let mut s: float;
-        let w: float, x: float, y: float, z: float;
-        let trace: float = cast(self.trace());
+        let mut s;
+        let w, x, y, z;
+        let trace = self.trace();
+        
+        let _1:   T = Number::from(1.0);
+        let half: T = Number::from(0.5);
         
         if trace >= cast(0) {
-            s = (trace + 1f).sqrt();
-            w = 0.5 * s;
-            s = 0.5 / s;
-            x = (self[1][2] - self[2][1]).cast::<float>() * s;
-            y = (self[2][0] - self[0][2]).cast::<float>() * s;
-            z = (self[0][1] - self[1][0]).cast::<float>() * s;
+            s = (_1 + trace).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[1][2] - self[2][1]) * s;
+            y = (self[2][0] - self[0][2]) * s;
+            z = (self[0][1] - self[1][0]) * s;
         } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = (1f + (self[0][0] - self[1][1] - self[2][2]).cast::<float>()).sqrt();
-            w = 0.5 * s;
-            s = 0.5 / s;
-            x = (self[0][1] - self[1][0]).cast::<float>() * s;
-            y = (self[2][0] - self[0][2]).cast::<float>() * s;
-            z = (self[1][2] - self[2][1]).cast::<float>() * s;
+            s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[0][1] - self[1][0]) * s;
+            y = (self[2][0] - self[0][2]) * s;
+            z = (self[1][2] - self[2][1]) * s;
         } else if self[1][1] > self[2][2] {
-            s = (1f + (self[1][1] - self[0][0] - self[2][2]).cast::<float>()).sqrt();
-            w = 0.5 * s;
-            s = 0.5 / s;
-            x = (self[0][1] - self[1][0]).cast::<float>() * s;
-            y = (self[1][2] - self[2][1]).cast::<float>() * s;
-            z = (self[2][0] - self[0][2]).cast::<float>() * s;
+            s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[0][1] - self[1][0]) * s;
+            y = (self[1][2] - self[2][1]) * s;
+            z = (self[2][0] - self[0][2]) * s;
         } else {
-            s = (1f + (self[2][2] - self[0][0] - self[1][1]).cast::<float>()).sqrt();
-            w = 0.5 * s;
-            s = 0.5 / s;
-            x = (self[2][0] - self[0][2]).cast::<float>() * s;
-            y = (self[1][2] - self[2][1]).cast::<float>() * s;
-            z = (self[0][1] - self[1][0]).cast::<float>() * s;
+            s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[2][0] - self[0][2]) * s;
+            y = (self[1][2] - self[2][1]) * s;
+            z = (self[0][1] - self[1][0]) * s;
         }
         
-        Quat::new(cast(w), cast(x), cast(y), cast(z))
+        Quat::new(w, x, y, z)
     }
 }
 
