@@ -40,6 +40,10 @@ pub type dvec2 = Vec2<f64>;             /// a two-component double-precision flo
 pub type dvec3 = Vec3<f64>;             /// a three-component double-precision floating-point vector
 pub type dvec4 = Vec4<f64>;             /// a four-component double-precision floating-point vector
 
+pub type bvec2 = Vec2<bool>;            /// a two-component Boolean vector
+pub type bvec3 = Vec3<bool>;            /// a three-component Boolean vector
+pub type bvec4 = Vec4<bool>;            /// a four-component Boolean vector
+
 pub type ivec2 = Vec2<i32>;             /// a two-component signed integer vector
 pub type ivec3 = Vec3<i32>;             /// a three-component signed integer vector
 pub type ivec4 = Vec4<i32>;             /// a four-component signed integer vector
@@ -110,6 +114,33 @@ pub impl dvec4 {
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec4>() }
+}
+ 
+ 
+pub impl bvec2 {
+    #[inline(always)] static pure fn new(x: bool, y: bool) -> bvec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec2>() }
+}
+ 
+pub impl bvec3 {
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool) -> bvec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec3>() }
+}
+ 
+pub impl bvec4 {
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
+    // #[inline(always)] static pure fn identity() -> bvec4 { NumericVector::identity() }
+    // #[inline(always)] static pure fn zero() -> bvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec4>() }
 }
 
 

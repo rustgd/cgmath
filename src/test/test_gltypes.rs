@@ -34,6 +34,13 @@ fn test_vec() {
     assert dvec3::size_of()  == dvec3::dim() * 8;
     assert dvec4::size_of()  == dvec4::dim() * 8;
     
+    assert bvec2::dim()      == 2;
+    assert bvec3::dim()      == 3;
+    assert bvec4::dim()      == 4;
+    assert bvec2::size_of()  == bvec2::dim() * 1;
+    assert bvec3::size_of()  == bvec3::dim() * 1;
+    assert bvec4::size_of()  == bvec4::dim() * 1;
+    
     assert ivec2::identity() == ivec2::from_value(1i32);
     assert ivec3::identity() == ivec3::from_value(1i32);
     assert ivec4::identity() == ivec4::from_value(1i32);
