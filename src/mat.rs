@@ -11,7 +11,7 @@ use funs::common::*;
 use funs::exponential::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
-use num::ext::Float;
+use num::kinds::Float;
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 

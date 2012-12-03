@@ -2,7 +2,7 @@ use funs::triganomic::tan;
 use angle::Angle;
 use mat::Mat4;
 use num::cast::{NumCast, cast};
-use num::ext::Float;
+use num::kinds::Float;
 
 /**
  * Create a perspective projection matrix

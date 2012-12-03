@@ -9,7 +9,7 @@ use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
 use num::cast::{cast, NumCast};
-use num::ext::Float;
+use num::kinds::Float;
 
 
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {

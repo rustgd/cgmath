@@ -10,7 +10,7 @@ use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
 use num::cast::*;
 use num::default_eq::DefaultEq;
-use num::ext::Number;
+use num::kinds::Number;
 
 ///
 /// The base vector trait

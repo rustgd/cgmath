@@ -13,7 +13,7 @@ use funs::triganomic::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 use num::default_eq::DefaultEq;
-use num::ext::Float;
+use num::kinds::Float;
 use vec::Vec3;
 
 

@@ -3,7 +3,7 @@ use core::f64::consts::pi;
 
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
-use num::ext::Float;
+use num::kinds::Float;
 use num::cast::{NumCast, cast};
 use quat::Quat;
 use vec::Vec3;
