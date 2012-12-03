@@ -213,7 +213,7 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
      */
     #[inline(always)]
     pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        let dot: T = Number::from(self.dot(other));
+        let dot = self.dot(other);
         
         // if quaternions are close together use `nlerp`
         let dot_threshold = Number::from(0.9995);
@@ -247,7 +247,7 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
         
-        let _1: T = cast(1);
+        let _1: T = Number::from(1);
         
         Mat3::new(_1 - yy2 - zz2,      xy2 - sz2,      xz2 + sy2,
                        xy2 + sz2, _1 - xx2 - zz2,      yz2 - sx2,
