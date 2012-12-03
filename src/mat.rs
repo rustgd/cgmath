@@ -32,7 +32,7 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
     pure fn mul_m(&self, other: &self) -> self;
     pure fn dot(&self, other: &self) -> T;
     
-    pure fn det(&self) -> T;
+    pure fn determinant(&self) -> T;
     pure fn trace(&self) -> T;
     
     pure fn invert(&self) -> Option<self>;
@@ -168,7 +168,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: Matrix<T, Vec2<T>> {
         other.transpose().mul_m(self).trace()
     }
     
-    pure fn det(&self) -> T {
+    pure fn determinant(&self) -> T {
        self[0][0] * self[1][1] - self[1][0] * self[0][1]
     }
 
@@ -179,7 +179,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn invert(&self) -> Option<Mat2<T>> {
         let _0 = cast(0);
-        let d = self.det();
+        let d = self.determinant();
         if d.default_eq(&_0) {
             None
         } else {
@@ -222,7 +222,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
-        !self.det().default_eq(&_0)
+        !self.determinant().default_eq(&_0)
     }
 }
 
@@ -430,7 +430,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: Matrix<T, Vec3<T>> {
         other.transpose().mul_m(self).trace()
     }
 
-    pure fn det(&self) -> T {
+    pure fn determinant(&self) -> T {
         self.col(0).dot(&self.col(1).cross(&self.col(2)))
     }
 
@@ -440,7 +440,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: Matrix<T, Vec3<T>> {
 
     // #[inline(always)]
     pure fn invert(&self) -> Option<Mat3<T>> {
-        let d = self.det();
+        let d = self.determinant();
         let _0 = cast(0);
         if d.default_eq(&_0) {
             None
@@ -499,7 +499,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
-        !self.det().default_eq(&_0)
+        !self.determinant().default_eq(&_0)
     }
 }
 
@@ -776,19 +776,19 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: Matrix<T, Vec4<T>> {
         other.transpose().mul_m(self).trace()
     }
 
-    pure fn det(&self) -> T {
+    pure fn determinant(&self) -> T {
         self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
                              self[1][2], self[2][2], self[3][2],
-                             self[1][3], self[2][3], self[3][3]).det() -
+                             self[1][3], self[2][3], self[3][3]).determinant() -
         self[1][0]*Mat3::new(self[0][1], self[2][1], self[3][1],
                              self[0][2], self[2][2], self[3][2],
-                             self[0][3], self[2][3], self[3][3]).det() +
+                             self[0][3], self[2][3], self[3][3]).determinant() +
         self[2][0]*Mat3::new(self[0][1], self[1][1], self[3][1],
                              self[0][2], self[1][2], self[3][2],
-                             self[0][3], self[1][3], self[3][3]).det() -
+                             self[0][3], self[1][3], self[3][3]).determinant() -
         self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
                              self[0][2], self[1][2], self[2][2],
-                             self[0][3], self[1][3], self[2][3]).det()
+                             self[0][3], self[1][3], self[2][3]).determinant()
     }
 
     pure fn trace(&self) -> T {
@@ -796,7 +796,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 
     pure fn invert(&self) -> Option<Mat4<T>> {
-        let d = self.det();
+        let d = self.determinant();
         let _0 = cast(0);
         if d.default_eq(&_0) {
             None
@@ -914,7 +914,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
-        !self.det().default_eq(&_0)
+        !self.determinant().default_eq(&_0)
     }
 }
 
