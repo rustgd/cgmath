@@ -11,60 +11,99 @@ use funs::exponential::Exp;
 use num::default_eq::DefaultEq;
 use num::kinds::Number;
 
-///
-/// The base vector trait
-///
+/**
+ * The base vector trait
+ */
 pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
     /// Construct the vector from a single value, copying it to each component
     static pure fn from_value(value: T) -> self;
 }
 
-/// A 2-dimensional vector
+/**
+ * A generic 2-dimensional vector
+ */
 pub trait Vector2<T>: Vector<T> {
-//     static pure fn new(x: T, y: T) -> self;
+    // static pure fn new(x: T, y: T) -> self;
 }
 
-/// A 3-dimensional vector
+/**
+ * A generic 3-dimensional vector
+ */
 pub trait Vector3<T>: Vector<T> {
-//     static pure fn new(x: T, y: T, z: T) -> self;
+    // static pure fn new(x: T, y: T, z: T) -> self;
 }
 
-/// A 4-dimensional vector
+/**
+ * A generic 4-dimensional vector
+ */
 pub trait Vector4<T>: Vector<T> {
 //     static pure fn new(x: T, y: T, z: T, w: T) -> self;
 }
 
-///
-/// A vector with numeric components
-///
+/**
+ * A vector with numeric components
+ */
 pub trait NumericVector<T>: Vector<T>, Neg<self>{
+    /**
+     * Returns a vector with each component set to one
+     */
     static pure fn identity() -> self;
+    
+    /**
+     * Returns a vector with each component set to zero
+     */
     static pure fn zero() -> self;
     
+    /**
+     * Returns the scalar multiplication of the vector and `value`
+     */
     pure fn mul_t(&self, value: T) -> self;
+    
+    /**
+     * Returns the scalar quotient of the vector and `value`
+     */
     pure fn div_t(&self, value: T) -> self;
     
+    /**
+     * Returns the sum of this vector with `other`
+     */
     pure fn add_v(&self, other: &self) -> self;
+    
+    /**
+     * Returns the difference between this vector and `other`
+     */
     pure fn sub_v(&self, other: &self) -> self;
     
+    /**
+     * Returns the dot product of this vector and `other`
+     */
     pure fn dot(&self, other: &self) -> T;
 }
 
-/// A 2-dimensional vector with numeric components
+/**
+ * A 2-dimensional vector with numeric components
+ */
 pub trait NumericVector2<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 }
 
-/// A 3-dimensional vector with numeric components
+/**
+ * A 3-dimensional vector with numeric components
+ */
 pub trait NumericVector3<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
 //     static pure fn unit_z() -> self;
+    /**
+     * Returns the cross product of this vector and `other`
+     */
     pure fn cross(&self, other: &self) -> self;
 }
 
-/// A 4-dimensional vector with numeric components
+/**
+ * A 4-dimensional vector with numeric components
+ */
 pub trait NumericVector4<T>: NumericVector<T> {
 //     static pure fn unit_x() -> self;
 //     static pure fn unit_y() -> self;
@@ -72,15 +111,38 @@ pub trait NumericVector4<T>: NumericVector<T> {
 //     static pure fn unit_w() -> self;
 }
 
-///
-/// A vector with geometric properties
-///
+/**
+ * A vector with geometric properties
+ */
 pub trait GeometricVector<T>: NumericVector<T> {
+    /**
+     * Returns the squared length of this vector
+     */
     pure fn length2(&self) -> T;
+    
+    /**
+     * Returns the length of the vector
+     */
     pure fn length(&self) -> T;
+    
+    /**
+     * Returns the distance between this vector and `other`
+     */
     pure fn distance2(&self, other: &self) -> T;
+    
+    /**
+     * Returns the squared distance between this vector and `other`
+     */
     pure fn distance(&self, other: &self) -> T;
+    
+    /**
+     * Returns this vector normalized
+     */
     pure fn normalize(&self) -> self;
+    
+    /**
+     * Linearly intoperlate between the vector and `other` by `amount`
+     */
     pure fn lerp(&self, other: &self, amount: T) -> self;
 }
 
@@ -88,9 +150,9 @@ pub trait GeometricVector<T>: NumericVector<T> {
 
 
 
-//
-//  Vec2
-//
+/**
+ *  Vec2
+ */
 pub struct Vec2<T> { x: T, y: T }
 
 pub impl<T> Vec2<T>/*: Vector2<T>*/ {
@@ -250,9 +312,9 @@ pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
 
 
 
-//
-//  Vec3
-//
+/**
+ *  Vec3
+ */
 pub struct Vec3<T> { x: T, y: T, z: T }
 
 pub impl<T> Vec3<T>/*: Vector3<T>*/ {
@@ -430,9 +492,9 @@ pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
 
 
 
-//
-//  Vec4
-//
+/**
+ *  Vec4
+ */
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub impl<T> Vec4<T>/*: Vector4<T>*/ {
