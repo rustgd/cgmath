@@ -40,7 +40,7 @@ pub trait Angle<T>: Add<self,self>
 pub enum Radians<T> = T;
 
 // FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
-pub impl<T:Copy Float Num NumCast Eq Ord> Radians<T>: Angle<T> {
+pub impl<T:Copy Float> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(Float::two_pi()) }
     #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(Float::pi())     }
     #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(Float::pi_2())   }
@@ -69,54 +69,54 @@ pub impl<T:Copy Float Num NumCast Eq Ord> Radians<T>: Angle<T> {
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Add<Radians<T>, Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Add<Radians<T>, Radians<T>> {
     #[inline(always)]
     pure fn add(rhs: &Radians<T>) -> Radians<T> {
         Radians(*self + **rhs)
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Sub<Radians<T>, Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Sub<Radians<T>, Radians<T>> {
     #[inline(always)]
     pure fn sub(&self, rhs: &Radians<T>) -> Radians<T> {
         Radians(**self - **rhs)
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Mul<T, Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Mul<T, Radians<T>> {
     #[inline(always)]
     pure fn mul(&self, rhs: &T) -> Radians<T> {
         Radians(**self * *rhs)
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Div<T, Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Div<T, Radians<T>> {
     #[inline(always)]
     pure fn div(&self, rhs: &T) -> Radians<T> {
         Radians(**self / *rhs)
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Modulo<T, Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Modulo<T, Radians<T>> {
     #[inline(always)]
     pure fn modulo(&self, rhs: &T) -> Radians<T> {
         Radians(**self % *rhs)
     }
 }
     
-pub impl<T:Copy Num> Radians<T>: Neg<Radians<T>> {
+pub impl<T:Copy Float> Radians<T>: Neg<Radians<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Radians<T> {
         Radians(-**self)
     }
 }
 
-pub impl<T:Copy Eq> Radians<T>: Eq {
+pub impl<T:Copy Float> Radians<T>: Eq {
     #[inline(always)] pure fn eq(&self, other: &Radians<T>) -> bool { **self == **other }
     #[inline(always)] pure fn ne(&self, other: &Radians<T>) -> bool { **self != **other }
 }
 
-pub impl<T:Copy Ord> Radians<T>: Ord {
+pub impl<T:Copy Float> Radians<T>: Ord {
     #[inline(always)] pure fn lt(&self, other: &Radians<T>) -> bool { **self <  **other }
     #[inline(always)] pure fn le(&self, other: &Radians<T>) -> bool { **self <= **other }
     #[inline(always)] pure fn ge(&self, other: &Radians<T>) -> bool { **self >= **other }
@@ -134,7 +134,7 @@ pub impl<T> Radians<T>: ToStr {
 pub enum Degrees<T> = T;
 
 // FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
-pub impl<T:Copy Num NumCast Eq Ord> Degrees<T>: Angle<T> {
+pub impl<T:Copy Float> Degrees<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(cast(360.0)) }
     #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(cast(180.0)) }
     #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(cast(90.0))  }
@@ -163,54 +163,54 @@ pub impl<T:Copy Num NumCast Eq Ord> Degrees<T>: Angle<T> {
     }
 }
 
-pub impl<T:Copy Num> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
     #[inline(always)]
     pure fn add(rhs: &Degrees<T>) -> Degrees<T> {
         Degrees(*self + **rhs)
     }
 }
     
-pub impl<T:Copy Num> Degrees<T>: Sub<Degrees<T>, Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Sub<Degrees<T>, Degrees<T>> {
     #[inline(always)]
     pure fn sub(&self, rhs: &Degrees<T>) -> Degrees<T> {
         Degrees(**self - **rhs)
     }
 }
     
-pub impl<T:Copy Num> Degrees<T>: Mul<T, Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Mul<T, Degrees<T>> {
     #[inline(always)]
     pure fn mul(&self, rhs: &T) -> Degrees<T> {
         Degrees(**self * *rhs)
     }
 }
     
-pub impl<T:Copy Num> Degrees<T>: Div<T, Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Div<T, Degrees<T>> {
     #[inline(always)]
     pure fn div(&self, rhs: &T) -> Degrees<T> {
         Degrees(**self / *rhs)
     }
 }
     
-pub impl<T:Copy Num> Degrees<T>: Modulo<T, Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Modulo<T, Degrees<T>> {
     #[inline(always)]
     pure fn modulo(&self, rhs: &T) -> Degrees<T> {
         Degrees(**self % *rhs)
     }
 }
     
-pub impl<T:Copy Num> Degrees<T>: Neg<Degrees<T>> {
+pub impl<T:Copy Float> Degrees<T>: Neg<Degrees<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Degrees<T> {
         Degrees(-**self)
     }
 }
 
-pub impl<T:Copy Eq> Degrees<T>: Eq {
+pub impl<T:Copy Float> Degrees<T>: Eq {
     #[inline(always)] pure fn eq(&self, other: &Degrees<T>) -> bool { **self == **other }
     #[inline(always)] pure fn ne(&self, other: &Degrees<T>) -> bool { **self != **other }
 }
 
-pub impl<T:Copy Ord> Degrees<T>: Ord {
+pub impl<T:Copy Float> Degrees<T>: Ord {
     #[inline(always)] pure fn lt(&self, other: &Degrees<T>) -> bool { **self <  **other }
     #[inline(always)] pure fn le(&self, other: &Degrees<T>) -> bool { **self <= **other }
     #[inline(always)] pure fn ge(&self, other: &Degrees<T>) -> bool { **self >= **other }
@@ -233,7 +233,7 @@ pub struct Rotation<T> {
     axis: Vec3<T>,
 }
 
-pub impl<T:Copy Num NumCast> Rotation<T> {
+pub impl<T:Copy Float> Rotation<T> {
     #[inline(always)]
     static pure fn new(theta: Radians<T>, axis: Vec3<T>) -> Rotation<T> {
         Rotation { theta: move theta, axis: move axis }

@@ -9,6 +9,7 @@ use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
 use num::cast::{cast, NumCast};
+use num::ext::Float;
 
 
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
@@ -412,7 +413,7 @@ pub impl<T:Copy> HSV<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> HSV<T>: Color<T> {
+pub impl<T:Copy Float Channel> HSV<T>: Color<T> {
     #[inline(always)]
     pure fn inverse(&self) -> HSV<T> {
         HSV::new(self.h.opposite(),
@@ -442,7 +443,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> HSV<T>: Color<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> HSV<T>: Color3<T> {
+pub impl<T:Copy Float Channel> HSV<T>: Color3<T> {
     #[inline(always)] pure fn to_rgba_u8(&self, a: u8)   -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(),  a) }
     #[inline(always)] pure fn to_rgba_u16(&self, a: u16) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), a) }
     #[inline(always)] pure fn to_rgba_u32(&self, a: u32) -> RGBA<u32> { RGBA::from_rgb_a(&self.to_rgb_u32(), a) }
@@ -454,7 +455,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> HSV<T>: Color3<T> {
     #[inline(always)] pure fn to_hsva_f64(&self, a: f64) -> HSVA<f64> { HSVA::from_hsv_a(&self.to_hsv_f64(), a) }
 }
 
-pub impl<T:Copy Eq> HSV<T>: Eq {
+pub impl<T:Copy Float> HSV<T>: Eq {
     pure fn eq(&self, other: &HSV<T>) -> bool {
         self.h == other.h &&
         self.s == other.s &&
@@ -511,7 +512,7 @@ pub impl<T:Copy> HSVA<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> HSVA<T>: Color<T> {
+pub impl<T:Copy Float Channel> HSVA<T>: Color<T> {
     #[inline(always)]
     pure fn inverse(&self) -> HSVA<T> {
         HSVA::new(self.h.opposite(),
@@ -542,7 +543,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> HSVA<T>: Color<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Channel Eq Ord> HSVA<T>: Color4<T> {
+pub impl<T:Copy Float Channel> HSVA<T>: Color4<T> {
     #[inline(always)] pure fn to_rgba_u8(&self)  -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(), self.a.to_channel_u8()) }
     #[inline(always)] pure fn to_rgba_u16(&self) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), self.a.to_channel_u16()) }
     #[inline(always)] pure fn to_rgba_u32(&self) -> RGBA<u32> { RGBA::from_rgb_a(&self.to_rgb_u32(), self.a.to_channel_u32()) }
@@ -554,7 +555,7 @@ pub impl<T:Copy Num NumCast Channel Eq Ord> HSVA<T>: Color4<T> {
     #[inline(always)] pure fn to_hsva_f64(&self) -> HSVA<f64> { HSVA::from_hsv_a(&self.to_hsv_f64(), self.a.to_channel_f64()) }
 }
 
-pub impl<T:Copy Eq> HSVA<T>: Eq {
+pub impl<T:Copy Float> HSVA<T>: Eq {
     pure fn eq(&self, other: &HSVA<T>) -> bool {
         self.h == other.h &&
         self.s == other.s &&

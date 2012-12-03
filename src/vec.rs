@@ -10,6 +10,7 @@ use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
 use num::cast::*;
 use num::default_eq::DefaultEq;
+use num::ext::Number;
 
 ///
 /// The base vector trait
@@ -132,7 +133,7 @@ pub impl<T:Copy> Vec2<T>: ToPtr<T> {
     }
 }
     
-pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
+pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec2<T> {
         Vec2::new(NumCast::one(),
@@ -176,14 +177,14 @@ pub impl<T:Copy Num NumCast> Vec2<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num> Vec2<T>: Neg<Vec2<T>> {
+pub impl<T:Copy Number> Vec2<T>: Neg<Vec2<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec2<T> {
         Vec2::new(-self[0], -self[1])
     }
 }
     
-pub impl<T:Copy Num NumCast Exp> Vec2<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -294,7 +295,7 @@ pub impl<T:Copy> Vec3<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
+pub impl<T:Copy Number> Vec3<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec3<T> {
         Vec3::new(NumCast::one(),
@@ -345,14 +346,14 @@ pub impl<T:Copy Num NumCast> Vec3<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num> Vec3<T>: Neg<Vec3<T>> {
+pub impl<T:Copy Number> Vec3<T>: Neg<Vec3<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec3<T> {
         Vec3::new(-self[0], -self[1], -self[2])
     }
 }
 
-pub impl<T:Copy Num> Vec3<T>: NumericVector3<T> {
+pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
     #[inline(always)]
     pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
@@ -361,7 +362,7 @@ pub impl<T:Copy Num> Vec3<T>: NumericVector3<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Exp> Vec3<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec3<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -474,7 +475,7 @@ pub impl<T:Copy> Vec4<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
+pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec4<T> {
         Vec4::new(NumCast::one(),
@@ -532,14 +533,14 @@ pub impl<T:Copy Num NumCast> Vec4<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Num> Vec4<T>: Neg<Vec4<T>> {
+pub impl<T:Copy Number> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec4<T> {
         Vec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl<T:Copy Num NumCast Exp> Vec4<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)

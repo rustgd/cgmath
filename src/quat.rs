@@ -13,6 +13,7 @@ use funs::triganomic::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 use num::default_eq::DefaultEq;
+use num::ext::Float;
 use vec::Vec3;
 
 
@@ -95,7 +96,7 @@ pub impl<T:Copy> Quat<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(NumCast::one(),
@@ -302,3 +303,81 @@ pub impl<T:Copy DefaultEq> Quat<T>: DefaultEq {
         self[3].default_eq(&other[3])
     }
 }
+
+// // Operator Overloads
+
+// pub impl<T, Result, RHS: QuatAddRHS<T, Result>> Quat<T>: Add<RHS,Result> {
+//     #[inline(always)]
+//     pure fn add(rhs: &RHS) -> Result {
+//         rhs.quat_add_rhs(&self)
+//     }
+// }
+
+// pub impl<T, Result, RHS: QuatSubRHS<T, Result>> Quat<T>: Sub<RHS,Result> {
+//     #[inline(always)]
+//     pure fn sub(&self, rhs: &RHS) -> Result {
+//         rhs.quat_sub_rhs(self)
+//     }
+// }
+
+// pub impl<T, Result, RHS: QuatMulRHS<T, Result>> Quat<T>: Mul<RHS,Result> {
+//     #[inline(always)]
+//     pure fn mul(&self, rhs: &RHS) -> Result {
+//         rhs.quat_mul_rhs(self)
+//     }
+// }
+
+// pub impl<T, Result, RHS: QuatDivRHS<T, Result>> Quat<T>: Div<RHS,Result> {
+//     #[inline(always)]
+//     pure fn div(&self, rhs: &RHS) -> Result {
+//         rhs.quat_div_rhs(self)
+//     }
+// }
+
+// // RHS Traits for Operator overloads
+// pub trait QuatAddRHS<T, Result> { pure fn quat_add_rhs(&self, lhs: &Quat<T>) -> Result; }
+// pub trait QuatSubRHS<T, Result> { pure fn quat_sub_rhs(&self, lhs: &Quat<T>) -> Result; }
+// pub trait QuatMulRHS<T, Result> { pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Result; }
+// pub trait QuatDivRHS<T, Result> { pure fn quat_div_rhs(&self, lhs: &Quat<T>) -> Result; }
+
+// // Quat/Scalar Multiplication
+// pub impl f32:   QuatMulRHS<f32,   Quat<f32>>   { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<f32>)   -> Quat<f32>   { lhs.mul_t(self) } }
+// pub impl f64:   QuatMulRHS<f64,   Quat<f64>>   { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<f64>)   -> Quat<f64>   { lhs.mul_t(self) } }
+// pub impl float: QuatMulRHS<float, Quat<float>> { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<float>) -> Quat<float> { lhs.mul_t(self) } }
+
+// // Quat/Scalar Division
+// pub impl f32:   QuatDivRHS<f32,   Quat<f32>>   { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<f32>)   -> Quat<f32>   { lhs.div_t(self) } }
+// pub impl f64:   QuatDivRHS<f64,   Quat<f64>>   { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<f64>)   -> Quat<f64>   { lhs.div_t(self) } }
+// pub impl float: QuatDivRHS<float, Quat<float>> { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<float>) -> Quat<float> { lhs.div_t(self) } }
+
+// // Quat/Vector Multiplication
+// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Vec3<T>: QuatMulRHS<T, Vec3<T>> {
+//     #[inline(always)]
+//     pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Vec3<T> {
+//         lhs.mul_v(self)
+//     }
+// }
+
+// // // Quat/Quat Addition
+// // pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatAddRHS<Quat<T>, Quat<T>> {
+// //     #[inline(always)]
+// //     pure fn quat_add_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
+// //         lhs.add_q(self)
+// //     }
+// // }
+
+// // Quat/Quat Subtraction
+// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatSubRHS<T, Quat<T>> {
+//     #[inline(always)]
+//     pure fn quat_sub_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
+//         lhs.sub_q(self)
+//     }
+// }
+
+// // Quat/Quat Multiplication
+// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatMulRHS<T, Quat<T>> {
+//     #[inline(always)]
+//     pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
+//         lhs.mul_q(self)
+//     }
+// }

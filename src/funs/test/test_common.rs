@@ -122,15 +122,15 @@ fn test_min() {
     assert min(&2f32, &1f32)    == 1f32;
     assert min(&2f64, &1f64)    == 1f64;
     
-    assert Radians(1).min(&Radians(2))   == Radians(1);
-    assert Radians(2).min(&Radians(1))   == Radians(1);
-    assert min(&Radians(1), &Radians(2)) == Radians(1);
-    assert min(&Radians(2), &Radians(1)) == Radians(1);
+    assert Radians(1.0).min(&Radians(2.0))   == Radians(1.0);
+    assert Radians(2.0).min(&Radians(1.0))   == Radians(1.0);
+    assert min(&Radians(1.0), &Radians(2.0)) == Radians(1.0);
+    assert min(&Radians(2.0), &Radians(1.0)) == Radians(1.0);
     
-    assert Degrees(1).min(&Degrees(2))   == Degrees(1);
-    assert Degrees(2).min(&Degrees(1))   == Degrees(1);
-    assert min(&Degrees(1), &Degrees(2)) == Degrees(1);
-    assert min(&Degrees(2), &Degrees(1)) == Degrees(1);
+    assert Degrees(1.0).min(&Degrees(2.0))   == Degrees(1.0);
+    assert Degrees(2.0).min(&Degrees(1.0))   == Degrees(1.0);
+    assert min(&Degrees(1.0), &Degrees(2.0)) == Degrees(1.0);
+    assert min(&Degrees(2.0), &Degrees(1.0)) == Degrees(1.0);
     
     assert min(&Vec2::new(1, 2),        &Vec2::new(2, 1))       == Vec2::new(1, 1);
     assert min(&Vec3::new(1, 2, 3),     &Vec3::new(3, 2, 1))    == Vec3::new(1, 2, 1);
@@ -201,15 +201,15 @@ fn test_max() {
     assert max(&2f32, &1f32)    == 2f32;
     assert max(&2f64, &1f64)    == 2f64;
     
-    assert Radians(1).max(&Radians(2))   == Radians(2);
-    assert Radians(2).max(&Radians(1))   == Radians(2);
-    assert max(&Radians(1), &Radians(2)) == Radians(2);
-    assert max(&Radians(2), &Radians(1)) == Radians(2);
+    assert Radians(1.0).max(&Radians(2.0))   == Radians(2.0);
+    assert Radians(2.0).max(&Radians(1.0))   == Radians(2.0);
+    assert max(&Radians(1.0), &Radians(2.0)) == Radians(2.0);
+    assert max(&Radians(2.0), &Radians(1.0)) == Radians(2.0);
     
-    assert Degrees(1).max(&Degrees(2))   == Degrees(2);
-    assert Degrees(2).max(&Degrees(1))   == Degrees(2);
-    assert max(&Degrees(1), &Degrees(2)) == Degrees(2);
-    assert max(&Degrees(2), &Degrees(1)) == Degrees(2);
+    assert Degrees(1.0).max(&Degrees(2.0))   == Degrees(2.0);
+    assert Degrees(2.0).max(&Degrees(1.0))   == Degrees(2.0);
+    assert max(&Degrees(1.0), &Degrees(2.0)) == Degrees(2.0);
+    assert max(&Degrees(2.0), &Degrees(1.0)) == Degrees(2.0);
     
     assert max(&Vec2::new(1, 2),        &Vec2::new(2, 1))       == Vec2::new(2, 2);
     assert max(&Vec3::new(1, 2, 3),     &Vec3::new(3, 2, 1))    == Vec3::new(3, 2, 3);

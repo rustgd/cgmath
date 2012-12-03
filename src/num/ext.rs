@@ -1,16 +1,82 @@
 use core::cmp::{Eq, Ord};
+use std::cmp::FuzzyEq;
 
-use num::cast::*;
-use num::default_eq::*;
+use num::cast::NumCast;
+use num::default_eq::DefaultEq;
 
 
-pub trait Number: Copy, Eq, Num, NumCast, Ord {
+pub trait Number: DefaultEq, Eq, Num, NumCast, Ord {
     static pure fn zero() -> self;
     static pure fn one()  -> self;
 }
 
+pub impl u8: Number {
+    #[inline(always)] static pure fn zero() -> u8 { 0u8 }
+    #[inline(always)] static pure fn one()  -> u8 { 1u8 }
+}
 
-pub trait UnSigned /*:Number*/ {}
+pub impl u16: Number {
+    #[inline(always)] static pure fn zero() -> u16 { 0u16 }
+    #[inline(always)] static pure fn one()  -> u16 { 1u16 }
+}
+
+pub impl u32: Number {
+    #[inline(always)] static pure fn zero() -> u32 { 0u32 }
+    #[inline(always)] static pure fn one()  -> u32 { 1u32 }
+}
+
+pub impl u64: Number {
+    #[inline(always)] static pure fn zero() -> u64 { 0u64 }
+    #[inline(always)] static pure fn one()  -> u64 { 1u64 }
+}
+
+pub impl uint: Number {
+    #[inline(always)] static pure fn zero() -> uint { 0u }
+    #[inline(always)] static pure fn one()  -> uint { 1u }
+}
+
+pub impl i8: Number {
+    #[inline(always)] static pure fn zero() -> i8 { 0i8 }
+    #[inline(always)] static pure fn one()  -> i8 { 1i8 }
+}
+
+pub impl i16: Number {
+    #[inline(always)] static pure fn zero() -> i16 { 0i16 }
+    #[inline(always)] static pure fn one()  -> i16 { 1i16 }
+}
+
+pub impl i32: Number {
+    #[inline(always)] static pure fn zero() -> i32 { 0i32 }
+    #[inline(always)] static pure fn one()  -> i32 { 1i32 }
+}
+
+pub impl i64: Number {
+    #[inline(always)] static pure fn zero() -> i64 { 0i64 }
+    #[inline(always)] static pure fn one()  -> i64 { 1i64 }
+}
+
+pub impl int: Number {
+    #[inline(always)] static pure fn zero() -> int { 0 }
+    #[inline(always)] static pure fn one()  -> int { 1 }
+}
+
+pub impl f32: Number {
+    #[inline(always)] static pure fn zero() -> f32 { 0f32 }
+    #[inline(always)] static pure fn one()  -> f32 { 1f32 }
+}
+
+pub impl f64: Number {
+    #[inline(always)] static pure fn zero() -> f64 { 0f64 }
+    #[inline(always)] static pure fn one()  -> f64 { 1f64 }
+}
+
+pub impl float: Number {
+    #[inline(always)] static pure fn zero() -> float { 0f }
+    #[inline(always)] static pure fn one()  -> float { 1f }
+}
+
+
+pub trait UnSigned: Number {}
 
 pub impl u8:   UnSigned {}
 pub impl u16:  UnSigned {}
@@ -19,7 +85,7 @@ pub impl u64:  UnSigned {}
 pub impl uint: UnSigned {}
 
 
-pub trait Signed /*:Number*/ {}
+pub trait Signed: Number {}
 
 pub impl i8:    Signed {}
 pub impl i16:   Signed {}
@@ -32,7 +98,7 @@ pub impl f64:   Signed {}
 pub impl float: Signed {}
 
 
-pub trait Integer /*:Number*/ {}
+pub trait Integer: Number {}
 
 pub impl u8:   Integer {}
 pub impl u16:  Integer {}
@@ -47,7 +113,7 @@ pub impl i64:  Integer {}
 pub impl int:  Integer {}
 
 
-pub trait Float /*:Number, FuzzyEq*/ {
+pub trait Float: Number, FuzzyEq {
     pure fn to_float() -> float;
     static pure fn from_float(n: float) -> self;
     

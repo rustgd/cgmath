@@ -11,6 +11,7 @@ use funs::common::*;
 use funs::exponential::*;
 use num::cast::*;
 use num::default_eq::DefaultEq;
+use num::ext::Float;
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 
@@ -70,7 +71,7 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
  */
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-pub impl<T:Copy NumCast> Mat2<T> {
+pub impl<T:Copy Float> Mat2<T> {
     #[inline(always)]
     static pure fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Mat2<T> {
@@ -109,7 +110,7 @@ pub impl<T:Copy NumCast> Mat2<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: Matrix<T, Vec2<T>> {
+pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec2<T> { self[i] }
     
@@ -226,7 +227,7 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat2<T>: Matrix<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy NumCast> Mat2<T>: Matrix2<T, Vec2<T>> {
+pub impl<T:Copy Float> Mat2<T>: Matrix2<T, Vec2<T>> {
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
         Mat3::from_Mat2(self)
@@ -263,14 +264,14 @@ pub impl<T:Copy> Mat2<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat2<T>: Neg<Mat2<T>> {
+pub impl<T:Copy Float> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat2<T> {
         Mat2::from_cols(-self[0], -self[1])
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat2<T>: Eq {
+pub impl<T:Copy Float> Mat2<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat2<T>) -> bool {
         self[0] == other[0] &&
@@ -283,7 +284,7 @@ pub impl<T:Copy DefaultEq> Mat2<T>: Eq {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
+pub impl<T:Copy Float> Mat2<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Mat2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
@@ -291,7 +292,7 @@ pub impl<T:Copy FuzzyEq> Mat2<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat2<T>: DefaultEq {
+pub impl<T:Copy Float> Mat2<T>: DefaultEq {
     #[inline(always)]
     pure fn default_eq(&self, other: &Mat2<T>) -> bool {
         self[0].default_eq(&other[0]) &&
@@ -309,7 +310,7 @@ pub impl<T:Copy DefaultEq> Mat2<T>: DefaultEq {
  */
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-pub impl<T:Copy NumCast> Mat3<T> {
+pub impl<T:Copy Float> Mat3<T> {
     #[inline(always)]
     static pure fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
@@ -363,7 +364,7 @@ pub impl<T:Copy NumCast> Mat3<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: Matrix<T, Vec3<T>> {
+pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec3<T> { self[i] }
     
@@ -503,14 +504,14 @@ pub impl<T:Copy Num NumCast DefaultEq> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy NumCast> Mat3<T>: Matrix3<T, Vec3<T>> {
+pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
         Mat4::from_Mat3(self)
     }
 }
 
-pub impl<T:Copy Num NumCast Ord DefaultEq> Mat3<T>: ToQuat<T> {
+pub impl<T:Copy Float> Mat3<T>: ToQuat<T> {
     pure fn to_Quat() -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
@@ -578,14 +579,14 @@ pub impl<T:Copy> Mat3<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast> Mat3<T>: Neg<Mat3<T>> {
+pub impl<T:Copy Float> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat3<T> {
         Mat3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat3<T>: Eq {
+pub impl<T:Copy Float> Mat3<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat3<T>) -> bool {
         self[0] == other[0] &&
@@ -599,7 +600,7 @@ pub impl<T:Copy DefaultEq> Mat3<T>: Eq {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Mat3<T>: FuzzyEq {
+pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Mat3<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
@@ -608,7 +609,7 @@ pub impl<T:Copy FuzzyEq> Mat3<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat3<T>: DefaultEq {
+pub impl<T:Copy Float> Mat3<T>: DefaultEq {
     #[inline(always)]
     pure fn default_eq(&self, other: &Mat3<T>) -> bool {
         self[0].default_eq(&other[0]) &&
@@ -627,7 +628,7 @@ pub impl<T:Copy DefaultEq> Mat3<T>: DefaultEq {
  */
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-pub impl<T:Copy NumCast> Mat4<T> {
+pub impl<T:Copy Float> Mat4<T> {
     #[inline(always)]
     static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
@@ -698,7 +699,7 @@ pub impl<T:Copy NumCast> Mat4<T> {
     }
 }
 
-pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: Matrix<T, Vec4<T>> {
+pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
     
@@ -921,7 +922,7 @@ pub impl<T:Copy Num NumCast DefaultEq Sign Ord> Mat4<T>: Matrix<T, Vec4<T>> {
 pub impl<T> Mat4<T>: Matrix4<T, Vec4<T>> {
 }
 
-pub impl<T:Copy Num NumCast> Mat4<T>: Neg<Mat4<T>> {
+pub impl<T:Copy Float> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat4<T> {
         Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
@@ -953,7 +954,7 @@ pub impl<T:Copy> Mat4<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat4<T>: Eq {
+pub impl<T:Copy Float> Mat4<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Mat4<T>) -> bool {
         self[0] == other[0] &&
@@ -968,7 +969,7 @@ pub impl<T:Copy DefaultEq> Mat4<T>: Eq {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Mat4<T>: FuzzyEq {
+pub impl<T:Copy Float> Mat4<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Mat4<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
@@ -978,7 +979,7 @@ pub impl<T:Copy FuzzyEq> Mat4<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy DefaultEq> Mat4<T>: DefaultEq {
+pub impl<T:Copy Float> Mat4<T>: DefaultEq {
     #[inline(always)]
     pure fn default_eq(&self, other: &Mat4<T>) -> bool {
         self[0].default_eq(&other[0]) &&
