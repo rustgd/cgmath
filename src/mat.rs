@@ -26,7 +26,7 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
     static pure fn zero() -> self;
     
     pure fn mul_t(&self, value: T) -> self;
-    pure fn mul_v(&self, other: &V) -> V;
+    pure fn mul_v(&self, vec: &V) -> V;
     pure fn add_m(&self, other: &self) -> self;
     pure fn sub_m(&self, other: &self) -> self;
     
@@ -142,9 +142,9 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self.row(0).dot(other),
-                  self.row(1).dot(other))
+    pure fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self.row(0).dot(vec),
+                  self.row(1).dot(vec))
     }
     
     #[inline(always)]
@@ -400,10 +400,10 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self.row(0).dot(other),
-                  self.row(1).dot(other),
-                  self.row(2).dot(other))
+    pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(self.row(0).dot(vec),
+                  self.row(1).dot(vec),
+                  self.row(2).dot(vec))
     }
     
     #[inline(always)]
@@ -732,11 +732,11 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     }
     
     #[inline(always)]
-    pure fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.row(0).dot(other),
-                  self.row(1).dot(other),
-                  self.row(2).dot(other),
-                  self.row(3).dot(other))
+    pure fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self.row(0).dot(vec),
+                  self.row(1).dot(vec),
+                  self.row(2).dot(vec),
+                  self.row(3).dot(vec))
     }
     
     #[inline(always)]
