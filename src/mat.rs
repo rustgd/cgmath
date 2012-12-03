@@ -36,7 +36,7 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
     pure fn determinant(&self) -> T;
     pure fn trace(&self) -> T;
     
-    pure fn invert(&self) -> Option<self>;
+    pure fn inverse(&self) -> Option<self>;
     pure fn transpose(&self) -> self;
     
     pure fn is_identity(&self) -> bool;
@@ -178,7 +178,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     }
 
     #[inline(always)]
-    pure fn invert(&self) -> Option<Mat2<T>> {
+    pure fn inverse(&self) -> Option<Mat2<T>> {
         let _0 = cast(0);
         let d = self.determinant();
         if d.default_eq(&_0) {
@@ -440,7 +440,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 
     // #[inline(always)]
-    pure fn invert(&self) -> Option<Mat3<T>> {
+    pure fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
         let _0 = cast(0);
         if d.default_eq(&_0) {
@@ -799,7 +799,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
-    pure fn invert(&self) -> Option<Mat4<T>> {
+    pure fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
         let _0 = cast(0);
         if d.default_eq(&_0) {

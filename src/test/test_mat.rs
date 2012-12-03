@@ -52,11 +52,11 @@ fn test_Mat2() {
     assert a.transpose() == Mat2::new(1f, 2f,
                                       3f, 4f);
 
-    assert option::unwrap(a.invert()) == Mat2::new(-2f,  1.5f,
+    assert option::unwrap(a.inverse()) == Mat2::new(-2f,  1.5f,
                                                     1f, -0.5f);
 
     assert Mat2::new(0f, 2f,
-                     0f, 5f).invert().is_none();
+                     0f, 5f).inverse().is_none();
     
     // exact_eq
     // fuzzy_eq
@@ -165,11 +165,11 @@ fn test_Mat3() {
                                       4f, 5f, 6f,
                                       7f, 8f, 9f);
 
-    assert a.invert().is_none();
+    assert a.inverse().is_none();
     
     assert option::unwrap(Mat3::new(2f, 4f, 6f,
                                     0f, 2f, 4f,
-                                    0f, 0f, 1f).invert())
+                                    0f, 0f, 1f).inverse())
         == Mat3::new(0.5f,  -1f,  1f,
                        0f, 0.5f, -2f,
                        0f,   0f,  1f);
@@ -177,7 +177,7 @@ fn test_Mat3() {
     // let ident: Mat3<float> = NumericMatrixNxN::identity();     // FIXME: there's something wrong with static functions here!
     let ident: Mat3<float> = Mat3::identity();
 
-    assert option::unwrap(ident.invert()) == ident;
+    assert option::unwrap(ident.inverse()) == ident;
     
     // exact_eq
     // fuzzy_eq
@@ -308,7 +308,7 @@ fn test_Mat4() {
                                        9f, 10f, 11f, 12f,
                                       13f, 14f, 15f, 16f);
 
-    assert option::unwrap(c.invert())
+    assert option::unwrap(c.inverse())
         == Mat4::new( 5f, -4f,  1f,  0f,
                      -4f,  8f, -4f,  0f,
                       4f, -8f,  4f,  8f,
@@ -317,7 +317,7 @@ fn test_Mat4() {
     // let ident: Mat4<float> = NumericMatrixNxN::identity();
     let ident: Mat4<float> = Mat4::identity();
 
-    assert option::unwrap(ident.invert()) == ident;
+    assert option::unwrap(ident.inverse()) == ident;
     
     // exact_eq
     // fuzzy_eq
