@@ -58,27 +58,25 @@ pub trait Color4<T>: Color<T> {
 
 
 /**
- * A generic rgb to hsv conversion
- *
- * Assumes that T is a floating point type
- *
- * TODO: Use some sort of 'Float' trait bound to make this safer
+ * RGB to HSV conversion
  */
 #[inline(always)]
-pub pure fn to_hsv<T:Copy Num NumCast Eq Ord>(color: &RGB<T>) -> HSV<T> {
+pub pure fn to_hsv<T:Copy Float>(color: &RGB<T>) -> HSV<T> {
     // Algorithm taken from the Wikipedia article on HSL and HSV:
     // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
     
-    let _0 = cast(0);
+    let _0 = Float::from_float(0f);
     
     let mx = [color.r, color.g, color.b].max();
     let mn = [color.r, color.g, color.b].min();
     let chr = mx - mn;
     
-    if chr != cast(0) {
-        let h = Degrees(if      color.r == mx   { ((color.g - color.b) / chr) % cast(6) }
-                        else if color.g == mx   { ((color.b - color.r) / chr) + cast(2) }
-                        else /* color.b == mx */{ ((color.r - color.g) / chr) + cast(4) } * cast(60));
+    if chr != Float::from_float(0f) {
+        let h = Degrees(
+            if      color.r == mx   { ((color.g - color.b) / chr) % Float::from_float(6f) }
+            else if color.g == mx   { ((color.b - color.r) / chr) + Float::from_float(2f) }
+            else /* color.b == mx */{ ((color.r - color.g) / chr) + Float::from_float(4f) }
+        * Float::from_float(60f));
         
         let s = chr / mx;
         
@@ -90,36 +88,32 @@ pub pure fn to_hsv<T:Copy Num NumCast Eq Ord>(color: &RGB<T>) -> HSV<T> {
 }
 
 /**
- * A generic hsv to rgb conversion
- *
- * Assumes that T is a floating point type
- *
- * TODO: Use some sort of 'Float' trait bound to make this safer
+ * HSV to RGB conversion
  */
 #[inline(always)]
-pub pure fn to_rgb<T:Copy Num NumCast Sign Eq Ord>(color: &HSV<T>) -> RGB<T> {
+pub pure fn to_rgb<T:Copy Float Sign>(color: &HSV<T>) -> RGB<T> {
     // Algorithm taken from the Wikipedia article on HSL and HSV:
     // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
     
-    let _0: T = cast(0);
-    let _1: T = cast(1);
-    let _2: T = cast(2);
+    let _0: T = Float::from_float(0f);
+    let _1: T = Float::from_float(1f);
+    let _2: T = Float::from_float(2f);
     
     let chr = color.v * color.s;
-    let h_ = *(color.h) / cast(60);  // TODO: it'd be nice if Degrees / Degrees returned a scalar
+    let h_ = (* color.h) / Float::from_float(60f);  // TODO: it'd be nice if Degrees / Degrees returned a scalar
     
     // the 2nd largest component
     let x = chr * (_1 - ((h_ % _2) - _1).abs());
     
     
     let mut color_rgb =
-        if      h_ < cast(1) { RGB::new(chr,   x,  _0) }
-        else if h_ < cast(2) { RGB::new(  x, chr,  _0) }
-        else if h_ < cast(3) { RGB::new( _0, chr,   x) }
-        else if h_ < cast(4) { RGB::new( _0,   x, chr) }
-        else if h_ < cast(5) { RGB::new(  x,  _0, chr) }
-        else if h_ < cast(6) { RGB::new(chr,  _0,   x) }
-        else                 { RGB::new( _0,  _0,  _0) };
+        if      h_ < Float::from_float(1f) { RGB::new(chr,   x,  _0) }
+        else if h_ < Float::from_float(2f) { RGB::new(  x, chr,  _0) }
+        else if h_ < Float::from_float(3f) { RGB::new( _0, chr,   x) }
+        else if h_ < Float::from_float(4f) { RGB::new( _0,   x, chr) }
+        else if h_ < Float::from_float(5f) { RGB::new(  x,  _0, chr) }
+        else if h_ < Float::from_float(6f) { RGB::new(chr,  _0,   x) }
+        else                               { RGB::new( _0,  _0,  _0) };
     
     // match the value by adding the same amount to each component
     let mn = color.v - chr;
