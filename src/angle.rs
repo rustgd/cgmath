@@ -3,7 +3,7 @@ use core::f64::consts::pi;
 
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
-use num::kinds::Float;
+use num::kinds::{Float, Number};
 use num::cast::{NumCast, cast};
 use quat::Quat;
 use vec::Vec3;
@@ -46,7 +46,7 @@ pub impl<T:Copy Float> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(Float::pi_2())   }
     #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(Float::pi_3())   }
     #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(Float::pi_4())   }
-    #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(NumCast::zero()) }
+    #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(Number::zero()) }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / pi)) }

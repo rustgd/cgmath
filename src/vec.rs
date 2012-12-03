@@ -136,14 +136,14 @@ pub impl<T:Copy> Vec2<T>: ToPtr<T> {
 pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec2<T> {
-        Vec2::new(NumCast::one(),
-                  NumCast::one())
+        Vec2::new(Number::one(),
+                  Number::one())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec2<T> {
-        Vec2::new(NumCast::zero(),
-                  NumCast::zero())
+        Vec2::new(Number::zero(),
+                  Number::zero())
     }
     
     #[inline(always)]
@@ -298,16 +298,16 @@ pub impl<T:Copy> Vec3<T>: ToPtr<T> {
 pub impl<T:Copy Number> Vec3<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec3<T> {
-        Vec3::new(NumCast::one(),
-                  NumCast::one(),
-                  NumCast::one())
+        Vec3::new(Number::one(),
+                  Number::one(),
+                  Number::one())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec3<T> {
-        Vec3::new(NumCast::zero(),
-                  NumCast::zero(),
-                  NumCast::zero())
+        Vec3::new(Number::zero(),
+                  Number::zero(),
+                  Number::zero())
     }
     
     #[inline(always)]
@@ -478,18 +478,18 @@ pub impl<T:Copy> Vec4<T>: ToPtr<T> {
 pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec4<T> {
-        Vec4::new(NumCast::one(),
-                  NumCast::one(),
-                  NumCast::one(),
-                  NumCast::one())
+        Vec4::new(Number::one(),
+                  Number::one(),
+                  Number::one(),
+                  Number::one())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec4<T> {
-        Vec4::new(NumCast::zero(),
-                  NumCast::zero(),
-                  NumCast::zero(),
-                  NumCast::zero())
+        Vec4::new(Number::zero(),
+                  Number::zero(),
+                  Number::zero(),
+                  Number::zero())
     }
     
     #[inline(always)]

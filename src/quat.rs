@@ -13,7 +13,7 @@ use funs::triganomic::*;
 use mat::{Mat3, Mat4};
 use num::cast::*;
 use num::default_eq::DefaultEq;
-use num::kinds::Float;
+use num::kinds::{Float, Number};
 use vec::Vec3;
 
 
@@ -99,18 +99,18 @@ pub impl<T:Copy> Quat<T>: ToPtr<T> {
 pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
-        Quat::new(NumCast::one(),
-                  NumCast::one(),
-                  NumCast::one(),
-                  NumCast::one())
+        Quat::new(Number::one(),
+                  Number::one(),
+                  Number::one(),
+                  Number::one())
     }
     
     #[inline(always)]
     static pure fn zero() -> Quat<T> {
-        Quat::new(NumCast::zero(),
-                  NumCast::zero(),
-                  NumCast::zero(),
-                  NumCast::zero())
+        Quat::new(Number::zero(),
+                  Number::zero(),
+                  Number::zero(),
+                  Number::zero())
     }
     
     #[inline(always)]
