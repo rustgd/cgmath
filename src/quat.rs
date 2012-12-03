@@ -15,34 +15,89 @@ use num::kinds::{Float, Number};
 use vec::Vec3;
 
 
-///
-/// The base quaternion trait
-///
-    static pure fn identity() -> self;      /// The multiplicative identity
-    static pure fn zero() -> self;          /// The additive identity
+/**
+ * The base quaternion trait
+ */
 pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
+    /**
+     * Returns the multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
+     */
+    static pure fn identity() -> self;
     
+    /**
+     * Returns the additive identity, ie: `q = 0 + 0i + 0j + 0i`
+     */
+    static pure fn zero() -> self;
+    
+    /**
+     * Returns the result of multiplying the quaternion a scalar
+     */
     pure fn mul_t(&self, value: T) -> self;
+    
+    /**
+     * Returns the result of dividing the quaternion a scalar
+     */
     pure fn div_t(&self, value: T) -> self;
     
+    /**
+     * Returns the result of multiplying the quaternion by a vector
+     */
     pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>;
     
+    /**
+     * Returns the sum of this quaternion and `other` 
+     */
     pure fn add_q(&self, other: &self) -> self;
+    
+    /**
+     * Returns the sum of this quaternion and `other` 
+     */
     pure fn sub_q(&self, other: &self) -> self;
+    
+    /**
+     * Returns the the result of multipliplying the quaternion by `other`
+     */
     pure fn mul_q(&self, other: &self) -> self;
     
+    /**
+     * The dot product of the quaternion and `other`
+     */
     pure fn dot(&self, other: &self) -> T;
     
     pure fn conjugate(&self) -> self;
+    
+    /**
+     * Returns the multiplicative inverse of the quaternion
+     */
     pure fn inverse(&self) -> self;
     pure fn length2(&self) -> T;
     pure fn length(&self) -> T;
+    
+    /**
+     * Returns the normalized quaternion
+     */
     pure fn normalize(&self) -> self;
     
+    /**
+     * Normalised linear interpolation
+     */
     pure fn nlerp(&self, other: &self, amount: T) -> self;
+    
+    /**
+     * Perform a spherical linear interpolation between the quaternion and
+     * `other`. This is more accutrate than `nlerp`, but is also more
+     * computationally intensive.
+     */ 
     pure fn slerp(&self, other: &self, amount: T) -> self;
     
+    /**
+     * Convert the quaternion to a 3 x 3 rotation matrix
+     */
     pure fn to_mat3(&self) -> Mat3<T>;
+    
+    /**
+     * Convert the quaternion to a 4 x 4 transformation matrix
+     */
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
@@ -58,11 +113,18 @@ pub trait ToQuat<T> {
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 pub impl<T> Quat<T> {
+    /**
+     * Construct the quaternion from one scalar component and three
+     * imaginary components
+     */
     #[inline(always)]
     static pure fn new(s: T, vx: T, vy: T, vz: T) -> Quat<T> {
         Quat::from_sv(move s, move Vec3::new(move vx, move vy, move vz))
     }
     
+    /**
+     * Construct the quaternion from a scalar and a vector
+     */
     #[inline(always)]
     static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: move s, v: move v }

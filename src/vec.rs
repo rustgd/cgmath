@@ -12,7 +12,7 @@ use num::default_eq::DefaultEq;
 use num::kinds::Number;
 
 /**
- * The base vector trait
+ * The base generic vector trait
  */
 pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
     /// Construct the vector from a single value, copying it to each component
@@ -65,17 +65,17 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
     pure fn div_t(&self, value: T) -> self;
     
     /**
-     * Returns the sum of this vector with `other`
+     * Returns the sum of the vector with `other`
      */
     pure fn add_v(&self, other: &self) -> self;
     
     /**
-     * Returns the difference between this vector and `other`
+     * Returns the difference between the vector and `other`
      */
     pure fn sub_v(&self, other: &self) -> self;
     
     /**
-     * Returns the dot product of this vector and `other`
+     * Returns the dot product of the vector and `other`
      */
     pure fn dot(&self, other: &self) -> T;
 }
@@ -84,19 +84,19 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
  * A 2-dimensional vector with numeric components
  */
 pub trait NumericVector2<T>: NumericVector<T> {
-//     static pure fn unit_x() -> self;
-//     static pure fn unit_y() -> self;
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
 }
 
 /**
  * A 3-dimensional vector with numeric components
  */
 pub trait NumericVector3<T>: NumericVector<T> {
-//     static pure fn unit_x() -> self;
-//     static pure fn unit_y() -> self;
-//     static pure fn unit_z() -> self;
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
+    // static pure fn unit_z() -> self;
     /**
-     * Returns the cross product of this vector and `other`
+     * Returns the cross product of the vector and `other`
      */
     pure fn cross(&self, other: &self) -> self;
 }
@@ -105,10 +105,10 @@ pub trait NumericVector3<T>: NumericVector<T> {
  * A 4-dimensional vector with numeric components
  */
 pub trait NumericVector4<T>: NumericVector<T> {
-//     static pure fn unit_x() -> self;
-//     static pure fn unit_y() -> self;
-//     static pure fn unit_z() -> self;
-//     static pure fn unit_w() -> self;
+    // static pure fn unit_x() -> self;
+    // static pure fn unit_y() -> self;
+    // static pure fn unit_z() -> self;
+    // static pure fn unit_w() -> self;
 }
 
 /**
@@ -116,7 +116,7 @@ pub trait NumericVector4<T>: NumericVector<T> {
  */
 pub trait GeometricVector<T>: NumericVector<T> {
     /**
-     * Returns the squared length of this vector
+     * Returns the squared length of the vector
      */
     pure fn length2(&self) -> T;
     
@@ -126,22 +126,22 @@ pub trait GeometricVector<T>: NumericVector<T> {
     pure fn length(&self) -> T;
     
     /**
-     * Returns the distance between this vector and `other`
+     * Returns the squared distance between the vector and `other`.
      */
     pure fn distance2(&self, other: &self) -> T;
     
     /**
-     * Returns the squared distance between this vector and `other`
+     * Returns the distance between the vector and `other`
      */
     pure fn distance(&self, other: &self) -> T;
     
     /**
-     * Returns this vector normalized
+     * Returns the normalized vector
      */
     pure fn normalize(&self) -> self;
     
     /**
-     * Linearly intoperlate between the vector and `other` by `amount`
+     * Linearly intoperlate between the vector and `other`
      */
     pure fn lerp(&self, other: &self, amount: T) -> self;
 }

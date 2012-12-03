@@ -15,48 +15,127 @@ use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 
 /**
- * An N x N Matrix
+ * The base square matrix trait
  */
 pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
+    /**
+     * Returns the column vector at `i`
+     */
     pure fn col(&self, i: uint) -> V;
+    
+    /**
+     * Returns the row vector at `i`
+     */
     pure fn row(&self, i: uint) -> V;
     
+    /**
+     * Returns the identity matrix
+     */
     static pure fn identity() -> self;
+    
+    /**
+     * Returns a matrix with all elements set to zero
+     */
     static pure fn zero() -> self;
     
+    /**
+     * Returns the scalar multiplication of this matrix and `value`
+     */
     pure fn mul_t(&self, value: T) -> self;
+    
+    /**
+     * Returns the matrix vector product of the matrix and `vec`
+     */
     pure fn mul_v(&self, vec: &V) -> V;
+    
+    /**
+     * Ruturns the matrix addition of the matrix and `other`
+     */
     pure fn add_m(&self, other: &self) -> self;
+    
+    /**
+     * Ruturns the difference between the matrix and `other`
+     */
     pure fn sub_m(&self, other: &self) -> self;
     
+    /**
+     * Returns the matrix product of the matrix and `other`
+     */
     pure fn mul_m(&self, other: &self) -> self;
+    
+    /**
+     * Returns the matrix dot product of the matrix and `other`
+     */
     pure fn dot(&self, other: &self) -> T;
     
+    /**
+     * Returns the determinant of the matrix
+     */
     pure fn determinant(&self) -> T;
+    
+    /**
+     * Returns the sum of the main diagonal of the matrix
+     */
     pure fn trace(&self) -> T;
     
+    /**
+     * Returns the inverse of the matrix
+     */
     pure fn inverse(&self) -> Option<self>;
+    
+    /**
+     * Returns the transpose of the matrix
+     */
     pure fn transpose(&self) -> self;
     
+    /**
+     * Returns `true` if the matrix is approximately equal to the
+     * identity matrix
+     */
     pure fn is_identity(&self) -> bool;
+    
+    /**
+     * Returns `true` all the elements outside the main diagonal are
+     * approximately equal to zero.
+     */
     pure fn is_diagonal(&self) -> bool;
+    
+    /**
+     * Returns `true` if the matrix is not approximately equal to the
+     * identity matrix.
+     */
     pure fn is_rotated(&self) -> bool;
+    
+    /**
+     * Returns `true` if the matrix is approximately symmetrical (ie, if the
+     * matrix is equal to its transpose).
+     */
     pure fn is_symmetric(&self) -> bool;
+    
+    /**
+     * Returns `true` if  the matrix is invertable
+     */
     pure fn is_invertible(&self) -> bool;
 }
 
-/// A 2 x 2 square matrix with numeric elements
+/**
+ * A 2 x 2 square matrix with numeric elements
+ */
 pub trait Matrix2<T,V>: Matrix<T,V> {
     pure fn to_mat3(&self) -> Mat3<T>;
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
-/// A 3 x 3 square matrix with numeric elements
+/**
+ * A 3 x 3 square matrix with numeric elements
+ */
 pub trait Matrix3<T,V>: Matrix<T,V> {
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
-/// A 4 x 4 square matrix with numeric elements
+/**
+ * A 4 x 4 square matrix with numeric elements
+ */
 pub trait Matrix4<T,V>: Matrix<T,V> {
 }
 
