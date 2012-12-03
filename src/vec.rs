@@ -8,7 +8,6 @@ use std::cmp::FuzzyEq;
 
 use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
-use num::cast::*;
 use num::default_eq::DefaultEq;
 use num::kinds::Number;
 
@@ -207,7 +206,7 @@ pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize(&self) -> Vec2<T> {
-        let mut n: T = cast(1); 
+        let mut n: T = Number::from(1); 
         n /= self.length();
         return self.mul_t(n);
     }
@@ -385,7 +384,7 @@ pub impl<T:Copy Number Exp> Vec3<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize(&self) -> Vec3<T> {
-        let mut n: T = cast(1);
+        let mut n: T = Number::from(1);
         n /= self.length();
         return self.mul_t(n);
     }
@@ -563,7 +562,7 @@ pub impl<T:Copy Number Exp> Vec4<T>: GeometricVector<T> {
     
     #[inline(always)]
     pure fn normalize(&self) -> Vec4<T> {
-        let mut n: T = cast(1);
+        let mut n: T = Number::from(1);
         n /= self.length();
         return self.mul_t(n);
     }
