@@ -11,7 +11,6 @@ use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::*;
 use mat::{Mat3, Mat4};
-use num::default_eq::DefaultEq;
 use num::kinds::{Float, Number};
 use vec::Vec3;
 
@@ -19,9 +18,9 @@ use vec::Vec3;
 ///
 /// The base quaternion trait
 ///
-pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq, Neg<self> {
     static pure fn identity() -> self;      /// The multiplicative identity
     static pure fn zero() -> self;          /// The additive identity
+pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
     
     pure fn mul_t(&self, value: T) -> self;
     pure fn div_t(&self, value: T) -> self;
@@ -290,16 +289,6 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
-    }
-}
-
-pub impl<T:Copy DefaultEq> Quat<T>: DefaultEq {
-    #[inline(always)]
-    pure fn default_eq(&self, other: &Quat<T>) -> bool {
-        self[0].default_eq(&other[0]) &&
-        self[1].default_eq(&other[1]) &&
-        self[2].default_eq(&other[2]) &&
-        self[3].default_eq(&other[3])
     }
 }
 
