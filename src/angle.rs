@@ -41,12 +41,12 @@ pub enum Radians<T> = T;
 
 // FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
 pub impl<T:Copy Float> Radians<T>: Angle<T> {
-    #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(Float::two_pi()) }
-    #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(Float::pi())     }
-    #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(Float::pi_2())   }
-    #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(Float::pi_3())   }
-    #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(Float::pi_4())   }
-    #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(Number::zero()) }
+    #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(Float::two_pi())    }
+    #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(Float::pi())        }
+    #[inline(always)] static pure fn quadrant()     -> Radians<T> { Radians(Float::frac_pi_2()) }
+    #[inline(always)] static pure fn sextant()      -> Radians<T> { Radians(Float::frac_pi_3()) }
+    #[inline(always)] static pure fn octant()       -> Radians<T> { Radians(Float::frac_pi_4()) }
+    #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(Number::zero())     }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / pi)) }
