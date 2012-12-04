@@ -34,9 +34,19 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     static pure fn identity() -> self;
     
     /**
+     * Sets the matrix to the identity matrix
+     */
+    fn to_identity(&mut self);
+    
+    /**
      * Returns a matrix with all elements set to zero
      */
     static pure fn zero() -> self;
+    
+    /**
+     * Sets each element of the matrix to zero
+     */
+    fn to_zero(&mut self);
     
     /**
      * Returns the scalar multiplication of this matrix and `value`
@@ -259,6 +269,11 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
                   _0, _1)
     }
     
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat2::identity();
+    }
+    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -275,6 +290,11 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
         let _0 = Number::from(0);
         Mat2::new(_0, _0,
                   _0, _0)
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat2::zero();
     }
     
     #[inline(always)]
@@ -570,6 +590,11 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
                   _0, _0, _1)
     }
     
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat3::identity();
+    }
+    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -589,6 +614,11 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
         Mat3::new(_0, _0, _0,
                   _0, _0, _0,
                   _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat3::zero();
     }
     
     #[inline(always)]
@@ -974,6 +1004,11 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   _0, _0, _0, _1)
     }
     
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat4::identity();
+    }
+    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -996,6 +1031,11 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   _0, _0, _0, _0,
                   _0, _0, _0, _0,
                   _0, _0, _0, _0)
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat4::zero();
     }
     
     #[inline(always)]

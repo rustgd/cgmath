@@ -9,6 +9,9 @@ fn test_Mat2() {
                    y: Vec2 { x: 2f, y: 4f } };
     let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
                    y: Vec2 { x: 3f, y: 5f } };
+    
+    let mut mut_a = a;
+    
     let v1 = Vec2::new(1f, 2f);
     let f1 = 0.5f;
     
@@ -29,6 +32,19 @@ fn test_Mat2() {
     
     assert a.col(0) == Vec2::new(1f, 3f);
     assert a.col(1) == Vec2::new(2f, 4f);
+    
+    assert Mat2::identity() == Mat2::new(1f, 0f,
+                                         0f, 1f);
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    assert Mat2::zero() == Mat2::new(0f, 0f,
+                                     0f, 0f);
+    
+    mut_a.to_zero();
+    assert mut_a == Mat2::new(0f, 0f,
+                              0f, 0f);
 
     assert a.determinant() == -2f;
     assert a.trace() == 5f;
@@ -105,6 +121,9 @@ fn test_Mat3() {
     let b = Mat3 { x: Vec3 { x: 2f, y: 5f, z:  8f },
                    y: Vec3 { x: 3f, y: 6f, z:  9f },
                    z: Vec3 { x: 4f, y: 7f, z: 10f } };
+    
+    let mut mut_a = a;
+    
     let v1 = Vec3::new(1f, 2f, 3f);
     let f1 = 0.5f;
     
@@ -136,6 +155,21 @@ fn test_Mat3() {
     assert a.col(0) == Vec3::new(1f, 4f, 7f);
     assert a.col(1) == Vec3::new(2f, 5f, 8f);
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
+    
+    assert Mat3::identity() == Mat3::new(1f, 0f, 0f,
+                                         0f, 1f, 0f,
+                                         0f, 0f, 1f);
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    assert Mat3::zero() == Mat3::new(0f, 0f, 0f,
+                                     0f, 0f, 0f,
+                                     0f, 0f, 0f);
+    mut_a.to_zero();
+    assert mut_a == Mat3::new(0f, 0f, 0f,
+                              0f, 0f, 0f,
+                              0f, 0f, 0f);
 
     assert a.determinant() == 0f;
     assert a.trace() == 15f;
@@ -228,6 +262,9 @@ fn test_Mat4() {
                    y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
                    z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
                    w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
+    
+    let mut mut_a = a;
+    
     let v1 = Vec4::new(1f, 2f, 3f, 4f);
     let f1 = 0.5f;
     
@@ -273,6 +310,24 @@ fn test_Mat4() {
     assert a.col(1) == Vec4::new(2f, 6f, 10f, 14f);
     assert a.col(2) == Vec4::new(3f, 7f, 11f, 15f);
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
+    
+    assert Mat4::identity() == Mat4::new(1f, 0f, 0f, 0f,
+                                         0f, 1f, 0f, 0f,
+                                         0f, 0f, 1f, 0f,
+                                         0f, 0f, 0f, 1f);
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    assert Mat4::zero() == Mat4::new(0f, 0f, 0f, 0f,
+                                     0f, 0f, 0f, 0f,
+                                     0f, 0f, 0f, 0f,
+                                     0f, 0f, 0f, 0f);
+    mut_a.to_zero();
+    assert mut_a == Mat4::new(0f, 0f, 0f, 0f,
+                              0f, 0f, 0f, 0f,
+                              0f, 0f, 0f, 0f,
+                              0f, 0f, 0f, 0f);
 
     assert a.determinant() == 0f;
     assert a.trace() == 34f;
