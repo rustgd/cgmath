@@ -168,11 +168,11 @@ pub impl<T:Copy Float> Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      * ~~~
-     *        r0     r1
+     *        c0     c1
      *     +------+------+
-     *  c0 | c0r0 | c0r1 |
+     *  r0 | c0r0 | c1r0 |
      *     +------+------+
-     *  c1 | c1r0 | c1r1 |
+     *  r1 | c0r1 | c1r1 |
      *     +------+------+
      * ~~~
      */
@@ -186,11 +186,11 @@ pub impl<T:Copy Float> Mat2<T> {
     /**
      * Construct a 2 x 2 matrix from column vectors
      * ~~~
-     *        r0     r1
+     *        c0     c1
      *     +------+------+
-     *  c0 | c0.x | c0.y |
+     *  r0 | c0.x | c1.x |
      *     +------+------+
-     *  c1 | c1.x | c1.y |
+     *  r1 | c0.y | c1.y |
      *     +------+------+
      * ~~~
      */
@@ -203,11 +203,11 @@ pub impl<T:Copy Float> Mat2<T> {
     /**
      * Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
      * ~~~
-     *        r0    r1
+     *        c0    c1
      *     +-----+-----+
-     *  c0 | val |   0 |
+     *  r0 | val |   0 |
      *     +-----+-----+
-     *  c1 |   0 | val |
+     *  r1 |   0 | val |
      *     +-----+-----+
      * ~~~
      */
@@ -253,11 +253,11 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     /**
      * Returns the multiplicative identity matrix
      * ~~~
-     *       r0   r1
+     *       c0   c1
      *     +----+----+ 
-     *  c0 |  1 |  0 |
+     *  r0 |  1 |  0 |
      *     +----+----+
-     *  c1 |  0 |  1 |
+     *  r1 |  0 |  1 |
      *     +----+----+
      * ~~~
      */
@@ -277,11 +277,11 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     /**
      * Returns the additive identity matrix
      * ~~~
-     *       r0   r1
+     *       c0   c1
      *     +----+----+ 
-     *  c0 |  0 |  0 |
+     *  r0 |  0 |  0 |
      *     +----+----+
-     *  c1 |  0 |  0 |
+     *  r1 |  0 |  0 |
      *     +----+----+
      * ~~~
      */
@@ -468,13 +468,13 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
      * ~~~
-     *         r0     r1     r2
+     *         c0     c1     c2
      *      +------+------+------+
-     *   c0 | c0r0 | c1r1 | c2r2 |
+     *   r0 | c0r0 | c1r0 | c2r0 |
      *      +------+------+------+
-     *   c1 | c1r0 | c1r1 | c1r2 |
+     *   r1 | c0r1 | c1r1 | c2r1 |
      *      +------+------+------+
-     *   c2 | c2r0 | c2r1 | c2r2 |
+     *   r2 | c0r2 | c1r2 | c2r2 |
      *      +------+------+------+
      * ~~~
      */
@@ -490,13 +490,13 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a 3 x 3 matrix from column vectors
      * ~~~
-     *        r0     r1     r2
+     *        c0     c1     c2
      *     +------+------+------+
-     *  c0 | c0.x | c0.y | c0.z |
+     *  r0 | c0.x | c1.y | c2.z |
      *     +------+------+------+
-     *  c1 | c1.x | c1.y | c1.z |
+     *  r1 | c0.x | c1.y | c2.z |
      *     +------+------+------+
-     *  c2 | c2.x | c2.y | c2.z |
+     *  r2 | c0.x | c1.y | c2.z |
      *     +------+------+------+
      * ~~~
      */
@@ -510,13 +510,13 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a 3 x 3 diagonal matrix with the major diagonal set to `value`
      * ~~~
-     *        r0    r1    r2
+     *        c0    c1    c2
      *     +-----+-----+-----+
-     *  c0 | val |   0 |   0 |
+     *  r0 | val |   0 |   0 |
      *     +-----+-----+-----+
-     *  c1 |   0 | val |   0 |
+     *  r1 |   0 | val |   0 |
      *     +-----+-----+-----+
-     *  c2 |   0 |   0 | val |
+     *  r2 |   0 |   0 | val |
      *     +-----+-----+-----+
      * ~~~
      */
@@ -571,13 +571,13 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     /**
      * Returns the multiplicative identity matrix
      * ~~~
-     *       r0   r1   r2
+     *       c0   c1   c2
      *     +----+----+----+
-     *  c0 |  1 |  0 |  0 |
+     *  r0 |  1 |  0 |  0 |
      *     +----+----+----+
-     *  c1 |  0 |  1 |  0 |
+     *  r1 |  0 |  1 |  0 |
      *     +----+----+----+
-     *  c2 |  0 |  0 |  1 |
+     *  r2 |  0 |  0 |  1 |
      *     +----+----+----+
      * ~~~
      */
@@ -598,13 +598,13 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     /**
      * Returns the additive identity matrix
      * ~~~
-     *       r0   r1   r2
+     *       c0   c1   c2
      *     +----+----+----+
-     *  c0 |  0 |  0 |  0 |
+     *  r0 |  0 |  0 |  0 |
      *     +----+----+----+
-     *  c1 |  0 |  0 |  0 |
+     *  r1 |  0 |  0 |  0 |
      *     +----+----+----+
-     *  c2 |  0 |  0 |  0 |
+     *  r2 |  0 |  0 |  0 |
      *     +----+----+----+
      * ~~~
      */
@@ -855,15 +855,15 @@ pub impl<T:Copy Float> Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
      * ~~~
-     *        r0     r1     r2     r3
+     *        c0     c1     c2     c3
      *     +------+------+------+------+
-     *  c0 | c0r0 | c0r1 | c0r2 | c0r3 |
+     *  r0 | c0r0 | c1r0 | c2r0 | c3r0 |
      *     +------+------+------+------+
-     *  c1 | c1r0 | c1r1 | c1r2 | c1r3 |
+     *  r1 | c0r1 | c1r1 | c2r1 | c3r1 |
      *     +------+------+------+------+
-     *  c2 | c2r0 | c2r1 | c2r2 | c2r3 |
+     *  r2 | c0r2 | c1r2 | c2r2 | c3r2 |
      *     +------+------+------+------+
-     *  c3 | c3r0 | c3r1 | c3r2 | c3r3 |
+     *  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
      *     +------+------+------+------+
      * ~~~
      */
@@ -881,15 +881,15 @@ pub impl<T:Copy Float> Mat4<T> {
     /**
      * Construct a 4 x 4 matrix from column vectors
      * ~~~
-     *        r0     r1     r2     r3
+     *        c0     c1     c2     c3
      *     +------+------+------+------+
-     *  c0 | c0.x | c0.y | c0.z | c0.w |
+     *  r0 | c0.x | c1.x | c2.x | c3.x |
      *     +------+------+------+------+
-     *  c1 | c1.x | c1.y | c1.z | c1.w |
+     *  r1 | c0.y | c1.y | c2.y | c3.y |
      *     +------+------+------+------+
-     *  c2 | c2.x | c2.y | c2.z | c2.w |
+     *  r2 | c0.z | c1.z | c2.z | c3.z |
      *     +------+------+------+------+
-     *  c3 | c3.x | c3.y | c3.z | c3.w |
+     *  r3 | c0.w | c1.w | c2.w | c3.w |
      *     +------+------+------+------+
      * ~~~
      */
@@ -904,15 +904,15 @@ pub impl<T:Copy Float> Mat4<T> {
     /**
      * Construct a 4 x 4 diagonal matrix with the major diagonal set to `value`
      * ~~~
-     *        r0    r1    r2    r3
+     *        c0    c1    c2    c3
      *     +-----+-----+-----+-----+
-     *  c0 | val |   0 |   0 |   0 |
+     *  r0 | val |   0 |   0 |   0 |
      *     +-----+-----+-----+-----+
-     *  c1 |   0 | val |   0 |   0 |
+     *  r1 |   0 | val |   0 |   0 |
      *     +-----+-----+-----+-----+
-     *  c2 |   0 |   0 | val |   0 |
+     *  r2 |   0 |   0 | val |   0 |
      *     +-----+-----+-----+-----+
-     *  c3 |   0 |   0 |   0 | val |
+     *  r3 |   0 |   0 |   0 | val |
      *     +-----+-----+-----+-----+
      * ~~~
      */
@@ -982,15 +982,15 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     /**
      * Returns the multiplicative identity matrix
      * ~~~
-     *       r0   r1   r2   r3
+     *       c0   c1   c2   c3
      *     +----+----+----+----+
-     *  c0 |  1 |  0 |  0 |  0 |
+     *  r0 |  1 |  0 |  0 |  0 |
      *     +----+----+----+----+
-     *  c1 |  0 |  1 |  0 |  0 |
+     *  r1 |  0 |  1 |  0 |  0 |
      *     +----+----+----+----+
-     *  c2 |  0 |  0 |  1 |  0 |
+     *  r2 |  0 |  0 |  1 |  0 |
      *     +----+----+----+----+
-     *  c3 |  0 |  0 |  0 |  1 |
+     *  r3 |  0 |  0 |  0 |  1 |
      *     +----+----+----+----+
      * ~~~
      */
@@ -1012,15 +1012,15 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     /**
      * Returns the additive identity matrix
      * ~~~
-     *       r0   r1   r2   r3
+     *       c0   c1   c2   c3
      *     +----+----+----+----+
-     *  c0 |  0 |  0 |  0 |  0 |
+     *  r0 |  0 |  0 |  0 |  0 |
      *     +----+----+----+----+
-     *  c1 |  0 |  0 |  0 |  0 |
+     *  r1 |  0 |  0 |  0 |  0 |
      *     +----+----+----+----+
-     *  c2 |  0 |  0 |  0 |  0 |
+     *  r2 |  0 |  0 |  0 |  0 |
      *     +----+----+----+----+
-     *  c3 |  0 |  0 |  0 |  0 |
+     *  r3 |  0 |  0 |  0 |  0 |
      *     +----+----+----+----+
      * ~~~
      */
