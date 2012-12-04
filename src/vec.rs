@@ -180,17 +180,18 @@ pub impl<T> Vec2<T>: Dimensional<T> {
 pub impl<T:Copy> Vec2<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec2<T>, *T>(
-                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> Vec2<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*Vec2<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
     
@@ -342,17 +343,18 @@ pub impl<T> Vec3<T>: Dimensional<T> {
 pub impl<T:Copy> Vec3<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec3<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> Vec3<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*Vec3<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -522,17 +524,18 @@ pub impl<T> Vec4<T>: Dimensional<T> {
 pub impl<T:Copy> Vec4<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Vec4<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> Vec4<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*Vec4<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 

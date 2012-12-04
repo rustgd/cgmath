@@ -142,17 +142,18 @@ pub impl<T> Quat<T>: Dimensional<T> {
 pub impl<T:Copy> Quat<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> Quat<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 

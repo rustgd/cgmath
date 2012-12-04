@@ -425,7 +425,11 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
 pub impl<T:Copy> Mat2<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
+        unsafe {
+            transmute::<*Mat2<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -818,7 +822,11 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
 pub impl<T:Copy> Mat3<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
+        unsafe {
+            transmute::<*Mat3<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -1270,7 +1278,11 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
 pub impl<T:Copy> Mat4<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        self[0].to_ptr()
+        unsafe {
+            transmute::<*Mat4<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
