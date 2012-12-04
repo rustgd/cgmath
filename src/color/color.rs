@@ -149,17 +149,18 @@ pub impl<T> RGB<T>: Dimensional<T> {
 pub impl<T:Copy> RGB<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*RGB<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> RGB<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*RGB<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -272,17 +273,18 @@ pub impl<T> RGBA<T>: Dimensional<T> {
 pub impl<T:Copy> RGBA<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*RGBA<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> RGBA<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*RGBA<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -392,17 +394,18 @@ pub impl<T> HSV<T>: Dimensional<T> {
 pub impl<T:Copy> HSV<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*HSV<T>, *T>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> HSV<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*HSV<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
@@ -491,17 +494,18 @@ pub impl<T> HSVA<T>: Dimensional<T> {
 pub impl<T:Copy> HSVA<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*HSVA<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
-        }
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 
 pub impl<T:Copy> HSVA<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
-        ptr::to_unsafe_ptr(&self[0])
+        unsafe {
+            transmute::<*HSVA<T>, *T>(
+                to_unsafe_ptr(&*self)
+            )
+        }
     }
 }
 
