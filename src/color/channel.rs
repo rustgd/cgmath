@@ -1,7 +1,9 @@
-pub trait Channel {
-    static pure fn channel_max() -> self;
+use num::kinds::Number;
+
+pub trait Channel: Number {
+    static pure fn max() -> self;
     
-    static pure fn from_channel<T:Channel>(val: T) -> self;
+    static pure fn from<T:Channel>(val: T) -> self;
     pure fn convert_channel<T:Channel>(&self) -> T;
     
     pure fn to_channel_u8(&self)    -> u8;
@@ -15,13 +17,11 @@ pub trait Channel {
     pure fn inverse(&self) -> self;
 }
 
-pub pure fn convert_channel<T:Channel, U:Channel>(val: T) -> U { val.convert_channel() }
-
 pub impl u8: Channel {
-    #[inline(always)] static pure fn channel_max() -> u8 { 0xFF }  // 2^8
+    #[inline(always)] static pure fn max() -> u8 { 0xFF }  // 2^8
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u8 { val.to_channel_u8() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> u8 { val.to_channel_u8() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
     #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) }
     #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self as u16 << 8) | (*self) as u16 }
@@ -35,10 +35,10 @@ pub impl u8: Channel {
 }
 
 pub impl u16: Channel {
-    #[inline(always)] static pure fn channel_max() -> u16 { 0xFFFF }   // 2^16
+    #[inline(always)] static pure fn max() -> u16 { 0xFFFF }   // 2^16
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u16 { val.to_channel_u16() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> u16 { val.to_channel_u16() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
     #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self >> 8) as u8 }    // this is the equivalent of `self/256`. Some folks prefer to do `self/257`
     #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) }
@@ -52,10 +52,10 @@ pub impl u16: Channel {
 }
 
 pub impl u32: Channel {
-    #[inline(always)] static pure fn channel_max() -> u32 { 0xFFFF_FFFF }   // 2^32
+    #[inline(always)] static pure fn max() -> u32 { 0xFFFF_FFFF }   // 2^32
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u32 { val.to_channel_u32() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> u32 { val.to_channel_u32() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
     #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self >> 24) as u8 }
     #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self >> 16) as u16 }
@@ -69,10 +69,10 @@ pub impl u32: Channel {
 }
 
 pub impl u64: Channel {
-    #[inline(always)] static pure fn channel_max() -> u64 { 0xFFFF_FFFF_FFFF_FFFF_u64 }   // 2^64
+    #[inline(always)] static pure fn max() -> u64 { 0xFFFF_FFFF_FFFF_FFFF_u64 }   // 2^64
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> u64 { val.to_channel_u64() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> u64 { val.to_channel_u64() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
     #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self >> 56) as u8 }
     #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self >> 48) as u16 }
@@ -86,14 +86,14 @@ pub impl u64: Channel {
 }
 
 pub impl f32: Channel {
-    #[inline(always)] static pure fn channel_max() -> f32 { 1f32 }
+    #[inline(always)] static pure fn max() -> f32 { 1f32 }
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> f32 { val.to_channel_f32() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> f32 { val.to_channel_f32() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
     
-    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFF_u8         as f32) as u8  }
-    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFF_u16      as f32) as u16 }
+    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFF_u8    as f32) as u8  }
+    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFF_u16 as f32) as u16 }
     #[inline(always)] pure fn to_channel_u32(&self)   -> u32   { fail(~"to_channel_u32 not yet implemented for f32") }
     #[inline(always)] pure fn to_channel_u64(&self)   -> u64   { fail(~"to_channel_u64 not yet implemented for f32") }
     #[inline(always)] pure fn to_channel_f32(&self)   -> f32   { (*self) }
@@ -104,13 +104,13 @@ pub impl f32: Channel {
 }
 
 pub impl f64: Channel {
-    #[inline(always)] static pure fn channel_max() -> f64 { 1f64 }
+    #[inline(always)] static pure fn max() -> f64 { 1f64 }
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> f64 { val.to_channel_f64() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> f64 { val.to_channel_f64() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
-    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFFu8    as f64) as u8  }
-    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFFu16 as f64) as u16 }
+    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFF_u8    as f64) as u8  }
+    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFF_u16 as f64) as u16 }
     #[inline(always)] pure fn to_channel_u32(&self)   -> u32   { fail(~"to_channel_u32 not yet implemented for f64") }
     #[inline(always)] pure fn to_channel_u64(&self)   -> u64   { fail(~"to_channel_u64 not yet implemented for f64") }
     #[inline(always)] pure fn to_channel_f32(&self)   -> f32   { (*self) as f32 }
@@ -121,13 +121,13 @@ pub impl f64: Channel {
 }
 
 pub impl float: Channel {
-    #[inline(always)] static pure fn channel_max() -> float { 1f }
+    #[inline(always)] static pure fn max() -> float { 1f }
     
-    #[inline(always)] static pure fn from_channel<T:Channel>(val: T) -> float { val.to_channel_float() }
-    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { from_channel(*self) }
+    #[inline(always)] static pure fn from<T:Channel>(val: T) -> float { val.to_channel_float() }
+    #[inline(always)] pure fn convert_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     
-    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFFu8    as float) as u8  }
-    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFFu16 as float) as u16 }
+    #[inline(always)] pure fn to_channel_u8(&self)    -> u8    { (*self) * (0xFF_u8    as float) as u8  }
+    #[inline(always)] pure fn to_channel_u16(&self)   -> u16   { (*self) * (0xFFFF_u16 as float) as u16 }
     #[inline(always)] pure fn to_channel_u32(&self)   -> u32   { fail(~"to_channel_u32 not yet implemented for float") }
     #[inline(always)] pure fn to_channel_u64(&self)   -> u64   { fail(~"to_channel_u64 not yet implemented for float") }
     #[inline(always)] pure fn to_channel_f32(&self)   -> f32   { (*self) as f32 }
