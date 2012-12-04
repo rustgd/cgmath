@@ -130,7 +130,7 @@ fn test_Vec3() {
     mut_a.swap(1, 2);
     assert mut_a[1] == a[2];
     assert mut_a[2] == a[1];
-    let mut mut_a = a;
+    mut_a = a;
     
     assert a.x == 1f;
     assert a.y == 2f;
@@ -140,6 +140,10 @@ fn test_Vec3() {
     assert a[2] == 3f;
     
     assert a.cross(&b) == Vec3::new(-3f, 6f, -3f);
+    
+    mut_a.cross_self(&b);
+    assert mut_a == a.cross(&b);
+    mut_a = a;
     
     assert -a      == Vec3::new(-1f, -2f, -3f);
     assert a.neg() == Vec3::new(-1f, -2f, -3f);

@@ -144,6 +144,16 @@ pub trait NumericVector3<T>: NumericVector<T> {
 }
 
 /**
+ * A mutable 3-dimensional vector with numeric components
+ */
+pub trait MutableNumericVector3<T>: MutableNumericVector<&self/T> {
+    /**
+     * Set to the cross product of the vector and `other`
+     */
+    fn cross_self(&mut self, other: &self);
+}
+
+/**
  * A 4-dimensional vector with numeric components
  */
 pub trait NumericVector4<T>: NumericVector<T> {
@@ -525,15 +535,6 @@ pub impl<T:Copy Number> Vec3<T>: Neg<Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
-    #[inline(always)]
-    pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
-                  (self[2] * other[0]) - (self[0] * other[2]),
-                  (self[0] * other[1]) - (self[1] * other[0]))
-    }
-}
-
 pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
     #[inline(always)]
     fn neg_self(&mut self) {
@@ -568,6 +569,22 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
         *self.index_mut(0) -= other[0];
         *self.index_mut(1) -= other[1];
         *self.index_mut(2) -= other[2];
+    }
+}
+
+pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
+    #[inline(always)]
+    pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
+                  (self[2] * other[0]) - (self[0] * other[2]),
+                  (self[0] * other[1]) - (self[1] * other[0]))
+    }
+}
+
+pub impl<T:Copy Number> Vec3<T>: MutableNumericVector3<&self/T> {
+    #[inline(always)]
+    fn cross_self(&mut self, other: &Vec3<T>) {
+        *self = self.cross(other);
     }
 }
 
