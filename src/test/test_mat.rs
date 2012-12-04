@@ -33,6 +33,16 @@ fn test_Mat2() {
     assert a.col(0) == Vec2::new(1f, 3f);
     assert a.col(1) == Vec2::new(2f, 4f);
     
+    mut_a.swap_cols(0, 1);
+    assert mut_a.col(0) == a.col(1);
+    assert mut_a.col(1) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 1);
+    assert mut_a.row(0) == a.row(1);
+    assert mut_a.row(1) == a.row(0);
+    mut_a = a;
+    
     assert Mat2::identity() == Mat2::new(1f, 0f,
                                          0f, 1f);
     mut_a.to_identity();
@@ -155,6 +165,26 @@ fn test_Mat3() {
     assert a.col(0) == Vec3::new(1f, 4f, 7f);
     assert a.col(1) == Vec3::new(2f, 5f, 8f);
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
+    
+    mut_a.swap_cols(0, 2);
+    assert mut_a.col(0) == a.col(2);
+    assert mut_a.col(2) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_cols(1, 2);
+    assert mut_a.col(1) == a.col(2);
+    assert mut_a.col(2) == a.col(1);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 2);
+    assert mut_a.row(0) == a.row(2);
+    assert mut_a.row(2) == a.row(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(1, 2);
+    assert mut_a.row(1) == a.row(2);
+    assert mut_a.row(2) == a.row(1);
+    mut_a = a;
     
     assert Mat3::identity() == Mat3::new(1f, 0f, 0f,
                                          0f, 1f, 0f,
@@ -310,6 +340,26 @@ fn test_Mat4() {
     assert a.col(1) == Vec4::new(2f, 6f, 10f, 14f);
     assert a.col(2) == Vec4::new(3f, 7f, 11f, 15f);
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
+    
+    mut_a.swap_cols(0, 3);
+    assert mut_a.col(0) == a.col(3);
+    assert mut_a.col(3) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_cols(1, 2);
+    assert mut_a.col(1) == a.col(2);
+    assert mut_a.col(2) == a.col(1);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 3);
+    assert mut_a.row(0) == a.row(3);
+    assert mut_a.row(3) == a.row(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(1, 2);
+    assert mut_a.row(1) == a.row(2);
+    assert mut_a.row(2) == a.row(1);
+    mut_a = a;
     
     assert Mat4::identity() == Mat4::new(1f, 0f, 0f, 0f,
                                          0f, 1f, 0f, 0f,

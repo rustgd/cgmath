@@ -20,6 +20,11 @@ fn test_Vec2() {
     // assert Vec2::unit_y()   == Vec2::new(0f, 1f);
     // assert Vec2::identity() == Vec2::new(1f, 1f);
     
+    let mut mut_a = a;
+    mut_a.swap(0, 1);
+    assert mut_a[0] == a[1];
+    assert mut_a[1] == a[0];
+    
     assert a.x == 1f;
     assert a.y == 2f;
     assert a[0] == 1f;
@@ -82,6 +87,16 @@ fn test_Vec3() {
     // assert Vec3::unit_z()   == Vec3::new(0f, 0f, 1f);
     // assert Vec3::identity() == Vec3::new(1f, 1f, 1f);
     
+    let mut mut_a = a;
+    mut_a.swap(0, 2);
+    assert mut_a[0] == a[2];
+    assert mut_a[2] == a[0];
+    
+    mut_a = a;
+    mut_a.swap(1, 2);
+    assert mut_a[1] == a[2];
+    assert mut_a[2] == a[1];
+    
     assert a.x == 1f;
     assert a.y == 2f;
     assert a.z == 3f;
@@ -141,6 +156,16 @@ fn test_Vec4() {
     
     assert Vec4::new(1f, 2f, 3f, 4f) == a;
     // assert Vec4::from_value(1f32) == Vec4::new(1f32, 1f32, 1f32, 1f32);
+    
+    let mut mut_a = a;
+    mut_a.swap(0, 3);
+    assert mut_a[0] == a[3];
+    assert mut_a[3] == a[0];
+    
+    mut_a = a;
+    mut_a.swap(1, 2);
+    assert mut_a[1] == a[2];
+    assert mut_a[2] == a[1];
     
     // assert Vec4::zero()     == Vec4::new(0f, 0f, 0f, 0f);
     // assert Vec4::unit_x()   == Vec4::new(1f, 0f, 0f, 0f);

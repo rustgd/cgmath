@@ -29,6 +29,16 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     pure fn row(&self, i: uint) -> V;
     
     /**
+     * Swap two columns of the matrix in place
+     */
+    fn swap_cols(&mut self, a: uint, b: uint);
+    
+    /**
+     * Swap two rows of the matrix in place 
+     */
+    fn swap_rows(&mut self, a: uint, b: uint);
+    
+    /**
      * Returns the identity matrix
      */
     static pure fn identity() -> self;
@@ -248,6 +258,30 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     pure fn row(&self, i: uint) -> Vec2<T> {
         Vec2::new(self[0][i],
                   self[1][i])
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        let addr_a =
+            match a {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 1 but found %u", a))
+            };
+        let addr_b =
+            match b {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 1 but found %u", b))
+            };
+        
+        util::swap(addr_a, addr_b);
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
     }
     
     /**
@@ -576,6 +610,33 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
         Vec3::new(self[0][i],
                   self[1][i],
                   self[2][i])
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        let addr_a =
+            match a {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                2 => &mut self.z,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2 but found %u", a))
+            };
+        let addr_b =
+            match b {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                2 => &mut self.z,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2 but found %u", b))
+            };
+        
+        util::swap(addr_a, addr_b);
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+        self.z.swap(a, b);
     }
     
     /**
@@ -996,6 +1057,36 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   self[1][i],
                   self[2][i],
                   self[3][i])
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        let addr_a =
+            match a {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                2 => &mut self.z,
+                3 => &mut self.w,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", a))
+            };
+        let addr_b =
+            match b {
+                0 => &mut self.x,
+                1 => &mut self.y,
+                2 => &mut self.z,
+                3 => &mut self.w,
+                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", b))
+            };
+        
+        util::swap(addr_a, addr_b);
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+        self.z.swap(a, b);
+        self.w.swap(a, b);
     }
     
     /**
