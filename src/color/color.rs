@@ -112,7 +112,7 @@ pub pure fn to_rgb<T:Copy Float Sign>(color: &HSV<T>) -> RGB<T> {
         else if h_ < Number::from(4f) { RGB::new( _0,   x, chr) }
         else if h_ < Number::from(5f) { RGB::new(  x,  _0, chr) }
         else if h_ < Number::from(6f) { RGB::new(chr,  _0,   x) }
-        else                               { RGB::new( _0,  _0,  _0) };
+        else                          { RGB::new( _0,  _0,  _0) };
     
     // match the value by adding the same amount to each component
     let mn = color.v - chr;
