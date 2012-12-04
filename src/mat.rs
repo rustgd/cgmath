@@ -342,6 +342,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn inverse(&self) -> Option<Mat2<T>> {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         let d = self.determinant();
         if d.fuzzy_eq(&_0) {
             None
@@ -366,6 +367,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         self[0][1].fuzzy_eq(&_0) &&
         self[1][0].fuzzy_eq(&_0)
     }
@@ -385,6 +387,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
     }
 }
@@ -523,6 +526,7 @@ pub impl<T:Copy Float> Mat3<T> {
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat3<T> {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         Mat3::new(value,    _0,    _0,
                      _0, value,    _0,
                      _0,    _0, value)
@@ -532,6 +536,8 @@ pub impl<T:Copy Float> Mat3<T> {
     static pure fn from_Mat2(m: &Mat2<T>) -> Mat3<T> {
         let _0 = cast(0);
         let _1 = cast(1);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
+        // let _1 = Number::from(1);                // FIXME: causes ICE
         Mat3::new(m[0][0], m[0][1], _0,
                   m[1][0], m[1][1], _0,
                        _0,      _0, _1)
@@ -583,8 +589,10 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        // let _0 = cast(0);
+        // let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat3::new(_1, _0, _0,
                   _0, _1, _0,
                   _0, _0, _1)
@@ -610,7 +618,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
      */
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat3::new(_0, _0, _0,
                   _0, _0, _0,
                   _0, _0, _0)
@@ -672,6 +680,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     pure fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         if d.fuzzy_eq(&_0) {
             None
         } else {
@@ -698,6 +707,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         self[0][1].fuzzy_eq(&_0) &&
         self[0][2].fuzzy_eq(&_0) &&
         
@@ -729,6 +739,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
+        // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
     }
 }
@@ -752,7 +763,7 @@ pub impl<T:Copy Float Exp> Mat3<T>: ToQuat<T> {
         let _1:   T = Number::from(1.0);
         let half: T = Number::from(0.5);
         
-        if trace >= cast(0) {
+        if trace >= Number::from(0) {
             s = (_1 + trace).sqrt();
             w = half * s;
             s = half / s;
@@ -996,8 +1007,8 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat4::new(_1, _0, _0, _0,
                   _0, _1, _0, _0,
                   _0, _0, _1, _0,
@@ -1026,7 +1037,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
      */
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat4::new(_0, _0, _0, _0,
                   _0, _0, _0, _0,
                   _0, _0, _0, _0,
@@ -1106,6 +1117,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
 
     pure fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
+        // let _0 = Number::from(0);    // FIXME: Triggers ICE
         let _0 = cast(0);
         if d.fuzzy_eq(&_0) {
             None

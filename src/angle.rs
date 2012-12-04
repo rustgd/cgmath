@@ -245,6 +245,8 @@ pub impl<T:Copy Float> Rotation<T> {
         let s:  T = sin(&self.theta);
         let _0: T = cast(0);
         let _1: T = cast(1);
+        // let _0: T = Number::from(0);    // FIXME: causes ICE
+        // let _1: T = Number::from(0);    // FIXME: causes ICE
         let t:  T = _1 - c;
         
         let x = self.axis.x;
@@ -263,7 +265,7 @@ pub impl<T:Copy Float> Rotation<T> {
     
     #[inline(always)]
     pure fn to_quat() -> Quat<T> {
-        let half = self.theta / cast(2);
+        let half = self.theta / Number::from(2);
         Quat::from_sv(cos(&half), self.axis.mul_t(sin(&half)))
     }
 }
