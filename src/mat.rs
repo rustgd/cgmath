@@ -150,22 +150,56 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 pub impl<T:Copy Float> Mat2<T> {
+    /**
+     * Construct a 2 x 2 matrix
+     * ~~~
+     *        r0     r1
+     *     +------+------+
+     *  c0 | c0r0 | c0r1 |
+     *     +------+------+
+     *  c1 | c1r0 | c1r1 |
+     *     +------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Mat2<T> {
         Mat2::from_cols(Vec2::new(move c0r0, move c0r1),
                         Vec2::new(move c1r0, move c1r1))
     }
-
+    
+    /**
+     * Construct a 2 x 2 matrix from column vectors
+     * ~~~
+     *        r0     r1
+     *     +------+------+
+     *  c0 | c0.x | c0.y |
+     *     +------+------+
+     *  c1 | c1.x | c1.y |
+     *     +------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_cols(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: move c0,
                y: move c1 }
     }
     
+    /**
+     * Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
+     * ~~~
+     *        r0    r1
+     *     +-----+-----+
+     *  c0 | val |   0 |
+     *     +-----+-----+
+     *  c1 |   0 | val |
+     *     +-----+-----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat2<T> {
-        let _0 = cast(0);
+        // let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat2::new(value,    _0,
                      _0, value)
     }
@@ -198,6 +232,17 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
                   self[1][i])
     }
     
+    /**
+     * Returns the multiplicative identity matrix
+     * ~~~
+     *       r0   r1
+     *     +----+----+ 
+     *  c0 |  1 |  0 |
+     *     +----+----+
+     *  c1 |  0 |  1 |
+     *     +----+----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
         let _0 = Number::from(0);
@@ -206,6 +251,17 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
                   _0, _1)
     }
     
+    /**
+     * Returns the additive identity matrix
+     * ~~~
+     *       r0   r1
+     *     +----+----+ 
+     *  c0 |  0 |  0 |
+     *     +----+----+
+     *  c1 |  0 |  0 |
+     *     +----+----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
         let _0 = Number::from(0);
@@ -381,6 +437,19 @@ pub impl<T:Copy Float> Mat2<T>: FuzzyEq {
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 pub impl<T:Copy Float> Mat3<T> {
+    /**
+     * Construct a 3 x 3 matrix
+     * ~~~
+     *         r0     r1     r2
+     *      +------+------+------+
+     *   c0 | c0r0 | c1r1 | c2r2 |
+     *      +------+------+------+
+     *   c1 | c1r0 | c1r1 | c1r2 |
+     *      +------+------+------+
+     *   c2 | c2r0 | c2r1 | c2r2 |
+     *      +------+------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
@@ -390,6 +459,19 @@ pub impl<T:Copy Float> Mat3<T> {
                         Vec3::new(move c2r0, move c2r1, move c2r2))
     }
     
+    /**
+     * Construct a 3 x 3 matrix from column vectors
+     * ~~~
+     *        r0     r1     r2
+     *     +------+------+------+
+     *  c0 | c0.x | c0.y | c0.z |
+     *     +------+------+------+
+     *  c1 | c1.x | c1.y | c1.z |
+     *     +------+------+------+
+     *  c2 | c2.x | c2.y | c2.z |
+     *     +------+------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_cols(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: move c0,
@@ -397,6 +479,19 @@ pub impl<T:Copy Float> Mat3<T> {
                z: move c2 }
     }
     
+    /**
+     * Construct a 3 x 3 diagonal matrix with the major diagonal set to `value`
+     * ~~~
+     *        r0    r1    r2
+     *     +-----+-----+-----+
+     *  c0 | val |   0 |   0 |
+     *     +-----+-----+-----+
+     *  c1 |   0 | val |   0 |
+     *     +-----+-----+-----+
+     *  c2 |   0 |   0 | val |
+     *     +-----+-----+-----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat3<T> {
         let _0 = cast(0);
@@ -445,6 +540,19 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
                   self[2][i])
     }
     
+    /**
+     * Returns the multiplicative identity matrix
+     * ~~~
+     *       r0   r1   r2
+     *     +----+----+----+
+     *  c0 |  1 |  0 |  0 |
+     *     +----+----+----+
+     *  c1 |  0 |  1 |  0 |
+     *     +----+----+----+
+     *  c2 |  0 |  0 |  1 |
+     *     +----+----+----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
         let _0 = cast(0);
@@ -454,6 +562,19 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
                   _0, _0, _1)
     }
     
+    /**
+     * Returns the additive identity matrix
+     * ~~~
+     *       r0   r1   r2
+     *     +----+----+----+
+     *  c0 |  0 |  0 |  0 |
+     *     +----+----+----+
+     *  c1 |  0 |  0 |  0 |
+     *     +----+----+----+
+     *  c2 |  0 |  0 |  0 |
+     *     +----+----+----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
         let _0 = cast(0);
@@ -693,6 +814,21 @@ pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 pub impl<T:Copy Float> Mat4<T> {
+    /**
+     * Construct a 4 x 4 matrix
+     * ~~~
+     *        r0     r1     r2     r3
+     *     +------+------+------+------+
+     *  c0 | c0r0 | c0r1 | c0r2 | c0r3 |
+     *     +------+------+------+------+
+     *  c1 | c1r0 | c1r1 | c1r2 | c1r3 |
+     *     +------+------+------+------+
+     *  c2 | c2r0 | c2r1 | c2r2 | c2r3 |
+     *     +------+------+------+------+
+     *  c3 | c3r0 | c3r1 | c3r2 | c3r3 |
+     *     +------+------+------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
@@ -704,6 +840,21 @@ pub impl<T:Copy Float> Mat4<T> {
                         Vec4::new(move c3r0, move c3r1, move c3r2, move c3r3))
     }
     
+    /**
+     * Construct a 4 x 4 matrix from column vectors
+     * ~~~
+     *        r0     r1     r2     r3
+     *     +------+------+------+------+
+     *  c0 | c0.x | c0.y | c0.z | c0.w |
+     *     +------+------+------+------+
+     *  c1 | c1.x | c1.y | c1.z | c1.w |
+     *     +------+------+------+------+
+     *  c2 | c2.x | c2.y | c2.z | c2.w |
+     *     +------+------+------+------+
+     *  c3 | c3.x | c3.y | c3.z | c3.w |
+     *     +------+------+------+------+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_cols(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
         Mat4 { x: move c0,
@@ -712,6 +863,21 @@ pub impl<T:Copy Float> Mat4<T> {
                w: move c3 }
     }
     
+    /**
+     * Construct a 4 x 4 diagonal matrix with the major diagonal set to `value`
+     * ~~~
+     *        r0    r1    r2    r3
+     *     +-----+-----+-----+-----+
+     *  c0 | val |   0 |   0 |   0 |
+     *     +-----+-----+-----+-----+
+     *  c1 |   0 | val |   0 |   0 |
+     *     +-----+-----+-----+-----+
+     *  c2 |   0 |   0 | val |   0 |
+     *     +-----+-----+-----+-----+
+     *  c3 |   0 |   0 |   0 | val |
+     *     +-----+-----+-----+-----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat4<T> {
         let _0 = cast(0);
@@ -775,6 +941,46 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   self[3][i])
     }
     
+    /**
+     * Returns the multiplicative identity matrix
+     * ~~~
+     *       r0   r1   r2   r3
+     *     +----+----+----+----+
+     *  c0 |  1 |  0 |  0 |  0 |
+     *     +----+----+----+----+
+     *  c1 |  0 |  1 |  0 |  0 |
+     *     +----+----+----+----+
+     *  c2 |  0 |  0 |  1 |  0 |
+     *     +----+----+----+----+
+     *  c3 |  0 |  0 |  0 |  1 |
+     *     +----+----+----+----+
+     * ~~~
+     */
+    #[inline(always)]
+    static pure fn identity() -> Mat4<T> {
+        let _0 = cast(0);
+        let _1 = cast(1);
+        Mat4::new(_1, _0, _0, _0,
+                  _0, _1, _0, _0,
+                  _0, _0, _1, _0,
+                  _0, _0, _0, _1)
+    }
+    
+    /**
+     * Returns the additive identity matrix
+     * ~~~
+     *       r0   r1   r2   r3
+     *     +----+----+----+----+
+     *  c0 |  0 |  0 |  0 |  0 |
+     *     +----+----+----+----+
+     *  c1 |  0 |  0 |  0 |  0 |
+     *     +----+----+----+----+
+     *  c2 |  0 |  0 |  0 |  0 |
+     *     +----+----+----+----+
+     *  c3 |  0 |  0 |  0 |  0 |
+     *     +----+----+----+----+
+     * ~~~
+     */
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
         let _0 = cast(0);
@@ -814,16 +1020,6 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                         self[1].sub_v(&other[1]),
                         self[2].sub_v(&other[2]),
                         self[3].sub_v(&other[3]))
-    }
-    
-    #[inline(always)]
-    static pure fn identity() -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        Mat4::new(_1, _0, _0, _0,
-                  _0, _1, _0, _0,
-                  _0, _0, _1, _0,
-                  _0, _0, _0, _1)
     }
     
     #[inline(always)]
