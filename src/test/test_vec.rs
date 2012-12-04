@@ -81,6 +81,8 @@ fn test_Vec2_geometric() {
     let b0 = Vec2::new(3f, 4f); // (3, 4, 5) Pythagorean triple
     let b = a.add_v(&b0);
     
+    // TODO: test normalize and normalize_self
+    
     assert a.length() == 13f;
     assert a.length2() == 13f * 13f;
     
@@ -94,6 +96,10 @@ fn test_Vec2_geometric() {
     let d = Vec2::new( 1.0f,  0.0f);
     
     assert c.lerp(&d, 0.75f) == Vec2::new(0.250f, -0.250f);
+    
+    let mut mut_c = c;
+    mut_c.lerp_self(&d, &0.75f);
+    assert mut_c == c.lerp(&d, 0.75f);
 }
 
 #[test]
@@ -189,6 +195,8 @@ fn test_Vec3_geometric() {
     let b0 = Vec3::new(1f, 4f, 8f); // (1, 4, 8, 9) Pythagorean quadruple
     let b = a.add_v(&b0);
     
+    // TODO: test normalize and normalize_self
+    
     assert a.length() == 7f;
     assert a.length2() == 7f * 7f;
     
@@ -202,6 +210,10 @@ fn test_Vec3_geometric() {
     let d = Vec3::new( 1.0f,  0.0f, 0.5f);
     
     assert c.lerp(&d, 0.75f) == Vec3::new(0.250f, -0.250f, 0.625f);
+    
+    let mut mut_c = c;
+    mut_c.lerp_self(&d, &0.75f);
+    assert mut_c == c.lerp(&d, 0.75f);
 }
 
 #[test]
@@ -297,6 +309,8 @@ fn test_Vec4_geometric() {
     let b0 = Vec4::new(1f, 2f, 8f, 10f); // (1, 2, 8, 10, 13) Pythagorean quintuple
     let b = a.add_v(&b0);
     
+    // TODO: test normalize and normalize_self
+    
     assert a.length() == 11f;
     assert a.length2() == 11f * 11f;
     
@@ -310,4 +324,8 @@ fn test_Vec4_geometric() {
     let d = Vec4::new( 1.0f,  0.0f, 0.5f, 1.0f);
     
     assert c.lerp(&d, 0.75f) == Vec4::new(0.250f, -0.250f, 0.625f, 1.250f);
+    
+    let mut mut_c = c;
+    mut_c.lerp_self(&d, &0.75f);
+    assert mut_c == c.lerp(&d, 0.75f);
 }

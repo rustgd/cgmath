@@ -77,7 +77,7 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
     pure fn div_t(&self, value: T) -> self;
     
     /**
-     * Returns the sum of the vector with `other`
+     * Returns the sum of the vector and `other`
      */
     pure fn add_v(&self, other: &self) -> self;
     
@@ -112,12 +112,12 @@ pub trait MutableNumericVector<T>: MutableVector<&self/T>, NumericVector<T> {
     fn div_self_t(&mut self, value: T);
     
     /**
-     * Add a vector
+     * Set to the sum of the vector and `other`
      */
     fn add_self_v(&mut self, other: &self);
     
     /**
-     * Subtract a vector
+     * Set to the difference between the vector and `other`
      */
     fn sub_self_v(&mut self, other: &self);
 }
@@ -137,6 +137,7 @@ pub trait NumericVector3<T>: NumericVector<T> {
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
     // static pure fn unit_z() -> self;
+    
     /**
      * Returns the cross product of the vector and `other`
      */
@@ -196,6 +197,19 @@ pub trait GeometricVector<T>: NumericVector<T> {
      * Linearly intoperlate between the vector and `other`
      */
     pure fn lerp(&self, other: &self, amount: T) -> self;
+}
+
+pub trait MutableGeometricVector<T>: MutableNumericVector<&self/T>,
+                                     GeometricVector<T> {
+    /**
+     * Normalize the vector
+     */
+    fn normalize_self(&mut self);
+    
+    /**
+     * Linearly intoperlate the vector towards `other`
+     */
+    fn lerp_self(&mut self, other: &self, amount: T);
 }
 
 
@@ -378,6 +392,19 @@ pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+}
+
+pub impl<T:Copy Number Exp> Vec2<T>: MutableGeometricVector<&self/T> {
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let mut n: T = Number::from(1); 
+        n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    fn lerp_self(&mut self, other: &Vec2<T>, amount: &T) {
+        self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
     }
 }
 
@@ -622,6 +649,19 @@ pub impl<T:Copy Number Exp> Vec3<T>: GeometricVector<T> {
     }
 }
 
+pub impl<T:Copy Number Exp> Vec3<T>: MutableGeometricVector<&self/T> {
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let mut n: T = Number::from(1); 
+        n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    fn lerp_self(&mut self, other: &Vec3<T>, amount: &T) {
+        self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
+    }
+}
+
 pub impl<T:Copy DefaultEq> Vec3<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Vec3<T>) -> bool {
@@ -859,6 +899,19 @@ pub impl<T:Copy Number Exp> Vec4<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+}
+
+pub impl<T:Copy Number Exp> Vec4<T>: MutableGeometricVector<&self/T> {
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let mut n: T = Number::from(1); 
+        n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    fn lerp_self(&mut self, other: &Vec4<T>, amount: &T) {
+        self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
     }
 }
 
