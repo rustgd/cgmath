@@ -72,7 +72,7 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
     pure fn mul_t(&self, value: T) -> self;
     
     /**
-     * Returns the scalar quotient of the vector and `value`
+     * Returns the scalar division of the vector and `value`
      */
     pure fn div_t(&self, value: T) -> self;
     
@@ -80,11 +80,6 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
      * Returns the sum of the vector with `other`
      */
     pure fn add_v(&self, other: &self) -> self;
-    
-    /**
-     * Add the vector `other`
-     */
-    // fn add_v_self(&mut self, other: &self);
     
     /**
      * Returns the difference between the vector and `other`
@@ -95,6 +90,36 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
      * Returns the dot product of the vector and `other`
      */
     pure fn dot(&self, other: &self) -> T;
+}
+
+/**
+ * A mutable vector with numeric components
+ */
+pub trait MutableNumericVector<T>: MutableVector<&self/T>, NumericVector<T> {
+    /**
+     * Negate the vector
+     */
+    fn neg_self(&mut self);
+    
+    /**
+     * Multiply the vector by a scalar
+     */
+    fn mul_self_t(&mut self, value: T);
+    
+    /**
+     * Divide the vector by a scalar
+     */
+    fn div_self_t(&mut self, value: T);
+    
+    /**
+     * Add a vector
+     */
+    fn add_self_v(&mut self, other: &self);
+    
+    /**
+     * Subtract a vector
+     */
+    fn sub_self_v(&mut self, other: &self);
 }
 
 /**
@@ -279,7 +304,39 @@ pub impl<T:Copy Number> Vec2<T>: Neg<Vec2<T>> {
         Vec2::new(-self[0], -self[1])
     }
 }
+
+pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+    }
     
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: &T) {
+        *self.index_mut(0) *= (*value);
+        *self.index_mut(1) *= (*value);
+    }
+    
+    #[inline(always)]
+    fn div_self_t(&mut self, value: &T) {
+        *self.index_mut(0) /= (*value);
+        *self.index_mut(1) /= (*value);
+    }
+    
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+    }
+    
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+    }
+}
+
 pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
@@ -474,6 +531,43 @@ pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
         Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
                   (self[2] * other[0]) - (self[0] * other[2]),
                   (self[0] * other[1]) - (self[1] * other[0]))
+    }
+}
+
+pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+        *self.index_mut(2) = -*self.index_mut(2);
+    }
+    
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: &T) {
+        *self.index_mut(0) *= (*value);
+        *self.index_mut(1) *= (*value);
+        *self.index_mut(2) *= (*value);
+    }
+    
+    #[inline(always)]
+    fn div_self_t(&mut self, value: &T) {
+        *self.index_mut(0) /= (*value);
+        *self.index_mut(1) /= (*value);
+        *self.index_mut(2) /= (*value);
+    }
+    
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+        *self.index_mut(2) += other[2];
+    }
+    
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+        *self.index_mut(2) -= other[2];
     }
 }
 
@@ -672,6 +766,48 @@ pub impl<T:Copy Number> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec4<T> {
         Vec4::new(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+        *self.index_mut(2) = -*self.index_mut(2);
+        *self.index_mut(3) = -*self.index_mut(3);
+    }
+    
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: &T) {
+        *self.index_mut(0) *= (*value);
+        *self.index_mut(1) *= (*value);
+        *self.index_mut(2) *= (*value);
+        *self.index_mut(3) *= (*value);
+    }
+    
+    #[inline(always)]
+    fn div_self_t(&mut self, value: &T) {
+        *self.index_mut(0) /= (*value);
+        *self.index_mut(1) /= (*value);
+        *self.index_mut(2) /= (*value);
+        *self.index_mut(3) /= (*value);
+    }
+    
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+        *self.index_mut(2) += other[2];
+        *self.index_mut(3) += other[3];
+    }
+    
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+        *self.index_mut(2) -= other[2];
+        *self.index_mut(3) -= other[3];
     }
 }
 

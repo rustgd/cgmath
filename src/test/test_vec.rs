@@ -12,6 +12,8 @@ fn test_Vec2() {
     let f1 = 1.5f;
     let f2 = 0.5f;
     
+    let mut mut_a = a;
+    
     assert Vec2::new(1f, 2f) == a;
     // assert Vec2::from_value(1f32) == Vec2::new(1f32, 1f32);
     
@@ -20,10 +22,15 @@ fn test_Vec2() {
     // assert Vec2::unit_y()   == Vec2::new(0f, 1f);
     // assert Vec2::identity() == Vec2::new(1f, 1f);
     
-    let mut mut_a = a;
+    *mut_a.index_mut(0) = 42f;
+    *mut_a.index_mut(1) = 43f;
+    assert mut_a == Vec2::new(42f, 43f);
+    mut_a = a;
+    
     mut_a.swap(0, 1);
     assert mut_a[0] == a[1];
     assert mut_a[1] == a[0];
+    mut_a = a;
     
     assert a.x == 1f;
     assert a.y == 2f;
@@ -38,6 +45,26 @@ fn test_Vec2() {
     
     assert a.add_v(&b) == Vec2::new( 4f,  6f);
     assert a.sub_v(&b) == Vec2::new(-2f, -2f);
+    
+    mut_a.neg_self();
+    assert mut_a == -a;
+    mut_a = a;
+    
+    mut_a.mul_self_t(&f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.div_self_t(&f2);
+    assert mut_a == a.div_t(f2);
+    mut_a = a;
+    
+    mut_a.add_self_v(&b);
+    assert mut_a == a.add_v(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_v(&b);
+    assert mut_a == a.sub_v(&b);
+    // mut_a = a;
     
     // exact_eq
     // fuzzy_eq
@@ -78,6 +105,8 @@ fn test_Vec3() {
     let f1 = 1.5f;
     let f2 = 0.5f;
     
+    let mut mut_a = a;
+    
     assert Vec3::new(1f, 2f, 3f) == a;
     // assert Vec3::from_value(1f32) == Vec3::new(1f32, 1f32, 1f32);
     
@@ -87,15 +116,21 @@ fn test_Vec3() {
     // assert Vec3::unit_z()   == Vec3::new(0f, 0f, 1f);
     // assert Vec3::identity() == Vec3::new(1f, 1f, 1f);
     
-    let mut mut_a = a;
+    *mut_a.index_mut(0) = 42f;
+    *mut_a.index_mut(1) = 43f;
+    *mut_a.index_mut(2) = 44f;
+    assert mut_a == Vec3::new(42f, 43f, 44f);
+    mut_a = a;
+    
     mut_a.swap(0, 2);
     assert mut_a[0] == a[2];
     assert mut_a[2] == a[0];
-    
     mut_a = a;
+    
     mut_a.swap(1, 2);
     assert mut_a[1] == a[2];
     assert mut_a[2] == a[1];
+    let mut mut_a = a;
     
     assert a.x == 1f;
     assert a.y == 2f;
@@ -114,6 +149,26 @@ fn test_Vec3() {
     
     assert a.add_v(&b) == Vec3::new( 5f,  7f,  9f);
     assert a.sub_v(&b) == Vec3::new(-3f, -3f, -3f);
+    
+    mut_a.neg_self();
+    assert mut_a == -a;
+    mut_a = a;
+    
+    mut_a.mul_self_t(&f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.div_self_t(&f2);
+    assert mut_a == a.div_t(f2);
+    mut_a = a;
+    
+    mut_a.add_self_v(&b);
+    assert mut_a == a.add_v(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_v(&b);
+    assert mut_a == a.sub_v(&b);
+    // mut_a = a;
     
     // exact_eq
     // fuzzy_eq
@@ -154,18 +209,27 @@ fn test_Vec4() {
     let f1 = 1.5f;
     let f2 = 0.5f;
     
+    let mut mut_a = a;
+    
     assert Vec4::new(1f, 2f, 3f, 4f) == a;
     // assert Vec4::from_value(1f32) == Vec4::new(1f32, 1f32, 1f32, 1f32);
     
-    let mut mut_a = a;
+    *mut_a.index_mut(0) = 42f;
+    *mut_a.index_mut(1) = 43f;
+    *mut_a.index_mut(2) = 44f;
+    *mut_a.index_mut(3) = 45f;
+    assert mut_a == Vec4::new(42f, 43f, 44f, 45f);
+    mut_a = a;
+    
     mut_a.swap(0, 3);
     assert mut_a[0] == a[3];
     assert mut_a[3] == a[0];
-    
     mut_a = a;
+    
     mut_a.swap(1, 2);
     assert mut_a[1] == a[2];
     assert mut_a[2] == a[1];
+    mut_a = a;
     
     // assert Vec4::zero()     == Vec4::new(0f, 0f, 0f, 0f);
     // assert Vec4::unit_x()   == Vec4::new(1f, 0f, 0f, 0f);
@@ -193,6 +257,26 @@ fn test_Vec4() {
     assert a.sub_v(&b) == Vec4::new(-4f, -4f, -4f, -4f);
     
     assert a.dot(&b) == 70f;
+    
+    mut_a.neg_self();
+    assert mut_a == -a;
+    mut_a = a;
+    
+    mut_a.mul_self_t(&f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.div_self_t(&f2);
+    assert mut_a == a.div_t(f2);
+    mut_a = a;
+    
+    mut_a.add_self_v(&b);
+    assert mut_a == a.add_v(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_v(&b);
+    assert mut_a == a.sub_v(&b);
+    // mut_a = a;
     
     // exact_eq
     // fuzzy_eq
