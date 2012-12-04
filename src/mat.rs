@@ -29,34 +29,14 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     pure fn row(&self, i: uint) -> V;
     
     /**
-     * Swap two columns of the matrix in place
-     */
-    fn swap_cols(&mut self, a: uint, b: uint);
-    
-    /**
-     * Swap two rows of the matrix in place 
-     */
-    fn swap_rows(&mut self, a: uint, b: uint);
-    
-    /**
      * Returns the identity matrix
      */
     static pure fn identity() -> self;
     
     /**
-     * Sets the matrix to the identity matrix
-     */
-    fn to_identity(&mut self);
-    
-    /**
      * Returns a matrix with all elements set to zero
      */
     static pure fn zero() -> self;
-    
-    /**
-     * Sets each element of the matrix to zero
-     */
-    fn to_zero(&mut self);
     
     /**
      * Returns the scalar multiplication of this matrix and `value`
@@ -141,6 +121,33 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
      * Returns `true` if  the matrix is invertable
      */
     pure fn is_invertible(&self) -> bool;
+}
+
+pub trait MutableMatrix<T,V>: Matrix<T,V> {
+    /**
+     * Get a mutable reference to the column at `i`
+     */
+    fn col_mut(&mut self, i: uint) -> &self/mut V;
+    
+    /**
+     * Swap two columns of the matrix in place
+     */
+    fn swap_cols(&mut self, a: uint, b: uint);
+    
+    /**
+     * Swap two rows of the matrix in place 
+     */
+    fn swap_rows(&mut self, a: uint, b: uint);
+    
+    /**
+     * Sets the matrix to the identity matrix
+     */
+    fn to_identity(&mut self);
+    
+    /**
+     * Sets each element of the matrix to zero
+     */
+    fn to_zero(&mut self);
 }
 
 /**
@@ -260,30 +267,6 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
                   self[1][i])
     }
     
-    #[inline(always)]
-    fn swap_cols(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 1 but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 1 but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
-    
-    #[inline(always)]
-    fn swap_rows(&mut self, a: uint, b: uint) {
-        self.x.swap(a, b);
-        self.y.swap(a, b);
-    }
-    
     /**
      * Returns the multiplicative identity matrix
      * ~~~
@@ -303,11 +286,6 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
                   _0, _1)
     }
     
-    #[inline(always)]
-    fn to_identity(&mut self) {
-        *self = Mat2::identity();
-    }
-    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -324,11 +302,6 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
         let _0 = Number::from(0);
         Mat2::new(_0, _0,
                   _0, _0)
-    }
-    
-    #[inline(always)]
-    fn to_zero(&mut self) {
-        *self = Mat2::zero();
     }
     
     #[inline(always)]
@@ -423,6 +396,39 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
         let _0 = cast(0);
         // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
+    }
+}
+
+pub impl<T:Copy Float> Mat2<T>: MutableMatrix<T, Vec2<T>> {
+    #[inline(always)]
+    fn col_mut(&mut self, i: uint) -> &self/mut Vec2<T> {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        util::swap(self.col_mut(a),
+                   self.col_mut(b));
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+    }
+    
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat2::identity();
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat2::zero();
     }
 }
 
@@ -612,33 +618,6 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
                   self[2][i])
     }
     
-    #[inline(always)]
-    fn swap_cols(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2 but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2 but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
-    
-    #[inline(always)]
-    fn swap_rows(&mut self, a: uint, b: uint) {
-        self.x.swap(a, b);
-        self.y.swap(a, b);
-        self.z.swap(a, b);
-    }
-    
     /**
      * Returns the multiplicative identity matrix
      * ~~~
@@ -663,11 +642,6 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
                   _0, _0, _1)
     }
     
-    #[inline(always)]
-    fn to_identity(&mut self) {
-        *self = Mat3::identity();
-    }
-    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -687,11 +661,6 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
         Mat3::new(_0, _0, _0,
                   _0, _0, _0,
                   _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    fn to_zero(&mut self) {
-        *self = Mat3::zero();
     }
     
     #[inline(always)]
@@ -806,6 +775,41 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
         let _0 = cast(0);
         // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
+    }
+}
+
+pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
+    #[inline(always)]
+    fn col_mut(&mut self, i: uint) -> &self/mut Vec3<T> {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        util::swap(self.col_mut(a),
+                   self.col_mut(b));
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+        self.z.swap(a, b);
+    }
+    
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat3::identity();
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat3::zero();
     }
 }
 
@@ -1059,36 +1063,6 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   self[3][i])
     }
     
-    #[inline(always)]
-    fn swap_cols(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                3 => &mut self.w,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                3 => &mut self.w,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
-    
-    #[inline(always)]
-    fn swap_rows(&mut self, a: uint, b: uint) {
-        self.x.swap(a, b);
-        self.y.swap(a, b);
-        self.z.swap(a, b);
-        self.w.swap(a, b);
-    }
-    
     /**
      * Returns the multiplicative identity matrix
      * ~~~
@@ -1114,11 +1088,6 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   _0, _0, _0, _1)
     }
     
-    #[inline(always)]
-    fn to_identity(&mut self) {
-        *self = Mat4::identity();
-    }
-    
     /**
      * Returns the additive identity matrix
      * ~~~
@@ -1141,11 +1110,6 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                   _0, _0, _0, _0,
                   _0, _0, _0, _0,
                   _0, _0, _0, _0)
-    }
-    
-    #[inline(always)]
-    fn to_zero(&mut self) {
-        *self = Mat4::zero();
     }
     
     #[inline(always)]
@@ -1335,6 +1299,43 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     pure fn is_invertible(&self) -> bool {
         let _0 = cast(0);
         !self.determinant().fuzzy_eq(&_0)
+    }
+}
+
+pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
+    #[inline(always)]
+    fn col_mut(&mut self, i: uint) -> &self/mut Vec4<T> {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            3 => &mut self.w,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        util::swap(self.col_mut(a),
+                   self.col_mut(b));
+    }
+    
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+        self.z.swap(a, b);
+        self.w.swap(a, b);
+    }
+    
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        *self = Mat4::identity();
+    }
+    
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        *self = Mat4::zero();
     }
 }
 
