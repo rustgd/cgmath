@@ -80,6 +80,11 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     
     /**
      * Returns the inverse of the matrix
+     * 
+     * # Return value
+     *
+     * - `Some(m)` if the inversion was successful, where `m` is the inverted matrix
+     * - `None` if the inversion was unsuccessful (because the matrix was not invertable)
      */
     pure fn inverse(&self) -> Option<self>;
     
