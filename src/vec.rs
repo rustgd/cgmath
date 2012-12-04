@@ -17,6 +17,13 @@ use num::kinds::Number;
 pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
     /// Construct the vector from a single value, copying it to each component
     static pure fn from_value(value: T) -> self;
+}
+
+pub trait MutableVector<T>: Vector<T> {
+    /**
+     * Get a mutable reference to the component at `i`
+     */
+    fn index_mut(&mut self, i: uint) -> &self/mut T;
     
     /**
      * Swap two components of the vector in place
@@ -48,7 +55,7 @@ pub trait Vector4<T>: Vector<T> {
 /**
  * A vector with numeric components
  */
-pub trait NumericVector<T>: Vector<T>, Neg<self>{
+pub trait NumericVector<T>: Vector<T>, Neg<self> {
     /**
      * Returns a vector with each component set to one
      */
@@ -73,6 +80,11 @@ pub trait NumericVector<T>: Vector<T>, Neg<self>{
      * Returns the sum of the vector with `other`
      */
     pure fn add_v(&self, other: &self) -> self;
+    
+    /**
+     * Add the vector `other`
+     */
+    // fn add_v_self(&mut self, other: &self);
     
     /**
      * Returns the difference between the vector and `other`
@@ -172,24 +184,6 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value, value)
     }
-    
-    #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
 }
 
 pub impl<T> Vec2<T>: Dimensional<T> {
@@ -215,6 +209,23 @@ pub impl<T:Copy> Vec2<T>: ToPtr<T> {
                 to_unsafe_ptr(&*self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec2<T>: MutableVector<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
     }
 }
     
@@ -353,26 +364,6 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec3<T> {
         Vec3::new(value, value, value)
     }
-    
-    #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
 }
 
 pub impl<T> Vec3<T>: Dimensional<T> {
@@ -398,6 +389,24 @@ pub impl<T:Copy> Vec3<T>: ToPtr<T> {
                 to_unsafe_ptr(&*self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec3<T>: MutableVector<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
     }
 }
 
@@ -554,28 +563,6 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value, value, value, value)
     }
-    
-    #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
-        let addr_a =
-            match a {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                3 => &mut self.w,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", a))
-            };
-        let addr_b =
-            match b {
-                0 => &mut self.x,
-                1 => &mut self.y,
-                2 => &mut self.z,
-                3 => &mut self.w,
-                _ => fail(fmt!("index out of bounds: expected an index from 0 to 3 but found %u", b))
-            };
-        
-        util::swap(addr_a, addr_b);
-    }
 }
 
 pub impl<T> Vec4<T>: Dimensional<T> {
@@ -601,6 +588,25 @@ pub impl<T:Copy> Vec4<T>: ToPtr<T> {
                 to_unsafe_ptr(&*self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec4<T>: MutableVector<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            3 => &mut self.w,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
     }
 }
 
