@@ -198,8 +198,8 @@ pub impl<T:Copy Float> Mat2<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat2<T> {
-        // let _0 = cast(0);
-        let _0 = Number::from(0);
+        let _0 = cast(0);
+        // let _0 = Number::from(0);    // FIXME: causes ICE
         Mat2::new(value,    _0,
                      _0, value)
     }
@@ -209,6 +209,8 @@ pub impl<T:Copy Float> Mat2<T> {
     static pure fn identity() -> Mat2<T> {
         let _0 = cast(0);
         let _1 = cast(1);
+        // let _0 = Number::from(0);    // FIXME: causes ICE
+        // let _1 = Number::from(1);    // FIXME: causes ICE
         Mat2::new(_1, _0,
                   _0, _1)
     }
@@ -217,6 +219,7 @@ pub impl<T:Copy Float> Mat2<T> {
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
         let _0 = cast(0);
+        // let _0 = Number::from(0);    // FIXME: causes ICE
         Mat2::new(_0, _0,
                   _0, _0)
     }
