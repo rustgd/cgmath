@@ -70,6 +70,4 @@ pub mod num {
     pub mod default_eq;
     #[path = "num/kinds.rs"]
     pub mod kinds;
-    #[path = "num/rhs.rs"]
-    pub mod rhs; // FIXME: see module description
 }
