@@ -7,8 +7,8 @@ Lmath is generic linear algebra library for Rust. There is still much to do, uni
 - ~~Matrix inversion~~
 - ~~Matrix rotation~~
 - ~~Angle types (degrees/radians)~~
-- N x M matrices
 - Operator Overloading
+- Phase out the use of `num::cast::cast` for numeric conversions
 - Implement component-wise functions for vectors
 - Euler and axial rotations
 - Performance improvements

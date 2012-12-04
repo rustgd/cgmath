@@ -1,10 +1,14 @@
 /**
- * This trait allows for the easy casting between each of thethe built in
- * numeric types, going above and beyond the static 'to_int' function found in
- * the Num trait. I've found that it is especially handy in generic functions
- * when you need to mix floating point and integer values.
+ * Wrapper methods for numeric type casts
+ *
+ * Note: although the `from` and `cast` medods are still inclueded, they will
+ * be phased out in favour of the `num::kinds::Number::from<T:Number(n: T)`
+ * static constructor method. I feel that this will be far clearer than using
+ * the `cast` function everywhere.
  */
 pub trait NumCast {
+    // TODO: the plan is to remove the `from` and `cast` methods and use the 
+    // `num::kinds::Number::from<T:Number(n: T)` method instead
     static pure fn from<T:NumCast>(n: T) -> self;
     pure fn cast<T:NumCast>(&self) -> T;
     
