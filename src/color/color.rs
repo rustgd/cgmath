@@ -9,10 +9,10 @@ use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
 use num::kinds::{Float, Number};
+
 /**
  * A generic color trait.
  */
-
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
     /**
      * Returns the color with each component inverted
@@ -101,9 +101,22 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
     pure fn to_hsv_f64(&self) -> HSV<f64>;
 }
 
-// pub trait ColorRGB<T> {
-//     static pure fn from_hex(hex: u8) -> self;
-// }
+pub trait MutableColor<T>: Color<T> {
+    /**
+     * Get a mutable reference to the component at `i`
+     */
+    fn index_mut(&mut self, i: uint) -> &self/mut T;
+    
+    /**
+     * Swap two components of the color in place
+     */
+    fn swap(&mut self, a: uint, b: uint);
+    
+    /**
+     * Invert each component of the color
+     */
+    fn invert_self(&mut self);
+}
 
 pub trait Color3<T>: Color<T> {
     // TODO: documentation (bleh, so much writing)
@@ -130,6 +143,10 @@ pub trait Color4<T>: Color<T> {
     pure fn to_hsva_f32(&self) -> HSVA<f32>;
     pure fn to_hsva_f64(&self) -> HSVA<f64>;
 }
+
+// pub trait ColorRGB<T> {
+//     static pure fn from_hex(hex: u8) -> self;
+// }
 
 
 
@@ -296,6 +313,31 @@ pub impl<T:Copy Number Channel> RGB<T>: Color<T> {
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
 }
 
+pub impl<T:Copy Channel> RGB<T>: MutableColor<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => &mut self.r,
+            1 => &mut self.g,
+            2 => &mut self.b,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        self.r = self.r.inverse();
+        self.g = self.g.inverse();
+        self.b = self.b.inverse();
+    }
+}
+
 pub impl<T:Copy Number Channel> RGB<T>: Color3<T> {
     #[inline(always)] pure fn to_rgba_u8(&self, a: u8)   -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(),  a) }
     #[inline(always)] pure fn to_rgba_u16(&self, a: u16) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), a) }
@@ -421,6 +463,33 @@ pub impl<T:Copy Number Channel> RGBA<T>: Color<T> {
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
 }
 
+pub impl<T:Copy Channel> RGBA<T>: MutableColor<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => &mut self.r,
+            1 => &mut self.g,
+            2 => &mut self.b,
+            3 => &mut self.a,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        self.r = self.r.inverse();
+        self.g = self.g.inverse();
+        self.b = self.b.inverse();
+        self.a = self.a.inverse();
+    }
+}
+
 pub impl<T:Copy Number Channel> RGBA<T>: Color4<T> {
     #[inline(always)] pure fn to_rgba_u8(&self)  -> RGBA<u8>  { RGBA::from_rgb_a(&self.to_rgb_u8(),  self.a.to_channel_u8()) }
     #[inline(always)] pure fn to_rgba_u16(&self) -> RGBA<u16> { RGBA::from_rgb_a(&self.to_rgb_u16(), self.a.to_channel_u16()) }
@@ -514,6 +583,32 @@ pub impl<T:Copy Float Channel> HSV<T>: Color<T> {
         HSV::new(Degrees((*self.h).to_f64()),
                  self.s.to_channel_f64(),
                  self.v.to_channel_f64())
+    }
+}
+
+pub impl<T:Copy Channel> HSV<T>: MutableColor<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => ,
+            1 => &mut self.s,
+            2 => &mut self.v,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        if a != 0 && b != 0 { fail(fmt!("can't swap the hue component (at index 0) in a HSV type: found a: %u, b: %u", a, b)); }
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        self.h = self.h.inverse();
+        self.s = self.s.inverse();
+        self.v = self.v.inverse();
     }
 }
 
@@ -615,6 +710,34 @@ pub impl<T:Copy Float Channel> HSVA<T>: Color<T> {
         HSV::new(Degrees((*self.h).to_f64()),
                  self.s.to_channel_f64(),
                  self.v.to_channel_f64())
+    }
+}
+
+pub impl<T:Copy Channel> HSVA<T>: MutableColor<T> {
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &self/mut T {
+        match i {
+            0 => ,
+            1 => &mut self.s,
+            2 => &mut self.v,
+            3 => &mut self.a,
+            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+    
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        if a != 0 && b != 0 { fail(fmt!("can't swap the hue component (at index 0) in a HSVA type: found a: %u, b: %u", a, b)); }
+        util::swap(self.index_mut(a),
+                   self.index_mut(b));
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        self.h = self.h.inverse();
+        self.s = self.s.inverse();
+        self.v = self.v.inverse();
+        self.a = self.a.inverse();
     }
 }
 
