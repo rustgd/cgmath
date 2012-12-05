@@ -11,15 +11,15 @@ use vec::Vec3;
 /**
  * The base trait for anglular units
  */
-pub trait Angle<T>: Add<self,self>
-                  , Sub<self,self>
-                  , Mul<T,self>
-                  , Div<T,self>
-                  // , Div<self,T>
-                  , Modulo<T,self>
-                  // , Modulo<self,T>
-                  , Neg<self>
-                  , Eq, Ord {
+pub trait Angle<T>: Add<self,self>,
+                    Sub<self,self>
+                    Mul<T,self>,
+                    Div<T,self>,
+                    // Div<self,T>,     // TODO: not sure how to implement this, or if it is even possible...
+                    Modulo<T,self>,
+                    // Modulo<self,T>,  // TODO: not sure how to implement this, or if it is even possible...
+                    Neg<self>,
+                    Eq, Ord {
     static pure fn full_turn() -> self;
     static pure fn half_turn() -> self;
     static pure fn quadrant()  -> self;
@@ -39,7 +39,6 @@ pub trait Angle<T>: Add<self,self>
 
 pub enum Radians<T> = T;
 
-// FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
 pub impl<T:Copy Float> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Radians<T> { Radians(Float::two_pi())    }
     #[inline(always)] static pure fn half_turn()    -> Radians<T> { Radians(Float::pi())        }
