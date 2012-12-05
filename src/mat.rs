@@ -9,7 +9,7 @@ use std::cmp::FuzzyEq;
 use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
-use num::cast::*;
+use num::conv::cast;
 use num::kinds::{Float, Number};
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};

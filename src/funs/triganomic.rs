@@ -5,7 +5,7 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 use angle::Radians;
-use num::cast::cast;
+use num::conv::cast;
 use num::kinds::Number;
 use vec::{Vec3, Vec2, Vec4};
 

@@ -64,8 +64,8 @@ pub mod funs {
 }
 
 pub mod num {
-    #[path = "num/cast.rs"]
-    pub mod cast;
+    #[path = "num/conv.rs"]
+    pub mod conv;
     #[path = "num/default_eq.rs"]
     pub mod default_eq;
     #[path = "num/kinds.rs"]

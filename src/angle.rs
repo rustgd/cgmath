@@ -4,7 +4,7 @@ use core::f64::consts::pi;
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
 use num::kinds::{Float, Number};
-use num::cast::{NumCast, cast};
+use num::conv::cast;
 use quat::Quat;
 use vec::Vec3;
 

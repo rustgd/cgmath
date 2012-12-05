@@ -6,11 +6,11 @@
  * static constructor method. I feel that this will be far clearer than using
  * the `cast` function everywhere.
  */
-pub trait NumCast {
+pub trait NumConv {
     // TODO: the plan is to remove the `from` and `cast` methods and use the 
     // `num::kinds::Number::from<T:Number(n: T)` method instead
-    static pure fn from<T:NumCast>(n: T) -> self;
-    pure fn cast<T:NumCast>(&self) -> T;
+    static pure fn from<T:NumConv>(n: T) -> self;
+    pure fn cast<T:NumConv>(&self) -> T;
     
     pure fn to_u8(&self)    -> u8;
     pure fn to_u16(&self)   -> u16;
@@ -30,11 +30,11 @@ pub trait NumCast {
 }
 
 #[inline(always)]
-pub pure fn cast<T:NumCast, U:NumCast>(n: T) -> U { n.cast() }
+pub pure fn cast<T:NumConv, U:NumConv>(n: T) -> U { n.cast() }
 
-pub impl u8: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u8 { n.to_u8() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl u8: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u8 { n.to_u8() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self          }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -53,9 +53,9 @@ pub impl u8: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl u16: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u16 { n.to_u16() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl u16: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u16 { n.to_u16() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self          }
@@ -74,9 +74,9 @@ pub impl u16: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl u32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u32 { n.to_u32() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl u32: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u32 { n.to_u32() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -95,9 +95,9 @@ pub impl u32: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl u64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> u64 { n.to_u64() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl u64: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u64 { n.to_u64() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -116,9 +116,9 @@ pub impl u64: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl uint: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> uint { n.to_uint() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl uint: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> uint { n.to_uint() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -137,9 +137,9 @@ pub impl uint: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl i8: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i8 { n.to_i8() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl i8: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i8 { n.to_i8() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -158,9 +158,9 @@ pub impl i8: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl i16: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i16 { n.to_i16() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl i16: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i16 { n.to_i16() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -179,9 +179,9 @@ pub impl i16: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl i32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i32 { n.to_i32() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl i32: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i32 { n.to_i32() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -200,9 +200,9 @@ pub impl i32: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl i64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> i64 { n.to_i64() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl i64: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i64 { n.to_i64() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -221,9 +221,9 @@ pub impl i64: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl int: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> int { n.to_int() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl int: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> int { n.to_int() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -242,9 +242,9 @@ pub impl int: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl f32: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f32 { n.to_f32() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl f32: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> f32 { n.to_f32() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -263,9 +263,9 @@ pub impl f32: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl f64: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> f64 { n.to_f64() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl f64: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> f64 { n.to_f64() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }
@@ -284,9 +284,9 @@ pub impl f64: NumCast {
     #[inline(always)] pure fn to_float(&self) -> float { *self as float }
 }
 
-pub impl float: NumCast {
-    #[inline(always)] static pure fn from<T:NumCast>(n: T) -> float { n.to_float() }
-    #[inline(always)] pure fn cast<T:NumCast>(&self) -> T { NumCast::from(*self) }
+pub impl float: NumConv {
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> float { n.to_float() }
+    #[inline(always)] pure fn cast<T:NumConv>(&self) -> T { NumConv::from(*self) }
     
     #[inline(always)] pure fn to_u8(&self)    -> u8    { *self as u8    }
     #[inline(always)] pure fn to_u16(&self)   -> u16   { *self as u16   }

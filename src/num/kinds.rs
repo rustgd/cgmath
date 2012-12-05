@@ -1,11 +1,11 @@
 use core::cmp::{Eq, Ord};
 use std::cmp::FuzzyEq;
 
-use num::cast::NumCast;
+use num::conv::NumConv;
 use num::default_eq::DefaultEq;
 
 
-pub trait Number: DefaultEq, Eq, Num, NumCast, Ord {
+pub trait Number: DefaultEq, Eq, Num, NumConv, Ord {
     /**
      * Construct a number from the type `T:Number`
      */
