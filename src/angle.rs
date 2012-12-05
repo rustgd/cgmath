@@ -12,7 +12,7 @@ use vec::Vec3;
  * The base trait for anglular units
  */
 pub trait Angle<T>: Add<self,self>,
-                    Sub<self,self>
+                    Sub<self,self>,
                     Mul<T,self>,
                     Div<T,self>,
                     // Div<self,T>,     // TODO: not sure how to implement this, or if it is even possible...

@@ -625,11 +625,11 @@ pub impl<T:Copy Float Channel> HSV<T>: Color<T> {
     }
 }
 
-pub impl<T:Copy Channel> HSV<T>: MutableColor<T> {
+pub impl<T:Copy Channel Float> HSV<T>: MutableColor<T> {
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &self/mut T {
         match i {
-            0 => ,
+            0 => fail(~"can't swap the hue component at index 0 in a HSVA type"),
             1 => &mut self.s,
             2 => &mut self.v,
             _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
@@ -645,7 +645,7 @@ pub impl<T:Copy Channel> HSV<T>: MutableColor<T> {
     
     #[inline(always)]
     fn invert_self(&mut self) {
-        self.h = self.h.inverse();
+        self.h = self.h.opposite();
         self.s = self.s.inverse();
         self.v = self.v.inverse();
     }
@@ -764,11 +764,11 @@ pub impl<T:Copy Float Channel> HSVA<T>: Color<T> {
     }
 }
 
-pub impl<T:Copy Channel> HSVA<T>: MutableColor<T> {
+pub impl<T:Copy Channel Float> HSVA<T>: MutableColor<T> {
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &self/mut T {
         match i {
-            0 => ,
+            0 => fail(~"can't swap the hue component at index 0 in a HSVA type"),
             1 => &mut self.s,
             2 => &mut self.v,
             3 => &mut self.a,
@@ -778,14 +778,13 @@ pub impl<T:Copy Channel> HSVA<T>: MutableColor<T> {
     
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        if a != 0 && b != 0 { fail(fmt!("can't swap the hue component (at index 0) in a HSVA type: found a: %u, b: %u", a, b)); }
         util::swap(self.index_mut(a),
                    self.index_mut(b));
     }
     
     #[inline(always)]
     fn invert_self(&mut self) {
-        self.h = self.h.inverse();
+        self.h = self.h.opposite();
         self.s = self.s.inverse();
         self.v = self.v.inverse();
         self.a = self.a.inverse();
