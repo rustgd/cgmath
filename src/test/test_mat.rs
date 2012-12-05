@@ -10,8 +10,6 @@ fn test_Mat2() {
     let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
                    y: Vec2 { x: 3f, y: 5f } };
     
-    let mut mut_a = a;
-    
     let v1 = Vec2::new(1f, 2f);
     let f1 = 0.5f;
     
@@ -33,28 +31,11 @@ fn test_Mat2() {
     assert a.col(0) == Vec2::new(1f, 3f);
     assert a.col(1) == Vec2::new(2f, 4f);
     
-    mut_a.swap_cols(0, 1);
-    assert mut_a.col(0) == a.col(1);
-    assert mut_a.col(1) == a.col(0);
-    mut_a = a;
-    
-    mut_a.swap_rows(0, 1);
-    assert mut_a.row(0) == a.row(1);
-    assert mut_a.row(1) == a.row(0);
-    mut_a = a;
-    
     assert Mat2::identity() == Mat2::new(1f, 0f,
                                          0f, 1f);
-    mut_a.to_identity();
-    assert mut_a.is_identity();
-    mut_a = a;
     
     assert Mat2::zero() == Mat2::new(0f, 0f,
                                      0f, 0f);
-    
-    mut_a.to_zero();
-    assert mut_a == Mat2::new(0f, 0f,
-                              0f, 0f);
 
     assert a.determinant() == -2f;
     assert a.trace() == 5f;
@@ -123,6 +104,59 @@ fn test_Mat2() {
                                     0f, 0f, 0f, 1f);
 }
 
+fn test_Mat2_mut() {
+    let a = Mat2 { x: Vec2 { x: 1f, y: 3f },
+                   y: Vec2 { x: 2f, y: 4f } };
+    let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
+                   y: Vec2 { x: 3f, y: 5f } };
+    
+    let f1 = 0.5f;
+    
+    let mut mut_a = a;
+    
+    mut_a.swap_cols(0, 1);
+    assert mut_a.col(0) == a.col(1);
+    assert mut_a.col(1) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 1);
+    assert mut_a.row(0) == a.row(1);
+    assert mut_a.row(1) == a.row(0);
+    mut_a = a;
+    
+    mut_a.set(&b);
+    assert mut_a == b;
+    mut_a = a;
+    
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    mut_a.to_zero();
+    assert mut_a == Mat2::zero();
+    mut_a = a;
+    
+    mut_a.mul_self_t(f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.add_self_m(&b);
+    assert mut_a == a.add_m(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_m(&b);
+    assert mut_a == a.sub_m(&b);
+    mut_a = a;
+    
+    mut_a.invert_self();
+    assert mut_a == option::unwrap(a.inverse());
+    mut_a = a;
+    
+    mut_a.transpose_self();
+    assert mut_a == a.transpose();
+    // mut_a = a;
+}
+
 #[test]
 fn test_Mat3() {
     let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
@@ -131,8 +165,6 @@ fn test_Mat3() {
     let b = Mat3 { x: Vec3 { x: 2f, y: 5f, z:  8f },
                    y: Vec3 { x: 3f, y: 6f, z:  9f },
                    z: Vec3 { x: 4f, y: 7f, z: 10f } };
-    
-    let mut mut_a = a;
     
     let v1 = Vec3::new(1f, 2f, 3f);
     let f1 = 0.5f;
@@ -166,40 +198,13 @@ fn test_Mat3() {
     assert a.col(1) == Vec3::new(2f, 5f, 8f);
     assert a.col(2) == Vec3::new(3f, 6f, 9f);
     
-    mut_a.swap_cols(0, 2);
-    assert mut_a.col(0) == a.col(2);
-    assert mut_a.col(2) == a.col(0);
-    mut_a = a;
-    
-    mut_a.swap_cols(1, 2);
-    assert mut_a.col(1) == a.col(2);
-    assert mut_a.col(2) == a.col(1);
-    mut_a = a;
-    
-    mut_a.swap_rows(0, 2);
-    assert mut_a.row(0) == a.row(2);
-    assert mut_a.row(2) == a.row(0);
-    mut_a = a;
-    
-    mut_a.swap_rows(1, 2);
-    assert mut_a.row(1) == a.row(2);
-    assert mut_a.row(2) == a.row(1);
-    mut_a = a;
-    
     assert Mat3::identity() == Mat3::new(1f, 0f, 0f,
                                          0f, 1f, 0f,
                                          0f, 0f, 1f);
-    mut_a.to_identity();
-    assert mut_a.is_identity();
-    mut_a = a;
     
     assert Mat3::zero() == Mat3::new(0f, 0f, 0f,
                                      0f, 0f, 0f,
                                      0f, 0f, 0f);
-    mut_a.to_zero();
-    assert mut_a == Mat3::new(0f, 0f, 0f,
-                              0f, 0f, 0f,
-                              0f, 0f, 0f);
 
     assert a.determinant() == 0f;
     assert a.trace() == 15f;
@@ -278,6 +283,75 @@ fn test_Mat3() {
     // to_Quaternion
 }
 
+fn test_Mat3_mut() {
+    let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
+                   y: Vec3 { x: 2f, y: 5f, z:  8f },
+                   z: Vec3 { x: 3f, y: 6f, z:  9f } };
+    let b = Mat3 { x: Vec3 { x: 2f, y: 5f, z:  8f },
+                   y: Vec3 { x: 3f, y: 6f, z:  9f },
+                   z: Vec3 { x: 4f, y: 7f, z: 10f } };
+    let c = Mat3 { x: Vec3 { x: 2f, y: 4f, z:  6f },
+                   y: Vec3 { x: 0f, y: 2f, z:  4f },
+                   z: Vec3 { x: 0f, y: 0f, z:  1f } };
+    
+    let f1 = 0.5f;
+    
+    let mut mut_a = a;
+    let mut mut_c = c;
+    
+    mut_a.swap_cols(0, 2);
+    assert mut_a.col(0) == a.col(2);
+    assert mut_a.col(2) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_cols(1, 2);
+    assert mut_a.col(1) == a.col(2);
+    assert mut_a.col(2) == a.col(1);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 2);
+    assert mut_a.row(0) == a.row(2);
+    assert mut_a.row(2) == a.row(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(1, 2);
+    assert mut_a.row(1) == a.row(2);
+    assert mut_a.row(2) == a.row(1);
+    mut_a = a;
+    
+    mut_a.set(&b);
+    assert mut_a == b;
+    mut_a = a;
+    
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    mut_a.to_zero();
+    assert mut_a == Mat3::zero();
+    mut_a = a;
+    
+    mut_a.mul_self_t(f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.add_self_m(&b);
+    assert mut_a == a.add_m(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_m(&b);
+    assert mut_a == a.sub_m(&b);
+    mut_a = a;
+    
+    mut_c.invert_self();
+    assert mut_c == option::unwrap(c.inverse());
+    // mut_c = c;
+    
+    mut_a.transpose_self();
+    assert mut_a == a.transpose();
+    // mut_a = a;
+}
+
 #[test]
 fn test_Mat4() {
     let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
@@ -292,8 +366,6 @@ fn test_Mat4() {
                    y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
                    z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
                    w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
-    
-    let mut mut_a = a;
     
     let v1 = Vec4::new(1f, 2f, 3f, 4f);
     let f1 = 0.5f;
@@ -341,43 +413,15 @@ fn test_Mat4() {
     assert a.col(2) == Vec4::new(3f, 7f, 11f, 15f);
     assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
     
-    mut_a.swap_cols(0, 3);
-    assert mut_a.col(0) == a.col(3);
-    assert mut_a.col(3) == a.col(0);
-    mut_a = a;
-    
-    mut_a.swap_cols(1, 2);
-    assert mut_a.col(1) == a.col(2);
-    assert mut_a.col(2) == a.col(1);
-    mut_a = a;
-    
-    mut_a.swap_rows(0, 3);
-    assert mut_a.row(0) == a.row(3);
-    assert mut_a.row(3) == a.row(0);
-    mut_a = a;
-    
-    mut_a.swap_rows(1, 2);
-    assert mut_a.row(1) == a.row(2);
-    assert mut_a.row(2) == a.row(1);
-    mut_a = a;
-    
     assert Mat4::identity() == Mat4::new(1f, 0f, 0f, 0f,
                                          0f, 1f, 0f, 0f,
                                          0f, 0f, 1f, 0f,
                                          0f, 0f, 0f, 1f);
-    mut_a.to_identity();
-    assert mut_a.is_identity();
-    mut_a = a;
     
     assert Mat4::zero() == Mat4::new(0f, 0f, 0f, 0f,
                                      0f, 0f, 0f, 0f,
                                      0f, 0f, 0f, 0f,
                                      0f, 0f, 0f, 0f);
-    mut_a.to_zero();
-    assert mut_a == Mat4::new(0f, 0f, 0f, 0f,
-                              0f, 0f, 0f, 0f,
-                              0f, 0f, 0f, 0f,
-                              0f, 0f, 0f, 0f);
 
     assert a.determinant() == 0f;
     assert a.trace() == 34f;
@@ -451,4 +495,76 @@ fn test_Mat4() {
     assert c.is_invertible();
     
     assert Mat4::from_value(6f).is_diagonal();
+}
+
+fn test_Mat4_mut() {
+    let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
+                   y: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
+                   z: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
+                   w: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f } };
+    let b = Mat4 { x: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
+                   y: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
+                   z: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f },
+                   w: Vec4 { x: 5f, y: 9f, z: 13f, w: 17f } };
+    let c = Mat4 { x: Vec4 { x: 3f, y: 2f, z:  1f, w:  1f },
+                   y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
+                   z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
+                   w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
+    
+    let f1 = 0.5f;
+    
+    let mut mut_a = a;
+    let mut mut_c = c;
+    
+    mut_a.swap_cols(0, 3);
+    assert mut_a.col(0) == a.col(3);
+    assert mut_a.col(3) == a.col(0);
+    mut_a = a;
+    
+    mut_a.swap_cols(1, 2);
+    assert mut_a.col(1) == a.col(2);
+    assert mut_a.col(2) == a.col(1);
+    mut_a = a;
+    
+    mut_a.swap_rows(0, 3);
+    assert mut_a.row(0) == a.row(3);
+    assert mut_a.row(3) == a.row(0);
+    mut_a = a;
+    
+    mut_a.swap_rows(1, 2);
+    assert mut_a.row(1) == a.row(2);
+    assert mut_a.row(2) == a.row(1);
+    mut_a = a;
+    
+    mut_a.set(&b);
+    assert mut_a == b;
+    mut_a = a;
+    
+    mut_a.to_identity();
+    assert mut_a.is_identity();
+    mut_a = a;
+    
+    mut_a.to_zero();
+    assert mut_a == Mat4::zero();
+    mut_a = a;
+    
+    mut_a.mul_self_t(f1);
+    assert mut_a == a.mul_t(f1);
+    mut_a = a;
+    
+    mut_a.add_self_m(&b);
+    assert mut_a == a.add_m(&b);
+    mut_a = a;
+    
+    mut_a.sub_self_m(&b);
+    assert mut_a == a.sub_m(&b);
+    mut_a = a;
+    
+    mut_c.invert_self();
+    assert mut_c == option::unwrap(c.inverse());
+    // mut_c = c;
+    
+    mut_a.transpose_self();
+    assert mut_a == a.transpose();
+    // mut_a = a;
 }

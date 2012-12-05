@@ -150,6 +150,11 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
     fn swap_rows(&mut self, a: uint, b: uint);
     
     /**
+     * Sets the matrix to `other` 
+     */
+    fn set(&mut self, other: &self);
+    
+    /**
      * Sets the matrix to the identity matrix
      */
     fn to_identity(&mut self);
@@ -158,6 +163,36 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
      * Sets each element of the matrix to zero
      */
     fn to_zero(&mut self);
+
+    /**
+     * Multiplies the matrix by a scalar
+     */
+    fn mul_self_t(&mut self, value: T);
+    
+    /**
+     * Add the matrix `other` to `self`
+     */
+    fn add_self_m(&mut self, other: &self);
+    
+    /**
+     * Subtract the matrix `other` from `self`
+     */
+    fn sub_self_m(&mut self, other: &self);
+    
+    /**
+     * Sets the matrix to its inverse
+     * 
+     * # Failure
+     *
+     * Fails if the matrix is not invertable. Make sure you check with the
+     * `is_invertible` method before you attempt this!
+     */
+    fn invert_self(&mut self);
+    
+    /**
+     * Sets the matrix to its transpose
+     */
+    fn transpose_self(&mut self);
 }
 
 /**
@@ -436,7 +471,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat2<T>: MutableMatrix<T, Vec2<T>> {
+pub impl<T:Copy Float Sign> Mat2<T>: MutableMatrix<T, Vec2<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec2<T> {
         match i {
@@ -459,13 +494,50 @@ pub impl<T:Copy Float> Mat2<T>: MutableMatrix<T, Vec2<T>> {
     }
     
     #[inline(always)]
+    fn set(&mut self, other: &Mat2<T>) {
+        (*self) = (*other);
+    }
+    
+    #[inline(always)]
     fn to_identity(&mut self) {
-        *self = Mat2::identity();
+        (*self) = Mat2::identity();
     }
     
     #[inline(always)]
     fn to_zero(&mut self) {
-        *self = Mat2::zero();
+        (*self) = Mat2::zero();
+    }
+    
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        self.col_mut(0).mul_self_t(&value);
+        self.col_mut(1).mul_self_t(&value);
+    }
+    
+    #[inline(always)]
+    fn add_self_m(&mut self, other: &Mat2<T>) {
+        self.col_mut(0).add_self_v(&other[0]);
+        self.col_mut(1).add_self_v(&other[1]);
+    }
+    
+    #[inline(always)]
+    fn sub_self_m(&mut self, other: &Mat2<T>) {
+        self.col_mut(0).sub_self_v(&other[0]);
+        self.col_mut(1).sub_self_v(&other[1]);
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        match self.inverse() {
+            Some(m) => (*self) = m,
+            None => fail(~"Couldn't invert the matrix!")
+        }
+    }
+    
+    #[inline(always)]
+    fn transpose_self(&mut self) {
+        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
     }
 }
 
@@ -844,7 +916,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
+pub impl<T:Copy Float Sign> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec3<T> {
         match i {
@@ -869,13 +941,59 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     }
     
     #[inline(always)]
+    fn set(&mut self, other: &Mat3<T>) {
+        (*self) = (*other);
+    }
+    
+    #[inline(always)]
     fn to_identity(&mut self) {
-        *self = Mat3::identity();
+        (*self) = Mat3::identity();
     }
     
     #[inline(always)]
     fn to_zero(&mut self) {
-        *self = Mat3::zero();
+        (*self) = Mat3::zero();
+    }
+    
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        self.col_mut(0).mul_self_t(&value);
+        self.col_mut(1).mul_self_t(&value);
+        self.col_mut(2).mul_self_t(&value);
+    }
+    
+    #[inline(always)]
+    fn add_self_m(&mut self, other: &Mat3<T>) {
+        self.col_mut(0).add_self_v(&other[0]);
+        self.col_mut(1).add_self_v(&other[1]);
+        self.col_mut(2).add_self_v(&other[2]);
+    }
+    
+    #[inline(always)]
+    fn sub_self_m(&mut self, other: &Mat3<T>) {
+        self.col_mut(0).sub_self_v(&other[0]);
+        self.col_mut(1).sub_self_v(&other[1]);
+        self.col_mut(2).sub_self_v(&other[2]);
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        match self.inverse() {
+            Some(m) => (*self) = m,
+            None => fail(~"Couldn't invert the matrix!")
+        }
+    }
+    
+    #[inline(always)]
+    fn transpose_self(&mut self) {
+        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        
+        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        
+        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
     }
 }
 
@@ -1403,7 +1521,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
+pub impl<T:Copy Float Sign> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec4<T> {
         match i {
@@ -1430,13 +1548,69 @@ pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     }
     
     #[inline(always)]
+    fn set(&mut self, other: &Mat4<T>) {
+        (*self) = (*other);
+    }
+    
+    #[inline(always)]
     fn to_identity(&mut self) {
-        *self = Mat4::identity();
+        (*self) = Mat4::identity();
     }
     
     #[inline(always)]
     fn to_zero(&mut self) {
-        *self = Mat4::zero();
+        (*self) = Mat4::zero();
+    }
+    
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        self.col_mut(0).mul_self_t(&value);
+        self.col_mut(1).mul_self_t(&value);
+        self.col_mut(2).mul_self_t(&value);
+        self.col_mut(3).mul_self_t(&value);
+    }
+    
+    #[inline(always)]
+    fn add_self_m(&mut self, other: &Mat4<T>) {
+        self.col_mut(0).add_self_v(&other[0]);
+        self.col_mut(1).add_self_v(&other[1]);
+        self.col_mut(2).add_self_v(&other[2]);
+        self.col_mut(3).add_self_v(&other[3]);
+    }
+    
+    #[inline(always)]
+    fn sub_self_m(&mut self, other: &Mat4<T>) {
+        self.col_mut(0).sub_self_v(&other[0]);
+        self.col_mut(1).sub_self_v(&other[1]);
+        self.col_mut(2).sub_self_v(&other[2]);
+        self.col_mut(3).sub_self_v(&other[3]);
+    }
+    
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        match self.inverse() {
+            Some(m) => (*self) = m,
+            None => fail(~"Couldn't invert the matrix!")
+        }
+    }
+    
+    #[inline(always)]
+    fn transpose_self(&mut self) {
+        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(3), self.col_mut(3).index_mut(0));
+        
+        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(3), self.col_mut(3).index_mut(1));
+        
+        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(3), self.col_mut(3).index_mut(2));
+        
+        util::swap(self.col_mut(3).index_mut(0), self.col_mut(0).index_mut(3));
+        util::swap(self.col_mut(3).index_mut(1), self.col_mut(1).index_mut(3));
+        util::swap(self.col_mut(3).index_mut(2), self.col_mut(2).index_mut(3));
     }
 }
 
