@@ -64,14 +64,33 @@ pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
      */
     pure fn dot(&self, other: &self) -> T;
     
+    /**
+     * Returns the conjugate of the quaternion
+     */
     pure fn conjugate(&self) -> self;
     
     /**
      * Returns the multiplicative inverse of the quaternion
      */
     pure fn inverse(&self) -> self;
-    pure fn length2(&self) -> T;
-    pure fn length(&self) -> T;
+    
+    /**
+     * Returns the squared magnitude of the quaternion. This is useful for
+     * magnitude comparisons where the exact magnitude does not need to be
+     * calculated.
+     */
+    pure fn magnitude2(&self) -> T;
+    
+    /**
+     * Returns the magnitude of the quaternion
+     *
+     * # Performance notes
+     *
+     * For instances where the exact magnitude of the vector does not need to be
+     * known, for example for quaternion-quaternion magnitude comparisons,
+     * it is advisable to use the `magnitude2` method instead.
+     */
+    pure fn magnitude(&self) -> T;
     
     /**
      * Returns the normalized quaternion
@@ -85,7 +104,11 @@ pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
     
     /**
      * Perform a spherical linear interpolation between the quaternion and
-     * `other`. This is more accutrate than `nlerp`, but is also more
+     * `other`.
+     *
+     * # Performance notes
+     *
+     * This is more accurate than `nlerp` but is also more
      * computationally intensive.
      */ 
     pure fn slerp(&self, other: &self, amount: T) -> self;
@@ -102,6 +125,9 @@ pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
 }
 
 pub trait ToQuat<T> {
+    /**
+     * Convert `self` to a quaternion
+     */
     pure fn to_Quat() -> Quat<T>;
 }
 
@@ -109,21 +135,40 @@ pub trait ToQuat<T> {
 
 
 
-
+/**
+ * A quaternion in scalar/vector form
+ *
+ * # Fields
+ *
+ * * `s` - the scalar component
+ * * `v` - a vector containing the three imaginary components
+ */
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 pub impl<T> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
+     *
+     * # Arguments
+     *
+     * * `w`  - the scalar component
+     * * `xi` - the fist imaginary component
+     * * `yj` - the second imaginary component
+     * * `zk` - the third imaginary component
      */
     #[inline(always)]
-    static pure fn new(s: T, vx: T, vy: T, vz: T) -> Quat<T> {
-        Quat::from_sv(move s, move Vec3::new(move vx, move vy, move vz))
+    static pure fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
+        Quat::from_sv(move w, move Vec3::new(move xi, move yj, move zk))
     }
     
     /**
      * Construct the quaternion from a scalar and a vector
+     *
+     * # Arguments
+     *
+     * * `s` - the scalar component
+     * * `v` - a vector containing the three imaginary components
      */
     #[inline(always)]
     static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
@@ -232,23 +277,23 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
     
     #[inline(always)]
     pure fn inverse(&self) -> Quat<T> {
-        self.conjugate().div_t(self.length2())
+        self.conjugate().div_t(self.magnitude2())
     }
     
     #[inline(always)]
-    pure fn length2(&self) -> T {
+    pure fn magnitude2(&self) -> T {
         self.s * self.s + self.v.length2()
     }
     
     #[inline(always)]
-    pure fn length(&self) -> T {
-        self.length2().sqrt()
+    pure fn magnitude(&self) -> T {
+        self.magnitude2().sqrt()
     }
     
     #[inline(always)]
     pure fn normalize(&self) -> Quat<T> {
         let mut n: T = Number::from(1);
-        n /= self.length();
+        n /= self.magnitude();
         return self.mul_t(n);
     }
     
@@ -264,15 +309,16 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
      * Both quaternions should be normalized first, or else strange things will
      * will happen...
      *
-     * Note: The `acos` used in `slerp` is an expensive operation, so unless your
-     * quarternions a far away from each other it's generally more advisable to
-     * use nlerp when you know your rotations are going to be small.
+     * # Performance notes
      *
-     * See *[Understanding Slerp, Then Not Using It]
-     * (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)*
-     * for more information. The [Arcsynthesis OpenGL tutorial]
-     * (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-     * also provides a good explanation.
+     * The `acos` operation used in `slerp` is an expensive operation, so unless
+     * your quarternions a far away from each other it's generally more advisable
+     * to use `nlerp` when you know your rotations are going to be small.
+     *
+     * - [Understanding Slerp, Then Not Using It]
+     *   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
+     * - [Arcsynthesis OpenGL tutorial]
+     *   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
      */
     #[inline(always)]
     pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
@@ -354,81 +400,3 @@ pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
         self[3].fuzzy_eq(&other[3])
     }
 }
-
-// // Operator Overloads
-
-// pub impl<T, Result, RHS: QuatAddRHS<T, Result>> Quat<T>: Add<RHS,Result> {
-//     #[inline(always)]
-//     pure fn add(rhs: &RHS) -> Result {
-//         rhs.quat_add_rhs(&self)
-//     }
-// }
-
-// pub impl<T, Result, RHS: QuatSubRHS<T, Result>> Quat<T>: Sub<RHS,Result> {
-//     #[inline(always)]
-//     pure fn sub(&self, rhs: &RHS) -> Result {
-//         rhs.quat_sub_rhs(self)
-//     }
-// }
-
-// pub impl<T, Result, RHS: QuatMulRHS<T, Result>> Quat<T>: Mul<RHS,Result> {
-//     #[inline(always)]
-//     pure fn mul(&self, rhs: &RHS) -> Result {
-//         rhs.quat_mul_rhs(self)
-//     }
-// }
-
-// pub impl<T, Result, RHS: QuatDivRHS<T, Result>> Quat<T>: Div<RHS,Result> {
-//     #[inline(always)]
-//     pure fn div(&self, rhs: &RHS) -> Result {
-//         rhs.quat_div_rhs(self)
-//     }
-// }
-
-// // RHS Traits for Operator overloads
-// pub trait QuatAddRHS<T, Result> { pure fn quat_add_rhs(&self, lhs: &Quat<T>) -> Result; }
-// pub trait QuatSubRHS<T, Result> { pure fn quat_sub_rhs(&self, lhs: &Quat<T>) -> Result; }
-// pub trait QuatMulRHS<T, Result> { pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Result; }
-// pub trait QuatDivRHS<T, Result> { pure fn quat_div_rhs(&self, lhs: &Quat<T>) -> Result; }
-
-// // Quat/Scalar Multiplication
-// pub impl f32:   QuatMulRHS<f32,   Quat<f32>>   { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<f32>)   -> Quat<f32>   { lhs.mul_t(self) } }
-// pub impl f64:   QuatMulRHS<f64,   Quat<f64>>   { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<f64>)   -> Quat<f64>   { lhs.mul_t(self) } }
-// pub impl float: QuatMulRHS<float, Quat<float>> { #[inline(always)] pure fn quat_mul_rhs(&self, lhs: &Quat<float>) -> Quat<float> { lhs.mul_t(self) } }
-
-// // Quat/Scalar Division
-// pub impl f32:   QuatDivRHS<f32,   Quat<f32>>   { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<f32>)   -> Quat<f32>   { lhs.div_t(self) } }
-// pub impl f64:   QuatDivRHS<f64,   Quat<f64>>   { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<f64>)   -> Quat<f64>   { lhs.div_t(self) } }
-// pub impl float: QuatDivRHS<float, Quat<float>> { #[inline(always)] pure fn quat_div_rhs(&self, lhs: &Quat<float>) -> Quat<float> { lhs.div_t(self) } }
-
-// // Quat/Vector Multiplication
-// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Vec3<T>: QuatMulRHS<T, Vec3<T>> {
-//     #[inline(always)]
-//     pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Vec3<T> {
-//         lhs.mul_v(self)
-//     }
-// }
-
-// // // Quat/Quat Addition
-// // pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatAddRHS<Quat<T>, Quat<T>> {
-// //     #[inline(always)]
-// //     pure fn quat_add_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
-// //         lhs.add_q(self)
-// //     }
-// // }
-
-// // Quat/Quat Subtraction
-// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatSubRHS<T, Quat<T>> {
-//     #[inline(always)]
-//     pure fn quat_sub_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
-//         lhs.sub_q(self)
-//     }
-// }
-
-// // Quat/Quat Multiplication
-// pub impl<T:Copy Num NumCast Exp Extent Ord InvTrig> Quat<T>: QuatMulRHS<T, Quat<T>> {
-//     #[inline(always)]
-//     pure fn quat_mul_rhs(&self, lhs: &Quat<T>) -> Quat<T> {
-//         lhs.mul_q(self)
-//     }
-// }

@@ -123,6 +123,9 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     pure fn is_invertible(&self) -> bool;
 }
 
+/**
+ * A mutable matrix
+ */
 pub trait MutableMatrix<T,V>: Matrix<T,V> {
     /**
      * Get a mutable reference to the column at `i`
@@ -151,7 +154,7 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
 }
 
 /**
- * A 2 x 2 square matrix with numeric elements
+ * A 2 x 2 matrix
  */
 pub trait Matrix2<T,V>: Matrix<T,V> {
     pure fn to_mat3(&self) -> Mat3<T>;
@@ -159,14 +162,14 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
 }
 
 /**
- * A 3 x 3 square matrix with numeric elements
+ * A 3 x 3 matrix
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
 /**
- * A 4 x 4 square matrix with numeric elements
+ * A 4 x 4 matrix
  */
 pub trait Matrix4<T,V>: Matrix<T,V> {
 }
@@ -178,12 +181,24 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 
 /**
  *  A 2 x 2 column major matrix
+ *
+ * # Fields
+ *
+ * * `x` - the first column vector of the matrix
+ * * `y` - the second column vector of the matrix
+ * * `z` - the third column vector of the matrix
  */
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 pub impl<T:Copy Float> Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
+     *
+     * # Arguments
+     *
+     * * `c0r0`, `c0r1` - the first column of the matrix
+     * * `c1r0`, `c1r1` - the second column of the matrix
+     *
      * ~~~
      *        c0     c1
      *     +------+------+
@@ -202,6 +217,12 @@ pub impl<T:Copy Float> Mat2<T> {
     
     /**
      * Construct a 2 x 2 matrix from column vectors
+     *
+     * # Arguments
+     *
+     * * `c0` - the first column vector of the matrix
+     * * `c1` - the second column vector of the matrix
+     *
      * ~~~
      *        c0     c1
      *     +------+------+
@@ -219,6 +240,11 @@ pub impl<T:Copy Float> Mat2<T> {
     
     /**
      * Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
+     *
+     * # Arguments
+     *
+     * * `value` - the value to set the major diagonal to
+     *
      * ~~~
      *        c0    c1
      *     +-----+-----+
@@ -508,12 +534,25 @@ pub impl<T:Copy Float> Mat2<T>: FuzzyEq {
 
 /**
  *  A 3 x 3 column major matrix
+ *
+ * # Fields
+ *
+ * * `x` - the first column vector of the matrix
+ * * `y` - the second column vector of the matrix
+ * * `z` - the third column vector of the matrix
  */
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
+     *
+     * # Arguments
+     *
+     * * `c0r0`, `c0r1`, `c0r2` - the first column of the matrix
+     * * `c1r0`, `c1r1`, `c1r2` - the second column of the matrix
+     * * `c2r0`, `c2r1`, `c2r2` - the third column of the matrix
+     *
      * ~~~
      *         c0     c1     c2
      *      +------+------+------+
@@ -536,6 +575,13 @@ pub impl<T:Copy Float> Mat3<T> {
     
     /**
      * Construct a 3 x 3 matrix from column vectors
+     *
+     * # Arguments
+     *
+     * * `c0` - the first column vector of the matrix
+     * * `c1` - the second column vector of the matrix
+     * * `c2` - the third column vector of the matrix
+     *
      * ~~~
      *        c0     c1     c2
      *     +------+------+------+
@@ -556,6 +602,11 @@ pub impl<T:Copy Float> Mat3<T> {
     
     /**
      * Construct a 3 x 3 diagonal matrix with the major diagonal set to `value`
+     *
+     * # Arguments
+     *
+     * * `value` - the value to set the major diagonal to
+     *
      * ~~~
      *        c0    c1    c2
      *     +-----+-----+-----+
@@ -932,12 +983,27 @@ pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
 
 /**
  *  A 4 x 4 column major matrix
+ *
+ * # Fields
+ *
+ * * `x` - the first column vector of the matrix
+ * * `y` - the second column vector of the matrix
+ * * `z` - the third column vector of the matrix
+ * * `w` - the fourth column vector of the matrix
  */
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 pub impl<T:Copy Float> Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
+     *
+     * # Arguments
+     *
+     * * `c0r0`, `c0r1`, `c0r2`, `c0r3` - the first column of the matrix
+     * * `c1r0`, `c1r1`, `c1r2`, `c1r3` - the second column of the matrix
+     * * `c2r0`, `c2r1`, `c2r2`, `c2r3` - the third column of the matrix
+     * * `c3r0`, `c3r1`, `c3r2`, `c3r3` - the fourth column of the matrix
+     *
      * ~~~
      *        c0     c1     c2     c3
      *     +------+------+------+------+
@@ -964,6 +1030,14 @@ pub impl<T:Copy Float> Mat4<T> {
     
     /**
      * Construct a 4 x 4 matrix from column vectors
+     *
+     * # Arguments
+     *
+     * * `c0` - the first column vector of the matrix
+     * * `c1` - the second column vector of the matrix
+     * * `c2` - the third column vector of the matrix
+     * * `c3` - the fourth column vector of the matrix
+     *
      * ~~~
      *        c0     c1     c2     c3
      *     +------+------+------+------+
@@ -987,6 +1061,11 @@ pub impl<T:Copy Float> Mat4<T> {
     
     /**
      * Construct a 4 x 4 diagonal matrix with the major diagonal set to `value`
+     *
+     * # Arguments
+     *
+     * * `value` - the value to set the major diagonal to
+     *
      * ~~~
      *        c0    c1    c2    c3
      *     +-----+-----+-----+-----+
@@ -1187,6 +1266,9 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         } else {
 
             // Gauss Jordan Elimination with partial pivoting
+            
+            // TODO: use column/row swapping methods. Check with Luqman to see
+            // if the column-major layout has been used correctly
 
             let mut a = *self;
             // let mut inv: Mat4<T> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
