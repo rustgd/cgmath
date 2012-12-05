@@ -7,7 +7,22 @@ use num::default_eq::DefaultEq;
 
 pub trait Number: DefaultEq, Eq, Num, NumConv, Ord {
     /**
-     * Construct a number from the type `T:Number`
+     * Cast a number to the type surrounding the static method
+     *
+     * # Type parameters
+     *
+     * `T` - The type of the number which will be cast.
+     *
+     * # Return value
+     *
+     * `n` cast to the type surrounding the static method
+     *
+     * # Example
+     *
+     * ~~~
+     * let twenty: f32 = Number::from(0x14);
+     * assert twenty == 20f32;
+     * ~~~
      */
     static pure fn from<T:Number>(n: T) -> self;
     

@@ -15,7 +15,9 @@ use num::kinds::{Float, Number};
  */
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
     /**
-     * Returns the color with each component inverted
+     * # Return value
+     *
+     * The color with each component inverted
      */
     pure fn inverse(&self) -> self;
     
@@ -30,7 +32,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
     pure fn to_rgb_u8(&self) -> RGB<u8>;
     
     /**
-     * Convert the color to a RGB<u16>
+     * Convert the color to a `RGB<u16>`
      *
      * # Returns
      *
@@ -144,6 +146,7 @@ pub trait Color4<T>: Color<T> {
     pure fn to_hsva_f64(&self) -> HSVA<f64>;
 }
 
+// TODO!!!
 // pub trait ColorRGB<T> {
 //     static pure fn from_hex(hex: u8) -> self;
 // }
@@ -221,7 +224,20 @@ pub pure fn to_rgb<T:Copy Float Sign>(color: &HSV<T>) -> RGB<T> {
 
 
 
-
+/**
+ *  A RGB color type (red, green, blue)
+ *
+ * # Type parameters
+ *
+ * * `T` - A color component which should be one of the following primitive
+ *         types: `u8`, `u16`, `u32`, `u64`, `f32` or `f64`.
+ *
+ * # Fields
+ *
+ * * `r` - the red component
+ * * `g` - the green component
+ * * `b` - the blue component
+ */
 pub struct RGB<T> { r: T, g: T, b: T }
 
 pub impl<T:Copy> RGB<T> {
@@ -364,8 +380,21 @@ pub impl<T:Copy Eq> RGB<T>: Eq {
 
 
 
-
-
+/**
+ *  A RGBA color type (red, green, blue, alpha)
+ *
+ * # Type parameters
+ *
+ * * `T` - A color component which should be one of the following primitive
+ *         types: `u8`, `u16`, `u32`, `u64`, `f32` or `f64`.
+ *
+ * # Fields
+ *
+ * * `r` - the red component
+ * * `g` - the green component
+ * * `b` - the blue component
+ * * `a` - the alpha component
+ */
 pub struct RGBA<T> { r: T, g: T, b: T, a: T }
 
 pub impl<T:Copy> RGBA<T> {
@@ -517,9 +546,19 @@ pub impl<T:Copy Eq> RGBA<T>: Eq {
 
 
 
-
-
-
+/**
+ *  A HSV color type (hue, saturation, value)
+ *
+ * # Type parameters
+ *
+ * * `T` - A color component which should be either an `f32` or `f64`.
+ *
+ * # Fields
+ *
+ * * `h` - the hue component in degrees (from 0.0 to 360.0)
+ * * `s` - the saturation component
+ * * `v` - the value (brightness) component
+ */
 pub struct HSV<T> { h: Degrees<T>, s: T, v: T }
 
 pub impl<T:Copy> HSV<T> {
@@ -638,8 +677,20 @@ pub impl<T:Copy Float> HSV<T>: Eq {
 
 
 
-
-
+/**
+ *  A HSVA color type (hue, saturation, value, alpha)
+ *
+ * # Type parameters
+ *
+ * * `T` - A color component which should be either an `f32` or `f64`.
+ *
+ * # Fields
+ *
+ * * `h` - the hue component in degrees (from 0.0 to 360.0)
+ * * `s` - the saturation component
+ * * `v` - the value (brightness) component
+ * * `v` - the alpha component
+ */
 pub struct HSVA<T> { h: Degrees<T>, s: T, v: T, a: T }
 
 pub impl<T:Copy> HSVA<T> {

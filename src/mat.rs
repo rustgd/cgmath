@@ -26,62 +26,86 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
  */
 pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     /**
-     * Returns the column vector at `i`
+     * # Return value
+     *
+     * The column vector at `i`
      */
     pure fn col(&self, i: uint) -> V;
     
     /**
-     * Returns the row vector at `i`
+     * # Return value
+     *
+     * The row vector at `i`
      */
     pure fn row(&self, i: uint) -> V;
     
     /**
-     * Returns the identity matrix
+     * # Return value
+     *
+     * The identity matrix
      */
     static pure fn identity() -> self;
     
     /**
-     * Returns a matrix with all elements set to zero
+     * # Return value
+     *
+     * A matrix with all elements set to zero
      */
     static pure fn zero() -> self;
     
     /**
-     * Returns the scalar multiplication of this matrix and `value`
+     * # Return value
+     *
+     * The scalar multiplication of this matrix and `value`
      */
     pure fn mul_t(&self, value: T) -> self;
     
     /**
-     * Returns the matrix vector product of the matrix and `vec`
+     * # Return value
+     *
+     * The matrix vector product of the matrix and `vec`
      */
     pure fn mul_v(&self, vec: &V) -> V;
     
     /**
-     * Ruturns the matrix addition of the matrix and `other`
+     * # Return value
+     *
+     * The matrix addition of the matrix and `other`
      */
     pure fn add_m(&self, other: &self) -> self;
     
     /**
-     * Ruturns the difference between the matrix and `other`
+     * # Return value
+     *
+     * The difference between the matrix and `other`
      */
     pure fn sub_m(&self, other: &self) -> self;
     
     /**
-     * Returns the matrix product of the matrix and `other`
+     * # Return value
+     *
+     * The matrix product of the matrix and `other`
      */
     pure fn mul_m(&self, other: &self) -> self;
     
     /**
-     * Returns the matrix dot product of the matrix and `other`
+     * # Return value
+     *
+     * The matrix dot product of the matrix and `other`
      */
     pure fn dot(&self, other: &self) -> T;
     
     /**
-     * Returns the determinant of the matrix
+     * # Return value
+     *
+     * The determinant of the matrix
      */
     pure fn determinant(&self) -> T;
     
     /**
-     * Returns the sum of the main diagonal of the matrix
+     * # Return value
+     *
+     * The sum of the main diagonal of the matrix
      */
     pure fn trace(&self) -> T;
     
@@ -90,42 +114,61 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
      * 
      * # Return value
      *
-     * - `Some(m)` if the inversion was successful, where `m` is the inverted matrix
-     * - `None` if the inversion was unsuccessful (because the matrix was not invertable)
+     * * `Some(m)` - if the inversion was successful, where `m` is the inverted matrix
+     * * `None` - if the inversion was unsuccessful (because the matrix was not invertable)
      */
     pure fn inverse(&self) -> Option<self>;
     
     /**
-     * Returns the transpose of the matrix
+     * # Return value
+     *
+     * The transposed matrix
      */
     pure fn transpose(&self) -> self;
     
     /**
-     * Returns `true` if the matrix is approximately equal to the
-     * identity matrix
+     * Check to see if the matrix is an identity matrix
+     *
+     * # Return value
+     * 
+     * `true` if the matrix is approximately equal to the identity matrix
      */
     pure fn is_identity(&self) -> bool;
     
     /**
-     * Returns `true` all the elements outside the main diagonal are
-     * approximately equal to zero.
+     * Check to see if the matrix is diagonal
+     *
+     * # Return value
+     *
+     * `true` all the elements outside the main diagonal are approximately
+     * equal to zero.
      */
     pure fn is_diagonal(&self) -> bool;
     
     /**
-     * Returns `true` if the matrix is not approximately equal to the
-     * identity matrix.
+     * Check to see if the matrix is rotated
+     *
+     * # Return value
+     *
+     * `true` if the matrix is not approximately equal to the identity matrix.
      */
     pure fn is_rotated(&self) -> bool;
     
     /**
-     * Returns `true` if the matrix is approximately symmetrical (ie, if the
-     * matrix is equal to its transpose).
+     * Check to see if the matrix is symmetric
+     *
+     * # Return value
+     *
+     * `true` if the matrix is approximately equal to its transpose).
      */
     pure fn is_symmetric(&self) -> bool;
     
     /**
-     * Returns `true` if  the matrix is invertable
+     * Check to see if the matrix is invertable
+     *
+     * # Return value
+     *
+     * `true` if  the matrix is invertable
      */
     pure fn is_invertible(&self) -> bool;
 }
@@ -135,7 +178,9 @@ pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
  */
 pub trait MutableMatrix<T,V>: Matrix<T,V> {
     /**
-     * Get a mutable reference to the column at `i`
+     * # Return value
+     *
+     * A mutable reference to the column at `i`
      */
     fn col_mut(&mut self, i: uint) -> &self/mut V;
     

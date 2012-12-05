@@ -1,3 +1,12 @@
+/**
+ * > Every morning in the early part of October 1843, on my coming down to
+ *   breakfast, your brother William Edward and yourself used to ask me: "Well,
+ *   Papa, can you multiply triples?" Whereto I was always obliged to reply,
+ *   with a sad shake of the head, "No, I can only add and subtract them."
+ *
+ *   Sir William Hamilton
+ */
+
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
@@ -21,96 +30,132 @@ use vec::Vec3;
  * # Type parameters
  *
  * * `T` - The type of the components. Should be a floating point type.
- * * `V3` - The 3-dimensional vector containing the three imaginary components
- *          of the quaternion.
+ * * `V3` - The 3-dimensional vector type that will containin the imaginary
+ *          components of the quaternion.
  */
 pub trait Quaternion<T,V3>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
     /**
-     * Returns the multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
+     * # Return value
+     *
+     * The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
      */
     static pure fn identity() -> self;
     
     /**
-     * Returns the additive identity, ie: `q = 0 + 0i + 0j + 0i`
+     * # Return value
+     *
+     * The additive identity, ie: `q = 0 + 0i + 0j + 0i`
      */
     static pure fn zero() -> self;
     
     /**
-     * Returns the result of multiplying the quaternion a scalar
+     * # Return value
+     *
+     * The result of multiplying the quaternion a scalar
      */
     pure fn mul_t(&self, value: T) -> self;
     
     /**
-     * Returns the result of dividing the quaternion a scalar
+     * # Return value
+     *
+     * The result of dividing the quaternion a scalar
      */
     pure fn div_t(&self, value: T) -> self;
     
     /**
-     * Returns the result of multiplying the quaternion by a vector
+     * # Return value
+     *
+     * The result of multiplying the quaternion by a vector
      */
     pure fn mul_v(&self, vec: &V3) -> V3;
     
     /**
-     * Returns the sum of this quaternion and `other` 
+     * # Return value
+     *
+     * The sum of this quaternion and `other` 
      */
     pure fn add_q(&self, other: &self) -> self;
     
     /**
-     * Returns the sum of this quaternion and `other` 
+     * # Return value
+     *
+     * The sum of this quaternion and `other` 
      */
     pure fn sub_q(&self, other: &self) -> self;
     
     /**
-     * Returns the the result of multipliplying the quaternion by `other`
+     * # Return value
+     *
+     * The the result of multipliplying the quaternion by `other`
      */
     pure fn mul_q(&self, other: &self) -> self;
     
     /**
+     * # Return value
+     *
      * The dot product of the quaternion and `other`
      */
     pure fn dot(&self, other: &self) -> T;
     
     /**
-     * Returns the conjugate of the quaternion
+     * # Return value
+     *
+     * The conjugate of the quaternion
      */
     pure fn conjugate(&self) -> self;
     
     /**
-     * Returns the multiplicative inverse of the quaternion
+     * # Return value
+     *
+     * The multiplicative inverse of the quaternion
      */
     pure fn inverse(&self) -> self;
     
     /**
-     * Returns the squared magnitude of the quaternion. This is useful for
+     * # Return value
+     *
+     * The squared magnitude of the quaternion. This is useful for
      * magnitude comparisons where the exact magnitude does not need to be
      * calculated.
      */
     pure fn magnitude2(&self) -> T;
     
     /**
-     * Returns the magnitude of the quaternion
+     * # Return value
+     *
+     * The magnitude of the quaternion
      *
      * # Performance notes
      *
-     * For instances where the exact magnitude of the vector does not need to be
-     * known, for example for quaternion-quaternion magnitude comparisons,
+     * For instances where the exact magnitude of the quaternion does not need
+     * to be known, for example for quaternion-quaternion magnitude comparisons,
      * it is advisable to use the `magnitude2` method instead.
      */
     pure fn magnitude(&self) -> T;
     
     /**
-     * Returns the normalized quaternion
+     * # Return value
+     *
+     * The normalized quaternion
      */
     pure fn normalize(&self) -> self;
     
     /**
      * Normalised linear interpolation
+     *
+     * # Return value
+     *
+     * The intoperlated quaternion
      */
     pure fn nlerp(&self, other: &self, amount: T) -> self;
     
     /**
      * Perform a spherical linear interpolation between the quaternion and
      * `other`.
+     *
+     * # Return value
+     *
+     * The intoperlated quaternion
      *
      * # Performance notes
      *

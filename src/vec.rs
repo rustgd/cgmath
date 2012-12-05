@@ -66,7 +66,7 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
     /**
      * The standard basis vector
      *
-     * # Returns
+     * # Return value
      *
      * A vector with each component set to one
      */
@@ -75,34 +75,44 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
     /**
      * The null vector
      *
-     * # Returns
+     * # Return value
      *
      * A vector with each component set to zero
      */
     static pure fn zero() -> self;
     
     /**
-     * Returns the scalar multiplication of the vector and `value`
+     * # Return value
+     *
+     * The scalar multiplication of the vector and `value`
      */
     pure fn mul_t(&self, value: T) -> self;
     
     /**
-     * Returns the scalar division of the vector and `value`
+     * # Return value
+     *
+     * The scalar division of the vector and `value`
      */
     pure fn div_t(&self, value: T) -> self;
     
     /**
-     * Returns the sum of the vector and `other`
+     * # Return value
+     *
+     * The sum of the vector and `other`
      */
     pure fn add_v(&self, other: &self) -> self;
     
     /**
-     * Returns the difference between the vector and `other`
+     * # Return value
+     *
+     * The difference between the vector and `other`
      */
     pure fn sub_v(&self, other: &self) -> self;
     
     /**
-     * Returns the dot product of the vector and `other`
+     * # Return value
+     *
+     * The dot product of the vector and `other`
      */
     pure fn dot(&self, other: &self) -> T;
 }
@@ -154,7 +164,9 @@ pub trait NumericVector3<T>: NumericVector<T> {
     // static pure fn unit_z() -> self;
     
     /**
-     * Returns the cross product of the vector and `other`
+     * # Return value
+     *
+     * The cross product of the vector and `other`
      */
     pure fn cross(&self, other: &self) -> self;
 }
@@ -188,32 +200,53 @@ pub trait NumericVector4<T>: NumericVector<T> {
  */
 pub trait EuclideanVector<T>: NumericVector<T> {
     /**
-     * Returns the squared length of the vector
+     * # Return value
+     *
+     * The squared length of the vector. This is useful for comparisons where
+     * the exact length does not need to be calculated.
      */
     pure fn length2(&self) -> T;
     
     /**
-     * Returns the length of the vector
+     * # Return value
+     *
+     * The length of the vector
+     *
+     * # Performance notes
+     *
+     * For instances where the exact length of the vector does not need to be
+     * known, for example for quaternion-quaternion length comparisons,
+     * it is advisable to use the `length2` method instead.
      */
     pure fn length(&self) -> T;
     
     /**
-     * Returns the squared distance between the vector and `other`.
+     * # Return value
+     *
+     * The squared distance between the vector and `other`.
      */
     pure fn distance2(&self, other: &self) -> T;
     
     /**
-     * Returns the distance between the vector and `other`
+     * # Return value
+     *
+     * The distance between the vector and `other`
      */
     pure fn distance(&self, other: &self) -> T;
     
     /**
-     * Returns the normalized vector
+     * # Return value
+     *
+     * The normalized vector
      */
     pure fn normalize(&self) -> self;
     
     /**
      * Linearly intoperlate between the vector and `other`
+     *
+     * # Return value
+     *
+     * The intoperlated vector
      */
     pure fn lerp(&self, other: &self, amount: T) -> self;
 }
@@ -243,7 +276,17 @@ pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>,
 
 
 /**
- *  Vec2
+ * A 2-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
  */
 pub struct Vec2<T> { x: T, y: T }
 
@@ -468,7 +511,18 @@ pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
 
 
 /**
- *  Vec3
+ * A 3-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
+ * * `z` - the third component of the vector
  */
 pub struct Vec3<T> { x: T, y: T, z: T }
 
@@ -724,7 +778,19 @@ pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
 
 
 /**
- *  Vec4
+ * A 4-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
+ * * `z` - the third component of the vector
+ * * `w` - the fourth component of the vector
  */
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
