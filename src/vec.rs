@@ -12,10 +12,17 @@ use num::default_eq::DefaultEq;
 use num::kinds::Number;
 
 /**
- * The base generic vector trait
+ * The base generic vector trait.
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
  */
 pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
-    /// Construct the vector from a single value, copying it to each component
+    /**
+     * Construct the vector from a single value, copying it to each component
+     */
     static pure fn from_value(value: T) -> self;
 }
 
@@ -49,7 +56,7 @@ pub trait Vector3<T>: Vector<T> {
  * A generic 4-dimensional vector
  */
 pub trait Vector4<T>: Vector<T> {
-//     static pure fn new(x: T, y: T, z: T, w: T) -> self;
+    // static pure fn new(x: T, y: T, z: T, w: T) -> self;
 }
 
 /**

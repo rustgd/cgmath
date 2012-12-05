@@ -16,6 +16,13 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
 
 /**
  * The base square matrix trait
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the elements of the matrix. Should be a floating point type.
+ * * `V` - The type of the row and column vectors. Should have components of a
+ *         floating point type and have the same number of dimensions as the
+ *         number of rows and columns in the matrix.
  */
 pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
     /**
@@ -181,6 +188,10 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 
 /**
  *  A 2 x 2 column major matrix
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the elements of the matrix. Should be a floating point type.
  *
  * # Fields
  *
@@ -534,6 +545,10 @@ pub impl<T:Copy Float> Mat2<T>: FuzzyEq {
 
 /**
  *  A 3 x 3 column major matrix
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the elements of the matrix. Should be a floating point type.
  *
  * # Fields
  *
@@ -983,6 +998,10 @@ pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
 
 /**
  *  A 4 x 4 column major matrix
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the elements of the matrix. Should be a floating point type.
  *
  * # Fields
  *

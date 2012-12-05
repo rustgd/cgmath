@@ -17,8 +17,14 @@ use vec::Vec3;
 
 /**
  * The base quaternion trait
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. Should be a floating point type.
+ * * `V3` - The 3-dimensional vector containing the three imaginary components
+ *          of the quaternion.
  */
-pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
+pub trait Quaternion<T,V3>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
     /**
      * Returns the multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
      */
@@ -42,7 +48,7 @@ pub trait Quaternion<T>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
     /**
      * Returns the result of multiplying the quaternion by a vector
      */
-    pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>;
+    pure fn mul_v(&self, vec: &V3) -> V3;
     
     /**
      * Returns the sum of this quaternion and `other` 
@@ -138,6 +144,10 @@ pub trait ToQuat<T> {
 /**
  * A quaternion in scalar/vector form
  *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. Should be a floating point type.
+ *
  * # Fields
  *
  * * `s` - the scalar component
@@ -202,7 +212,7 @@ pub impl<T:Copy> Quat<T>: ToPtr<T> {
     }
 }
 
-pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T> {
+pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(Number::from(1),
