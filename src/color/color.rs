@@ -9,19 +9,95 @@ use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
 use num::kinds::{Float, Number};
-
+/**
+ * A generic color trait.
+ */
 
 pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
+    /**
+     * Returns the color with each component inverted
+     */
     pure fn inverse(&self) -> self;
     
+    /**
+     * Convert the color to a `RGB<u8>`
+     *
+     * # Returns
+     *
+     * The color as a `RGB<u8>` color with components ranging from
+     * `0x00u8` to `0xFFu8`
+     */
     pure fn to_rgb_u8(&self) -> RGB<u8>;
+    
+    /**
+     * Convert the color to a RGB<u16>
+     *
+     * # Returns
+     *
+     * The color as a `RGB<u16>` color with components ranging from
+     * `0x0000u16` to `0xFFFFu16`
+     */
     pure fn to_rgb_u16(&self) -> RGB<u16>;
+    
+    /**
+     * Convert the color to a `RGB<u32>`
+     *
+     * # Returns
+     *
+     * The color as a `RGB<u32>` color with components ranging from
+     * `0x0000_0000_u32` to `0xFFFF_FFFF_u32`
+     */
     pure fn to_rgb_u32(&self) -> RGB<u32>;
+    
+    /**
+     * Convert the color to a `RGB<u64>`
+     *
+     * # Returns
+     *
+     * The color as a `RGB<u32>` color with components ranging from
+     * `0x0000_0000_u32` to `0xFFFF_FFFF_u32`
+     */
     pure fn to_rgb_u64(&self) -> RGB<u64>;
+    
+    /**
+     * Convert the color to a `RGB<f32>`
+     *
+     * # Returns
+     *
+     * The color as a `RGB<f32>` color with components ranging from
+     * `0f32` to `1f32`
+     */
     pure fn to_rgb_f32(&self) -> RGB<f32>;
+    
+    /**
+     * Convert the color to a `RGB<f64>`
+     *
+     * # Returns
+     *
+     * The color as a `RGB<f64>` color with components ranging from
+     * `0f64` to `1f64`
+     */
     pure fn to_rgb_f64(&self) -> RGB<f64>;
     
+    
+    /**
+     * Convert the color to a `HSV<f32>`
+     *
+     * # Returns
+     *
+     * The color as a `HSV<f32>` with the `h` component as a `f32` angle and
+     * saturation and value components ranging from `0f32` to `1f32`
+     */
     pure fn to_hsv_f32(&self) -> HSV<f32>;
+    
+    /**
+     * Convert the color to a `HSV<f64>`
+     *
+     * # Returns
+     *
+     * The color as a `HSV<f64>` with the `h` component as a `f64` angle and
+     * saturation and value components ranging from `0f64` to `1f64`
+     */
     pure fn to_hsv_f64(&self) -> HSV<f64>;
 }
 
@@ -30,6 +106,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
 // }
 
 pub trait Color3<T>: Color<T> {
+    // TODO: documentation (bleh, so much writing)
     pure fn to_rgba_u8(&self, a: u8) -> RGBA<u8>;
     pure fn to_rgba_u16(&self, a: u16) -> RGBA<u16>;
     pure fn to_rgba_u32(&self, a: u32) -> RGBA<u32>;
@@ -42,6 +119,7 @@ pub trait Color3<T>: Color<T> {
 }
 
 pub trait Color4<T>: Color<T> {
+    // TODO: documentation (arrg...)
     pure fn to_rgba_u8(&self) -> RGBA<u8>;
     pure fn to_rgba_u16(&self) -> RGBA<u16>;
     pure fn to_rgba_u32(&self) -> RGBA<u32>;
