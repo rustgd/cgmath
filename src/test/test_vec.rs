@@ -76,7 +76,7 @@ fn test_Vec2() {
 }
 
 #[test]
-fn test_Vec2_geometric() {
+fn test_Vec2_euclidean() {
     let a = Vec2::new(5f, 12f); // (5, 12, 13) Pythagorean triple
     let b0 = Vec2::new(3f, 4f); // (3, 4, 5) Pythagorean triple
     let b = a.add_v(&b0);
@@ -190,7 +190,7 @@ fn test_Vec3() {
 }
 
 #[test]
-fn test_Vec3_geometric() {
+fn test_Vec3_euclidean() {
     let a = Vec3::new(2f, 3f, 6f); // (2, 3, 6, 7) Pythagorean quadruple
     let b0 = Vec3::new(1f, 4f, 8f); // (1, 4, 8, 9) Pythagorean quadruple
     let b = a.add_v(&b0);
@@ -304,7 +304,7 @@ fn test_Vec4() {
 }
 
 #[test]
-fn test_Vec4_geometric() {
+fn test_Vec4_euclidean() {
     let a = Vec4::new(1f, 2f, 4f, 10f); // (1, 2, 4, 10, 11) Pythagorean quintuple
     let b0 = Vec4::new(1f, 2f, 8f, 10f); // (1, 2, 8, 10, 13) Pythagorean quintuple
     let b = a.add_v(&b0);

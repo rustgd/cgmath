@@ -64,12 +64,20 @@ pub trait Vector4<T>: Vector<T> {
  */
 pub trait NumericVector<T>: Vector<T>, Neg<self> {
     /**
-     * Returns a vector with each component set to one
+     * The standard basis vector
+     *
+     * # Returns
+     *
+     * A vector with each component set to one
      */
     static pure fn identity() -> self;
     
     /**
-     * Returns a vector with each component set to zero
+     * The null vector
+     *
+     * # Returns
+     *
+     * A vector with each component set to zero
      */
     static pure fn zero() -> self;
     
@@ -172,9 +180,13 @@ pub trait NumericVector4<T>: NumericVector<T> {
 }
 
 /**
- * A vector with geometric properties
+ * A Euclidean (or Affine) vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait GeometricVector<T>: NumericVector<T> {
+pub trait EuclideanVector<T>: NumericVector<T> {
     /**
      * Returns the squared length of the vector
      */
@@ -206,8 +218,15 @@ pub trait GeometricVector<T>: NumericVector<T> {
     pure fn lerp(&self, other: &self, amount: T) -> self;
 }
 
-pub trait MutableGeometricVector<T>: MutableNumericVector<&self/T>,
-                                     GeometricVector<T> {
+/**
+ * A mutable Euclidean (or Affine) vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This should be a floating point type.
+ */
+pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>,
+                                     EuclideanVector<T> {
     /**
      * Normalize the vector
      */
@@ -368,7 +387,7 @@ pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec2<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -402,7 +421,7 @@ pub impl<T:Copy Number Exp> Vec2<T>: GeometricVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec2<T>: MutableGeometricVector<&self/T> {
+pub impl<T:Copy Number Exp> Vec2<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
@@ -622,7 +641,7 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector3<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec3<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec3<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -656,7 +675,7 @@ pub impl<T:Copy Number Exp> Vec3<T>: GeometricVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec3<T>: MutableGeometricVector<&self/T> {
+pub impl<T:Copy Number Exp> Vec3<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
@@ -875,7 +894,7 @@ pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec4<T>: GeometricVector<T> {
+pub impl<T:Copy Number Exp> Vec4<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -909,7 +928,7 @@ pub impl<T:Copy Number Exp> Vec4<T>: GeometricVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec4<T>: MutableGeometricVector<&self/T> {
+pub impl<T:Copy Number Exp> Vec4<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
