@@ -458,10 +458,10 @@ fn test_Mat4() {
                                       13f, 14f, 15f, 16f);
 
     assert option::unwrap(c.inverse())
-        == Mat4::new( 5f, -4f,  1f,  0f,
-                     -4f,  8f, -4f,  0f,
-                      4f, -8f,  4f,  8f,
-                     -3f,  4f,  1f, -8f).mul_t(0.125f);
+        .fuzzy_eq(&Mat4::new( 5f, -4f,  1f,  0f,
+                             -4f,  8f, -4f,  0f,
+                              4f, -8f,  4f,  8f,
+                             -3f,  4f,  1f, -8f).mul_t(0.125f));
     
     // let ident: Mat4<float> = Matrix::identity();
     let ident: Mat4<float> = Mat4::identity();

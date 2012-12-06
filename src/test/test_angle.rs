@@ -90,7 +90,7 @@ fn test_rotation() {
         let newpos = rot.to_mat4().mul_v(&pos);
         let expected_pos = Vec4::new(-1.0, 0.0, 0.0, 1.0);
         
-        assert newpos == expected_pos;
+        assert newpos.fuzzy_eq(&expected_pos);
     }
     {
         let pos = Vec4::new(4f32, 0f32, 0f32, 1f32);
@@ -111,8 +111,8 @@ fn test_rotation() {
         let expected_pos_a = Vec4::new(0f32, 0f32, -4f32, 1f32);
         let expected_pos_b = Vec4::new(0f32, 0f32,  4f32, 1f32);
         
-        assert newpos_a == expected_pos_a;
-        assert newpos_b == expected_pos_b;
+        assert newpos_a.fuzzy_eq(&expected_pos_a);
+        assert newpos_b.fuzzy_eq(&expected_pos_b);
     }
     
     // TODO: test to_quat

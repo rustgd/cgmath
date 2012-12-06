@@ -2,10 +2,9 @@ use core::cmp::{Eq, Ord};
 use std::cmp::FuzzyEq;
 
 use num::conv::NumConv;
-use num::default_eq::DefaultEq;
 
 
-pub trait Number: DefaultEq, Eq, Num, NumConv, Ord {
+pub trait Number: Eq, Num, NumConv, Ord {
     /**
      * Cast a number to the type surrounding the static method
      *

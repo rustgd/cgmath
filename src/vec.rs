@@ -8,7 +8,6 @@ use std::cmp::FuzzyEq;
 
 use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
-use num::default_eq::DefaultEq;
 use num::kinds::Number;
 
 /**
@@ -19,7 +18,7 @@ use num::kinds::Number;
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq, DefaultEq {
+pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
@@ -477,10 +476,11 @@ pub impl<T:Copy Number Exp> Vec2<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy DefaultEq> Vec2<T>: Eq {
+pub impl<T:Copy Eq> Vec2<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Vec2<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1]
     }
     
     #[inline(always)]
@@ -494,14 +494,6 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
-    }
-}
-
-pub impl<T:Copy DefaultEq> Vec2<T>: DefaultEq {
-    #[inline(always)]
-    pure fn default_eq(&self, other: &Vec2<T>) -> bool {
-        self[0].default_eq(&other[0]) &&
-        self[1].default_eq(&other[1])
     }
 }
 
@@ -742,10 +734,12 @@ pub impl<T:Copy Number Exp> Vec3<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy DefaultEq> Vec3<T>: Eq {
+pub impl<T:Copy Eq> Vec3<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Vec3<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2]
     }
     
     #[inline(always)]
@@ -760,15 +754,6 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
-    }
-}
-
-pub impl<T:Copy DefaultEq> Vec3<T>: DefaultEq {
-    #[inline(always)]
-    pure fn default_eq(&self, other: &Vec3<T>) -> bool {
-        self[0].default_eq(&other[0]) &&
-        self[1].default_eq(&other[1]) &&
-        self[2].default_eq(&other[2])
     }
 }
 
@@ -1007,10 +992,13 @@ pub impl<T:Copy Number Exp> Vec4<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy DefaultEq> Vec4<T>: Eq {
+pub impl<T:Copy Eq> Vec4<T>: Eq {
     #[inline(always)]
     pure fn eq(&self, other: &Vec4<T>) -> bool {
-        self.default_eq(other)
+        self[0] == other[0] &&
+        self[1] == other[1] &&
+        self[2] == other[2] &&
+        self[3] == other[3]
     }
     
     #[inline(always)]
@@ -1026,15 +1014,5 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
-    }
-}
-
-pub impl<T:Copy DefaultEq> Vec4<T>: DefaultEq {
-    #[inline(always)]
-    pure fn default_eq(&self, other: &Vec4<T>) -> bool {
-        self[0].default_eq(&other[0]) &&
-        self[1].default_eq(&other[1]) &&
-        self[2].default_eq(&other[2]) &&
-        self[3].default_eq(&other[3])
     }
 }
