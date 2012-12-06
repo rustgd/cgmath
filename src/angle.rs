@@ -245,16 +245,16 @@ pub impl<T:Copy Float> Rotation<T> {
         let _0: T = cast(0);
         let _1: T = cast(1);
         // let _0: T = Number::from(0);    // FIXME: causes ICE
-        // let _1: T = Number::from(0);    // FIXME: causes ICE
-        let t:  T = _1 - c;
+        // let _1: T = Number::from(1);    // FIXME: causes ICE
+        let _1_c:  T = _1 - c;
         
         let x = self.axis.x;
         let y = self.axis.y;
         let z = self.axis.z;
         
-        Mat3::new(t * x * x + c,       t * x * y + s * z,   t * x * z - s * y,
-                  t * x * y - s * z,   t * y * y + c,       t * y * z + s * x,
-                  t * x * z - s - y,   t * y * z - s * x,   t * z * z + c)
+        Mat3::new(_1_c * x * x + c,       _1_c * x * y + s * z,   _1_c * x * z - s * y,
+                  _1_c * x * y - s * z,   _1_c * y * y + c,       _1_c * y * z + s * x,
+                  _1_c * x * z + s * y,   _1_c * y * z - s * x,   _1_c * z * z + c)
     }
     
     #[inline(always)]
