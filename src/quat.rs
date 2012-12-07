@@ -413,9 +413,9 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
         
         let _1: T = Number::from(1);
         
-        Mat3::new(_1 - yy2 - zz2,      xy2 - sz2,      xz2 + sy2,
-                       xy2 + sz2, _1 - xx2 - zz2,      yz2 - sx2,
-                       xz2 - sy2,      yz2 + sx2, _1 - xx2 - yy2)
+        Mat3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
+                       xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
+                       xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
     
     #[inline(always)]
