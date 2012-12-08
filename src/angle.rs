@@ -219,13 +219,3 @@ pub impl<T:Copy Float> Degrees<T>: Ord {
 pub impl<T> Degrees<T>: ToStr {
     pure fn to_str() -> ~str { fmt!("%?\xB0", *self) }
 }
-
-
-
-
-
-pub struct Euler<T> {
-    x: Radians<T>,   // pitch
-    y: Radians<T>,   // yaw
-    z: Radians<T>,   // roll
-}

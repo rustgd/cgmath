@@ -22,7 +22,7 @@
 
 use core::sys::size_of;
 
-use angle::{Angle, Radians, Degrees, Euler};
+use angle::{Angle, Radians, Degrees};
 use color::color::{RGB, RGBA, HSV, HSVA};
 use mat::{Matrix, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
@@ -396,13 +396,6 @@ pub impl ddegrees {
     #[inline(always)] static pure fn sextant()   -> ddegrees { Angle::sextant()   }
     #[inline(always)] static pure fn octant()    -> ddegrees { Angle::octant()    }
 }
-
-
-// Axis rotation aliases. These are not present in the GLSL specification, but
-// they follow roughly the same nomenclature.
-
-pub type euler  = Euler<f32>;       /// single-precision floating-point euler angles (pitch/yaw/roll)
-pub type deuler = Euler<f64>;       /// double-precision floating-point euler angles (pitch/yaw/roll)
 
 
 // Quaternion aliases. These are not present in the GLSL specification, but
