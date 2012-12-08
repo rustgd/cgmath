@@ -1,5 +1,4 @@
 use core::cmp::{Eq, Ord};
-use core::f64::consts::pi;
 
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
@@ -48,11 +47,11 @@ pub impl<T:Copy Float> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(Number::zero())     }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
-    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / pi)) }
+    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / Float::pi())) }
     
     #[inline(always)]
     pure fn wrap(&self) -> Radians<T> {
-        let theta = (*self) % cast(2.0 * pi);
+        let theta = (*self) % cast(2.0 * Float::pi());
         
         // keep in the domain of 0 to 1 rad
         if theta >= Angle::zero() {
@@ -141,7 +140,7 @@ pub impl<T:Copy Float> Degrees<T>: Angle<T> {
     #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(cast(45.0))  }
     #[inline(always)] static pure fn zero()         -> Degrees<T> { Degrees(cast(0.0))   }
     
-    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * cast(pi / 180.0)) }
+    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * cast(Float::pi::<float>() / 180.0)) }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { *self }
     
     #[inline(always)]
