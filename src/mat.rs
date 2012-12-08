@@ -608,10 +608,10 @@ pub impl<T:Copy> Mat2<T>: Dimensional<Vec2<T>> {
 
 pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec2<T> {
+    pure fn index(&self, i: uint) -> Vec2<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat2<T>, *Vec2<T>>(
-                to_unsafe_ptr(&self)), 2) |slice| { slice[i] }
+                to_unsafe_ptr(self)), 2) |slice| { slice[i] }
         }
     }
 }
@@ -621,7 +621,7 @@ pub impl<T:Copy> Mat2<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Mat2<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
@@ -1105,10 +1105,10 @@ pub impl<T:Copy> Mat3<T>: Dimensional<Vec3<T>> {
 
 pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec3<T> {
+    pure fn index(&self, i: uint) -> Vec3<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat3<T>, *Vec3<T>>(
-                to_unsafe_ptr(&self)), 3) |slice| { slice[i] }
+                to_unsafe_ptr(self)), 3) |slice| { slice[i] }
         }
     }
 }
@@ -1118,7 +1118,7 @@ pub impl<T:Copy> Mat3<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Mat3<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
@@ -1679,10 +1679,10 @@ pub impl<T> Mat4<T>: Dimensional<Vec4<T>> {
 
 pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec4<T> {
+    pure fn index(&self, i: uint) -> Vec4<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat4<T>, *Vec4<T>>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(self)), 4) |slice| { slice[i] }
         }
     }
 }
@@ -1692,7 +1692,7 @@ pub impl<T:Copy> Mat4<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Mat4<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }

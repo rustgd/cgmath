@@ -259,7 +259,7 @@ pub impl<T> RGB<T>: Dimensional<T> {
 
 pub impl<T:Copy> RGB<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
+    pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
@@ -269,7 +269,7 @@ pub impl<T:Copy> RGB<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*RGB<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
@@ -421,7 +421,7 @@ pub impl<T> RGBA<T>: Dimensional<T> {
 
 pub impl<T:Copy> RGBA<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
+    pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
@@ -431,7 +431,7 @@ pub impl<T:Copy> RGBA<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*RGBA<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
@@ -579,7 +579,7 @@ pub impl<T> HSV<T>: Dimensional<T> {
 
 pub impl<T:Copy> HSV<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
+    pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
@@ -589,7 +589,7 @@ pub impl<T:Copy> HSV<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*HSV<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
@@ -717,7 +717,7 @@ pub impl<T> HSVA<T>: Dimensional<T> {
 
 pub impl<T:Copy> HSVA<T>: Index<uint, T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
+    pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
@@ -727,7 +727,7 @@ pub impl<T:Copy> HSVA<T>: ToPtr<T> {
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*HSVA<T>, *T>(
-                to_unsafe_ptr(&*self)
+                to_unsafe_ptr(self)
             )
         }
     }
