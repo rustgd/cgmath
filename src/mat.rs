@@ -1439,7 +1439,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
-    pure fn inverse(&self) -> Option<Mat4<T>> {
+    pure fn inverse(&self) -> Option<Mat4<T>> unsafe {
         let d = self.determinant();
         // let _0 = Number::from(0);    // FIXME: Triggers ICE
         let _0 = cast(0);
@@ -1448,55 +1448,41 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         } else {
 
             // Gauss Jordan Elimination with partial pivoting
+            // So take this matrix, A, augmented with the identity
+            // and essentially reduce [A|I]
             
-            // TODO: use column/row swapping methods. Check with Luqman to see
-            // if the column-major layout has been used correctly
+            let mut A = *self;
+            // let mut I: Mat4<T> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
+            let mut I = Mat4::identity();
 
-            let mut a = *self;
-            // let mut inv: Mat4<T> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
-            let mut inv = Mat4::identity();
-
-            // Find largest pivot column j among rows j..3
             for uint::range(0, 4) |j| {
+                // Find largest element in col j
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    if abs(&a[i][j]) > abs(&a[i1][j]) {
+                    if abs(&A[j][i]) > abs(&A[j][i1]) {
                         i1 = i;
                     }
                 }
 
-                // Swap rows i1 and j in a and inv to
+                // Swap columns i1 and j in A and I to
                 // put pivot on diagonal
-                let c = [mut a.x, a.y, a.z, a.w];
-                c[i1] <-> c[j];
-                a = Mat4::from_cols(c[0], c[1], c[2], c[3]);
-                let c = [mut inv.x, inv.y, inv.z, inv.w];
-                c[i1] <-> c[j];
-                inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+                A.swap_cols(i1, j);
+                I.swap_cols(i1, j);
 
-                // Scale row j to have a unit diagonal
-                let c = [mut inv.x, inv.y, inv.z, inv.w];
-                c[j] = c[j].div_t(a[j][j]);
-                inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
-                let c = [mut a.x, a.y, a.z, a.w];
-                c[j] = c[j].div_t(a[j][j]);
-                a = Mat4::from_cols(c[0], c[1], c[2], c[3]);
+                // Scale col j to have a unit diagonal
+                I.col_mut(j).div_self_t(&A[j][j]);
+                A.col_mut(j).div_self_t(&A[j][j]);
 
-                // Eliminate off-diagonal elems in col j of a,
-                // doing identical ops to inv
+                // Eliminate off-diagonal elems in col j of A,
+                // doing identical ops to I
                 for uint::range(0, 4) |i| {
                     if i != j {
-                        let c = [mut inv.x, inv.y, inv.z, inv.w];
-                        c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
-                        inv = Mat4::from_cols(c[0], c[1], c[2], c[3]);
-
-                        let c = [mut a.x, a.y, a.z, a.w];
-                        c[i] = c[i].sub_v(&c[j].mul_t(a[i][j]));
-                        a = Mat4::from_cols(c[0], c[1], c[2], c[3]); 
+                        I.col_mut(i).sub_self_v(&I[j].mul_t(A[i][j]));
+                        A.col_mut(i).sub_self_v(&A[j].mul_t(A[i][j]));
                     }
                 }
             }
-            Some(inv)
+            Some(I)
         }
     }
     
