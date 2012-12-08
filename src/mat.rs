@@ -6,9 +6,11 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
+use angle::Angle;
 use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
+use funs::triganomic::{sin, cos};
 use num::conv::cast;
 use num::kinds::{Float, Number};
 use quat::{Quat, ToQuat};
@@ -252,6 +254,7 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  * A 3 x 3 matrix
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T>;
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
@@ -1043,6 +1046,25 @@ pub impl<T:Copy Float Sign> Mat3<T>: MutableMatrix<T, Vec3<T>> {
 }
 
 pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
+    #[inline(always)]
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
+        let c:  T = cos(&theta.to_radians());
+        let s:  T = sin(&theta.to_radians());
+        let _0: T = cast(0);
+        let _1: T = cast(1);
+        // let _0: T = Number::from(0);    // FIXME: causes ICE
+        // let _1: T = Number::from(1);    // FIXME: causes ICE
+        let _1_c:  T = _1 - c;
+        
+        let x = axis.x;
+        let y = axis.y;
+        let z = axis.z;
+        
+        Mat3::new(_1_c * x * x + c,       _1_c * x * y + s * z,   _1_c * x * z - s * y,
+                  _1_c * x * y - s * z,   _1_c * y * y + c,       _1_c * y * z + s * x,
+                  _1_c * x * z + s * y,   _1_c * y * z - s * x,   _1_c * z * z + c)
+    }
+    
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
         Mat4::from_Mat3(self)

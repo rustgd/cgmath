@@ -15,6 +15,7 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
+use angle::Angle;
 use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
@@ -34,6 +35,8 @@ use vec::Vec3;
  *          components of the quaternion.
  */
 pub trait Quaternion<T,V3>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> self;
+    
     /**
      * # Return value
      *
@@ -258,6 +261,12 @@ pub impl<T:Copy> Quat<T>: ToPtr<T> {
 }
 
 pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
+    #[inline(always)]
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Quat<T> {
+        let half = theta.to_radians() / Number::from(2);
+        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
+    }
+    
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(Number::from(1),

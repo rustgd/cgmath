@@ -224,55 +224,6 @@ pub impl<T> Degrees<T>: ToStr {
 
 
 
-/**
- * An angular rotation around an arbitary axis
- */
-pub struct Rotation<T> {
-    theta: Radians<T>,
-    axis: Vec3<T>,
-}
-
-pub impl<T:Copy Float> Rotation<T> {
-    #[inline(always)]
-    static pure fn new(theta: Radians<T>, axis: Vec3<T>) -> Rotation<T> {
-        Rotation { theta: move theta, axis: move axis }
-    }
-    
-    #[inline(always)]
-    pure fn to_mat3() -> Mat3<T> {
-        let c:  T = cos(&self.theta);
-        let s:  T = sin(&self.theta);
-        let _0: T = cast(0);
-        let _1: T = cast(1);
-        // let _0: T = Number::from(0);    // FIXME: causes ICE
-        // let _1: T = Number::from(1);    // FIXME: causes ICE
-        let _1_c:  T = _1 - c;
-        
-        let x = self.axis.x;
-        let y = self.axis.y;
-        let z = self.axis.z;
-        
-        Mat3::new(_1_c * x * x + c,       _1_c * x * y + s * z,   _1_c * x * z - s * y,
-                  _1_c * x * y - s * z,   _1_c * y * y + c,       _1_c * y * z + s * x,
-                  _1_c * x * z + s * y,   _1_c * y * z - s * x,   _1_c * z * z + c)
-    }
-    
-    #[inline(always)]
-    pure fn to_mat4() -> Mat4<T> {
-        self.to_mat3().to_mat4()
-    }
-    
-    #[inline(always)]
-    pure fn to_quat() -> Quat<T> {
-        let half = self.theta / Number::from(2);
-        Quat::from_sv(cos(&half), self.axis.mul_t(sin(&half)))
-    }
-}
-
-
-
-
-
 pub struct Euler<T> {
     x: Radians<T>,   // pitch
     y: Radians<T>,   // yaw

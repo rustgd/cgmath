@@ -22,7 +22,7 @@
 
 use core::sys::size_of;
 
-use angle::{Angle, Radians, Degrees, Rotation, Euler};
+use angle::{Angle, Radians, Degrees, Euler};
 use color::color::{RGB, RGBA, HSV, HSVA};
 use mat::{Matrix, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
@@ -395,23 +395,6 @@ pub impl ddegrees {
     #[inline(always)] static pure fn quadrant()  -> ddegrees { Angle::quadrant()  }
     #[inline(always)] static pure fn sextant()   -> ddegrees { Angle::sextant()   }
     #[inline(always)] static pure fn octant()    -> ddegrees { Angle::octant()    }
-}
-
-
-// Axis rotation aliases. These are not present in the GLSL specification, but
-// they follow roughly the same nomenclature.
-
-pub type rotation  = Rotation<f32>;       /// a single-precision floating-point axis rotation
-pub type drotation = Rotation<f64>;       /// a double-precision floating-point axis rotation
-
-pub impl rotation {
-    #[inline(always)] static pure fn new(theta: radians, axis: vec3) -> rotation { Rotation::new(move theta, move axis) }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<rotation>() }
-}
-
-pub impl drotation {
-    #[inline(always)] static pure fn new(theta: dradians, axis: dvec3) -> drotation { Rotation::new(move theta, move axis) }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<drotation>() }
 }
 
 
