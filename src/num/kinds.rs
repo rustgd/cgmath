@@ -6,15 +6,8 @@ use num::conv::NumConv;
 
 pub trait Number: Eq, Num, NumConv, Ord {
     /**
-     * Cast a number to the type surrounding the static method
-     *
-     * # Type parameters
-     *
-     * `T` - The type of the number which will be cast.
-     *
-     * # Return value
-     *
-     * `n` cast to the type surrounding the static method
+     * Construct a new number by casting a number the the static method's
+     * enclosing type
      *
      * # Example
      *
@@ -25,8 +18,8 @@ pub trait Number: Eq, Num, NumConv, Ord {
      */
     static pure fn from<T:Number>(n: T) -> self;
     
-    static pure fn zero() -> self;      /// The additive identity of the number
-    static pure fn one()  -> self;      // The multiplicative identity of the number
+    static pure fn zero() -> self;      /// The additive identity
+    static pure fn one()  -> self;      // The multiplicative identity
 }
 
 pub impl u8: Number {

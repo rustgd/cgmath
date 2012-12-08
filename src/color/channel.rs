@@ -1,8 +1,24 @@
 use num::kinds::Number;
 
+/**
+ * A color channel
+ */
 pub trait Channel: Number {
+    /**
+     * The maximum value used by the channel
+     */
     static pure fn max() -> self;
     
+    /**
+     * Convert a channel to the enclosing type
+     *
+     * # Example
+     *
+     * ~~~
+     * let chan: f32 = Channel::from(0xFFFFu16);
+     * assert chan == 1.0f32;
+     * ~~~
+     */
     static pure fn from<T:Channel>(val: T) -> self;
     
     pure fn to_channel_u8(&self)    -> u8;

@@ -63,7 +63,7 @@ pub impl<T:Copy Float> Radians<T>: Angle<T> {
     
     #[inline(always)]
     pure fn opposite(&self) -> Radians<T> {
-        (self + Angle::half_turn()).wrap()     // TODO: test!
+        (self + Angle::half_turn()).wrap()
     }
 }
     
@@ -121,6 +121,13 @@ pub impl<T:Copy Float> Radians<T>: Ord {
     #[inline(always)] pure fn gt(&self, other: &Radians<T>) -> bool { **self >  **other }
 }
 
+/**
+ * # Example
+ *
+ * ~~~
+ * assert fmt!("%s", Radians(1).to_str()) == ~"1 rad";
+ * ~~~
+ */
 pub impl<T> Radians<T>: ToStr {
     pure fn to_str() -> ~str { fmt!("%? rad", *self) }
 }
@@ -157,7 +164,7 @@ pub impl<T:Copy Float> Degrees<T>: Angle<T> {
     
     #[inline(always)]
     pure fn opposite(&self) -> Degrees<T> {
-        (self + Angle::half_turn()).wrap()      // TODO: test!
+        (self + Angle::half_turn()).wrap()
     }
 }
 
@@ -215,6 +222,13 @@ pub impl<T:Copy Float> Degrees<T>: Ord {
     #[inline(always)] pure fn gt(&self, other: &Degrees<T>) -> bool { **self >  **other }
 }
 
+/**
+ * # Example
+ *
+ * ~~~
+ * assert fmt!("%s", Degrees(180.0).to_str()) == ~"180°";
+ * ~~~
+ */
 pub impl<T> Degrees<T>: ToStr {
     pure fn to_str() -> ~str { fmt!("%?\xB0", *self) }
 }

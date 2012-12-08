@@ -26,7 +26,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<u8>` color with components ranging from
+     * The color as a `RGB<u8>` color with components in the range of
      * `0x00u8` to `0xFFu8`
      */
     pure fn to_rgb_u8(&self) -> RGB<u8>;
@@ -36,7 +36,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<u16>` color with components ranging from
+     * The color as a `RGB<u16>` color with components in the range of
      * `0x0000u16` to `0xFFFFu16`
      */
     pure fn to_rgb_u16(&self) -> RGB<u16>;
@@ -46,7 +46,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<u32>` color with components ranging from
+     * The color as a `RGB<u32>` color with components in the range of
      * `0x0000_0000_u32` to `0xFFFF_FFFF_u32`
      */
     pure fn to_rgb_u32(&self) -> RGB<u32>;
@@ -56,7 +56,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<u32>` color with components ranging from
+     * The color as a `RGB<u32>` color with components in the range of
      * `0x0000_0000_u32` to `0xFFFF_FFFF_u32`
      */
     pure fn to_rgb_u64(&self) -> RGB<u64>;
@@ -66,7 +66,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<f32>` color with components ranging from
+     * The color as a `RGB<f32>` color with components in the range of
      * `0f32` to `1f32`
      */
     pure fn to_rgb_f32(&self) -> RGB<f32>;
@@ -76,7 +76,7 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `RGB<f64>` color with components ranging from
+     * The color as a `RGB<f64>` color with components in the range of
      * `0f64` to `1f64`
      */
     pure fn to_rgb_f64(&self) -> RGB<f64>;
@@ -87,8 +87,9 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `HSV<f32>` with the `h` component as a `f32` angle and
-     * saturation and value components ranging from `0f32` to `1f32`
+     * The color as a `HSV<f32>` with the `h` component as a `Degrees<f32>`
+     * angle type, and saturation and value components in the range of `0f32`
+     * to `1f32`.
      */
     pure fn to_hsv_f32(&self) -> HSV<f32>;
     
@@ -97,8 +98,9 @@ pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
      *
      * # Returns
      *
-     * The color as a `HSV<f64>` with the `h` component as a `f64` angle and
-     * saturation and value components ranging from `0f64` to `1f64`
+     * The color as a `HSV<f64>` with the `h` component as a `Degrees<f64>`
+     * angle type, and saturation and value components in the range of `0f64`
+     * to `1f64`.
      */
     pure fn to_hsv_f64(&self) -> HSV<f64>;
 }
@@ -120,6 +122,9 @@ pub trait MutableColor<T>: Color<T> {
     fn invert_self(&mut self);
 }
 
+/**
+ * A generic three-component color
+ */
 pub trait Color3<T>: Color<T> {
     // TODO: documentation (bleh, so much writing)
     pure fn to_rgba_u8(&self, a: u8) -> RGBA<u8>;
@@ -133,6 +138,9 @@ pub trait Color3<T>: Color<T> {
     pure fn to_hsva_f64(&self, a: f64) -> HSVA<f64>;
 }
 
+/**
+ * A generic four-component color, the last component being an alpha channel
+ */
 pub trait Color4<T>: Color<T> {
     // TODO: documentation (arrg...)
     pure fn to_rgba_u8(&self) -> RGBA<u8>;
