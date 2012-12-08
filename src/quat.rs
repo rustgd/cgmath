@@ -388,18 +388,22 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
     pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot = self.dot(other);
         
-        // if quaternions are close together use `nlerp`
         let dot_threshold = Number::from(0.9995);
-        if dot > dot_threshold { return self.nlerp(other, amount) }
         
-        let robust_dot = dot.clamp(&-Number::from(1), &Number::from(1));    // stay within the domain of acos()
-        let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
-        let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
-        
-        let q = other.sub_q(&self.mul_t(robust_dot))
-                     .normalize();
-        
-        self.mul_t(cos(&theta)).add_q(&q.mul_t(sin(&theta)))
+        if dot > dot_threshold {
+            return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
+        } else {
+            let robust_dot = dot.clamp(&-Number::from(1),
+                                       &Number::from(1));       // stay within the domain of acos()
+            
+            let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
+            let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
+            
+            let q = other.sub_q(&self.mul_t(robust_dot))
+                         .normalize();
+            
+            return self.mul_t(cos(&theta)).add_q(&q.mul_t(sin(&theta)));
+        }
     }
     
     #[inline(always)]
