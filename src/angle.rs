@@ -69,8 +69,8 @@ pub impl<T:Copy Float> Radians<T>: Angle<T> {
     
 pub impl<T:Copy Float> Radians<T>: Add<Radians<T>, Radians<T>> {
     #[inline(always)]
-    pure fn add(rhs: &Radians<T>) -> Radians<T> {
-        Radians(*self + **rhs)
+    pure fn add(&self, rhs: &Radians<T>) -> Radians<T> {
+        Radians(**self + **rhs)
     }
 }
     
@@ -170,8 +170,8 @@ pub impl<T:Copy Float> Degrees<T>: Angle<T> {
 
 pub impl<T:Copy Float> Degrees<T>: Add<Degrees<T>, Degrees<T>> {
     #[inline(always)]
-    pure fn add(rhs: &Degrees<T>) -> Degrees<T> {
-        Degrees(*self + **rhs)
+    pure fn add(&self, rhs: &Degrees<T>) -> Degrees<T> {
+        Degrees(**self + **rhs)
     }
 }
     

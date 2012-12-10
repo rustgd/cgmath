@@ -139,7 +139,7 @@ pub impl f32: Approx {
     #[inline(always)] pure fn round(&self) -> f32 { f32::round(*self) }
     // #[inline(always)] pure fn roundEven(&self) -> f32 {}
     #[inline(always)] pure fn ceil(&self)  -> f32 { f32::ceil(*self) }
-    #[inline(always)] pure fn fract(&self) -> f32 { (*self) - floor(&*self) }
+    #[inline(always)] pure fn fract(&self) -> f32 { (*self) - floor(self) }
 }
 
 pub impl f64: Approx {
@@ -148,7 +148,7 @@ pub impl f64: Approx {
     #[inline(always)] pure fn round(&self) -> f64 { f64::round(*self) }
     // #[inline(always)] pure fn roundEven(&self) -> f64 {}
     #[inline(always)] pure fn ceil(&self)  -> f64 { f64::ceil(*self) }
-    #[inline(always)] pure fn fract(&self) -> f64 { (*self) - floor(&*self) }
+    #[inline(always)] pure fn fract(&self) -> f64 { (*self) - floor(self) }
 }
 
 pub impl float: Approx {
@@ -157,7 +157,7 @@ pub impl float: Approx {
     #[inline(always)] pure fn round(&self) -> float { f64::round(*self as f64) as float }
     // #[inline(always)] pure fn roundEven(&self) -> float {}
     #[inline(always)] pure fn ceil(&self)  -> float { f64::ceil(*self as f64) as float }
-    #[inline(always)] pure fn fract(&self) -> float { (*self) - floor(&*self) }
+    #[inline(always)] pure fn fract(&self) -> float { (*self) - floor(self) }
 }
 
 
