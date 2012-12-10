@@ -1461,7 +1461,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
-    pure fn inverse(&self) -> Option<Mat4<T>> unsafe {
+    pure fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
         // let _0 = Number::from(0);    // FIXME: Triggers ICE
         let _0 = cast(0);
@@ -1485,22 +1485,29 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
                         i1 = i;
                     }
                 }
+                
+                // We need to use an unsafe block in order to use these inpure
+                // functions. This *should* be ok because A and I are never
+                // exposed to the outside world.
+                unsafe {
+                    // Swap columns i1 and j in A and I to
+                    // put pivot on diagonal
+                    A.swap_cols(i1, j);
+                    I.swap_cols(i1, j);
 
-                // Swap columns i1 and j in A and I to
-                // put pivot on diagonal
-                A.swap_cols(i1, j);
-                I.swap_cols(i1, j);
+                    // Scale col j to have a unit diagonal
+                    I.col_mut(j).div_self_t(&A[j][j]);
+                    A.col_mut(j).div_self_t(&A[j][j]);
 
-                // Scale col j to have a unit diagonal
-                I.col_mut(j).div_self_t(&A[j][j]);
-                A.col_mut(j).div_self_t(&A[j][j]);
-
-                // Eliminate off-diagonal elems in col j of A,
-                // doing identical ops to I
-                for uint::range(0, 4) |i| {
-                    if i != j {
-                        I.col_mut(i).sub_self_v(&I[j].mul_t(A[i][j]));
-                        A.col_mut(i).sub_self_v(&A[j].mul_t(A[i][j]));
+                    // Eliminate off-diagonal elems in col j of A,
+                    // doing identical ops to I
+                    for uint::range(0, 4) |i| {
+                        if i != j {
+                            unsafe {
+                                I.col_mut(i).sub_self_v(&I[j].mul_t(A[i][j]));
+                                A.col_mut(i).sub_self_v(&A[j].mul_t(A[i][j]));
+                            }
+                        }
                     }
                 }
             }
