@@ -34,7 +34,7 @@ use vec::Vec3;
  * * `V3` - The 3-dimensional vector type that will containin the imaginary
  *          components of the quaternion.
  */
-pub trait Quaternion<T,V3>: Dimensional<T>, ToPtr<T>, Eq, Neg<self> {
+pub trait Quaternion<T,V3>: Dimensional<T> ToPtr<T> Eq Neg<self> {
     static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> self;
     
     /**

@@ -4,7 +4,7 @@ use std::cmp::FuzzyEq;
 use num::conv::NumConv;
 
 
-pub trait Number: Eq, Num, NumConv, Ord {
+pub trait Number: Eq Num NumConv Ord {
     /**
      * Construct a new number by casting a number the the static method's
      * enclosing type
@@ -232,7 +232,7 @@ pub impl i64:  Integer {}
 pub impl int:  Integer {}
 
 
-pub trait Float: Number, FuzzyEq {
+pub trait Float: Number FuzzyEq {
     pure fn to_float() -> float;
     static pure fn from_float(n: float) -> self;
     

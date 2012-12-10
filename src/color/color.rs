@@ -13,7 +13,7 @@ use num::kinds::{Float, Number};
 /**
  * A generic color trait.
  */
-pub trait Color<T>: Dimensional<T>, ToPtr<T>, Eq {
+pub trait Color<T>: Dimensional<T> ToPtr<T> Eq {
     /**
      * # Return value
      *

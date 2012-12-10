@@ -26,7 +26,7 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait Matrix<T,V>: Dimensional<V>, ToPtr<T>, Eq, Neg<self> {
+pub trait Matrix<T,V>: Dimensional<V> ToPtr<T> Eq Neg<self> {
     /**
      * # Return value
      *

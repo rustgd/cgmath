@@ -18,7 +18,7 @@ use num::kinds::Number;
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait Vector<T>: Dimensional<T>, ToPtr<T>, Eq {
+pub trait Vector<T>: Dimensional<T> ToPtr<T> Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
@@ -61,7 +61,7 @@ pub trait Vector4<T>: Vector<T> {
 /**
  * A vector with numeric components
  */
-pub trait NumericVector<T>: Vector<T>, Neg<self> {
+pub trait NumericVector<T>: Vector<T> Neg<self> {
     /**
      * The standard basis vector
      *
@@ -119,7 +119,7 @@ pub trait NumericVector<T>: Vector<T>, Neg<self> {
 /**
  * A mutable vector with numeric components
  */
-pub trait MutableNumericVector<T>: MutableVector<&self/T>, NumericVector<T> {
+pub trait MutableNumericVector<T>: MutableVector<&self/T> NumericVector<T> {
     /**
      * Negate the vector
      */
@@ -257,7 +257,7 @@ pub trait EuclideanVector<T>: NumericVector<T> {
  *
  * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>,
+pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>
                                      EuclideanVector<T> {
     /**
      * Normalize the vector
