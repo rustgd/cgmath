@@ -146,7 +146,7 @@ pub impl int: Number {
     /**
      * Construct an `int` from the type `T:Number`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> int { n.to_int() }
+    #[inline(always)] static pure fn from<T:Number>(n: T) -> int { n.to_int_() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<int>() }
     #[inline(always)] static pure fn bits() -> uint { sys::size_of::<int>() * 8 }
