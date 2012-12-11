@@ -204,17 +204,68 @@ pub impl u64:  UnSigned {}
 pub impl uint: UnSigned {}
 
 
-pub trait Signed: Number {}
+pub trait Signed: Number {
+    pure fn is_positive(&self)    -> bool;
+    pure fn is_negative(&self)    -> bool;
+    pure fn is_nonpositive(&self) -> bool;
+    pure fn is_nonnegative(&self) -> bool;
+}
 
-pub impl i8:    Signed {}
-pub impl i16:   Signed {}
-pub impl i32:   Signed {}
-pub impl i64:   Signed {}
-pub impl int:   Signed {}
+pub impl i8: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { (*self) >  0 }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { (*self) <  0 }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { (*self) <= 0 }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { (*self) >= 0 }
+}
 
-pub impl f32:   Signed {}
-pub impl f64:   Signed {}
-pub impl float: Signed {}
+pub impl i16: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { (*self) >  0 }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { (*self) <  0 }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { (*self) <= 0 }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { (*self) >= 0 }
+}
+
+pub impl i32: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { (*self) >  0 }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { (*self) <  0 }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { (*self) <= 0 }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { (*self) >= 0 }
+}
+
+pub impl i64: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { (*self) >  0 }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { (*self) <  0 }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { (*self) <= 0 }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { (*self) >= 0 }
+}
+
+pub impl int: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { (*self) >  0 }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { (*self) <  0 }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { (*self) <= 0 }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { (*self) >= 0 }
+}
+
+pub impl f32: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { f32::is_positive(*self) }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { f32::is_negative(*self) }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { f32::is_nonpositive(*self) }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { f32::is_nonnegative(*self) }
+}
+
+pub impl f64: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { f64::is_positive(*self) }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { f64::is_negative(*self) }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { f64::is_nonpositive(*self) }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { f64::is_nonnegative(*self) }
+}
+
+pub impl float: Signed {
+    #[inline(always)] pure fn is_positive(&self)    -> bool { core::float::is_positive(*self) }
+    #[inline(always)] pure fn is_negative(&self)    -> bool { core::float::is_negative(*self) }
+    #[inline(always)] pure fn is_nonpositive(&self) -> bool { core::float::is_nonpositive(*self) }
+    #[inline(always)] pure fn is_nonnegative(&self) -> bool { core::float::is_nonnegative(*self) }
+}
 
 
 pub trait Integer: Number {}
@@ -235,6 +286,14 @@ pub impl int:  Integer {}
 pub trait Float: Number FuzzyEq {
     pure fn to_float() -> float;
     static pure fn from_float(n: float) -> self;
+    
+    static pure fn NaN()            -> self;
+    static pure fn infinity()       -> self;
+    static pure fn neg_infinity()   -> self;
+    
+    pure fn is_NaN(&self)           -> bool;
+    pure fn is_infinite(&self)      -> bool;
+    pure fn is_finite(&self)        -> bool;
     
     static pure fn two_pi()         -> self;    /// 2 × π
     static pure fn pi()             -> self;    /// π
@@ -259,67 +318,91 @@ pub impl f32: Float {
     #[inline(always)] pure fn to_float() -> float { self as float }
     #[inline(always)] static pure fn from_float(n: float) -> f32 { n as f32 }
     
-    #[inline(always)] static pure fn two_pi()           -> f32 { 6.28318530717958647692528676655900576_f32  }   /// 2 × π
-    #[inline(always)] static pure fn pi()               -> f32 { 3.14159265358979323846264338327950288_f32  }   /// π
-    #[inline(always)] static pure fn frac_pi_2()        -> f32 { 1.57079632679489661923132169163975144_f32  }   /// π / 2
-    #[inline(always)] static pure fn frac_pi_3()        -> f32 { 1.04719755119659774615421446109316763_f32  }   /// π / 3
+    #[inline(always)] static pure fn NaN()              -> f32 { 0_f32 / 0_f32 }
+    #[inline(always)] static pure fn infinity()         -> f32 { 1_f32 / 0_f32 }
+    #[inline(always)] static pure fn neg_infinity()     -> f32 {-1_f32 / 0_f32 }
+    
+    #[inline(always)] pure fn is_NaN(&self)             -> bool { self != self }
+    #[inline(always)] pure fn is_infinite(&self)        -> bool { (*self) == Float::infinity() || (*self) == Float::neg_infinity() }
+    #[inline(always)] pure fn is_finite(&self)          -> bool { !(self.is_NaN() || self.is_infinite()) }
+    
+    #[inline(always)] static pure fn two_pi()           -> f32 { 6.28318530717958647692528676655900576__f32 }   /// 2 × π
+    #[inline(always)] static pure fn pi()               -> f32 { 3.14159265358979323846264338327950288__f32 }   /// π
+    #[inline(always)] static pure fn frac_pi_2()        -> f32 { 1.57079632679489661923132169163975144__f32 }   /// π / 2
+    #[inline(always)] static pure fn frac_pi_3()        -> f32 { 1.04719755119659774615421446109316763__f32 }   /// π / 3
     #[inline(always)] static pure fn frac_pi_4()        -> f32 { 0.785398163397448309615660845819875721_f32 }   /// π / 4
-    #[inline(always)] static pure fn frac_pi_6()        -> f32 { 0.52359877559829887307710723054658381_f32  }   /// π / 6
-    #[inline(always)] static pure fn frac_pi_8()        -> f32 { 0.39269908169872415480783042290993786_f32  }   /// π / 8
+    #[inline(always)] static pure fn frac_pi_6()        -> f32 { 0.52359877559829887307710723054658381__f32 }   /// π / 6
+    #[inline(always)] static pure fn frac_pi_8()        -> f32 { 0.39269908169872415480783042290993786__f32 }   /// π / 8
     #[inline(always)] static pure fn frac_1_pi()        -> f32 { 0.318309886183790671537767526745028724_f32 }   /// 1 / π
     #[inline(always)] static pure fn frac_2_pi()        -> f32 { 0.636619772367581343075535053490057448_f32 }   /// 2 / π
-    #[inline(always)] static pure fn frac_2_sqrtpi()    -> f32 { 1.12837916709551257389615890312154517_f32  }   /// 2 / sqrt(π)
-    #[inline(always)] static pure fn sqrt2()            -> f32 { 1.41421356237309504880168872420969808_f32  }   /// sqrt(2)
+    #[inline(always)] static pure fn frac_2_sqrtpi()    -> f32 { 1.12837916709551257389615890312154517__f32 }   /// 2 / sqrt(π)
+    #[inline(always)] static pure fn sqrt2()            -> f32 { 1.41421356237309504880168872420969808__f32 }   /// sqrt(2)
     #[inline(always)] static pure fn frac_1_sqrt2()     -> f32 { 0.707106781186547524400844362104849039_f32 }   /// 1 / sqrt(2)
-    #[inline(always)] static pure fn e()                -> f32 { 2.71828182845904523536028747135266250_f32  }   /// Euler's number
-    #[inline(always)] static pure fn log2_e()           -> f32 { 1.44269504088896340735992468100189214_f32  }   /// log2(e)
+    #[inline(always)] static pure fn e()                -> f32 { 2.71828182845904523536028747135266250__f32 }   /// Euler's number
+    #[inline(always)] static pure fn log2_e()           -> f32 { 1.44269504088896340735992468100189214__f32 }   /// log2(e)
     #[inline(always)] static pure fn log10_e()          -> f32 { 0.434294481903251827651128918916605082_f32 }   /// log10(e)
     #[inline(always)] static pure fn ln_2()             -> f32 { 0.693147180559945309417232121458176568_f32 }   /// ln(2)
-    #[inline(always)] static pure fn ln_10()            -> f32 { 2.30258509299404568401799145468436421_f32  }   //  ln(10)
+    #[inline(always)] static pure fn ln_10()            -> f32 { 2.30258509299404568401799145468436421__f32 }   //  ln(10)
 }
 
 pub impl f64: Float {
     #[inline(always)] pure fn to_float() -> float { self as float }
     #[inline(always)] static pure fn from_float(n: float) -> f64 { n as f64 }
     
-    #[inline(always)] static pure fn two_pi()           -> f64 { 6.28318530717958647692528676655900576_f64  }   /// 2 × π
-    #[inline(always)] static pure fn pi()               -> f64 { 3.14159265358979323846264338327950288_f64  }   /// π
-    #[inline(always)] static pure fn frac_pi_2()        -> f64 { 1.57079632679489661923132169163975144_f64  }   /// π / 2
-    #[inline(always)] static pure fn frac_pi_3()        -> f64 { 1.04719755119659774615421446109316763_f64  }   /// π / 3
+    #[inline(always)] static pure fn NaN()              -> f64 { 0_f64 / 0_f64 }
+    #[inline(always)] static pure fn infinity()         -> f64 { 1_f64 / 0_f64 }
+    #[inline(always)] static pure fn neg_infinity()     -> f64 {-1_f64 / 0_f64 }
+    
+    #[inline(always)] pure fn is_NaN(&self)             -> bool { self != self }
+    #[inline(always)] pure fn is_infinite(&self)        -> bool { (*self) == Float::infinity() || (*self) == Float::neg_infinity() }
+    #[inline(always)] pure fn is_finite(&self)          -> bool { !(self.is_NaN() || self.is_infinite()) }
+    
+    #[inline(always)] static pure fn two_pi()           -> f64 { 6.28318530717958647692528676655900576__f64 }   /// 2 × π
+    #[inline(always)] static pure fn pi()               -> f64 { 3.14159265358979323846264338327950288__f64 }   /// π
+    #[inline(always)] static pure fn frac_pi_2()        -> f64 { 1.57079632679489661923132169163975144__f64 }   /// π / 2
+    #[inline(always)] static pure fn frac_pi_3()        -> f64 { 1.04719755119659774615421446109316763__f64 }   /// π / 3
     #[inline(always)] static pure fn frac_pi_4()        -> f64 { 0.785398163397448309615660845819875721_f64 }   /// π / 4
-    #[inline(always)] static pure fn frac_pi_6()        -> f64 { 0.52359877559829887307710723054658381_f64  }   /// π / 6
-    #[inline(always)] static pure fn frac_pi_8()        -> f64 { 0.39269908169872415480783042290993786_f64  }   /// π / 8
+    #[inline(always)] static pure fn frac_pi_6()        -> f64 { 0.52359877559829887307710723054658381__f64 }   /// π / 6
+    #[inline(always)] static pure fn frac_pi_8()        -> f64 { 0.39269908169872415480783042290993786__f64 }   /// π / 8
     #[inline(always)] static pure fn frac_1_pi()        -> f64 { 0.318309886183790671537767526745028724_f64 }   /// 1 / π
     #[inline(always)] static pure fn frac_2_pi()        -> f64 { 0.636619772367581343075535053490057448_f64 }   /// 2 / π
-    #[inline(always)] static pure fn frac_2_sqrtpi()    -> f64 { 1.12837916709551257389615890312154517_f64  }   /// 2 / sqrt(π)
-    #[inline(always)] static pure fn sqrt2()            -> f64 { 1.41421356237309504880168872420969808_f64  }   /// sqrt(2)
+    #[inline(always)] static pure fn frac_2_sqrtpi()    -> f64 { 1.12837916709551257389615890312154517__f64 }   /// 2 / sqrt(π)
+    #[inline(always)] static pure fn sqrt2()            -> f64 { 1.41421356237309504880168872420969808__f64 }   /// sqrt(2)
     #[inline(always)] static pure fn frac_1_sqrt2()     -> f64 { 0.707106781186547524400844362104849039_f64 }   /// 1 / sqrt(2)
-    #[inline(always)] static pure fn e()                -> f64 { 2.71828182845904523536028747135266250_f64  }   /// Euler's number
-    #[inline(always)] static pure fn log2_e()           -> f64 { 1.44269504088896340735992468100189214_f64  }   /// log2(e)
+    #[inline(always)] static pure fn e()                -> f64 { 2.71828182845904523536028747135266250__f64 }   /// Euler's number
+    #[inline(always)] static pure fn log2_e()           -> f64 { 1.44269504088896340735992468100189214__f64 }   /// log2(e)
     #[inline(always)] static pure fn log10_e()          -> f64 { 0.434294481903251827651128918916605082_f64 }   /// log10(e)
     #[inline(always)] static pure fn ln_2()             -> f64 { 0.693147180559945309417232121458176568_f64 }   /// ln(2)
-    #[inline(always)] static pure fn ln_10()            -> f64 { 2.30258509299404568401799145468436421_f64  }   //  ln(10)
+    #[inline(always)] static pure fn ln_10()            -> f64 { 2.30258509299404568401799145468436421__f64 }   //  ln(10)
 }
 
 pub impl float: Float {
     #[inline(always)] pure fn to_float() -> float { self }
     #[inline(always)] static pure fn from_float(n: float) -> float { n }
     
-    #[inline(always)] static pure fn two_pi()           -> float { 6.28318530717958647692528676655900576  }     /// 2 × π
-    #[inline(always)] static pure fn pi()               -> float { 3.14159265358979323846264338327950288  }     /// π
-    #[inline(always)] static pure fn frac_pi_2()        -> float { 1.57079632679489661923132169163975144  }     /// π / 2
-    #[inline(always)] static pure fn frac_pi_3()        -> float { 1.04719755119659774615421446109316763  }     /// π / 3
-    #[inline(always)] static pure fn frac_pi_4()        -> float { 0.785398163397448309615660845819875721 }     /// π / 4
-    #[inline(always)] static pure fn frac_pi_6()        -> float { 0.52359877559829887307710723054658381  }     /// π / 6
-    #[inline(always)] static pure fn frac_pi_8()        -> float { 0.39269908169872415480783042290993786  }     /// π / 8
-    #[inline(always)] static pure fn frac_1_pi()        -> float { 0.318309886183790671537767526745028724 }     /// 1 / π
-    #[inline(always)] static pure fn frac_2_pi()        -> float { 0.636619772367581343075535053490057448 }     /// 2 / π
-    #[inline(always)] static pure fn frac_2_sqrtpi()    -> float { 1.12837916709551257389615890312154517  }     /// 2 / sqrt(π)
-    #[inline(always)] static pure fn sqrt2()            -> float { 1.41421356237309504880168872420969808  }     /// sqrt(2)
-    #[inline(always)] static pure fn frac_1_sqrt2()     -> float { 0.707106781186547524400844362104849039 }     /// 1 / sqrt(2)
-    #[inline(always)] static pure fn e()                -> float { 2.71828182845904523536028747135266250  }     /// Euler's number
-    #[inline(always)] static pure fn log2_e()           -> float { 1.44269504088896340735992468100189214  }     /// log2(e)
-    #[inline(always)] static pure fn log10_e()          -> float { 0.434294481903251827651128918916605082 }     /// log10(e)
-    #[inline(always)] static pure fn ln_2()             -> float { 0.693147180559945309417232121458176568 }     /// ln(2)
-    #[inline(always)] static pure fn ln_10()            -> float { 2.30258509299404568401799145468436421  }     //  ln(10)
+    #[inline(always)] static pure fn NaN()              -> float { 0_f / 0_f }
+    #[inline(always)] static pure fn infinity()         -> float { 1_f / 0_f }
+    #[inline(always)] static pure fn neg_infinity()     -> float {-1_f / 0_f }
+    
+    #[inline(always)] pure fn is_NaN(&self)             -> bool { self != self }
+    #[inline(always)] pure fn is_infinite(&self)        -> bool { (*self) == Float::infinity() || (*self) == Float::neg_infinity() }
+    #[inline(always)] pure fn is_finite(&self)          -> bool { !(self.is_NaN() || self.is_infinite()) }
+    
+    #[inline(always)] static pure fn two_pi()           -> float { 6.28318530717958647692528676655900576__f }   /// 2 × π
+    #[inline(always)] static pure fn pi()               -> float { 3.14159265358979323846264338327950288__f }   /// π
+    #[inline(always)] static pure fn frac_pi_2()        -> float { 1.57079632679489661923132169163975144__f }   /// π / 2
+    #[inline(always)] static pure fn frac_pi_3()        -> float { 1.04719755119659774615421446109316763__f }   /// π / 3
+    #[inline(always)] static pure fn frac_pi_4()        -> float { 0.785398163397448309615660845819875721_f }   /// π / 4
+    #[inline(always)] static pure fn frac_pi_6()        -> float { 0.52359877559829887307710723054658381__f }   /// π / 6
+    #[inline(always)] static pure fn frac_pi_8()        -> float { 0.39269908169872415480783042290993786__f }   /// π / 8
+    #[inline(always)] static pure fn frac_1_pi()        -> float { 0.318309886183790671537767526745028724_f }   /// 1 / π
+    #[inline(always)] static pure fn frac_2_pi()        -> float { 0.636619772367581343075535053490057448_f }   /// 2 / π
+    #[inline(always)] static pure fn frac_2_sqrtpi()    -> float { 1.12837916709551257389615890312154517__f }   /// 2 / sqrt(π)
+    #[inline(always)] static pure fn sqrt2()            -> float { 1.41421356237309504880168872420969808__f }   /// sqrt(2)
+    #[inline(always)] static pure fn frac_1_sqrt2()     -> float { 0.707106781186547524400844362104849039_f }   /// 1 / sqrt(2)
+    #[inline(always)] static pure fn e()                -> float { 2.71828182845904523536028747135266250__f }   /// Euler's number
+    #[inline(always)] static pure fn log2_e()           -> float { 1.44269504088896340735992468100189214__f }   /// log2(e)
+    #[inline(always)] static pure fn log10_e()          -> float { 0.434294481903251827651128918916605082_f }   /// log10(e)
+    #[inline(always)] static pure fn ln_2()             -> float { 0.693147180559945309417232121458176568_f }   /// ln(2)
+    #[inline(always)] static pure fn ln_10()            -> float { 2.30258509299404568401799145468436421__f }   //  ln(10)
 }
