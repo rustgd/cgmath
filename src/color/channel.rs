@@ -1,4 +1,4 @@
-use num::kinds::Number;
+use num::types::Number;
 
 /**
  * A color channel

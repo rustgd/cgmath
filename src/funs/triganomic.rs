@@ -6,7 +6,7 @@
  */
 use angle::Radians;
 use num::conv::cast;
-use num::kinds::Number;
+use num::types::Number;
 use vec::{Vec3, Vec2, Vec4};
 
 /**

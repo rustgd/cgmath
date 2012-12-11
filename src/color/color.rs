@@ -8,7 +8,7 @@ use angle::Degrees;
 use channel::Channel;
 use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
-use num::kinds::{Float, Number};
+use num::types::{Float, Number};
 
 /**
  * A generic color trait.

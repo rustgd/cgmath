@@ -1,6 +1,6 @@
 use funs::triganomic::tan;
 use angle::Angle;
-use num::kinds::{Float, Number};
+use num::types::{Float, Number};
 use mat::Mat4;
 
 /**

@@ -12,7 +12,7 @@ use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::{sin, cos};
 use num::conv::cast;
-use num::kinds::{Float, Number};
+use num::types::{Float, Number};
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
 

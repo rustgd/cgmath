@@ -8,7 +8,7 @@ use std::cmp::FuzzyEq;
 
 use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
-use num::kinds::Number;
+use num::types::Number;
 
 /**
  * The base generic vector trait.

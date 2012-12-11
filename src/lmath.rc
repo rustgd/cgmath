@@ -66,6 +66,6 @@ pub mod funs {
 pub mod num {
     #[path = "num/conv.rs"]
     pub mod conv;
-    #[path = "num/kinds.rs"]
-    pub mod kinds;
+    #[path = "num/types.rs"]
+    pub mod types;
 }

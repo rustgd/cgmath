@@ -21,7 +21,8 @@ use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::*;
 use mat::{Mat3, Mat4};
-use num::kinds::{Float, Number};
+use num::types::{Float, Number};
+use num::conv::cast;
 use vec::Vec3;
 
 

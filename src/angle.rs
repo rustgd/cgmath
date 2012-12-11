@@ -2,8 +2,8 @@ use core::cmp::{Eq, Ord};
 
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
-use num::kinds::{Float, Number};
 use num::conv::cast;
+use num::types::{Float, Number};
 use quat::Quat;
 use vec::Vec3;
 
