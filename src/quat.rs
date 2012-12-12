@@ -16,7 +16,6 @@ use core::vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
 use angle::Angle;
-use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::*;
@@ -35,9 +34,7 @@ use vec::Vec3;
  * * `V3` - The 3-dimensional vector type that will containin the imaginary
  *          components of the quaternion.
  */
-pub trait Quaternion<T,V3>: Dimensional<T> ToPtr<T> Eq Neg<self> {
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> self;
-    
+pub trait Quaternion<T,V3>: Index<uint, T> Eq Neg<self> {
     /**
      * # Return value
      *
@@ -177,6 +174,13 @@ pub trait Quaternion<T,V3>: Dimensional<T> ToPtr<T> Eq Neg<self> {
      * Convert the quaternion to a 4 x 4 transformation matrix
      */
     pure fn to_mat4(&self) -> Mat4<T>;
+    
+    /**
+     * # Return value
+     *
+     * A pointer to the first component of the quaternion
+     */
+    pure fn to_ptr(&self) -> *T;
 }
 
 pub trait ToQuat<T> {
@@ -204,7 +208,7 @@ pub trait ToQuat<T> {
  */
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T> Quat<T> {
+pub impl<T:Copy Float> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -233,41 +237,26 @@ pub impl<T> Quat<T> {
     static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: move s, v: move v }
     }
-}
-
-pub impl<T> Quat<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
     
     #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Quat<T>>() }
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Quat<T> {
+        // let half = theta.to_radians() / Number::from(2);
+        let half = theta.to_radians() / cast(2);
+        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
+    }
 }
 
 pub impl<T:Copy> Quat<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> Quat<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
+        unsafe { do buf_as_slice(
             transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(self)
-            )
+                to_unsafe_ptr(self)), 4) |slice| { slice[i] }
         }
     }
 }
 
 pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
-    #[inline(always)]
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Quat<T> {
-        let half = theta.to_radians() / Number::from(2);
-        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
-    }
-    
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(Number::from(1),
@@ -436,9 +425,18 @@ pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
     pure fn to_mat4(&self) -> Mat4<T> {
         self.to_mat3().to_mat4()
     }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
-pub impl<T:Copy Num> Quat<T>: Neg<Quat<T>> {
+pub impl<T:Copy Float> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])

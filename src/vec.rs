@@ -6,7 +6,6 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
-use dim::{Dimensional, ToPtr};
 use funs::exponential::Exp;
 use num::types::Number;
 
@@ -18,11 +17,18 @@ use num::types::Number;
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait Vector<T>: Dimensional<T> ToPtr<T> Eq {
+pub trait Vector<T>: Index<uint, T> Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
     static pure fn from_value(value: T) -> self;
+    
+    /**
+     * # Return value
+     *
+     * A pointer to the first component of the vector
+     */
+    pure fn to_ptr(&self) -> *T;
 }
 
 pub trait MutableVector<T>: Vector<T> {
@@ -301,24 +307,7 @@ pub impl<T:Copy> Vec2<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value, value)
     }
-}
-
-pub impl<T> Vec2<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 2 }
     
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Vec2<T>>() }
-}
-
-pub impl<T:Copy> Vec2<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> Vec2<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         unsafe {
@@ -326,6 +315,13 @@ pub impl<T:Copy> Vec2<T>: ToPtr<T> {
                 to_unsafe_ptr(self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec2<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
     }
 }
 
@@ -530,24 +526,7 @@ pub impl<T:Copy> Vec3<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec3<T> {
         Vec3::new(value, value, value)
     }
-}
-
-pub impl<T> Vec3<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 3 }
     
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Vec3<T>>() }
-}
-
-pub impl<T:Copy> Vec3<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> Vec3<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         unsafe {
@@ -555,6 +534,13 @@ pub impl<T:Copy> Vec3<T>: ToPtr<T> {
                 to_unsafe_ptr(self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec3<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
 
@@ -791,24 +777,7 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
     static pure fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value, value, value, value)
     }
-}
-
-pub impl<T> Vec4<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
     
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Vec4<T>>() }
-}
-
-pub impl<T:Copy> Vec4<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> Vec4<T>: ToPtr<T> {
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         unsafe {
@@ -816,6 +785,13 @@ pub impl<T:Copy> Vec4<T>: ToPtr<T> {
                 to_unsafe_ptr(self)
             )
         }
+    }
+}
+
+pub impl<T:Copy> Vec4<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 

@@ -6,14 +6,13 @@ use core::vec::raw::buf_as_slice;
 
 use angle::Degrees;
 use channel::Channel;
-use dim::{Dimensional, ToPtr};
 use funs::common::Sign;
 use num::types::{Float, Number};
 
 /**
  * A generic color trait.
  */
-pub trait Color<T>: Dimensional<T> ToPtr<T> Eq {
+pub trait Color<T>: Index<uint, T> Eq {
     /**
      * # Return value
      *
@@ -103,6 +102,13 @@ pub trait Color<T>: Dimensional<T> ToPtr<T> Eq {
      * to `1f64`.
      */
     pure fn to_hsv_f64(&self) -> HSV<f64>;
+    
+    /**
+     * # Return value
+     *
+     * A pointer to the first component of the color
+     */
+    pure fn to_ptr(&self) -> *T;
 }
 
 pub trait MutableColor<T>: Color<T> {
@@ -255,31 +261,10 @@ pub impl<T:Copy> RGB<T> {
     }
 }
 
-pub impl<T> RGB<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 3 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint {
-        size_of::<RGB<T>>()
-    }
-}
-
-pub impl<T:Copy> RGB<T>: Index<uint, T> {
+pub impl<T:Copy Number Channel> RGB<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> RGB<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*RGB<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
     }
 }
 
@@ -335,6 +320,15 @@ pub impl<T:Copy Number Channel> RGB<T>: Color<T> {
     
     #[inline(always)] pure fn to_hsv_f32(&self) -> HSV<f32> { to_hsv(&self.to_rgb_f32()) }
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*RGB<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
 pub impl<T:Copy Channel> RGB<T>: MutableColor<T> {
@@ -417,31 +411,10 @@ pub impl<T:Copy> RGBA<T> {
     }
 }
 
-pub impl<T> RGBA<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint {
-        size_of::<RGBA<T>>()
-    }
-}
-
-pub impl<T:Copy> RGBA<T>: Index<uint, T> {
+pub impl<T:Copy Number Channel> RGBA<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> RGBA<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*RGBA<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
     }
 }
 
@@ -498,6 +471,15 @@ pub impl<T:Copy Number Channel> RGBA<T>: Color<T> {
     
     #[inline(always)] pure fn to_hsv_f32(&self) -> HSV<f32> { to_hsv(&self.to_rgb_f32()) }
     #[inline(always)] pure fn to_hsv_f64(&self) -> HSV<f64> { to_hsv(&self.to_rgb_f64()) }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*RGBA<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
 pub impl<T:Copy Channel> RGBA<T>: MutableColor<T> {
@@ -575,31 +557,10 @@ pub impl<T:Copy> HSV<T> {
     }
 }
 
-pub impl<T> HSV<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 3 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint {
-        size_of::<HSV<T>>()
-    }
-}
-
-pub impl<T:Copy> HSV<T>: Index<uint, T> {
+pub impl<T:Copy Float Channel> HSV<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> HSV<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*HSV<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
     }
 }
 
@@ -630,6 +591,15 @@ pub impl<T:Copy Float Channel> HSV<T>: Color<T> {
         HSV::new(Degrees((*self.h).to_f64()),
                  self.s.to_channel_f64(),
                  self.v.to_channel_f64())
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*HSV<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
     }
 }
 
@@ -713,31 +683,10 @@ pub impl<T:Copy> HSVA<T> {
     }
 }
 
-pub impl<T> HSVA<T>: Dimensional<T> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint {
-        size_of::<HSVA<T>>()
-    }
-}
-
-pub impl<T:Copy> HSVA<T>: Index<uint, T> {
+pub impl<T:Copy Float Channel> HSVA<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
-    }
-}
-
-pub impl<T:Copy> HSVA<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*HSVA<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
     }
 }
 
@@ -769,6 +718,15 @@ pub impl<T:Copy Float Channel> HSVA<T>: Color<T> {
         HSV::new(Degrees((*self.h).to_f64()),
                  self.s.to_channel_f64(),
                  self.v.to_channel_f64())
+    }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*HSVA<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
     }
 }
 

@@ -7,7 +7,6 @@ use core::vec::raw::buf_as_slice;
 use std::cmp::FuzzyEq;
 
 use angle::Angle;
-use dim::{Dimensional, ToPtr};
 use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::{sin, cos};
@@ -26,7 +25,7 @@ use vec::{NumericVector, Vec2, Vec3, Vec4};
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait Matrix<T,V>: Dimensional<V> ToPtr<T> Eq Neg<self> {
+pub trait Matrix<T,V>: Index<uint, V> Eq Neg<self> {
     /**
      * # Return value
      *
@@ -173,6 +172,13 @@ pub trait Matrix<T,V>: Dimensional<V> ToPtr<T> Eq Neg<self> {
      * `true` if  the matrix is invertable
      */
     pure fn is_invertible(&self) -> bool;
+    
+    /**
+     * # Return value
+     *
+     * A pointer to the first element of the matrix
+     */
+    pure fn to_ptr(&self) -> *T;
 }
 
 /**
@@ -517,6 +523,15 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
         // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
     }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*Mat2<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
 pub impl<T:Copy Float Sign> Mat2<T>: MutableMatrix<T, Vec2<T>> {
@@ -601,31 +616,12 @@ pub impl<T:Copy Float> Mat2<T>: Matrix2<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy> Mat2<T>: Dimensional<Vec2<T>> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 2 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Mat2<T>>() }
-}
-
 pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> Vec2<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat2<T>, *Vec2<T>>(
                 to_unsafe_ptr(self)), 2) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl<T:Copy> Mat2<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Mat2<T>, *T>(
-                to_unsafe_ptr(self)
-            )
         }
     }
 }
@@ -962,6 +958,15 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
         // let _0 = Number::from(0);                // FIXME: causes ICE
         !self.determinant().fuzzy_eq(&_0)
     }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*Mat3<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
 pub impl<T:Copy Float Sign> Mat3<T>: MutableMatrix<T, Vec3<T>> {
@@ -1117,31 +1122,12 @@ pub impl<T:Copy Float Exp> Mat3<T>: ToQuat<T> {
     }
 }
 
-pub impl<T:Copy> Mat3<T>: Dimensional<Vec3<T>> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 3 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Mat3<T>>() }
-}
-
 pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> Vec3<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat3<T>, *Vec3<T>>(
                 to_unsafe_ptr(self)), 3) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl<T:Copy> Mat3<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Mat3<T>, *T>(
-                to_unsafe_ptr(self)
-            )
         }
     }
 }
@@ -1574,6 +1560,15 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
         let _0 = cast(0);
         !self.determinant().fuzzy_eq(&_0)
     }
+    
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*Mat4<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
 }
 
 pub impl<T:Copy Float Sign> Mat4<T>: MutableMatrix<T, Vec4<T>> {
@@ -1679,31 +1674,12 @@ pub impl<T:Copy Float> Mat4<T>: Neg<Mat4<T>> {
     }
 }
 
-pub impl<T> Mat4<T>: Dimensional<Vec4<T>> {
-    #[inline(always)]
-    static pure fn dim() -> uint { 4 }
-    
-    #[inline(always)]
-    static pure fn size_of() -> uint { size_of::<Mat4<T>>() }
-}
-
 pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> Vec4<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(self)), 4) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl<T:Copy> Mat4<T>: ToPtr<T> {
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Mat4<T>, *T>(
-                to_unsafe_ptr(self)
-            )
         }
     }
 }
