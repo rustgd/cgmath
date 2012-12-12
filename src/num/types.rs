@@ -284,7 +284,6 @@ pub impl int:  Integer {}
 
 
 pub trait Float: Number FuzzyEq {
-    pure fn to_float() -> float;
     static pure fn from_float(n: float) -> self;
     
     static pure fn NaN()            -> self;
@@ -315,7 +314,6 @@ pub trait Float: Number FuzzyEq {
 }
 
 pub impl f32: Float {
-    #[inline(always)] pure fn to_float() -> float { self as float }
     #[inline(always)] static pure fn from_float(n: float) -> f32 { n as f32 }
     
     #[inline(always)] static pure fn NaN()              -> f32 { 0_f32 / 0_f32 }
@@ -346,7 +344,6 @@ pub impl f32: Float {
 }
 
 pub impl f64: Float {
-    #[inline(always)] pure fn to_float() -> float { self as float }
     #[inline(always)] static pure fn from_float(n: float) -> f64 { n as f64 }
     
     #[inline(always)] static pure fn NaN()              -> f64 { 0_f64 / 0_f64 }
@@ -377,7 +374,6 @@ pub impl f64: Float {
 }
 
 pub impl float: Float {
-    #[inline(always)] pure fn to_float() -> float { self }
     #[inline(always)] static pure fn from_float(n: float) -> float { n }
     
     #[inline(always)] static pure fn NaN()              -> float { 0_f / 0_f }
