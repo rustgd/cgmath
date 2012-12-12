@@ -1,5 +1,7 @@
 use core::cmp::{Eq, Ord};
 
+use std::cmp::FuzzyEq;
+
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
 use num::conv::cast;
@@ -18,6 +20,7 @@ pub trait Angle<T>: Add<self,self>
                     Modulo<T,self>
                     // Modulo<self,T>   // TODO: not sure how to implement this, or if it is even possible...
                     Neg<self>
+                    FuzzyEq
                     Eq Ord {
     static pure fn full_turn() -> self;
     static pure fn half_turn() -> self;
@@ -35,7 +38,7 @@ pub trait Angle<T>: Add<self,self>
 
 
 
-
+// pub struct Radians<T>(T);    // error: internal compiler error: deref_cat() invoked on non-derefable type angle::Radians<'a>
 pub enum Radians<T> = T;
 
 pub impl<T:Copy Float> Radians<T>: Angle<T> {
@@ -109,6 +112,13 @@ pub impl<T:Copy Float> Radians<T>: Neg<Radians<T>> {
     }
 }
 
+pub impl<T:Copy Float> Radians<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &Radians<T>) -> bool {
+        (*self).fuzzy_eq(&**other)
+    }
+}
+
 pub impl<T:Copy Float> Radians<T>: Eq {
     #[inline(always)] pure fn eq(&self, other: &Radians<T>) -> bool { **self == **other }
     #[inline(always)] pure fn ne(&self, other: &Radians<T>) -> bool { **self != **other }
@@ -136,9 +146,9 @@ pub impl<T> Radians<T>: ToStr {
 
 
 
+// pub struct Degrees<T>(T);    // error: internal compiler error: deref_cat() invoked on non-derefable type angle::Degrees<'a>
 pub enum Degrees<T> = T;
 
-// FIXME: not sure why I need the Eq and Ord trait bounds, but Rust complains if I don't include them
 pub impl<T:Copy Float> Degrees<T>: Angle<T> {
     #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(cast(360.0)) }
     #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(cast(180.0)) }
@@ -207,6 +217,13 @@ pub impl<T:Copy Float> Degrees<T>: Neg<Degrees<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Degrees<T> {
         Degrees(-**self)
+    }
+}
+
+pub impl<T:Copy Float> Degrees<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &Degrees<T>) -> bool {
+        (*self).fuzzy_eq(&**other)
     }
 }
 

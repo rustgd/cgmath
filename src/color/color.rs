@@ -4,6 +4,8 @@ use core::ptr::to_unsafe_ptr;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
+use std::cmp::FuzzyEq;
+
 use angle::Degrees;
 use channel::Channel;
 use funs::common::Sign;
@@ -380,6 +382,15 @@ pub impl<T:Copy Eq> RGB<T>: Eq {
     }
 }
 
+pub impl<T:Copy Float> RGB<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &RGB<T>) -> bool {
+        self.r.fuzzy_eq(&other.r) &&
+        self.g.fuzzy_eq(&other.g) &&
+        self.b.fuzzy_eq(&other.b)
+    }
+}
+
 
 
 /**
@@ -534,6 +545,16 @@ pub impl<T:Copy Eq> RGBA<T>: Eq {
     }
 }
 
+pub impl<T:Copy Float> RGBA<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &RGBA<T>) -> bool {
+        self.r.fuzzy_eq(&other.r) &&
+        self.g.fuzzy_eq(&other.g) &&
+        self.b.fuzzy_eq(&other.b) &&
+        self.a.fuzzy_eq(&other.a)
+    }
+}
+
 
 
 /**
@@ -650,6 +671,15 @@ pub impl<T:Copy Float> HSV<T>: Eq {
     
     pure fn ne(&self, other: &HSV<T>) -> bool {
         !(self == other)
+    }
+}
+
+pub impl<T:Copy Float> HSV<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &HSV<T>) -> bool {
+        self.h.fuzzy_eq(&other.h) &&
+        self.s.fuzzy_eq(&other.s) &&
+        self.v.fuzzy_eq(&other.v)
     }
 }
 
@@ -779,5 +809,15 @@ pub impl<T:Copy Float> HSVA<T>: Eq {
     
     pure fn ne(&self, other: &HSVA<T>) -> bool {
         !(self == other)
+    }
+}
+
+pub impl<T:Copy Float> HSVA<T>: FuzzyEq {
+    #[inline(always)]
+    pure fn fuzzy_eq(other: &HSVA<T>) -> bool {
+        self.h.fuzzy_eq(&other.h) &&
+        self.s.fuzzy_eq(&other.s) &&
+        self.v.fuzzy_eq(&other.v) &&
+        self.a.fuzzy_eq(&other.a)
     }
 }
