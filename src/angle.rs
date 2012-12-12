@@ -8,7 +8,7 @@ use quat::Quat;
 use vec::Vec3;
 
 /**
- * The base trait for anglular units
+ * The base trait for angular units
  */
 pub trait Angle<T>: Add<self,self>
                     Sub<self,self>
