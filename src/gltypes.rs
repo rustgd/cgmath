@@ -23,7 +23,6 @@
 use core::sys::size_of;
 
 use angle::{Angle, Radians, Degrees};
-use color::color::{RGB, RGBA, HSV, HSVA};
 use mat::{Matrix, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
@@ -404,46 +403,8 @@ pub impl ddegrees {
 pub type quat4  = Quat<f32>;             /// a single-precision floating-point quaternion
 pub type dquat4 = Quat<f64>;             /// a double-precision floating-point quaternion
 
-// Color type aliases. Prefixing the colors with the type letter looked a little
-// strange, so in this case I opted for a suffix. It actually loosely follows the
-// nomanclature defined in [this article](http://www.opengl.org/wiki/Image_Formats#Color_formats)
-// on the OpenGL wiki.
 
-pub type rgb      = rgbf;           /// same as a `rgb32f`
-pub type rgba     = rgbaf;          /// same as a `rgba32f`
 
-pub type rgbf     = rgb32f;         /// same as a `rgb32f`
-pub type rgb32f   = RGB<f32>;       /// a 32-bit floating-point RGB color with component values ranging from 0f32 to 1f32
-pub type rgb64f   = RGB<f64>;       /// a 64-bit floating-point RGB color with component values ranging from 0f64 to 1f64
-
-pub type rgbaf    = rgba32f;        /// same as a `rgba32f`
-pub type rgba32f  = RGBA<f32>;      /// a 32-bit floating-point RGBA color with component values ranging from 0.0 to 1.0
-pub type rgba64f  = RGBA<f64>;      /// a 64-bit floating-point RGBA color with component values ranging from 0.0 to 1.0
-
-pub type rgbu     = rgb8u;          /// same as a `rgb8u`
-pub type rgb8u    = RGB<u8>;        /// an 8-bit unsigned-integer RGB color with component values ranging from 0x00 to 0xFF
-pub type rgb16u   = RGB<u16>;       /// a 16-bit unsigned-integer RGB color with component values ranging from 0x0000 to 0xFFFF
-pub type rgb32u   = RGB<u32>;       /// a 32-bit unsigned-integer RGB color with component values ranging from 0x0000_0000 to 0xFFFF_FFFF
-pub type rgb64u   = RGB<u64>;       /// a 64-bit unsigned-integer RGB color with component values ranging from 0x0000_0000 to 0xFFFF_FFFF
-
-pub type rgbau    = rgba8u;         /// same as a `rgba8u`
-pub type rgba8u   = RGBA<u8>;       /// an 8-bit unsigned-integer RGB color with component values ranging from 0x00 to 0xFF
-pub type rgba16u  = RGBA<u16>;      /// a 16-bit unsigned-integer RGB color with component values ranging from 0x0000 to 0xFFFF
-pub type rgba32u  = RGBA<u32>;      /// a 32-bit unsigned-integer RGB color with component values ranging from 0x0000_0000 to 0xFFFF_FFFF
-pub type rgba64u  = RGBA<u64>;      /// a 364bit unsigned-integer RGB color with component values ranging from 0x0000_0000 to 0xFFFF_FFFF
-
-pub type hsv      = hsvaf;          /// same as a `hsv32f`
-pub type hsva     = hsvaf;          /// same as a `hsva32f`
-
-pub type hsvf     = hsv32f;         /// same as a `hsv32f`
-pub type hsv32f   = HSV<f32>;       /// TODO: documentation
-pub type hsv64f   = HSV<f64>;       /// TODO: documentation
-
-pub type hsvaf    = hsva32f;        /// same as a `hsva32f`
-pub type hsva32f  = HSVA<f32>;      /// TODO: documentation
-pub type hsva64f  = HSVA<f64>;      /// TODO: documentation
-
-// TODO: Color method wrappers
 
 // prevents "error: expected item"
 priv fn hack() {}

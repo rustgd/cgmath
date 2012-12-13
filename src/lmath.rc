@@ -30,21 +30,6 @@ mod test {
     mod test_vec;
 }
 
-pub mod color {
-    #[path = "color/channel.rs"]
-    pub mod channel;
-    #[path = "color/color.rs"]
-    pub mod color;
-    
-    #[test]
-    mod test {
-        #[path = "color/test/test_channel.rs"]
-        mod test_channel;
-        #[path = "color/test/test_color.rs"]
-        mod test_color;
-    }
-}
-
 pub mod funs {
     #[path = "funs/common.rs"]
     pub mod common;
