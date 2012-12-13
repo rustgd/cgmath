@@ -247,6 +247,11 @@ pub trait EuclideanVector<T>: NumericVector<T> {
     pure fn normalize(&self) -> self;
     
     /**
+     * Set the length of the vector whilst preserving the direction
+     */
+    pure fn normalize_to(&self, length: T) -> self;
+    
+    /**
      * Linearly intoperlate between the vector and `other`
      *
      * # Return value
@@ -269,6 +274,11 @@ pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>
      * Normalize the vector
      */
     fn normalize_self(&mut self);
+    
+    /**
+     * Set the vector to a specified length whilst preserving the direction
+     */
+    fn normalize_self_to(&mut self, length: T);
     
     /**
      * Linearly intoperlate the vector towards `other`
@@ -454,6 +464,12 @@ pub impl<T:Copy Number Exp> Vec2<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn normalize_to(&self, length: T) -> Vec2<T> {
+        let mut n: T = length / self.length();
+        return self.mul_t(n);
+    }
+    
+    #[inline(always)]
     pure fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
@@ -464,6 +480,12 @@ pub impl<T:Copy Number Exp> Vec2<T>: MutableEuclideanVector<&self/T> {
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
         n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: &T) {
+        let mut n: T = length / self.length();
         self.mul_self_t(&n);
     }
     
@@ -702,6 +724,12 @@ pub impl<T:Copy Number Exp> Vec3<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn normalize_to(&self, length: T) -> Vec3<T> {
+        let mut n: T = length / self.length();
+        return self.mul_t(n);
+    }
+    
+    #[inline(always)]
     pure fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
@@ -712,6 +740,12 @@ pub impl<T:Copy Number Exp> Vec3<T>: MutableEuclideanVector<&self/T> {
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
         n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: &T) {
+        let mut n: T = length / self.length();
         self.mul_self_t(&n);
     }
     
@@ -950,6 +984,12 @@ pub impl<T:Copy Number Exp> Vec4<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn normalize_to(&self, length: T) -> Vec4<T> {
+        let mut n: T = length / self.length();
+        return self.mul_t(n);
+    }
+    
+    #[inline(always)]
     pure fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
@@ -960,6 +1000,12 @@ pub impl<T:Copy Number Exp> Vec4<T>: MutableEuclideanVector<&self/T> {
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
         n /= self.length();
+        self.mul_self_t(&n);
+    }
+    
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: &T) {
+        let mut n: T = length / self.length();
         self.mul_self_t(&n);
     }
     
