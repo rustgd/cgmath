@@ -113,28 +113,33 @@ pub trait InvTrig {
     pure fn asin(&self) -> Radians<self>;
     pure fn acos(&self) -> Radians<self>;
     pure fn atan(&self) -> Radians<self>;
+    pure fn atan2(&self, other: &self) -> Radians<self>;
 }
 
 #[inline(always)] pub pure fn asin<T:InvTrig>(x: &T) -> Radians<T> { x.asin() }
 #[inline(always)] pub pure fn acos<T:InvTrig>(x: &T) -> Radians<T> { x.acos() }
 #[inline(always)] pub pure fn atan<T:InvTrig>(x: &T) -> Radians<T> { x.atan() }
+#[inline(always)] pub pure fn atan2<T:InvTrig>(a: &T, b: &T) -> Radians<T> { a.atan2(b) }
 
 pub impl f32: InvTrig {
     #[inline(always)] pure fn asin(&self) -> Radians<f32> { Radians(f32::asin(*self)) }
     #[inline(always)] pure fn acos(&self) -> Radians<f32> { Radians(f32::acos(*self)) }
     #[inline(always)] pure fn atan(&self) -> Radians<f32> { Radians(f32::atan(*self)) }
+    #[inline(always)] pure fn atan2(&self, other: &f32) -> Radians<f32> { Radians(f32::atan2(*self, *other)) }
 }
 
 pub impl f64: InvTrig {
     #[inline(always)] pure fn asin(&self) -> Radians<f64> { Radians(f64::asin(*self)) }
     #[inline(always)] pure fn acos(&self) -> Radians<f64> { Radians(f64::acos(*self)) }
     #[inline(always)] pure fn atan(&self) -> Radians<f64> { Radians(f64::atan(*self)) }
+    #[inline(always)] pure fn atan2(&self, other: &f64) -> Radians<f64> { Radians(f64::atan2(*self, *other)) }
 }
 
 pub impl float: InvTrig {
     #[inline(always)] pure fn asin(&self) -> Radians<float> { Radians(f64::asin(*self as f64) as float) }
     #[inline(always)] pure fn acos(&self) -> Radians<float> { Radians(f64::acos(*self as f64) as float) }
     #[inline(always)] pure fn atan(&self) -> Radians<float> { Radians(f64::atan(*self as f64) as float) }
+    #[inline(always)] pure fn atan2(&self, other: &float) -> Radians<float> { Radians(f64::atan2(*self as f64, *other as f64) as float) }
 }
 
 // TODO: figure out how to merge with InvTrig

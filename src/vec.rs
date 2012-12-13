@@ -6,7 +6,9 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
+use angle::Radians;
 use funs::exponential::Exp;
+use funs::triganomic::{InvTrig, acos, atan2};
 use num::types::Number;
 
 /**
@@ -158,6 +160,13 @@ pub trait MutableNumericVector<T>: MutableVector<&self/T> NumericVector<T> {
 pub trait NumericVector2<T>: NumericVector<T> {
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
+    
+    /**
+     * # Return value
+     *
+     * The perp dot product of the vector and `other`
+     */
+    pure fn perp_dot(&self, other: &self) -> T;
 }
 
 /**
@@ -238,6 +247,13 @@ pub trait EuclideanVector<T>: NumericVector<T> {
      * The distance between the vector and `other`
      */
     pure fn distance(&self, other: &self) -> T;
+    
+    /**
+     * # Return value
+     *
+     * The angle between the vector and `other`
+     */
+    pure fn angle(&self, other: &self) -> Radians<T>;
     
     /**
      * # Return value
@@ -435,7 +451,14 @@ pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec2<T>: EuclideanVector<T> {
+pub impl<T:Copy Number> Vec2<T>: NumericVector2<T> {
+    #[inline(always)]
+    pure fn perp_dot(&self, other: &Vec2<T>) ->T {
+        (self[0] * other[1]) - (self[1] * other[0])
+    }
+}
+
+pub impl<T:Copy Number Exp InvTrig> Vec2<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -457,6 +480,11 @@ pub impl<T:Copy Number Exp> Vec2<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn angle(&self, other: &Vec2<T>) -> Radians<T> {
+        atan2(&self.perp_dot(other), &self.dot(other))
+    }
+    
+    #[inline(always)]
     pure fn normalize(&self) -> Vec2<T> {
         let mut n: T = Number::from(1); 
         n /= self.length();
@@ -475,7 +503,7 @@ pub impl<T:Copy Number Exp> Vec2<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec2<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Number Exp InvTrig> Vec2<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
@@ -695,7 +723,7 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector3<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec3<T>: EuclideanVector<T> {
+pub impl<T:Copy Number Exp InvTrig> Vec3<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -717,6 +745,11 @@ pub impl<T:Copy Number Exp> Vec3<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn angle(&self, other: &Vec3<T>) -> Radians<T> {
+        atan2(&self.cross(other).length(), &self.dot(other))
+    }
+    
+    #[inline(always)]
     pure fn normalize(&self) -> Vec3<T> {
         let mut n: T = Number::from(1);
         n /= self.length();
@@ -735,7 +768,7 @@ pub impl<T:Copy Number Exp> Vec3<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec3<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Number Exp InvTrig> Vec3<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 
@@ -955,7 +988,7 @@ pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec4<T>: EuclideanVector<T> {
+pub impl<T:Copy Number Exp InvTrig> Vec4<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -977,6 +1010,11 @@ pub impl<T:Copy Number Exp> Vec4<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
+    pure fn angle(&self, other: &Vec4<T>) -> Radians<T> {
+        acos(&(self.dot(other) / (self.length() * other.length())))
+    }
+    
+    #[inline(always)]
     pure fn normalize(&self) -> Vec4<T> {
         let mut n: T = Number::from(1);
         n /= self.length();
@@ -995,7 +1033,7 @@ pub impl<T:Copy Number Exp> Vec4<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp> Vec4<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Number Exp InvTrig> Vec4<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 

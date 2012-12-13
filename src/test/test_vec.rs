@@ -1,4 +1,5 @@
 use std::cmp::FuzzyEq;
+use angle::*;
 use vec::*;
 
 // TODO
@@ -81,8 +82,6 @@ fn test_Vec2_euclidean() {
     let b0 = Vec2::new(3f, 4f); // (3, 4, 5) Pythagorean triple
     let b = a.add_v(&b0);
     
-    // TODO: test normalize and normalize_self
-    
     assert a.length() == 13f;
     assert a.length2() == 13f * 13f;
     
@@ -91,6 +90,13 @@ fn test_Vec2_euclidean() {
     
     assert a.distance(&b) == 5f;
     assert a.distance2(&b) == 5f * 5f;
+    
+    assert Vec2::new(1f, 0f).angle(&Vec2::new(0f, 1f)).fuzzy_eq(&Angle::quadrant());
+    assert Vec2::new(10f, 0f).angle(&Vec2::new(0f, 5f)).fuzzy_eq(&Angle::quadrant());
+    assert Vec2::new(-1f, 0f).angle(&Vec2::new(0f, 1f)).fuzzy_eq(&-Angle::quadrant());
+    
+    assert Vec2::new(3f, 4f).normalize().fuzzy_eq(&Vec2::new(3f/5f, 4f/5f));
+    // TODO: test normalize_to, normalize_self, and normalize_self_to
     
     let c = Vec2::new(-2.0f, -1.0f);
     let d = Vec2::new( 1.0f,  0.0f);
@@ -195,8 +201,6 @@ fn test_Vec3_euclidean() {
     let b0 = Vec3::new(1f, 4f, 8f); // (1, 4, 8, 9) Pythagorean quadruple
     let b = a.add_v(&b0);
     
-    // TODO: test normalize and normalize_self
-    
     assert a.length() == 7f;
     assert a.length2() == 7f * 7f;
     
@@ -205,6 +209,13 @@ fn test_Vec3_euclidean() {
     
     assert a.distance(&b) == 9f;
     assert a.distance2(&b) == 9f * 9f;
+    
+    assert Vec3::new(1f, 0f, 1f).angle(&Vec3::new(1f, 1f, 0f)).fuzzy_eq(&Angle::sextant());
+    assert Vec3::new(10f, 0f, 10f).angle(&Vec3::new(5f, 5f, 0f)).fuzzy_eq(&Angle::sextant());
+    assert Vec3::new(-1f, 0f, -1f).angle(&Vec3::new(1f, -1f, 0f)).fuzzy_eq(&Radians(2f * Float::frac_pi_3()));
+    
+    assert Vec3::new(2f, 3f, 6f).normalize().fuzzy_eq(&Vec3::new(2f/7f, 3f/7f, 6f/7f));
+    // TODO: test normalize_to, normalize_self, and normalize_self_to
     
     let c = Vec3::new(-2.0f, -1.0f, 1.0f);
     let d = Vec3::new( 1.0f,  0.0f, 0.5f);
@@ -309,8 +320,6 @@ fn test_Vec4_euclidean() {
     let b0 = Vec4::new(1f, 2f, 8f, 10f); // (1, 2, 8, 10, 13) Pythagorean quintuple
     let b = a.add_v(&b0);
     
-    // TODO: test normalize and normalize_self
-    
     assert a.length() == 11f;
     assert a.length2() == 11f * 11f;
     
@@ -319,6 +328,13 @@ fn test_Vec4_euclidean() {
     
     assert a.distance(&b) == 13f;
     assert a.distance2(&b) == 13f * 13f;
+    
+    assert Vec4::new(1f, 0f, 1f, 0f).angle(&Vec4::new(0f, 1f, 0f, 1f)).fuzzy_eq(&Angle::quadrant());
+    assert Vec4::new(10f, 0f, 10f, 0f).angle(&Vec4::new(0f, 5f, 0f, 5f)).fuzzy_eq(&Angle::quadrant());
+    assert Vec4::new(-1f, 0f, -1f, 0f).angle(&Vec4::new(0f, 1f, 0f, 1f)).fuzzy_eq(&Angle::quadrant());
+    
+    assert Vec4::new(1f, 2f, 4f, 10f).normalize().fuzzy_eq(&Vec4::new(1f/11f, 2f/11f, 4f/11f, 10f/11f));
+    // TODO: test normalize_to, normalize_self, and normalize_self_to
 
     let c = Vec4::new(-2.0f, -1.0f, 1.0f, 2.0f);
     let d = Vec4::new( 1.0f,  0.0f, 0.5f, 1.0f);
