@@ -4,9 +4,8 @@
  * This module corresponds to Section 8.1 of the [GLSL 4.30.6 specification]
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
-use angle::Radians;
-use num::conv::cast;
-use num::types::Number;
+use angle::{Radians, Degrees};
+use num::types::{Number, Float};
 use vec::{Vec3, Vec2, Vec4};
 
 /**
@@ -24,13 +23,19 @@ priv trait Trig<T> {
 #[inline(always)] pub pure fn cos<T:Trig<R>, R>(theta: &T) -> R { theta.cos() }
 #[inline(always)] pub pure fn tan<T:Trig<R>, R>(theta: &T) -> R { theta.tan() }
 
-priv impl<T:Copy Number> Radians<T>: Trig<T> {
-    #[inline(always)] pure fn sin(&self) -> T { cast(f64::sin(cast(**self))) }
-    #[inline(always)] pure fn cos(&self) -> T { cast(f64::cos(cast(**self))) }
-    #[inline(always)] pure fn tan(&self) -> T { cast(f64::tan(cast(**self))) }
+priv impl<T:Copy Float> Radians<T>: Trig<T> {
+    #[inline(always)] pure fn sin(&self) -> T { Number::from(f64::sin(Number::from(**self))) }
+    #[inline(always)] pure fn cos(&self) -> T { Number::from(f64::cos(Number::from(**self))) }
+    #[inline(always)] pure fn tan(&self) -> T { Number::from(f64::tan(Number::from(**self))) }
 }
 
-pub impl<T:Copy Number> Vec2<Radians<T>>: Trig<Vec2<T>>  {
+pub impl<T:Copy Float> Degrees<T>: Trig<T> {
+    #[inline(always)] pure fn sin(&self) -> T { Number::from(f64::sin(Number::from(*self.to_radians()))) }
+    #[inline(always)] pure fn cos(&self) -> T { Number::from(f64::cos(Number::from(*self.to_radians()))) }
+    #[inline(always)] pure fn tan(&self) -> T { Number::from(f64::tan(Number::from(*self.to_radians()))) }
+}
+
+pub impl<T:Copy Float> Vec2<Radians<T>>: Trig<Vec2<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec2<T> {
         Vec2::new(sin(&self[0]),
@@ -50,7 +55,7 @@ pub impl<T:Copy Number> Vec2<Radians<T>>: Trig<Vec2<T>>  {
     }
 }
 
-pub impl<T:Copy Number> Vec3<Radians<T>>: Trig<Vec3<T>>  {
+pub impl<T:Copy Float> Vec3<Radians<T>>: Trig<Vec3<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec3<T> {
         Vec3::new(sin(&self[0]),
@@ -73,7 +78,7 @@ pub impl<T:Copy Number> Vec3<Radians<T>>: Trig<Vec3<T>>  {
     }
 }
 
-pub impl<T:Copy Number> Vec4<Radians<T>>: Trig<Vec4<T>>  {
+pub impl<T:Copy Float> Vec4<Radians<T>>: Trig<Vec4<T>>  {
     #[inline(always)]
     pure fn sin(&self) -> Vec4<T> {
         Vec4::new(sin(&self[0]),

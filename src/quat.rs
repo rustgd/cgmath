@@ -21,7 +21,6 @@ use funs::exponential::*;
 use funs::triganomic::*;
 use mat::{Mat3, Mat4};
 use num::types::{Float, Number};
-use num::conv::cast;
 use vec::Vec3;
 
 
@@ -240,8 +239,7 @@ pub impl<T:Copy Float> Quat<T> {
     
     #[inline(always)]
     static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Quat<T> {
-        // let half = theta.to_radians() / Number::from(2);
-        let half = theta.to_radians() / cast(2);
+        let half = theta.to_radians() / Number::from(2);
         Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
     }
 }

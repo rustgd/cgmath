@@ -10,7 +10,6 @@ use angle::Angle;
 use funs::common::*;
 use funs::exponential::*;
 use funs::triganomic::{sin, cos};
-use num::conv::cast;
 use num::types::{Float, Number};
 use quat::{Quat, ToQuat};
 use vec::{NumericVector, Vec2, Vec3, Vec4};
@@ -356,8 +355,7 @@ pub impl<T:Copy Float> Mat2<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat2<T> {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);    // FIXME: causes ICE
+        let _0 = Number::from(0);
         Mat2::new(value,    _0,
                      _0, value)
     }
@@ -365,10 +363,8 @@ pub impl<T:Copy Float> Mat2<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        // let _0 = Number::from(0);    // FIXME: causes ICE
-        // let _1 = Number::from(1);    // FIXME: causes ICE
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat2::new(_1, _0,
                   _0, _1)
     }
@@ -376,8 +372,7 @@ pub impl<T:Copy Float> Mat2<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);    // FIXME: causes ICE
+        let _0 = Number::from(0);
         Mat2::new(_0, _0,
                   _0, _0)
     }
@@ -474,10 +469,8 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
 
     #[inline(always)]
     pure fn inverse(&self) -> Option<Mat2<T>> {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
         let d = self.determinant();
-        if d.fuzzy_eq(&_0) {
+        if d.fuzzy_eq(&Number::from(0)) {
             None
         } else {
             Some(Mat2::new( self[1][1]/d, -self[0][1]/d,
@@ -499,8 +492,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
+        let _0 = Number::from(0);
         self[0][1].fuzzy_eq(&_0) &&
         self[1][0].fuzzy_eq(&_0)
     }
@@ -519,9 +511,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
 
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
-        !self.determinant().fuzzy_eq(&_0)
+        !self.determinant().fuzzy_eq(&Number::from(0))
     }
     
     #[inline(always)]
@@ -751,8 +741,7 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat3<T> {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
+        let _0 = Number::from(0);
         Mat3::new(value,    _0,    _0,
                      _0, value,    _0,
                      _0,    _0, value)
@@ -760,10 +749,8 @@ pub impl<T:Copy Float> Mat3<T> {
     
     #[inline(always)]
     static pure fn from_Mat2(m: &Mat2<T>) -> Mat3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
-        // let _1 = Number::from(1);                // FIXME: causes ICE
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat3::new(m[0][0], m[0][1], _0,
                   m[1][0], m[1][1], _0,
                        _0,      _0, _1)
@@ -772,8 +759,8 @@ pub impl<T:Copy Float> Mat3<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat3::new(_1, _0, _0,
                   _0, _1, _0,
                   _0, _0, _1)
@@ -782,7 +769,7 @@ pub impl<T:Copy Float> Mat3<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat3::new(_0, _0, _0,
                   _0, _0, _0,
                   _0, _0, _0)
@@ -815,8 +802,6 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
-        // let _0 = cast(0);
-        // let _1 = cast(1);
         let _0 = Number::from(0);
         let _1 = Number::from(1);
         Mat3::new(_1, _0, _0,
@@ -895,15 +880,12 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     // #[inline(always)]
     pure fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
-        if d.fuzzy_eq(&_0) {
+        if d.fuzzy_eq(&Number::from(0)) {
             None
         } else {
             Some(Mat3::from_cols(self[1].cross(&self[2]).div_t(d),
                                  self[2].cross(&self[0]).div_t(d),
-                                 self[0].cross(&self[1]).div_t(d))
-            .transpose())
+                                 self[0].cross(&self[1]).div_t(d)).transpose())
         }
     }
     
@@ -922,8 +904,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
+        let _0 = Number::from(0);
         self[0][1].fuzzy_eq(&_0) &&
         self[0][2].fuzzy_eq(&_0) &&
         
@@ -954,9 +935,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
 
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
-        let _0 = cast(0);
-        // let _0 = Number::from(0);                // FIXME: causes ICE
-        !self.determinant().fuzzy_eq(&_0)
+        !self.determinant().fuzzy_eq(&Number::zero())
     }
     
     #[inline(always)]
@@ -1055,10 +1034,8 @@ pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
         let c:  T = cos(&theta.to_radians());
         let s:  T = sin(&theta.to_radians());
-        let _0: T = cast(0);
-        let _1: T = cast(1);
-        // let _0: T = Number::from(0);    // FIXME: causes ICE
-        // let _1: T = Number::from(1);    // FIXME: causes ICE
+        let _0: T = Number::from(0);
+        let _1: T = Number::from(1);
         let _1_c:  T = _1 - c;
         
         let x = axis.x;
@@ -1271,7 +1248,7 @@ pub impl<T:Copy Float> Mat4<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat4<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat4::new(value,    _0,    _0,    _0,
                      _0, value,    _0,    _0,
                      _0,    _0, value,    _0,
@@ -1280,8 +1257,8 @@ pub impl<T:Copy Float> Mat4<T> {
     
     #[inline(always)]
     static pure fn from_Mat2(m: &Mat2<T>) -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat4::new(m[0][0], m[0][1], _0, _0,
                   m[1][0], m[1][1], _0, _0,
                        _0,      _0, _1, _0,
@@ -1290,8 +1267,8 @@ pub impl<T:Copy Float> Mat4<T> {
     
     #[inline(always)]
     static pure fn from_Mat3(m: &Mat3<T>) -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat4::new(m[0][0], m[0][1], m[0][2], _0,
                   m[1][0], m[1][1], m[1][2], _0,
                   m[2][0], m[2][1], m[2][2], _0,
@@ -1301,8 +1278,8 @@ pub impl<T:Copy Float> Mat4<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
-        let _0 = cast(0);
-        let _1 = cast(1);
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
         Mat4::new(_1, _0, _0, _0,
                   _0, _1, _0, _0,
                   _0, _0, _1, _0,
@@ -1312,7 +1289,7 @@ pub impl<T:Copy Float> Mat4<T> {
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         Mat4::new(_0, _0, _0, _0,
                   _0, _0, _0, _0,
                   _0, _0, _0, _0,
@@ -1449,9 +1426,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
 
     pure fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
-        // let _0 = Number::from(0);    // FIXME: Triggers ICE
-        let _0 = cast(0);
-        if d.fuzzy_eq(&_0) {
+        if d.fuzzy_eq(&Number::from(0)) {
             None
         } else {
             
@@ -1512,7 +1487,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
-        let _0 = cast(0);
+        let _0 = Number::from(0);
         self[0][1].fuzzy_eq(&_0) &&
         self[0][2].fuzzy_eq(&_0) &&
         self[0][3].fuzzy_eq(&_0) &&
@@ -1557,8 +1532,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
 
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
-        let _0 = cast(0);
-        !self.determinant().fuzzy_eq(&_0)
+        !self.determinant().fuzzy_eq(&Number::zero())
     }
     
     #[inline(always)]

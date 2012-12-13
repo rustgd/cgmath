@@ -4,7 +4,6 @@ use std::cmp::FuzzyEq;
 
 use funs::triganomic::{cos, sin};
 use mat::{Mat3, Mat4};
-use num::conv::cast;
 use num::types::{Float, Number};
 use quat::Quat;
 use vec::Vec3;
@@ -50,11 +49,11 @@ pub impl<T:Copy Float> Radians<T>: Angle<T> {
     #[inline(always)] static pure fn zero()         -> Radians<T> { Radians(Number::zero())     }
     
     #[inline(always)] pure fn to_radians(&self) -> Radians<T> { *self }
-    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * cast(180.0 / Float::pi())) }
+    #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { Degrees(**self * Number::from(180.0 / Float::pi())) }
     
     #[inline(always)]
     pure fn wrap(&self) -> Radians<T> {
-        let theta = (*self) % cast(2.0 * Float::pi());
+        let theta = (*self) % Number::from(2.0 * Float::pi());
         
         // keep in the domain of 0 to 1 rad
         if theta >= Angle::zero() {
@@ -150,19 +149,19 @@ pub impl<T> Radians<T>: ToStr {
 pub enum Degrees<T> = T;
 
 pub impl<T:Copy Float> Degrees<T>: Angle<T> {
-    #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(cast(360.0)) }
-    #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(cast(180.0)) }
-    #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(cast(90.0))  }
-    #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(cast(60.0))  }
-    #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(cast(45.0))  }
-    #[inline(always)] static pure fn zero()         -> Degrees<T> { Degrees(cast(0.0))   }
+    #[inline(always)] static pure fn full_turn()    -> Degrees<T> { Degrees(Number::from(360.0)) }
+    #[inline(always)] static pure fn half_turn()    -> Degrees<T> { Degrees(Number::from(180.0)) }
+    #[inline(always)] static pure fn quadrant()     -> Degrees<T> { Degrees(Number::from(90.0))  }
+    #[inline(always)] static pure fn sextant()      -> Degrees<T> { Degrees(Number::from(60.0))  }
+    #[inline(always)] static pure fn octant()       -> Degrees<T> { Degrees(Number::from(45.0))  }
+    #[inline(always)] static pure fn zero()         -> Degrees<T> { Degrees(Number::from(0.0))   }
     
-    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * cast(Float::pi::<float>() / 180.0)) }
+    #[inline(always)] pure fn to_radians(&self) -> Radians<T> { Radians(**self * Number::from(Float::pi::<float>() / 180.0)) }
     #[inline(always)] pure fn to_degrees(&self) -> Degrees<T> { *self }
     
     #[inline(always)]
     pure fn wrap(&self) -> Degrees<T> {
-        let theta = (*self) % cast(360);
+        let theta = (*self) % Number::from(360);
         
         // keep in the domain of 0 to 360 degrees
         if theta >= Angle::zero() {

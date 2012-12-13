@@ -16,7 +16,7 @@ pub trait Number: Eq Num NumConv Ord {
      * assert twenty == 20f32;
      * ~~~
      */
-    static pure fn from<T:Number>(n: T) -> self;
+    static pure fn from<T:NumConv>(n: T) -> self;
     
     static pure fn size_of() -> uint;
     static pure fn bits() -> uint;
@@ -27,9 +27,9 @@ pub trait Number: Eq Num NumConv Ord {
 
 pub impl u8: Number {
     /**
-     * Construct a `u8` from the type `T:Number`
+     * Construct a `u8` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> u8 { n.to_u8() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u8 { n.to_u8() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<u8>() }
     #[inline(always)] static pure fn bits() -> uint { 8 }
@@ -40,9 +40,9 @@ pub impl u8: Number {
 
 pub impl u16: Number {
     /**
-     * Construct a `u16` from the type `T:Number`
+     * Construct a `u16` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> u16 { n.to_u16() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u16 { n.to_u16() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<u16>() }
     #[inline(always)] static pure fn bits() -> uint { 16 }
@@ -53,9 +53,9 @@ pub impl u16: Number {
 
 pub impl u32: Number {
     /**
-     * Construct a `u32` from the type `T:Number`
+     * Construct a `u32` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> u32 { n.to_u32() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u32 { n.to_u32() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<u32>() }
     #[inline(always)] static pure fn bits() -> uint { 32 }
@@ -66,9 +66,9 @@ pub impl u32: Number {
 
 pub impl u64: Number {
     /**
-     * Construct a `u64` from the type `T:Number`
+     * Construct a `u64` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> u64 { n.to_u64() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> u64 { n.to_u64() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<u64>() }
     #[inline(always)] static pure fn bits() -> uint { 64 }
@@ -79,9 +79,9 @@ pub impl u64: Number {
 
 pub impl uint: Number {
     /**
-     * Construct a `uint` from the type `T:Number`
+     * Construct a `uint` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> uint { n.to_uint() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> uint { n.to_uint() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<uint>() }
     #[inline(always)] static pure fn bits() -> uint { sys::size_of::<uint>() * 8 }
@@ -92,9 +92,9 @@ pub impl uint: Number {
 
 pub impl i8: Number {
     /**
-     * Construct an `i8` from the type `T:Number`
+     * Construct an `i8` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> i8 { n.to_i8() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i8 { n.to_i8() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<i8>() }
     #[inline(always)] static pure fn bits() -> uint { 8 }
@@ -105,9 +105,9 @@ pub impl i8: Number {
 
 pub impl i16: Number {
     /**
-     * Construct an `i16` from the type `T:Number`
+     * Construct an `i16` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> i16 { n.to_i16() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i16 { n.to_i16() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<i16>() }
     #[inline(always)] static pure fn bits() -> uint { 16 }
@@ -118,9 +118,9 @@ pub impl i16: Number {
 
 pub impl i32: Number {
     /**
-     * Construct an `i32` from the type `T:Number`
+     * Construct an `i32` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> i32 { n.to_i32() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i32 { n.to_i32() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<i32>() }
     #[inline(always)] static pure fn bits() -> uint { 32 }
@@ -131,9 +131,9 @@ pub impl i32: Number {
 
 pub impl i64: Number {
     /**
-     * Construct an `i64` from the type `T:Number`
+     * Construct an `i64` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> i64 { n.to_i64() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> i64 { n.to_i64() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<i64>() }
     #[inline(always)] static pure fn bits() -> uint { 64 }
@@ -144,9 +144,9 @@ pub impl i64: Number {
 
 pub impl int: Number {
     /**
-     * Construct an `int` from the type `T:Number`
+     * Construct an `int` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> int { n.to_int_() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> int { n.to_int_() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<int>() }
     #[inline(always)] static pure fn bits() -> uint { sys::size_of::<int>() * 8 }
@@ -157,9 +157,9 @@ pub impl int: Number {
 
 pub impl f32: Number {
     /**
-     * Construct a `f32` from the type `T:Number`
+     * Construct a `f32` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> f32 { n.to_f32() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> f32 { n.to_f32() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<f32>() }
     #[inline(always)] static pure fn bits() -> uint { 32 }
@@ -170,9 +170,9 @@ pub impl f32: Number {
 
 pub impl f64: Number {
     /**
-     * Construct a `f64` from the type `T:Number`
+     * Construct a `f64` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> f64 { n.to_f64() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> f64 { n.to_f64() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<f64>() }
     #[inline(always)] static pure fn bits() -> uint { 64 }
@@ -183,9 +183,9 @@ pub impl f64: Number {
 
 pub impl float: Number {
     /**
-     * Construct a `float` from the type `T:Number`
+     * Construct a `float` from the type `T`
      */
-    #[inline(always)] static pure fn from<T:Number>(n: T) -> float { n.to_float() }
+    #[inline(always)] static pure fn from<T:NumConv>(n: T) -> float { n.to_float() }
     
     #[inline(always)] static pure fn size_of() -> uint { sys::size_of::<float>() }
     #[inline(always)] static pure fn bits() -> uint { sys::size_of::<float>() * 8 }
