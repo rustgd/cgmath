@@ -111,15 +111,6 @@ pub impl<T:Copy Float> Mat3<T> {
                      _0,    _0, value)
     }
     
-    #[inline(always)]
-    static pure fn from_Mat2(m: &Mat2<T>) -> Mat3<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat3::new(m[0][0], m[0][1], _0,
-                  m[1][0], m[1][1], _0,
-                       _0,      _0, _1)
-    }
-    
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
@@ -413,7 +404,12 @@ pub impl<T:Copy Float Exp> Mat3<T>: Matrix3<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
-        Mat4::from_Mat3(self)
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        Mat4::new(self[0][0], self[0][1], self[0][2], _0,
+                  self[1][0], self[1][1], self[1][2], _0,
+                  self[2][0], self[2][1], self[2][2], _0,
+                          _0,         _0,         _0, _1)
     }
     
     pure fn to_Quat() -> Quat<T> {

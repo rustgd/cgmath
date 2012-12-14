@@ -122,26 +122,6 @@ pub impl<T:Copy Float> Mat4<T> {
                      _0,    _0,    _0, value)
     }
     
-    #[inline(always)]
-    static pure fn from_Mat2(m: &Mat2<T>) -> Mat4<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat4::new(m[0][0], m[0][1], _0, _0,
-                  m[1][0], m[1][1], _0, _0,
-                       _0,      _0, _1, _0,
-                       _0,      _0, _0, _1)
-    }
-    
-    #[inline(always)]
-    static pure fn from_Mat3(m: &Mat3<T>) -> Mat4<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat4::new(m[0][0], m[0][1], m[0][2], _0,
-                  m[1][0], m[1][1], m[1][2], _0,
-                  m[2][0], m[2][1], m[2][2], _0,
-                       _0,      _0,      _0, _1)
-    }
-    
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {

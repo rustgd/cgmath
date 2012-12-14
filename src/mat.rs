@@ -249,7 +249,36 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
  * A 2 x 2 matrix
  */
 pub trait Matrix2<T,V>: Matrix<T,V> {
+    /**
+     * Returns the the matrix with an extra row and column added
+     * ~~~
+     *       c0   c1                 c0   c1   c2
+     *     +----+----+             +----+----+----+
+     *  r0 |  a |  b |          r0 |  a |  b |  0 |
+     *     +----+----+             +----+----+----+
+     *  r1 |  c |  d |    =>    r1 |  c |  d |  0 |
+     *     +----+----+             +----+----+----+
+     *                          r2 |  0 |  0 |  1 |
+     *                             +----+----+----+
+     * ~~~
+     */
     pure fn to_mat3(&self) -> Mat3<T>;
+    
+    /**
+     * Returns the the matrix with an extra two rows and columns added
+     * ~~~
+     *       c0   c1                 c0   c1   c2   c3
+     *     +----+----+             +----+----+----+----+
+     *  r0 |  a |  b |          r0 |  a |  b |  0 |  0 |
+     *     +----+----+             +----+----+----+----+
+     *  r1 |  c |  d |    =>    r1 |  c |  d |  0 |  0 |
+     *     +----+----+             +----+----+----+----+
+     *                          r2 |  0 |  0 |  1 |  0 |
+     *                             +----+----+----+----+
+     *                          r3 |  0 |  0 |  0 |  1 |
+     *                             +----+----+----+----+
+     * ~~~
+     */
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
@@ -257,7 +286,26 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  * A 3 x 3 matrix
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
+    /**
+     * Construct a matrix from an axis and an 
+     */
     static pure fn from_axis_angle<A:Angle<T>>(axis: &V, theta: A) -> Mat3<T>;
+    
+    /**
+     * Returns the the matrix with an extra row and column added
+     * ~~~
+     *       c0   c1   c2                 c0   c1   c2   c3
+     *     +----+----+----+             +----+----+----+----+
+     *  r0 |  a |  b |  c |          r0 |  a |  b |  c |  0 |
+     *     +----+----+----+             +----+----+----+----+
+     *  r1 |  d |  e |  f |    =>    r1 |  d |  e |  f |  0 |
+     *     +----+----+----+             +----+----+----+----+
+     *  r2 |  g |  h |  i |          r2 |  g |  h |  i |  0 |
+     *     +----+----+----+             +----+----+----+----+
+     *                               r3 |  0 |  0 |  0 |  1 |
+     *                                  +----+----+----+----+
+     * ~~~
+     */
     pure fn to_mat4(&self) -> Mat4<T>;
     
     /**
@@ -269,5 +317,4 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
 /**
  * A 4 x 4 matrix
  */
-pub trait Matrix4<T,V>: Matrix<T,V> {
-}
+pub trait Matrix4<T,V>: Matrix<T,V> {}

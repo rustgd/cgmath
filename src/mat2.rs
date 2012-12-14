@@ -333,12 +333,21 @@ pub impl<T:Copy Float Sign> Mat2<T>: MutableMatrix<T, Vec2<T>> {
 pub impl<T:Copy Float> Mat2<T>: Matrix2<T, Vec2<T>> {
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
-        Mat3::from_Mat2(self)
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        Mat3::new(self[0][0], self[0][1], _0,
+                  self[1][0], self[1][1], _0,
+                          _0,         _0, _1)
     }
     
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
-        Mat4::from_Mat2(self)
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        Mat4::new(self[0][0], self[0][1], _0, _0,
+                  self[1][0], self[1][1], _0, _0,
+                          _0,         _0, _1, _0,
+                          _0,         _0, _0, _1)
     }
 }
 

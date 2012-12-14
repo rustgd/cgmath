@@ -177,15 +177,6 @@ fn test_Mat3() {
                                 Vec3::new(2f, 5f, 8f),
                                 Vec3::new(3f, 6f, 9f));
     
-    assert Mat3::from_value(4f64) == Mat3::new(4f64, 0f64, 0f64,
-                                               0f64, 4f64, 0f64,
-                                               0f64, 0f64, 4f64);
-    
-    assert Mat3::from_Mat2(&Mat2::new(1f32, 3f32,
-                                      2f32, 4f32)) == Mat3::new(1f32, 3f32, 0f32,
-                                                                2f32, 4f32, 0f32,
-                                                                0f32, 0f32, 1f32);
-    
     assert a[0] == Vec3::new(1f, 4f, 7f);
     assert a[1] == Vec3::new(2f, 5f, 8f);
     assert a[2] == Vec3::new(3f, 6f, 9f);
@@ -384,19 +375,6 @@ fn test_Mat4() {
                                                0f64, 4f64, 0f64, 0f64,
                                                0f64, 0f64, 4f64, 0f64,
                                                0f64, 0f64, 0f64, 4f64);
-    
-    assert Mat4::from_Mat2(&Mat2::new(1f, 3f,
-                                      2f, 4f)) == Mat4::new(1f, 3f, 0f, 0f,
-                                                            2f, 4f, 0f, 0f,
-                                                            0f, 0f, 1f, 0f,
-                                                            0f, 0f, 0f, 1f);
-    
-    assert Mat4::from_Mat3(&Mat3::new(1f32, 4f32, 7f32,
-                                      2f32, 5f32, 8f32,
-                                      3f32, 6f32, 9f32)) == Mat4::new(1f32, 4f32, 7f32, 0f32,
-                                                                      2f32, 5f32, 8f32, 0f32,
-                                                                      3f32, 6f32, 9f32, 0f32,
-                                                                      0f32, 0f32, 0f32, 1f32);
     
     assert a[0] == Vec4::new(1f, 5f,  9f, 13f);
     assert a[1] == Vec4::new(2f, 6f, 10f, 14f);
