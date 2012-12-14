@@ -242,6 +242,32 @@ pub impl<T:Copy Float> Quat<T> {
         let half = theta.to_radians() / Number::from(2);
         Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
     }
+    
+    /**
+     * # Return value
+     *
+     * The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
+     */
+    #[inline(always)]
+    static pure fn identity() -> Quat<T> {
+        Quat::new(Number::one(),
+                  Number::zero(),
+                  Number::zero(),
+                  Number::zero())
+    }
+    
+    /**
+     * # Return value
+     *
+     * The additive identity, ie: `q = 0 + 0i + 0j + 0i`
+     */
+    #[inline(always)]
+    static pure fn zero() -> Quat<T> {
+        Quat::new(Number::zero(),
+                  Number::zero(),
+                  Number::zero(),
+                  Number::zero())
+    }
 }
 
 pub impl<T:Copy> Quat<T>: Index<uint, T> {
