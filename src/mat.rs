@@ -1,9 +1,8 @@
 use core::cmp::Eq;
-
 use std::cmp::FuzzyEq;
 
 use angle::Angle;
-use quat::ToQuat;
+use quat::Quat;
 
 pub mod mat2;
 pub mod mat3;
@@ -257,9 +256,14 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
 /**
  * A 3 x 3 matrix
  */
-pub trait Matrix3<T,V>: Matrix<T,V> ToQuat<T> {
+pub trait Matrix3<T,V>: Matrix<T,V> {
     static pure fn from_axis_angle<A:Angle<T>>(axis: &V, theta: A) -> Mat3<T>;
     pure fn to_mat4(&self) -> Mat4<T>;
+    
+    /**
+     * Convert the matrix to a quaternion
+     */
+    pure fn to_Quat() -> Quat<T>;
 }
 
 /**

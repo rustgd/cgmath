@@ -182,12 +182,6 @@ pub trait Quaternion<T,V3>: Index<uint, T> Eq Neg<self> {
     pure fn to_ptr(&self) -> *T;
 }
 
-pub trait ToQuat<T> {
-    /**
-     * Convert `self` to a quaternion
-     */
-    pure fn to_Quat() -> Quat<T>;
-}
 
 
 
