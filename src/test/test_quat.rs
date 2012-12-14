@@ -40,19 +40,3 @@ fn test_quat_2() {
                                            -1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0,
                                                        0.0,            0.0, 1.0));
 }
-
-/*
-
-Here is what I use to test my quaternions:
-
-* First, rotate an arbitrary vector around an arbitrary axis using an arbitrary angle (of course with a quaternion).
-
-* Then compare the original to the result vector, considering length and angle. If the length is constant and the angle is as desired, everything is fine and you are "green".
-
-* Now generate a series of rotation quaternions and concatenate them. Transform an arbitrary vector with it.
-
-* Now use each individual transformation of that series to transform the vector again, but this time checking angle and length like in the single transformation case. Only proceed while you stay "green".
-
-* Finally, compare both results. If they match, you are "green".
-
-*/
