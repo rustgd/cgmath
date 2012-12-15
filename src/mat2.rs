@@ -5,8 +5,10 @@ use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 
+use angle::Angle;
 use funs::common::*;
 use funs::exponential::*;
+use funs::triganomic::{sin, cos};
 use num::types::{Float, Number};
 use vec::Vec2;
 
@@ -94,6 +96,16 @@ pub impl<T:Copy Float> Mat2<T> {
         let _0 = Number::from(0);
         Mat2::new(value,    _0,
                      _0, value)
+    }
+    
+    // FIXME: An interim solution to the issues with static functions
+    #[inline(always)]
+    static pure fn from_angle<A:Angle<T>>(theta: A) -> Mat2<T> {
+        let cos_theta = cos(&theta.to_radians());
+        let sin_theta = sin(&theta.to_radians());
+        
+        Mat2::new(cos_theta, -sin_theta,
+                  sin_theta,  cos_theta)
     }
     
     // FIXME: An interim solution to the issues with static functions

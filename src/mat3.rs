@@ -129,6 +129,98 @@ pub impl<T:Copy Float> Mat3<T> {
                   _0, _0, _0,
                   _0, _0, _0)
     }
+    
+    /**
+     * Construct a matrix from an angular rotation around the `x` axis
+     */
+    #[inline(always)]
+    static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Mat3<T> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let cos_theta = cos(&theta.to_radians());
+        let sin_theta = sin(&theta.to_radians());
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        
+        Mat3::new(_1,        _0,         _0,
+                  _0,  cos_theta, sin_theta,
+                  _0, -sin_theta, cos_theta)
+    }
+    
+    /**
+     * Construct a matrix from an angular rotation around the `y` axis
+     */
+    #[inline(always)]
+    static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Mat3<T> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let cos_theta = cos(&theta.to_radians());
+        let sin_theta = sin(&theta.to_radians());
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        
+        Mat3::new(cos_theta, _0, -sin_theta,
+                         _0, _1,         _0,
+                  sin_theta, _0,  cos_theta)
+    }
+    
+    /**
+     * Construct a matrix from an angular rotation around the `z` axis
+     */
+    #[inline(always)]
+    static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Mat3<T> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let cos_theta = cos(&theta.to_radians());
+        let sin_theta = sin(&theta.to_radians());
+        let _0 = Number::from(0);
+        let _1 = Number::from(1);
+        
+        Mat3::new( cos_theta, sin_theta, _0,
+                  -sin_theta, cos_theta, _0,
+                          _0,        _0, _1)
+    }
+    
+    /**
+     * Construct a matrix from Euler angles
+     *
+     * # Arguments
+     *
+     * * `theta_x` - the angular rotation around the `x` axis (pitch)
+     * * `theta_y` - the angular rotation around the `y` axis (yaw)
+     * * `theta_z` - the angular rotation around the `z` axis (roll)
+     */
+    #[inline(always)]
+    static pure fn from_angle_xyz<A:Angle<T>>(theta_x: A, theta_y: A, theta_z: A) -> Mat3<T> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let cx = cos(&theta_x.to_radians());
+        let sx = sin(&theta_x.to_radians());
+        let cy = cos(&theta_y.to_radians());
+        let sy = sin(&theta_y.to_radians());
+        let cz = cos(&theta_z.to_radians());
+        let sz = sin(&theta_z.to_radians());
+        
+        Mat3::new(            cy*cz,             cy*sz,   -sy,
+                  -cx*sz + sx*sy*cz,  cx*cz + sx*sy*sz, sx*cy,
+                   sx*sz + cx*sy*cz, -sx*cz + cx*sy*sz, cx*cy)
+    }
+    
+    /**
+     * Construct a matrix from an axis and an angular rotation
+     */
+    #[inline(always)]
+    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
+        let c:  T = cos(&theta.to_radians());
+        let s:  T = sin(&theta.to_radians());
+        let _0: T = Number::from(0);
+        let _1: T = Number::from(1);
+        let _1_c:  T = _1 - c;
+        
+        let x = axis.x;
+        let y = axis.y;
+        let z = axis.z;
+        
+        Mat3::new(_1_c*x*x + c,   _1_c*x*y + s*z, _1_c*x*z - s*y,
+                  _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
+                  _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
+    }
 }
 
 pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {

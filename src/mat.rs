@@ -287,7 +287,7 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
     /**
-     * Construct a matrix from an axis and an 
+     * Construct a matrix from an axis and an angular rotation
      */
     static pure fn from_axis_angle<A:Angle<T>>(axis: &V, theta: A) -> Mat3<T>;
     
