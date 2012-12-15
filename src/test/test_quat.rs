@@ -1,7 +1,7 @@
+use funs::exponential::sqrt;
 use mat::*;
 use quat::*;
 use vec::*;
-use funs::exponential::sqrt;
 
 // TODO
 

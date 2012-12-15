@@ -1,5 +1,5 @@
+use funs::relational::*;
 use vec::*;
-use relational::*;
 
 #[test]
 fn test_boolv2() {

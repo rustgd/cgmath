@@ -1,4 +1,4 @@
-use common::*;
+use funs::common::*;
 use angle::{Radians, Degrees};
 use vec::{Vec2, Vec3, Vec4};
 
