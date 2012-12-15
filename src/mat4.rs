@@ -86,7 +86,10 @@ pub impl<T:Copy Float> Mat4<T> {
      * ~~~
      */
     #[inline(always)]
-    static pure fn from_cols(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
+    static pure fn from_cols(c0: Vec4<T>,
+                             c1: Vec4<T>,
+                             c2: Vec4<T>,
+                             c3: Vec4<T>) -> Mat4<T> {
         Mat4 { x: move c0,
                y: move c1,
                z: move c2,
@@ -239,13 +242,26 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        // Surprisingly when building with optimisation turned on this is actually
-        // faster than writing out the matrix multiplication in expanded form.
-        // If you don't believe me, see ./test/performance/matrix_mul.rs
-        Mat4::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)), self.row(3).dot(&other.col(0)),
-                  self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)), self.row(3).dot(&other.col(1)),
-                  self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)), self.row(3).dot(&other.col(2)),
-                  self.row(0).dot(&other.col(3)), self.row(1).dot(&other.col(3)), self.row(2).dot(&other.col(3)), self.row(3).dot(&other.col(3)))
+        Mat4::new(self.row(0).dot(&other.col(0)),
+                  self.row(1).dot(&other.col(0)),
+                  self.row(2).dot(&other.col(0)),
+                  self.row(3).dot(&other.col(0)),
+                  
+                  self.row(0).dot(&other.col(1)),
+                  self.row(1).dot(&other.col(1)),
+                  self.row(2).dot(&other.col(1)),
+                  self.row(3).dot(&other.col(1)),
+                  
+                  self.row(0).dot(&other.col(2)),
+                  self.row(1).dot(&other.col(2)),
+                  self.row(2).dot(&other.col(2)),
+                  self.row(3).dot(&other.col(2)),
+                  
+                  self.row(0).dot(&other.col(3)),
+                  self.row(1).dot(&other.col(3)),
+                  self.row(2).dot(&other.col(3)),
+                  self.row(3).dot(&other.col(3)))
+        
     }
     
     pure fn dot(&self, other: &Mat4<T>) -> T {
@@ -485,8 +501,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T> Mat4<T>: Matrix4<T, Vec4<T>> {
-}
+pub impl<T> Mat4<T>: Matrix4<T, Vec4<T>> {}
 
 pub impl<T:Copy Float> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]

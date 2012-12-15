@@ -70,16 +70,18 @@ pub impl<T:Copy Float> Mat3<T> {
      * ~~~
      *        c0     c1     c2
      *     +------+------+------+
-     *  r0 | c0.x | c1.y | c2.z |
+     *  r0 | c0.x | c1.x | c2.x |
      *     +------+------+------+
-     *  r1 | c0.x | c1.y | c2.z |
+     *  r1 | c0.y | c1.y | c2.y |
      *     +------+------+------+
-     *  r2 | c0.x | c1.y | c2.z |
+     *  r2 | c0.z | c1.z | c2.z |
      *     +------+------+------+
      * ~~~
      */
     #[inline(always)]
-    static pure fn from_cols(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
+    static pure fn from_cols(c0: Vec3<T>,
+                             c1: Vec3<T>,
+                             c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: move c0,
                y: move c1,
                z: move c2 }
@@ -307,9 +309,17 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)),
-                  self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)),
-                  self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)))
+        Mat3::new(self.row(0).dot(&other.col(0)),
+                  self.row(1).dot(&other.col(0)),
+                  self.row(2).dot(&other.col(0)),
+            
+                  self.row(0).dot(&other.col(1)),
+                  self.row(1).dot(&other.col(1)),
+                  self.row(2).dot(&other.col(1)),
+                  
+                  self.row(0).dot(&other.col(2)),
+                  self.row(1).dot(&other.col(2)),
+                  self.row(2).dot(&other.col(2)))
     }
     
     pure fn dot(&self, other: &Mat3<T>) -> T {

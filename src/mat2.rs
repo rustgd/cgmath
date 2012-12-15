@@ -70,7 +70,8 @@ pub impl<T:Copy Float> Mat2<T> {
      * ~~~
      */
     #[inline(always)]
-    static pure fn from_cols(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
+    static pure fn from_cols(c0: Vec2<T>,
+                             c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: move c0,
                y: move c1 }
     }
