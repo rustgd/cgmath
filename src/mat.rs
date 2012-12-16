@@ -1,7 +1,7 @@
 use core::cmp::Eq;
 use std::cmp::FuzzyEq;
+use numeric::types::angle::Angle;
 
-use angle::Angle;
 use quat::Quat;
 
 pub mod mat2;

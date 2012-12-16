@@ -4,11 +4,11 @@ use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
+use numeric::traits::*;
+use numeric::types::angle::Angle;
+use numeric::types::float::Float;
+use numeric::types::number::Number;
 
-use angle::Angle;
-use funs::common::*;
-use funs::exponential::*;
-use num::types::{Float, Number};
 use vec::Vec4;
 
 /**
@@ -147,7 +147,7 @@ pub impl<T:Copy Float> Mat4<T> {
     }
 }
 
-pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
+pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
     
@@ -408,7 +408,7 @@ pub impl<T:Copy Float Sign> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T:Copy Float Sign> Mat4<T>: MutableMatrix<T, Vec4<T>> {
+pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec4<T> {
         match i {

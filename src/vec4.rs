@@ -4,11 +4,10 @@ use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-
-use angle::Radians;
-use funs::exponential::Exp;
-use funs::triganomic::{InvTrig, acos};
-use num::types::Number;
+use numeric::traits::*;
+use numeric::types::angle::Radians;
+use numeric::types::float::Float;
+use numeric::types::number::Number;
 
 /**
  * A 4-dimensional vector
@@ -183,7 +182,7 @@ pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number Exp InvTrig> Vec4<T>: EuclideanVector<T> {
+pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -228,7 +227,7 @@ pub impl<T:Copy Number Exp InvTrig> Vec4<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Number Exp InvTrig> Vec4<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let mut n: T = Number::from(1); 

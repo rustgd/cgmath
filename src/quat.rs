@@ -14,13 +14,12 @@ use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
+use numeric::traits::*;
+use numeric::types::angle::Angle;
+use numeric::types::float::Float;
+use numeric::types::number::Number;
 
-use angle::Angle;
-use funs::common::*;
-use funs::exponential::*;
-use funs::triganomic::*;
 use mat::{Mat3, Mat4};
-use num::types::{Float, Number};
 use vec::Vec3;
 
 
@@ -274,7 +273,7 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
     }
 }
 
-pub impl<T:Copy Float Exp Extent InvTrig> Quat<T>: Quaternion<T, Vec3<T>> {
+pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
         Quat::new(Number::from(1),

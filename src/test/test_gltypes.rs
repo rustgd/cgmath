@@ -180,26 +180,6 @@ fn test_mat() {
 }
 
 #[test]
-fn test_radians() {
-    // TODO: unit tests
-}
-
-#[test]
-fn test_degrees() {
-    // TODO: unit tests
-}
-
-#[test]
-fn test_rotation() {
-    // TODO: unit tests
-}
-
-#[test]
-fn test_euler() {
-    // TODO: unit tests
-}
-
-#[test]
 fn test_quat() {
     // TODO: unit tests
 }

@@ -1,4 +1,6 @@
-use funs::exponential::sqrt;
+use numeric::traits::sqrt;
+use numeric::types::angle::*;
+
 use mat::*;
 use quat::*;
 use vec::*;

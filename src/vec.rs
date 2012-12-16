@@ -2,9 +2,8 @@ use core::cmp::Eq;
 
 use std::cmp::FuzzyEq;
 
-use angle::Radians;
-use num::types::Number;
-
+use numeric::types::angle::Radians;
+use numeric::types::number::Number;
 
 pub mod vec2;
 pub mod vec3;

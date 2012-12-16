@@ -9,8 +9,8 @@
 #[crate_type = "lib"];
 
 extern mod std;
+extern mod numeric;
 
-pub mod angle;
 pub mod gltypes;
 pub mod mat;
 pub mod quat;
@@ -18,8 +18,6 @@ pub mod vec;
 
 #[test]
 mod test {
-    #[path = "test/test_angle.rs"]
-    mod test_angle;
     #[path = "test/test_gltypes.rs"]
     mod test_gltypes;
     #[path = "test/test_mat.rs"]
@@ -31,25 +29,18 @@ mod test {
 }
 
 pub mod funs {
-    #[path = "funs/common.rs"]
-    pub mod common;
-    #[path = "funs/exponential.rs"]
-    pub mod exponential;
+    // #[path = "funs/common.rs"]
+    // pub mod common;
+    // #[path = "funs/exponential.rs"]
+    // pub mod exponential;
     #[path = "funs/projection.rs"]
     pub mod projection;
-    #[path = "funs/triganomic.rs"]
-    pub mod triganomic;
+    // #[path = "funs/triganomic.rs"]
+    // pub mod triganomic;
     
     #[test]
     mod test {
-        #[path = "funs/test/test_common.rs"]
-        mod test_common;
+        // #[path = "funs/test/test_common.rs"]
+        // mod test_common;
     }
-}
-
-pub mod num {
-    #[path = "num/conv.rs"]
-    pub mod conv;
-    #[path = "num/types.rs"]
-    pub mod types;
 }

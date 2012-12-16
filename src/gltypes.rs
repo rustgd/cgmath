@@ -22,7 +22,6 @@
 
 use core::sys::size_of;
 
-use angle::{Angle, Radians, Degrees};
 use mat::{Matrix, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
@@ -344,56 +343,6 @@ pub impl dmat4 {
     #[inline(always)] static pure fn rows() -> uint { 4 }
     #[inline(always)] static pure fn cols() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat4>() }
-}
-
-
-// Angle unit aliases. These are not present in the GLSL specification, but they
-// follow roughly the same nomenclature.
-
-pub type radians  = Radians<f32>;       /// a single-precision angle with floating-point radian units
-pub type dradians = Radians<f64>;       /// a double-precision angle with floating-point radian units
-pub type degrees  = Degrees<f32>;       /// a single-precision angle with floating-point degree units
-pub type ddegrees = Degrees<f64>;       /// a double-precision angle with floating-point degree units
-                                        //  TODO: not sure about 'ddegrees' - could be easy to mis-type
-
-
-// Angle unit constructors
-
-pub fn radians(theta: f32)  -> radians  { Radians(theta) }
-pub fn dradians(theta: f64) -> dradians { Radians(theta) }
-pub fn degrees(theta: f32)  -> degrees  { Degrees(theta) }
-pub fn ddegrees(theta: f64) -> ddegrees { Degrees(theta) }
-
-pub impl radians {
-    #[inline(always)] static pure fn full_turn() -> radians  { Angle::full_turn() }
-    #[inline(always)] static pure fn half_turn() -> radians  { Angle::half_turn() }
-    #[inline(always)] static pure fn quadrant()  -> radians  { Angle::quadrant()  }
-    #[inline(always)] static pure fn sextant()   -> radians  { Angle::sextant()   }
-    #[inline(always)] static pure fn octant()    -> radians  { Angle::octant()    }
-}
-
-pub impl dradians {
-    #[inline(always)] static pure fn full_turn() -> dradians { Angle::full_turn() }
-    #[inline(always)] static pure fn half_turn() -> dradians { Angle::half_turn() }
-    #[inline(always)] static pure fn quadrant()  -> dradians { Angle::quadrant()  }
-    #[inline(always)] static pure fn sextant()   -> dradians { Angle::sextant()   }
-    #[inline(always)] static pure fn octant()    -> dradians { Angle::octant()    }
-}
-
-pub impl degrees {
-    #[inline(always)] static pure fn full_turn() -> degrees  { Angle::full_turn() }
-    #[inline(always)] static pure fn half_turn() -> degrees  { Angle::half_turn() }
-    #[inline(always)] static pure fn quadrant()  -> degrees  { Angle::quadrant()  }
-    #[inline(always)] static pure fn sextant()   -> degrees  { Angle::sextant()   }
-    #[inline(always)] static pure fn octant()    -> degrees  { Angle::octant()    }
-}
-
-pub impl ddegrees {
-    #[inline(always)] static pure fn full_turn() -> ddegrees { Angle::full_turn() }
-    #[inline(always)] static pure fn half_turn() -> ddegrees { Angle::half_turn() }
-    #[inline(always)] static pure fn quadrant()  -> ddegrees { Angle::quadrant()  }
-    #[inline(always)] static pure fn sextant()   -> ddegrees { Angle::sextant()   }
-    #[inline(always)] static pure fn octant()    -> ddegrees { Angle::octant()    }
 }
 
 

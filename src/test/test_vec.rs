@@ -1,5 +1,7 @@
 use std::cmp::FuzzyEq;
-use angle::*;
+use numeric::types::float::*;
+use numeric::types::angle::*;
+
 use vec::*;
 
 // TODO

@@ -4,12 +4,11 @@ use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
+use numeric::traits::*;
+use numeric::types::angle::Angle;
+use numeric::types::float::Float;
+use numeric::types::number::Number;
 
-use angle::Angle;
-use funs::common::*;
-use funs::exponential::*;
-use funs::triganomic::{sin, cos};
-use num::types::{Float, Number};
 use quat::Quat;
 use vec::Vec3;
 
@@ -405,7 +404,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float Sign> Mat3<T>: MutableMatrix<T, Vec3<T>> {
+pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec3<T> {
         match i {
@@ -486,7 +485,7 @@ pub impl<T:Copy Float Sign> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float Exp> Mat3<T>: Matrix3<T, Vec3<T>> {
+pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     #[inline(always)]
     static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
         let c:  T = cos(&theta.to_radians());
