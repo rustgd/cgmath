@@ -305,3 +305,24 @@ pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>
      */
     fn lerp_self(&mut self, other: &self, amount: T);
 }
+
+/**
+ * Component-wise vector comparison methods
+ */
+pub trait RelationalVector<T, BoolVec>: Vector<T> {
+    pure fn less_than(&self, other: &self) -> BoolVec;
+    pure fn less_than_equal(&self, other: &self) -> BoolVec;
+    pure fn greater_than(&self, other: &self) -> BoolVec;
+    pure fn greater_than_equal(&self, other: &self) -> BoolVec;
+    pure fn equal(&self, other: &self) -> BoolVec;
+    pure fn not_equal(&self, other: &self) -> BoolVec;
+}
+
+/**
+ * A vector with boolean components
+ */
+pub trait BooleanVector: Vector<bool> {
+    pure fn any(&self) -> bool;
+    pure fn all(&self) -> bool;
+    pure fn not(&self) -> self;
+}

@@ -1,5 +1,5 @@
 use core::cast::transmute;
-use core::cmp::Eq;
+use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
@@ -243,5 +243,60 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
+    }
+}
+
+pub impl<T:Copy Ord Eq> Vec2<T>: RelationalVector<T, Vec2<bool>> {
+    #[inline(always)]
+    pure fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] < other[0],
+                  self[1] < other[1])
+    }
+    
+    #[inline(always)]
+    pure fn less_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] <= other[0],
+                  self[1] <= other[1])
+    }
+    
+    #[inline(always)]
+    pure fn greater_than(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] > other[0],
+                  self[1] > other[1])
+    }
+    
+    #[inline(always)]
+    pure fn greater_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] >= other[0],
+                  self[1] >= other[1])
+    }
+    
+    #[inline(always)]
+    pure fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] == other[0],
+                  self[1] == other[1])
+    }
+    
+    #[inline(always)]
+    pure fn not_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(self[0] != other[0],
+                  self[1] != other[1])
+    }
+}
+
+pub impl Vec2<bool>: BooleanVector {
+    #[inline(always)]
+    pure fn any(&self) -> bool {
+        self[0] || self[1]
+    }
+    
+    #[inline(always)]
+    pure fn all(&self) -> bool {
+        self[0] && self[1]
+    }
+    
+    #[inline(always)]
+    pure fn not(&self) -> Vec2<bool> { 
+        Vec2::new(!self[0], !self[1])
     }
 }

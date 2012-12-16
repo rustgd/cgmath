@@ -111,6 +111,25 @@ fn test_Vec2_euclidean() {
 }
 
 #[test]
+fn test_Vec2_boolean() {
+    let tf = Vec2::new(true, false);
+    let ff = Vec2::new(false, false);
+    let tt = Vec2::new(true, true);
+    
+    assert tf.any() == true;
+    assert tf.all() == false;
+    assert tf.not() == Vec2::new(false, true);
+    
+    assert ff.any() == false;
+    assert ff.all() == false;
+    assert ff.not() == Vec2::new(true, true);
+    
+    assert tt.any() == true;
+    assert tt.all() == true;
+    assert tt.not() == Vec2::new(false, false);
+}
+
+#[test]
 fn test_Vec3() {
     // assert Vec3::dim == 3;
     
@@ -230,6 +249,25 @@ fn test_Vec3_euclidean() {
 }
 
 #[test]
+fn test_Vec3_boolean() {
+    let tft = Vec3::new(true, false, true);
+    let fff = Vec3::new(false, false, false);
+    let ttt = Vec3::new(true, true, true);
+    
+    assert tft.any() == true;
+    assert tft.all() == false;
+    assert tft.not() == Vec3::new(false, true, false);
+    
+    assert fff.any() == false;
+    assert fff.all() == false;
+    assert fff.not() == Vec3::new(true, true, true);
+    
+    assert ttt.any() == true;
+    assert ttt.all() == true;
+    assert ttt.not() == Vec3::new(false, false, false);
+}
+
+#[test]
 fn test_Vec4() {
     // assert Vec4::dim == 4;
     
@@ -346,4 +384,23 @@ fn test_Vec4_euclidean() {
     let mut mut_c = c;
     mut_c.lerp_self(&d, &0.75f);
     assert mut_c == c.lerp(&d, 0.75f);
+}
+
+#[test]
+fn test_Vec4_boolean() {
+    let tftf = Vec4::new(true, false, true, false);
+    let ffff = Vec4::new(false, false, false, false);
+    let tttt = Vec4::new(true, true, true, true);
+    
+    assert tftf.any() == true;
+    assert tftf.all() == false;
+    assert tftf.not() == Vec4::new(false, true, false, true);
+    
+    assert ffff.any() == false;
+    assert ffff.all() == false;
+    assert ffff.not() == Vec4::new(true, true, true, true);
+    
+    assert tttt.any() == true;
+    assert tttt.all() == true;
+    assert tttt.not() == Vec4::new(false, false, false, false);
 }

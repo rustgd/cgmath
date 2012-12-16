@@ -1,5 +1,5 @@
 use core::cast::transmute;
-use core::cmp::Eq;
+use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
@@ -268,5 +268,72 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
+    }
+}
+
+pub impl<T:Copy Ord Eq> Vec4<T>: RelationalVector<T, Vec4<bool>> {
+    #[inline(always)]
+    pure fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] < other[0],
+                  self[1] < other[1],
+                  self[2] < other[2],
+                  self[3] < other[3])
+    }
+    
+    #[inline(always)]
+    pure fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] <= other[0],
+                  self[1] <= other[1],
+                  self[2] <= other[2],
+                  self[3] <= other[3])
+    }
+    
+    #[inline(always)]
+    pure fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] > other[0],
+                  self[1] > other[1],
+                  self[2] > other[2],
+                  self[3] > other[3])
+    }
+    
+    #[inline(always)]
+    pure fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] >= other[0],
+                  self[1] >= other[1],
+                  self[2] >= other[2],
+                  self[3] >= other[3])
+    }
+    
+    #[inline(always)]
+    pure fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] == other[0],
+                  self[1] == other[1],
+                  self[2] == other[2],
+                  self[3] == other[3])
+    }
+    
+    #[inline(always)]
+    pure fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(self[0] != other[0],
+                  self[1] != other[1],
+                  self[2] != other[2],
+                  self[3] != other[3])
+    }
+}
+
+pub impl Vec4<bool>: BooleanVector {
+    #[inline(always)]
+    pure fn any(&self) -> bool {
+        self[0] || self[1] || self[2] || self[3]
+    }
+    
+    #[inline(always)]
+    pure fn all(&self) -> bool {
+        self[0] && self[1] && self[2] && self[3]
+    }
+    
+    #[inline(always)]
+    pure fn not(&self) -> Vec4<bool> { 
+        Vec4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
