@@ -271,7 +271,7 @@ pub impl<T:Copy FuzzyEq> Vec3<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy Ord Eq> Vec3<T>: RelationalVector<T, Vec3<bool>> {
+pub impl<T:Copy Ord> Vec3<T>: OrdinalVector<T, Vec3<bool>> {
     #[inline(always)]
     pure fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(self[0] < other[0],
@@ -299,7 +299,9 @@ pub impl<T:Copy Ord Eq> Vec3<T>: RelationalVector<T, Vec3<bool>> {
                   self[1] >= other[1],
                   self[2] >= other[2])
     }
-    
+}
+
+pub impl<T:Copy Eq> Vec3<T>: EquableVector<T, Vec3<bool>> {
     #[inline(always)]
     pure fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(self[0] == other[0],

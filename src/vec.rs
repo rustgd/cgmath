@@ -309,12 +309,40 @@ pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>
 /**
  * Component-wise vector comparison methods
  */
-pub trait RelationalVector<T, BoolVec>: Vector<T> {
+pub trait OrdinalVector<T, BoolVec>: Vector<T> {
+    /**
+     * Component-wise compare of `self < other`
+     */
     pure fn less_than(&self, other: &self) -> BoolVec;
+    
+    /**
+     * Component-wise compare of `self <= other`
+     */
     pure fn less_than_equal(&self, other: &self) -> BoolVec;
+    
+    /**
+     * Component-wise compare of `self > other`
+     */
     pure fn greater_than(&self, other: &self) -> BoolVec;
+    
+    /**
+     * Component-wise compare of `self >= other`
+     */
     pure fn greater_than_equal(&self, other: &self) -> BoolVec;
+}
+
+/**
+ * Component-wise equality comparison methods
+ */
+pub trait EquableVector<T, BoolVec>: Vector<T> {
+    /**
+     * Component-wise compare of `self == other`
+     */
     pure fn equal(&self, other: &self) -> BoolVec;
+    
+    /**
+     * Component-wise compare of `self != other`
+     */
     pure fn not_equal(&self, other: &self) -> BoolVec;
 }
 
@@ -322,7 +350,24 @@ pub trait RelationalVector<T, BoolVec>: Vector<T> {
  * A vector with boolean components
  */
 pub trait BooleanVector: Vector<bool> {
+    /**
+     * # Return value
+     *
+     * `true` if of any component is `true`
+     */
     pure fn any(&self) -> bool;
+    
+    /**
+     * # Return value
+     *
+     * `true` only if all components are `true`
+     */
     pure fn all(&self) -> bool;
+    
+    /**
+     * # Return value
+     *
+     * the component-wise logical complement
+     */
     pure fn not(&self) -> self;
 }
