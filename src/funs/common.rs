@@ -8,7 +8,7 @@
 use numeric::funs::*;
 use numeric::traits::*;
 
-use vec::{Vec2, Vec3, Vec4};
+use vec::{Vector, Vec2, Vec3, Vec4};
 
 // Approx
 
@@ -146,52 +146,125 @@ pub impl<T:Copy Approx> Vec4<T>: Approx {
 
 // Extent
 
-pub impl<T:Copy Extent> Vec2<T>: Extent {
+pub trait ExtentVector<T>: Vector<T> {
+    pure fn min_t(&self, value: T) -> self;
+    pure fn max_t(&self, value: T) -> self;
+    pure fn clamp_t(&self, mn: T, mx: T) -> self;
+    
+    pure fn min_v(&self, other: &self) -> self;
+    pure fn max_v(&self, other: &self) -> self;
+    pure fn clamp_v(&self, mn: &self, mx: &self) -> self;
+}
+
+pub impl<T:Copy Extent> Vec2<T>: ExtentVector<T> {
     #[inline(always)]
-    pure fn min(&self, other: &Vec2<T>) -> Vec2<T> {
+    pure fn min_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(min(&self[0], &value),
+                  min(&self[1], &value))
+    }
+    
+    #[inline(always)]
+    pure fn max_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(max(&self[0], &value),
+                  max(&self[1], &value))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_t(&self, mn: T, mx: T) -> Vec2<T> {
+        Vec2::new(self[0].clamp(&mn, &mx),
+                  self[1].clamp(&mn, &mx))
+    }
+    
+    #[inline(always)]
+    pure fn min_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(min(&self[0], &other[0]),
                   min(&self[1], &other[1]))
     }
     
     #[inline(always)]
-    pure fn max(&self, other: &Vec2<T>) -> Vec2<T> {
+    pure fn max_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(max(&self[0], &other[0]),
                   max(&self[1], &other[1]))
     }
     
     #[inline(always)]
-    pure fn clamp(&self, mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
+    pure fn clamp_v(&self, mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]))
     }
 }
 
-pub impl<T:Copy Extent> Vec3<T>: Extent {
+pub impl<T:Copy Extent> Vec3<T>: ExtentVector<T> {
     #[inline(always)]
-    pure fn min(&self, other: &Vec3<T>) -> Vec3<T> {
+    pure fn min_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(min(&self[0], &value),
+                  min(&self[1], &value),
+                  min(&self[2], &value))
+    }
+    
+    #[inline(always)]
+    pure fn max_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(max(&self[0], &value),
+                  max(&self[1], &value),
+                  max(&self[2], &value))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_t(&self, mn: T, mx: T) -> Vec3<T> {
+        Vec3::new(self[0].clamp(&mn, &mx),
+                  self[1].clamp(&mn, &mx),
+                  self[2].clamp(&mn, &mx))
+    }
+    
+    #[inline(always)]
+    pure fn min_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(min(&self[0], &other[0]),
                   min(&self[1], &other[1]),
                   min(&self[2], &other[2]))
     }
     
     #[inline(always)]
-    pure fn max(&self, other: &Vec3<T>) -> Vec3<T> {
+    pure fn max_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(max(&self[0], &other[0]),
                   max(&self[1], &other[1]),
                   max(&self[2], &other[2]))
     }
     
     #[inline(always)]
-    pure fn clamp(&self, mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
+    pure fn clamp_v(&self, mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]),
                   self[2].clamp(&mn[2], &mx[2]))
     }
 }
 
-pub impl<T:Copy Extent> Vec4<T>: Extent {
+pub impl<T:Copy Extent> Vec4<T>: ExtentVector<T> {
     #[inline(always)]
-    pure fn min(&self, other: &Vec4<T>) -> Vec4<T> {
+    pure fn min_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(min(&self[0], &value),
+                  min(&self[1], &value),
+                  min(&self[2], &value),
+                  min(&self[3], &value))
+    }
+    
+    #[inline(always)]
+    pure fn max_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(max(&self[0], &value),
+                  max(&self[1], &value),
+                  max(&self[2], &value),
+                  max(&self[3], &value))
+    }
+    
+    #[inline(always)]
+    pure fn clamp_t(&self, mn: T, mx: T) -> Vec4<T> {
+        Vec4::new(self[0].clamp(&mn, &mx),
+                  self[1].clamp(&mn, &mx),
+                  self[2].clamp(&mn, &mx),
+                  self[3].clamp(&mn, &mx))
+    }
+    
+    #[inline(always)]
+    pure fn min_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(min(&self[0], &other[0]),
                   min(&self[1], &other[1]),
                   min(&self[2], &other[2]),
@@ -199,7 +272,7 @@ pub impl<T:Copy Extent> Vec4<T>: Extent {
     }
     
     #[inline(always)]
-    pure fn max(&self, other: &Vec4<T>) -> Vec4<T> {
+    pure fn max_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(max(&self[0], &other[0]),
                   max(&self[1], &other[1]),
                   max(&self[2], &other[2]),
@@ -207,7 +280,7 @@ pub impl<T:Copy Extent> Vec4<T>: Extent {
     }
     
     #[inline(always)]
-    pure fn clamp(&self, mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
+    pure fn clamp_v(&self, mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].clamp(&mn[0], &mx[0]),
                   self[1].clamp(&mn[1], &mx[1]),
                   self[2].clamp(&mn[2], &mx[2]),
@@ -217,52 +290,125 @@ pub impl<T:Copy Extent> Vec4<T>: Extent {
 
 // Mix
 
-pub impl<T:Copy Mix> Vec2<T>: Mix {
+pub trait MixVector<T>: Vector<T> {
+    pure fn mix_t(&self, other: T, value: T) -> self;
+    pure fn smooth_step_t(&self, edge0: T, edge1: T) -> self;
+    pure fn step_t(&self, edge: T) -> self;
+    
+    pure fn mix_v(&self, other: &self, value: &self) -> self;
+    pure fn smooth_step_v(&self, edge0: &self, edge1: &self) -> self;
+    pure fn step_v(&self, edge: &self) -> self;
+}
+
+pub impl<T:Copy Mix> Vec2<T>: MixVector<T> {
     #[inline(always)]
-    pure fn mix(&self, other: &Vec2<T>, value: &Vec2<T>) -> Vec2<T> {
+    pure fn mix_t(&self, other: T, value: T) -> Vec2<T> {
+        Vec2::new(self[0].mix(&other, &value),
+                  self[1].mix(&other, &value))
+    }
+    
+    #[inline(always)]
+    pure fn smooth_step_t(&self, edge0: T, edge1: T) -> Vec2<T> {
+        Vec2::new(self[0].smooth_step(&edge0, &edge1),
+                  self[1].smooth_step(&edge0, &edge1))
+    }
+    
+    #[inline(always)]
+    pure fn step_t(&self, edge: T) -> Vec2<T> {
+        Vec2::new(self[0].step(&edge),
+                  self[1].step(&edge))
+    }
+    
+    #[inline(always)]
+    pure fn mix_v(&self, other: &Vec2<T>, value: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].mix(&other[0], &value[0]),
                   self[1].mix(&other[1], &value[1]))
     }
     
     #[inline(always)]
-    pure fn smooth_step(&self, edge0: &Vec2<T>, edge1: &Vec2<T>) -> Vec2<T> {
+    pure fn smooth_step_v(&self, edge0: &Vec2<T>, edge1: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].smooth_step(&edge0[0], &edge1[0]),
                   self[1].smooth_step(&edge0[1], &edge1[1]))
     }
     
     #[inline(always)]
-    pure fn step(&self, edge: &Vec2<T>) -> Vec2<T> {
+    pure fn step_v(&self, edge: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self[0].step(&edge[0]),
                   self[1].step(&edge[1]))
     }
 }
 
-pub impl<T:Copy Mix> Vec3<T>: Mix {
+pub impl<T:Copy Mix> Vec3<T>: MixVector<T> {
     #[inline(always)]
-    pure fn mix(&self, other: &Vec3<T>, value: &Vec3<T>) -> Vec3<T> {
+    pure fn mix_t(&self, other: T, value: T) -> Vec3<T> {
+        Vec3::new(self[0].mix(&other, &value),
+                  self[1].mix(&other, &value),
+                  self[2].mix(&other, &value))
+    }
+    
+    #[inline(always)]
+    pure fn smooth_step_t(&self, edge0: T, edge1: T) -> Vec3<T> {
+        Vec3::new(self[0].smooth_step(&edge0, &edge1),
+                  self[1].smooth_step(&edge0, &edge1),
+                  self[2].smooth_step(&edge0, &edge1))
+    }
+    
+    #[inline(always)]
+    pure fn step_t(&self, edge: T) -> Vec3<T> {
+        Vec3::new(self[0].step(&edge),
+                  self[1].step(&edge),
+                  self[2].step(&edge))
+    }
+    
+    #[inline(always)]
+    pure fn mix_v(&self, other: &Vec3<T>, value: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].mix(&other[0], &value[0]),
                   self[1].mix(&other[1], &value[1]),
                   self[2].mix(&other[2], &value[2]))
     }
     
     #[inline(always)]
-    pure fn smooth_step(&self, edge0: &Vec3<T>, edge1: &Vec3<T>) -> Vec3<T> {
+    pure fn smooth_step_v(&self, edge0: &Vec3<T>, edge1: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].smooth_step(&edge0[0], &edge1[0]),
                   self[1].smooth_step(&edge0[1], &edge1[1]),
                   self[2].smooth_step(&edge0[2], &edge1[2]))
     }
     
     #[inline(always)]
-    pure fn step(&self, edge: &Vec3<T>) -> Vec3<T> {
+    pure fn step_v(&self, edge: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self[0].step(&edge[0]),
                   self[1].step(&edge[1]),
                   self[2].step(&edge[2]))
     }
 }
 
-pub impl<T:Copy Mix> Vec4<T>: Mix {
+pub impl<T:Copy Mix> Vec4<T>: MixVector<T> {
     #[inline(always)]
-    pure fn mix(&self, other: &Vec4<T>, value: &Vec4<T>) -> Vec4<T> {
+    pure fn mix_t(&self, other: T, value: T) -> Vec4<T> {
+        Vec4::new(self[0].mix(&other, &value),
+                  self[1].mix(&other, &value),
+                  self[2].mix(&other, &value),
+                  self[3].mix(&other, &value))
+    }
+    
+    #[inline(always)]
+    pure fn smooth_step_t(&self, edge0: T, edge1: T) -> Vec4<T> {
+        Vec4::new(self[0].smooth_step(&edge0, &edge1),
+                  self[1].smooth_step(&edge0, &edge1),
+                  self[2].smooth_step(&edge0, &edge1),
+                  self[3].smooth_step(&edge0, &edge1))
+    }
+    
+    #[inline(always)]
+    pure fn step_t(&self, edge: T) -> Vec4<T> {
+        Vec4::new(self[0].step(&edge),
+                  self[1].step(&edge),
+                  self[2].step(&edge),
+                  self[3].step(&edge))
+    }
+    
+    #[inline(always)]
+    pure fn mix_v(&self, other: &Vec4<T>, value: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].mix(&other[0], &value[0]),
                   self[1].mix(&other[1], &value[1]),
                   self[2].mix(&other[2], &value[2]),
@@ -270,7 +416,7 @@ pub impl<T:Copy Mix> Vec4<T>: Mix {
     }
     
     #[inline(always)]
-    pure fn smooth_step(&self, edge0: &Vec4<T>, edge1: &Vec4<T>) -> Vec4<T> {
+    pure fn smooth_step_v(&self, edge0: &Vec4<T>, edge1: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].smooth_step(&edge0[0], &edge1[0]),
                   self[1].smooth_step(&edge0[1], &edge1[1]),
                   self[2].smooth_step(&edge0[2], &edge1[2]),
@@ -278,7 +424,7 @@ pub impl<T:Copy Mix> Vec4<T>: Mix {
     }
     
     #[inline(always)]
-    pure fn step(&self, edge: &Vec4<T>) -> Vec4<T> {
+    pure fn step_v(&self, edge: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0].step(&edge[0]),
                   self[1].step(&edge[1]),
                   self[2].step(&edge[2]),

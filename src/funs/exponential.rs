@@ -8,15 +8,33 @@
 use numeric::funs::*;
 use numeric::traits::*;
 
-use vec::{Vec2, Vec3, Vec4};
+use vec::{Vector, Vec2, Vec3, Vec4};
 
 // Exp
+
+pub trait ExpVector<T>: Vector<T> {
+    pure fn pow_t(&self, n: T) -> self;
+    pure fn pow_v(&self, n: &self) -> self; 
+}
+
+pub impl<T:Copy Exp> Vec2<T>: ExpVector<T> {
+    #[inline(always)]
+    pure fn pow_t(&self, n: T) -> Vec2<T> {
+        Vec2::new(pow(&self[0], &n),
+                  pow(&self[1], &n))
+    }
+    
+    #[inline(always)]
+    pure fn pow_v(&self, n: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(pow(&self[0], &n[0]),
+                  pow(&self[1], &n[1]))
+    }
+}
 
 pub impl<T:Copy Exp> Vec2<T>: Exp {
     #[inline(always)]
     pure fn pow(&self, n: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(pow(&self[0], &n[0]),
-                  pow(&self[1], &n[1]))
+        self.pow_v(n)
     }
     
     #[inline(always)]
@@ -56,12 +74,26 @@ pub impl<T:Copy Exp> Vec2<T>: Exp {
     }
 }
 
-pub impl<T:Copy Exp> Vec3<T>: Exp {
+pub impl<T:Copy Exp> Vec3<T>: ExpVector<T> {
     #[inline(always)]
-    pure fn pow(&self, n: &Vec3<T>) -> Vec3<T> {
+    pure fn pow_t(&self, n: T) -> Vec3<T> {
+        Vec3::new(pow(&self[0], &n),
+                  pow(&self[1], &n),
+                  pow(&self[2], &n))
+    }
+    
+    #[inline(always)]
+    pure fn pow_v(&self, n: &Vec3<T>) -> Vec3<T> {
         Vec3::new(pow(&self[0], &n[0]),
                   pow(&self[1], &n[1]),
                   pow(&self[2], &n[2]))
+    }
+}
+
+pub impl<T:Copy Exp> Vec3<T>: Exp {
+    #[inline(always)]
+    pure fn pow(&self, n: &Vec3<T>) -> Vec3<T> {
+        self.pow_v(n)
     }
     
     #[inline(always)]
@@ -107,13 +139,28 @@ pub impl<T:Copy Exp> Vec3<T>: Exp {
     }
 }
 
-pub impl<T:Copy Exp> Vec4<T>: Exp {
+pub impl<T:Copy Exp> Vec4<T>: ExpVector<T> {
     #[inline(always)]
-    pure fn pow(&self, n: &Vec4<T>) -> Vec4<T> {
+    pure fn pow_t(&self, n: T) -> Vec4<T> {
+        Vec4::new(pow(&self[0], &n),
+                  pow(&self[1], &n),
+                  pow(&self[2], &n),
+                  pow(&self[3], &n))
+    }
+    
+    #[inline(always)]
+    pure fn pow_v(&self, n: &Vec4<T>) -> Vec4<T> {
         Vec4::new(pow(&self[0], &n[0]),
                   pow(&self[1], &n[1]),
                   pow(&self[2], &n[2]),
                   pow(&self[3], &n[3]))
+    }
+}
+
+pub impl<T:Copy Exp> Vec4<T>: Exp {
+    #[inline(always)]
+    pure fn pow(&self, n: &Vec4<T>) -> Vec4<T> {
+        self.pow_v(n)
     }
     
     #[inline(always)]
