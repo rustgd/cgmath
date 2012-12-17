@@ -29,14 +29,14 @@ mod test {
 }
 
 pub mod funs {
-    // #[path = "funs/common.rs"]
-    // pub mod common;
-    // #[path = "funs/exponential.rs"]
-    // pub mod exponential;
+    #[path = "funs/common.rs"]
+    pub mod common;
+    #[path = "funs/exponential.rs"]
+    pub mod exponential;
     #[path = "funs/projection.rs"]
     pub mod projection;
-    // #[path = "funs/triganomic.rs"]
-    // pub mod triganomic;
+    #[path = "funs/triganomic.rs"]
+    pub mod triganomic;
     
     #[test]
     mod test {

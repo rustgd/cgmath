@@ -5,55 +5,11 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
+use numeric::traits::*;
+
 use vec::{Vec2, Vec3, Vec4};
 
-pub trait Exp {
-    pure fn pow(&self, n: &self) -> self;
-    pure fn exp(&self)      -> self;
-    pure fn log_(&self)     -> self;
-    pure fn exp2(&self)     -> self;
-    pure fn log2(&self)     -> self;
-    pure fn sqrt(&self)     -> self;
-    pure fn inv_sqrt(&self) -> self;
-}
-
-#[inline(always)] pub pure fn pow<T:Exp>(x: &T, n: &T)  -> T { x.pow(n) }
-#[inline(always)] pub pure fn exp<T:Exp>(x: &T)         -> T { x.exp()  }
-#[inline(always)] pub pure fn log_<T:Exp>(x: &T)        -> T { x.log_() }
-#[inline(always)] pub pure fn exp2<T:Exp>(x: &T)        -> T { x.exp2() }
-#[inline(always)] pub pure fn log2<T:Exp>(x: &T)        -> T { x.log2() }
-#[inline(always)] pub pure fn sqrt<T:Exp>(x: &T)        -> T { x.sqrt() }
-#[inline(always)] pub pure fn inv_sqrt<T:Exp>(x: &T)    -> T { x.inv_sqrt() }
-
-pub impl f32: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f32)    -> f32 { f32::pow(*self, *n) }
-    #[inline(always)] pure fn exp(&self)             -> f32 { f32::exp(*self) }
-    #[inline(always)] pure fn log_(&self)            -> f32 { f32::ln(*self) }
-    #[inline(always)] pure fn exp2(&self)            -> f32 { f32::exp2(*self) }
-    #[inline(always)] pure fn log2(&self)            -> f32 { f32::log2(*self) }
-    #[inline(always)] pure fn sqrt(&self)            -> f32 { f32::sqrt(*self) }
-    #[inline(always)] pure fn inv_sqrt(&self)        -> f32 { 1f32 / self.sqrt() }  // TODO: optimise? need a wizard
-}
-
-pub impl f64: Exp {
-    #[inline(always)] pure fn pow(&self, n: &f64)    -> f64 { f64::pow(*self, *n) }
-    #[inline(always)] pure fn exp(&self)             -> f64 { f64::exp(*self) }
-    #[inline(always)] pure fn log_(&self)            -> f64 { f64::ln(*self) }
-    #[inline(always)] pure fn exp2(&self)            -> f64 { f64::exp2(*self) }
-    #[inline(always)] pure fn log2(&self)            -> f64 { f64::log2(*self) }
-    #[inline(always)] pure fn sqrt(&self)            -> f64 { f64::sqrt(*self) }
-    #[inline(always)] pure fn inv_sqrt(&self)        -> f64 { 1f64 / self.sqrt() }  // TODO: optimise? need a wizard
-}
-
-pub impl float: Exp {
-    #[inline(always)] pure fn pow(&self, n: &float)  -> float { f64::pow(*self as f64, *n as f64) as float }
-    #[inline(always)] pure fn exp(&self)             -> float { f64::exp(*self as f64) as float }
-    #[inline(always)] pure fn log_(&self)            -> float { f64::ln(*self as f64) as float }
-    #[inline(always)] pure fn exp2(&self)            -> float { f64::exp2(*self as f64) as float }
-    #[inline(always)] pure fn log2(&self)            -> float { f64::log2(*self as f64) as float }
-    #[inline(always)] pure fn sqrt(&self)            -> float { f64::sqrt(*self as f64) as float }
-    #[inline(always)] pure fn inv_sqrt(&self)        -> float { 1f / self.sqrt() }  // TODO: optimise? need a wizard
-}
+// Exp
 
 pub impl<T:Copy Exp> Vec2<T>: Exp {
     #[inline(always)]
