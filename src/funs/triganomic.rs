@@ -5,6 +5,7 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
+use numeric::funs::*;
 use numeric::traits::*;
 use numeric::types::angle::{Angle, Radians};
 use numeric::types::float::Float;

@@ -1,4 +1,4 @@
-use numeric::traits::sqrt;
+use numeric::funs::sqrt;
 use numeric::types::angle::*;
 
 use mat::*;

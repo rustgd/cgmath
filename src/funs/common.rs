@@ -5,6 +5,7 @@
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 
+use numeric::funs::*;
 use numeric::traits::*;
 
 use vec::{Vec2, Vec3, Vec4};

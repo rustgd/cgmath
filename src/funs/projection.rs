@@ -1,4 +1,4 @@
-use numeric::traits::*;
+use numeric::funs::*;
 use numeric::types::angle::Angle;
 use numeric::types::float::Float;
 use numeric::types::number::Number;

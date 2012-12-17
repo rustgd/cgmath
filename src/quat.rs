@@ -14,7 +14,7 @@ use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::traits::*;
+use numeric::funs::*;
 use numeric::types::angle::Angle;
 use numeric::types::float::Float;
 use numeric::types::number::Number;

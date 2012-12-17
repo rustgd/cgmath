@@ -4,7 +4,7 @@ use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::traits::*;
+use numeric::funs::*;
 use numeric::types::angle::Radians;
 use numeric::types::float::Float;
 use numeric::types::number::Number;
