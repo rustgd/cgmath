@@ -308,6 +308,10 @@ pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T>
 
 /**
  * Component-wise vector comparison methods
+ *
+ * The methods contained in this trait correspond to the relational functions
+ * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 pub trait OrdinalVector<T, BoolVec>: Vector<T> {
     /**
@@ -333,6 +337,10 @@ pub trait OrdinalVector<T, BoolVec>: Vector<T> {
 
 /**
  * Component-wise equality comparison methods
+ *
+ * The methods contained in this trait correspond to the relational functions
+ * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 pub trait EquableVector<T, BoolVec>: Vector<T> {
     /**
@@ -348,6 +356,10 @@ pub trait EquableVector<T, BoolVec>: Vector<T> {
 
 /**
  * A vector with boolean components
+ *
+ * The methods contained in this trait correspond to the relational functions
+ * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
+ * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
 pub trait BooleanVector: Vector<bool> {
     /**
