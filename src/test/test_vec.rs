@@ -7,7 +7,7 @@ use vec::*;
 // TODO
 
 #[test]
-fn test_Vec2() {
+fn test_vec2() {
     // assert Vec2::dim == 2;
     
     let a = Vec2 { x: 1f, y: 2f };
@@ -69,17 +69,19 @@ fn test_Vec2() {
     assert mut_a == a.sub_v(&b);
     // mut_a = a;
     
-    // exact_eq
-    // fuzzy_eq
-    // eq
-    
     // assert c.abs()       == Vec2::new( 2.0f,  1.0f);
     // assert c.min(&d)      == Vec2::new(-2.0f, -1.0f);
     // assert c.max(&d)      == Vec2::new( 1.0f,  0.0f);
 }
 
 #[test]
-fn test_Vec2_euclidean() {
+fn test_vec2_fuzzy_eq() {
+    assert !Vec2::new(0.000001, 0.000001).fuzzy_eq(&Vec2::new(0.0, 0.0));
+    assert Vec2::new(0.0000001, 0.0000001).fuzzy_eq(&Vec2::new(0.0, 0.0));
+}
+
+#[test]
+fn test_vec2_euclidean() {
     let a = Vec2::new(5f, 12f); // (5, 12, 13) Pythagorean triple
     let b0 = Vec2::new(3f, 4f); // (3, 4, 5) Pythagorean triple
     let b = a.add_v(&b0);
@@ -111,7 +113,7 @@ fn test_Vec2_euclidean() {
 }
 
 #[test]
-fn test_Vec2_boolean() {
+fn test_vec2_boolean() {
     let tf = Vec2::new(true, false);
     let ff = Vec2::new(false, false);
     let tt = Vec2::new(true, true);
@@ -130,7 +132,7 @@ fn test_Vec2_boolean() {
 }
 
 #[test]
-fn test_Vec3() {
+fn test_vec3() {
     // assert Vec3::dim == 3;
     
     let a = Vec3 { x: 1f, y: 2f, z: 3f };
@@ -217,7 +219,13 @@ fn test_Vec3() {
 }
 
 #[test]
-fn test_Vec3_euclidean() {
+fn test_vec3_fuzzy_eq() {
+    assert !Vec3::new(0.000001, 0.000001, 0.000001).fuzzy_eq(&Vec3::new(0.0, 0.0, 0.0));
+    assert Vec3::new(0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Vec3::new(0.0, 0.0, 0.0));
+}
+
+#[test]
+fn test_vec3_euclidean() {
     let a = Vec3::new(2f, 3f, 6f); // (2, 3, 6, 7) Pythagorean quadruple
     let b0 = Vec3::new(1f, 4f, 8f); // (1, 4, 8, 9) Pythagorean quadruple
     let b = a.add_v(&b0);
@@ -249,7 +257,7 @@ fn test_Vec3_euclidean() {
 }
 
 #[test]
-fn test_Vec3_boolean() {
+fn test_vec3_boolean() {
     let tft = Vec3::new(true, false, true);
     let fff = Vec3::new(false, false, false);
     let ttt = Vec3::new(true, true, true);
@@ -268,7 +276,7 @@ fn test_Vec3_boolean() {
 }
 
 #[test]
-fn test_Vec4() {
+fn test_vec4() {
     // assert Vec4::dim == 4;
     
     let a = Vec4 { x: 1f, y: 2f, z: 3f, w: 4f };
@@ -345,17 +353,19 @@ fn test_Vec4() {
     assert mut_a == a.sub_v(&b);
     // mut_a = a;
     
-    // exact_eq
-    // fuzzy_eq
-    // eq
-    
     // assert c.abs()        == Vec4::new( 2.0f,  1.0f, 1.0f, 2.0f);
     // assert c.min(&d)      == Vec4::new(-2.0f, -1.0f, 0.5f, 1.0f);
     // assert c.max(&d)      == Vec4::new( 1.0f,  0.0f, 1.0f, 2.0f);
 }
 
 #[test]
-fn test_Vec4_euclidean() {
+fn test_vec4_fuzzy_eq() {
+    assert !Vec4::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&Vec4::new(0.0, 0.0, 0.0, 0.0));
+    assert Vec4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Vec4::new(0.0, 0.0, 0.0, 0.0));
+}
+
+#[test]
+fn test_vec4_euclidean() {
     let a = Vec4::new(1f, 2f, 4f, 10f); // (1, 2, 4, 10, 11) Pythagorean quintuple
     let b0 = Vec4::new(1f, 2f, 8f, 10f); // (1, 2, 8, 10, 13) Pythagorean quintuple
     let b = a.add_v(&b0);
@@ -387,7 +397,7 @@ fn test_Vec4_euclidean() {
 }
 
 #[test]
-fn test_Vec4_boolean() {
+fn test_vec4_boolean() {
     let tftf = Vec4::new(true, false, true, false);
     let ffff = Vec4::new(false, false, false, false);
     let tttt = Vec4::new(true, true, true, true);

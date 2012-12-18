@@ -4,7 +4,7 @@ use vec::*;
 // TODO
 
 #[test]
-fn test_Mat2() {
+fn test_mat2() {
     let a = Mat2 { x: Vec2 { x: 1f, y: 3f },
                    y: Vec2 { x: 2f, y: 4f } };
     let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
@@ -65,10 +65,6 @@ fn test_Mat2() {
     assert Mat2::new(0f, 2f,
                      0f, 5f).inverse().is_none();
     
-    // exact_eq
-    // fuzzy_eq
-    // eq
-    
     // let ident: Mat2<float> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
     let ident: Mat2<float> = Mat2::identity();
     
@@ -104,7 +100,7 @@ fn test_Mat2() {
                                     0f, 0f, 0f, 1f);
 }
 
-fn test_Mat2_mut() {
+fn test_mat2_mut() {
     let a = Mat2 { x: Vec2 { x: 1f, y: 3f },
                    y: Vec2 { x: 2f, y: 4f } };
     let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
@@ -158,7 +154,15 @@ fn test_Mat2_mut() {
 }
 
 #[test]
-fn test_Mat3() {
+fn test_mat2_fuzzy_eq() {
+    assert !Mat2::new(0.000001, 0.000001,
+                      0.000001, 0.000001).fuzzy_eq(&Mat2::zero());
+    assert Mat2::new(0.0000001, 0.0000001,
+                     0.0000001, 0.0000001).fuzzy_eq(&Mat2::zero());
+}
+
+#[test]
+fn test_mat3() {
     let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
                    y: Vec3 { x: 2f, y: 5f, z:  8f },
                    z: Vec3 { x: 3f, y: 6f, z:  9f } };
@@ -239,10 +243,6 @@ fn test_Mat3() {
 
     assert option::unwrap(ident.inverse()) == ident;
     
-    // exact_eq
-    // fuzzy_eq
-    // eq
-    
     assert ident.is_identity();
     assert ident.is_symmetric();
     assert ident.is_diagonal();
@@ -274,7 +274,7 @@ fn test_Mat3() {
     // to_Quaternion
 }
 
-fn test_Mat3_mut() {
+fn test_mat3_mut() {
     let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
                    y: Vec3 { x: 2f, y: 5f, z:  8f },
                    z: Vec3 { x: 3f, y: 6f, z:  9f } };
@@ -344,7 +344,17 @@ fn test_Mat3_mut() {
 }
 
 #[test]
-fn test_Mat4() {
+fn test_mat3_fuzzy_eq() {
+    assert !Mat3::new(0.000001, 0.000001, 0.000001,
+                      0.000001, 0.000001, 0.000001,
+                      0.000001, 0.000001, 0.000001).fuzzy_eq(&Mat3::zero());
+    assert Mat3::new(0.0000001, 0.0000001, 0.0000001,
+                     0.0000001, 0.0000001, 0.0000001,
+                     0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Mat3::zero());
+}
+
+#[test]
+fn test_mat4() {
     let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
                    y: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
                    z: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
@@ -446,10 +456,6 @@ fn test_Mat4() {
 
     assert option::unwrap(ident.inverse()) == ident;
     
-    // exact_eq
-    // fuzzy_eq
-    // eq
-    
     assert ident.is_identity();
     assert ident.is_symmetric();
     assert ident.is_diagonal();
@@ -475,7 +481,7 @@ fn test_Mat4() {
     assert Mat4::from_value(6f).is_diagonal();
 }
 
-fn test_Mat4_mut() {
+fn test_mat4_mut() {
     let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
                    y: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
                    z: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
@@ -545,4 +551,16 @@ fn test_Mat4_mut() {
     mut_a.transpose_self();
     assert mut_a == a.transpose();
     // mut_a = a;
+}
+
+#[test]
+fn test_mat4_fuzzy_eq() {
+    assert !Mat4::new(0.000001, 0.000001, 0.000001, 0.000001,
+                      0.000001, 0.000001, 0.000001, 0.000001,
+                      0.000001, 0.000001, 0.000001, 0.000001,
+                      0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&Mat4::zero());
+    assert Mat4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                     0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                     0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                     0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Mat4::zero());
 }

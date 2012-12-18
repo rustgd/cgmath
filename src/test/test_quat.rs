@@ -8,7 +8,7 @@ use vec::*;
 // TODO
 
 #[test]
-fn test_Quat() {
+fn test_quat() {
     let a = Quat { s: 1f, v: Vec3 { x: 2f, y: 3f, z: 4f } };
     
     assert a == Quat::from_sv(1f, Vec3::new(2f, 3f, 4f));
@@ -41,4 +41,10 @@ fn test_quat_2() {
     assert q.to_mat3().fuzzy_eq(&Mat3::new( 1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0,
                                            -1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0,
                                                        0.0,            0.0, 1.0));
+}
+
+#[test]
+fn test_quat_fuzzy_eq() {
+    assert !Quat::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&Quat::new(0.0, 0.0, 0.0, 0.0));
+    assert Quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Quat::new(0.0, 0.0, 0.0, 0.0));
 }
