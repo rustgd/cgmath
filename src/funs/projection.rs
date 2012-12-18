@@ -28,20 +28,24 @@ pub pure fn perspective<T:Copy Float, A:Angle<T>>(fovy: A, aspectRatio: T, near:
 #[inline(always)]
 pub pure fn frustum<T:Copy Float>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = Number::from(0);
+    let _1: T = Number::from(1);
     let _2: T = Number::from(2);
     
     let c0r0 = (_2 * near) / (right - left);
     let c0r1 = _0;
     let c0r2 = _0;
     let c0r3 = _0;
+    
     let c1r0 = _0;
     let c1r1 = (_2 * near) / (top - bottom);
     let c1r2 = _0;
     let c1r3 = _0;
+    
     let c2r0 = (right + left) / (right - left);
     let c2r1 = (top + bottom) / (top - bottom);
     let c2r2 = -(far + near) / (far - near);
-    let c2r3 = Number::from(-1);
+    let c2r3 = -_1;
+    
     let c3r0 = _0;
     let c3r1 = _0;
     let c3r2 = -(_2 * far * near) / (far - near);
