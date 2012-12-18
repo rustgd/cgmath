@@ -5,7 +5,7 @@
        url = "https://github.com/bjz/lmath-rs")];
 
 #[comment = "A generic linear algebra library."];
-#[license = "APL2"];
+#[license = "ASL2"];
 #[crate_type = "lib"];
 
 extern mod std;
