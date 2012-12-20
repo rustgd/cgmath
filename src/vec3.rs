@@ -23,6 +23,7 @@ use numeric::types::number::Number;
  * * `y` - the second component of the vector
  * * `z` - the third component of the vector
  */
+#[deriving_eq]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
 pub impl<T> Vec3<T>/*: Vector3<T>*/ {
@@ -245,20 +246,6 @@ pub impl<T:Copy Float> Vec3<T>: MutableEuclideanVector<&self/T> {
     
     fn lerp_self(&mut self, other: &Vec3<T>, amount: &T) {
         self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
-    }
-}
-
-pub impl<T:Copy Eq> Vec3<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Vec3<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Vec3<T>) -> bool {
-        !(self == other)
     }
 }
 

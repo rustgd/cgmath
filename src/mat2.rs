@@ -24,6 +24,7 @@ use vec::Vec2;
  * * `y` - the second column vector of the matrix
  * * `z` - the third column vector of the matrix
  */
+#[deriving_eq]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 pub impl<T:Copy Float> Mat2<T> {
@@ -377,19 +378,6 @@ pub impl<T:Copy Float> Mat2<T>: Neg<Mat2<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat2<T> {
         Mat2::from_cols(-self[0], -self[1])
-    }
-}
-
-pub impl<T:Copy Float> Mat2<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Mat2<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Mat2<T>) -> bool {
-        !(self == other)
     }
 }
 

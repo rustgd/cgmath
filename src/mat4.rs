@@ -25,6 +25,7 @@ use vec::Vec4;
  * * `z` - the third column vector of the matrix
  * * `w` - the fourth column vector of the matrix
  */
+#[deriving_eq]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 pub impl<T:Copy Float> Mat4<T> {
@@ -517,21 +518,6 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(self)), 4) |slice| { slice[i] }
         }
-    }
-}
-
-pub impl<T:Copy Float> Mat4<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Mat4<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Mat4<T>) -> bool {
-        !(self == other)
     }
 }
 

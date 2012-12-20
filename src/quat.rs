@@ -198,6 +198,7 @@ pub trait Quaternion<T,V3>: Index<uint, T> Eq Neg<self> {
  * * `s` - the scalar component
  * * `v` - a vector containing the three imaginary components
  */
+#[deriving_eq]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 pub impl<T:Copy Float> Quat<T> {
@@ -457,21 +458,6 @@ pub impl<T:Copy Float> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
-    }
-}
-
-pub impl<T:Copy Eq> Quat<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Quat<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Quat<T>) -> bool {
-        !(self == other)
     }
 }
 

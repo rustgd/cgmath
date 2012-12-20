@@ -22,6 +22,7 @@ use numeric::types::number::Number;
  * * `x` - the first component of the vector
  * * `y` - the second component of the vector
  */
+ #[deriving_eq]
 pub struct Vec2<T> { x: T, y: T }
 
 pub impl<T> Vec2<T>/*: Vector2<T>*/ {
@@ -222,19 +223,6 @@ pub impl<T:Copy Float> Vec2<T>: MutableEuclideanVector<&self/T> {
     
     fn lerp_self(&mut self, other: &Vec2<T>, amount: &T) {
         self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
-    }
-}
-
-pub impl<T:Copy Eq> Vec2<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Vec2<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Vec2<T>) -> bool {
-        !(self == other)
     }
 }
 

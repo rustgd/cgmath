@@ -24,6 +24,7 @@ use numeric::types::number::Number;
  * * `z` - the third component of the vector
  * * `w` - the fourth component of the vector
  */
+#[deriving_eq]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub impl<T> Vec4<T>/*: Vector4<T>*/ {
@@ -243,21 +244,6 @@ pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
     
     fn lerp_self(&mut self, other: &Vec4<T>, amount: &T) {
         self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
-    }
-}
-
-pub impl<T:Copy Eq> Vec4<T>: Eq {
-    #[inline(always)]
-    pure fn eq(&self, other: &Vec4<T>) -> bool {
-        self[0] == other[0] &&
-        self[1] == other[1] &&
-        self[2] == other[2] &&
-        self[3] == other[3]
-    }
-    
-    #[inline(always)]
-    pure fn ne(&self, other: &Vec4<T>) -> bool {
-        !(self == other)
     }
 }
 
