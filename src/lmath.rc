@@ -18,24 +18,16 @@ pub mod vec;
 
 #[test]
 mod test {
-    #[path = "test/test_gltypes.rs"]
     mod test_gltypes;
-    #[path = "test/test_mat.rs"]
     mod test_mat;
-    #[path = "test/test_quat.rs"]
     mod test_quat;
-    #[path = "test/test_vec.rs"]
     mod test_vec;
 }
 
 pub mod funs {
-    #[path = "funs/common.rs"]
     pub mod common;
-    #[path = "funs/exponential.rs"]
     pub mod exponential;
-    #[path = "funs/projection.rs"]
     pub mod projection;
-    #[path = "funs/triganomic.rs"]
     pub mod triganomic;
     
     #[test]
