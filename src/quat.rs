@@ -215,7 +215,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     static pure fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
-        Quat::from_sv(move w, move Vec3::new(move xi, move yj, move zk))
+        Quat::from_sv(w, Vec3::new(xi, yj, zk))
     }
     
     /**
@@ -228,7 +228,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
-        Quat { s: move s, v: move v }
+        Quat { s: s, v: v }
     }
     
     #[inline(always)]

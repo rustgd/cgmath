@@ -57,10 +57,10 @@ pub impl<T:Copy Float> Mat4<T> {
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
-        Mat4::from_cols(Vec4::new(move c0r0, move c0r1, move c0r2, move c0r3),
-                        Vec4::new(move c1r0, move c1r1, move c1r2, move c1r3),
-                        Vec4::new(move c2r0, move c2r1, move c2r2, move c2r3),
-                        Vec4::new(move c3r0, move c3r1, move c3r2, move c3r3))
+        Mat4::from_cols(Vec4::new(c0r0, c0r1, c0r2, c0r3),
+                        Vec4::new(c1r0, c1r1, c1r2, c1r3),
+                        Vec4::new(c2r0, c2r1, c2r2, c2r3),
+                        Vec4::new(c3r0, c3r1, c3r2, c3r3))
     }
     
     /**
@@ -91,10 +91,7 @@ pub impl<T:Copy Float> Mat4<T> {
                              c1: Vec4<T>,
                              c2: Vec4<T>,
                              c3: Vec4<T>) -> Mat4<T> {
-        Mat4 { x: move c0,
-               y: move c1,
-               z: move c2,
-               w: move c3 }
+        Mat4 { x: c0, y: c1, z: c2, w: c3 }
     }
     
     /**

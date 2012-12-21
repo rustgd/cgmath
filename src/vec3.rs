@@ -29,7 +29,7 @@ pub struct Vec3<T> { x: T, y: T, z: T }
 pub impl<T> Vec3<T>/*: Vector3<T>*/ {
     #[inline(always)]
     static pure fn new(x: T, y: T, z: T) -> Vec3<T> {
-        Vec3 { x: move x, y: move y, z: move z }
+        Vec3 { x: x, y: y, z: z }
     }
 }
 

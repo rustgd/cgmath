@@ -53,9 +53,9 @@ pub impl<T:Copy Float> Mat3<T> {
     static pure fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
                        c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
-        Mat3::from_cols(Vec3::new(move c0r0, move c0r1, move c0r2),
-                        Vec3::new(move c1r0, move c1r1, move c1r2),
-                        Vec3::new(move c2r0, move c2r1, move c2r2))
+        Mat3::from_cols(Vec3::new(c0r0, c0r1, c0r2),
+                        Vec3::new(c1r0, c1r1, c1r2),
+                        Vec3::new(c2r0, c2r1, c2r2))
     }
     
     /**
@@ -82,9 +82,7 @@ pub impl<T:Copy Float> Mat3<T> {
     static pure fn from_cols(c0: Vec3<T>,
                              c1: Vec3<T>,
                              c2: Vec3<T>) -> Mat3<T> {
-        Mat3 { x: move c0,
-               y: move c1,
-               z: move c2 }
+        Mat3 { x: c0, y: c1, z: c2 }
     }
     
     /**

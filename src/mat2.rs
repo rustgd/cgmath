@@ -48,8 +48,8 @@ pub impl<T:Copy Float> Mat2<T> {
     #[inline(always)]
     static pure fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Mat2<T> {
-        Mat2::from_cols(Vec2::new(move c0r0, move c0r1),
-                        Vec2::new(move c1r0, move c1r1))
+        Mat2::from_cols(Vec2::new(c0r0, c0r1),
+                        Vec2::new(c1r0, c1r1))
     }
     
     /**
@@ -72,8 +72,7 @@ pub impl<T:Copy Float> Mat2<T> {
     #[inline(always)]
     static pure fn from_cols(c0: Vec2<T>,
                              c1: Vec2<T>) -> Mat2<T> {
-        Mat2 { x: move c0,
-               y: move c1 }
+        Mat2 { x: c0, y: c1 }
     }
     
     /**

@@ -28,7 +28,7 @@ pub struct Vec2<T> { x: T, y: T }
 pub impl<T> Vec2<T>/*: Vector2<T>*/ {
     #[inline(always)]
     static pure fn new(x: T, y: T ) -> Vec2<T> {
-        Vec2 { x: move x, y: move y }
+        Vec2 { x: x, y: y }
     }
 }
 

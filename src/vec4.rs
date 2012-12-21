@@ -30,7 +30,7 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 pub impl<T> Vec4<T>/*: Vector4<T>*/ {
     #[inline(always)]
     static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
-        Vec4 { x: move x, y: move y, z: move z, w: move w }
+        Vec4 { x: x, y: y, z: z, w: w }
     }
 }
 
