@@ -43,6 +43,9 @@ fn test_vec2() {
     assert -a      == Vec2::new(-1f, -2f);
     assert a.neg() == Vec2::new(-1f, -2f);
     
+    assert Vec2::new(0f, 0f).is_zero();
+    assert !Vec2::new(1f, 1f).is_zero();
+    
     assert a.mul_t(f1) == Vec2::new( 1.5f, 3.0f);
     assert a.div_t(f2) == Vec2::new( 2.0f, 4.0f);
     
@@ -182,6 +185,9 @@ fn test_vec3() {
     
     assert -a      == Vec3::new(-1f, -2f, -3f);
     assert a.neg() == Vec3::new(-1f, -2f, -3f);
+    
+    assert Vec3::new(0f, 0f, 0f).is_zero();
+    assert !Vec3::new(1f, 1f, 1f).is_zero();
     
     assert a.mul_t(f1) == Vec3::new( 1.5f, 3.0f, 4.5f);
     assert a.div_t(f2) == Vec3::new( 2.0f, 4.0f, 6.0f);
@@ -324,6 +330,9 @@ fn test_vec4() {
     
     assert -a      == Vec4::new(-1f, -2f, -3f, -4f);
     assert a.neg() == Vec4::new(-1f, -2f, -3f, -4f);
+    
+    assert Vec4::new(0f, 0f, 0f, 0f).is_zero();
+    assert !Vec4::new(1f, 1f, 1f, 1f).is_zero();
     
     assert a.mul_t(f1) == Vec4::new( 1.5f, 3.0f, 4.5f, 6.0f);
     assert a.div_t(f2) == Vec4::new( 2.0f, 4.0f, 6.0f, 8.0f);

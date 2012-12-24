@@ -94,6 +94,13 @@ pub trait NumericVector<T>: Vector<T> Neg<self> {
     /**
      * # Return value
      *
+     * True if the vector is equal to zero
+     */
+    pure fn is_zero(&self) -> bool;
+    
+    /**
+     * # Return value
+     *
      * The scalar multiplication of the vector and `value`
      */
     pure fn mul_t(&self, value: T) -> self;

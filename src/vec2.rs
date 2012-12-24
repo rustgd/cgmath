@@ -86,6 +86,12 @@ pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     }
     
     #[inline(always)]
+    pure fn is_zero(&self) -> bool {
+        self[0] == Number::zero() &&
+        self[1] == Number::zero()
+    }
+    
+    #[inline(always)]
     pure fn mul_t(&self, value: T) -> Vec2<T> {
         Vec2::new(self[0] * value,
                   self[1] * value)

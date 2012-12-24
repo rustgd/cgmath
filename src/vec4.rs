@@ -94,6 +94,14 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
+    pure fn is_zero(&self) -> bool {
+        self[0] == Number::zero() &&
+        self[1] == Number::zero() &&
+        self[2] == Number::zero() &&
+        self[3] == Number::zero()
+    }
+    
+    #[inline(always)]
     pure fn mul_t(&self, value: T) -> Vec4<T> {
         Vec4::new(self[0] * value,
                   self[1] * value,
