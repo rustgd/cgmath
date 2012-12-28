@@ -227,8 +227,8 @@ pub impl<T:Copy Float> Mat3<T> {
     #[inline(always)]
     static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Mat3<T> {
         let dir_ = dir.normalize();
-        let up_  = up.normalize().cross(&dir_).normalize();
-        let side = dir_.cross(&up_).normalize();
+        let side = dir_.cross(&up.normalize());
+        let up_  = side.cross(&dir_).normalize();
         
         Mat3::from_axes(up_, side, dir_)
     }
