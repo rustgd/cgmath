@@ -311,26 +311,43 @@ pub impl<T:Copy Float> Quat<T> {
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_x<A:Angle<T>>(_theta: A) -> Quat<T> {
-        fail(~"Not yet implemented!")
+    static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Quat<T> {
+        let _0 = Number::from(0);
+        let _2 = Number::from(2);
+        let rad = theta.to_radians();
+        Quat::new((rad / _2).cos(), rad.sin(), _0, _0)
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_y<A:Angle<T>>(_theta: A) -> Quat<T> {
-        fail(~"Not yet implemented!")
+    static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Quat<T> {
+        let _0 = Number::from(0);
+        let _2 = Number::from(2);
+        let rad = theta.to_radians();
+        Quat::new((rad / _2).cos(), _0, rad.sin(), _0)
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_z<A:Angle<T>>(_theta: A) -> Quat<T> {
-        fail(~"Not yet implemented!")
+    static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Quat<T> {
+        let _0 = Number::from(0);
+        let _2 = Number::from(2);
+        let rad = theta.to_radians();
+        Quat::new((rad / _2).cos(), _0, _0, rad.sin())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_xyz<A:Angle<T>>(_x: A, _y: A, _z: A) -> Quat<T> {
-        fail(~"Not yet implemented!")
+    static pure fn from_angle_xyz<A:Angle<T>>(x: A, y: A, z: A) -> Quat<T> {
+        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
+        let _2 = Number::from(2);
+        let xdiv2 = x.to_radians() / _2;
+        let ydiv2 = y.to_radians() / _2;
+        let zdiv2 = z.to_radians() / _2;
+        Quat::new(cos(&zdiv2) * cos(&xdiv2) * cos(&ydiv2) + sin(&zdiv2) * sin(&xdiv2) * sin(&ydiv2),
+                  sin(&zdiv2) * cos(&xdiv2) * cos(&ydiv2) - cos(&zdiv2) * sin(&xdiv2) * sin(&ydiv2),
+                  cos(&zdiv2) * sin(&xdiv2) * cos(&ydiv2) + sin(&zdiv2) * cos(&xdiv2) * sin(&ydiv2),
+                  cos(&zdiv2) * cos(&xdiv2) * sin(&ydiv2) - sin(&zdiv2) * sin(&xdiv2) * cos(&ydiv2))
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
@@ -348,8 +365,8 @@ pub impl<T:Copy Float> Quat<T> {
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn look_at(_dir: &Vec3<T>, _up: &Vec3<T>) -> Quat<T> {
-        fail(~"Not yet implemented!")
+    static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
+        Mat3::look_at(dir, up).to_quat()
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
