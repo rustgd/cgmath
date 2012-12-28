@@ -12,6 +12,8 @@ use numeric::types::float::Float;
 
 use vec::{Vec3, Vec2, Vec4};
 
+// see issue: https://github.com/mozilla/rust/issues/4208
+
 // // Trig
 
 // pub impl<T:Copy Float, A:Copy Angle<T>> Vec2<A>: Trig<Vec2<T>>  {
@@ -83,9 +85,11 @@ use vec::{Vec3, Vec2, Vec4};
 //     }
 // }
 
+// see issue: https://github.com/mozilla/rust/issues/4208
+
 // // InvTrig
 
-// pub impl<T:Copy Float InvTrig> Vec2<T>: InvTrig<Vec2<Radians<T>>>  {
+// pub impl<T:Copy Float> Vec2<T>: InvTrig<Vec2<Radians<T>>>  {
 //     #[inline(always)]
 //     pure fn asin(&self) -> Vec2<Radians<T>> {
 //         Vec2::new(asin(&self[0]),
@@ -105,7 +109,7 @@ use vec::{Vec3, Vec2, Vec4};
 //     }
 // }
 
-// pub impl<T:Copy Float InvTrig> Vec3<T>: InvTrig<Vec3<Radians<T>>>  {
+// pub impl<T:Copy Float> Vec3<T>: InvTrig<Vec3<Radians<T>>> {
 //     #[inline(always)]
 //     pure fn asin(&self) -> Vec3<Radians<T>> {
 //         Vec3::new(asin(&self[0]),
@@ -128,7 +132,7 @@ use vec::{Vec3, Vec2, Vec4};
 //     }
 // }
 
-// pub impl<T:Copy Float InvTrig> Vec4<T>: InvTrig<Vec4<Radians<T>>>  {
+// pub impl<T:Copy Float> Vec4<T>: InvTrig<Vec4<Radians<T>>> {
 //     #[inline(always)]
 //     pure fn asin(&self) -> Vec4<Radians<T>> {
 //         Vec4::new(asin(&self[0]),

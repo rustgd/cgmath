@@ -32,9 +32,9 @@ pub impl<T:Copy Approx> Vec2<T>: Approx {
     }
     
     // #[inline(always)]
-    // pure fn ceil(&self)  -> Vec2<T> {
-    //     Vec2::new(roundEven(&self[0]),
-    //               roundEven(&self[1]))
+    // pure fn round_even(&self)  -> Vec2<T> {
+    //     Vec2::new(round_even(&self[0]),
+    //               round_even(&self[1]))
     // }
     
     #[inline(always)]
@@ -73,10 +73,10 @@ pub impl<T:Copy Approx> Vec3<T>: Approx {
     }
     
     // #[inline(always)]
-    // pure fn ceil(&self)  -> Vec3<T> {
-    //     Vec3::new(roundEven(&self[0]),
-    //               roundEven(&self[1]),
-    //               roundEven(&self[2]))
+    // pure fn round_even(&self)  -> Vec3<T> {
+    //     Vec3::new(round_even(&self[0]),
+    //               round_even(&self[1]),
+    //               round_even(&self[2]))
     // }
     
     #[inline(always)]
@@ -120,11 +120,11 @@ pub impl<T:Copy Approx> Vec4<T>: Approx {
     }
     
     // #[inline(always)]
-    // pure fn ceil(&self)  -> Vec4<T> {
-    //     Vec4::new(roundEven(&self[0]),
-    //               roundEven(&self[1]),
-    //               roundEven(&self[2]),
-    //               roundEven(&self[3]))
+    // pure fn round_even(&self)  -> Vec4<T> {
+    //     Vec4::new(round_even(&self[0]),
+    //               round_even(&self[1]),
+    //               round_even(&self[2]),
+    //               round_even(&self[3]))
     // }
     
     #[inline(always)]
