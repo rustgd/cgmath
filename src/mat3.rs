@@ -112,24 +112,13 @@ pub impl<T:Copy Float> Mat3<T> {
                      _0,    _0, value)
     }
     
-    // FIXME: An interim solution to the issues with static functions
+    /// Wrapper method for `Matrix::identity`
     #[inline(always)]
-    static pure fn identity() -> Mat3<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat3::new(_1, _0, _0,
-                  _0, _1, _0,
-                  _0, _0, _1)
-    }
+    static pure fn identity() -> Mat3<T> { Matrix::identity() }
     
-    // FIXME: An interim solution to the issues with static functions
+    /// Wrapper method for `Matrix::zero`
     #[inline(always)]
-    static pure fn zero() -> Mat3<T> {
-        let _0 = Number::from(0);
-        Mat3::new(_0, _0, _0,
-                  _0, _0, _0,
-                  _0, _0, _0)
-    }
+    static pure fn zero() -> Mat3<T> { Matrix::zero() }
     
     /**
      * Construct a matrix from an angular rotation around the `x` axis

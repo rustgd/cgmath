@@ -123,26 +123,13 @@ pub impl<T:Copy Float> Mat4<T> {
                      _0,    _0,    _0, value)
     }
     
-    // FIXME: An interim solution to the issues with static functions
+    /// Wrapper method for `Matrix::identity`
     #[inline(always)]
-    static pure fn identity() -> Mat4<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat4::new(_1, _0, _0, _0,
-                  _0, _1, _0, _0,
-                  _0, _0, _1, _0,
-                  _0, _0, _0, _1)
-    }
+    static pure fn identity() -> Mat4<T> { Matrix::identity() }
     
-    // FIXME: An interim solution to the issues with static functions
+    /// Wrapper method for `Matrix::zero`
     #[inline(always)]
-    static pure fn zero() -> Mat4<T> {
-        let _0 = Number::from(0);
-        Mat4::new(_0, _0, _0, _0,
-                  _0, _0, _0, _0,
-                  _0, _0, _0, _0,
-                  _0, _0, _0, _0)
-    }
+    static pure fn zero() -> Mat4<T> { Matrix::zero() }
 }
 
 pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
