@@ -49,8 +49,10 @@ fn test_vec2() {
     assert a.mul_t(f1) == Vec2::new( 1.5f, 3.0f);
     assert a.div_t(f2) == Vec2::new( 2.0f, 4.0f);
     
-    assert a.add_v(&b) == Vec2::new( 4f,  6f);
-    assert a.sub_v(&b) == Vec2::new(-2f, -2f);
+    assert a.add_v(&b) == Vec2::new(   4f,    6f);
+    assert a.sub_v(&b) == Vec2::new(  -2f,   -2f);
+    assert a.mul_v(&b) == Vec2::new(   3f,    8f);
+    assert a.div_v(&b) == Vec2::new(1f/3f, 2f/4f);
     
     mut_a.neg_self();
     assert mut_a == -a;
@@ -70,6 +72,14 @@ fn test_vec2() {
     
     mut_a.sub_self_v(&b);
     assert mut_a == a.sub_v(&b);
+    mut_a = a;
+    
+    mut_a.mul_self_v(&b);
+    assert mut_a == a.mul_v(&b);
+    mut_a = a;
+    
+    mut_a.div_self_v(&b);
+    assert mut_a == a.div_v(&b);
     // mut_a = a;
     
     // assert c.abs()       == Vec2::new( 2.0f,  1.0f);
@@ -192,8 +202,10 @@ fn test_vec3() {
     assert a.mul_t(f1) == Vec3::new( 1.5f, 3.0f, 4.5f);
     assert a.div_t(f2) == Vec3::new( 2.0f, 4.0f, 6.0f);
     
-    assert a.add_v(&b) == Vec3::new( 5f,  7f,  9f);
-    assert a.sub_v(&b) == Vec3::new(-3f, -3f, -3f);
+    assert a.add_v(&b) == Vec3::new(   5f,    7f,    9f);
+    assert a.sub_v(&b) == Vec3::new(  -3f,   -3f,   -3f);
+    assert a.mul_v(&b) == Vec3::new(   4f,   10f,   18f);
+    assert a.div_v(&b) == Vec3::new(1f/4f, 2f/5f, 3f/6f);
     
     mut_a.neg_self();
     assert mut_a == -a;
@@ -213,6 +225,14 @@ fn test_vec3() {
     
     mut_a.sub_self_v(&b);
     assert mut_a == a.sub_v(&b);
+    mut_a = a;
+    
+    mut_a.mul_self_v(&b);
+    assert mut_a == a.mul_v(&b);
+    mut_a = a;
+    
+    mut_a.div_self_v(&b);
+    assert mut_a == a.div_v(&b);
     // mut_a = a;
     
     // exact_eq
@@ -337,8 +357,10 @@ fn test_vec4() {
     assert a.mul_t(f1) == Vec4::new( 1.5f, 3.0f, 4.5f, 6.0f);
     assert a.div_t(f2) == Vec4::new( 2.0f, 4.0f, 6.0f, 8.0f);
     
-    assert a.add_v(&b) == Vec4::new( 6f,  8f, 10f, 12f);
-    assert a.sub_v(&b) == Vec4::new(-4f, -4f, -4f, -4f);
+    assert a.add_v(&b) == Vec4::new(   6f,    8f,   10f,   12f);
+    assert a.sub_v(&b) == Vec4::new(  -4f,   -4f,   -4f,   -4f);
+    assert a.mul_v(&b) == Vec4::new(   5f,   12f,   21f,   32f);
+    assert a.div_v(&b) == Vec4::new(1f/5f, 2f/6f, 3f/7f, 4f/8f);
     
     assert a.dot(&b) == 70f;
     
@@ -360,6 +382,14 @@ fn test_vec4() {
     
     mut_a.sub_self_v(&b);
     assert mut_a == a.sub_v(&b);
+    mut_a = a;
+    
+    mut_a.mul_self_v(&b);
+    assert mut_a == a.mul_v(&b);
+    mut_a = a;
+    
+    mut_a.div_self_v(&b);
+    assert mut_a == a.div_v(&b);
     // mut_a = a;
     
     // assert c.abs()        == Vec4::new( 2.0f,  1.0f, 1.0f, 2.0f);

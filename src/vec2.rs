@@ -116,6 +116,18 @@ pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     }
     
     #[inline(always)]
+    pure fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self[0] * other[0],
+                  self[1] * other[1])
+    }
+    
+    #[inline(always)]
+    pure fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self[0] / other[0],
+                  self[1] / other[1])
+    }
+    
+    #[inline(always)]
     pure fn dot(&self, other: &Vec2<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1]
@@ -158,6 +170,18 @@ pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
     fn sub_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) -= other[0];
         *self.index_mut(1) -= other[1];
+    }
+    
+    #[inline(always)]
+    fn mul_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) *= other[0];
+        *self.index_mut(1) *= other[1];
+    }
+    
+    #[inline(always)]
+    fn div_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) /= other[0];
+        *self.index_mut(1) /= other[1];
     }
 }
 

@@ -113,18 +113,24 @@ pub trait NumericVector<T>: Vector<T> Neg<self> {
     pure fn div_t(&self, value: T) -> self;
     
     /**
-     * # Return value
-     *
-     * The sum of the vector and `other`
+     * Component-wise vector addition
      */
     pure fn add_v(&self, other: &self) -> self;
     
     /**
-     * # Return value
-     *
-     * The difference between the vector and `other`
+     * Component-wise vector subtraction
      */
     pure fn sub_v(&self, other: &self) -> self;
+    
+    /**
+     * Component-wise vector multiplication
+     */
+    pure fn mul_v(&self, other: &self) -> self;
+    
+    /**
+     * Component-wise vector division
+     */
+    pure fn div_v(&self, other: &self) -> self;
     
     /**
      * # Return value
@@ -155,14 +161,24 @@ pub trait MutableNumericVector<T>: MutableVector<&self/T>
     fn div_self_t(&mut self, value: T);
     
     /**
-     * Set to the sum of the vector and `other`
+     * Set the vector to the component-wise vector sum
      */
     fn add_self_v(&mut self, other: &self);
     
     /**
-     * Set to the difference between the vector and `other`
+     * Set the vector to the component-wise vector difference
      */
     fn sub_self_v(&mut self, other: &self);
+    
+    /**
+     * Set the vector to the component-wise vector product
+     */
+    fn mul_self_v(&mut self, other: &self);
+    
+    /**
+     * Set the vector to the component-wise vector quotient
+     */
+    fn div_self_v(&mut self, other: &self);
 }
 
 /**

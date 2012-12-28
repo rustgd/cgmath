@@ -134,6 +134,22 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     }
     
     #[inline(always)]
+    pure fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self[0] * other[0],
+                  self[1] * other[1],
+                  self[2] * other[2],
+                  self[3] * other[3])
+    }
+    
+    #[inline(always)]
+    pure fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self[0] / other[0],
+                  self[1] / other[1],
+                  self[2] / other[2],
+                  self[3] / other[3])
+    }
+    
+    #[inline(always)]
     pure fn dot(&self, other: &Vec4<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
@@ -188,6 +204,22 @@ pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
         *self.index_mut(1) -= other[1];
         *self.index_mut(2) -= other[2];
         *self.index_mut(3) -= other[3];
+    }
+    
+    #[inline(always)]
+    fn mul_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) *= other[0];
+        *self.index_mut(1) *= other[1];
+        *self.index_mut(2) *= other[2];
+        *self.index_mut(3) *= other[3];
+    }
+    
+    #[inline(always)]
+    fn div_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) /= other[0];
+        *self.index_mut(1) /= other[1];
+        *self.index_mut(2) /= other[2];
+        *self.index_mut(3) /= other[3];
     }
 }
 
