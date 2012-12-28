@@ -67,12 +67,6 @@ pub impl<T:Copy Float> Quat<T> {
         Quat { s: s, v: v }
     }
     
-    #[inline(always)]
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Quat<T> {
-        let half = theta.to_radians() / Number::from(2);
-        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
-    }
-    
     /**
      * # Return value
      *
@@ -302,8 +296,74 @@ pub impl<T:Copy Float> Quat<T> {
     }
     
     /**
+     * # Return value
+     *
+     * A pointer to the first component of the quaternion
+     */
+    #[inline(always)]
+    pure fn to_ptr(&self) -> *T {
+        unsafe {
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(self)
+            )
+        }
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_angle_x<A:Angle<T>>(_theta: A) -> Quat<T> {
+        fail(~"Not yet implemented!")
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_angle_y<A:Angle<T>>(_theta: A) -> Quat<T> {
+        fail(~"Not yet implemented!")
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_angle_z<A:Angle<T>>(_theta: A) -> Quat<T> {
+        fail(~"Not yet implemented!")
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_angle_xyz<A:Angle<T>>(_x: A, _y: A, _z: A) -> Quat<T> {
+        fail(~"Not yet implemented!")
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> Quat<T> {
+        let half = theta.to_radians() / Number::from(2);
+        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
+        Mat3::from_axes(x, y, z).to_quat()
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn look_at(_dir: &Vec3<T>, _up: &Vec3<T>) -> Quat<T> {
+        fail(~"Not yet implemented!")
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn concat(&self, other: &Quat<T>) -> Quat<T> { self.mul_q(other) }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn rotate_vec(&self, vec: &Vec3<T>) -> Vec3<T> { self.mul_v(vec) }
+    
+    /**
      * Convert the quaternion to a 3 x 3 rotation matrix
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
@@ -329,27 +389,9 @@ pub impl<T:Copy Float> Quat<T> {
                        xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
     
-    /**
-     * Convert the quaternion to a 4 x 4 transformation matrix
-     */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    pure fn to_mat4(&self) -> Mat4<T> {
-        self.to_mat3().to_mat4()
-    }
-    
-    /**
-     * # Return value
-     *
-     * A pointer to the first component of the quaternion
-     */
-    #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
-    }
+    pure fn to_quat(&self) -> Quat<T> { *self }
 }
 
 pub impl<T:Copy> Quat<T>: Index<uint, T> {

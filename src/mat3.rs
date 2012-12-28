@@ -10,6 +10,7 @@ use numeric::types::float::Float;
 use numeric::types::number::Number;
 
 use quat::Quat;
+use rot::Rotation;
 use vec::Vec3;
 
 /**
@@ -133,6 +134,7 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a matrix from an angular rotation around the `x` axis
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -149,6 +151,7 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a matrix from an angular rotation around the `y` axis
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -165,6 +168,7 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a matrix from an angular rotation around the `z` axis
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -187,6 +191,7 @@ pub impl<T:Copy Float> Mat3<T> {
      * * `theta_y` - the angular rotation around the `y` axis (yaw)
      * * `theta_z` - the angular rotation around the `z` axis (roll)
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_xyz<A:Angle<T>>(theta_x: A, theta_y: A, theta_z: A) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
@@ -205,8 +210,9 @@ pub impl<T:Copy Float> Mat3<T> {
     /**
      * Construct a matrix from an axis and an angular rotation
      */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
+    static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> Mat3<T> {
         let c:  T = cos(&theta.to_radians());
         let s:  T = sin(&theta.to_radians());
         let _0: T = Number::from(0);
@@ -220,6 +226,83 @@ pub impl<T:Copy Float> Mat3<T> {
         Mat3::new(_1_c*x*x + c,   _1_c*x*y + s*z, _1_c*x*z - s*y,
                   _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
                   _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Mat3<T> {
+        Mat3::from_cols(x, y, z)
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Mat3<T> {
+        let dir_ = dir.normalize();
+        let up_  = up.normalize().cross(&dir_).normalize();
+        let side = dir_.cross(&up_).normalize();
+        
+        Mat3::from_axes(up_, side, dir_)
+    }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn concat(&self, other: &Mat3<T>) -> Mat3<T> { self.mul_m(other) }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn rotate_vec(&self, vec: &Vec3<T>) -> Vec3<T> { self.mul_v(vec) }
+    
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn to_mat3(&self) -> Mat3<T> { *self }
+    
+    /**
+     * Convert the matrix to a quaternion
+     */
+    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
+    #[inline(always)]
+    pure fn to_quat(&self) -> Quat<T> {
+        // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
+        // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
+        
+        let mut s;
+        let w, x, y, z;
+        let trace = self.trace();
+        
+        let _1:   T = Number::from(1.0);
+        let half: T = Number::from(0.5);
+        
+        if trace >= Number::from(0) {
+            s = (_1 + trace).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[1][2] - self[2][1]) * s;
+            y = (self[2][0] - self[0][2]) * s;
+            z = (self[0][1] - self[1][0]) * s;
+        } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
+            s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[0][1] - self[1][0]) * s;
+            y = (self[2][0] - self[0][2]) * s;
+            z = (self[1][2] - self[2][1]) * s;
+        } else if self[1][1] > self[2][2] {
+            s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[0][1] - self[1][0]) * s;
+            y = (self[1][2] - self[2][1]) * s;
+            z = (self[2][0] - self[0][2]) * s;
+        } else {
+            s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
+            w = half * s;
+            s = half / s;
+            x = (self[2][0] - self[0][2]) * s;
+            y = (self[1][2] - self[2][1]) * s;
+            z = (self[0][1] - self[1][0]) * s;
+        }
+        
+        Quat::new(w, x, y, z)
     }
 }
 
@@ -486,23 +569,6 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
 
 pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     #[inline(always)]
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &Vec3<T>, theta: A) -> Mat3<T> {
-        let c:  T = cos(&theta.to_radians());
-        let s:  T = sin(&theta.to_radians());
-        let _0: T = Number::from(0);
-        let _1: T = Number::from(1);
-        let _1_c:  T = _1 - c;
-        
-        let x = axis.x;
-        let y = axis.y;
-        let z = axis.z;
-        
-        Mat3::new(_1_c * x * x + c,       _1_c * x * y + s * z,   _1_c * x * z - s * y,
-                  _1_c * x * y - s * z,   _1_c * y * y + c,       _1_c * y * z + s * x,
-                  _1_c * x * z + s * y,   _1_c * y * z - s * x,   _1_c * z * z + c)
-    }
-    
-    #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
         let _0 = Number::from(0);
         let _1 = Number::from(1);
@@ -510,50 +576,6 @@ pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
                   self[1][0], self[1][1], self[1][2], _0,
                   self[2][0], self[2][1], self[2][2], _0,
                           _0,         _0,         _0, _1)
-    }
-    
-    pure fn to_Quat() -> Quat<T> {
-        // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
-        // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
-        
-        let mut s;
-        let w, x, y, z;
-        let trace = self.trace();
-        
-        let _1:   T = Number::from(1.0);
-        let half: T = Number::from(0.5);
-        
-        if trace >= Number::from(0) {
-            s = (_1 + trace).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[1][2] - self[2][1]) * s;
-            y = (self[2][0] - self[0][2]) * s;
-            z = (self[0][1] - self[1][0]) * s;
-        } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[0][1] - self[1][0]) * s;
-            y = (self[2][0] - self[0][2]) * s;
-            z = (self[1][2] - self[2][1]) * s;
-        } else if self[1][1] > self[2][2] {
-            s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[0][1] - self[1][0]) * s;
-            y = (self[1][2] - self[2][1]) * s;
-            z = (self[2][0] - self[0][2]) * s;
-        } else {
-            s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[2][0] - self[0][2]) * s;
-            y = (self[1][2] - self[2][1]) * s;
-            z = (self[0][1] - self[1][0]) * s;
-        }
-        
-        Quat::new(w, x, y, z)
     }
 }
 

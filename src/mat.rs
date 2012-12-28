@@ -287,11 +287,6 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
     /**
-     * Construct a matrix from an axis and an angular rotation
-     */
-    static pure fn from_axis_angle<A:Angle<T>>(axis: &V, theta: A) -> Mat3<T>;
-    
-    /**
      * Returns the the matrix with an extra row and column added
      * ~~~
      *       c0   c1   c2                 c0   c1   c2   c3
@@ -307,11 +302,6 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
      * ~~~
      */
     pure fn to_mat4(&self) -> Mat4<T>;
-    
-    /**
-     * Convert the matrix to a quaternion
-     */
-    pure fn to_Quat() -> Quat<T>;
 }
 
 /**
