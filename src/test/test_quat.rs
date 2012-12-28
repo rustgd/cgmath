@@ -32,7 +32,6 @@ fn test_quat() {
 fn test_quat_2() {
     let v = Vec3::new(1.0, 0.0, 0.0);
     
-    // let q: Quat<float> = Quaternion::from_axis_angle(&Vec3::new(0.0, 0.0, -1.0), Degrees(-90.0));
     let q = Quat::from_axis_angle(&Vec3::new(0.0, 0.0, -1.0), Degrees(-45.0));
     
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees

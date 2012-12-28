@@ -22,170 +22,6 @@ use numeric::types::number::Number;
 use mat::{Mat3, Mat4};
 use vec::Vec3;
 
-
-/**
- * The base quaternion trait
- *
- * # Type parameters
- *
- * * `T` - The type of the components. Should be a floating point type.
- * * `V3` - The 3-dimensional vector type that will containin the imaginary
- *          components of the quaternion.
- */
-pub trait Quaternion<T,V3>: Index<uint, T> Eq Neg<self> {
-    /**
-     * # Return value
-     *
-     * The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
-     */
-    static pure fn identity() -> self;
-    
-    /**
-     * # Return value
-     *
-     * The additive identity, ie: `q = 0 + 0i + 0j + 0i`
-     */
-    static pure fn zero() -> self;
-    
-    /**
-     * # Return value
-     *
-     * The result of multiplying the quaternion a scalar
-     */
-    pure fn mul_t(&self, value: T) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The result of dividing the quaternion a scalar
-     */
-    pure fn div_t(&self, value: T) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The result of multiplying the quaternion by a vector
-     */
-    pure fn mul_v(&self, vec: &V3) -> V3;
-    
-    /**
-     * # Return value
-     *
-     * The sum of this quaternion and `other` 
-     */
-    pure fn add_q(&self, other: &self) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The sum of this quaternion and `other` 
-     */
-    pure fn sub_q(&self, other: &self) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The the result of multipliplying the quaternion by `other`
-     */
-    pure fn mul_q(&self, other: &self) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The dot product of the quaternion and `other`
-     */
-    pure fn dot(&self, other: &self) -> T;
-    
-    /**
-     * # Return value
-     *
-     * The conjugate of the quaternion
-     */
-    pure fn conjugate(&self) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The multiplicative inverse of the quaternion
-     */
-    pure fn inverse(&self) -> self;
-    
-    /**
-     * # Return value
-     *
-     * The squared magnitude of the quaternion. This is useful for
-     * magnitude comparisons where the exact magnitude does not need to be
-     * calculated.
-     */
-    pure fn magnitude2(&self) -> T;
-    
-    /**
-     * # Return value
-     *
-     * The magnitude of the quaternion
-     *
-     * # Performance notes
-     *
-     * For instances where the exact magnitude of the quaternion does not need
-     * to be known, for example for quaternion-quaternion magnitude comparisons,
-     * it is advisable to use the `magnitude2` method instead.
-     */
-    pure fn magnitude(&self) -> T;
-    
-    /**
-     * # Return value
-     *
-     * The normalized quaternion
-     */
-    pure fn normalize(&self) -> self;
-    
-    /**
-     * Normalised linear interpolation
-     *
-     * # Return value
-     *
-     * The intoperlated quaternion
-     */
-    pure fn nlerp(&self, other: &self, amount: T) -> self;
-    
-    /**
-     * Perform a spherical linear interpolation between the quaternion and
-     * `other`.
-     *
-     * # Return value
-     *
-     * The intoperlated quaternion
-     *
-     * # Performance notes
-     *
-     * This is more accurate than `nlerp` but is also more
-     * computationally intensive.
-     */ 
-    pure fn slerp(&self, other: &self, amount: T) -> self;
-    
-    /**
-     * Convert the quaternion to a 3 x 3 rotation matrix
-     */
-    pure fn to_mat3(&self) -> Mat3<T>;
-    
-    /**
-     * Convert the quaternion to a 4 x 4 transformation matrix
-     */
-    pure fn to_mat4(&self) -> Mat4<T>;
-    
-    /**
-     * # Return value
-     *
-     * A pointer to the first component of the quaternion
-     */
-    pure fn to_ptr(&self) -> *T;
-}
-
-
-
-
-
-
 /**
  * A quaternion in scalar/vector form
  *
@@ -262,35 +98,12 @@ pub impl<T:Copy Float> Quat<T> {
                   Number::zero(),
                   Number::zero())
     }
-}
-
-pub impl<T:Copy> Quat<T>: Index<uint, T> {
-    #[inline(always)]
-    pure fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(self)), 4) |slice| { slice[i] }
-        }
-    }
-}
-
-pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
-    #[inline(always)]
-    static pure fn identity() -> Quat<T> {
-        Quat::new(Number::from(1),
-                  Number::from(0),
-                  Number::from(0),
-                  Number::from(0))
-    }
     
-    #[inline(always)]
-    static pure fn zero() -> Quat<T> {
-        Quat::new(Number::from(0),
-                  Number::from(0),
-                  Number::from(0),
-                  Number::from(0))
-    }
-    
+    /**
+     * # Return value
+     *
+     * The result of multiplying the quaternion a scalar
+     */
     #[inline(always)]
     pure fn mul_t(&self, value: T) -> Quat<T> {
         Quat::new(self[0] * value,
@@ -299,6 +112,11 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                   self[3] * value)
     }
     
+    /**
+     * # Return value
+     *
+     * The result of dividing the quaternion a scalar
+     */
     #[inline(always)]
     pure fn div_t(&self, value: T) -> Quat<T> {
         Quat::new(self[0] / value,
@@ -306,13 +124,23 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                   self[2] / value,
                   self[3] / value)
     }
-
+    
+    /**
+     * # Return value
+     *
+     * The result of multiplying the quaternion by a vector
+     */
     #[inline(always)]
     pure fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
         self.v.cross(&tmp).mul_t(Number::from(2)).add_v(vec)
     }
     
+    /**
+     * # Return value
+     *
+     * The sum of this quaternion and `other` 
+     */
     #[inline(always)]
     pure fn add_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self[0] + other[0],
@@ -321,6 +149,11 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                   self[3] + other[3])
     }
     
+    /**
+     * # Return value
+     *
+     * The sum of this quaternion and `other` 
+     */
     #[inline(always)]
     pure fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self[0] - other[0],
@@ -329,6 +162,11 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                   self[3] - other[3])
     }
     
+    /**
+     * # Return value
+     *
+     * The the result of multipliplying the quaternion by `other`
+     */
     #[inline(always)]
     pure fn mul_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self.s * other.s   - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
@@ -337,31 +175,69 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                   self.s * other.v.z + self.v.z * other.s   + self.v.x * other.v.y - self.v.y * other.v.x) 
     }
     
+    /**
+     * # Return value
+     *
+     * The dot product of the quaternion and `other`
+     */
     #[inline(always)]
     pure fn dot(&self, other: &Quat<T>) -> T {
         self.s * other.s + self.v.dot(&other.v)
     }
     
+    /**
+     * # Return value
+     *
+     * The conjugate of the quaternion
+     */
     #[inline(always)]
     pure fn conjugate(&self) -> Quat<T> {
         Quat::from_sv(self.s, -self.v)
     }
     
+    /**
+     * # Return value
+     *
+     * The multiplicative inverse of the quaternion
+     */
     #[inline(always)]
     pure fn inverse(&self) -> Quat<T> {
         self.conjugate().div_t(self.magnitude2())
     }
     
+    /**
+     * # Return value
+     *
+     * The squared magnitude of the quaternion. This is useful for
+     * magnitude comparisons where the exact magnitude does not need to be
+     * calculated.
+     */
     #[inline(always)]
     pure fn magnitude2(&self) -> T {
         self.s * self.s + self.v.length2()
     }
     
+    /**
+     * # Return value
+     *
+     * The magnitude of the quaternion
+     *
+     * # Performance notes
+     *
+     * For instances where the exact magnitude of the quaternion does not need
+     * to be known, for example for quaternion-quaternion magnitude comparisons,
+     * it is advisable to use the `magnitude2` method instead.
+     */
     #[inline(always)]
     pure fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
     
+    /**
+     * # Return value
+     *
+     * The normalized quaternion
+     */
     #[inline(always)]
     pure fn normalize(&self) -> Quat<T> {
         let mut n: T = Number::from(1);
@@ -369,6 +245,13 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
         return self.mul_t(n);
     }
     
+    /**
+     * Normalised linear interpolation
+     *
+     * # Return value
+     *
+     * The intoperlated quaternion
+     */
     #[inline(always)]
     pure fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let _1: T = Number::from(1);
@@ -378,8 +261,12 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
     /**
      * Spherical Linear Intoperlation
      *
-     * Both quaternions should be normalized first, or else strange things will
-     * will happen...
+     * Perform a spherical linear interpolation between the quaternion and
+     * `other`. Both quaternions should be normalized first.
+     *
+     * # Return value
+     *
+     * The intoperlated quaternion
      *
      * # Performance notes
      *
@@ -414,6 +301,9 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
         }
     }
     
+    /**
+     * Convert the quaternion to a 3 x 3 rotation matrix
+     */
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
@@ -439,17 +329,35 @@ pub impl<T:Copy Float> Quat<T>: Quaternion<T, Vec3<T>> {
                        xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
     
+    /**
+     * Convert the quaternion to a 4 x 4 transformation matrix
+     */
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
         self.to_mat3().to_mat4()
     }
     
+    /**
+     * # Return value
+     *
+     * A pointer to the first component of the quaternion
+     */
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Quat<T>, *T>(
                 to_unsafe_ptr(self)
             )
+        }
+    }
+}
+
+pub impl<T:Copy> Quat<T>: Index<uint, T> {
+    #[inline(always)]
+    pure fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(
+            transmute::<*Quat<T>, *T>(
+                to_unsafe_ptr(self)), 4) |slice| { slice[i] }
         }
     }
 }
