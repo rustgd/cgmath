@@ -18,6 +18,7 @@ use numeric::funs::*;
 use numeric::types::angle::Angle;
 use numeric::types::float::Float;
 use numeric::types::number::Number;
+use numeric::types::number::Number::{one, zero};
 
 use mat::{Mat3, Mat4};
 use vec::Vec3;
@@ -74,10 +75,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     static pure fn identity() -> Quat<T> {
-        Quat::new(Number::one(),
-                  Number::zero(),
-                  Number::zero(),
-                  Number::zero())
+        Quat::new(one(), zero(), zero(), zero())
     }
     
     /**
@@ -87,10 +85,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     static pure fn zero() -> Quat<T> {
-        Quat::new(Number::zero(),
-                  Number::zero(),
-                  Number::zero(),
-                  Number::zero())
+        Quat::new(zero(), zero(), zero(), zero())
     }
     
     /**
@@ -234,9 +229,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     pure fn normalize(&self) -> Quat<T> {
-        let mut n: T = Number::from(1);
-        n /= self.magnitude();
-        return self.mul_t(n);
+        self.mul_t(one::<T>()/self.magnitude())
     }
     
     /**
@@ -248,8 +241,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     pure fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        let _1: T = Number::from(1);
-        self.mul_t(_1 - amount).add_q(&other.mul_t(amount)).normalize()
+        self.mul_t(one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
     }
     
     /**
@@ -282,8 +274,7 @@ pub impl<T:Copy Float> Quat<T> {
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
         } else {
-            let robust_dot = dot.clamp(&-Number::from(1),
-                                       &Number::from(1));       // stay within the domain of acos()
+            let robust_dot = dot.clamp(&-one(), &one());        // stay within the domain of acos()
             
             let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
             let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
@@ -312,28 +303,25 @@ pub impl<T:Copy Float> Quat<T> {
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Quat<T> {
-        let _0 = Number::from(0);
         let _2 = Number::from(2);
         let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), rad.sin(), _0, _0)
+        Quat::new((rad / _2).cos(), rad.sin(), zero(), zero())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Quat<T> {
-        let _0 = Number::from(0);
         let _2 = Number::from(2);
         let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), _0, rad.sin(), _0)
+        Quat::new((rad / _2).cos(), zero(), rad.sin(), zero())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Quat<T> {
-        let _0 = Number::from(0);
         let _2 = Number::from(2);
         let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), _0, _0, rad.sin())
+        Quat::new((rad / _2).cos(), zero(), zero(), rad.sin())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
@@ -399,7 +387,7 @@ pub impl<T:Copy Float> Quat<T> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
         
-        let _1: T = Number::from(1);
+        let _1: T = one();
         
         Mat3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
                        xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,

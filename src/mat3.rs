@@ -8,6 +8,7 @@ use numeric::funs::*;
 use numeric::types::angle::Angle;
 use numeric::types::float::Float;
 use numeric::types::number::Number;
+use numeric::types::number::Number::{one, zero};
 
 use quat::Quat;
 use rot::Rotation;
@@ -106,10 +107,9 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat3<T> {
-        let _0 = Number::from(0);
-        Mat3::new(value,    _0,    _0,
-                     _0, value,    _0,
-                     _0,    _0, value)
+        Mat3::new(value, zero(), zero(),
+                  zero(), value, zero(),
+                  zero(), zero(), value)
     }
     
     /// Wrapper method for `Matrix::identity`
@@ -129,12 +129,10 @@ pub impl<T:Copy Float> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = cos(&theta.to_radians());
         let sin_theta = sin(&theta.to_radians());
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
         
-        Mat3::new(_1,        _0,         _0,
-                  _0,  cos_theta, sin_theta,
-                  _0, -sin_theta, cos_theta)
+        Mat3::new( one(),     zero(),    zero(),
+                  zero(),  cos_theta, sin_theta,
+                  zero(), -sin_theta, cos_theta)
     }
     
     /**
@@ -146,12 +144,10 @@ pub impl<T:Copy Float> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = cos(&theta.to_radians());
         let sin_theta = sin(&theta.to_radians());
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
         
-        Mat3::new(cos_theta, _0, -sin_theta,
-                         _0, _1,         _0,
-                  sin_theta, _0,  cos_theta)
+        Mat3::new(cos_theta, zero(), -sin_theta,
+                     zero(),  one(),     zero(),
+                  sin_theta, zero(),  cos_theta)
     }
     
     /**
@@ -163,12 +159,10 @@ pub impl<T:Copy Float> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = cos(&theta.to_radians());
         let sin_theta = sin(&theta.to_radians());
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
         
-        Mat3::new( cos_theta, sin_theta, _0,
-                  -sin_theta, cos_theta, _0,
-                          _0,        _0, _1)
+        Mat3::new( cos_theta, sin_theta, zero(),
+                  -sin_theta, cos_theta, zero(),
+                      zero(),    zero(),  one())
     }
     
     /**
@@ -202,11 +196,9 @@ pub impl<T:Copy Float> Mat3<T> {
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> Mat3<T> {
-        let c:  T = cos(&theta.to_radians());
-        let s:  T = sin(&theta.to_radians());
-        let _0: T = Number::from(0);
-        let _1: T = Number::from(1);
-        let _1_c:  T = _1 - c;
+        let c = cos(&theta.to_radians());
+        let s = sin(&theta.to_radians());
+        let _1_c = one::<T>() - c;
         
         let x = axis.x;
         let y = axis.y;
@@ -261,7 +253,7 @@ pub impl<T:Copy Float> Mat3<T> {
         let _1:   T = Number::from(1.0);
         let half: T = Number::from(0.5);
         
-        if trace >= Number::from(0) {
+        if trace >= zero() {
             s = (_1 + trace).sqrt();
             w = half * s;
             s = half / s;
@@ -321,11 +313,9 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat3<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat3::new(_1, _0, _0,
-                  _0, _1, _0,
-                  _0, _0, _1)
+        Mat3::new( one(), zero(), zero(),
+                  zero(),  one(), zero(),
+                  zero(), zero(),  one())
     }
     
     /**
@@ -343,10 +333,9 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
      */
     #[inline(always)]
     static pure fn zero() -> Mat3<T> {
-        let _0 = Number::from(0);
-        Mat3::new(_0, _0, _0,
-                  _0, _0, _0,
-                  _0, _0, _0)
+        Mat3::new(zero(), zero(), zero(),
+                  zero(), zero(), zero(),
+                  zero(), zero(), zero())
     }
     
     #[inline(always)]
@@ -407,7 +396,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     // #[inline(always)]
     pure fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
-        if d.fuzzy_eq(&Number::from(0)) {
+        if d.fuzzy_eq(&zero()) {
             None
         } else {
             Some(Mat3::from_cols(self[1].cross(&self[2]).div_t(d),
@@ -431,15 +420,14 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
-        let _0 = Number::from(0);
-        self[0][1].fuzzy_eq(&_0) &&
-        self[0][2].fuzzy_eq(&_0) &&
+        self[0][1].fuzzy_eq(&zero()) &&
+        self[0][2].fuzzy_eq(&zero()) &&
         
-        self[1][0].fuzzy_eq(&_0) &&
-        self[1][2].fuzzy_eq(&_0) &&
+        self[1][0].fuzzy_eq(&zero()) &&
+        self[1][2].fuzzy_eq(&zero()) &&
         
-        self[2][0].fuzzy_eq(&_0) &&
-        self[2][1].fuzzy_eq(&_0)
+        self[2][0].fuzzy_eq(&zero()) &&
+        self[2][1].fuzzy_eq(&zero())
     }
     
     #[inline(always)]
@@ -462,7 +450,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
 
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&Number::zero())
+        !self.determinant().fuzzy_eq(&zero())
     }
     
     #[inline(always)]
@@ -559,12 +547,10 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
 pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat4::new(self[0][0], self[0][1], self[0][2], _0,
-                  self[1][0], self[1][1], self[1][2], _0,
-                  self[2][0], self[2][1], self[2][2], _0,
-                          _0,         _0,         _0, _1)
+        Mat4::new(self[0][0], self[0][1], self[0][2], zero(),
+                  self[1][0], self[1][1], self[1][2], zero(),
+                  self[2][0], self[2][1], self[2][2], zero(),
+                      zero(),     zero(),     zero(),  one())
     }
 }
 

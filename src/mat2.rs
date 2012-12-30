@@ -7,7 +7,7 @@ use std::cmp::FuzzyEq;
 use numeric::funs::*;
 use numeric::types::angle::Angle;
 use numeric::types::float::Float;
-use numeric::types::number::Number;
+use numeric::types::number::Number::{one, zero};
 
 use vec::Vec2;
 
@@ -93,9 +93,8 @@ pub impl<T:Copy Float> Mat2<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat2<T> {
-        let _0 = Number::from(0);
-        Mat2::new(value,    _0,
-                     _0, value)
+        Mat2::new(value, zero(),
+                  zero(), value)
     }
     
     // FIXME: An interim solution to the issues with static functions
@@ -140,10 +139,8 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat2<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat2::new(_1, _0,
-                  _0, _1)
+        Mat2::new(one(), zero(),
+                  zero(), one())
     }
     
     /**
@@ -159,9 +156,8 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
      */
     #[inline(always)]
     static pure fn zero() -> Mat2<T> {
-        let _0 = Number::from(0);
-        Mat2::new(_0, _0,
-                  _0, _0)
+        Mat2::new(zero(), zero(),
+                  zero(), zero())
     }
     
     #[inline(always)]
@@ -209,7 +205,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     #[inline(always)]
     pure fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
-        if d.fuzzy_eq(&Number::from(0)) {
+        if d.fuzzy_eq(&zero()) {
             None
         } else {
             Some(Mat2::new( self[1][1]/d, -self[0][1]/d,
@@ -231,9 +227,8 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
     
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
-        let _0 = Number::from(0);
-        self[0][1].fuzzy_eq(&_0) &&
-        self[1][0].fuzzy_eq(&_0)
+        self[0][1].fuzzy_eq(&zero()) &&
+        self[1][0].fuzzy_eq(&zero())
     }
     
     #[inline(always)]
@@ -250,7 +245,7 @@ pub impl<T:Copy Float> Mat2<T>: Matrix<T, Vec2<T>> {
 
     #[inline(always)]
     pure fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&Number::from(0))
+        !self.determinant().fuzzy_eq(&zero())
     }
     
     #[inline(always)]
@@ -336,21 +331,17 @@ pub impl<T:Copy Float> Mat2<T>: MutableMatrix<T, Vec2<T>> {
 pub impl<T:Copy Float> Mat2<T>: Matrix2<T, Vec2<T>> {
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat3::new(self[0][0], self[0][1], _0,
-                  self[1][0], self[1][1], _0,
-                          _0,         _0, _1)
+        Mat3::new(self[0][0], self[0][1], zero(),
+                  self[1][0], self[1][1], zero(),
+                      zero(),     zero(),  one())
     }
     
     #[inline(always)]
     pure fn to_mat4(&self) -> Mat4<T> {
-        let _0 = Number::from(0);
-        let _1 = Number::from(1);
-        Mat4::new(self[0][0], self[0][1], _0, _0,
-                  self[1][0], self[1][1], _0, _0,
-                          _0,         _0, _1, _0,
-                          _0,         _0, _0, _1)
+        Mat4::new(self[0][0], self[0][1], zero(), zero(),
+                  self[1][0], self[1][1], zero(), zero(),
+                      zero(),     zero(),  one(), zero(),
+                      zero(),     zero(), zero(),  one())
     }
 }
 

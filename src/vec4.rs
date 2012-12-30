@@ -8,6 +8,7 @@ use numeric::funs::*;
 use numeric::types::angle::Radians;
 use numeric::types::float::Float;
 use numeric::types::number::Number;
+use numeric::types::number::Number::{one, zero};
 
 /**
  * A 4-dimensional vector
@@ -79,18 +80,12 @@ pub impl<T:Copy> Vec4<T>: MutableVector<T> {
 pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec4<T> {
-        Vec4::new(Number::one(),
-                  Number::one(),
-                  Number::one(),
-                  Number::one())
+        Vec4::new(one(), one(), one(), one())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec4<T> {
-        Vec4::new(Number::zero(),
-                  Number::zero(),
-                  Number::zero(),
-                  Number::zero())
+        Vec4::new(zero(), zero(), zero(), zero())
     }
     
     #[inline(always)]
@@ -251,15 +246,12 @@ pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
     
     #[inline(always)]
     pure fn normalize(&self) -> Vec4<T> {
-        let mut n: T = Number::from(1);
-        n /= self.length();
-        return self.mul_t(n);
+        self.mul_t(one::<T>()/self.length())
     }
     
     #[inline(always)]
     pure fn normalize_to(&self, length: T) -> Vec4<T> {
-        let mut n: T = length / self.length();
-        return self.mul_t(n);
+        self.mul_t(length / self.length())
     }
     
     #[inline(always)]
@@ -271,14 +263,13 @@ pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
 pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
-        let mut n: T = Number::from(1); 
-        n /= self.length();
+        let n = one::<T>() / self.length();
         self.mul_self_t(&n);
     }
     
     #[inline(always)]
     fn normalize_self_to(&mut self, length: &T) {
-        let mut n: T = length / self.length();
+        let n = length / self.length();
         self.mul_self_t(&n);
     }
     
