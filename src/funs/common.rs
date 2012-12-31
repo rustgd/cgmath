@@ -10,9 +10,9 @@ use numeric::traits::*;
 
 use vec::{Vector, Vec2, Vec3, Vec4};
 
-// Approx
+// Round
 
-pub impl<T:Copy Approx> Vec2<T>: Approx {
+pub impl<T:Copy Round> Vec2<T>: Round {
     #[inline(always)]
     pure fn floor(&self) -> Vec2<T> {
         Vec2::new(floor(&self[0]),
@@ -50,7 +50,7 @@ pub impl<T:Copy Approx> Vec2<T>: Approx {
     }
 }
 
-pub impl<T:Copy Approx> Vec3<T>: Approx {
+pub impl<T:Copy Round> Vec3<T>: Round {
     #[inline(always)]
     pure fn floor(&self) -> Vec3<T> {
         Vec3::new(floor(&self[0]),
@@ -94,7 +94,7 @@ pub impl<T:Copy Approx> Vec3<T>: Approx {
     }
 }
 
-pub impl<T:Copy Approx> Vec4<T>: Approx {
+pub impl<T:Copy Round> Vec4<T>: Round {
     #[inline(always)]
     pure fn floor(&self) -> Vec4<T> {
         Vec4::new(floor(&self[0]),
