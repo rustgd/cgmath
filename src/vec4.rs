@@ -90,10 +90,10 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     
     #[inline(always)]
     pure fn is_zero(&self) -> bool {
-        self[0] == Number::zero() &&
-        self[1] == Number::zero() &&
-        self[2] == Number::zero() &&
-        self[3] == Number::zero()
+        self[0] == zero() &&
+        self[1] == zero() &&
+        self[2] == zero() &&
+        self[3] == zero()
     }
     
     #[inline(always)]
