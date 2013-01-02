@@ -203,16 +203,12 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: NumericVector3<T,Vec4<T>> {
+pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
     #[inline(always)]
     pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
                   (self[2] * other[0]) - (self[0] * other[2]),
                   (self[0] * other[1]) - (self[1] * other[0]))
-    }
-    
-    pure fn to_homogeneous(&self) -> Vec4<T> {
-        Vec4::new(self.x, self.y, self.z, zero())
     }
 }
 
@@ -220,6 +216,13 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector3<&self/T> {
     #[inline(always)]
     fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other);
+    }
+}
+
+pub impl<T:Copy Number> Vec3<T>: ToHomogeneous<Vec4<T>> {
+    #[inline(always)]
+    pure fn to_homogeneous(&self) -> Vec4<T> {
+        Vec4::new(self.x, self.y, self.z, zero())
     }
 }
 

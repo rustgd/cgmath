@@ -199,7 +199,7 @@ pub trait NumericVector2<T>: NumericVector<T> {
 /**
  * A 3-dimensional vector with numeric components
  */
-pub trait NumericVector3<T,HV>: NumericVector<T> {
+pub trait NumericVector3<T>: NumericVector<T> {
     // static pure fn unit_x() -> self;
     // static pure fn unit_y() -> self;
     // static pure fn unit_z() -> self;
@@ -210,11 +210,6 @@ pub trait NumericVector3<T,HV>: NumericVector<T> {
      * The cross product of the vector and `other`
      */
     pure fn cross(&self, other: &self) -> self;
-    
-    /**
-     * Convert the vector to its homogeneous form
-     */
-    pure fn to_homogeneous(&self) -> HV;
 }
 
 /**
@@ -235,6 +230,13 @@ pub trait NumericVector4<T>: NumericVector<T> {
     // static pure fn unit_y() -> self;
     // static pure fn unit_z() -> self;
     // static pure fn unit_w() -> self;
+}
+
+pub trait ToHomogeneous<H> {
+    /**
+     * Convert to a homogenous coordinate
+     */
+    pure fn to_homogeneous(&self) -> H;
 }
 
 /**

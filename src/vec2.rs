@@ -191,6 +191,13 @@ pub impl<T:Copy Number> Vec2<T>: NumericVector2<T> {
     }
 }
 
+pub impl<T:Copy Number> Vec2<T>: ToHomogeneous<Vec3<T>> {
+    #[inline(always)]
+    pure fn to_homogeneous(&self) -> Vec3<T> {
+        Vec3::new(self.x, self.y, zero())
+    }
+}
+
 pub impl<T:Copy Float> Vec2<T>: EuclideanVector<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
