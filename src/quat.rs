@@ -274,7 +274,7 @@ pub impl<T:Copy Float> Quat<T> {
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
         } else {
-            let robust_dot = dot.clamp(&-one(), &one());        // stay within the domain of acos()
+            let robust_dot = dot.clamp(&-one::<T>(), &one());        // stay within the domain of acos()
             
             let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
             let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
