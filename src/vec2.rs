@@ -1,14 +1,28 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 use numeric::funs::*;
-use numeric::types::angle::Radians;
-use numeric::types::float::Float;
-use numeric::types::number::Number;
+use numeric::types::{Float, Number, Radians};
 use numeric::types::number::Number::{one, zero};
+
+use vec::{
+    Vec3,
+    Vector,
+    MutableVector,
+    NumericVector,
+    NumericVector2,
+    MutableNumericVector,
+    ToHomogeneous,
+    EuclideanVector,
+    MutableEuclideanVector,
+    EquableVector,
+    OrdinalVector,
+    BooleanVector,
+};
 
 /**
  * A 2-dimensional vector
@@ -68,8 +82,8 @@ pub impl<T:Copy> Vec2<T>: MutableVector<T> {
     
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        util::swap(self.index_mut(a),
-                   self.index_mut(b));
+        swap(self.index_mut(a),
+             self.index_mut(b));
     }
 }
     

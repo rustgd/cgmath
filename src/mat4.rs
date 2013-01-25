@@ -1,15 +1,22 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
+use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 use numeric::funs::*;
-use numeric::types::angle::Angle;
-use numeric::types::float::Float;
+use numeric::types::{Angle, Float};
 use numeric::types::number::Number::{one, zero};
 
 use vec::Vec4;
+
+use mat::{
+    Mat3,
+    Matrix,
+    MutableMatrix,
+    Matrix4,
+};
 
 /**
  *  A 4 x 4 column major matrix
@@ -402,8 +409,8 @@ pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        util::swap(self.col_mut(a),
-                   self.col_mut(b));
+        swap(self.col_mut(a),
+             self.col_mut(b));
     }
     
     #[inline(always)]
@@ -463,21 +470,21 @@ pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     
     #[inline(always)]
     fn transpose_self(&mut self) {
-        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
-        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
-        util::swap(self.col_mut(0).index_mut(3), self.col_mut(3).index_mut(0));
+        swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        swap(self.col_mut(0).index_mut(3), self.col_mut(3).index_mut(0));
         
-        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
-        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
-        util::swap(self.col_mut(1).index_mut(3), self.col_mut(3).index_mut(1));
+        swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        swap(self.col_mut(1).index_mut(3), self.col_mut(3).index_mut(1));
         
-        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
-        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
-        util::swap(self.col_mut(2).index_mut(3), self.col_mut(3).index_mut(2));
+        swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
+        swap(self.col_mut(2).index_mut(3), self.col_mut(3).index_mut(2));
         
-        util::swap(self.col_mut(3).index_mut(0), self.col_mut(0).index_mut(3));
-        util::swap(self.col_mut(3).index_mut(1), self.col_mut(1).index_mut(3));
-        util::swap(self.col_mut(3).index_mut(2), self.col_mut(2).index_mut(3));
+        swap(self.col_mut(3).index_mut(0), self.col_mut(0).index_mut(3));
+        swap(self.col_mut(3).index_mut(1), self.col_mut(1).index_mut(3));
+        swap(self.col_mut(3).index_mut(2), self.col_mut(2).index_mut(3));
     }
 }
 

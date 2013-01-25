@@ -1,18 +1,25 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
+use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 use numeric::funs::*;
-use numeric::types::angle::Angle;
-use numeric::types::float::Float;
+use numeric::types::{Angle, Float};
 use numeric::types::number::Number;
 use numeric::types::number::Number::{one, zero};
 
 use quat::Quat;
 use rot::Rotation;
 use vec::Vec3;
+
+use mat::{
+    Mat4,
+    Matrix,
+    MutableMatrix,
+    Matrix3,
+};
 
 /**
  *  A 3 x 3 column major matrix
@@ -476,8 +483,8 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        util::swap(self.col_mut(a),
-                   self.col_mut(b));
+        swap(self.col_mut(a),
+             self.col_mut(b));
     }
     
     #[inline(always)]
@@ -533,14 +540,14 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     
     #[inline(always)]
     fn transpose_self(&mut self) {
-        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
-        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
         
-        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
-        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
         
-        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
-        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
+        swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
     }
 }
 

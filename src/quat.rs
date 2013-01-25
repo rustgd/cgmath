@@ -351,6 +351,10 @@ pub impl<T:Copy Float> Quat<T> {
         Mat3::from_axes(x, y, z).to_quat()
     }
     
+    pure fn get_angle_axis<A:Angle<T>>(&self) -> (A, Vec3<T>) {
+        fail(~"Not yet implemented.")
+    }
+    
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
