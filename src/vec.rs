@@ -2,7 +2,7 @@ use core::cmp::Eq;
 
 use std::cmp::FuzzyEq;
 
-use numeric::types::{Number, Radians};
+use numeric::Number;
 
 pub use vec2::Vec2;
 pub use vec3::Vec3;
@@ -280,9 +280,9 @@ pub trait EuclideanVector<T>: NumericVector<T> {
     /**
      * # Return value
      *
-     * The angle between the vector and `other`
+     * The angle between the vector and `other` in radians
      */
-    pure fn angle(&self, other: &self) -> Radians<T>;
+    pure fn angle(&self, other: &self) -> T;
     
     /**
      * # Return value

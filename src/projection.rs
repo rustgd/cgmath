@@ -1,7 +1,5 @@
-use numeric::funs::*;
-use numeric::types::angle::Angle;
-use numeric::types::float::Float;
-use numeric::types::number::Number;
+use numeric::*;
+use numeric::number::Number;
 
 use mat::Mat4;
 
@@ -12,8 +10,8 @@ use mat::Mat4;
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pub pure fn perspective<T:Copy Float, A:Angle<T>>(fovy: A, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let ymax = near * tan(&fovy.to_radians());
+pub pure fn perspective<T:Copy Float>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+    let ymax = near * tan(radians(fovy));
     let xmax = ymax * aspectRatio;
     
     frustum(-xmax, xmax, -ymax, ymax, near, far)

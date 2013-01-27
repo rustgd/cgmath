@@ -26,6 +26,8 @@ use mat::{Matrix, Mat2, Mat3, Mat4};
 use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
 
+use numeric::*;
+
 
 // Vector aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).

@@ -1,5 +1,4 @@
-use numeric::funs::sqrt;
-use numeric::types::angle::*;
+use numeric::*;
 
 use mat::*;
 use quat::*;
@@ -30,17 +29,19 @@ fn test_quat() {
 
 #[test]
 fn test_quat_2() {
+    use numeric::types::{Degrees, Radians};
+    
     let v = Vec3::new(1.0, 0.0, 0.0);
     
     // let q: Quat<float> = rot::Rotation::from_angle_axis(Degrees(-45.0), &Vec3::new(0.0, 0.0, -1.0));
-    let q = Quat::from_angle_axis(Degrees(-45.0), &Vec3::new(0.0, 0.0, -1.0));
+    let q = Quat::from_angle_axis(radians(-45.0), &Vec3::new(0.0, 0.0, -1.0));
     
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert q.mul_v(&v).fuzzy_eq(&Vec3::new(1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0));
+    assert q.mul_v(&v).fuzzy_eq(&Vec3::new(1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0));
     assert q.mul_v(&v).length() == v.length();
-    assert q.to_mat3().fuzzy_eq(&Mat3::new( 1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0,
-                                           -1.0/sqrt(&2.0), 1.0/sqrt(&2.0), 0.0,
-                                                       0.0,            0.0, 1.0));
+    assert q.to_mat3().fuzzy_eq(&Mat3::new( 1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0,
+                                           -1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0,
+                                                      0.0,           0.0, 1.0));
 }
 
 #[test]

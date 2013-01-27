@@ -5,9 +5,8 @@ use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::funs::*;
-use numeric::types::{Angle, Float};
-use numeric::types::number::Number::{one, zero};
+use numeric::*;
+use numeric::number::Number::{zero,one};
 
 use vec::Vec4;
 
@@ -293,7 +292,7 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
                 // Find largest element in col j
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    if abs(&A[j][i]) > abs(&A[j][i1]) {
+                    if abs(A[j][i]) > abs(A[j][i1]) {
                         i1 = i;
                     }
                 }

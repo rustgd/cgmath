@@ -5,9 +5,8 @@ use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::funs::*;
-use numeric::types::{Angle, Float};
-use numeric::types::number::Number::{one, zero};
+use numeric::*;
+use numeric::number::Number::{zero,one};
 
 use vec::Vec2;
 
@@ -107,9 +106,9 @@ pub impl<T:Copy Float> Mat2<T> {
     
     // FIXME: An interim solution to the issues with static functions
     #[inline(always)]
-    static pure fn from_angle<A:Angle<T>>(theta: A) -> Mat2<T> {
-        let cos_theta = cos(&theta.to_radians());
-        let sin_theta = sin(&theta.to_radians());
+    static pure fn from_angle(radians: T) -> Mat2<T> {
+        let cos_theta = cos(radians);
+        let sin_theta = sin(radians);
         
         Mat2::new(cos_theta, -sin_theta,
                   sin_theta,  cos_theta)

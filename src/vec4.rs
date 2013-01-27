@@ -5,9 +5,8 @@ use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::funs::*;
-use numeric::types::{Float, Number, Radians};
-use numeric::types::number::Number::{one, zero};
+use numeric::*;
+use numeric::number::Number::{zero,one};
 
 use vec::{
     Vector,
@@ -252,8 +251,8 @@ pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
     }
     
     #[inline(always)]
-    pure fn angle(&self, other: &Vec4<T>) -> Radians<T> {
-        acos(&(self.dot(other) / (self.length() * other.length())))
+    pure fn angle(&self, other: &Vec4<T>) -> T {
+        acos(self.dot(other) / (self.length() * other.length()))
     }
     
     #[inline(always)]

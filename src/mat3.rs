@@ -5,10 +5,9 @@ use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::funs::*;
-use numeric::types::{Angle, Float};
-use numeric::types::number::Number;
-use numeric::types::number::Number::{one, zero};
+use numeric::*;
+use numeric::number::Number;
+use numeric::number::Number::{zero,one};
 
 use quat::Quat;
 use rot::Rotation;
@@ -132,10 +131,10 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Mat3<T> {
+    static pure fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(&theta.to_radians());
-        let sin_theta = sin(&theta.to_radians());
+        let cos_theta = cos(radians);
+        let sin_theta = sin(radians);
         
         Mat3::new( one(),     zero(),    zero(),
                   zero(),  cos_theta, sin_theta,
@@ -147,10 +146,10 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Mat3<T> {
+    static pure fn from_angle_y(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(&theta.to_radians());
-        let sin_theta = sin(&theta.to_radians());
+        let cos_theta = cos(radians);
+        let sin_theta = sin(radians);
         
         Mat3::new(cos_theta, zero(), -sin_theta,
                      zero(),  one(),     zero(),
@@ -162,10 +161,10 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Mat3<T> {
+    static pure fn from_angle_z(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(&theta.to_radians());
-        let sin_theta = sin(&theta.to_radians());
+        let cos_theta = cos(radians);
+        let sin_theta = sin(radians);
         
         Mat3::new( cos_theta, sin_theta, zero(),
                   -sin_theta, cos_theta, zero(),
@@ -183,14 +182,14 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_xyz<A:Angle<T>>(theta_x: A, theta_y: A, theta_z: A) -> Mat3<T> {
+    static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let cx = cos(&theta_x.to_radians());
-        let sx = sin(&theta_x.to_radians());
-        let cy = cos(&theta_y.to_radians());
-        let sy = sin(&theta_y.to_radians());
-        let cz = cos(&theta_z.to_radians());
-        let sz = sin(&theta_z.to_radians());
+        let cx = cos(radians_x);
+        let sx = sin(radians_x);
+        let cy = cos(radians_y);
+        let sy = sin(radians_y);
+        let cz = cos(radians_z);
+        let sz = sin(radians_z);
         
         Mat3::new(            cy*cz,             cy*sz,   -sy,
                   -cx*sz + sx*sy*cz,  cx*cz + sx*sy*sz, sx*cy,
@@ -202,9 +201,9 @@ pub impl<T:Copy Float> Mat3<T> {
      */
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> Mat3<T> {
-        let c = cos(&theta.to_radians());
-        let s = sin(&theta.to_radians());
+    static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Mat3<T> {
+        let c = cos(radians);
+        let s = sin(radians);
         let _1_c = one::<T>() - c;
         
         let x = axis.x;

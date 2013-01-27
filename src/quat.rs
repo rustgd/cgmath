@@ -14,11 +14,9 @@ use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
-use numeric::funs::*;
-use numeric::types::angle::Angle;
-use numeric::types::float::Float;
-use numeric::types::number::Number;
-use numeric::types::number::Number::{one, zero};
+use numeric::*;
+use numeric::number::Number;
+use numeric::number::Number::{zero,one};
 
 use mat::{Mat3, Mat4};
 use vec::Vec3;
@@ -274,15 +272,15 @@ pub impl<T:Copy Float> Quat<T> {
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
         } else {
-            let robust_dot = dot.clamp(&-one::<T>(), &one());        // stay within the domain of acos()
+            let robust_dot = dot.clamp(-one::<T>(), one());     // stay within the domain of acos()
             
-            let theta_0 = acos(&robust_dot);                    // the angle between the quaternions
+            let theta_0 = acos(robust_dot);                     // the angle between the quaternions
             let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
             
             let q = other.sub_q(&self.mul_t(robust_dot))
                          .normalize();
             
-            return self.mul_t(cos(&theta)).add_q(&q.mul_t(sin(&theta)));
+            return self.mul_t(cos(theta)).add_q(&q.mul_t(sin(theta)));
         }
     }
     
@@ -302,47 +300,44 @@ pub impl<T:Copy Float> Quat<T> {
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_x<A:Angle<T>>(theta: A) -> Quat<T> {
+    static pure fn from_angle_x(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
-        let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), rad.sin(), zero(), zero())
+        Quat::new(cos(radians / _2), sin(radians), zero(), zero())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_y<A:Angle<T>>(theta: A) -> Quat<T> {
+    static pure fn from_angle_y(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
-        let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), zero(), rad.sin(), zero())
+        Quat::new(cos(radians / _2), zero(), sin(radians), zero())
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_z<A:Angle<T>>(theta: A) -> Quat<T> {
+    static pure fn from_angle_z(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
-        let rad = theta.to_radians();
-        Quat::new((rad / _2).cos(), zero(), zero(), rad.sin())
+        Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_xyz<A:Angle<T>>(x: A, y: A, z: A) -> Quat<T> {
+    static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
         let _2 = Number::from(2);
-        let xdiv2 = x.to_radians() / _2;
-        let ydiv2 = y.to_radians() / _2;
-        let zdiv2 = z.to_radians() / _2;
-        Quat::new(cos(&zdiv2) * cos(&xdiv2) * cos(&ydiv2) + sin(&zdiv2) * sin(&xdiv2) * sin(&ydiv2),
-                  sin(&zdiv2) * cos(&xdiv2) * cos(&ydiv2) - cos(&zdiv2) * sin(&xdiv2) * sin(&ydiv2),
-                  cos(&zdiv2) * sin(&xdiv2) * cos(&ydiv2) + sin(&zdiv2) * cos(&xdiv2) * sin(&ydiv2),
-                  cos(&zdiv2) * cos(&xdiv2) * sin(&ydiv2) - sin(&zdiv2) * sin(&xdiv2) * cos(&ydiv2))
+        let xdiv2 = radians_x / _2;
+        let ydiv2 = radians_y / _2;
+        let zdiv2 = radians_z / _2;
+        Quat::new(cos(zdiv2) * cos(xdiv2) * cos(ydiv2) + sin(zdiv2) * sin(xdiv2) * sin(ydiv2),
+                  sin(zdiv2) * cos(xdiv2) * cos(ydiv2) - cos(zdiv2) * sin(xdiv2) * sin(ydiv2),
+                  cos(zdiv2) * sin(xdiv2) * cos(ydiv2) + sin(zdiv2) * cos(xdiv2) * sin(ydiv2),
+                  cos(zdiv2) * cos(xdiv2) * sin(ydiv2) - sin(zdiv2) * sin(xdiv2) * cos(ydiv2))
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
-    static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> Quat<T> {
-        let half = theta.to_radians() / Number::from(2);
-        Quat::from_sv(cos(&half), axis.mul_t(sin(&half)))
+    static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
+        let half = radians / Number::from(2);
+        Quat::from_sv(cos(half), axis.mul_t(sin(half)))
     }
     
     // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
@@ -351,7 +346,7 @@ pub impl<T:Copy Float> Quat<T> {
         Mat3::from_axes(x, y, z).to_quat()
     }
     
-    pure fn get_angle_axis<A:Angle<T>>(&self) -> (A, Vec3<T>) {
+    pure fn get_angle_axis(&self) -> (T, Vec3<T>) {
         fail(~"Not yet implemented.")
     }
     

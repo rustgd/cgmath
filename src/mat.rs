@@ -1,6 +1,5 @@
 use core::cmp::Eq;
 use std::cmp::FuzzyEq;
-use numeric::types::angle::Angle;
 
 use quat::Quat;
 

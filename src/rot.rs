@@ -1,5 +1,3 @@
-use numeric::types::angle::Angle;
-
 use mat::Mat3;
 use quat::Quat;
 use vec::Vec3;
@@ -10,11 +8,11 @@ use vec::Vec3;
 pub trait Rotation<T> {
     static pure fn from<R: Rotation<T>>(rot: R) -> self;
     
-    static pure fn from_angle_x<A:Angle<T>>(theta: A) -> self;
-    static pure fn from_angle_y<A:Angle<T>>(theta: A) -> self;
-    static pure fn from_angle_z<A:Angle<T>>(theta: A) -> self;
-    static pure fn from_angle_xyz<A:Angle<T>>(x: A, y: A, z: A) -> self;
-    static pure fn from_angle_axis<A:Angle<T>>(theta: A, axis: &Vec3<T>) -> self;
+    static pure fn from_angle_x(radians: T) -> self;
+    static pure fn from_angle_y(radians: T) -> self;
+    static pure fn from_angle_z(radians: T) -> self;
+    static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> self;
+    static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> self;
     static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> self;
     static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> self;
     
