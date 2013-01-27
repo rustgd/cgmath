@@ -47,21 +47,21 @@ pub trait MutableVector<T>: Vector<T> {
  * A generic 2-dimensional vector
  */
 pub trait Vector2<T>: Vector<T> {
-    // static pure fn new(x: T, y: T) -> self;
+    static pure fn new(x: T, y: T) -> self;
 }
 
 /**
  * A generic 3-dimensional vector
  */
 pub trait Vector3<T>: Vector<T> {
-    // static pure fn new(x: T, y: T, z: T) -> self;
+    static pure fn new(x: T, y: T, z: T) -> self;
 }
 
 /**
  * A generic 4-dimensional vector
  */
 pub trait Vector4<T>: Vector<T> {
-    // static pure fn new(x: T, y: T, z: T, w: T) -> self;
+    static pure fn new(x: T, y: T, z: T, w: T) -> self;
 }
 
 /**

@@ -23,14 +23,17 @@
 use core::sys::size_of;
 
 use vec::{
+    Vec2,
+    Vec3,
+    Vec4,
     Vector,
+    Vector2,
+    Vector3,
+    Vector4,
     NumericVector,
     NumericVector2,
     NumericVector3,
     NumericVector4,
-    Vec2,
-    Vec3,
-    Vec4,
 };
 
 use mat::{Matrix, Mat2, Mat3, Mat4};
@@ -66,7 +69,7 @@ pub type uvec4 = Vec4<u32>;             /// a four-component unsigned integer ve
 // Vector method wrappers
 
 pub impl vec2 {
-    #[inline(always)] static pure fn new(x: f32, y: f32) -> vec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
     #[inline(always)] static pure fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec2 { NumericVector::zero() }
@@ -79,7 +82,7 @@ pub impl vec2 {
 }
 
 pub impl vec3 {
-    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32) -> vec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
     #[inline(always)] static pure fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec3 { NumericVector::zero() }
@@ -93,7 +96,7 @@ pub impl vec3 {
 }
 
 pub impl vec4 {
-    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] static pure fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec4 { NumericVector::zero() }
@@ -109,7 +112,7 @@ pub impl vec4 {
 
 
 pub impl dvec2 {
-    #[inline(always)] static pure fn new(x: f64, y: f64) -> dvec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
     #[inline(always)] static pure fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec2 { NumericVector::zero() }
@@ -122,7 +125,7 @@ pub impl dvec2 {
 }
 
 pub impl dvec3 {
-    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64) -> dvec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
     #[inline(always)] static pure fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec3 { NumericVector::zero() }
@@ -136,7 +139,7 @@ pub impl dvec3 {
 }
 
 pub impl dvec4 {
-    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] static pure fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec4 { NumericVector::zero() }
@@ -152,7 +155,7 @@ pub impl dvec4 {
  
  
 pub impl bvec2 {
-    #[inline(always)] static pure fn new(x: bool, y: bool) -> bvec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
     #[inline(always)] static pure fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
     
     #[inline(always)] static pure fn dim() -> uint { 2 }
@@ -160,7 +163,7 @@ pub impl bvec2 {
 }
  
 pub impl bvec3 {
-    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool) -> bvec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
     #[inline(always)] static pure fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
     
     #[inline(always)] static pure fn dim() -> uint { 3 }
@@ -168,7 +171,7 @@ pub impl bvec3 {
 }
  
 pub impl bvec4 {
-    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] static pure fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
@@ -177,7 +180,7 @@ pub impl bvec4 {
 
 
 pub impl ivec2 {
-    #[inline(always)] static pure fn new(x: i32, y: i32) -> ivec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
     #[inline(always)] static pure fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec2 { NumericVector::zero() }
@@ -190,7 +193,7 @@ pub impl ivec2 {
 }
 
 pub impl ivec3 {
-    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32) -> ivec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
     #[inline(always)] static pure fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec3 { NumericVector::zero() }
@@ -204,7 +207,7 @@ pub impl ivec3 {
 }
 
 pub impl ivec4 {
-    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] static pure fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec4 { NumericVector::zero() }
@@ -220,7 +223,7 @@ pub impl ivec4 {
 
 
 pub impl uvec2 {
-    #[inline(always)] static pure fn new(x: u32, y: u32) -> uvec2 { Vec2::new(x, y) }
+    #[inline(always)] static pure fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
     #[inline(always)] static pure fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec2 { NumericVector::zero() }
@@ -233,7 +236,7 @@ pub impl uvec2 {
 }
 
 pub impl uvec3 {
-    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32) -> uvec3 { Vec3::new(x, y, z) }
+    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
     #[inline(always)] static pure fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec3 { NumericVector::zero() }
@@ -247,7 +250,7 @@ pub impl uvec3 {
 }
 
 pub impl uvec4 {
-    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vec4::new(x, y, z, w) }
+    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] static pure fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec4 { NumericVector::zero() }

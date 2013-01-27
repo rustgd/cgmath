@@ -10,6 +10,7 @@ use numeric::number::Number::{zero,one};
 
 use vec::{
     Vector,
+    Vector4,
     MutableVector,
     NumericVector,
     NumericVector4,
@@ -40,7 +41,7 @@ use vec::{
 #[deriving_eq]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-pub impl<T> Vec4<T>/*: Vector4<T>*/ {
+pub impl<T> Vec4<T> {
     #[inline(always)]
     static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
@@ -60,6 +61,13 @@ pub impl<T:Copy> Vec4<T>: Vector<T> {
                 to_unsafe_ptr(self)
             )
         }
+    }
+}
+
+pub impl<T> Vec4<T>: Vector4<T> {
+    #[inline(always)]
+    static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
     }
 }
 
