@@ -29,8 +29,6 @@ fn test_quat() {
 
 #[test]
 fn test_quat_2() {
-    use numeric::types::{Degrees, Radians};
-    
     let v = Vec3::new(1.0, 0.0, 0.0);
     
     // let q: Quat<float> = rot::Rotation::from_angle_axis(Degrees(-45.0), &Vec3::new(0.0, 0.0, -1.0));
