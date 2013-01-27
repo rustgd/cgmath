@@ -12,6 +12,7 @@ use vec::{
     Vector,
     MutableVector,
     NumericVector,
+    NumericVector4,
     MutableNumericVector,
     ToHomogeneous,
     EuclideanVector,
@@ -168,6 +169,28 @@ pub impl<T:Copy Number> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec4<T> {
         Vec4::new(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+pub impl<T:Copy Number> Vec4<T>: NumericVector4<T> {
+    #[inline(always)]
+    static pure fn unit_x() -> Vec4<T> {
+        Vec4::new(one(), zero(), zero(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_y() -> Vec4<T> {
+        Vec4::new(zero(), one(), zero(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_z() -> Vec4<T> {
+        Vec4::new(zero(), zero(), one(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_w() -> Vec4<T> {
+        Vec4::new(zero(), zero(), zero(), one())
     }
 }
 

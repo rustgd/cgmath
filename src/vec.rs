@@ -136,6 +136,47 @@ pub trait NumericVector<T>: Vector<T> Neg<self> {
 }
 
 /**
+ * A 2-dimensional vector with numeric components
+ */
+pub trait NumericVector2<T>: NumericVector<T> {
+    static pure fn unit_x() -> self;
+    static pure fn unit_y() -> self;
+    
+    /**
+     * # Return value
+     *
+     * The perp dot product of the vector and `other`
+     */
+    pure fn perp_dot(&self, other: &self) -> T;
+}
+
+/**
+ * A 3-dimensional vector with numeric components
+ */
+pub trait NumericVector3<T>: NumericVector<T> {
+    static pure fn unit_x() -> self;
+    static pure fn unit_y() -> self;
+    static pure fn unit_z() -> self;
+    
+    /**
+     * # Return value
+     *
+     * The cross product of the vector and `other`
+     */
+    pure fn cross(&self, other: &self) -> self;
+}
+
+/**
+ * A 4-dimensional vector with numeric components
+ */
+pub trait NumericVector4<T>: NumericVector<T> {
+    static pure fn unit_x() -> self;
+    static pure fn unit_y() -> self;
+    static pure fn unit_z() -> self;
+    static pure fn unit_w() -> self;
+}
+
+/**
  * A mutable vector with numeric components
  */
 pub trait MutableNumericVector<T>: MutableVector<&self/T>
@@ -177,37 +218,6 @@ pub trait MutableNumericVector<T>: MutableVector<&self/T>
 }
 
 /**
- * A 2-dimensional vector with numeric components
- */
-pub trait NumericVector2<T>: NumericVector<T> {
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-    
-    /**
-     * # Return value
-     *
-     * The perp dot product of the vector and `other`
-     */
-    pure fn perp_dot(&self, other: &self) -> T;
-}
-
-/**
- * A 3-dimensional vector with numeric components
- */
-pub trait NumericVector3<T>: NumericVector<T> {
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-    // static pure fn unit_z() -> self;
-    
-    /**
-     * # Return value
-     *
-     * The cross product of the vector and `other`
-     */
-    pure fn cross(&self, other: &self) -> self;
-}
-
-/**
  * A mutable 3-dimensional vector with numeric components
  */
 pub trait MutableNumericVector3<T>: MutableNumericVector<&self/T> {
@@ -215,16 +225,6 @@ pub trait MutableNumericVector3<T>: MutableNumericVector<&self/T> {
      * Set to the cross product of the vector and `other`
      */
     fn cross_self(&mut self, other: &self);
-}
-
-/**
- * A 4-dimensional vector with numeric components
- */
-pub trait NumericVector4<T>: NumericVector<T> {
-    // static pure fn unit_x() -> self;
-    // static pure fn unit_y() -> self;
-    // static pure fn unit_z() -> self;
-    // static pure fn unit_w() -> self;
 }
 
 pub trait ToHomogeneous<H> {

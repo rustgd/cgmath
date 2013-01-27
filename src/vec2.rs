@@ -153,6 +153,23 @@ pub impl<T:Copy Number> Vec2<T>: Neg<Vec2<T>> {
     }
 }
 
+pub impl<T:Copy Number> Vec2<T>: NumericVector2<T> {
+    #[inline(always)]
+    static pure fn unit_x() -> Vec2<T> {
+        Vec2::new(one(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_y() -> Vec2<T> {
+        Vec2::new(zero(), one())
+    }
+    
+    #[inline(always)]
+    pure fn perp_dot(&self, other: &Vec2<T>) ->T {
+        (self[0] * other[1]) - (self[1] * other[0])
+    }
+}
+
 pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
     #[inline(always)]
     fn neg_self(&mut self) {
@@ -194,13 +211,6 @@ pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
     fn div_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) /= other[0];
         *self.index_mut(1) /= other[1];
-    }
-}
-
-pub impl<T:Copy Number> Vec2<T>: NumericVector2<T> {
-    #[inline(always)]
-    pure fn perp_dot(&self, other: &Vec2<T>) ->T {
-        (self[0] * other[1]) - (self[1] * other[0])
     }
 }
 

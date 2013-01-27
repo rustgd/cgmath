@@ -22,8 +22,18 @@
 
 use core::sys::size_of;
 
+use vec::{
+    Vector,
+    NumericVector,
+    NumericVector2,
+    NumericVector3,
+    NumericVector4,
+    Vec2,
+    Vec3,
+    Vec4,
+};
+
 use mat::{Matrix, Mat2, Mat3, Mat4};
-use vec::{Vector, NumericVector, Vec2, Vec3, Vec4};
 use quat::{/*Quaternion, */Quat};
 
 use numeric::*;
@@ -61,6 +71,9 @@ pub impl vec2 {
     #[inline(always)] static pure fn identity() -> vec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec2 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> vec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec2 { NumericVector2::unit_y() }
+    
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<vec2>() }
 }
@@ -71,6 +84,10 @@ pub impl vec3 {
     #[inline(always)] static pure fn identity() -> vec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec3 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> vec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> vec3 { NumericVector3::unit_z() }
+    
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<vec3>() }
 }
@@ -80,6 +97,11 @@ pub impl vec4 {
     #[inline(always)] static pure fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> vec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> vec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> vec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> vec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> vec4 { NumericVector4::unit_w() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<vec4>() }
@@ -92,6 +114,9 @@ pub impl dvec2 {
     #[inline(always)] static pure fn identity() -> dvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec2 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> dvec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec2 { NumericVector2::unit_y() }
+    
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec2>() }
 }
@@ -102,6 +127,10 @@ pub impl dvec3 {
     #[inline(always)] static pure fn identity() -> dvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec3 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> dvec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> dvec3 { NumericVector3::unit_z() }
+    
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec3>() }
 }
@@ -111,6 +140,11 @@ pub impl dvec4 {
     #[inline(always)] static pure fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> dvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> dvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> dvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> dvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> dvec4 { NumericVector4::unit_w() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec4>() }
@@ -150,6 +184,9 @@ pub impl ivec2 {
     #[inline(always)] static pure fn identity() -> ivec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec2 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> ivec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec2 { NumericVector2::unit_y() }
+    
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec2>() }
 }
@@ -160,6 +197,10 @@ pub impl ivec3 {
     #[inline(always)] static pure fn identity() -> ivec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec3 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> ivec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> ivec3 { NumericVector3::unit_z() }
+    
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec3>() }
 }
@@ -169,6 +210,11 @@ pub impl ivec4 {
     #[inline(always)] static pure fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> ivec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> ivec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> ivec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> ivec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> ivec4 { NumericVector4::unit_w() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec4>() }
@@ -181,6 +227,9 @@ pub impl uvec2 {
     #[inline(always)] static pure fn identity() -> uvec2 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec2 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> uvec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec2 { NumericVector2::unit_y() }
+    
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec2>() }
 }
@@ -191,6 +240,10 @@ pub impl uvec3 {
     #[inline(always)] static pure fn identity() -> uvec3 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec3 { NumericVector::zero() }
     
+    #[inline(always)] static pure fn unit_x() -> uvec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> uvec3 { NumericVector3::unit_z() }
+    
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec3>() }
 }
@@ -200,6 +253,11 @@ pub impl uvec4 {
     #[inline(always)] static pure fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
     #[inline(always)] static pure fn identity() -> uvec4 { NumericVector::identity() }
     #[inline(always)] static pure fn zero() -> uvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> uvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> uvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> uvec4 { NumericVector4::unit_w() }
     
     #[inline(always)] static pure fn dim() -> uint { 4 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec4>() }

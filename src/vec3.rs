@@ -164,6 +164,30 @@ pub impl<T:Copy Number> Vec3<T>: Neg<Vec3<T>> {
     }
 }
 
+pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
+    #[inline(always)]
+    static pure fn unit_x() -> Vec3<T> {
+        Vec3::new(one(), zero(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_y() -> Vec3<T> {
+        Vec3::new(zero(), one(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn unit_z() -> Vec3<T> {
+        Vec3::new(zero(), zero(), one())
+    }
+    
+    #[inline(always)]
+    pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
+                  (self[2] * other[0]) - (self[0] * other[2]),
+                  (self[0] * other[1]) - (self[1] * other[0]))
+    }
+}
+
 pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
     #[inline(always)]
     fn neg_self(&mut self) {
@@ -212,15 +236,6 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
         *self.index_mut(0) /= other[0];
         *self.index_mut(1) /= other[1];
         *self.index_mut(2) /= other[2];
-    }
-}
-
-pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
-    #[inline(always)]
-    pure fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new((self[1] * other[2]) - (self[2] * other[1]),
-                  (self[2] * other[0]) - (self[0] * other[2]),
-                  (self[0] * other[1]) - (self[1] * other[0]))
     }
 }
 
