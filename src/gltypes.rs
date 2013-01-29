@@ -289,6 +289,8 @@ pub impl mat2 {
     #[inline(always)] static pure fn identity() -> mat2 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> mat2 { Matrix::zero() }
     
+    #[inline(always)] static pure fn from_angle(radians: f32) -> mat2 { Mat2::from_angle(radians) }
+    
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn rows() -> uint { 2 }
     #[inline(always)] static pure fn cols() -> uint { 2 }
@@ -304,6 +306,14 @@ pub impl mat3 {
     
     #[inline(always)] static pure fn identity() -> mat3 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> mat3 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn from_angle_x(radians: f32) -> mat3 { Mat3::from_angle_x(radians) }
+    #[inline(always)] static pure fn from_angle_y(radians: f32) -> mat3 { Mat3::from_angle_y(radians) }
+    #[inline(always)] static pure fn from_angle_z(radians: f32) -> mat3 { Mat3::from_angle_z(radians) }
+    #[inline(always)] static pure fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32) -> mat3 { Mat3::from_angle_xyz(radians_x, radians_y, radians_z) }
+    #[inline(always)] static pure fn from_angle_axis(radians: f32, axis: &vec3) -> mat3 { Mat3::from_angle_axis(radians, axis) }
+    #[inline(always)] static pure fn from_axes(x: vec3, y: vec3, z: vec3) -> mat3 { Mat3::from_axes(x, y, z) }
+    #[inline(always)] static pure fn look_at(dir: &vec3, up: &vec3) -> mat3 { Mat3::look_at(dir, up) }
     
     #[inline(always)] static pure fn dim() -> uint { 3 }
     #[inline(always)] static pure fn rows() -> uint { 3 }
@@ -380,10 +390,40 @@ pub impl dmat4 {
 // Quaternion aliases. These are not present in the GLSL specification, but
 // they follow roughly the same nomenclature.
 
-pub type quat4  = Quat<f32>;             /// a single-precision floating-point quaternion
-pub type dquat4 = Quat<f64>;             /// a double-precision floating-point quaternion
+pub type quat  = Quat<f32>;             /// a single-precision floating-point quaternion
+pub type dquat = Quat<f64>;             /// a double-precision floating-point quaternion
 
+pub impl quat {
+    #[inline(always)] static pure fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
+    #[inline(always)] static pure fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
+    #[inline(always)] static pure fn identity() -> quat { Quat::identity() }
+    #[inline(always)] static pure fn zero() -> quat { Quat::zero() }
+    
+    #[inline(always)] static pure fn from_angle_x(radians: f32) -> quat { Quat::from_angle_x(radians) }
+    #[inline(always)] static pure fn from_angle_y(radians: f32) -> quat { Quat::from_angle_y(radians) }
+    #[inline(always)] static pure fn from_angle_z(radians: f32) -> quat { Quat::from_angle_z(radians) }
+    #[inline(always)] static pure fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32)
+        -> quat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
+    #[inline(always)] static pure fn from_angle_axis(radians: f32, axis: &vec3) -> quat { Quat::from_angle_axis(radians, axis) }
+    #[inline(always)] static pure fn from_axes(x: vec3, y: vec3, z: vec3) -> quat { Quat::from_axes(x, y, z) }
+    #[inline(always)] static pure fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
+}
 
+pub impl dquat {
+    #[inline(always)] static pure fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
+    #[inline(always)] static pure fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
+    #[inline(always)] static pure fn identity() -> dquat { Quat::identity() }
+    #[inline(always)] static pure fn zero() -> dquat { Quat::zero() }
+    
+    #[inline(always)] static pure fn from_angle_x(radians: f64) -> dquat { Quat::from_angle_x(radians) }
+    #[inline(always)] static pure fn from_angle_y(radians: f64) -> dquat { Quat::from_angle_y(radians) }
+    #[inline(always)] static pure fn from_angle_z(radians: f64) -> dquat { Quat::from_angle_z(radians) }
+    #[inline(always)] static pure fn from_angle_xyz(radians_x: f64, radians_y: f64, radians_z: f64)
+        -> dquat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
+    #[inline(always)] static pure fn from_angle_axis(radians: f64, axis: &dvec3) -> dquat { Quat::from_angle_axis(radians, axis) }
+    #[inline(always)] static pure fn from_axes(x: dvec3, y: dvec3, z: dvec3) -> dquat { Quat::from_axes(x, y, z) }
+    #[inline(always)] static pure fn look_at(dir: &dvec3, up: &dvec3) -> dquat { Quat::look_at(dir, up) }
+}
 
 
 // prevents "error: expected item"
