@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
@@ -8,7 +9,11 @@ use std::cmp::FuzzyEq;
 use numeric::*;
 use numeric::number::Number::{zero,one};
 
-use vec::Vec2;
+use vec::{
+    Vec2,
+    vec2,
+    dvec2,
+};
 
 use mat::{
     Mat3,
@@ -375,4 +380,46 @@ pub impl<T:Copy Float> Mat2<T>: FuzzyEq {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type mat2 = Mat2<f32>;              /// a 2×2 single-precision floating-point matrix
+pub type dmat2 = Mat2<f64>;             /// a 2×2 double-precision floating-point matrix
+
+// Static method wrappers for GLSL-style types
+
+pub impl mat2 {
+    #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
+        -> mat2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
+    #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
+        -> mat2 { Mat2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat2 { Mat2::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> mat2 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> mat2 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn from_angle(radians: f32) -> mat2 { Mat2::from_angle(radians) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn rows() -> uint { 2 }
+    #[inline(always)] static pure fn cols() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat2>() }
+}
+
+pub impl dmat2 {
+    #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
+        -> dmat2 { Mat2::new(c0r0, c0r1, c1r0, c1r1) }
+    #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
+        -> dmat2 { Mat2::from_cols(move c0, move c1) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { Mat2::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> dmat2 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> dmat2 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn rows() -> uint { 2 }
+    #[inline(always)] static pure fn cols() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat2>() }
 }

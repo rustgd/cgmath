@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
@@ -391,4 +392,79 @@ pub impl Vec3<bool>: BooleanVector {
     pure fn not(&self) -> Vec3<bool> { 
         Vec3::new(!self[0], !self[1], !self[2])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type vec3  = Vec3<f32>;             /// a three-component single-precision floating-point vector
+pub type dvec3 = Vec3<f64>;             /// a three-component double-precision floating-point vector
+pub type bvec3 = Vec3<bool>;            /// a three-component Boolean vector
+pub type ivec3 = Vec3<i32>;             /// a three-component signed integer vector
+pub type uvec3 = Vec3<u32>;             /// a three-component unsigned integer vector
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec3 {
+    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> vec3 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> vec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> vec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> vec3 { NumericVector3::unit_z() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec3>() }
+}
+
+pub impl dvec3 {
+    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> dvec3 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> dvec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> dvec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> dvec3 { NumericVector3::unit_z() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec3>() }
+}
+
+pub impl bvec3 {
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec3>() }
+}
+
+pub impl ivec3 {
+    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> ivec3 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> ivec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> ivec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> ivec3 { NumericVector3::unit_z() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec3>() }
+}
+
+pub impl uvec3 {
+    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] static pure fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> uvec3 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> uvec3 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> uvec3 { NumericVector3::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec3 { NumericVector3::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> uvec3 { NumericVector3::unit_z() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec3>() }
 }

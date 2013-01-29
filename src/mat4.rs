@@ -2,13 +2,18 @@ use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
 use core::util::swap;
+use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
 use numeric::*;
 use numeric::number::Number::{zero,one};
 
-use vec::Vec4;
+use vec::{
+    Vec4,
+    vec4,
+    dvec4,
+};
 
 use mat::{
     Mat3,
@@ -514,4 +519,44 @@ pub impl<T:Copy Float> Mat4<T>: FuzzyEq {
         self[2].fuzzy_eq(&other[2]) &&
         self[3].fuzzy_eq(&other[3])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type mat4 = Mat4<f32>;              /// a 4×4 single-precision floating-point matrix
+pub type dmat4 = Mat4<f64>;             /// a 4×4 double-precision floating-point matrix
+
+// Static method wrappers for GLSL-style types
+
+pub impl mat4 {
+    #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
+        -> mat4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+    #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
+        -> mat4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat4 { Mat4::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> mat4 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> mat4 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn rows() -> uint { 4 }
+    #[inline(always)] static pure fn cols() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat4>() }
+}
+
+pub impl dmat4 {
+    #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
+        -> dmat4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+    #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
+        -> dmat4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat4 { Mat4::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> dmat4 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> dmat4 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn rows() -> uint { 4 }
+    #[inline(always)] static pure fn cols() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat4>() }
 }

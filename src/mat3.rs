@@ -2,6 +2,7 @@ use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
 use core::util::swap;
+use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::FuzzyEq;
@@ -11,7 +12,12 @@ use numeric::number::Number::{zero,one};
 
 use quat::Quat;
 use rot::Rotation;
-use vec::Vec3;
+
+use vec::{
+    Vec3,
+    vec3,
+    dvec3,
+};
 
 use mat::{
     Mat4,
@@ -584,4 +590,53 @@ pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type mat3 = Mat3<f32>;              /// a 3×3 single-precision floating-point matrix
+pub type dmat3 = Mat3<f64>;             /// a 3×3 double-precision floating-point matrix
+
+// Static method wrappers for GLSL-style types
+
+pub impl mat3 {
+    #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c0r2: f32, c1r0: f32, c1r1: f32, c1r2: f32, c2r0: f32, c2r1: f32, c2r2: f32)
+        -> mat3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
+    #[inline(always)] static pure fn from_cols(c0: vec3, c1: vec3, c2: vec3)
+        -> mat3 { Mat3::from_cols(move c0, move c1, move c2) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat3 { Mat3::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> mat3 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> mat3 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn from_angle_x(radians: f32) -> mat3 { Mat3::from_angle_x(radians) }
+    #[inline(always)] static pure fn from_angle_y(radians: f32) -> mat3 { Mat3::from_angle_y(radians) }
+    #[inline(always)] static pure fn from_angle_z(radians: f32) -> mat3 { Mat3::from_angle_z(radians) }
+    #[inline(always)] static pure fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32) -> mat3 { Mat3::from_angle_xyz(radians_x, radians_y, radians_z) }
+    #[inline(always)] static pure fn from_angle_axis(radians: f32, axis: &vec3) -> mat3 { Mat3::from_angle_axis(radians, axis) }
+    #[inline(always)] static pure fn from_axes(x: vec3, y: vec3, z: vec3) -> mat3 { Mat3::from_axes(x, y, z) }
+    #[inline(always)] static pure fn look_at(dir: &vec3, up: &vec3) -> mat3 { Mat3::look_at(dir, up) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn rows() -> uint { 3 }
+    #[inline(always)] static pure fn cols() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat3>() }
+}
+
+
+pub impl dmat3 {
+    #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c0r2: f64, c1r0: f64, c1r1: f64, c1r2: f64, c2r0: f64, c2r1: f64, c2r2: f64)
+        -> dmat3 { Mat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
+    #[inline(always)] static pure fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)
+        -> dmat3 { Mat3::from_cols(move c0, move c1, move c2) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat3 { Mat3::from_value(v) }
+    
+    #[inline(always)] static pure fn identity() -> dmat3 { Matrix::identity() }
+    #[inline(always)] static pure fn zero() -> dmat3 { Matrix::zero() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 3 }
+    #[inline(always)] static pure fn rows() -> uint { 3 }
+    #[inline(always)] static pure fn cols() -> uint { 3 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat3>() }
 }

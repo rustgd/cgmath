@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
@@ -352,4 +353,75 @@ pub impl Vec2<bool>: BooleanVector {
     pure fn not(&self) -> Vec2<bool> { 
         Vec2::new(!self[0], !self[1])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type vec2  = Vec2<f32>;             /// a two-component single-precision floating-point vector
+pub type dvec2 = Vec2<f64>;             /// a two-component double-precision floating-point vector
+pub type bvec2 = Vec2<bool>;            /// a two-component Boolean vector
+pub type ivec2 = Vec2<i32>;             /// a two-component signed integer vector
+pub type uvec2 = Vec2<u32>;             /// a two-component unsigned integer vector
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec2 {
+    #[inline(always)] static pure fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> vec2 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> vec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> vec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec2 { NumericVector2::unit_y() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec2>() }
+}
+
+pub impl dvec2 {
+    #[inline(always)] static pure fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> dvec2 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> dvec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> dvec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec2 { NumericVector2::unit_y() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec2>() }
+}
+
+pub impl bvec2 {
+    #[inline(always)] static pure fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec2>() }
+}
+
+pub impl ivec2 {
+    #[inline(always)] static pure fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> ivec2 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> ivec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> ivec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec2 { NumericVector2::unit_y() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec2>() }
+}
+
+pub impl uvec2 {
+    #[inline(always)] static pure fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
+    #[inline(always)] static pure fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> uvec2 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> uvec2 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> uvec2 { NumericVector2::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec2 { NumericVector2::unit_y() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 2 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec2>() }
 }

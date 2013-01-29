@@ -11,7 +11,6 @@
 extern mod std;
 extern mod numeric;
 
-pub mod gltypes;
 pub mod mat;
 pub mod mat2;
 pub mod mat3;
@@ -27,7 +26,6 @@ pub mod projection;
 
 #[test]
 mod test {
-    mod test_gltypes;
     mod test_mat;
     mod test_quat;
     mod test_rot;

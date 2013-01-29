@@ -3,9 +3,9 @@ use std::cmp::FuzzyEq;
 
 use quat::Quat;
 
-pub use mat2::Mat2;
-pub use mat3::Mat3;
-pub use mat4::Mat4;
+pub use mat2::{Mat2, mat2, dmat2};
+pub use mat3::{Mat3, mat3, dmat3};
+pub use mat4::{Mat4, mat4, dmat4};
 
 /**
  * The base square matrix trait

@@ -4,9 +4,9 @@ use std::cmp::FuzzyEq;
 
 use numeric::Number;
 
-pub use vec2::Vec2;
-pub use vec3::Vec3;
-pub use vec4::Vec4;
+pub use vec2::{Vec2, vec2, dvec2, bvec2, ivec2, uvec2};
+pub use vec3::{Vec3, vec3, dvec3, bvec3, ivec3, uvec3};
+pub use vec4::{Vec4, vec4, dvec4, bvec4, ivec4, uvec4};
 
 
 /**

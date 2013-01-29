@@ -1,6 +1,7 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
+use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
@@ -397,4 +398,84 @@ pub impl Vec4<bool>: BooleanVector {
     pure fn not(&self) -> Vec4<bool> { 
         Vec4::new(!self[0], !self[1], !self[2], !self[3])
     }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+pub type vec4  = Vec4<f32>;             /// a four-component single-precision floating-point vector
+pub type dvec4 = Vec4<f64>;             /// a four-component double-precision floating-point vector
+pub type bvec4 = Vec4<bool>;            /// a four-component Boolean vector
+pub type ivec4 = Vec4<i32>;             /// a four-component signed integer vector
+pub type uvec4 = Vec4<u32>;             /// a four-component unsigned integer vector
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec4 {
+    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> vec4 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> vec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> vec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> vec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> vec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> vec4 { NumericVector4::unit_w() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec4>() }
+}
+
+pub impl dvec4 {
+    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> dvec4 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> dvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> dvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> dvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> dvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> dvec4 { NumericVector4::unit_w() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec4>() }
+}
+ 
+ 
+pub impl bvec4 {
+    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec4>() }
+}
+
+pub impl ivec4 {
+    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> ivec4 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> ivec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> ivec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> ivec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> ivec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> ivec4 { NumericVector4::unit_w() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec4>() }
+}
+
+pub impl uvec4 {
+    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static pure fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
+    #[inline(always)] static pure fn identity() -> uvec4 { NumericVector::identity() }
+    #[inline(always)] static pure fn zero() -> uvec4 { NumericVector::zero() }
+    
+    #[inline(always)] static pure fn unit_x() -> uvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static pure fn unit_y() -> uvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static pure fn unit_z() -> uvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static pure fn unit_w() -> uvec4 { NumericVector4::unit_w() }
+    
+    #[inline(always)] static pure fn dim() -> uint { 4 }
+    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec4>() }
 }
