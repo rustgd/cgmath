@@ -11,6 +11,7 @@ use numeric::number::Number::{zero,one};
 
 use vec::{
     Vec4,
+    Vector4,
     vec4,
     dvec4,
 };
@@ -18,8 +19,9 @@ use vec::{
 use mat::{
     Mat3,
     Matrix,
-    MutableMatrix,
+    Matrix3,
     Matrix4,
+    MutableMatrix,
 };
 
 /**
@@ -39,70 +41,16 @@ use mat::{
 #[deriving_eq]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-pub impl<T:Copy Float> Mat4<T> {
-    /**
-     * Construct a 4 x 4 matrix
-     *
-     * # Arguments
-     *
-     * * `c0r0`, `c0r1`, `c0r2`, `c0r3` - the first column of the matrix
-     * * `c1r0`, `c1r1`, `c1r2`, `c1r3` - the second column of the matrix
-     * * `c2r0`, `c2r1`, `c2r2`, `c2r3` - the third column of the matrix
-     * * `c3r0`, `c3r1`, `c3r2`, `c3r3` - the fourth column of the matrix
-     *
-     * ~~~
-     *        c0     c1     c2     c3
-     *     +------+------+------+------+
-     *  r0 | c0r0 | c1r0 | c2r0 | c3r0 |
-     *     +------+------+------+------+
-     *  r1 | c0r1 | c1r1 | c2r1 | c3r1 |
-     *     +------+------+------+------+
-     *  r2 | c0r2 | c1r2 | c2r2 | c3r2 |
-     *     +------+------+------+------+
-     *  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
-     *     +------+------+------+------+
-     * ~~~
-     */
+pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     #[inline(always)]
-    static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
-                       c1r0: T, c1r1: T, c1r2: T, c1r3: T,
-                       c2r0: T, c2r1: T, c2r2: T, c2r3: T,
-                       c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
-        Mat4::from_cols(Vec4::new(c0r0, c0r1, c0r2, c0r3),
-                        Vec4::new(c1r0, c1r1, c1r2, c1r3),
-                        Vec4::new(c2r0, c2r1, c2r2, c2r3),
-                        Vec4::new(c3r0, c3r1, c3r2, c3r3))
-    }
+    pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
     
-    /**
-     * Construct a 4 x 4 matrix from column vectors
-     *
-     * # Arguments
-     *
-     * * `c0` - the first column vector of the matrix
-     * * `c1` - the second column vector of the matrix
-     * * `c2` - the third column vector of the matrix
-     * * `c3` - the fourth column vector of the matrix
-     *
-     * ~~~
-     *        c0     c1     c2     c3
-     *     +------+------+------+------+
-     *  r0 | c0.x | c1.x | c2.x | c3.x |
-     *     +------+------+------+------+
-     *  r1 | c0.y | c1.y | c2.y | c3.y |
-     *     +------+------+------+------+
-     *  r2 | c0.z | c1.z | c2.z | c3.z |
-     *     +------+------+------+------+
-     *  r3 | c0.w | c1.w | c2.w | c3.w |
-     *     +------+------+------+------+
-     * ~~~
-     */
     #[inline(always)]
-    static pure fn from_cols(c0: Vec4<T>,
-                             c1: Vec4<T>,
-                             c2: Vec4<T>,
-                             c3: Vec4<T>) -> Mat4<T> {
-        Mat4 { x: c0, y: c1, z: c2, w: c3 }
+    pure fn row(&self, i: uint) -> Vec4<T> {
+        Vector4::new(self[0][i],
+                     self[1][i],
+                     self[2][i],
+                     self[3][i])
     }
     
     /**
@@ -127,31 +75,10 @@ pub impl<T:Copy Float> Mat4<T> {
      */
     #[inline(always)]
     static pure fn from_value(value: T) -> Mat4<T> {
-        Mat4::new(value, zero(), zero(), zero(),
-                  zero(), value, zero(), zero(),
-                  zero(), zero(), value, zero(),
-                  zero(), zero(), zero(), value)
-    }
-    
-    /// Wrapper method for `Matrix::identity`
-    #[inline(always)]
-    static pure fn identity() -> Mat4<T> { Matrix::identity() }
-    
-    /// Wrapper method for `Matrix::zero`
-    #[inline(always)]
-    static pure fn zero() -> Mat4<T> { Matrix::zero() }
-}
-
-pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
-    #[inline(always)]
-    pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
-    
-    #[inline(always)]
-    pure fn row(&self, i: uint) -> Vec4<T> {
-        Vec4::new(self[0][i],
-                  self[1][i],
-                  self[2][i],
-                  self[3][i])
+        Matrix4::new(value, zero(), zero(), zero(),
+                     zero(), value, zero(), zero(),
+                     zero(), zero(), value, zero(),
+                     zero(), zero(), zero(), value)
     }
     
     /**
@@ -171,10 +98,10 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
      */
     #[inline(always)]
     static pure fn identity() -> Mat4<T> {
-        Mat4::new( one(), zero(), zero(), zero(),
-                  zero(),  one(), zero(), zero(),
-                  zero(), zero(),  one(), zero(),
-                  zero(), zero(), zero(),  one())
+        Matrix4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                     zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
+                     zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
+                     zero::<T>(), zero::<T>(), zero::<T>(),  one::<T>())
     }
     
     /**
@@ -194,65 +121,65 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
      */
     #[inline(always)]
     static pure fn zero() -> Mat4<T> {
-        Mat4::new(zero(), zero(), zero(), zero(),
-                  zero(), zero(), zero(), zero(),
-                  zero(), zero(), zero(), zero(),
-                  zero(), zero(), zero(), zero())
+        Matrix4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
     
     #[inline(always)]
     pure fn mul_t(&self, value: T) -> Mat4<T> {
-        Mat4::from_cols(self[0].mul_t(value),
-                        self[1].mul_t(value),
-                        self[2].mul_t(value),
-                        self[3].mul_t(value))
+        Matrix4::from_cols(self[0].mul_t(value),
+                           self[1].mul_t(value),
+                           self[2].mul_t(value),
+                           self[3].mul_t(value))
     }
     
     #[inline(always)]
     pure fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.row(0).dot(vec),
-                  self.row(1).dot(vec),
-                  self.row(2).dot(vec),
-                  self.row(3).dot(vec))
+        Vector4::new(self.row(0).dot(vec),
+                     self.row(1).dot(vec),
+                     self.row(2).dot(vec),
+                     self.row(3).dot(vec))
     }
     
     #[inline(always)]
     pure fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(self[0].add_v(&other[0]),
-                        self[1].add_v(&other[1]),
-                        self[2].add_v(&other[2]),
-                        self[3].add_v(&other[3]))
+        Matrix4::from_cols(self[0].add_v(&other[0]),
+                           self[1].add_v(&other[1]),
+                           self[2].add_v(&other[2]),
+                           self[3].add_v(&other[3]))
     }
     
     #[inline(always)]
     pure fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(self[0].sub_v(&other[0]),
-                        self[1].sub_v(&other[1]),
-                        self[2].sub_v(&other[2]),
-                        self[3].sub_v(&other[3]))
+        Matrix4::from_cols(self[0].sub_v(&other[0]),
+                           self[1].sub_v(&other[1]),
+                           self[2].sub_v(&other[2]),
+                           self[3].sub_v(&other[3]))
     }
     
     #[inline(always)]
     pure fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::new(self.row(0).dot(&other.col(0)),
-                  self.row(1).dot(&other.col(0)),
-                  self.row(2).dot(&other.col(0)),
-                  self.row(3).dot(&other.col(0)),
+        Matrix4::new(self.row(0).dot(&other.col(0)),
+                     self.row(1).dot(&other.col(0)),
+                     self.row(2).dot(&other.col(0)),
+                     self.row(3).dot(&other.col(0)),
                   
-                  self.row(0).dot(&other.col(1)),
-                  self.row(1).dot(&other.col(1)),
-                  self.row(2).dot(&other.col(1)),
-                  self.row(3).dot(&other.col(1)),
+                     self.row(0).dot(&other.col(1)),
+                     self.row(1).dot(&other.col(1)),
+                     self.row(2).dot(&other.col(1)),
+                     self.row(3).dot(&other.col(1)),
                   
-                  self.row(0).dot(&other.col(2)),
-                  self.row(1).dot(&other.col(2)),
-                  self.row(2).dot(&other.col(2)),
-                  self.row(3).dot(&other.col(2)),
+                     self.row(0).dot(&other.col(2)),
+                     self.row(1).dot(&other.col(2)),
+                     self.row(2).dot(&other.col(2)),
+                     self.row(3).dot(&other.col(2)),
                   
-                  self.row(0).dot(&other.col(3)),
-                  self.row(1).dot(&other.col(3)),
-                  self.row(2).dot(&other.col(3)),
-                  self.row(3).dot(&other.col(3)))
+                     self.row(0).dot(&other.col(3)),
+                     self.row(1).dot(&other.col(3)),
+                     self.row(2).dot(&other.col(3)),
+                     self.row(3).dot(&other.col(3)))
         
     }
     
@@ -261,18 +188,23 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 
     pure fn determinant(&self) -> T {
-        self[0][0]*Mat3::new(self[1][1], self[2][1], self[3][1],
-                             self[1][2], self[2][2], self[3][2],
-                             self[1][3], self[2][3], self[3][3]).determinant() -
-        self[1][0]*Mat3::new(self[0][1], self[2][1], self[3][1],
-                             self[0][2], self[2][2], self[3][2],
-                             self[0][3], self[2][3], self[3][3]).determinant() +
-        self[2][0]*Mat3::new(self[0][1], self[1][1], self[3][1],
-                             self[0][2], self[1][2], self[3][2],
-                             self[0][3], self[1][3], self[3][3]).determinant() -
-        self[3][0]*Mat3::new(self[0][1], self[1][1], self[2][1],
-                             self[0][2], self[1][2], self[2][2],
-                             self[0][3], self[1][3], self[2][3]).determinant()
+        let m0: Mat3<T> = Matrix3::new(self[1][1], self[2][1], self[3][1],
+                                       self[1][2], self[2][2], self[3][2],
+                                       self[1][3], self[2][3], self[3][3]);
+        let m1: Mat3<T> = Matrix3::new(self[0][1], self[2][1], self[3][1],
+                                       self[0][2], self[2][2], self[3][2],
+                                       self[0][3], self[2][3], self[3][3]);
+        let m2: Mat3<T> = Matrix3::new(self[0][1], self[1][1], self[3][1],
+                                       self[0][2], self[1][2], self[3][2],
+                                       self[0][3], self[1][3], self[3][3]);
+        let m3: Mat3<T> = Matrix3::new(self[0][1], self[1][1], self[2][1],
+                                       self[0][2], self[1][2], self[2][2],
+                                       self[0][3], self[1][3], self[2][3]);
+        
+        self[0][0] * m0.determinant() -
+        self[1][0] * m1.determinant() +
+        self[2][0] * m2.determinant() -
+        self[3][0] * m3.determinant()
     }
 
     pure fn trace(&self) -> T {
@@ -290,8 +222,7 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
             // and essentially reduce [A|I]
             
             let mut A = *self;
-            // let mut I: Mat4<T> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
-            let mut I = Mat4::identity();
+            let mut I: Mat4<T> = Matrix::identity();
             
             for uint::range(0, 4) |j| {
                 // Find largest element in col j
@@ -328,16 +259,15 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn transpose(&self) -> Mat4<T> {
-        Mat4::new(self[0][0], self[1][0], self[2][0], self[3][0],
-                  self[0][1], self[1][1], self[2][1], self[3][1],
-                  self[0][2], self[1][2], self[2][2], self[3][2],
-                  self[0][3], self[1][3], self[2][3], self[3][3])
+        Matrix4::new(self[0][0], self[1][0], self[2][0], self[3][0],
+                     self[0][1], self[1][1], self[2][1], self[3][1],
+                     self[0][2], self[1][2], self[2][2], self[3][2],
+                     self[0][3], self[1][3], self[2][3], self[3][3])
     }
     
     #[inline(always)]
     pure fn is_identity(&self) -> bool {
-        // self.fuzzy_eq(&Matrix::identity())     // FIXME: there's something wrong with static functions here!
-        self.fuzzy_eq(&Mat4::identity())
+        self.fuzzy_eq(&Matrix::identity())
     }
     
     #[inline(always)]
@@ -361,8 +291,7 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     
     #[inline(always)]
     pure fn is_rotated(&self) -> bool {
-        // !self.fuzzy_eq(&Matrix::identity())     // FIXME: there's something wrong with static functions here!
-        !self.fuzzy_eq(&Mat4::identity())
+        !self.fuzzy_eq(&Matrix::identity())
     }
     
     #[inline(always)]
@@ -399,6 +328,73 @@ pub impl<T:Copy Float> Mat4<T>: Matrix<T, Vec4<T>> {
     }
 }
 
+pub impl<T:Copy Float> Mat4<T>: Matrix4<T, Vec4<T>> {
+    /**
+     * Construct a 4 x 4 matrix
+     *
+     * # Arguments
+     *
+     * * `c0r0`, `c0r1`, `c0r2`, `c0r3` - the first column of the matrix
+     * * `c1r0`, `c1r1`, `c1r2`, `c1r3` - the second column of the matrix
+     * * `c2r0`, `c2r1`, `c2r2`, `c2r3` - the third column of the matrix
+     * * `c3r0`, `c3r1`, `c3r2`, `c3r3` - the fourth column of the matrix
+     *
+     * ~~~
+     *        c0     c1     c2     c3
+     *     +------+------+------+------+
+     *  r0 | c0r0 | c1r0 | c2r0 | c3r0 |
+     *     +------+------+------+------+
+     *  r1 | c0r1 | c1r1 | c2r1 | c3r1 |
+     *     +------+------+------+------+
+     *  r2 | c0r2 | c1r2 | c2r2 | c3r2 |
+     *     +------+------+------+------+
+     *  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
+     *     +------+------+------+------+
+     * ~~~
+     */
+    #[inline(always)]
+    static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+                       c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+                       c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+                       c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
+        Matrix4::from_cols(Vector4::new::<T,Vec4<T>>(c0r0, c0r1, c0r2, c0r3),
+                           Vector4::new::<T,Vec4<T>>(c1r0, c1r1, c1r2, c1r3),
+                           Vector4::new::<T,Vec4<T>>(c2r0, c2r1, c2r2, c2r3),
+                           Vector4::new::<T,Vec4<T>>(c3r0, c3r1, c3r2, c3r3))
+    }
+    
+    /**
+     * Construct a 4 x 4 matrix from column vectors
+     *
+     * # Arguments
+     *
+     * * `c0` - the first column vector of the matrix
+     * * `c1` - the second column vector of the matrix
+     * * `c2` - the third column vector of the matrix
+     * * `c3` - the fourth column vector of the matrix
+     *
+     * ~~~
+     *        c0     c1     c2     c3
+     *     +------+------+------+------+
+     *  r0 | c0.x | c1.x | c2.x | c3.x |
+     *     +------+------+------+------+
+     *  r1 | c0.y | c1.y | c2.y | c3.y |
+     *     +------+------+------+------+
+     *  r2 | c0.z | c1.z | c2.z | c3.z |
+     *     +------+------+------+------+
+     *  r3 | c0.w | c1.w | c2.w | c3.w |
+     *     +------+------+------+------+
+     * ~~~
+     */
+    #[inline(always)]
+    static pure fn from_cols(c0: Vec4<T>,
+                             c1: Vec4<T>,
+                             c2: Vec4<T>,
+                             c3: Vec4<T>) -> Mat4<T> {
+        Mat4 { x: c0, y: c1, z: c2, w: c3 }
+    }
+}
+
 pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec4<T> {
@@ -432,12 +428,12 @@ pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     
     #[inline(always)]
     fn to_identity(&mut self) {
-        (*self) = Mat4::identity();
+        (*self) = Matrix::identity();
     }
     
     #[inline(always)]
     fn to_zero(&mut self) {
-        (*self) = Mat4::zero();
+        (*self) = Matrix::zero();
     }
     
     #[inline(always)]
@@ -492,12 +488,10 @@ pub impl<T:Copy Float> Mat4<T>: MutableMatrix<T, Vec4<T>> {
     }
 }
 
-pub impl<T> Mat4<T>: Matrix4<T, Vec4<T>> {}
-
 pub impl<T:Copy Float> Mat4<T>: Neg<Mat4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat4<T> {
-        Mat4::from_cols(-self[0], -self[1], -self[2], -self[3])
+        Matrix4::from_cols(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
@@ -524,17 +518,17 @@ pub impl<T:Copy Float> Mat4<T>: FuzzyEq {
 // GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type mat4 = Mat4<f32>;              /// a 4×4 single-precision floating-point matrix
-pub type dmat4 = Mat4<f64>;             /// a 4×4 double-precision floating-point matrix
+pub type mat4 = Mat4<f32>;      // a 4×4 single-precision floating-point matrix
+pub type dmat4 = Mat4<f64>;     // a 4×4 double-precision floating-point matrix
 
 // Static method wrappers for GLSL-style types
 
 pub impl mat4 {
     #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
-        -> mat4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+        -> mat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
-        -> mat4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
-    #[inline(always)] static pure fn from_value(v: f32) -> mat4 { Mat4::from_value(v) }
+        -> mat4 { Matrix4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
     
     #[inline(always)] static pure fn identity() -> mat4 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> mat4 { Matrix::zero() }
@@ -547,10 +541,10 @@ pub impl mat4 {
 
 pub impl dmat4 {
     #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
-        -> dmat4 { Mat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+        -> dmat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
-        -> dmat4 { Mat4::from_cols(move c0, move c1, move c2, move c3) }
-    #[inline(always)] static pure fn from_value(v: f64) -> dmat4 { Mat4::from_value(v) }
+        -> dmat4 { Matrix4::from_cols(move c0, move c1, move c2, move c3) }
+    #[inline(always)] static pure fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
     
     #[inline(always)] static pure fn identity() -> dmat4 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> dmat4 { Matrix::zero() }

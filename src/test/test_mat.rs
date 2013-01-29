@@ -5,67 +5,67 @@ use vec::*;
 
 #[test]
 fn test_mat2() {
-    let a = Mat2 { x: Vec2 { x: 1f, y: 3f },
-                   y: Vec2 { x: 2f, y: 4f } };
-    let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
-                   y: Vec2 { x: 3f, y: 5f } };
+    let a = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
+                   y: Vec2 { x: 2.0, y: 4.0 } };
+    let b = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
+                   y: Vec2 { x: 3.0, y: 5.0 } };
     
-    let v1 = Vec2::new(1f, 2f);
-    let f1 = 0.5f;
+    let v1 = vec2::new(1.0, 2.0);
+    let f1 = 0.5;
     
-    assert a == Mat2::new(1f, 3f,
-                          2f, 4f);
+    assert a == mat2::new(1.0, 3.0,
+                          2.0, 4.0);
     
-    assert a == Mat2::from_cols(Vec2::new(1f, 3f),
-                                Vec2::new(2f, 4f));
+    assert a == mat2::from_cols(vec2::new(1.0, 3.0),
+                                vec2::new(2.0, 4.0));
     
-    assert Mat2::from_value(4f64) == Mat2::new(4f64, 0f64,
-                                               0f64, 4f64);
+    assert mat2::from_value(4.0) == mat2::new(4.0, 0.0,
+                                               0.0, 4.0);
     
-    assert a[0] == Vec2::new(1f, 3f);
-    assert a[1] == Vec2::new(2f, 4f);
+    assert a[0] == vec2::new(1.0, 3.0);
+    assert a[1] == vec2::new(2.0, 4.0);
     
-    assert a.row(0) == Vec2::new(1f, 2f);
-    assert a.row(1) == Vec2::new(3f, 4f);
+    assert a.row(0) == vec2::new(1.0, 2.0);
+    assert a.row(1) == vec2::new(3.0, 4.0);
     
-    assert a.col(0) == Vec2::new(1f, 3f);
-    assert a.col(1) == Vec2::new(2f, 4f);
+    assert a.col(0) == vec2::new(1.0, 3.0);
+    assert a.col(1) == vec2::new(2.0, 4.0);
     
-    assert Mat2::identity() == Mat2::new(1f, 0f,
-                                         0f, 1f);
+    assert mat2::identity() == mat2::new(1.0, 0.0,
+                                         0.0, 1.0);
     
-    assert Mat2::zero() == Mat2::new(0f, 0f,
-                                     0f, 0f);
+    assert mat2::zero() == mat2::new(0.0, 0.0,
+                                     0.0, 0.0);
 
-    assert a.determinant() == -2f;
-    assert a.trace() == 5f;
+    assert a.determinant() == -2.0;
+    assert a.trace() == 5.0;
     
-    assert a.neg() == Mat2::new(-1f, -3f,
-                                -2f, -4f);
+    assert a.neg() == mat2::new(-1.0, -3.0,
+                                -2.0, -4.0);
     assert -a == a.neg();
     
-    assert a.mul_t(f1) == Mat2::new(0.5f, 1.5f,
-                                    1.0f, 2.0f);
-    assert a.mul_v(&v1) == Vec2::new(5f, 11f);
+    assert a.mul_t(f1) == mat2::new(0.5, 1.5,
+                                    1.0, 2.0);
+    assert a.mul_v(&v1) == vec2::new(5.0, 11.0);
     
-    assert a.add_m(&b) == Mat2::new(3f, 7f,
-                                    5f, 9f);
-    assert a.sub_m(&b) == Mat2::new(-1f, -1f,
-                                    -1f, -1f);
-    assert a.mul_m(&b) == Mat2::new(10.0, 22.0,
+    assert a.add_m(&b) == mat2::new(3.0, 7.0,
+                                    5.0, 9.0);
+    assert a.sub_m(&b) == mat2::new(-1.0, -1.0,
+                                    -1.0, -1.0);
+    assert a.mul_m(&b) == mat2::new(10.0, 22.0,
                                     13.0, 29.0);
-    assert a.dot(&b) == 40f; 
+    assert a.dot(&b) == 40.0; 
     
-    assert a.transpose() == Mat2::new(1f, 2f,
-                                      3f, 4f);
+    assert a.transpose() == mat2::new(1.0, 2.0,
+                                      3.0, 4.0);
 
-    assert option::unwrap(a.inverse()) == Mat2::new(-2f,  1.5f,
-                                                    1f, -0.5f);
+    assert option::unwrap(a.inverse()) == mat2::new(-2.0,  1.5,
+                                                     1.0, -0.5);
 
-    assert Mat2::new(0f, 2f,
-                     0f, 5f).inverse().is_none();
+    assert mat2::new(0.0, 2.0,
+                     0.0, 5.0).inverse().is_none();
     
-    let ident: Mat2<float> = Matrix::identity();
+    let ident = mat2::identity();
     
     assert ident.is_identity();
     assert ident.is_symmetric();
@@ -79,35 +79,35 @@ fn test_mat2() {
     assert a.is_rotated();
     assert a.is_invertible();
     
-    let c = Mat2::new(2f, 1f,
-                      1f, 2f);
+    let c = mat2::new(2.0, 1.0,
+                      1.0, 2.0);
     assert !c.is_identity();
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
     assert c.is_invertible();
     
-    assert Mat2::from_value(6f).is_diagonal();
+    assert mat2::from_value(6.0).is_diagonal();
     
-    assert a.to_mat3() == Mat3::new(1f, 3f, 0f,
-                                    2f, 4f, 0f,
-                                    0f, 0f, 1f);
+    assert a.to_mat3() == mat3::new(1.0, 3.0, 0.0,
+                                    2.0, 4.0, 0.0,
+                                    0.0, 0.0, 1.0);
     
-    assert a.to_mat4() == Mat4::new(1f, 3f, 0f, 0f,
-                                    2f, 4f, 0f, 0f,
-                                    0f, 0f, 1f, 0f,
-                                    0f, 0f, 0f, 1f);
+    assert a.to_mat4() == mat4::new(1.0, 3.0, 0.0, 0.0,
+                                    2.0, 4.0, 0.0, 0.0,
+                                    0.0, 0.0, 1.0, 0.0,
+                                    0.0, 0.0, 0.0, 1.0);
 }
 
 fn test_mat2_mut() {
-    let a = Mat2 { x: Vec2 { x: 1f, y: 3f },
-                   y: Vec2 { x: 2f, y: 4f } };
-    let b = Mat2 { x: Vec2 { x: 2f, y: 4f },
-                   y: Vec2 { x: 3f, y: 5f } };
+    let a = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
+                   y: Vec2 { x: 2.0, y: 4.0 } };
+    let b = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
+                   y: Vec2 { x: 3.0, y: 5.0 } };
     
-    let f1 = 0.5f;
+    let f1 = 0.5;
     
-    let mut mut_a = a;
+    let mut mut_a: mat2 = a;
     
     mut_a.swap_cols(0, 1);
     assert mut_a.col(0) == a.col(1);
@@ -128,7 +128,7 @@ fn test_mat2_mut() {
     mut_a = a;
     
     mut_a.to_zero();
-    assert mut_a == Mat2::zero();
+    assert mut_a == mat2::zero();
     mut_a = a;
     
     mut_a.mul_self_t(f1);
@@ -154,88 +154,88 @@ fn test_mat2_mut() {
 
 #[test]
 fn test_mat2_fuzzy_eq() {
-    assert !Mat2::new(0.000001, 0.000001,
-                      0.000001, 0.000001).fuzzy_eq(&Mat2::zero());
-    assert Mat2::new(0.0000001, 0.0000001,
-                     0.0000001, 0.0000001).fuzzy_eq(&Mat2::zero());
+    assert !mat2::new(0.000001, 0.000001,
+                      0.000001, 0.000001).fuzzy_eq(&mat2::zero());
+    assert mat2::new(0.0000001, 0.0000001,
+                     0.0000001, 0.0000001).fuzzy_eq(&mat2::zero());
 }
 
 #[test]
 fn test_mat3() {
-    let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
-                   y: Vec3 { x: 2f, y: 5f, z:  8f },
-                   z: Vec3 { x: 3f, y: 6f, z:  9f } };
-    let b = Mat3 { x: Vec3 { x: 2f, y: 5f, z:  8f },
-                   y: Vec3 { x: 3f, y: 6f, z:  9f },
-                   z: Vec3 { x: 4f, y: 7f, z: 10f } };
+    let a = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
+                   y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+                   z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
+    let b = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+                   y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
+                   z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
     
-    let v1 = Vec3::new(1f, 2f, 3f);
-    let f1 = 0.5f;
+    let v1 = vec3::new(1.0, 2.0, 3.0);
+    let f1 = 0.5;
     
-    assert a == Mat3::new(1f, 4f, 7f,
-                          2f, 5f, 8f,
-                          3f, 6f, 9f);
+    assert a == mat3::new(1.0, 4.0, 7.0,
+                          2.0, 5.0, 8.0,
+                          3.0, 6.0, 9.0);
     
-    assert a == Mat3::from_cols(Vec3::new(1f, 4f, 7f),
-                                Vec3::new(2f, 5f, 8f),
-                                Vec3::new(3f, 6f, 9f));
+    assert a == mat3::from_cols(vec3::new(1.0, 4.0, 7.0),
+                                vec3::new(2.0, 5.0, 8.0),
+                                vec3::new(3.0, 6.0, 9.0));
     
-    assert a[0] == Vec3::new(1f, 4f, 7f);
-    assert a[1] == Vec3::new(2f, 5f, 8f);
-    assert a[2] == Vec3::new(3f, 6f, 9f);
+    assert a[0] == vec3::new(1.0, 4.0, 7.0);
+    assert a[1] == vec3::new(2.0, 5.0, 8.0);
+    assert a[2] == vec3::new(3.0, 6.0, 9.0);
     
-    assert a.row(0) == Vec3::new(1f, 2f, 3f);
-    assert a.row(1) == Vec3::new(4f, 5f, 6f);
-    assert a.row(2) == Vec3::new(7f, 8f, 9f);
+    assert a.row(0) == vec3::new(1.0, 2.0, 3.0);
+    assert a.row(1) == vec3::new(4.0, 5.0, 6.0);
+    assert a.row(2) == vec3::new(7.0, 8.0, 9.0);
     
-    assert a.col(0) == Vec3::new(1f, 4f, 7f);
-    assert a.col(1) == Vec3::new(2f, 5f, 8f);
-    assert a.col(2) == Vec3::new(3f, 6f, 9f);
+    assert a.col(0) == vec3::new(1.0, 4.0, 7.0);
+    assert a.col(1) == vec3::new(2.0, 5.0, 8.0);
+    assert a.col(2) == vec3::new(3.0, 6.0, 9.0);
     
-    assert Mat3::identity() == Mat3::new(1f, 0f, 0f,
-                                         0f, 1f, 0f,
-                                         0f, 0f, 1f);
+    assert mat3::identity() == mat3::new(1.0, 0.0, 0.0,
+                                         0.0, 1.0, 0.0,
+                                         0.0, 0.0, 1.0);
     
-    assert Mat3::zero() == Mat3::new(0f, 0f, 0f,
-                                     0f, 0f, 0f,
-                                     0f, 0f, 0f);
+    assert mat3::zero() == mat3::new(0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0);
 
-    assert a.determinant() == 0f;
-    assert a.trace() == 15f;
+    assert a.determinant() == 0.0;
+    assert a.trace() == 15.0;
     
-    assert a.neg() == Mat3::new(-1f, -4f, -7f,
-                                -2f, -5f, -8f,
-                                -3f, -6f, -9f);
+    assert a.neg() == mat3::new(-1.0, -4.0, -7.0,
+                                -2.0, -5.0, -8.0,
+                                -3.0, -6.0, -9.0);
     assert -a == a.neg();
     
-    assert a.mul_t(f1) == Mat3::new(0.5f, 2.0f, 3.5f,
-                                    1.0f, 2.5f, 4.0f,
-                                    1.5f, 3.0f, 4.5f);
-    assert a.mul_v(&v1) == Vec3::new(14f, 32f, 50f);
+    assert a.mul_t(f1) == mat3::new(0.5, 2.0, 3.5,
+                                    1.0, 2.5, 4.0,
+                                    1.5, 3.0, 4.5);
+    assert a.mul_v(&v1) == vec3::new(14.0, 32.0, 50.0);
     
-    assert a.add_m(&b) == Mat3::new(3f,  9f, 15f,
-                                    5f, 11f, 17f,
-                                    7f, 13f, 19f);
-    assert a.sub_m(&b) == Mat3::new(-1f, -1f, -1f,
-                                    -1f, -1f, -1f,
-                                    -1f, -1f, -1f);
-    assert a.mul_m(&b) == Mat3::new(36f,  81f, 126f,
-                                    42f,  96f, 150f,
-                                    48f, 111f, 174f);
-    assert a.dot(&b) == 330f;
+    assert a.add_m(&b) == mat3::new(3.0,  9.0, 15.0,
+                                    5.0, 11.0, 17.0,
+                                    7.0, 13.0, 19.0);
+    assert a.sub_m(&b) == mat3::new(-1.0, -1.0, -1.0,
+                                    -1.0, -1.0, -1.0,
+                                    -1.0, -1.0, -1.0);
+    assert a.mul_m(&b) == mat3::new(36.0,  81.0, 126.0,
+                                    42.0,  96.0, 150.0,
+                                    48.0, 111.0, 174.0);
+    assert a.dot(&b) == 330.0;
     
-    assert a.transpose() == Mat3::new(1f, 2f, 3f,
-                                      4f, 5f, 6f,
-                                      7f, 8f, 9f);
+    assert a.transpose() == mat3::new(1.0, 2.0, 3.0,
+                                      4.0, 5.0, 6.0,
+                                      7.0, 8.0, 9.0);
 
     assert a.inverse().is_none();
     
-    assert option::unwrap(Mat3::new(2f, 4f, 6f,
-                                    0f, 2f, 4f,
-                                    0f, 0f, 1f).inverse())
-        == Mat3::new(0.5f,  -1f,  1f,
-                       0f, 0.5f, -2f,
-                       0f,   0f,  1f);
+    assert option::unwrap(mat3::new(2.0, 4.0, 6.0,
+                                    0.0, 2.0, 4.0,
+                                    0.0, 0.0, 1.0).inverse())
+        == mat3::new(0.5,  -1.0,  1.0,
+                     0.0,   0.5, -2.0,
+                     0.0,   0.0,  1.0);
     
     let ident: Mat3<float> = Matrix::identity();
 
@@ -253,40 +253,40 @@ fn test_mat3() {
     assert a.is_rotated();
     assert !a.is_invertible();
     
-    let c = Mat3::new(3f, 2f, 1f,
-                      2f, 3f, 2f,
-                      1f, 2f, 3f);
+    let c = mat3::new(3.0, 2.0, 1.0,
+                      2.0, 3.0, 2.0,
+                      1.0, 2.0, 3.0);
     assert !c.is_identity();
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
     assert c.is_invertible();
     
-    assert Mat3::from_value(6f).is_diagonal();
+    assert mat3::from_value(6.0).is_diagonal();
     
-    assert a.to_mat4() == Mat4::new(1f, 4f, 7f, 0f,
-                                    2f, 5f, 8f, 0f,
-                                    3f, 6f, 9f, 0f,
-                                    0f, 0f, 0f, 1f);
+    assert a.to_mat4() == mat4::new(1.0, 4.0, 7.0, 0.0,
+                                    2.0, 5.0, 8.0, 0.0,
+                                    3.0, 6.0, 9.0, 0.0,
+                                    0.0, 0.0, 0.0, 1.0);
     
     // to_Quaternion
 }
 
 fn test_mat3_mut() {
-    let a = Mat3 { x: Vec3 { x: 1f, y: 4f, z:  7f },
-                   y: Vec3 { x: 2f, y: 5f, z:  8f },
-                   z: Vec3 { x: 3f, y: 6f, z:  9f } };
-    let b = Mat3 { x: Vec3 { x: 2f, y: 5f, z:  8f },
-                   y: Vec3 { x: 3f, y: 6f, z:  9f },
-                   z: Vec3 { x: 4f, y: 7f, z: 10f } };
-    let c = Mat3 { x: Vec3 { x: 2f, y: 4f, z:  6f },
-                   y: Vec3 { x: 0f, y: 2f, z:  4f },
-                   z: Vec3 { x: 0f, y: 0f, z:  1f } };
+    let a = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
+                   y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+                   z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
+    let b = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+                   y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
+                   z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
+    let c = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
+                   y: Vec3 { x: 0.0, y: 2.0, z:  4.0 },
+                   z: Vec3 { x: 0.0, y: 0.0, z:  1.0 } };
     
-    let f1 = 0.5f;
+    let f1 = 0.5;
     
-    let mut mut_a = a;
-    let mut mut_c = c;
+    let mut mut_a: mat3 = a;
+    let mut mut_c: mat3 = c;
     
     mut_a.swap_cols(0, 2);
     assert mut_a.col(0) == a.col(2);
@@ -317,7 +317,7 @@ fn test_mat3_mut() {
     mut_a = a;
     
     mut_a.to_zero();
-    assert mut_a == Mat3::zero();
+    assert mut_a == mat3::zero();
     mut_a = a;
     
     mut_a.mul_self_t(f1);
@@ -343,115 +343,115 @@ fn test_mat3_mut() {
 
 #[test]
 fn test_mat3_fuzzy_eq() {
-    assert !Mat3::new(0.000001, 0.000001, 0.000001,
+    assert !mat3::new(0.000001, 0.000001, 0.000001,
                       0.000001, 0.000001, 0.000001,
-                      0.000001, 0.000001, 0.000001).fuzzy_eq(&Mat3::zero());
-    assert Mat3::new(0.0000001, 0.0000001, 0.0000001,
+                      0.000001, 0.000001, 0.000001).fuzzy_eq(&mat3::zero());
+    assert mat3::new(0.0000001, 0.0000001, 0.0000001,
                      0.0000001, 0.0000001, 0.0000001,
-                     0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Mat3::zero());
+                     0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat3::zero());
 }
 
 #[test]
 fn test_mat4() {
-    let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
-                   y: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
-                   z: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
-                   w: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f } };
-    let b = Mat4 { x: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
-                   y: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
-                   z: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f },
-                   w: Vec4 { x: 5f, y: 9f, z: 13f, w: 17f } };
-    let c = Mat4 { x: Vec4 { x: 3f, y: 2f, z:  1f, w:  1f },
-                   y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
-                   z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
-                   w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
+    let a: mat4 = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
+                         y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                         z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                         w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
+    let b: mat4 = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                         y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                         z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
+                         w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
+    let c: mat4 = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
+                         y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
+                         z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
+                         w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
     
-    let v1 = Vec4::new(1f, 2f, 3f, 4f);
-    let f1 = 0.5f;
+    let v1 = vec4::new(1.0, 2.0, 3.0, 4.0);
+    let f1 = 0.5;
     
-    assert a == Mat4::new(1f, 5f,  9f, 13f,
-                          2f, 6f, 10f, 14f,
-                          3f, 7f, 11f, 15f,
-                          4f, 8f, 12f, 16f);
+    assert a == mat4::new(1.0, 5.0,  9.0, 13.0,
+                          2.0, 6.0, 10.0, 14.0,
+                          3.0, 7.0, 11.0, 15.0,
+                          4.0, 8.0, 12.0, 16.0);
     
-    assert a == Mat4::from_cols(Vec4::new(1f, 5f,  9f, 13f),
-                                Vec4::new(2f, 6f, 10f, 14f),
-                                Vec4::new(3f, 7f, 11f, 15f),
-                                Vec4::new(4f, 8f, 12f, 16f));
+    assert a == mat4::from_cols(vec4::new(1.0, 5.0,  9.0, 13.0),
+                                vec4::new(2.0, 6.0, 10.0, 14.0),
+                                vec4::new(3.0, 7.0, 11.0, 15.0),
+                                vec4::new(4.0, 8.0, 12.0, 16.0));
     
-    assert Mat4::from_value(4f64) == Mat4::new(4f64, 0f64, 0f64, 0f64,
-                                               0f64, 4f64, 0f64, 0f64,
-                                               0f64, 0f64, 4f64, 0f64,
-                                               0f64, 0f64, 0f64, 4f64);
+    assert mat4::from_value(4.0) == mat4::new(4.0, 0.0, 0.0, 0.0,
+                                              0.0, 4.0, 0.0, 0.0,
+                                              0.0, 0.0, 4.0, 0.0,
+                                              0.0, 0.0, 0.0, 4.0);
     
-    assert a[0] == Vec4::new(1f, 5f,  9f, 13f);
-    assert a[1] == Vec4::new(2f, 6f, 10f, 14f);
-    assert a[2] == Vec4::new(3f, 7f, 11f, 15f);
-    assert a[3] == Vec4::new(4f, 8f, 12f, 16f);
+    assert a[0] == vec4::new(1.0, 5.0,  9.0, 13.0);
+    assert a[1] == vec4::new(2.0, 6.0, 10.0, 14.0);
+    assert a[2] == vec4::new(3.0, 7.0, 11.0, 15.0);
+    assert a[3] == vec4::new(4.0, 8.0, 12.0, 16.0);
     
-    assert a.row(0) == Vec4::new( 1f,  2f,  3f,  4f);
-    assert a.row(1) == Vec4::new( 5f,  6f,  7f,  8f);
-    assert a.row(2) == Vec4::new( 9f, 10f, 11f, 12f);
-    assert a.row(3) == Vec4::new(13f, 14f, 15f, 16f);
+    assert a.row(0) == vec4::new( 1.0,  2.0,  3.0,  4.0);
+    assert a.row(1) == vec4::new( 5.0,  6.0,  7.0,  8.0);
+    assert a.row(2) == vec4::new( 9.0, 10.0, 11.0, 12.0);
+    assert a.row(3) == vec4::new(13.0, 14.0, 15.0, 16.0);
     
-    assert a.col(0) == Vec4::new(1f, 5f,  9f, 13f);
-    assert a.col(1) == Vec4::new(2f, 6f, 10f, 14f);
-    assert a.col(2) == Vec4::new(3f, 7f, 11f, 15f);
-    assert a.col(3) == Vec4::new(4f, 8f, 12f, 16f);
+    assert a.col(0) == vec4::new(1.0, 5.0,  9.0, 13.0);
+    assert a.col(1) == vec4::new(2.0, 6.0, 10.0, 14.0);
+    assert a.col(2) == vec4::new(3.0, 7.0, 11.0, 15.0);
+    assert a.col(3) == vec4::new(4.0, 8.0, 12.0, 16.0);
     
-    assert Mat4::identity() == Mat4::new(1f, 0f, 0f, 0f,
-                                         0f, 1f, 0f, 0f,
-                                         0f, 0f, 1f, 0f,
-                                         0f, 0f, 0f, 1f);
+    assert mat4::identity() == mat4::new(1.0, 0.0, 0.0, 0.0,
+                                         0.0, 1.0, 0.0, 0.0,
+                                         0.0, 0.0, 1.0, 0.0,
+                                         0.0, 0.0, 0.0, 1.0);
     
-    assert Mat4::zero() == Mat4::new(0f, 0f, 0f, 0f,
-                                     0f, 0f, 0f, 0f,
-                                     0f, 0f, 0f, 0f,
-                                     0f, 0f, 0f, 0f);
+    assert mat4::zero() == mat4::new(0.0, 0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0, 0.0);
 
-    assert a.determinant() == 0f;
-    assert a.trace() == 34f;
+    assert a.determinant() == 0.0;
+    assert a.trace() == 34.0;
     
-    assert a.neg() == Mat4::new(-1f, -5f,  -9f, -13f,
-                                -2f, -6f, -10f, -14f,
-                                -3f, -7f, -11f, -15f,
-                                -4f, -8f, -12f, -16f);
+    assert a.neg() == mat4::new(-1.0, -5.0,  -9.0, -13.0,
+                                -2.0, -6.0, -10.0, -14.0,
+                                -3.0, -7.0, -11.0, -15.0,
+                                -4.0, -8.0, -12.0, -16.0);
     assert -a == a.neg();
     
-    assert a.mul_t(f1) == Mat4::new(0.5f, 2.5f, 4.5f, 6.5f,
-                                    1.0f, 3.0f, 5.0f, 7.0f,
-                                    1.5f, 3.5f, 5.5f, 7.5f,
-                                    2.0f, 4.0f, 6.0f, 8.0f);
-    assert a.mul_v(&v1) == Vec4::new(30.0, 70.0, 110.0, 150.0);
+    assert a.mul_t(f1) == mat4::new(0.5, 2.5, 4.5, 6.5,
+                                    1.0, 3.0, 5.0, 7.0,
+                                    1.5, 3.5, 5.5, 7.5,
+                                    2.0, 4.0, 6.0, 8.0);
+    assert a.mul_v(&v1) == vec4::new(30.0, 70.0, 110.0, 150.0);
     
-    assert a.add_m(&b) == Mat4::new(3f, 11f, 19f, 27f,
-                                    5f, 13f, 21f, 29f,
-                                    7f, 15f, 23f, 31f,
-                                    9f, 17f, 25f, 33f);
-    assert a.sub_m(&b) == Mat4::new(-1f, -1f, -1f, -1f,
-                                    -1f, -1f, -1f, -1f,
-                                    -1f, -1f, -1f, -1f,
-                                    -1f, -1f, -1f, -1f);
-    assert a.mul_m(&b) == Mat4::new(100f, 228f, 356f, 484f,
-                                    110f, 254f, 398f, 542f,
-                                    120f, 280f, 440f, 600f,
-                                    130f, 306f, 482f, 658f);
-    assert a.dot(&b) == 1632f;
+    assert a.add_m(&b) == mat4::new(3.0, 11.0, 19.0, 27.0,
+                                    5.0, 13.0, 21.0, 29.0,
+                                    7.0, 15.0, 23.0, 31.0,
+                                    9.0, 17.0, 25.0, 33.0);
+    assert a.sub_m(&b) == mat4::new(-1.0, -1.0, -1.0, -1.0,
+                                    -1.0, -1.0, -1.0, -1.0,
+                                    -1.0, -1.0, -1.0, -1.0,
+                                    -1.0, -1.0, -1.0, -1.0);
+    assert a.mul_m(&b) == mat4::new(100.0, 228.0, 356.0, 484.0,
+                                    110.0, 254.0, 398.0, 542.0,
+                                    120.0, 280.0, 440.0, 600.0,
+                                    130.0, 306.0, 482.0, 658.0);
+    assert a.dot(&b) == 1632.0;
     
-    assert a.transpose() == Mat4::new( 1f,  2f,  3f,  4f,
-                                       5f,  6f,  7f,  8f,
-                                       9f, 10f, 11f, 12f,
-                                      13f, 14f, 15f, 16f);
+    assert a.transpose() == mat4::new( 1.0,  2.0,  3.0,  4.0,
+                                       5.0,  6.0,  7.0,  8.0,
+                                       9.0, 10.0, 11.0, 12.0,
+                                      13.0, 14.0, 15.0, 16.0);
+    
+    assert c.inverse().unwrap()
+        .fuzzy_eq(&mat4::new( 5.0, -4.0,  1.0,  0.0,
+                             -4.0,  8.0, -4.0,  0.0,
+                              4.0, -8.0,  4.0,  8.0,
+                             -3.0,  4.0,  1.0, -8.0).mul_t(0.125));
+    
+    let ident = mat4::identity();
 
-    assert option::unwrap(c.inverse())
-        .fuzzy_eq(&Mat4::new( 5f, -4f,  1f,  0f,
-                             -4f,  8f, -4f,  0f,
-                              4f, -8f,  4f,  8f,
-                             -3f,  4f,  1f, -8f).mul_t(0.125f));
-    
-    let ident: Mat4<float> = Matrix::identity();
-
-    assert option::unwrap(ident.inverse()) == ident;
+    assert ident.inverse().unwrap() == ident;
     
     assert ident.is_identity();
     assert ident.is_symmetric();
@@ -465,37 +465,37 @@ fn test_mat4() {
     assert a.is_rotated();
     assert !a.is_invertible();
     
-    let c = Mat4::new(4f, 3f, 2f, 1f,
-                      3f, 4f, 3f, 2f,
-                      2f, 3f, 4f, 3f,
-                      1f, 2f, 3f, 4f);
+    let c = mat4::new(4.0, 3.0, 2.0, 1.0,
+                      3.0, 4.0, 3.0, 2.0,
+                      2.0, 3.0, 4.0, 3.0,
+                      1.0, 2.0, 3.0, 4.0);
     assert !c.is_identity();
     assert c.is_symmetric();
     assert !c.is_diagonal();
     assert c.is_rotated();
     assert c.is_invertible();
     
-    assert Mat4::from_value(6f).is_diagonal();
+    assert mat4::from_value(6.0).is_diagonal();
 }
 
 fn test_mat4_mut() {
-    let a = Mat4 { x: Vec4 { x: 1f, y: 5f, z:  9f, w: 13f },
-                   y: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
-                   z: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
-                   w: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f } };
-    let b = Mat4 { x: Vec4 { x: 2f, y: 6f, z: 10f, w: 14f },
-                   y: Vec4 { x: 3f, y: 7f, z: 11f, w: 15f },
-                   z: Vec4 { x: 4f, y: 8f, z: 12f, w: 16f },
-                   w: Vec4 { x: 5f, y: 9f, z: 13f, w: 17f } };
-    let c = Mat4 { x: Vec4 { x: 3f, y: 2f, z:  1f, w:  1f },
-                   y: Vec4 { x: 2f, y: 3f, z:  2f, w:  2f },
-                   z: Vec4 { x: 1f, y: 2f, z:  3f, w:  3f },
-                   w: Vec4 { x: 0f, y: 1f, z:  1f, w:  0f } };
+    let a = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
+                   y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                   z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                   w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
+    let b = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                   y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                   z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
+                   w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
+    let c = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
+                   y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
+                   z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
+                   w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
     
-    let f1 = 0.5f;
+    let f1 = 0.5;
     
-    let mut mut_a = a;
-    let mut mut_c = c;
+    let mut mut_a: mat4 = a;
+    let mut mut_c: mat4 = c;
     
     mut_a.swap_cols(0, 3);
     assert mut_a.col(0) == a.col(3);
@@ -526,7 +526,7 @@ fn test_mat4_mut() {
     mut_a = a;
     
     mut_a.to_zero();
-    assert mut_a == Mat4::zero();
+    assert mut_a == mat4::zero();
     mut_a = a;
     
     mut_a.mul_self_t(f1);
@@ -552,12 +552,12 @@ fn test_mat4_mut() {
 
 #[test]
 fn test_mat4_fuzzy_eq() {
-    assert !Mat4::new(0.000001, 0.000001, 0.000001, 0.000001,
+    assert !mat4::new(0.000001, 0.000001, 0.000001, 0.000001,
                       0.000001, 0.000001, 0.000001, 0.000001,
                       0.000001, 0.000001, 0.000001, 0.000001,
-                      0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&Mat4::zero());
-    assert Mat4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                      0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&mat4::zero());
+    assert mat4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001,
                      0.0000001, 0.0000001, 0.0000001, 0.0000001,
                      0.0000001, 0.0000001, 0.0000001, 0.0000001,
-                     0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Mat4::zero());
+                     0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat4::zero());
 }

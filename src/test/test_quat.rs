@@ -8,42 +8,41 @@ use vec::*;
 
 #[test]
 fn test_quat() {
-    let a = Quat { s: 1f, v: Vec3 { x: 2f, y: 3f, z: 4f } };
+    let a = Quat { s: 1.0, v: Vec3 { x: 2.0, y: 3.0, z: 4.0 } };
     
-    assert a == Quat::from_sv(1f, Vec3::new(2f, 3f, 4f));
-    assert a == Quat::new(1f, 2f, 3f, 4f);
+    assert a == quat::from_sv(1.0, vec3::new(2.0, 3.0, 4.0));
+    assert a == quat::new(1.0, 2.0, 3.0, 4.0);
     
-    assert Quat::zero()     == Quat::new(0f, 0f, 0f, 0f);
-    assert Quat::identity() == Quat::new(1f, 0f, 0f, 0f);
+    assert quat::zero()     == quat::new(0.0, 0.0, 0.0, 0.0);
+    assert quat::identity() == quat::new(1.0, 0.0, 0.0, 0.0);
     
-    assert a.s == 1f;
-    assert a.v.x == 2f;
-    assert a.v.y == 3f;
-    assert a.v.z == 4f;
-    assert a[0] == 1f;
-    assert a[1] == 2f;
-    assert a[2] == 3f;
-    assert a[3] == 4f;
+    assert a.s == 1.0;
+    assert a.v.x == 2.0;
+    assert a.v.y == 3.0;
+    assert a.v.z == 4.0;
+    assert a[0] == 1.0;
+    assert a[1] == 2.0;
+    assert a[2] == 3.0;
+    assert a[3] == 4.0;
     // TODO
 }
 
 #[test]
 fn test_quat_2() {
-    let v = Vec3::new(1.0, 0.0, 0.0);
+    let v = vec3::new(1f32, 0f32, 0f32);
     
-    // let q: Quat<float> = rot::Rotation::from_angle_axis(Degrees(-45.0), &Vec3::new(0.0, 0.0, -1.0));
-    let q = Quat::from_angle_axis(radians(-45.0), &Vec3::new(0.0, 0.0, -1.0));
+    let q = quat::from_angle_axis(radians(-45f32), &vec3::new(0f32, 0f32, -1f32));
     
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert q.mul_v(&v).fuzzy_eq(&Vec3::new(1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0));
+    assert q.mul_v(&v).fuzzy_eq(&vec3::new(1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32));
     assert q.mul_v(&v).length() == v.length();
-    assert q.to_mat3().fuzzy_eq(&Mat3::new( 1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0,
-                                           -1.0/sqrt(2.0), 1.0/sqrt(2.0), 0.0,
-                                                      0.0,           0.0, 1.0));
+    assert q.to_mat3().fuzzy_eq(&mat3::new( 1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32,
+                                           -1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32,
+                                                      0f32,           0f32, 1f32));
 }
 
 #[test]
 fn test_quat_fuzzy_eq() {
-    assert !Quat::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&Quat::new(0.0, 0.0, 0.0, 0.0));
-    assert Quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&Quat::new(0.0, 0.0, 0.0, 0.0));
+    assert !quat::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&quat::new(0.0, 0.0, 0.0, 0.0));
+    assert quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&quat::new(0.0, 0.0, 0.0, 0.0));
 }

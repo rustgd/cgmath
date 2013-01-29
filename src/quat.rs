@@ -18,10 +18,14 @@ use numeric::*;
 use numeric::number::Number;
 use numeric::number::Number::{zero,one};
 
-use mat::{Mat3, Mat4};
+use mat::{
+    Mat3,
+    Matrix3
+};
 
 use vec::{
     Vec3,
+    Vector3,
     vec3,
     dvec3,
 };
@@ -55,7 +59,7 @@ pub impl<T:Copy Float> Quat<T> {
      */
     #[inline(always)]
     static pure fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
-        Quat::from_sv(w, Vec3::new(xi, yj, zk))
+        Quat::from_sv(w, Vector3::new(xi, yj, zk))
     }
     
     /**
@@ -89,6 +93,57 @@ pub impl<T:Copy Float> Quat<T> {
     #[inline(always)]
     static pure fn zero() -> Quat<T> {
         Quat::new(zero(), zero(), zero(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn from_angle_x(radians: T) -> Quat<T> {
+        let _2 = Number::from(2);
+        Quat::new(cos(radians / _2), sin(radians), zero(), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn from_angle_y(radians: T) -> Quat<T> {
+        let _2 = Number::from(2);
+        Quat::new(cos(radians / _2), zero(), sin(radians), zero())
+    }
+    
+    #[inline(always)]
+    static pure fn from_angle_z(radians: T) -> Quat<T> {
+        let _2 = Number::from(2);
+        Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
+    }
+    
+    #[inline(always)]
+    static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
+        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
+        let _2 = Number::from(2);
+        let xdiv2 = radians_x / _2;
+        let ydiv2 = radians_y / _2;
+        let zdiv2 = radians_z / _2;
+        Quat::new(cos(zdiv2) * cos(xdiv2) * cos(ydiv2) + sin(zdiv2) * sin(xdiv2) * sin(ydiv2),
+                  sin(zdiv2) * cos(xdiv2) * cos(ydiv2) - cos(zdiv2) * sin(xdiv2) * sin(ydiv2),
+                  cos(zdiv2) * sin(xdiv2) * cos(ydiv2) + sin(zdiv2) * cos(xdiv2) * sin(ydiv2),
+                  cos(zdiv2) * cos(xdiv2) * sin(ydiv2) - sin(zdiv2) * sin(xdiv2) * cos(ydiv2))
+    }
+    
+    #[inline(always)]
+    static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
+        let half = radians / Number::from(2);
+        Quat::from_sv(cos(half), axis.mul_t(sin(half)))
+    }
+    
+    #[inline(always)]
+    static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
+        let m: Mat3<T> = Matrix3::from_axes(x, y, z); m.to_quat()
+    }
+    
+    pure fn get_angle_axis(&self) -> (T, Vec3<T>) {
+        fail(~"Not yet implemented.")
+    }
+    
+    #[inline(always)]
+    static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
+        let m: Mat3<T> = Matrix3::look_at(dir, up); m.to_quat()
     }
     
     /**
@@ -303,76 +358,9 @@ pub impl<T:Copy Float> Quat<T> {
         }
     }
     
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_angle_x(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
-        Quat::new(cos(radians / _2), sin(radians), zero(), zero())
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_angle_y(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
-        Quat::new(cos(radians / _2), zero(), sin(radians), zero())
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_angle_z(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
-        Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
-        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let _2 = Number::from(2);
-        let xdiv2 = radians_x / _2;
-        let ydiv2 = radians_y / _2;
-        let zdiv2 = radians_z / _2;
-        Quat::new(cos(zdiv2) * cos(xdiv2) * cos(ydiv2) + sin(zdiv2) * sin(xdiv2) * sin(ydiv2),
-                  sin(zdiv2) * cos(xdiv2) * cos(ydiv2) - cos(zdiv2) * sin(xdiv2) * sin(ydiv2),
-                  cos(zdiv2) * sin(xdiv2) * cos(ydiv2) + sin(zdiv2) * cos(xdiv2) * sin(ydiv2),
-                  cos(zdiv2) * cos(xdiv2) * sin(ydiv2) - sin(zdiv2) * sin(xdiv2) * cos(ydiv2))
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
-        let half = radians / Number::from(2);
-        Quat::from_sv(cos(half), axis.mul_t(sin(half)))
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
-        Mat3::from_axes(x, y, z).to_quat()
-    }
-    
-    pure fn get_angle_axis(&self) -> (T, Vec3<T>) {
-        fail(~"Not yet implemented.")
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
-        Mat3::look_at(dir, up).to_quat()
-    }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    pure fn concat(&self, other: &Quat<T>) -> Quat<T> { self.mul_q(other) }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    pure fn rotate_vec(&self, vec: &Vec3<T>) -> Vec3<T> { self.mul_v(vec) }
-    
     /**
      * Convert the quaternion to a 3 x 3 rotation matrix
      */
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
     #[inline(always)]
     pure fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
@@ -393,14 +381,10 @@ pub impl<T:Copy Float> Quat<T> {
         
         let _1: T = one();
         
-        Mat3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
-                       xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
-                       xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
+        Matrix3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
+                          xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
+                          xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
-    
-    // TODO: Move to Rotation implementation. See: https://github.com/mozilla/rust/issues/4306
-    #[inline(always)]
-    pure fn to_quat(&self) -> Quat<T> { *self }
 }
 
 pub impl<T:Copy> Quat<T>: Index<uint, T> {

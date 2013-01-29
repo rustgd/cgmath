@@ -13,6 +13,7 @@ use vec::{
     Vec3,
     Vector,
     Vector2,
+    Vector3,
     MutableVector,
     NumericVector,
     NumericVector2,
@@ -41,17 +42,10 @@ use vec::{
  #[deriving_eq]
 pub struct Vec2<T> { x: T, y: T }
 
-pub impl<T> Vec2<T> {
-    #[inline(always)]
-    static pure fn new(x: T, y: T ) -> Vec2<T> {
-        Vec2 { x: x, y: y }
-    }
-}
-
-pub impl<T:Copy> Vec2<T>: Vector<T> {
+pub impl<T:Copy Eq> Vec2<T>: Vector<T> {
     #[inline(always)]
     static pure fn from_value(value: T) -> Vec2<T> {
-        Vec2::new(value, value)
+        Vector2::new(value, value)
     }
     
     #[inline(always)]
@@ -71,7 +65,7 @@ pub impl<T> Vec2<T>: Vector2<T> {
     }
 }
 
-pub impl<T:Copy> Vec2<T>: Index<uint, T> {
+pub impl<T:Copy Eq> Vec2<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
@@ -98,12 +92,12 @@ pub impl<T:Copy> Vec2<T>: MutableVector<T> {
 pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec2<T> {
-        Vec2::new(one(), one())
+        Vector2::new(one::<T>(), one::<T>())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec2<T> {
-        Vec2::new(zero(), zero())
+        Vector2::new(zero::<T>(), zero::<T>())
     }
     
     #[inline(always)]
@@ -114,38 +108,38 @@ pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
     
     #[inline(always)]
     pure fn mul_t(&self, value: T) -> Vec2<T> {
-        Vec2::new(self[0] * value,
-                  self[1] * value)
+        Vector2::new(self[0] * value,
+                     self[1] * value)
     }
     
     #[inline(always)]
     pure fn div_t(&self, value: T) -> Vec2<T> {
-        Vec2::new(self[0] / value,
-                  self[1] / value)
+        Vector2::new(self[0] / value,
+                     self[1] / value)
     }
     
     #[inline(always)]
     pure fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self[0] + other[0],
-                  self[1] + other[1])
+        Vector2::new(self[0] + other[0],
+                     self[1] + other[1])
     }
     
     #[inline(always)]
     pure fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self[0] - other[0],
-                  self[1] - other[1])
+        Vector2::new(self[0] - other[0],
+                     self[1] - other[1])
     }
     
     #[inline(always)]
     pure fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self[0] * other[0],
-                  self[1] * other[1])
+        Vector2::new(self[0] * other[0],
+                     self[1] * other[1])
     }
     
     #[inline(always)]
     pure fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self[0] / other[0],
-                  self[1] / other[1])
+        Vector2::new(self[0] / other[0],
+                     self[1] / other[1])
     }
     
     #[inline(always)]
@@ -158,19 +152,19 @@ pub impl<T:Copy Number> Vec2<T>: NumericVector<T> {
 pub impl<T:Copy Number> Vec2<T>: Neg<Vec2<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec2<T> {
-        Vec2::new(-self[0], -self[1])
+        Vector2::new(-self[0], -self[1])
     }
 }
 
 pub impl<T:Copy Number> Vec2<T>: NumericVector2<T> {
     #[inline(always)]
     static pure fn unit_x() -> Vec2<T> {
-        Vec2::new(one(), zero())
+        Vector2::new(one::<T>(), zero::<T>())
     }
     
     #[inline(always)]
     static pure fn unit_y() -> Vec2<T> {
-        Vec2::new(zero(), one())
+        Vector2::new(zero::<T>(), one::<T>())
     }
     
     #[inline(always)]
@@ -226,7 +220,7 @@ pub impl<T:Copy Number> Vec2<T>: MutableNumericVector<&self/T> {
 pub impl<T:Copy Number> Vec2<T>: ToHomogeneous<Vec3<T>> {
     #[inline(always)]
     pure fn to_homogeneous(&self) -> Vec3<T> {
-        Vec3::new(self.x, self.y, zero())
+        Vector3::new(self.x, self.y, zero())
     }
 }
 
@@ -290,7 +284,7 @@ pub impl<T:Copy Float> Vec2<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
+pub impl<T:Copy FuzzyEq Eq> Vec2<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
@@ -298,43 +292,43 @@ pub impl<T:Copy FuzzyEq> Vec2<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy Ord> Vec2<T>: OrdinalVector<T, Vec2<bool>> {
+pub impl<T:Copy Ord Eq> Vec2<T>: OrdinalVector<T, Vec2<bool>> {
     #[inline(always)]
     pure fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] < other[0],
-                  self[1] < other[1])
+        Vector2::new(self[0] < other[0],
+                     self[1] < other[1])
     }
     
     #[inline(always)]
     pure fn less_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] <= other[0],
-                  self[1] <= other[1])
+        Vector2::new(self[0] <= other[0],
+                     self[1] <= other[1])
     }
     
     #[inline(always)]
     pure fn greater_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] > other[0],
-                  self[1] > other[1])
+        Vector2::new(self[0] > other[0],
+                     self[1] > other[1])
     }
     
     #[inline(always)]
     pure fn greater_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] >= other[0],
-                  self[1] >= other[1])
+        Vector2::new(self[0] >= other[0],
+                     self[1] >= other[1])
     }
 }
 
 pub impl<T:Copy Eq> Vec2<T>: EquableVector<T, Vec2<bool>> {
     #[inline(always)]
     pure fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] == other[0],
-                  self[1] == other[1])
+        Vector2::new(self[0] == other[0],
+                     self[1] == other[1])
     }
     
     #[inline(always)]
     pure fn not_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(self[0] != other[0],
-                  self[1] != other[1])
+        Vector2::new(self[0] != other[0],
+                     self[1] != other[1])
     }
 }
 
@@ -351,18 +345,18 @@ pub impl Vec2<bool>: BooleanVector {
     
     #[inline(always)]
     pure fn not(&self) -> Vec2<bool> { 
-        Vec2::new(!self[0], !self[1])
+        Vector2::new(!self[0], !self[1])
     }
 }
 
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type vec2  = Vec2<f32>;             /// a two-component single-precision floating-point vector
-pub type dvec2 = Vec2<f64>;             /// a two-component double-precision floating-point vector
-pub type bvec2 = Vec2<bool>;            /// a two-component Boolean vector
-pub type ivec2 = Vec2<i32>;             /// a two-component signed integer vector
-pub type uvec2 = Vec2<u32>;             /// a two-component unsigned integer vector
+pub type vec2  = Vec2<f32>;     // a two-component single-precision floating-point vector
+pub type dvec2 = Vec2<f64>;     // a two-component double-precision floating-point vector
+pub type bvec2 = Vec2<bool>;    // a two-component Boolean vector
+pub type ivec2 = Vec2<i32>;     // a two-component signed integer vector
+pub type uvec2 = Vec2<u32>;     // a two-component unsigned integer vector
 
 // Static method wrappers for GLSL-style types
 

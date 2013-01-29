@@ -42,17 +42,10 @@ use vec::{
 #[deriving_eq]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-pub impl<T> Vec4<T> {
-    #[inline(always)]
-    static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
-        Vec4 { x: x, y: y, z: z, w: w }
-    }
-}
-
-pub impl<T:Copy> Vec4<T>: Vector<T> {
+pub impl<T:Copy Eq> Vec4<T>: Vector<T> {
     #[inline(always)]
     static pure fn from_value(value: T) -> Vec4<T> {
-        Vec4::new(value, value, value, value)
+        Vector4::new(value, value, value, value)
     }
     
     #[inline(always)]
@@ -72,7 +65,7 @@ pub impl<T> Vec4<T>: Vector4<T> {
     }
 }
 
-pub impl<T:Copy> Vec4<T>: Index<uint, T> {
+pub impl<T:Copy Eq> Vec4<T>: Index<uint, T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
@@ -101,12 +94,12 @@ pub impl<T:Copy> Vec4<T>: MutableVector<T> {
 pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     #[inline(always)]
     static pure fn identity() -> Vec4<T> {
-        Vec4::new(one(), one(), one(), one())
+        Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
     }
     
     #[inline(always)]
     static pure fn zero() -> Vec4<T> {
-        Vec4::new(zero(), zero(), zero(), zero())
+        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
     
     #[inline(always)]
@@ -119,50 +112,50 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     
     #[inline(always)]
     pure fn mul_t(&self, value: T) -> Vec4<T> {
-        Vec4::new(self[0] * value,
-                  self[1] * value,
-                  self[2] * value,
-                  self[3] * value)
+        Vector4::new(self[0] * value,
+                     self[1] * value,
+                     self[2] * value,
+                     self[3] * value)
     }
     
     #[inline(always)]
     pure fn div_t(&self, value: T) -> Vec4<T> {
-        Vec4::new(self[0] / value,
-                  self[1] / value,
-                  self[2] / value,
-                  self[3] / value)
+        Vector4::new(self[0] / value,
+                     self[1] / value,
+                     self[2] / value,
+                     self[3] / value)
     }
     
     #[inline(always)]
     pure fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self[0] + other[0],
-                  self[1] + other[1],
-                  self[2] + other[2],
-                  self[3] + other[3])
+        Vector4::new(self[0] + other[0],
+                     self[1] + other[1],
+                     self[2] + other[2],
+                     self[3] + other[3])
     }
     
     #[inline(always)]
     pure fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self[0] - other[0],
-                  self[1] - other[1],
-                  self[2] - other[2],
-                  self[3] - other[3])
+        Vector4::new(self[0] - other[0],
+                     self[1] - other[1],
+                     self[2] - other[2],
+                     self[3] - other[3])
     }
     
     #[inline(always)]
     pure fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self[0] * other[0],
-                  self[1] * other[1],
-                  self[2] * other[2],
-                  self[3] * other[3])
+        Vector4::new(self[0] * other[0],
+                     self[1] * other[1],
+                     self[2] * other[2],
+                     self[3] * other[3])
     }
     
     #[inline(always)]
     pure fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self[0] / other[0],
-                  self[1] / other[1],
-                  self[2] / other[2],
-                  self[3] / other[3])
+        Vector4::new(self[0] / other[0],
+                     self[1] / other[1],
+                     self[2] / other[2],
+                     self[3] / other[3])
     }
     
     #[inline(always)]
@@ -177,29 +170,29 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
 pub impl<T:Copy Number> Vec4<T>: Neg<Vec4<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Vec4<T> {
-        Vec4::new(-self[0], -self[1], -self[2], -self[3])
+        Vector4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
 pub impl<T:Copy Number> Vec4<T>: NumericVector4<T> {
     #[inline(always)]
     static pure fn unit_x() -> Vec4<T> {
-        Vec4::new(one(), zero(), zero(), zero())
+        Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
     
     #[inline(always)]
     static pure fn unit_y() -> Vec4<T> {
-        Vec4::new(zero(), one(), zero(), zero())
+        Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
     }
     
     #[inline(always)]
     static pure fn unit_z() -> Vec4<T> {
-        Vec4::new(zero(), zero(), one(), zero())
+        Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
     }
     
     #[inline(always)]
     static pure fn unit_w() -> Vec4<T> {
-        Vec4::new(zero(), zero(), zero(), one())
+        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
     }
 }
 
@@ -321,7 +314,7 @@ pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
+pub impl<T:Copy FuzzyEq Eq> Vec4<T>: FuzzyEq {
     #[inline(always)]
     pure fn fuzzy_eq(other: &Vec4<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
@@ -331,55 +324,55 @@ pub impl<T:Copy FuzzyEq> Vec4<T>: FuzzyEq {
     }
 }
 
-pub impl<T:Copy Ord> Vec4<T>: OrdinalVector<T, Vec4<bool>> {
+pub impl<T:Copy Ord Eq> Vec4<T>: OrdinalVector<T, Vec4<bool>> {
     #[inline(always)]
     pure fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] < other[0],
-                  self[1] < other[1],
-                  self[2] < other[2],
-                  self[3] < other[3])
+        Vector4::new(self[0] < other[0],
+                     self[1] < other[1],
+                     self[2] < other[2],
+                     self[3] < other[3])
     }
     
     #[inline(always)]
     pure fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] <= other[0],
-                  self[1] <= other[1],
-                  self[2] <= other[2],
-                  self[3] <= other[3])
+        Vector4::new(self[0] <= other[0],
+                     self[1] <= other[1],
+                     self[2] <= other[2],
+                     self[3] <= other[3])
     }
     
     #[inline(always)]
     pure fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] > other[0],
-                  self[1] > other[1],
-                  self[2] > other[2],
-                  self[3] > other[3])
+        Vector4::new(self[0] > other[0],
+                     self[1] > other[1],
+                     self[2] > other[2],
+                     self[3] > other[3])
     }
     
     #[inline(always)]
     pure fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] >= other[0],
-                  self[1] >= other[1],
-                  self[2] >= other[2],
-                  self[3] >= other[3])
+        Vector4::new(self[0] >= other[0],
+                     self[1] >= other[1],
+                     self[2] >= other[2],
+                     self[3] >= other[3])
     }
 }
 
 pub impl<T:Copy Eq> Vec4<T>: EquableVector<T, Vec4<bool>> {
     #[inline(always)]
     pure fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] == other[0],
-                  self[1] == other[1],
-                  self[2] == other[2],
-                  self[3] == other[3])
+        Vector4::new(self[0] == other[0],
+                     self[1] == other[1],
+                     self[2] == other[2],
+                     self[3] == other[3])
     }
     
     #[inline(always)]
     pure fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(self[0] != other[0],
-                  self[1] != other[1],
-                  self[2] != other[2],
-                  self[3] != other[3])
+        Vector4::new(self[0] != other[0],
+                     self[1] != other[1],
+                     self[2] != other[2],
+                     self[3] != other[3])
     }
 }
 
@@ -396,18 +389,18 @@ pub impl Vec4<bool>: BooleanVector {
     
     #[inline(always)]
     pure fn not(&self) -> Vec4<bool> { 
-        Vec4::new(!self[0], !self[1], !self[2], !self[3])
+        Vector4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
 
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type vec4  = Vec4<f32>;             /// a four-component single-precision floating-point vector
-pub type dvec4 = Vec4<f64>;             /// a four-component double-precision floating-point vector
-pub type bvec4 = Vec4<bool>;            /// a four-component Boolean vector
-pub type ivec4 = Vec4<i32>;             /// a four-component signed integer vector
-pub type uvec4 = Vec4<u32>;             /// a four-component unsigned integer vector
+pub type vec4  = Vec4<f32>;     // a four-component single-precision floating-point vector
+pub type dvec4 = Vec4<f64>;     // a four-component double-precision floating-point vector
+pub type bvec4 = Vec4<bool>;    // a four-component Boolean vector
+pub type ivec4 = Vec4<i32>;     // a four-component signed integer vector
+pub type uvec4 = Vec4<u32>;     // a four-component unsigned integer vector
 
 // Static method wrappers for GLSL-style types
 
