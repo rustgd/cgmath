@@ -65,8 +65,7 @@ fn test_mat2() {
     assert Mat2::new(0f, 2f,
                      0f, 5f).inverse().is_none();
     
-    // let ident: Mat2<float> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
-    let ident: Mat2<float> = Mat2::identity();
+    let ident: Mat2<float> = Matrix::identity();
     
     assert ident.is_identity();
     assert ident.is_symmetric();
@@ -238,8 +237,7 @@ fn test_mat3() {
                        0f, 0.5f, -2f,
                        0f,   0f,  1f);
     
-    // let ident: Mat3<float> = Matrix::identity();     // FIXME: there's something wrong with static functions here!
-    let ident: Mat3<float> = Mat3::identity();
+    let ident: Mat3<float> = Matrix::identity();
 
     assert option::unwrap(ident.inverse()) == ident;
     
@@ -451,8 +449,7 @@ fn test_mat4() {
                               4f, -8f,  4f,  8f,
                              -3f,  4f,  1f, -8f).mul_t(0.125f));
     
-    // let ident: Mat4<float> = Matrix::identity();
-    let ident: Mat4<float> = Mat4::identity();
+    let ident: Mat4<float> = Matrix::identity();
 
     assert option::unwrap(ident.inverse()) == ident;
     
