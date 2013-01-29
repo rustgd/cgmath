@@ -26,8 +26,8 @@ pub mod projection;
 
 #[test]
 mod test {
-    mod test_mat;
-    mod test_quat;
-    mod test_rot;
-    mod test_vec;
+    #[path = "test_mat.rs" ] mod mat;
+    #[path = "test_quat.rs"] mod quat;
+    #[path = "test_rot.rs" ] mod rot;
+    #[path = "test_vec.rs" ] mod vec;
 }
