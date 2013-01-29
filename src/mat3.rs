@@ -11,7 +11,6 @@ use numeric::number::Number;
 use numeric::number::Number::{zero,one};
 
 use quat::Quat;
-use rot::Rotation;
 
 use vec::{
     Vec3,
