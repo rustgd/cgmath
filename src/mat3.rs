@@ -477,7 +477,7 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
             0 => &mut self.x,
             1 => &mut self.y,
             2 => &mut self.z,
-            _ => fail(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
         }
     }
     
@@ -534,7 +534,7 @@ pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     fn invert_self(&mut self) {
         match self.inverse() {
             Some(m) => (*self) = m,
-            None => fail(~"Couldn't invert the matrix!")
+            None => fail!(~"Couldn't invert the matrix!")
         }
     }
     

@@ -78,7 +78,7 @@ pub impl<T:Copy> Vec2<T>: MutableVector<T> {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
-            _ => fail(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
         }
     }
     

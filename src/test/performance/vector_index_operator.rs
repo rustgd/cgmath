@@ -21,7 +21,7 @@ pub impl VecMatch: Index<uint, float> {
             1 => self.y,
             2 => self.z,
             3 => self.w,
-            _ => fail(~"Vector index out of bounds.")
+            _ => fail!(~"Vector index out of bounds.")
         }
     }
 }

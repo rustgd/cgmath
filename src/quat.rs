@@ -138,7 +138,7 @@ pub impl<T:Copy Float> Quat<T> {
     }
     
     pure fn get_angle_axis(&self) -> (T, Vec3<T>) {
-        fail(~"Not yet implemented.")
+        fail!(~"Not yet implemented.")
     }
     
     #[inline(always)]
