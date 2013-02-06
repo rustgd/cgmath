@@ -406,7 +406,7 @@ pub impl<T:Copy Float> Quat<T>: Neg<Quat<T>> {
 
 pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Quat<T>) -> bool {
+    pure fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&

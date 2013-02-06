@@ -286,7 +286,7 @@ pub impl<T:Copy Float> Vec2<T>: MutableEuclideanVector<&self/T> {
 
 pub impl<T:Copy FuzzyEq Eq> Vec2<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Vec2<T>) -> bool {
+    pure fn fuzzy_eq(&self, other: &Vec2<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1])
     }
@@ -419,3 +419,15 @@ pub impl uvec2 {
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec2>() }
 }
+
+// Type aliases named in a more 'Rustic' style
+
+pub type vec2i   = Vec2<int>;
+pub type vec2i8  = Vec2<i8>;
+pub type vec2i16 = Vec2<i16>;
+pub type vec2i32 = Vec2<i32>;
+pub type vec2i64 = Vec2<i64>;
+pub type vec2f   = Vec2<float>;
+pub type vec2f32 = Vec2<f32>;
+pub type vec2f64 = Vec2<f64>;
+pub type vec2b   = Vec2<bool>;

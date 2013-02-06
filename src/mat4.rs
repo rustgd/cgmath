@@ -507,7 +507,7 @@ pub impl<T:Copy> Mat4<T>: Index<uint, Vec4<T>> {
 
 pub impl<T:Copy Float> Mat4<T>: FuzzyEq {
     #[inline(always)]
-    pure fn fuzzy_eq(other: &Mat4<T>) -> bool {
+    pure fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
         self[0].fuzzy_eq(&other[0]) &&
         self[1].fuzzy_eq(&other[1]) &&
         self[2].fuzzy_eq(&other[2]) &&
