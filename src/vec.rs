@@ -67,7 +67,7 @@ pub trait Vector4<T>: Vector<T> {
 /**
  * A vector with numeric components
  */
-pub trait NumericVector<T>: Vector<T> Neg<self> {
+pub trait NumericVector<T>: Vector<T> Neg<Self> {
     /**
      * The standard basis vector
      *

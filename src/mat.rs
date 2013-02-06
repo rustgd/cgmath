@@ -18,7 +18,7 @@ pub use mat4::{Mat4, mat4, dmat4};
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait Matrix<T,V>: Index<uint, V> Eq Neg<self> {
+pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
     /**
      * # Return value
      *
