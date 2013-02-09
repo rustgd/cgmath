@@ -13,7 +13,7 @@ use core::ptr::to_unsafe_ptr;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
-use std::cmp::FuzzyEq;
+use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
 use numeric::number::Number::{zero,one};
@@ -45,7 +45,7 @@ use vec::{
 #[deriving_eq]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy Float> Quat<T> {
+pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -397,20 +397,25 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
     }
 }
 
-pub impl<T:Copy Float> Quat<T>: Neg<Quat<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Quat<T>: Neg<Quat<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl<T:Copy FuzzyEq> Quat<T>: FuzzyEq {
+pub impl<T:Copy Float FuzzyEq<T>> Quat<T>: FuzzyEq<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1]) &&
-        self[2].fuzzy_eq(&other[2]) &&
-        self[3].fuzzy_eq(&other[3])
+        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+    }
+    
+    #[inline(always)]
+    pure fn fuzzy_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
+        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
+        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
+        self[2].fuzzy_eq_eps(&other[2], epsilon) &&
+        self[3].fuzzy_eq_eps(&other[3], epsilon)
     }
 }
 

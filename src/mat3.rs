@@ -5,7 +5,7 @@ use core::util::swap;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
-use std::cmp::FuzzyEq;
+use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
 use numeric::number::Number::{zero,one};
@@ -43,7 +43,7 @@ use mat::{
 #[deriving_eq]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Mat3<T>: Matrix<T, Vec3<T>> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec3<T> { self[i] }
     
@@ -243,7 +243,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Mat3<T>: Matrix3<T, Vec3<T>> {
     /**
      * Construct a 3 x 3 matrix
      *
@@ -470,7 +470,7 @@ pub impl<T:Copy Float> Mat3<T>: Matrix3<T, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: MutableMatrix<T, Vec3<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Mat3<T>: MutableMatrix<T, Vec3<T>> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec3<T> {
         match i {
@@ -561,19 +561,24 @@ pub impl<T:Copy> Mat3<T>: Index<uint, Vec3<T>> {
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: Neg<Mat3<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Mat3<T>: Neg<Mat3<T>> {
     #[inline(always)]
     pure fn neg(&self) -> Mat3<T> {
         Matrix3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
-pub impl<T:Copy Float> Mat3<T>: FuzzyEq {
+pub impl<T:Copy Float FuzzyEq<T>> Mat3<T>: FuzzyEq<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Mat3<T>) -> bool {
-        self[0].fuzzy_eq(&other[0]) &&
-        self[1].fuzzy_eq(&other[1]) &&
-        self[2].fuzzy_eq(&other[2])
+        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+    }
+    
+    #[inline(always)]
+    pure fn fuzzy_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
+        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
+        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
+        self[2].fuzzy_eq_eps(&other[2], epsilon)
     }
 }
 

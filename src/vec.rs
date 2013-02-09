@@ -408,3 +408,77 @@ pub trait BooleanVector: Vector<bool> {
      */
     pure fn not(&self) -> Self;
 }
+
+pub trait TrigVec<T>: Vector<T> {
+    pure fn radians(&self) -> Self;
+    pure fn degrees(&self) -> Self;
+    
+    // Triganometric functions
+    pure fn sin(&self)                      -> Self;
+    pure fn cos(&self)                      -> Self;
+    pure fn tan(&self)                      -> Self;
+    
+    // Inverse triganometric functions
+    pure fn asin(&self)                     -> Self;
+    pure fn acos(&self)                     -> Self;
+    pure fn atan(&self)                     -> Self;
+    pure fn atan2(&self, other: Self)       -> Self;
+    
+    // Hyperbolic triganometric functions
+    pure fn sinh(&self)                     -> Self;
+    pure fn cosh(&self)                     -> Self;
+    pure fn tanh(&self)                     -> Self;
+    // pure fn asinh()                      -> Self;
+    // pure fn acosh()                      -> Self;
+    // pure fn atanh()                      -> Self;
+}
+
+pub trait ExpVec<T>: Vector<T> {
+    // Exponential functions
+    pure fn pow_t(&self, n: Self)           -> Self;
+    pure fn pow_v(&self, n: T)              -> Self;
+    pure fn exp(&self)                      -> Self;
+    pure fn exp2(&self)                     -> Self;
+    pure fn ln(&self)                       -> Self;
+    pure fn ln2(&self)                      -> Self;
+    pure fn sqrt(&self)                     -> Self;
+    pure fn inv_sqrt(&self)                 -> Self;
+}
+
+pub trait ApproxVec<T>: Vector<T> {
+    // Whole-number approximation functions
+    pure fn floor(&self)                    -> Self;
+    pure fn trunc(&self)                    -> Self;
+    pure fn round(&self)                    -> Self;
+    // pure fn round_even(&self)            -> Self;
+    pure fn ceil(&self)                     -> Self;
+    pure fn fract(&self)                    -> Self;
+}
+
+pub trait SignedVec<T,BV>: Vector<T> {
+    pure fn is_positive(&self)    -> BV;
+    pure fn is_negative(&self)    -> BV;
+    pure fn is_nonpositive(&self) -> BV;
+    pure fn is_nonnegative(&self) -> BV;
+    
+    pure fn abs(&self) -> Self;
+    pure fn sign(&self) -> Self;
+    pure fn copysign(&self, other: Self) -> Self;
+}
+
+pub trait ExtentVec<T>: Vector<T> {
+    pure fn min_v(&self, other: &Self) -> Self;
+    pure fn max_v(&self, other: &Self) -> Self;
+    pure fn clamp_v(&self, mn: &Self, mx: &Self) -> Self;
+    
+    pure fn min_t(&self, other: T) -> Self;
+    pure fn max_t(&self, other: T) -> Self;
+    pure fn clamp_t(&self, mn: T, mx: T) -> Self;
+}
+
+pub trait MixVec<T>: Vector<T> {
+    // Functions for blending numbers together
+    pure fn mix(&self, other: Self, value: Self) -> Self;
+    pure fn smooth_step(&self, edge0: Self, edge1: Self) -> Self;
+    pure fn step(&self, edge: Self) -> Self;
+}
