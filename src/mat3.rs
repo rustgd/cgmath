@@ -15,6 +15,11 @@ use quat::Quat;
 use vec::{
     Vec3,
     Vector3,
+    MutableVector,
+    NumericVector,
+    NumericVector3,
+    MutableNumericVector,
+    EuclideanVector,
     vec3,
     dvec3,
 };

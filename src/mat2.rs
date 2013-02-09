@@ -13,6 +13,9 @@ use numeric::number::Number::{zero,one};
 use vec::{
     Vec2,
     Vector2,
+    MutableVector,
+    NumericVector,
+    MutableNumericVector,
     vec2,
     dvec2,
 };

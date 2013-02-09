@@ -26,6 +26,9 @@ use mat::{
 use vec::{
     Vec3,
     Vector3,
+    EuclideanVector,
+    NumericVector,
+    NumericVector3,
     vec3,
     dvec3,
 };
