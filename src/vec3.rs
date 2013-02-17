@@ -45,7 +45,7 @@ use vec::{
 #[deriving_eq]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
-pub impl<T:Copy Eq> Vec3<T>: Vector<T> {
+pub impl<T:Copy Eq> Vector<T> for Vec3<T> {
     #[inline(always)]
     static pure fn from_value(value: T) -> Vec3<T> {
         Vector3::new(value, value, value)
@@ -61,21 +61,21 @@ pub impl<T:Copy Eq> Vec3<T>: Vector<T> {
     }
 }
 
-pub impl<T> Vec3<T>: Vector3<T> {
+pub impl<T> Vector3<T> for Vec3<T> {
     #[inline(always)]
     static pure fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
     }
 }
 
-pub impl<T:Copy Eq> Vec3<T>: Index<uint, T> {
+pub impl<T:Copy Eq> Index<uint, T> for Vec3<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
     }
 }
 
-pub impl<T:Copy> Vec3<T>: MutableVector<T> {
+pub impl<T:Copy> MutableVector<T> for Vec3<T> {
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &self/mut T {
         match i {
@@ -93,7 +93,7 @@ pub impl<T:Copy> Vec3<T>: MutableVector<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: NumericVector<T> {
+pub impl<T:Copy Number> NumericVector<T> for Vec3<T> {
     #[inline(always)]
     static pure fn identity() -> Vec3<T> {
         Vector3::new(one::<T>(), one::<T>(), one::<T>())
@@ -161,14 +161,14 @@ pub impl<T:Copy Number> Vec3<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: Neg<Vec3<T>> {
+pub impl<T:Copy Number> Neg<Vec3<T>> for Vec3<T> {
     #[inline(always)]
     pure fn neg(&self) -> Vec3<T> {
         Vector3::new(-self[0], -self[1], -self[2])
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
+pub impl<T:Copy Number> NumericVector3<T> for Vec3<T> {
     #[inline(always)]
     static pure fn unit_x() -> Vec3<T> {
         Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
@@ -192,7 +192,7 @@ pub impl<T:Copy Number> Vec3<T>: NumericVector3<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
+pub impl<T:Copy Number> MutableNumericVector<&self/T> for Vec3<T> {
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -243,21 +243,21 @@ pub impl<T:Copy Number> Vec3<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: MutableNumericVector3<&self/T> {
+pub impl<T:Copy Number> MutableNumericVector3<&self/T> for Vec3<T> {
     #[inline(always)]
     fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other);
     }
 }
 
-pub impl<T:Copy Number> Vec3<T>: ToHomogeneous<Vec4<T>> {
+pub impl<T:Copy Number> ToHomogeneous<Vec4<T>> for Vec3<T> {
     #[inline(always)]
     pure fn to_homogeneous(&self) -> Vec4<T> {
         Vector4::new(self.x, self.y, self.z, zero())
     }
 }
 
-pub impl<T:Copy Float> Vec3<T>: EuclideanVector<T> {
+pub impl<T:Copy Float> EuclideanVector<T> for Vec3<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -299,7 +299,7 @@ pub impl<T:Copy Float> Vec3<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Float> Vec3<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Float> MutableEuclideanVector<&self/T> for Vec3<T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
@@ -317,7 +317,7 @@ pub impl<T:Copy Float> Vec3<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Vec3<T>: FuzzyEq<T> {
+pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Vec3<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
@@ -331,7 +331,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Vec3<T>: FuzzyEq<T> {
     }
 }
 
-pub impl<T:Copy Ord Eq> Vec3<T>: OrdinalVector<T, Vec3<bool>> {
+pub impl<T:Copy Ord Eq> OrdinalVector<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     pure fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vector3::new(self[0] < other[0],
@@ -361,7 +361,7 @@ pub impl<T:Copy Ord Eq> Vec3<T>: OrdinalVector<T, Vec3<bool>> {
     }
 }
 
-pub impl<T:Copy Eq> Vec3<T>: EquableVector<T, Vec3<bool>> {
+pub impl<T:Copy Eq> EquableVector<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     pure fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vector3::new(self[0] == other[0],
@@ -377,7 +377,7 @@ pub impl<T:Copy Eq> Vec3<T>: EquableVector<T, Vec3<bool>> {
     }
 }
 
-pub impl Vec3<bool>: BooleanVector {
+pub impl BooleanVector for Vec3<bool> {
     #[inline(always)]
     pure fn any(&self) -> bool {
         self[0] || self[1] || self[2]

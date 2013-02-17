@@ -390,7 +390,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     }
 }
 
-pub impl<T:Copy> Quat<T>: Index<uint, T> {
+pub impl<T:Copy> Index<uint, T> for Quat<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(
@@ -400,14 +400,14 @@ pub impl<T:Copy> Quat<T>: Index<uint, T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Quat<T>: Neg<Quat<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     pure fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Quat<T>: FuzzyEq<T> {
+pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))

@@ -43,7 +43,7 @@ use vec::{
 #[deriving_eq]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-pub impl<T:Copy Eq> Vec4<T>: Vector<T> {
+pub impl<T:Copy Eq> Vector<T> for Vec4<T> {
     #[inline(always)]
     static pure fn from_value(value: T) -> Vec4<T> {
         Vector4::new(value, value, value, value)
@@ -59,21 +59,21 @@ pub impl<T:Copy Eq> Vec4<T>: Vector<T> {
     }
 }
 
-pub impl<T> Vec4<T>: Vector4<T> {
+pub impl<T> Vector4<T> for Vec4<T> {
     #[inline(always)]
     static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
     }
 }
 
-pub impl<T:Copy Eq> Vec4<T>: Index<uint, T> {
+pub impl<T:Copy Eq> Index<uint, T> for Vec4<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
 
-pub impl<T:Copy> Vec4<T>: MutableVector<T> {
+pub impl<T:Copy> MutableVector<T> for Vec4<T> {
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &self/mut T {
         match i {
@@ -92,7 +92,7 @@ pub impl<T:Copy> Vec4<T>: MutableVector<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
+pub impl<T:Copy Number> NumericVector<T> for Vec4<T> {
     #[inline(always)]
     static pure fn identity() -> Vec4<T> {
         Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
@@ -168,14 +168,14 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec4<T>: Neg<Vec4<T>> {
+pub impl<T:Copy Number> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
     pure fn neg(&self) -> Vec4<T> {
         Vector4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl<T:Copy Number> Vec4<T>: NumericVector4<T> {
+pub impl<T:Copy Number> NumericVector4<T> for Vec4<T> {
     #[inline(always)]
     static pure fn unit_x() -> Vec4<T> {
         Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
@@ -197,7 +197,7 @@ pub impl<T:Copy Number> Vec4<T>: NumericVector4<T> {
     }
 }
 
-pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
+pub impl<T:Copy Number> MutableNumericVector<&self/T> for Vec4<T> {
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -255,7 +255,7 @@ pub impl<T:Copy Number> Vec4<T>: MutableNumericVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
+pub impl<T:Copy Float> EuclideanVector<T> for Vec4<T> {
     #[inline(always)]
     pure fn length2(&self) -> T {
         self.dot(self)
@@ -297,7 +297,7 @@ pub impl<T:Copy Float> Vec4<T>: EuclideanVector<T> {
     }
 }
 
-pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
+pub impl<T:Copy Float> MutableEuclideanVector<&self/T> for Vec4<T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
@@ -315,7 +315,7 @@ pub impl<T:Copy Float> Vec4<T>: MutableEuclideanVector<&self/T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Vec4<T>: FuzzyEq<T> {
+pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
@@ -330,7 +330,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Vec4<T>: FuzzyEq<T> {
     }
 }
 
-pub impl<T:Copy Ord Eq> Vec4<T>: OrdinalVector<T, Vec4<bool>> {
+pub impl<T:Copy Ord Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     pure fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] < other[0],
@@ -364,7 +364,7 @@ pub impl<T:Copy Ord Eq> Vec4<T>: OrdinalVector<T, Vec4<bool>> {
     }
 }
 
-pub impl<T:Copy Eq> Vec4<T>: EquableVector<T, Vec4<bool>> {
+pub impl<T:Copy Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     pure fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] == other[0],
@@ -382,7 +382,7 @@ pub impl<T:Copy Eq> Vec4<T>: EquableVector<T, Vec4<bool>> {
     }
 }
 
-pub impl Vec4<bool>: BooleanVector {
+pub impl BooleanVector for Vec4<bool> {
     #[inline(always)]
     pure fn any(&self) -> bool {
         self[0] || self[1] || self[2] || self[3]
