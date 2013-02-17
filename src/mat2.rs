@@ -46,7 +46,7 @@ use mat::{
 #[deriving_eq]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: Matrix<T, Vec2<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec2<T> { self[i] }
     
@@ -208,7 +208,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: Matrix<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: MutableMatrix<T, Vec2<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> MutableMatrix<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec2<T> {
         match i {
@@ -278,7 +278,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: MutableMatrix<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: Matrix2<T, Vec2<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -379,7 +379,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: Matrix2<T, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
+pub impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> Vec2<T> {
         unsafe { do buf_as_slice(
@@ -389,14 +389,14 @@ pub impl<T:Copy> Mat2<T>: Index<uint, Vec2<T>> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: Neg<Mat2<T>> {
+pub impl<T:Copy Float FuzzyEq<T>> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn neg(&self) -> Mat2<T> {
         Matrix2::from_cols(-self[0], -self[1])
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Mat2<T>: FuzzyEq<T> {
+pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Mat2<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
@@ -421,7 +421,7 @@ pub impl mat2 {
     #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
         -> mat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
-        -> mat2 { Matrix2::from_cols(move c0, move c1) }
+        -> mat2 { Matrix2::from_cols(c0, c1) }
     #[inline(always)] static pure fn from_value(v: f32) -> mat2 { Matrix::from_value(v) }
     
     #[inline(always)] static pure fn identity() -> mat2 { Matrix::identity() }
@@ -439,7 +439,7 @@ pub impl dmat2 {
     #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
         -> dmat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
-        -> dmat2 { Matrix2::from_cols(move c0, move c1) }
+        -> dmat2 { Matrix2::from_cols(c0, c1) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { Matrix::from_value(v) }
     
     #[inline(always)] static pure fn identity() -> dmat2 { Matrix::identity() }
