@@ -35,7 +35,7 @@ pub trait MutableVector<T>: Vector<T> {
     /**
      * Get a mutable reference to the component at `i`
      */
-    fn index_mut(&mut self, i: uint) -> &self/mut T;
+    fn index_mut(&mut self, i: uint) -> &'self mut T;
 
     /**
      * Swap two components of the vector in place
@@ -179,7 +179,7 @@ pub trait NumericVector4<T>: NumericVector<T> {
 /**
  * A mutable vector with numeric components
  */
-pub trait MutableNumericVector<T>: MutableVector<&self/T> +
+pub trait MutableNumericVector<T>: MutableVector<&'self T> +
                                    NumericVector<T> {
     /**
      * Negate the vector
@@ -220,7 +220,7 @@ pub trait MutableNumericVector<T>: MutableVector<&self/T> +
 /**
  * A mutable 3-dimensional vector with numeric components
  */
-pub trait MutableNumericVector3<T>: MutableNumericVector<&self/T> {
+pub trait MutableNumericVector3<T>: MutableNumericVector<&'self T> {
     /**
      * Set to the cross product of the vector and `other`
      */
@@ -313,7 +313,7 @@ pub trait EuclideanVector<T>: NumericVector<T> {
  *
  * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait MutableEuclideanVector<T>: MutableNumericVector<&self/T> +
+pub trait MutableEuclideanVector<T>: MutableNumericVector<&'self T> +
                                      EuclideanVector<T> {
     /**
      * Normalize the vector

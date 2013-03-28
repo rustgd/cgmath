@@ -75,7 +75,7 @@ impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
 
 impl<T:Copy> MutableVector<T> for Vec2<T> {
     #[inline(always)]
-    fn index_mut(&mut self, i: uint) -> &self/mut T {
+    fn index_mut(&mut self, i: uint) -> &'self mut T {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
@@ -174,7 +174,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 }
 
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<&self/T> for Vec2<T> {
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<&'self T> for Vec2<T> {
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -267,7 +267,7 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Euclid
     }
 }
 
-impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<&self/T> for Vec2<T> {
+impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<&'self T> for Vec2<T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();

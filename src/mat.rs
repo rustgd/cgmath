@@ -245,7 +245,7 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
      *
      * A mutable reference to the column at `i`
      */
-    fn col_mut(&mut self, i: uint) -> &self/mut V;
+    fn col_mut(&mut self, i: uint) -> &'self mut V;
 
     /**
      * Swap two columns of the matrix in place

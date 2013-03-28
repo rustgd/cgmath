@@ -477,7 +477,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableMatrix<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
-    fn col_mut(&mut self, i: uint) -> &self/mut Vec3<T> {
+    fn col_mut(&mut self, i: uint) -> &'self mut Vec3<T> {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
