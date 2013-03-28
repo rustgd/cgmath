@@ -78,7 +78,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn from_value(value: T) -> Mat4<T> {
+    fn from_value(value: T) -> Mat4<T> {
         Matrix4::new(value, zero(), zero(), zero(),
                      zero(), value, zero(), zero(),
                      zero(), zero(), value, zero(),
@@ -101,7 +101,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn identity() -> Mat4<T> {
+    fn identity() -> Mat4<T> {
         Matrix4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
@@ -124,7 +124,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn zero() -> Mat4<T> {
+    fn zero() -> Mat4<T> {
         Matrix4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
@@ -357,7 +357,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+    fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
@@ -391,7 +391,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn from_cols(c0: Vec4<T>,
+    fn from_cols(c0: Vec4<T>,
                              c1: Vec4<T>,
                              c2: Vec4<T>,
                              c3: Vec4<T>) -> Mat4<T> {
@@ -533,33 +533,33 @@ pub type dmat4 = Mat4<f64>;     // a 4×4 double-precision floating-point matrix
 // Static method wrappers for GLSL-style types
 
 impl mat4 {
-    #[inline(always)] static fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
+    #[inline(always)] fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
         -> mat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] static fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
+    #[inline(always)] fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] static fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
+    #[inline(always)] fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
 
-    #[inline(always)] static fn identity() -> mat4 { Matrix::identity() }
-    #[inline(always)] static fn zero() -> mat4 { Matrix::zero() }
+    #[inline(always)] fn identity() -> mat4 { Matrix::identity() }
+    #[inline(always)] fn zero() -> mat4 { Matrix::zero() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn rows() -> uint { 4 }
-    #[inline(always)] static fn cols() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<mat4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn rows() -> uint { 4 }
+    #[inline(always)] fn cols() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<mat4>() }
 }
 
 impl dmat4 {
-    #[inline(always)] static fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
+    #[inline(always)] fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
         -> dmat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] static fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
+    #[inline(always)] fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
         -> dmat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] static fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
+    #[inline(always)] fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
 
-    #[inline(always)] static fn identity() -> dmat4 { Matrix::identity() }
-    #[inline(always)] static fn zero() -> dmat4 { Matrix::zero() }
+    #[inline(always)] fn identity() -> dmat4 { Matrix::identity() }
+    #[inline(always)] fn zero() -> dmat4 { Matrix::zero() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn rows() -> uint { 4 }
-    #[inline(always)] static fn cols() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<dmat4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn rows() -> uint { 4 }
+    #[inline(always)] fn cols() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<dmat4>() }
 }

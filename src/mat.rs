@@ -36,21 +36,21 @@ pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
     /**
      * Construct a diagonal matrix with the major diagonal set to `value`
      */
-    static fn from_value(value: T) -> Self;
+    fn from_value(value: T) -> Self;
 
     /**
      * # Return value
      *
      * The identity matrix
      */
-    static fn identity() -> Self;
+    fn identity() -> Self;
 
     /**
      * # Return value
      *
      * A matrix with all elements set to zero
      */
-    static fn zero() -> Self;
+    fn zero() -> Self;
 
     /**
      * # Return value
@@ -183,12 +183,12 @@ pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
  * A 2 x 2 matrix
  */
 pub trait Matrix2<T,V>: Matrix<T,V> {
-    static fn new(c0r0: T, c0r1: T,
+    fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Self;
 
-    static fn from_cols(c0: V, c1: V) -> Self;
+    fn from_cols(c0: V, c1: V) -> Self;
 
-    static fn from_angle(radians: T) -> Self;
+    fn from_angle(radians: T) -> Self;
 
     fn to_mat3(&self) -> Mat3<T>;
 
@@ -199,25 +199,25 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  * A 3 x 3 matrix
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
-    static fn new(c0r0:T, c0r1:T, c0r2:T,
+    fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
                        c2r0:T, c2r1:T, c2r2:T) -> Self;
 
-    static fn from_cols(c0: V, c1: V, c2: V) -> Self;
+    fn from_cols(c0: V, c1: V, c2: V) -> Self;
 
-    static fn from_angle_x(radians: T) -> Self;
+    fn from_angle_x(radians: T) -> Self;
 
-    static fn from_angle_y(radians: T) -> Self;
+    fn from_angle_y(radians: T) -> Self;
 
-    static fn from_angle_z(radians: T) -> Self;
+    fn from_angle_z(radians: T) -> Self;
 
-    static fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Self;
+    fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Self;
 
-    static fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Self;
+    fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Self;
 
-    static fn from_axes(x: V, y: V, z: V) -> Self;
+    fn from_axes(x: V, y: V, z: V) -> Self;
 
-    static fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Self;
+    fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Self;
 
     fn to_mat4(&self) -> Mat4<T>;
 
@@ -228,12 +228,12 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
  * A 4 x 4 matrix
  */
 pub trait Matrix4<T,V>: Matrix<T,V> {
-    static fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+    fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Self;
 
-    static fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
+    fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
 }
 
 /**

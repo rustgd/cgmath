@@ -73,7 +73,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn from_value(value: T) -> Mat2<T> {
+    fn from_value(value: T) -> Mat2<T> {
         Matrix2::new(value, zero(),
                      zero(), value)
     }
@@ -90,7 +90,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn identity() -> Mat2<T> {
+    fn identity() -> Mat2<T> {
         Matrix2::new( one::<T>(), zero::<T>(),
                      zero::<T>(),  one::<T>())
     }
@@ -107,7 +107,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn zero() -> Mat2<T> {
+    fn zero() -> Mat2<T> {
         Matrix2::new(zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>())
     }
@@ -296,7 +296,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn new(c0r0: T, c0r1: T,
+    fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Mat2<T> {
         Matrix2::from_cols(Vector2::new::<T,Vec2<T>>(c0r0, c0r1),
                            Vector2::new::<T,Vec2<T>>(c1r0, c1r1))
@@ -320,13 +320,13 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static fn from_cols(c0: Vec2<T>,
+    fn from_cols(c0: Vec2<T>,
                              c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
     }
 
     #[inline(always)]
-    static fn from_angle(radians: T) -> Mat2<T> {
+    fn from_angle(radians: T) -> Mat2<T> {
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
 
@@ -417,37 +417,37 @@ pub type dmat2 = Mat2<f64>;     // a 2×2 double-precision floating-point matrix
 // Static method wrappers for GLSL-style types
 
 impl mat2 {
-    #[inline(always)] static fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
+    #[inline(always)] fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
         -> mat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
-    #[inline(always)] static fn from_cols(c0: vec2, c1: vec2)
+    #[inline(always)] fn from_cols(c0: vec2, c1: vec2)
         -> mat2 { Matrix2::from_cols(c0, c1) }
-    #[inline(always)] static fn from_value(v: f32) -> mat2 { Matrix::from_value(v) }
+    #[inline(always)] fn from_value(v: f32) -> mat2 { Matrix::from_value(v) }
 
-    #[inline(always)] static fn identity() -> mat2 { Matrix::identity() }
-    #[inline(always)] static fn zero() -> mat2 { Matrix::zero() }
+    #[inline(always)] fn identity() -> mat2 { Matrix::identity() }
+    #[inline(always)] fn zero() -> mat2 { Matrix::zero() }
 
-    #[inline(always)] static fn from_angle(radians: f32) -> mat2 { Matrix2::from_angle(radians) }
+    #[inline(always)] fn from_angle(radians: f32) -> mat2 { Matrix2::from_angle(radians) }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn rows() -> uint { 2 }
-    #[inline(always)] static fn cols() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<mat2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn rows() -> uint { 2 }
+    #[inline(always)] fn cols() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<mat2>() }
 }
 
 impl dmat2 {
-    #[inline(always)] static fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
+    #[inline(always)] fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
         -> dmat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
-    #[inline(always)] static fn from_cols(c0: dvec2, c1: dvec2)
+    #[inline(always)] fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2 { Matrix2::from_cols(c0, c1) }
-    #[inline(always)] static fn from_value(v: f64) -> dmat2 { Matrix::from_value(v) }
+    #[inline(always)] fn from_value(v: f64) -> dmat2 { Matrix::from_value(v) }
 
-    #[inline(always)] static fn identity() -> dmat2 { Matrix::identity() }
-    #[inline(always)] static fn zero() -> dmat2 { Matrix::zero() }
+    #[inline(always)] fn identity() -> dmat2 { Matrix::identity() }
+    #[inline(always)] fn zero() -> dmat2 { Matrix::zero() }
 
-    #[inline(always)] static fn from_angle(radians: f64) -> dmat2 { Matrix2::from_angle(radians) }
+    #[inline(always)] fn from_angle(radians: f64) -> dmat2 { Matrix2::from_angle(radians) }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn rows() -> uint { 2 }
-    #[inline(always)] static fn cols() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<dmat2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn rows() -> uint { 2 }
+    #[inline(always)] fn cols() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<dmat2>() }
 }

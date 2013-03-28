@@ -47,7 +47,7 @@ pub struct Vec3<T> { x: T, y: T, z: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec3<T> {
     #[inline(always)]
-    static fn from_value(value: T) -> Vec3<T> {
+    fn from_value(value: T) -> Vec3<T> {
         Vector3::new(value, value, value)
     }
 
@@ -63,7 +63,7 @@ impl<T:Copy + Eq> Vector<T> for Vec3<T> {
 
 impl<T> Vector3<T> for Vec3<T> {
     #[inline(always)]
-    static fn new(x: T, y: T, z: T) -> Vec3<T> {
+    fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
     }
 }
@@ -95,12 +95,12 @@ impl<T:Copy> MutableVector<T> for Vec3<T> {
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec3<T> {
     #[inline(always)]
-    static fn identity() -> Vec3<T> {
+    fn identity() -> Vec3<T> {
         Vector3::new(one::<T>(), one::<T>(), one::<T>())
     }
 
     #[inline(always)]
-    static fn zero() -> Vec3<T> {
+    fn zero() -> Vec3<T> {
         Vector3::new(zero::<T>(), zero::<T>(), zero::<T>())
     }
 
@@ -170,17 +170,17 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<V
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector3<T> for Vec3<T> {
     #[inline(always)]
-    static fn unit_x() -> Vec3<T> {
+    fn unit_x() -> Vec3<T> {
         Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_y() -> Vec3<T> {
+    fn unit_y() -> Vec3<T> {
         Vector3::new(zero::<T>(), one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_z() -> Vec3<T> {
+    fn unit_z() -> Vec3<T> {
         Vector3::new(zero::<T>(), zero::<T>(), one::<T>())
     }
 
@@ -406,65 +406,65 @@ pub type uvec3 = Vec3<u32>;     // a three-component unsigned integer vector
 // Static method wrappers for GLSL-style types
 
 impl vec3 {
-    #[inline(always)] static fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
-    #[inline(always)] static fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> vec3 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> vec3 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec3 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> vec3 { NumericVector3::unit_x() }
-    #[inline(always)] static fn unit_y() -> vec3 { NumericVector3::unit_y() }
-    #[inline(always)] static fn unit_z() -> vec3 { NumericVector3::unit_z() }
+    #[inline(always)] fn unit_x() -> vec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> vec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> vec3 { NumericVector3::unit_z() }
 
-    #[inline(always)] static fn dim() -> uint { 3 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<vec3>() }
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { size_of::<vec3>() }
 }
 
 impl dvec3 {
-    #[inline(always)] static fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] static fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> dvec3 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> dvec3 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec3 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> dvec3 { NumericVector3::unit_x() }
-    #[inline(always)] static fn unit_y() -> dvec3 { NumericVector3::unit_y() }
-    #[inline(always)] static fn unit_z() -> dvec3 { NumericVector3::unit_z() }
+    #[inline(always)] fn unit_x() -> dvec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> dvec3 { NumericVector3::unit_z() }
 
-    #[inline(always)] static fn dim() -> uint { 3 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<dvec3>() }
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { size_of::<dvec3>() }
 }
 
 impl bvec3 {
-    #[inline(always)] static fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] static fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
+    #[inline(always)] fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
 
-    #[inline(always)] static fn dim() -> uint { 3 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<bvec3>() }
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { size_of::<bvec3>() }
 }
 
 impl ivec3 {
-    #[inline(always)] static fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
-    #[inline(always)] static fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> ivec3 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> ivec3 { NumericVector::zero() }
+    #[inline(always)] fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec3 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> ivec3 { NumericVector3::unit_x() }
-    #[inline(always)] static fn unit_y() -> ivec3 { NumericVector3::unit_y() }
-    #[inline(always)] static fn unit_z() -> ivec3 { NumericVector3::unit_z() }
+    #[inline(always)] fn unit_x() -> ivec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> ivec3 { NumericVector3::unit_z() }
 
-    #[inline(always)] static fn dim() -> uint { 3 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<ivec3>() }
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { size_of::<ivec3>() }
 }
 
 impl uvec3 {
-    #[inline(always)] static fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] static fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> uvec3 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> uvec3 { NumericVector::zero() }
+    #[inline(always)] fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec3 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> uvec3 { NumericVector3::unit_x() }
-    #[inline(always)] static fn unit_y() -> uvec3 { NumericVector3::unit_y() }
-    #[inline(always)] static fn unit_z() -> uvec3 { NumericVector3::unit_z() }
+    #[inline(always)] fn unit_x() -> uvec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> uvec3 { NumericVector3::unit_z() }
 
-    #[inline(always)] static fn dim() -> uint { 3 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<uvec3>() }
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { size_of::<uvec3>() }
 }

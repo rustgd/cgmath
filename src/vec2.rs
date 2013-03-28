@@ -45,7 +45,7 @@ pub struct Vec2<T> { x: T, y: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec2<T> {
     #[inline(always)]
-    static fn from_value(value: T) -> Vec2<T> {
+    fn from_value(value: T) -> Vec2<T> {
         Vector2::new(value, value)
     }
 
@@ -61,7 +61,7 @@ impl<T:Copy + Eq> Vector<T> for Vec2<T> {
 
 impl<T> Vector2<T> for Vec2<T> {
     #[inline(always)]
-    static fn new(x: T, y: T ) -> Vec2<T> {
+    fn new(x: T, y: T ) -> Vec2<T> {
         Vec2 { x: x, y: y }
     }
 }
@@ -92,12 +92,12 @@ impl<T:Copy> MutableVector<T> for Vec2<T> {
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec2<T> {
     #[inline(always)]
-    static fn identity() -> Vec2<T> {
+    fn identity() -> Vec2<T> {
         Vector2::new(one::<T>(), one::<T>())
     }
 
     #[inline(always)]
-    static fn zero() -> Vec2<T> {
+    fn zero() -> Vec2<T> {
         Vector2::new(zero::<T>(), zero::<T>())
     }
 
@@ -159,12 +159,12 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<V
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector2<T> for Vec2<T> {
     #[inline(always)]
-    static fn unit_x() -> Vec2<T> {
+    fn unit_x() -> Vec2<T> {
         Vector2::new(one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_y() -> Vec2<T> {
+    fn unit_y() -> Vec2<T> {
         Vector2::new(zero::<T>(), one::<T>())
     }
 
@@ -367,63 +367,63 @@ pub type uvec2 = Vec2<u32>;     // a two-component unsigned integer vector
 // Static method wrappers for GLSL-style types
 
 impl vec2 {
-    #[inline(always)] static fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
-    #[inline(always)] static fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> vec2 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> vec2 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec2 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> vec2 { NumericVector2::unit_x() }
-    #[inline(always)] static fn unit_y() -> vec2 { NumericVector2::unit_y() }
+    #[inline(always)] fn unit_x() -> vec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> vec2 { NumericVector2::unit_y() }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<vec2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<vec2>() }
 }
 
 impl dvec2 {
-    #[inline(always)] static fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
-    #[inline(always)] static fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> dvec2 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> dvec2 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec2 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> dvec2 { NumericVector2::unit_x() }
-    #[inline(always)] static fn unit_y() -> dvec2 { NumericVector2::unit_y() }
+    #[inline(always)] fn unit_x() -> dvec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec2 { NumericVector2::unit_y() }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<dvec2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<dvec2>() }
 }
 
 impl bvec2 {
-    #[inline(always)] static fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
-    #[inline(always)] static fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
+    #[inline(always)] fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<bvec2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<bvec2>() }
 }
 
 impl ivec2 {
-    #[inline(always)] static fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
-    #[inline(always)] static fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> ivec2 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> ivec2 { NumericVector::zero() }
+    #[inline(always)] fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec2 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> ivec2 { NumericVector2::unit_x() }
-    #[inline(always)] static fn unit_y() -> ivec2 { NumericVector2::unit_y() }
+    #[inline(always)] fn unit_x() -> ivec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec2 { NumericVector2::unit_y() }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<ivec2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<ivec2>() }
 }
 
 impl uvec2 {
-    #[inline(always)] static fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
-    #[inline(always)] static fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> uvec2 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> uvec2 { NumericVector::zero() }
+    #[inline(always)] fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec2 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> uvec2 { NumericVector2::unit_x() }
-    #[inline(always)] static fn unit_y() -> uvec2 { NumericVector2::unit_y() }
+    #[inline(always)] fn unit_x() -> uvec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec2 { NumericVector2::unit_y() }
 
-    #[inline(always)] static fn dim() -> uint { 2 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<uvec2>() }
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { size_of::<uvec2>() }
 }
 
 // Type aliases named in a more 'Rustic' style

@@ -45,7 +45,7 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec4<T> {
     #[inline(always)]
-    static fn from_value(value: T) -> Vec4<T> {
+    fn from_value(value: T) -> Vec4<T> {
         Vector4::new(value, value, value, value)
     }
 
@@ -61,7 +61,7 @@ impl<T:Copy + Eq> Vector<T> for Vec4<T> {
 
 impl<T> Vector4<T> for Vec4<T> {
     #[inline(always)]
-    static fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+    fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
     }
 }
@@ -94,12 +94,12 @@ impl<T:Copy> MutableVector<T> for Vec4<T> {
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec4<T> {
     #[inline(always)]
-    static fn identity() -> Vec4<T> {
+    fn identity() -> Vec4<T> {
         Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
     }
 
     #[inline(always)]
-    static fn zero() -> Vec4<T> {
+    fn zero() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
@@ -177,22 +177,22 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<V
 
 impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
     #[inline(always)]
-    static fn unit_x() -> Vec4<T> {
+    fn unit_x() -> Vec4<T> {
         Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_y() -> Vec4<T> {
+    fn unit_y() -> Vec4<T> {
         Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_z() -> Vec4<T> {
+    fn unit_z() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static fn unit_w() -> Vec4<T> {
+    fn unit_w() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
     }
 }
@@ -411,70 +411,70 @@ pub type uvec4 = Vec4<u32>;     // a four-component unsigned integer vector
 // Static method wrappers for GLSL-style types
 
 impl vec4 {
-    #[inline(always)] static fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> vec4 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> vec4 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec4 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> vec4 { NumericVector4::unit_x() }
-    #[inline(always)] static fn unit_y() -> vec4 { NumericVector4::unit_y() }
-    #[inline(always)] static fn unit_z() -> vec4 { NumericVector4::unit_z() }
-    #[inline(always)] static fn unit_w() -> vec4 { NumericVector4::unit_w() }
+    #[inline(always)] fn unit_x() -> vec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> vec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> vec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> vec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<vec4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<vec4>() }
 }
 
 impl dvec4 {
-    #[inline(always)] static fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> dvec4 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> dvec4 { NumericVector::zero() }
+    #[inline(always)] fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec4 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> dvec4 { NumericVector4::unit_x() }
-    #[inline(always)] static fn unit_y() -> dvec4 { NumericVector4::unit_y() }
-    #[inline(always)] static fn unit_z() -> dvec4 { NumericVector4::unit_z() }
-    #[inline(always)] static fn unit_w() -> dvec4 { NumericVector4::unit_w() }
+    #[inline(always)] fn unit_x() -> dvec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> dvec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> dvec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<dvec4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<dvec4>() }
 }
 
 
 impl bvec4 {
-    #[inline(always)] static fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
+    #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<bvec4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<bvec4>() }
 }
 
 impl ivec4 {
-    #[inline(always)] static fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> ivec4 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> ivec4 { NumericVector::zero() }
+    #[inline(always)] fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec4 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> ivec4 { NumericVector4::unit_x() }
-    #[inline(always)] static fn unit_y() -> ivec4 { NumericVector4::unit_y() }
-    #[inline(always)] static fn unit_z() -> ivec4 { NumericVector4::unit_z() }
-    #[inline(always)] static fn unit_w() -> ivec4 { NumericVector4::unit_w() }
+    #[inline(always)] fn unit_x() -> ivec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> ivec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> ivec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<ivec4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<ivec4>() }
 }
 
 impl uvec4 {
-    #[inline(always)] static fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
-    #[inline(always)] static fn identity() -> uvec4 { NumericVector::identity() }
-    #[inline(always)] static fn zero() -> uvec4 { NumericVector::zero() }
+    #[inline(always)] fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec4 { NumericVector::zero() }
 
-    #[inline(always)] static fn unit_x() -> uvec4 { NumericVector4::unit_x() }
-    #[inline(always)] static fn unit_y() -> uvec4 { NumericVector4::unit_y() }
-    #[inline(always)] static fn unit_z() -> uvec4 { NumericVector4::unit_z() }
-    #[inline(always)] static fn unit_w() -> uvec4 { NumericVector4::unit_w() }
+    #[inline(always)] fn unit_x() -> uvec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> uvec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> uvec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static fn dim() -> uint { 4 }
-    #[inline(always)] static fn size_of() -> uint { size_of::<uvec4>() }
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { size_of::<uvec4>() }
 }

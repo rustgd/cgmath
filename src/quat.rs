@@ -61,7 +61,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * * `zk` - the third imaginary component
      */
     #[inline(always)]
-    static fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
+    fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
         Quat::from_sv(w, Vector3::new(xi, yj, zk))
     }
 
@@ -74,7 +74,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * * `v` - a vector containing the three imaginary components
      */
     #[inline(always)]
-    static fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
+    fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: s, v: v }
     }
 
@@ -84,7 +84,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
      */
     #[inline(always)]
-    static fn identity() -> Quat<T> {
+    fn identity() -> Quat<T> {
         Quat::new(one(), zero(), zero(), zero())
     }
 
@@ -94,30 +94,30 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * The additive identity, ie: `q = 0 + 0i + 0j + 0i`
      */
     #[inline(always)]
-    static fn zero() -> Quat<T> {
+    fn zero() -> Quat<T> {
         Quat::new(zero(), zero(), zero(), zero())
     }
 
     #[inline(always)]
-    static fn from_angle_x(radians: T) -> Quat<T> {
+    fn from_angle_x(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), sin(radians), zero(), zero())
     }
 
     #[inline(always)]
-    static fn from_angle_y(radians: T) -> Quat<T> {
+    fn from_angle_y(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), zero(), sin(radians), zero())
     }
 
     #[inline(always)]
-    static fn from_angle_z(radians: T) -> Quat<T> {
+    fn from_angle_z(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
     }
 
     #[inline(always)]
-    static fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
+    fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
         let _2 = Number::from(2);
         let xdiv2 = radians_x / _2;
@@ -130,13 +130,13 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    static fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
+    fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
         let half = radians / Number::from(2);
         Quat::from_sv(cos(half), axis.mul_t(sin(half)))
     }
 
     #[inline(always)]
-    static fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
+    fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
         let m: Mat3<T> = Matrix3::from_axes(x, y, z); m.to_quat()
     }
 
@@ -145,7 +145,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    static fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
+    fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
         let m: Mat3<T> = Matrix3::look_at(dir, up); m.to_quat()
     }
 
@@ -431,33 +431,33 @@ pub type dquat = Quat<f64>;             /// a double-precision floating-point qu
 // Static method wrappers for GLSL-style types
 
 impl quat {
-    #[inline(always)] static fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
-    #[inline(always)] static fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
-    #[inline(always)] static fn identity() -> quat { Quat::identity() }
-    #[inline(always)] static fn zero() -> quat { Quat::zero() }
+    #[inline(always)] fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
+    #[inline(always)] fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
+    #[inline(always)] fn identity() -> quat { Quat::identity() }
+    #[inline(always)] fn zero() -> quat { Quat::zero() }
 
-    #[inline(always)] static fn from_angle_x(radians: f32) -> quat { Quat::from_angle_x(radians) }
-    #[inline(always)] static fn from_angle_y(radians: f32) -> quat { Quat::from_angle_y(radians) }
-    #[inline(always)] static fn from_angle_z(radians: f32) -> quat { Quat::from_angle_z(radians) }
-    #[inline(always)] static fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32)
+    #[inline(always)] fn from_angle_x(radians: f32) -> quat { Quat::from_angle_x(radians) }
+    #[inline(always)] fn from_angle_y(radians: f32) -> quat { Quat::from_angle_y(radians) }
+    #[inline(always)] fn from_angle_z(radians: f32) -> quat { Quat::from_angle_z(radians) }
+    #[inline(always)] fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32)
         -> quat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-    #[inline(always)] static fn from_angle_axis(radians: f32, axis: &vec3) -> quat { Quat::from_angle_axis(radians, axis) }
-    #[inline(always)] static fn from_axes(x: vec3, y: vec3, z: vec3) -> quat { Quat::from_axes(x, y, z) }
-    #[inline(always)] static fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
+    #[inline(always)] fn from_angle_axis(radians: f32, axis: &vec3) -> quat { Quat::from_angle_axis(radians, axis) }
+    #[inline(always)] fn from_axes(x: vec3, y: vec3, z: vec3) -> quat { Quat::from_axes(x, y, z) }
+    #[inline(always)] fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
 }
 
 impl dquat {
-    #[inline(always)] static fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
-    #[inline(always)] static fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
-    #[inline(always)] static fn identity() -> dquat { Quat::identity() }
-    #[inline(always)] static fn zero() -> dquat { Quat::zero() }
+    #[inline(always)] fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
+    #[inline(always)] fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
+    #[inline(always)] fn identity() -> dquat { Quat::identity() }
+    #[inline(always)] fn zero() -> dquat { Quat::zero() }
 
-    #[inline(always)] static fn from_angle_x(radians: f64) -> dquat { Quat::from_angle_x(radians) }
-    #[inline(always)] static fn from_angle_y(radians: f64) -> dquat { Quat::from_angle_y(radians) }
-    #[inline(always)] static fn from_angle_z(radians: f64) -> dquat { Quat::from_angle_z(radians) }
-    #[inline(always)] static fn from_angle_xyz(radians_x: f64, radians_y: f64, radians_z: f64)
+    #[inline(always)] fn from_angle_x(radians: f64) -> dquat { Quat::from_angle_x(radians) }
+    #[inline(always)] fn from_angle_y(radians: f64) -> dquat { Quat::from_angle_y(radians) }
+    #[inline(always)] fn from_angle_z(radians: f64) -> dquat { Quat::from_angle_z(radians) }
+    #[inline(always)] fn from_angle_xyz(radians_x: f64, radians_y: f64, radians_z: f64)
         -> dquat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-    #[inline(always)] static fn from_angle_axis(radians: f64, axis: &dvec3) -> dquat { Quat::from_angle_axis(radians, axis) }
-    #[inline(always)] static fn from_axes(x: dvec3, y: dvec3, z: dvec3) -> dquat { Quat::from_axes(x, y, z) }
-    #[inline(always)] static fn look_at(dir: &dvec3, up: &dvec3) -> dquat { Quat::look_at(dir, up) }
+    #[inline(always)] fn from_angle_axis(radians: f64, axis: &dvec3) -> dquat { Quat::from_angle_axis(radians, axis) }
+    #[inline(always)] fn from_axes(x: dvec3, y: dvec3, z: dvec3) -> dquat { Quat::from_axes(x, y, z) }
+    #[inline(always)] fn look_at(dir: &dvec3, up: &dvec3) -> dquat { Quat::look_at(dir, up) }
 }

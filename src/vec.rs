@@ -21,7 +21,7 @@ pub trait Vector<T>: Index<uint, T> + Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
-    static fn from_value(value: T) -> Self;
+    fn from_value(value: T) -> Self;
 
     /**
      * # Return value
@@ -47,21 +47,21 @@ pub trait MutableVector<T>: Vector<T> {
  * A generic 2-dimensional vector
  */
 pub trait Vector2<T>: Vector<T> {
-    static fn new(x: T, y: T) -> Self;
+    fn new(x: T, y: T) -> Self;
 }
 
 /**
  * A generic 3-dimensional vector
  */
 pub trait Vector3<T>: Vector<T> {
-    static fn new(x: T, y: T, z: T) -> Self;
+    fn new(x: T, y: T, z: T) -> Self;
 }
 
 /**
  * A generic 4-dimensional vector
  */
 pub trait Vector4<T>: Vector<T> {
-    static fn new(x: T, y: T, z: T, w: T) -> Self;
+    fn new(x: T, y: T, z: T, w: T) -> Self;
 }
 
 /**
@@ -75,7 +75,7 @@ pub trait NumericVector<T>: Vector<T> + Neg<Self> {
      *
      * A vector with each component set to one
      */
-    static fn identity() -> Self;
+    fn identity() -> Self;
 
     /**
      * The null vector
@@ -84,7 +84,7 @@ pub trait NumericVector<T>: Vector<T> + Neg<Self> {
      *
      * A vector with each component set to zero
      */
-    static fn zero() -> Self;
+    fn zero() -> Self;
 
     /**
      * # Return value
@@ -139,8 +139,8 @@ pub trait NumericVector<T>: Vector<T> + Neg<Self> {
  * A 2-dimensional vector with numeric components
  */
 pub trait NumericVector2<T>: NumericVector<T> {
-    static fn unit_x() -> Self;
-    static fn unit_y() -> Self;
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
 
     /**
      * # Return value
@@ -154,9 +154,9 @@ pub trait NumericVector2<T>: NumericVector<T> {
  * A 3-dimensional vector with numeric components
  */
 pub trait NumericVector3<T>: NumericVector<T> {
-    static fn unit_x() -> Self;
-    static fn unit_y() -> Self;
-    static fn unit_z() -> Self;
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
+    fn unit_z() -> Self;
 
     /**
      * # Return value
@@ -170,10 +170,10 @@ pub trait NumericVector3<T>: NumericVector<T> {
  * A 4-dimensional vector with numeric components
  */
 pub trait NumericVector4<T>: NumericVector<T> {
-    static fn unit_x() -> Self;
-    static fn unit_y() -> Self;
-    static fn unit_z() -> Self;
-    static fn unit_w() -> Self;
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
+    fn unit_z() -> Self;
+    fn unit_w() -> Self;
 }
 
 /**
