@@ -28,7 +28,7 @@ pub impl<T:Copy Num> Vec4<T> {
     fn index(i: uint) -> T {
         unsafe { do buf_as_slice(
             transmute::<*Vec4<T>, *T>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(&self)), 4) |slice| { slice[*i] }
         }
     }
     

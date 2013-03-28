@@ -99,7 +99,7 @@ pub impl Vec4: Index<uint, float> {
     fn index(i: uint) -> float {
         unsafe { do buf_as_slice(
             transmute::<*Vec4, *float>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(&self)), 4) |slice| { slice[*i] }
         }
     }
 }
@@ -191,7 +191,7 @@ pub impl Mat4: Index<uint, Vec4> {
     fn index(i: uint) -> Vec4 {
         unsafe { do buf_as_slice(
             transmute::<*Mat4, *Vec4>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(&self)), 4) |slice| { slice[*i] }
         }
     }
 }

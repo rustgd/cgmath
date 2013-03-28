@@ -51,7 +51,7 @@ pub impl VecBufSlice: Index<uint, float> {
     fn index(i: uint) -> float unsafe {
         do vec::raw::buf_as_slice(
             transmute::<*VecBufSlice, *float>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(&self)), 4) |slice| { slice[*i] }
     }
 }
 

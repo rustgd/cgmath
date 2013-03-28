@@ -70,8 +70,8 @@ impl<T> Vector3<T> for Vec3<T> {
 
 impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
     #[inline(always)]
-    fn index(&self, i: uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[i] } }
+    fn index(&self, i: &uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
     }
 }
 
