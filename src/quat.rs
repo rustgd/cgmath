@@ -10,7 +10,6 @@
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
-use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};

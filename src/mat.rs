@@ -1,5 +1,4 @@
 use core::cmp::Eq;
-use std::cmp::FuzzyEq;
 
 use vec::Vec3;
 use quat::Quat;
