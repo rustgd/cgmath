@@ -40,7 +40,7 @@ use vec::{
  * * `x` - the first component of the vector
  * * `y` - the second component of the vector
  */
- #[deriving_eq]
+ #[deriving(Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec2<T> {

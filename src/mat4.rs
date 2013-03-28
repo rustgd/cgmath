@@ -42,7 +42,7 @@ use mat::{
  * * `z` - the third column vector of the matrix
  * * `w` - the fourth column vector of the matrix
  */
-#[deriving_eq]
+#[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec4<T>> for Mat4<T> {

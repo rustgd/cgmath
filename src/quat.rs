@@ -45,7 +45,7 @@ use vec::{
  * * `s` - the scalar component
  * * `v` - a vector containing the three imaginary components
  */
-#[deriving_eq]
+#[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {

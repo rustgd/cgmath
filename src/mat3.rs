@@ -45,7 +45,7 @@ use mat::{
  * * `y` - the second column vector of the matrix
  * * `z` - the third column vector of the matrix
  */
-#[deriving_eq]
+#[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec3<T>> for Mat3<T> {

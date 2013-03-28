@@ -42,7 +42,7 @@ use vec::{
  * * `y` - the second component of the vector
  * * `z` - the third component of the vector
  */
-#[deriving_eq]
+#[deriving(Eq)]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec3<T> {
