@@ -595,7 +595,7 @@ pub type dmat3 = Mat3<f64>;     // a 3×3 double-precision floating-point matrix
 
 // Static method wrappers for GLSL-style types
 
-impl mat3 {
+pub impl mat3 {
     #[inline(always)] fn new(c0r0: f32, c0r1: f32, c0r2: f32, c1r0: f32, c1r1: f32, c1r2: f32, c2r0: f32, c2r1: f32, c2r2: f32)
         -> mat3 { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] fn from_cols(c0: vec3, c1: vec3, c2: vec3)
@@ -620,7 +620,7 @@ impl mat3 {
 }
 
 
-impl dmat3 {
+pub impl dmat3 {
     #[inline(always)] fn new(c0r0: f64, c0r1: f64, c0r2: f64, c1r0: f64, c1r1: f64, c1r2: f64, c2r0: f64, c2r1: f64, c2r2: f64)
         -> dmat3 { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
     #[inline(always)] fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)

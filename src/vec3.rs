@@ -405,7 +405,7 @@ pub type uvec3 = Vec3<u32>;     // a three-component unsigned integer vector
 
 // Static method wrappers for GLSL-style types
 
-impl vec3 {
+pub impl vec3 {
     #[inline(always)] fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
     #[inline(always)] fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> vec3 { NumericVector::identity() }
@@ -419,7 +419,7 @@ impl vec3 {
     #[inline(always)] fn size_of() -> uint { size_of::<vec3>() }
 }
 
-impl dvec3 {
+pub impl dvec3 {
     #[inline(always)] fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
     #[inline(always)] fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> dvec3 { NumericVector::identity() }
@@ -433,7 +433,7 @@ impl dvec3 {
     #[inline(always)] fn size_of() -> uint { size_of::<dvec3>() }
 }
 
-impl bvec3 {
+pub impl bvec3 {
     #[inline(always)] fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
     #[inline(always)] fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
 
@@ -441,7 +441,7 @@ impl bvec3 {
     #[inline(always)] fn size_of() -> uint { size_of::<bvec3>() }
 }
 
-impl ivec3 {
+pub impl ivec3 {
     #[inline(always)] fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
     #[inline(always)] fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> ivec3 { NumericVector::identity() }
@@ -455,7 +455,7 @@ impl ivec3 {
     #[inline(always)] fn size_of() -> uint { size_of::<ivec3>() }
 }
 
-impl uvec3 {
+pub impl uvec3 {
     #[inline(always)] fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
     #[inline(always)] fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> uvec3 { NumericVector::identity() }

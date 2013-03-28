@@ -416,7 +416,7 @@ pub type dmat2 = Mat2<f64>;     // a 2×2 double-precision floating-point matrix
 
 // Static method wrappers for GLSL-style types
 
-impl mat2 {
+pub impl mat2 {
     #[inline(always)] fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
         -> mat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] fn from_cols(c0: vec2, c1: vec2)
@@ -434,7 +434,7 @@ impl mat2 {
     #[inline(always)] fn size_of() -> uint { size_of::<mat2>() }
 }
 
-impl dmat2 {
+pub impl dmat2 {
     #[inline(always)] fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
         -> dmat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] fn from_cols(c0: dvec2, c1: dvec2)

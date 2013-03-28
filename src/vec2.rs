@@ -366,7 +366,7 @@ pub type uvec2 = Vec2<u32>;     // a two-component unsigned integer vector
 
 // Static method wrappers for GLSL-style types
 
-impl vec2 {
+pub impl vec2 {
     #[inline(always)] fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
     #[inline(always)] fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> vec2 { NumericVector::identity() }
@@ -379,7 +379,7 @@ impl vec2 {
     #[inline(always)] fn size_of() -> uint { size_of::<vec2>() }
 }
 
-impl dvec2 {
+pub impl dvec2 {
     #[inline(always)] fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
     #[inline(always)] fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> dvec2 { NumericVector::identity() }
@@ -392,7 +392,7 @@ impl dvec2 {
     #[inline(always)] fn size_of() -> uint { size_of::<dvec2>() }
 }
 
-impl bvec2 {
+pub impl bvec2 {
     #[inline(always)] fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
     #[inline(always)] fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
 
@@ -400,7 +400,7 @@ impl bvec2 {
     #[inline(always)] fn size_of() -> uint { size_of::<bvec2>() }
 }
 
-impl ivec2 {
+pub impl ivec2 {
     #[inline(always)] fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
     #[inline(always)] fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> ivec2 { NumericVector::identity() }
@@ -413,7 +413,7 @@ impl ivec2 {
     #[inline(always)] fn size_of() -> uint { size_of::<ivec2>() }
 }
 
-impl uvec2 {
+pub impl uvec2 {
     #[inline(always)] fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
     #[inline(always)] fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> uvec2 { NumericVector::identity() }

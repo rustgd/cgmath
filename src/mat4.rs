@@ -532,7 +532,7 @@ pub type dmat4 = Mat4<f64>;     // a 4×4 double-precision floating-point matrix
 
 // Static method wrappers for GLSL-style types
 
-impl mat4 {
+pub impl mat4 {
     #[inline(always)] fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
         -> mat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
@@ -548,7 +548,7 @@ impl mat4 {
     #[inline(always)] fn size_of() -> uint { size_of::<mat4>() }
 }
 
-impl dmat4 {
+pub impl dmat4 {
     #[inline(always)] fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
         -> dmat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
     #[inline(always)] fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)

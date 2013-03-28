@@ -410,7 +410,7 @@ pub type uvec4 = Vec4<u32>;     // a four-component unsigned integer vector
 
 // Static method wrappers for GLSL-style types
 
-impl vec4 {
+pub impl vec4 {
     #[inline(always)] fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> vec4 { NumericVector::identity() }
@@ -425,7 +425,7 @@ impl vec4 {
     #[inline(always)] fn size_of() -> uint { size_of::<vec4>() }
 }
 
-impl dvec4 {
+pub impl dvec4 {
     #[inline(always)] fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> dvec4 { NumericVector::identity() }
@@ -441,7 +441,7 @@ impl dvec4 {
 }
 
 
-impl bvec4 {
+pub impl bvec4 {
     #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
 
@@ -449,7 +449,7 @@ impl bvec4 {
     #[inline(always)] fn size_of() -> uint { size_of::<bvec4>() }
 }
 
-impl ivec4 {
+pub impl ivec4 {
     #[inline(always)] fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> ivec4 { NumericVector::identity() }
@@ -464,7 +464,7 @@ impl ivec4 {
     #[inline(always)] fn size_of() -> uint { size_of::<ivec4>() }
 }
 
-impl uvec4 {
+pub impl uvec4 {
     #[inline(always)] fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
     #[inline(always)] fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
     #[inline(always)] fn identity() -> uvec4 { NumericVector::identity() }

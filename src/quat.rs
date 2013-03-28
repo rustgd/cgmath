@@ -47,7 +47,7 @@ use vec::{
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
+pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -429,7 +429,7 @@ pub type dquat = Quat<f64>;             /// a double-precision floating-point qu
 
 // Static method wrappers for GLSL-style types
 
-impl quat {
+pub impl quat {
     #[inline(always)] fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
     #[inline(always)] fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
     #[inline(always)] fn identity() -> quat { Quat::identity() }
@@ -445,7 +445,7 @@ impl quat {
     #[inline(always)] fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
 }
 
-impl dquat {
+pub impl dquat {
     #[inline(always)] fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
     #[inline(always)] fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
     #[inline(always)] fn identity() -> dquat { Quat::identity() }
