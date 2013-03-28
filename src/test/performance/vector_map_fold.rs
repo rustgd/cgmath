@@ -18,14 +18,14 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 pub mod Vec4 {
     #[inline(always)]
-    pub pure fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
+    pub fn new<T>(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
     }
 }
 
 pub impl<T:Copy Num> Vec4<T> {
     #[inline(always)]
-    pure fn index(i: uint) -> T {
+    fn index(i: uint) -> T {
         unsafe { do buf_as_slice(
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
@@ -35,7 +35,7 @@ pub impl<T:Copy Num> Vec4<T> {
     ////////////////////////////////////////////////////////////////////////////
     
     #[inline(always)]
-    pure fn map(f: fn&(a: &T) -> T) -> Vec4<T> {
+    fn map(f: fn&(a: &T) -> T) -> Vec4<T> {
         Vec4::new(f(&self[0]),
                   f(&self[1]),
                   f(&self[2]),
@@ -43,24 +43,24 @@ pub impl<T:Copy Num> Vec4<T> {
     }
     
     #[inline(always)]
-    pure fn map2(other: &Vec4<T>, f: fn&(a: &T, b: &T) -> T) -> Vec4<T> {
+    fn map2(other: &Vec4<T>, f: fn&(a: &T, b: &T) -> T) -> Vec4<T> {
         Vec4::new(f(&self[0], &other[0]),
                   f(&self[1], &other[1]),
                   f(&self[2], &other[2]),
                   f(&self[3], &other[3]))
     }
     
-    pure fn foldl<U: Copy>(z: U, p: &fn(t: T, u: &U) -> U) -> U {
+    fn foldl<U: Copy>(z: U, p: &fn(t: T, u: &U) -> U) -> U {
         p(self[3], &p(self[2], &p(self[1], &p(self[0], &z))))
     }
-    pure fn foldr<U: Copy>(z: U, p: &fn(t: &T, u: U) -> U) -> U {
+    fn foldr<U: Copy>(z: U, p: &fn(t: &T, u: U) -> U) -> U {
         p(&self[0], p(&self[1], p(&self[2], p(&self[3], z))))
     }
     
     ////////////////////////////////////////////////////////////////////////////
     
     #[inline(always)]
-    pure fn mul_t(value: T) -> Vec4<T> {
+    fn mul_t(value: T) -> Vec4<T> {
         Vec4::new(self[0] * value,
                   self[1] * value,
                   self[2] * value,
@@ -68,12 +68,12 @@ pub impl<T:Copy Num> Vec4<T> {
     }
     
     #[inline(always)]
-    pure fn mul_t_map(value: T) -> Vec4<T> {
+    fn mul_t_map(value: T) -> Vec4<T> {
         do self.map |a| { a * value }
     }
     
     #[inline(always)]
-    pure fn add_v(other: &Vec4<T>) -> Vec4<T> {
+    fn add_v(other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self[0] + other[0],
                   self[1] + other[1],
                   self[2] + other[2],
@@ -81,12 +81,12 @@ pub impl<T:Copy Num> Vec4<T> {
     }
     
     #[inline(always)]
-    pure fn add_v_map2(other: &Vec4<T>) -> Vec4<T> {
+    fn add_v_map2(other: &Vec4<T>) -> Vec4<T> {
         do self.map2(other) |a, b| { a + *b }
     }
     
     #[inline(always)]
-    pure fn dot(other: &Vec4<T>) -> T {
+    fn dot(other: &Vec4<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -94,7 +94,7 @@ pub impl<T:Copy Num> Vec4<T> {
     }
     
     #[inline(always)]
-    pure fn dot_foldl(other: &Vec4<T>) -> T {
+    fn dot_foldl(other: &Vec4<T>) -> T {
         self.map2(other, |a, b| { a * *b })
             .foldl(from_int(0), |t, u| { t + *u })
     }
@@ -102,7 +102,7 @@ pub impl<T:Copy Num> Vec4<T> {
 
 pub impl<T:Copy Num Eq> Vec4<T>: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec4<T>) -> bool {
+    fn eq(other: &Vec4<T>) -> bool {
         self[0] == other[0] &&
         self[1] == other[1] &&
         self[2] == other[2] &&
@@ -110,7 +110,7 @@ pub impl<T:Copy Num Eq> Vec4<T>: Eq {
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec4<T>) -> bool {
+    fn ne(other: &Vec4<T>) -> bool {
         !(self == *other)
     }
 }

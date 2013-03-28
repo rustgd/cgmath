@@ -45,12 +45,12 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 impl<T:Copy + Eq> Vector<T> for Vec4<T> {
     #[inline(always)]
-    static pure fn from_value(value: T) -> Vec4<T> {
+    static fn from_value(value: T) -> Vec4<T> {
         Vector4::new(value, value, value, value)
     }
 
     #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
+    fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Vec4<T>, *T>(
                 to_unsafe_ptr(self)
@@ -61,14 +61,14 @@ impl<T:Copy + Eq> Vector<T> for Vec4<T> {
 
 impl<T> Vector4<T> for Vec4<T> {
     #[inline(always)]
-    static pure fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+    static fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
     }
 }
 
 impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
     #[inline(always)]
-    pure fn index(&self, i: uint) -> T {
+    fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[i] } }
     }
 }
@@ -94,17 +94,17 @@ impl<T:Copy> MutableVector<T> for Vec4<T> {
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec4<T> {
     #[inline(always)]
-    static pure fn identity() -> Vec4<T> {
+    static fn identity() -> Vec4<T> {
         Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
     }
 
     #[inline(always)]
-    static pure fn zero() -> Vec4<T> {
+    static fn zero() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    pure fn is_zero(&self) -> bool {
+    fn is_zero(&self) -> bool {
         self[0] == zero() &&
         self[1] == zero() &&
         self[2] == zero() &&
@@ -112,7 +112,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn mul_t(&self, value: T) -> Vec4<T> {
+    fn mul_t(&self, value: T) -> Vec4<T> {
         Vector4::new(self[0] * value,
                      self[1] * value,
                      self[2] * value,
@@ -120,7 +120,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn div_t(&self, value: T) -> Vec4<T> {
+    fn div_t(&self, value: T) -> Vec4<T> {
         Vector4::new(self[0] / value,
                      self[1] / value,
                      self[2] / value,
@@ -128,7 +128,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
+    fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vector4::new(self[0] + other[0],
                      self[1] + other[1],
                      self[2] + other[2],
@@ -136,7 +136,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
+    fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vector4::new(self[0] - other[0],
                      self[1] - other[1],
                      self[2] - other[2],
@@ -144,7 +144,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
+    fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vector4::new(self[0] * other[0],
                      self[1] * other[1],
                      self[2] * other[2],
@@ -152,7 +152,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
+    fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vector4::new(self[0] / other[0],
                      self[1] / other[1],
                      self[2] / other[2],
@@ -160,7 +160,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     }
 
     #[inline(always)]
-    pure fn dot(&self, other: &Vec4<T>) -> T {
+    fn dot(&self, other: &Vec4<T>) -> T {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -170,29 +170,29 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
 
 impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
-    pure fn neg(&self) -> Vec4<T> {
+    fn neg(&self) -> Vec4<T> {
         Vector4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
 impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
     #[inline(always)]
-    static pure fn unit_x() -> Vec4<T> {
+    static fn unit_x() -> Vec4<T> {
         Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static pure fn unit_y() -> Vec4<T> {
+    static fn unit_y() -> Vec4<T> {
         Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static pure fn unit_z() -> Vec4<T> {
+    static fn unit_z() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
-    static pure fn unit_w() -> Vec4<T> {
+    static fn unit_w() -> Vec4<T> {
         Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
     }
 }
@@ -257,42 +257,42 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutab
 
 impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
     #[inline(always)]
-    pure fn length2(&self) -> T {
+    fn length2(&self) -> T {
         self.dot(self)
     }
 
     #[inline(always)]
-    pure fn length(&self) -> T {
+    fn length(&self) -> T {
         self.length2().sqrt()
     }
 
     #[inline(always)]
-    pure fn distance2(&self, other: &Vec4<T>) -> T {
+    fn distance2(&self, other: &Vec4<T>) -> T {
         other.sub_v(self).length2()
     }
 
     #[inline(always)]
-    pure fn distance(&self, other: &Vec4<T>) -> T {
+    fn distance(&self, other: &Vec4<T>) -> T {
         other.distance2(self).sqrt()
     }
 
     #[inline(always)]
-    pure fn angle(&self, other: &Vec4<T>) -> T {
+    fn angle(&self, other: &Vec4<T>) -> T {
         acos(self.dot(other) / (self.length() * other.length()))
     }
 
     #[inline(always)]
-    pure fn normalize(&self) -> Vec4<T> {
+    fn normalize(&self) -> Vec4<T> {
         self.mul_t(one::<T>()/self.length())
     }
 
     #[inline(always)]
-    pure fn normalize_to(&self, length: T) -> Vec4<T> {
+    fn normalize_to(&self, length: T) -> Vec4<T> {
         self.mul_t(length / self.length())
     }
 
     #[inline(always)]
-    pure fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
+    fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 }
@@ -317,12 +317,12 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutabl
 
 impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
     #[inline(always)]
-    pure fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
+    fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
     }
 
     #[inline(always)]
-    pure fn fuzzy_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
+    fn fuzzy_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
         self[0].fuzzy_eq_eps(&other[0], epsilon) &&
         self[1].fuzzy_eq_eps(&other[1], epsilon) &&
         self[2].fuzzy_eq_eps(&other[2], epsilon) &&
@@ -332,7 +332,7 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
 
 impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
-    pure fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] < other[0],
                      self[1] < other[1],
                      self[2] < other[2],
@@ -340,7 +340,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     }
 
     #[inline(always)]
-    pure fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] <= other[0],
                      self[1] <= other[1],
                      self[2] <= other[2],
@@ -348,7 +348,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     }
 
     #[inline(always)]
-    pure fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] > other[0],
                      self[1] > other[1],
                      self[2] > other[2],
@@ -356,7 +356,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     }
 
     #[inline(always)]
-    pure fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] >= other[0],
                      self[1] >= other[1],
                      self[2] >= other[2],
@@ -366,7 +366,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
 
 impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
-    pure fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] == other[0],
                      self[1] == other[1],
                      self[2] == other[2],
@@ -374,7 +374,7 @@ impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
     }
 
     #[inline(always)]
-    pure fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+    fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vector4::new(self[0] != other[0],
                      self[1] != other[1],
                      self[2] != other[2],
@@ -384,17 +384,17 @@ impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
 
 impl BooleanVector for Vec4<bool> {
     #[inline(always)]
-    pure fn any(&self) -> bool {
+    fn any(&self) -> bool {
         self[0] || self[1] || self[2] || self[3]
     }
 
     #[inline(always)]
-    pure fn all(&self) -> bool {
+    fn all(&self) -> bool {
         self[0] && self[1] && self[2] && self[3]
     }
 
     #[inline(always)]
-    pure fn not(&self) -> Vec4<bool> {
+    fn not(&self) -> Vec4<bool> {
         Vector4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
@@ -411,70 +411,70 @@ pub type uvec4 = Vec4<u32>;     // a four-component unsigned integer vector
 // Static method wrappers for GLSL-style types
 
 impl vec4 {
-    #[inline(always)] static pure fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static pure fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
-    #[inline(always)] static pure fn identity() -> vec4 { NumericVector::identity() }
-    #[inline(always)] static pure fn zero() -> vec4 { NumericVector::zero() }
+    #[inline(always)] static fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
+    #[inline(always)] static fn identity() -> vec4 { NumericVector::identity() }
+    #[inline(always)] static fn zero() -> vec4 { NumericVector::zero() }
 
-    #[inline(always)] static pure fn unit_x() -> vec4 { NumericVector4::unit_x() }
-    #[inline(always)] static pure fn unit_y() -> vec4 { NumericVector4::unit_y() }
-    #[inline(always)] static pure fn unit_z() -> vec4 { NumericVector4::unit_z() }
-    #[inline(always)] static pure fn unit_w() -> vec4 { NumericVector4::unit_w() }
+    #[inline(always)] static fn unit_x() -> vec4 { NumericVector4::unit_x() }
+    #[inline(always)] static fn unit_y() -> vec4 { NumericVector4::unit_y() }
+    #[inline(always)] static fn unit_z() -> vec4 { NumericVector4::unit_z() }
+    #[inline(always)] static fn unit_w() -> vec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<vec4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<vec4>() }
 }
 
 impl dvec4 {
-    #[inline(always)] static pure fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static pure fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
-    #[inline(always)] static pure fn identity() -> dvec4 { NumericVector::identity() }
-    #[inline(always)] static pure fn zero() -> dvec4 { NumericVector::zero() }
+    #[inline(always)] static fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
+    #[inline(always)] static fn identity() -> dvec4 { NumericVector::identity() }
+    #[inline(always)] static fn zero() -> dvec4 { NumericVector::zero() }
 
-    #[inline(always)] static pure fn unit_x() -> dvec4 { NumericVector4::unit_x() }
-    #[inline(always)] static pure fn unit_y() -> dvec4 { NumericVector4::unit_y() }
-    #[inline(always)] static pure fn unit_z() -> dvec4 { NumericVector4::unit_z() }
-    #[inline(always)] static pure fn unit_w() -> dvec4 { NumericVector4::unit_w() }
+    #[inline(always)] static fn unit_x() -> dvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static fn unit_y() -> dvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static fn unit_z() -> dvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static fn unit_w() -> dvec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<dvec4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<dvec4>() }
 }
 
 
 impl bvec4 {
-    #[inline(always)] static pure fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static pure fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
+    #[inline(always)] static fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<bvec4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<bvec4>() }
 }
 
 impl ivec4 {
-    #[inline(always)] static pure fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static pure fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
-    #[inline(always)] static pure fn identity() -> ivec4 { NumericVector::identity() }
-    #[inline(always)] static pure fn zero() -> ivec4 { NumericVector::zero() }
+    #[inline(always)] static fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
+    #[inline(always)] static fn identity() -> ivec4 { NumericVector::identity() }
+    #[inline(always)] static fn zero() -> ivec4 { NumericVector::zero() }
 
-    #[inline(always)] static pure fn unit_x() -> ivec4 { NumericVector4::unit_x() }
-    #[inline(always)] static pure fn unit_y() -> ivec4 { NumericVector4::unit_y() }
-    #[inline(always)] static pure fn unit_z() -> ivec4 { NumericVector4::unit_z() }
-    #[inline(always)] static pure fn unit_w() -> ivec4 { NumericVector4::unit_w() }
+    #[inline(always)] static fn unit_x() -> ivec4 { NumericVector4::unit_x() }
+    #[inline(always)] static fn unit_y() -> ivec4 { NumericVector4::unit_y() }
+    #[inline(always)] static fn unit_z() -> ivec4 { NumericVector4::unit_z() }
+    #[inline(always)] static fn unit_w() -> ivec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<ivec4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<ivec4>() }
 }
 
 impl uvec4 {
-    #[inline(always)] static pure fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] static pure fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
-    #[inline(always)] static pure fn identity() -> uvec4 { NumericVector::identity() }
-    #[inline(always)] static pure fn zero() -> uvec4 { NumericVector::zero() }
+    #[inline(always)] static fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] static fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
+    #[inline(always)] static fn identity() -> uvec4 { NumericVector::identity() }
+    #[inline(always)] static fn zero() -> uvec4 { NumericVector::zero() }
 
-    #[inline(always)] static pure fn unit_x() -> uvec4 { NumericVector4::unit_x() }
-    #[inline(always)] static pure fn unit_y() -> uvec4 { NumericVector4::unit_y() }
-    #[inline(always)] static pure fn unit_z() -> uvec4 { NumericVector4::unit_z() }
-    #[inline(always)] static pure fn unit_w() -> uvec4 { NumericVector4::unit_w() }
+    #[inline(always)] static fn unit_x() -> uvec4 { NumericVector4::unit_x() }
+    #[inline(always)] static fn unit_y() -> uvec4 { NumericVector4::unit_y() }
+    #[inline(always)] static fn unit_z() -> uvec4 { NumericVector4::unit_z() }
+    #[inline(always)] static fn unit_w() -> uvec4 { NumericVector4::unit_w() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<uvec4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<uvec4>() }
 }

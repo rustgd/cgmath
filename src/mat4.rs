@@ -47,10 +47,10 @@ pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
-    pure fn col(&self, i: uint) -> Vec4<T> { self[i] }
+    fn col(&self, i: uint) -> Vec4<T> { self[i] }
 
     #[inline(always)]
-    pure fn row(&self, i: uint) -> Vec4<T> {
+    fn row(&self, i: uint) -> Vec4<T> {
         Vector4::new(self[0][i],
                      self[1][i],
                      self[2][i],
@@ -78,7 +78,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static pure fn from_value(value: T) -> Mat4<T> {
+    static fn from_value(value: T) -> Mat4<T> {
         Matrix4::new(value, zero(), zero(), zero(),
                      zero(), value, zero(), zero(),
                      zero(), zero(), value, zero(),
@@ -101,7 +101,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static pure fn identity() -> Mat4<T> {
+    static fn identity() -> Mat4<T> {
         Matrix4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
@@ -124,7 +124,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static pure fn zero() -> Mat4<T> {
+    static fn zero() -> Mat4<T> {
         Matrix4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
@@ -132,7 +132,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn mul_t(&self, value: T) -> Mat4<T> {
+    fn mul_t(&self, value: T) -> Mat4<T> {
         Matrix4::from_cols(self[0].mul_t(value),
                            self[1].mul_t(value),
                            self[2].mul_t(value),
@@ -140,7 +140,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
+    fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
         Vector4::new(self.row(0).dot(vec),
                      self.row(1).dot(vec),
                      self.row(2).dot(vec),
@@ -148,7 +148,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
+    fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Matrix4::from_cols(self[0].add_v(&other[0]),
                            self[1].add_v(&other[1]),
                            self[2].add_v(&other[2]),
@@ -156,7 +156,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
+    fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Matrix4::from_cols(self[0].sub_v(&other[0]),
                            self[1].sub_v(&other[1]),
                            self[2].sub_v(&other[2]),
@@ -164,7 +164,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
+    fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Matrix4::new(self.row(0).dot(&other.col(0)),
                      self.row(1).dot(&other.col(0)),
                      self.row(2).dot(&other.col(0)),
@@ -187,11 +187,11 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     }
 
-    pure fn dot(&self, other: &Mat4<T>) -> T {
+    fn dot(&self, other: &Mat4<T>) -> T {
         other.transpose().mul_m(self).trace()
     }
 
-    pure fn determinant(&self) -> T {
+    fn determinant(&self) -> T {
         let m0: Mat3<T> = Matrix3::new(self[1][1], self[2][1], self[3][1],
                                        self[1][2], self[2][2], self[3][2],
                                        self[1][3], self[2][3], self[3][3]);
@@ -211,11 +211,11 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
         self[3][0] * m3.determinant()
     }
 
-    pure fn trace(&self) -> T {
+    fn trace(&self) -> T {
         self[0][0] + self[1][1] + self[2][2] + self[3][3]
     }
 
-    pure fn inverse(&self) -> Option<Mat4<T>> {
+    fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
         if d.fuzzy_eq(&zero()) {
             None
@@ -262,7 +262,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn transpose(&self) -> Mat4<T> {
+    fn transpose(&self) -> Mat4<T> {
         Matrix4::new(self[0][0], self[1][0], self[2][0], self[3][0],
                      self[0][1], self[1][1], self[2][1], self[3][1],
                      self[0][2], self[1][2], self[2][2], self[3][2],
@@ -270,12 +270,12 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn is_identity(&self) -> bool {
+    fn is_identity(&self) -> bool {
         self.fuzzy_eq(&Matrix::identity())
     }
 
     #[inline(always)]
-    pure fn is_diagonal(&self) -> bool {
+    fn is_diagonal(&self) -> bool {
         self[0][1].fuzzy_eq(&zero()) &&
         self[0][2].fuzzy_eq(&zero()) &&
         self[0][3].fuzzy_eq(&zero()) &&
@@ -294,12 +294,12 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn is_rotated(&self) -> bool {
+    fn is_rotated(&self) -> bool {
         !self.fuzzy_eq(&Matrix::identity())
     }
 
     #[inline(always)]
-    pure fn is_symmetric(&self) -> bool {
+    fn is_symmetric(&self) -> bool {
         self[0][1].fuzzy_eq(&self[1][0]) &&
         self[0][2].fuzzy_eq(&self[2][0]) &&
         self[0][3].fuzzy_eq(&self[3][0]) &&
@@ -318,12 +318,12 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 
     #[inline(always)]
-    pure fn is_invertible(&self) -> bool {
+    fn is_invertible(&self) -> bool {
         !self.determinant().fuzzy_eq(&zero())
     }
 
     #[inline(always)]
-    pure fn to_ptr(&self) -> *T {
+    fn to_ptr(&self) -> *T {
         unsafe {
             transmute::<*Mat4<T>, *T>(
                 to_unsafe_ptr(self)
@@ -357,7 +357,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static pure fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
+    static fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
@@ -391,7 +391,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
      * ~~~
      */
     #[inline(always)]
-    static pure fn from_cols(c0: Vec4<T>,
+    static fn from_cols(c0: Vec4<T>,
                              c1: Vec4<T>,
                              c2: Vec4<T>,
                              c3: Vec4<T>) -> Mat4<T> {
@@ -494,14 +494,14 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
 impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
-    pure fn neg(&self) -> Mat4<T> {
+    fn neg(&self) -> Mat4<T> {
         Matrix4::from_cols(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
 impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     #[inline(always)]
-    pure fn index(&self, i: uint) -> Vec4<T> {
+    fn index(&self, i: uint) -> Vec4<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat4<T>, *Vec4<T>>(
                 to_unsafe_ptr(self)), 4) |slice| { slice[i] }
@@ -511,12 +511,12 @@ impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
 
 impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
     #[inline(always)]
-    pure fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
+    fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
     }
 
     #[inline(always)]
-    pure fn fuzzy_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
+    fn fuzzy_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
         self[0].fuzzy_eq_eps(&other[0], epsilon) &&
         self[1].fuzzy_eq_eps(&other[1], epsilon) &&
         self[2].fuzzy_eq_eps(&other[2], epsilon) &&
@@ -533,33 +533,33 @@ pub type dmat4 = Mat4<f64>;     // a 4×4 double-precision floating-point matrix
 // Static method wrappers for GLSL-style types
 
 impl mat4 {
-    #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
+    #[inline(always)] static fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
         -> mat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] static pure fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
+    #[inline(always)] static fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
         -> mat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] static pure fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
+    #[inline(always)] static fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
 
-    #[inline(always)] static pure fn identity() -> mat4 { Matrix::identity() }
-    #[inline(always)] static pure fn zero() -> mat4 { Matrix::zero() }
+    #[inline(always)] static fn identity() -> mat4 { Matrix::identity() }
+    #[inline(always)] static fn zero() -> mat4 { Matrix::zero() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn rows() -> uint { 4 }
-    #[inline(always)] static pure fn cols() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<mat4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn rows() -> uint { 4 }
+    #[inline(always)] static fn cols() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<mat4>() }
 }
 
 impl dmat4 {
-    #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
+    #[inline(always)] static fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
         -> dmat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] static pure fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
+    #[inline(always)] static fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
         -> dmat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] static pure fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
+    #[inline(always)] static fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
 
-    #[inline(always)] static pure fn identity() -> dmat4 { Matrix::identity() }
-    #[inline(always)] static pure fn zero() -> dmat4 { Matrix::zero() }
+    #[inline(always)] static fn identity() -> dmat4 { Matrix::identity() }
+    #[inline(always)] static fn zero() -> dmat4 { Matrix::zero() }
 
-    #[inline(always)] static pure fn dim() -> uint { 4 }
-    #[inline(always)] static pure fn rows() -> uint { 4 }
-    #[inline(always)] static pure fn cols() -> uint { 4 }
-    #[inline(always)] static pure fn size_of() -> uint { size_of::<dmat4>() }
+    #[inline(always)] static fn dim() -> uint { 4 }
+    #[inline(always)] static fn rows() -> uint { 4 }
+    #[inline(always)] static fn cols() -> uint { 4 }
+    #[inline(always)] static fn size_of() -> uint { size_of::<dmat4>() }
 }

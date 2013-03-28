@@ -12,7 +12,7 @@ use mat::{Mat4, Matrix4};
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pub pure fn perspective<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub fn perspective<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * tan(radians(fovy));
     let xmax = ymax * aspectRatio;
 
@@ -26,7 +26,7 @@ pub pure fn perspective<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
  */
 #[inline(always)]
-pub pure fn frustum<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn frustum<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = Number::from(0);
     let _1: T = Number::from(1);
     let _2: T = Number::from(2);

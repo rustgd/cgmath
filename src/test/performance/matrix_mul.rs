@@ -79,14 +79,14 @@ pub struct Vec4 { x: float, y: float, z: float, w: float }
 
 mod Vec4 {
     #[inline(always)]
-    pub pure fn new(x: float, y: float, z: float, w: float) -> Vec4 {
+    pub fn new(x: float, y: float, z: float, w: float) -> Vec4 {
         Vec4 { x: move x, y: move y, z: move z, w: move w }
     }
 }
 
 impl Vec4 {
     #[inline(always)]
-    pure fn dot(other: &Vec4) -> float {
+    fn dot(other: &Vec4) -> float {
         self[0] * other[0] +
         self[1] * other[1] +
         self[2] * other[2] +
@@ -96,7 +96,7 @@ impl Vec4 {
 
 pub impl Vec4: Index<uint, float> {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
+    fn index(i: uint) -> float {
         unsafe { do buf_as_slice(
             transmute::<*Vec4, *float>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
@@ -106,7 +106,7 @@ pub impl Vec4: Index<uint, float> {
 
 pub impl Vec4: Eq {
     #[inline(always)]
-    pure fn eq(other: &Vec4) -> bool {
+    fn eq(other: &Vec4) -> bool {
         self[0] == other [0] &&
         self[1] == other [1] &&
         self[2] == other [2] &&
@@ -114,7 +114,7 @@ pub impl Vec4: Eq {
     }
     
     #[inline(always)]
-    pure fn ne(other: &Vec4) -> bool {
+    fn ne(other: &Vec4) -> bool {
         !(self == *other)
     }
 }
@@ -125,7 +125,7 @@ pub struct Mat4 { x: Vec4, y: Vec4, z: Vec4, w: Vec4 }
 
 mod Mat4 {
     #[inline(always)]
-    pub pure fn new(c0r0: float, c0r1: float, c0r2: float, c0r3: float,
+    pub fn new(c0r0: float, c0r1: float, c0r2: float, c0r3: float,
                     c1r0: float, c1r1: float, c1r2: float, c1r3: float,
                     c2r0: float, c2r1: float, c2r2: float, c2r3: float,
                     c3r0: float, c3r1: float, c3r2: float, c3r3: float) -> Mat4  {
@@ -136,7 +136,7 @@ mod Mat4 {
     }
     
     #[inline(always)]
-    pub pure fn from_cols(c0: Vec4, c1: Vec4, c2: Vec4, c3: Vec4) -> Mat4 {
+    pub fn from_cols(c0: Vec4, c1: Vec4, c2: Vec4, c3: Vec4) -> Mat4 {
         Mat4 { x: move c0,
                y: move c1,
                z: move c2,
@@ -146,17 +146,17 @@ mod Mat4 {
 
 impl Mat4 {
     #[inline(always)]
-    pure fn col(i: uint) -> Vec4 { self[i] }
+    fn col(i: uint) -> Vec4 { self[i] }
     
     #[inline(always)]
-    pure fn row(i: uint) -> Vec4 {
+    fn row(i: uint) -> Vec4 {
         Vec4::new(self[0][i],
                   self[1][i],
                   self[2][i],
                   self[3][i])
     }
     
-    pure fn mul_matrix_expanded(other: &Mat4) -> Mat4 {
+    fn mul_matrix_expanded(other: &Mat4) -> Mat4 {
         Mat4::new(self[0][0] * other[0][0] + self[1][0] * other[0][1] + self[2][0] * other[0][2] + self[3][0] * other[0][3],
                   self[0][1] * other[0][0] + self[1][1] * other[0][1] + self[2][1] * other[0][2] + self[3][1] * other[0][3],
                   self[0][2] * other[0][0] + self[1][2] * other[0][1] + self[2][2] * other[0][2] + self[3][2] * other[0][3],
@@ -178,7 +178,7 @@ impl Mat4 {
                   self[0][3] * other[3][0] + self[1][3] * other[3][1] + self[2][3] * other[3][2] + self[3][3] * other[3][3])
     }
     
-    pure fn mul_matrix_dot_product(other: &Mat4) -> Mat4 {
+    fn mul_matrix_dot_product(other: &Mat4) -> Mat4 {
         Mat4::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)), self.row(2).dot(&other.col(0)), self.row(3).dot(&other.col(0)),
                   self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)), self.row(2).dot(&other.col(1)), self.row(3).dot(&other.col(1)),
                   self.row(0).dot(&other.col(2)), self.row(1).dot(&other.col(2)), self.row(2).dot(&other.col(2)), self.row(3).dot(&other.col(2)),
@@ -188,7 +188,7 @@ impl Mat4 {
 
 pub impl Mat4: Index<uint, Vec4> {
     #[inline(always)]
-    pure fn index(i: uint) -> Vec4 {
+    fn index(i: uint) -> Vec4 {
         unsafe { do buf_as_slice(
             transmute::<*Mat4, *Vec4>(
                 to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
@@ -198,7 +198,7 @@ pub impl Mat4: Index<uint, Vec4> {
 
 pub impl Mat4: Eq {
     #[inline(always)]
-    pure fn eq(other: &Mat4) -> bool {
+    fn eq(other: &Mat4) -> bool {
         self[0] == other [0] &&
         self[1] == other [1] &&
         self[2] == other [2] &&
@@ -206,7 +206,7 @@ pub impl Mat4: Eq {
     }
     
     #[inline(always)]
-    pure fn ne(other: &Mat4) -> bool {
+    fn ne(other: &Mat4) -> bool {
         !(self == *other)
     }
 }
