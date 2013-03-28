@@ -246,20 +246,20 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        &mut self.x.mul_self_t(value);
-        &mut self.y.mul_self_t(value);
+        self.x.mul_self_t(value);
+        self.y.mul_self_t(value);
     }
 
     #[inline(always)]
     fn add_self_m(&mut self, other: &Mat2<T>) {
-        &mut self.x.add_self_v(&other[0]);
-        &mut self.y.add_self_v(&other[1]);
+        self.x.add_self_v(&other[0]);
+        self.y.add_self_v(&other[1]);
     }
 
     #[inline(always)]
     fn sub_self_m(&mut self, other: &Mat2<T>) {
-        &mut self.x.sub_self_v(&other[0]);
-        &mut self.y.sub_self_v(&other[1]);
+        self.x.sub_self_v(&other[0]);
+        self.y.sub_self_v(&other[1]);
     }
 
     #[inline(always)]
@@ -272,8 +272,8 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        &mut swap(&mut self.x.index_mut(1), &mut self.y.index_mut(0));
-        &mut swap(&mut self.y.index_mut(0), &mut self.x.index_mut(1));
+        swap(self.x.index_mut(1), self.y.index_mut(0));
+        swap(self.y.index_mut(0), self.x.index_mut(1));
     }
 }
 
