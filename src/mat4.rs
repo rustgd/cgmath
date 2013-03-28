@@ -244,8 +244,8 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
                     I.swap_cols(i1, j);
 
                     // Scale col j to have a unit diagonal
-                    I.col_mut(j).div_self_t(&A[j][j]);
-                    A.col_mut(j).div_self_t(&A[j][j]);
+                    I.col_mut(j).div_self_t(A[j][j]);
+                    A.col_mut(j).div_self_t(A[j][j]);
 
                     // Eliminate off-diagonal elems in col j of A,
                     // doing identical ops to I
@@ -442,10 +442,10 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(&value);
-        self.col_mut(1).mul_self_t(&value);
-        self.col_mut(2).mul_self_t(&value);
-        self.col_mut(3).mul_self_t(&value);
+        self.col_mut(0).mul_self_t(value);
+        self.col_mut(1).mul_self_t(value);
+        self.col_mut(2).mul_self_t(value);
+        self.col_mut(3).mul_self_t(value);
     }
 
     #[inline(always)]

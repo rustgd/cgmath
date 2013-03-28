@@ -175,7 +175,7 @@ pub trait NumericVector4<T>: NumericVector<T> {
 /**
  * A mutable vector with numeric components
  */
-pub trait MutableNumericVector<'self, T>: MutableVector<&'self T> +
+pub trait MutableNumericVector<'self, T>: MutableVector<T> +
                                           NumericVector<T> {
     /**
      * Negate the vector
@@ -216,7 +216,7 @@ pub trait MutableNumericVector<'self, T>: MutableVector<&'self T> +
 /**
  * A mutable 3-dimensional vector with numeric components
  */
-pub trait MutableNumericVector3<'self, T>: MutableNumericVector<&'self T> {
+pub trait MutableNumericVector3<'self, T>: MutableNumericVector<T> {
     /**
      * Set to the cross product of the vector and `other`
      */
@@ -309,7 +309,7 @@ pub trait EuclideanVector<T>: NumericVector<T> {
  *
  * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait MutableEuclideanVector<'self, T>: MutableNumericVector<&'self T> +
+pub trait MutableEuclideanVector<'self, T>: MutableNumericVector<T> +
                                             EuclideanVector<T> {
     /**
      * Normalize the vector

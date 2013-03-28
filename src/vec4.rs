@@ -197,7 +197,7 @@ impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<&'self T> for Vec4<T> {
+impl<'self,T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<T> for Vec4<T> {
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -207,19 +207,19 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutab
     }
 
     #[inline(always)]
-    fn mul_self_t(&mut self, value: &T) {
-        *self.index_mut(0) *= (*value);
-        *self.index_mut(1) *= (*value);
-        *self.index_mut(2) *= (*value);
-        *self.index_mut(3) *= (*value);
+    fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+        *self.index_mut(2) *= value;
+        *self.index_mut(3) *= value;
     }
 
     #[inline(always)]
-    fn div_self_t(&mut self, value: &T) {
-        *self.index_mut(0) /= (*value);
-        *self.index_mut(1) /= (*value);
-        *self.index_mut(2) /= (*value);
-        *self.index_mut(3) /= (*value);
+    fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+        *self.index_mut(2) /= value;
+        *self.index_mut(3) /= value;
     }
 
     #[inline(always)]
@@ -297,21 +297,21 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Euclid
     }
 }
 
-impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<&'self T> for Vec4<T> {
+impl<T: Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<T> for Vec4<T> {
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
-        self.mul_self_t(&n);
+        self.mul_self_t(n);
     }
 
     #[inline(always)]
-    fn normalize_self_to(&mut self, length: &T) {
+    fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
-        self.mul_self_t(&n);
+        self.mul_self_t(n);
     }
 
-    fn lerp_self(&mut self, other: &Vec4<T>, amount: &T) {
-        self.add_self_v(&other.sub_v(&*self).mul_t(*amount));
+    fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
+        self.add_self_v(&other.sub_v(&*self).mul_t(amount));
     }
 }
 

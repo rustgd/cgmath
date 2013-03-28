@@ -238,7 +238,7 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 /**
  * A mutable matrix
  */
-pub trait MutableMatrix<'self,T,V>: Matrix<T,V> {
+pub trait MutableMatrix<T,V>: Matrix<T,V> {
     /**
      * # Return value
      *

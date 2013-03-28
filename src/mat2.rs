@@ -246,8 +246,8 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        &mut self.x.mul_self_t(&value);
-        &mut self.y.mul_self_t(&value);
+        &mut self.x.mul_self_t(value);
+        &mut self.y.mul_self_t(value);
     }
 
     #[inline(always)]
