@@ -48,7 +48,7 @@ use vec::{
 #[deriving_eq]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -64,7 +64,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     static pure fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
         Quat::from_sv(w, Vector3::new(xi, yj, zk))
     }
-    
+
     /**
      * Construct the quaternion from a scalar and a vector
      *
@@ -77,7 +77,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     static pure fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: s, v: v }
     }
-    
+
     /**
      * # Return value
      *
@@ -87,7 +87,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     static pure fn identity() -> Quat<T> {
         Quat::new(one(), zero(), zero(), zero())
     }
-    
+
     /**
      * # Return value
      *
@@ -97,25 +97,25 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     static pure fn zero() -> Quat<T> {
         Quat::new(zero(), zero(), zero(), zero())
     }
-    
+
     #[inline(always)]
     static pure fn from_angle_x(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), sin(radians), zero(), zero())
     }
-    
+
     #[inline(always)]
     static pure fn from_angle_y(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), zero(), sin(radians), zero())
     }
-    
+
     #[inline(always)]
     static pure fn from_angle_z(radians: T) -> Quat<T> {
         let _2 = Number::from(2);
         Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
     }
-    
+
     #[inline(always)]
     static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
@@ -128,27 +128,27 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
                   cos(zdiv2) * sin(xdiv2) * cos(ydiv2) + sin(zdiv2) * cos(xdiv2) * sin(ydiv2),
                   cos(zdiv2) * cos(xdiv2) * sin(ydiv2) - sin(zdiv2) * sin(xdiv2) * cos(ydiv2))
     }
-    
+
     #[inline(always)]
     static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
         let half = radians / Number::from(2);
         Quat::from_sv(cos(half), axis.mul_t(sin(half)))
     }
-    
+
     #[inline(always)]
     static pure fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
         let m: Mat3<T> = Matrix3::from_axes(x, y, z); m.to_quat()
     }
-    
+
     pure fn get_angle_axis(&self) -> (T, Vec3<T>) {
         fail!(~"Not yet implemented.")
     }
-    
+
     #[inline(always)]
     static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
         let m: Mat3<T> = Matrix3::look_at(dir, up); m.to_quat()
     }
-    
+
     /**
      * # Return value
      *
@@ -161,7 +161,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
                   self[2] * value,
                   self[3] * value)
     }
-    
+
     /**
      * # Return value
      *
@@ -174,7 +174,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
                   self[2] / value,
                   self[3] / value)
     }
-    
+
     /**
      * # Return value
      *
@@ -185,11 +185,11 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
         self.v.cross(&tmp).mul_t(Number::from(2)).add_v(vec)
     }
-    
+
     /**
      * # Return value
      *
-     * The sum of this quaternion and `other` 
+     * The sum of this quaternion and `other`
      */
     #[inline(always)]
     pure fn add_q(&self, other: &Quat<T>) -> Quat<T> {
@@ -198,11 +198,11 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
                   self[2] + other[2],
                   self[3] + other[3])
     }
-    
+
     /**
      * # Return value
      *
-     * The sum of this quaternion and `other` 
+     * The sum of this quaternion and `other`
      */
     #[inline(always)]
     pure fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
@@ -211,7 +211,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
                   self[2] - other[2],
                   self[3] - other[3])
     }
-    
+
     /**
      * # Return value
      *
@@ -220,11 +220,11 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     #[inline(always)]
     pure fn mul_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self.s * other.s   - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
-                  self.s * other.v.x + self.v.x * other.s   + self.v.y * other.v.z - self.v.z * other.v.y, 
-                  self.s * other.v.y + self.v.y * other.s   + self.v.z * other.v.x - self.v.x * other.v.z, 
-                  self.s * other.v.z + self.v.z * other.s   + self.v.x * other.v.y - self.v.y * other.v.x) 
+                  self.s * other.v.x + self.v.x * other.s   + self.v.y * other.v.z - self.v.z * other.v.y,
+                  self.s * other.v.y + self.v.y * other.s   + self.v.z * other.v.x - self.v.x * other.v.z,
+                  self.s * other.v.z + self.v.z * other.s   + self.v.x * other.v.y - self.v.y * other.v.x)
     }
-    
+
     /**
      * # Return value
      *
@@ -234,7 +234,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn dot(&self, other: &Quat<T>) -> T {
         self.s * other.s + self.v.dot(&other.v)
     }
-    
+
     /**
      * # Return value
      *
@@ -244,7 +244,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn conjugate(&self) -> Quat<T> {
         Quat::from_sv(self.s, -self.v)
     }
-    
+
     /**
      * # Return value
      *
@@ -254,7 +254,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn inverse(&self) -> Quat<T> {
         self.conjugate().div_t(self.magnitude2())
     }
-    
+
     /**
      * # Return value
      *
@@ -266,7 +266,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn magnitude2(&self) -> T {
         self.s * self.s + self.v.length2()
     }
-    
+
     /**
      * # Return value
      *
@@ -282,7 +282,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
-    
+
     /**
      * # Return value
      *
@@ -292,7 +292,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn normalize(&self) -> Quat<T> {
         self.mul_t(one::<T>()/self.magnitude())
     }
-    
+
     /**
      * Normalised linear interpolation
      *
@@ -304,7 +304,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     pure fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         self.mul_t(one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
     }
-    
+
     /**
      * Spherical Linear Intoperlation
      *
@@ -329,24 +329,24 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
     #[inline(always)]
     pure fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot = self.dot(other);
-        
+
         let dot_threshold = Number::from(0.9995);
-        
+
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
         } else {
             let robust_dot = dot.clamp(-one::<T>(), one());     // stay within the domain of acos()
-            
+
             let theta_0 = acos(robust_dot);                     // the angle between the quaternions
             let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
-            
+
             let q = other.sub_q(&self.mul_t(robust_dot))
                          .normalize();
-            
+
             return self.mul_t(cos(theta)).add_q(&q.mul_t(sin(theta)));
         }
     }
-    
+
     /**
      * # Return value
      *
@@ -360,7 +360,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
             )
         }
     }
-    
+
     /**
      * Convert the quaternion to a 3 x 3 rotation matrix
      */
@@ -369,28 +369,28 @@ pub impl<T:Copy Float FuzzyEq<T>> Quat<T> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
         let z2 = self.v.z + self.v.z;
-        
+
         let xx2 = x2 * self.v.x;
         let xy2 = x2 * self.v.y;
         let xz2 = x2 * self.v.z;
-        
+
         let yy2 = y2 * self.v.y;
         let yz2 = y2 * self.v.z;
         let zz2 = z2 * self.v.z;
-        
+
         let sy2 = y2 * self.s;
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
-        
+
         let _1: T = one();
-        
+
         Matrix3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
                           xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
                           xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
 }
 
-pub impl<T:Copy> Index<uint, T> for Quat<T> {
+impl<T:Copy> Index<uint, T> for Quat<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> T {
         unsafe { do buf_as_slice(
@@ -400,19 +400,19 @@ pub impl<T:Copy> Index<uint, T> for Quat<T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Neg<Quat<T>> for Quat<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     pure fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
     }
-    
+
     #[inline(always)]
     pure fn fuzzy_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
         self[0].fuzzy_eq_eps(&other[0], epsilon) &&
@@ -430,12 +430,12 @@ pub type dquat = Quat<f64>;             /// a double-precision floating-point qu
 
 // Static method wrappers for GLSL-style types
 
-pub impl quat {
+impl quat {
     #[inline(always)] static pure fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
     #[inline(always)] static pure fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
     #[inline(always)] static pure fn identity() -> quat { Quat::identity() }
     #[inline(always)] static pure fn zero() -> quat { Quat::zero() }
-    
+
     #[inline(always)] static pure fn from_angle_x(radians: f32) -> quat { Quat::from_angle_x(radians) }
     #[inline(always)] static pure fn from_angle_y(radians: f32) -> quat { Quat::from_angle_y(radians) }
     #[inline(always)] static pure fn from_angle_z(radians: f32) -> quat { Quat::from_angle_z(radians) }
@@ -446,12 +446,12 @@ pub impl quat {
     #[inline(always)] static pure fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
 }
 
-pub impl dquat {
+impl dquat {
     #[inline(always)] static pure fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
     #[inline(always)] static pure fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
     #[inline(always)] static pure fn identity() -> dquat { Quat::identity() }
     #[inline(always)] static pure fn zero() -> dquat { Quat::zero() }
-    
+
     #[inline(always)] static pure fn from_angle_x(radians: f64) -> dquat { Quat::from_angle_x(radians) }
     #[inline(always)] static pure fn from_angle_y(radians: f64) -> dquat { Quat::from_angle_y(radians) }
     #[inline(always)] static pure fn from_angle_z(radians: f64) -> dquat { Quat::from_angle_z(radians) }

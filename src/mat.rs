@@ -18,122 +18,122 @@ pub use mat4::{Mat4, mat4, dmat4};
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
+pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
     /**
      * # Return value
      *
      * The column vector at `i`
      */
     pure fn col(&self, i: uint) -> V;
-    
+
     /**
      * # Return value
      *
      * The row vector at `i`
      */
     pure fn row(&self, i: uint) -> V;
-    
+
     /**
      * Construct a diagonal matrix with the major diagonal set to `value`
      */
     static pure fn from_value(value: T) -> Self;
-    
+
     /**
      * # Return value
      *
      * The identity matrix
      */
     static pure fn identity() -> Self;
-    
+
     /**
      * # Return value
      *
      * A matrix with all elements set to zero
      */
     static pure fn zero() -> Self;
-    
+
     /**
      * # Return value
      *
      * The scalar multiplication of this matrix and `value`
      */
     pure fn mul_t(&self, value: T) -> Self;
-    
+
     /**
      * # Return value
      *
      * The matrix vector product of the matrix and `vec`
      */
     pure fn mul_v(&self, vec: &V) -> V;
-    
+
     /**
      * # Return value
      *
      * The matrix addition of the matrix and `other`
      */
     pure fn add_m(&self, other: &Self) -> Self;
-    
+
     /**
      * # Return value
      *
      * The difference between the matrix and `other`
      */
     pure fn sub_m(&self, other: &Self) -> Self;
-    
+
     /**
      * # Return value
      *
      * The matrix product of the matrix and `other`
      */
     pure fn mul_m(&self, other: &Self) -> Self;
-    
+
     /**
      * # Return value
      *
      * The matrix dot product of the matrix and `other`
      */
     pure fn dot(&self, other: &Self) -> T;
-    
+
     /**
      * # Return value
      *
      * The determinant of the matrix
      */
     pure fn determinant(&self) -> T;
-    
+
     /**
      * # Return value
      *
      * The sum of the main diagonal of the matrix
      */
     pure fn trace(&self) -> T;
-    
+
     /**
      * Returns the inverse of the matrix
-     * 
+     *
      * # Return value
      *
      * * `Some(m)` - if the inversion was successful, where `m` is the inverted matrix
      * * `None` - if the inversion was unsuccessful (because the matrix was not invertable)
      */
     pure fn inverse(&self) -> Option<Self>;
-    
+
     /**
      * # Return value
      *
      * The transposed matrix
      */
     pure fn transpose(&self) -> Self;
-    
+
     /**
      * Check to see if the matrix is an identity matrix
      *
      * # Return value
-     * 
+     *
      * `true` if the matrix is approximately equal to the identity matrix
      */
     pure fn is_identity(&self) -> bool;
-    
+
     /**
      * Check to see if the matrix is diagonal
      *
@@ -143,7 +143,7 @@ pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
      * equal to zero.
      */
     pure fn is_diagonal(&self) -> bool;
-    
+
     /**
      * Check to see if the matrix is rotated
      *
@@ -152,7 +152,7 @@ pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
      * `true` if the matrix is not approximately equal to the identity matrix.
      */
     pure fn is_rotated(&self) -> bool;
-    
+
     /**
      * Check to see if the matrix is symmetric
      *
@@ -161,7 +161,7 @@ pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
      * `true` if the matrix is approximately equal to its transpose).
      */
     pure fn is_symmetric(&self) -> bool;
-    
+
     /**
      * Check to see if the matrix is invertable
      *
@@ -170,7 +170,7 @@ pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
      * `true` if  the matrix is invertable
      */
     pure fn is_invertible(&self) -> bool;
-    
+
     /**
      * # Return value
      *
@@ -185,13 +185,13 @@ pub trait Matrix<T,V>: Index<uint, V> Eq Neg<Self> {
 pub trait Matrix2<T,V>: Matrix<T,V> {
     static pure fn new(c0r0: T, c0r1: T,
                        c1r0: T, c1r1: T) -> Self;
-    
+
     static pure fn from_cols(c0: V, c1: V) -> Self;
-    
+
     static pure fn from_angle(radians: T) -> Self;
-    
+
     pure fn to_mat3(&self) -> Mat3<T>;
-    
+
     pure fn to_mat4(&self) -> Mat4<T>;
 }
 
@@ -202,25 +202,25 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
     static pure fn new(c0r0:T, c0r1:T, c0r2:T,
                        c1r0:T, c1r1:T, c1r2:T,
                        c2r0:T, c2r1:T, c2r2:T) -> Self;
-    
+
     static pure fn from_cols(c0: V, c1: V, c2: V) -> Self;
-    
+
     static pure fn from_angle_x(radians: T) -> Self;
-    
+
     static pure fn from_angle_y(radians: T) -> Self;
-    
+
     static pure fn from_angle_z(radians: T) -> Self;
-    
+
     static pure fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Self;
-    
+
     static pure fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Self;
-    
+
     static pure fn from_axes(x: V, y: V, z: V) -> Self;
-    
+
     static pure fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Self;
-    
+
     pure fn to_mat4(&self) -> Mat4<T>;
-    
+
     pure fn to_quat(&self) -> Quat<T>;
 }
 
@@ -232,7 +232,7 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
                        c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                        c2r0: T, c2r1: T, c2r2: T, c2r3: T,
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Self;
-    
+
     static pure fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
 }
 
@@ -246,27 +246,27 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
      * A mutable reference to the column at `i`
      */
     fn col_mut(&mut self, i: uint) -> &self/mut V;
-    
+
     /**
      * Swap two columns of the matrix in place
      */
     fn swap_cols(&mut self, a: uint, b: uint);
-    
+
     /**
-     * Swap two rows of the matrix in place 
+     * Swap two rows of the matrix in place
      */
     fn swap_rows(&mut self, a: uint, b: uint);
-    
+
     /**
-     * Sets the matrix to `other` 
+     * Sets the matrix to `other`
      */
     fn set(&mut self, other: &Self);
-    
+
     /**
      * Sets the matrix to the identity matrix
      */
     fn to_identity(&mut self);
-    
+
     /**
      * Sets each element of the matrix to zero
      */
@@ -276,27 +276,27 @@ pub trait MutableMatrix<T,V>: Matrix<T,V> {
      * Multiplies the matrix by a scalar
      */
     fn mul_self_t(&mut self, value: T);
-    
+
     /**
      * Add the matrix `other` to `self`
      */
     fn add_self_m(&mut self, other: &Self);
-    
+
     /**
      * Subtract the matrix `other` from `self`
      */
     fn sub_self_m(&mut self, other: &Self);
-    
+
     /**
      * Sets the matrix to its inverse
-     * 
+     *
      * # Failure
      *
      * Fails if the matrix is not invertable. Make sure you check with the
      * `is_invertible` method before you attempt this!
      */
     fn invert_self(&mut self);
-    
+
     /**
      * Sets the matrix to its transpose
      */

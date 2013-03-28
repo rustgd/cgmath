@@ -46,16 +46,16 @@ use mat::{
 #[deriving_eq]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn col(&self, i: uint) -> Vec2<T> { self[i] }
-    
+
     #[inline(always)]
     pure fn row(&self, i: uint) -> Vec2<T> {
         Vector2::new(self[0][i],
                      self[1][i])
     }
-    
+
     /**
      * Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
      *
@@ -77,12 +77,12 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
         Matrix2::new(value, zero(),
                      zero(), value)
     }
-    
+
     /**
      * Returns the multiplicative identity matrix
      * ~~~
      *       c0   c1
-     *     +----+----+ 
+     *     +----+----+
      *  r0 |  1 |  0 |
      *     +----+----+
      *  r1 |  0 |  1 |
@@ -94,12 +94,12 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
         Matrix2::new( one::<T>(), zero::<T>(),
                      zero::<T>(),  one::<T>())
     }
-    
+
     /**
      * Returns the additive identity matrix
      * ~~~
      *       c0   c1
-     *     +----+----+ 
+     *     +----+----+
      *  r0 |  0 |  0 |
      *     +----+----+
      *  r1 |  0 |  0 |
@@ -111,31 +111,31 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
         Matrix2::new(zero::<T>(), zero::<T>(),
                      zero::<T>(), zero::<T>())
     }
-    
+
     #[inline(always)]
     pure fn mul_t(&self, value: T) -> Mat2<T> {
         Matrix2::from_cols(self[0].mul_t(value),
                            self[1].mul_t(value))
     }
-    
+
     #[inline(always)]
     pure fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
         Vector2::new(self.row(0).dot(vec),
                      self.row(1).dot(vec))
     }
-    
+
     #[inline(always)]
     pure fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Matrix2::from_cols(self[0].add_v(&other[0]),
                            self[1].add_v(&other[1]))
     }
-    
+
     #[inline(always)]
     pure fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Matrix2::from_cols(self[0].sub_v(&other[0]),
                            self[1].sub_v(&other[1]))
     }
-    
+
     #[inline(always)]
     pure fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Matrix2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
@@ -145,7 +145,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     pure fn dot(&self, other: &Mat2<T>) -> T {
         other.transpose().mul_m(self).trace()
     }
-    
+
     pure fn determinant(&self) -> T {
        self[0][0] * self[1][1] - self[1][0] * self[0][1]
     }
@@ -164,29 +164,29 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
                               -self[1][0]/d,  self[0][0]/d))
         }
     }
-    
+
     #[inline(always)]
     pure fn transpose(&self) -> Mat2<T> {
         Matrix2::new(self[0][0], self[1][0],
                      self[0][1], self[1][1])
     }
-    
+
     #[inline(always)]
     pure fn is_identity(&self) -> bool {
         self.fuzzy_eq(&Matrix::identity())
     }
-    
+
     #[inline(always)]
     pure fn is_diagonal(&self) -> bool {
         self[0][1].fuzzy_eq(&zero()) &&
         self[1][0].fuzzy_eq(&zero())
     }
-    
+
     #[inline(always)]
     pure fn is_rotated(&self) -> bool {
         !self.fuzzy_eq(&Matrix::identity())
     }
-    
+
     #[inline(always)]
     pure fn is_symmetric(&self) -> bool {
         self[0][1].fuzzy_eq(&self[1][0]) &&
@@ -197,7 +197,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     pure fn is_invertible(&self) -> bool {
         !self.determinant().fuzzy_eq(&zero())
     }
-    
+
     #[inline(always)]
     pure fn to_ptr(&self) -> *T {
         unsafe {
@@ -208,7 +208,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> MutableMatrix<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableMatrix<T, Vec2<T> > for Mat2<T> {
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &self/mut Vec2<T> {
         match i {
@@ -217,52 +217,51 @@ pub impl<T:Copy Float FuzzyEq<T>> MutableMatrix<T, Vec2<T>> for Mat2<T> {
             _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
         }
     }
-    
+
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        swap(self.col_mut(a),
-             self.col_mut(b));
+        swap(&mut self.x, &mut self.y);
     }
-    
+
     #[inline(always)]
     fn swap_rows(&mut self, a: uint, b: uint) {
         self.x.swap(a, b);
         self.y.swap(a, b);
     }
-    
+
     #[inline(always)]
     fn set(&mut self, other: &Mat2<T>) {
         (*self) = (*other);
     }
-    
+
     #[inline(always)]
     fn to_identity(&mut self) {
         (*self) = Matrix::identity();
     }
-    
+
     #[inline(always)]
     fn to_zero(&mut self) {
         (*self) = Matrix::zero();
     }
-    
+
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(&value);
-        self.col_mut(1).mul_self_t(&value);
+        &mut self.x.mul_self_t(&value);
+        &mut self.y.mul_self_t(&value);
     }
-    
+
     #[inline(always)]
     fn add_self_m(&mut self, other: &Mat2<T>) {
-        self.col_mut(0).add_self_v(&other[0]);
-        self.col_mut(1).add_self_v(&other[1]);
+        &mut self.x.add_self_v(&other[0]);
+        &mut self.y.add_self_v(&other[1]);
     }
-    
+
     #[inline(always)]
     fn sub_self_m(&mut self, other: &Mat2<T>) {
-        self.col_mut(0).sub_self_v(&other[0]);
-        self.col_mut(1).sub_self_v(&other[1]);
+        &mut self.x.sub_self_v(&other[0]);
+        &mut self.y.sub_self_v(&other[1]);
     }
-    
+
     #[inline(always)]
     fn invert_self(&mut self) {
         match self.inverse() {
@@ -270,15 +269,15 @@ pub impl<T:Copy Float FuzzyEq<T>> MutableMatrix<T, Vec2<T>> for Mat2<T> {
             None => fail!(~"Couldn't invert the matrix!")
         }
     }
-    
+
     #[inline(always)]
     fn transpose_self(&mut self) {
-        swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
-        swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        &mut swap(&mut self.x.index_mut(1), &mut self.y.index_mut(0));
+        &mut swap(&mut self.y.index_mut(0), &mut self.x.index_mut(1));
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -302,7 +301,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
         Matrix2::from_cols(Vector2::new::<T,Vec2<T>>(c0r0, c0r1),
                            Vector2::new::<T,Vec2<T>>(c1r0, c1r1))
     }
-    
+
     /**
      * Construct a 2 x 2 matrix from column vectors
      *
@@ -325,16 +324,16 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
                              c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
     }
-    
+
     #[inline(always)]
     static pure fn from_angle(radians: T) -> Mat2<T> {
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
-        
+
         Matrix2::new(cos_theta, -sin_theta,
                      sin_theta,  cos_theta)
     }
-    
+
     /**
      * Returns the the matrix with an extra row and column added
      * ~~~
@@ -354,7 +353,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
                      self[1][0], self[1][1], zero(),
                          zero(),     zero(),  one())
     }
-    
+
     /**
      * Returns the the matrix with an extra two rows and columns added
      * ~~~
@@ -379,7 +378,7 @@ pub impl<T:Copy Float FuzzyEq<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
     }
 }
 
-pub impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
+impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn index(&self, i: uint) -> Vec2<T> {
         unsafe { do buf_as_slice(
@@ -389,19 +388,19 @@ pub impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> Neg<Mat2<T>> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     pure fn neg(&self) -> Mat2<T> {
         Matrix2::from_cols(-self[0], -self[1])
     }
 }
 
-pub impl<T:Copy Float FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
     #[inline(always)]
     pure fn fuzzy_eq(&self, other: &Mat2<T>) -> bool {
         self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
     }
-    
+
     #[inline(always)]
     pure fn fuzzy_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
         self[0].fuzzy_eq_eps(&other[0], epsilon) &&
@@ -417,36 +416,36 @@ pub type dmat2 = Mat2<f64>;     // a 2×2 double-precision floating-point matrix
 
 // Static method wrappers for GLSL-style types
 
-pub impl mat2 {
+impl mat2 {
     #[inline(always)] static pure fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
         -> mat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: vec2, c1: vec2)
         -> mat2 { Matrix2::from_cols(c0, c1) }
     #[inline(always)] static pure fn from_value(v: f32) -> mat2 { Matrix::from_value(v) }
-    
+
     #[inline(always)] static pure fn identity() -> mat2 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> mat2 { Matrix::zero() }
-    
+
     #[inline(always)] static pure fn from_angle(radians: f32) -> mat2 { Matrix2::from_angle(radians) }
-    
+
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn rows() -> uint { 2 }
     #[inline(always)] static pure fn cols() -> uint { 2 }
     #[inline(always)] static pure fn size_of() -> uint { size_of::<mat2>() }
 }
 
-pub impl dmat2 {
+impl dmat2 {
     #[inline(always)] static pure fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
         -> dmat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
     #[inline(always)] static pure fn from_cols(c0: dvec2, c1: dvec2)
         -> dmat2 { Matrix2::from_cols(c0, c1) }
     #[inline(always)] static pure fn from_value(v: f64) -> dmat2 { Matrix::from_value(v) }
-    
+
     #[inline(always)] static pure fn identity() -> dmat2 { Matrix::identity() }
     #[inline(always)] static pure fn zero() -> dmat2 { Matrix::zero() }
-    
+
     #[inline(always)] static pure fn from_angle(radians: f64) -> dmat2 { Matrix2::from_angle(radians) }
-    
+
     #[inline(always)] static pure fn dim() -> uint { 2 }
     #[inline(always)] static pure fn rows() -> uint { 2 }
     #[inline(always)] static pure fn cols() -> uint { 2 }
