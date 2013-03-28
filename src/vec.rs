@@ -31,7 +31,7 @@ pub trait Vector<T>: Index<uint, T> + Eq {
     fn to_ptr(&self) -> *T;
 }
 
-pub trait MutableVector<T>: Vector<T> {
+pub trait MutableVector<'self, T>: Vector<T> {
     /**
      * Get a mutable reference to the component at `i`
      */
@@ -179,8 +179,8 @@ pub trait NumericVector4<T>: NumericVector<T> {
 /**
  * A mutable vector with numeric components
  */
-pub trait MutableNumericVector<T>: MutableVector<&'self T> +
-                                   NumericVector<T> {
+pub trait MutableNumericVector<'self, T>: MutableVector<&'self T> +
+                                          NumericVector<T> {
     /**
      * Negate the vector
      */
@@ -220,7 +220,7 @@ pub trait MutableNumericVector<T>: MutableVector<&'self T> +
 /**
  * A mutable 3-dimensional vector with numeric components
  */
-pub trait MutableNumericVector3<T>: MutableNumericVector<&'self T> {
+pub trait MutableNumericVector3<'self, T>: MutableNumericVector<&'self T> {
     /**
      * Set to the cross product of the vector and `other`
      */
@@ -313,8 +313,8 @@ pub trait EuclideanVector<T>: NumericVector<T> {
  *
  * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait MutableEuclideanVector<T>: MutableNumericVector<&'self T> +
-                                     EuclideanVector<T> {
+pub trait MutableEuclideanVector<'self, T>: MutableNumericVector<&'self T> +
+                                            EuclideanVector<T> {
     /**
      * Normalize the vector
      */
