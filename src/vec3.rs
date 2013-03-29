@@ -313,7 +313,8 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutabl
     }
 
     fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
-        self.add_self_v(&other.sub_v(self).mul_t(amount));
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
     }
 }
 
