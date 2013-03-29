@@ -68,8 +68,8 @@ impl<T> Vector2<T> for Vec2<T> {
 
 impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
+    fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
     }
 }
 
