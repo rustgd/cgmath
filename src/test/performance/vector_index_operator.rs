@@ -15,7 +15,7 @@ pub struct VecMatch { x: float, y: float, z: float, w: float }
 
 pub impl VecMatch: Index<uint, float> {
     #[inline(always)]
-    pure fn index(i: uint) -> float {
+    fn index(i: uint) -> float {
         match i {
             0 => self.x,
             1 => self.y,
@@ -30,7 +30,7 @@ pub struct VecReinterpret { x: float, y: float, z: float, w: float }
 
 pub impl VecReinterpret: Index<uint, float> {
     #[inline(always)]
-    pure fn index(i: uint) -> float unsafe {
+    fn index(i: uint) -> float unsafe {
         (reinterpret_cast::<VecReinterpret, [float * 4]>(&self))[i]
     }
 }
@@ -39,7 +39,7 @@ pub struct VecTransmute { x: float, y: float, z: float, w: float }
 
 pub impl VecTransmute: Index<uint, float> {
     #[inline(always)]
-    pure fn index(i: uint) -> float unsafe {
+    fn index(i: uint) -> float unsafe {
         (transmute::<VecTransmute, [float * 4]>(self))[i]
     }
 }
@@ -48,10 +48,10 @@ pub struct VecBufSlice { x: float, y: float, z: float, w: float }
 
 pub impl VecBufSlice: Index<uint, float> {
     #[inline(always)]
-    pure fn index(i: uint) -> float unsafe {
+    fn index(i: uint) -> float unsafe {
         do vec::raw::buf_as_slice(
             transmute::<*VecBufSlice, *float>(
-                to_unsafe_ptr(&self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(&self)), 4) |slice| { slice[*i] }
     }
 }
 
