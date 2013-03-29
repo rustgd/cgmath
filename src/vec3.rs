@@ -13,14 +13,10 @@ use vec::{
     Vector,
     Vector3,
     Vector4,
-    MutableVector,
     NumericVector,
     NumericVector3,
-    MutableNumericVector,
-    MutableNumericVector3,
     ToHomogeneous,
     EuclideanVector,
-    MutableEuclideanVector,
     EquableVector,
     OrdinalVector,
     BooleanVector,
@@ -53,23 +49,7 @@ impl<T:Copy + Eq> Vector<T> for Vec3<T> {
     fn to_ptr(&self) -> *T {
         unsafe { transmute(self) }
     }
-}
-
-impl<T> Vector3<T> for Vec3<T> {
-    #[inline(always)]
-    fn new(x: T, y: T, z: T) -> Vec3<T> {
-        Vec3 { x: x, y: y, z: z }
-    }
-}
-
-impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
-    }
-}
-
-impl<T:Copy> MutableVector<T> for Vec3<T> {
+    
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &'self mut T {
         match i {
@@ -83,6 +63,20 @@ impl<T:Copy> MutableVector<T> for Vec3<T> {
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
         *self.index_mut(a) <-> *self.index_mut(b);
+    }
+}
+
+impl<T> Vector3<T> for Vec3<T> {
+    #[inline(always)]
+    fn new(x: T, y: T, z: T) -> Vec3<T> {
+        Vec3 { x: x, y: y, z: z }
+    }
+}
+
+impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
+    #[inline(always)]
+    fn index(&self, i: &uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
     }
 }
 
@@ -152,40 +146,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
         self[1] * other[1] +
         self[2] * other[2]
     }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec3<T>> for Vec3<T> {
-    #[inline(always)]
-    fn neg(&self) -> Vec3<T> {
-        Vector3::new(-self[0], -self[1], -self[2])
-    }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector3<T> for Vec3<T> {
-    #[inline(always)]
-    fn unit_x() -> Vec3<T> {
-        Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec3<T> {
-        Vector3::new(zero::<T>(), one::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_z() -> Vec3<T> {
-        Vector3::new(zero::<T>(), zero::<T>(), one::<T>())
-    }
-
-    #[inline(always)]
-    fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vector3::new((self[1] * other[2]) - (self[2] * other[1]),
-                     (self[2] * other[0]) - (self[0] * other[2]),
-                     (self[0] * other[1]) - (self[1] * other[0]))
-    }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<T> for Vec3<T> {
+    
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -236,7 +197,36 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutab
     }
 }
 
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector3<T> for Vec3<T> {
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec3<T>> for Vec3<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec3<T> {
+        Vector3::new(-self[0], -self[1], -self[2])
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector3<T> for Vec3<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec3<T> {
+        Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec3<T> {
+        Vector3::new(zero::<T>(), one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_z() -> Vec3<T> {
+        Vector3::new(zero::<T>(), zero::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vector3::new((self[1] * other[2]) - (self[2] * other[1]),
+                     (self[2] * other[0]) - (self[0] * other[2]),
+                     (self[0] * other[1]) - (self[1] * other[0]))
+    }
+    
     #[inline(always)]
     fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other);
@@ -290,9 +280,7 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Euclid
     fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-}
-
-impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<T> for Vec3<T> {
+    
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();

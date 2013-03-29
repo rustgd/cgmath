@@ -123,6 +123,68 @@ pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
      * The transposed matrix
      */
     fn transpose(&self) -> Self;
+    
+    /**
+     * # Return value
+     *
+     * A mutable reference to the column at `i`
+     */
+    fn col_mut(&mut self, i: uint) -> &'self mut V;
+
+    /**
+     * Swap two columns of the matrix in place
+     */
+    fn swap_cols(&mut self, a: uint, b: uint);
+
+    /**
+     * Swap two rows of the matrix in place
+     */
+    fn swap_rows(&mut self, a: uint, b: uint);
+
+    /**
+     * Sets the matrix to `other`
+     */
+    fn set(&mut self, other: &Self);
+
+    /**
+     * Sets the matrix to the identity matrix
+     */
+    fn to_identity(&mut self);
+
+    /**
+     * Sets each element of the matrix to zero
+     */
+    fn to_zero(&mut self);
+
+    /**
+     * Multiplies the matrix by a scalar
+     */
+    fn mul_self_t(&mut self, value: T);
+
+    /**
+     * Add the matrix `other` to `self`
+     */
+    fn add_self_m(&mut self, other: &Self);
+
+    /**
+     * Subtract the matrix `other` from `self`
+     */
+    fn sub_self_m(&mut self, other: &Self);
+
+    /**
+     * Sets the matrix to its inverse
+     *
+     * # Failure
+     *
+     * Fails if the matrix is not invertable. Make sure you check with the
+     * `is_invertible` method before you attempt this!
+     */
+    fn invert_self(&mut self);
+
+    /**
+     * Sets the matrix to its transpose
+     */
+    fn transpose_self(&mut self);
 
     /**
      * Check to see if the matrix is an identity matrix
@@ -233,71 +295,4 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
                        c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Self;
 
     fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
-}
-
-/**
- * A mutable matrix
- */
-pub trait MutableMatrix<T,V>: Matrix<T,V> {
-    /**
-     * # Return value
-     *
-     * A mutable reference to the column at `i`
-     */
-    fn col_mut(&mut self, i: uint) -> &'self mut V;
-
-    /**
-     * Swap two columns of the matrix in place
-     */
-    fn swap_cols(&mut self, a: uint, b: uint);
-
-    /**
-     * Swap two rows of the matrix in place
-     */
-    fn swap_rows(&mut self, a: uint, b: uint);
-
-    /**
-     * Sets the matrix to `other`
-     */
-    fn set(&mut self, other: &Self);
-
-    /**
-     * Sets the matrix to the identity matrix
-     */
-    fn to_identity(&mut self);
-
-    /**
-     * Sets each element of the matrix to zero
-     */
-    fn to_zero(&mut self);
-
-    /**
-     * Multiplies the matrix by a scalar
-     */
-    fn mul_self_t(&mut self, value: T);
-
-    /**
-     * Add the matrix `other` to `self`
-     */
-    fn add_self_m(&mut self, other: &Self);
-
-    /**
-     * Subtract the matrix `other` from `self`
-     */
-    fn sub_self_m(&mut self, other: &Self);
-
-    /**
-     * Sets the matrix to its inverse
-     *
-     * # Failure
-     *
-     * Fails if the matrix is not invertable. Make sure you check with the
-     * `is_invertible` method before you attempt this!
-     */
-    fn invert_self(&mut self);
-
-    /**
-     * Sets the matrix to its transpose
-     */
-    fn transpose_self(&mut self);
 }

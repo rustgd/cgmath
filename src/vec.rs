@@ -13,7 +13,7 @@ pub use vec4::{Vec4, vec4, dvec4, bvec4, ivec4, uvec4};
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait Vector<T>: Index<uint, T> + Eq {
+pub trait Vector<T>: Index<uint,T> + Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
@@ -25,9 +25,7 @@ pub trait Vector<T>: Index<uint, T> + Eq {
      * A pointer to the first component of the vector
      */
     fn to_ptr(&self) -> *T;
-}
-
-pub trait MutableVector<'self, T>: Vector<T> {
+    
     /**
      * Get a mutable reference to the component at `i`
      */
@@ -129,54 +127,7 @@ pub trait NumericVector<T>: Vector<T> + Neg<Self> {
      * The dot product of the vector and `other`
      */
     fn dot(&self, other: &Self) -> T;
-}
-
-/**
- * A 2-dimensional vector with numeric components
- */
-pub trait NumericVector2<T>: NumericVector<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-
-    /**
-     * # Return value
-     *
-     * The perp dot product of the vector and `other`
-     */
-    fn perp_dot(&self, other: &Self) -> T;
-}
-
-/**
- * A 3-dimensional vector with numeric components
- */
-pub trait NumericVector3<T>: NumericVector<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-    fn unit_z() -> Self;
-
-    /**
-     * # Return value
-     *
-     * The cross product of the vector and `other`
-     */
-    fn cross(&self, other: &Self) -> Self;
-}
-
-/**
- * A 4-dimensional vector with numeric components
- */
-pub trait NumericVector4<T>: NumericVector<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-    fn unit_z() -> Self;
-    fn unit_w() -> Self;
-}
-
-/**
- * A mutable vector with numeric components
- */
-pub trait MutableNumericVector<'self, T>: MutableVector<T> +
-                                          NumericVector<T> {
+    
     /**
      * Negate the vector
      */
@@ -214,13 +165,49 @@ pub trait MutableNumericVector<'self, T>: MutableVector<T> +
 }
 
 /**
- * A mutable 3-dimensional vector with numeric components
+ * A 2-dimensional vector with numeric components
  */
-pub trait MutableNumericVector3<'self, T>: MutableNumericVector<T> {
+pub trait NumericVector2<T>: NumericVector<T> {
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
+
+    /**
+     * # Return value
+     *
+     * The perp dot product of the vector and `other`
+     */
+    fn perp_dot(&self, other: &Self) -> T;
+}
+
+/**
+ * A 3-dimensional vector with numeric components
+ */
+pub trait NumericVector3<T>: NumericVector<T> {
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
+    fn unit_z() -> Self;
+
+    /**
+     * # Return value
+     *
+     * The cross product of the vector and `other`
+     */
+    fn cross(&self, other: &Self) -> Self;
+    
     /**
      * Set to the cross product of the vector and `other`
      */
     fn cross_self(&mut self, other: &Self);
+}
+
+/**
+ * A 4-dimensional vector with numeric components
+ */
+pub trait NumericVector4<T>: NumericVector<T> {
+    fn unit_x() -> Self;
+    fn unit_y() -> Self;
+    fn unit_z() -> Self;
+    fn unit_w() -> Self;
 }
 
 pub trait ToHomogeneous<H> {
@@ -300,17 +287,7 @@ pub trait EuclideanVector<T>: NumericVector<T> {
      * The intoperlated vector
      */
     fn lerp(&self, other: &Self, amount: T) -> Self;
-}
-
-/**
- * A mutable Euclidean (or Affine) vector
- *
- * # Type parameters
- *
- * * `T` - The type of the components. This should be a floating point type.
- */
-pub trait MutableEuclideanVector<'self, T>: MutableNumericVector<T> +
-                                            EuclideanVector<T> {
+    
     /**
      * Normalize the vector
      */

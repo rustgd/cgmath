@@ -12,9 +12,8 @@ use numeric::number::Number::{zero,one};
 use vec::{
     Vec2,
     Vector2,
-    MutableVector,
+    Vector,
     NumericVector,
-    MutableNumericVector,
     vec2,
     dvec2,
 };
@@ -26,7 +25,6 @@ use mat::{
     Matrix2,
     Matrix3,
     Matrix4,
-    MutableMatrix,
 };
 
 /**
@@ -169,41 +167,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
         Matrix2::new(self[0][0], self[1][0],
                      self[0][1], self[1][1])
     }
-
-    #[inline(always)]
-    fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&Matrix::identity())
-    }
-
-    #[inline(always)]
-    fn is_diagonal(&self) -> bool {
-        self[0][1].fuzzy_eq(&zero()) &&
-        self[1][0].fuzzy_eq(&zero())
-    }
-
-    #[inline(always)]
-    fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&Matrix::identity())
-    }
-
-    #[inline(always)]
-    fn is_symmetric(&self) -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[1][0].fuzzy_eq(&self[0][1])
-    }
-
-    #[inline(always)]
-    fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&zero())
-    }
-
-    #[inline(always)]
-    fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
-    }
-}
-
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableMatrix<T, Vec2<T> > for Mat2<T> {
+    
     #[inline(always)]
     fn col_mut(&mut self, i: uint) -> &'self mut Vec2<T> {
         match i {
@@ -269,6 +233,38 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     fn transpose_self(&mut self) {
         swap(self.x.index_mut(1), self.y.index_mut(0));
         swap(self.y.index_mut(0), self.x.index_mut(1));
+    }
+
+    #[inline(always)]
+    fn is_identity(&self) -> bool {
+        self.fuzzy_eq(&Matrix::identity())
+    }
+
+    #[inline(always)]
+    fn is_diagonal(&self) -> bool {
+        self[0][1].fuzzy_eq(&zero()) &&
+        self[1][0].fuzzy_eq(&zero())
+    }
+
+    #[inline(always)]
+    fn is_rotated(&self) -> bool {
+        !self.fuzzy_eq(&Matrix::identity())
+    }
+
+    #[inline(always)]
+    fn is_symmetric(&self) -> bool {
+        self[0][1].fuzzy_eq(&self[1][0]) &&
+        self[1][0].fuzzy_eq(&self[0][1])
+    }
+
+    #[inline(always)]
+    fn is_invertible(&self) -> bool {
+        !self.determinant().fuzzy_eq(&zero())
+    }
+
+    #[inline(always)]
+    fn to_ptr(&self) -> *T {
+        unsafe { transmute(self) }
     }
 }
 

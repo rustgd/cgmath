@@ -11,13 +11,10 @@ use numeric::number::Number::{zero,one};
 use vec::{
     Vector,
     Vector4,
-    MutableVector,
     NumericVector,
     NumericVector4,
-    MutableNumericVector,
     ToHomogeneous,
     EuclideanVector,
-    MutableEuclideanVector,
     EquableVector,
     OrdinalVector,
     BooleanVector,
@@ -51,23 +48,7 @@ impl<T:Copy + Eq> Vector<T> for Vec4<T> {
     fn to_ptr(&self) -> *T {
         unsafe { transmute(self) }
     }
-}
-
-impl<T> Vector4<T> for Vec4<T> {
-    #[inline(always)]
-    fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
-        Vec4 { x: x, y: y, z: z, w: w }
-    }
-}
-
-impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
-    }
-}
-
-impl<T:Copy> MutableVector<T> for Vec4<T> {
+    
     #[inline(always)]
     fn index_mut(&mut self, i: uint) -> &'self mut T {
         match i {
@@ -82,6 +63,20 @@ impl<T:Copy> MutableVector<T> for Vec4<T> {
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
         *self.index_mut(a) <-> *self.index_mut(b);
+    }
+}
+
+impl<T> Vector4<T> for Vec4<T> {
+    #[inline(always)]
+    fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
+    }
+}
+
+impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
+    #[inline(always)]
+    fn index(&self, i: &uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
     }
 }
 
@@ -159,38 +154,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
         self[2] * other[2] +
         self[3] * other[3]
     }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec4<T>> for Vec4<T> {
-    #[inline(always)]
-    fn neg(&self) -> Vec4<T> {
-        Vector4::new(-self[0], -self[1], -self[2], -self[3])
-    }
-}
-
-impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
-    #[inline(always)]
-    fn unit_x() -> Vec4<T> {
-        Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec4<T> {
-        Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_z() -> Vec4<T> {
-        Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_w() -> Vec4<T> {
-        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
-    }
-}
-
-impl<'self,T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<T> for Vec4<T> {
+    
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -248,6 +212,35 @@ impl<'self,T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>
     }
 }
 
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec4<T>> for Vec4<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec4<T> {
+        Vector4::new(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec4<T> {
+        Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec4<T> {
+        Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_z() -> Vec4<T> {
+        Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_w() -> Vec4<T> {
+        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
+    }
+}
+
 impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
     #[inline(always)]
     fn length2(&self) -> T {
@@ -288,9 +281,7 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Euclid
     fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-}
-
-impl<T: Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<T> for Vec4<T> {
+    
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();

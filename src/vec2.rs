@@ -13,13 +13,10 @@ use vec::{
     Vector,
     Vector2,
     Vector3,
-    MutableVector,
     NumericVector,
     NumericVector2,
-    MutableNumericVector,
     ToHomogeneous,
     EuclideanVector,
-    MutableEuclideanVector,
     EquableVector,
     OrdinalVector,
     BooleanVector,
@@ -51,6 +48,20 @@ impl<T:Copy + Eq> Vector<T> for Vec2<T> {
     fn to_ptr(&self) -> *T {
         unsafe { transmute(self) }
     }
+    
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &'self mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        }
+    }
+
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        *self.index_mut(a) <-> *self.index_mut(b);
+    }
 }
 
 impl<T> Vector2<T> for Vec2<T> {
@@ -64,22 +75,6 @@ impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
         unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
-    }
-}
-
-impl<T:Copy> MutableVector<T> for Vec2<T> {
-    #[inline(always)]
-    fn index_mut(&mut self, i: uint) -> &'self mut T {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
-        }
-    }
-
-    #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
-        *self.index_mut(a) <-> *self.index_mut(b);
     }
 }
 
@@ -141,33 +136,7 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
         self[0] * other[0] +
         self[1] * other[1]
     }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec2<T>> for Vec2<T> {
-    #[inline(always)]
-    fn neg(&self) -> Vec2<T> {
-        Vector2::new(-self[0], -self[1])
-    }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector2<T> for Vec2<T> {
-    #[inline(always)]
-    fn unit_x() -> Vec2<T> {
-        Vector2::new(one::<T>(), zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec2<T> {
-        Vector2::new(zero::<T>(), one::<T>())
-    }
-
-    #[inline(always)]
-    fn perp_dot(&self, other: &Vec2<T>) ->T {
-        (self[0] * other[1]) - (self[1] * other[0])
-    }
-}
-
-impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableNumericVector<T> for Vec2<T> {
+    
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index_mut(0);
@@ -208,6 +177,30 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Mutab
     fn div_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) /= other[0];
         *self.index_mut(1) /= other[1];
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec2<T>> for Vec2<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec2<T> {
+        Vector2::new(-self[0], -self[1])
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector2<T> for Vec2<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec2<T> {
+        Vector2::new(one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec2<T> {
+        Vector2::new(zero::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn perp_dot(&self, other: &Vec2<T>) ->T {
+        (self[0] * other[1]) - (self[1] * other[0])
     }
 }
 
@@ -258,9 +251,7 @@ impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Euclid
     fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-}
-
-impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableEuclideanVector<T> for Vec2<T> {
+    
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();

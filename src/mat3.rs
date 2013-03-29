@@ -13,10 +13,9 @@ use quat::Quat;
 use vec::{
     Vec3,
     Vector3,
-    MutableVector,
+    Vector,
     NumericVector,
     NumericVector3,
-    MutableNumericVector,
     EuclideanVector,
     vec3,
     dvec3,
@@ -27,7 +26,6 @@ use mat::{
     Matrix,
     Matrix3,
     Matrix4,
-    MutableMatrix,
 };
 
 /**
@@ -195,6 +193,84 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
         Matrix3::new(self[0][0], self[1][0], self[2][0],
                      self[0][1], self[1][1], self[2][1],
                      self[0][2], self[1][2], self[2][2])
+    }
+    
+    #[inline(always)]
+    fn col_mut(&mut self, i: uint) -> &'self mut Vec3<T> {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+
+    #[inline(always)]
+    fn swap_cols(&mut self, a: uint, b: uint) {
+        *self.col_mut(a) <-> *self.col_mut(b);
+    }
+
+    #[inline(always)]
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        self.x.swap(a, b);
+        self.y.swap(a, b);
+        self.z.swap(a, b);
+    }
+
+    #[inline(always)]
+    fn set(&mut self, other: &Mat3<T>) {
+        (*self) = (*other);
+    }
+
+    #[inline(always)]
+    fn to_identity(&mut self) {
+        (*self) = Matrix::identity();
+    }
+
+    #[inline(always)]
+    fn to_zero(&mut self) {
+        (*self) = Matrix::zero();
+    }
+
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        self.col_mut(0).mul_self_t(value);
+        self.col_mut(1).mul_self_t(value);
+        self.col_mut(2).mul_self_t(value);
+    }
+
+    #[inline(always)]
+    fn add_self_m(&mut self, other: &Mat3<T>) {
+        self.col_mut(0).add_self_v(&other[0]);
+        self.col_mut(1).add_self_v(&other[1]);
+        self.col_mut(2).add_self_v(&other[2]);
+    }
+
+    #[inline(always)]
+    fn sub_self_m(&mut self, other: &Mat3<T>) {
+        self.col_mut(0).sub_self_v(&other[0]);
+        self.col_mut(1).sub_self_v(&other[1]);
+        self.col_mut(2).sub_self_v(&other[2]);
+    }
+
+    #[inline(always)]
+    fn invert_self(&mut self) {
+        match self.inverse() {
+            Some(m) => (*self) = m,
+            None => fail!(~"Couldn't invert the matrix!")
+        }
+    }
+
+    #[inline(always)]
+    fn transpose_self(&mut self) {
+        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
+        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
+
+        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
+        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
+
+        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
+        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
     }
 
     #[inline(always)]
@@ -466,86 +542,6 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
         }
 
         Quat::new(w, x, y, z)
-    }
-}
-
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> MutableMatrix<T, Vec3<T>> for Mat3<T> {
-    #[inline(always)]
-    fn col_mut(&mut self, i: uint) -> &'self mut Vec3<T> {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            2 => &mut self.z,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
-        }
-    }
-
-    #[inline(always)]
-    fn swap_cols(&mut self, a: uint, b: uint) {
-        *self.col_mut(a) <-> *self.col_mut(b);
-    }
-
-    #[inline(always)]
-    fn swap_rows(&mut self, a: uint, b: uint) {
-        self.x.swap(a, b);
-        self.y.swap(a, b);
-        self.z.swap(a, b);
-    }
-
-    #[inline(always)]
-    fn set(&mut self, other: &Mat3<T>) {
-        (*self) = (*other);
-    }
-
-    #[inline(always)]
-    fn to_identity(&mut self) {
-        (*self) = Matrix::identity();
-    }
-
-    #[inline(always)]
-    fn to_zero(&mut self) {
-        (*self) = Matrix::zero();
-    }
-
-    #[inline(always)]
-    fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(value);
-        self.col_mut(1).mul_self_t(value);
-        self.col_mut(2).mul_self_t(value);
-    }
-
-    #[inline(always)]
-    fn add_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).add_self_v(&other[0]);
-        self.col_mut(1).add_self_v(&other[1]);
-        self.col_mut(2).add_self_v(&other[2]);
-    }
-
-    #[inline(always)]
-    fn sub_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).sub_self_v(&other[0]);
-        self.col_mut(1).sub_self_v(&other[1]);
-        self.col_mut(2).sub_self_v(&other[2]);
-    }
-
-    #[inline(always)]
-    fn invert_self(&mut self) {
-        match self.inverse() {
-            Some(m) => (*self) = m,
-            None => fail!(~"Couldn't invert the matrix!")
-        }
-    }
-
-    #[inline(always)]
-    fn transpose_self(&mut self) {
-        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
-        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
-
-        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
-        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
-
-        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
-        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
     }
 }
 
