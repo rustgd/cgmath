@@ -1,6 +1,5 @@
 use core::cast::transmute;
 use core::cmp::Eq;
-use core::ptr::to_unsafe_ptr;
 use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;
@@ -200,11 +199,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Mat2<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
+        unsafe { transmute(self) }
     }
 }
 
@@ -381,10 +376,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec2<T> {
-        unsafe { do buf_as_slice(
-            transmute::<*Mat2<T>, *Vec2<T>>(
-                to_unsafe_ptr(self)), 2) |slice| { slice[*i] }
-        }
+        unsafe { do buf_as_slice(transmute(self), 2) |slice| { slice[*i] } }
     }
 }
 

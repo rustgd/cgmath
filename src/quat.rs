@@ -9,7 +9,6 @@
 
 use core::cast::transmute;
 use core::cmp::{Eq, Ord};
-use core::ptr::to_unsafe_ptr;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
@@ -353,11 +352,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
      */
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe {
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(self)
-            )
-        }
+        unsafe { transmute(self) }
     }
 
     /**
@@ -392,10 +387,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
 impl<T:Copy> Index<uint, T> for Quat<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(
-            transmute::<*Quat<T>, *T>(
-                to_unsafe_ptr(self)), 4) |slice| { slice[*i] }
-        }
+        unsafe { do buf_as_slice(transmute(self), 4) |slice| { slice[*i] } }
     }
 }
 
