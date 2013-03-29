@@ -499,10 +499,10 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
 impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     #[inline(always)]
-    fn index(&self, i: uint) -> Vec4<T> {
+    fn index(&self, i: &uint) -> Vec4<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat4<T>, *Vec4<T>>(
-                to_unsafe_ptr(self)), 4) |slice| { slice[i] }
+                to_unsafe_ptr(self)), 4) |slice| { slice[*i] }
         }
     }
 }
