@@ -3,7 +3,7 @@ TARGET = lmath
 ROOT_DIR = .
 
 SRC_DIR        = $(ROOT_DIR)/src
-SRC_CRATE      = $(TARGET).rc
+SRC_CRATE      = $(TARGET).rs
 BUILD_DIR      = $(ROOT_DIR)/lib
 
 TEST           = $(TARGET)

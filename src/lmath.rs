@@ -1,5 +1,5 @@
 #[link(name = "lmath",
-       vers = "0.1",
+       vers = "0.1.0",
        uuid = "A2DEEB53-EB35-4B44-B247-9044B57E3BA5",
        author = "Brendan Zabarauskas",
        url = "https://github.com/bjz/lmath-rs")];
