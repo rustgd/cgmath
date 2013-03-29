@@ -1,5 +1,6 @@
 use mat::*;
 use vec::*;
+use std::cmp::FuzzyEq;
 
 // TODO
 
@@ -57,10 +58,10 @@ fn test_mat2() {
     assert!(a.dot(&b) == 40.0); 
     
     assert!(a.transpose() == mat2::new(1.0, 2.0,
-                                      3.0, 4.0));
+                                       3.0, 4.0));
 
-    assert!(option::unwrap(a.inverse()) == mat2::new(-2.0,  1.5,
-                                                      1.0, -0.5));
+    assert!(a.inverse().unwrap() == mat2::new(-2.0,  1.5,
+                                               1.0, -0.5));
 
     assert!(mat2::new(0.0, 2.0,
                       0.0, 5.0).inverse().is_none());
@@ -144,7 +145,7 @@ fn test_mat2_mut() {
     mut_a = a;
     
     mut_a.invert_self();
-    assert!(mut_a == option::unwrap(a.inverse()));
+    assert!(mut_a == a.inverse().unwrap());
     mut_a = a;
     
     mut_a.transpose_self();
@@ -230,16 +231,16 @@ fn test_mat3() {
 
     assert!(a.inverse().is_none());
     
-    assert!(option::unwrap(mat3::new(2.0, 4.0, 6.0,
-                                     0.0, 2.0, 4.0,
-                                     0.0, 0.0, 1.0).inverse())
+    assert!(mat3::new(2.0, 4.0, 6.0,
+                      0.0, 2.0, 4.0,
+                      0.0, 0.0, 1.0).inverse().unwrap()
         == mat3::new(0.5,  -1.0,  1.0,
                      0.0,   0.5, -2.0,
                      0.0,   0.0,  1.0));
     
     let ident: Mat3<float> = Matrix::identity();
 
-    assert!(option::unwrap(ident.inverse()) == ident);
+    assert!(ident.inverse().unwrap() == ident);
     
     assert!(ident.is_identity());
     assert!(ident.is_symmetric());
@@ -333,7 +334,7 @@ fn test_mat3_mut() {
     mut_a = a;
     
     mut_c.invert_self();
-    assert!(mut_c == option::unwrap(c.inverse()));
+    assert!(mut_c == c.inverse().unwrap());
     // mut_c = c;
     
     mut_a.transpose_self();
@@ -542,7 +543,7 @@ fn test_mat4_mut() {
     mut_a = a;
     
     mut_c.invert_self();
-    assert!(mut_c == option::unwrap(c.inverse()));
+    assert!(mut_c == c.inverse().unwrap());
     // mut_c = c;
     
     mut_a.transpose_self();
@@ -553,11 +554,11 @@ fn test_mat4_mut() {
 #[test]
 fn test_mat4_fuzzy_eq() {
     assert!(!mat4::new(0.000001, 0.000001, 0.000001, 0.000001,
-                      0.000001, 0.000001, 0.000001, 0.000001,
-                      0.000001, 0.000001, 0.000001, 0.000001,
-                      0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&mat4::zero()));
+                       0.000001, 0.000001, 0.000001, 0.000001,
+                       0.000001, 0.000001, 0.000001, 0.000001,
+                       0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&mat4::zero()));
     assert!(mat4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001,
-                     0.0000001, 0.0000001, 0.0000001, 0.0000001,
-                     0.0000001, 0.0000001, 0.0000001, 0.0000001,
-                     0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat4::zero()));
+                      0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                      0.0000001, 0.0000001, 0.0000001, 0.0000001,
+                      0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat4::zero()));
 }

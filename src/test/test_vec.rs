@@ -1,5 +1,4 @@
 use std::cmp::FuzzyEq;
-use numeric::*;
 use numeric::float::Float;
 
 use vec::*;
@@ -58,11 +57,11 @@ fn test_vec2() {
     assert!(mut_a == -a);
     mut_a = a;
     
-    mut_a.mul_self_t(&f1);
+    mut_a.mul_self_t(f1);
     assert!(mut_a == a.mul_t(f1));
     mut_a = a;
     
-    mut_a.div_self_t(&f2);
+    mut_a.div_self_t(f2);
     assert!(mut_a == a.div_t(f2));
     mut_a = a;
     
@@ -110,7 +109,7 @@ fn test_vec2_euclidean() {
     
     assert!(vec2::new(1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&Float::frac_pi_2()));
     assert!(vec2::new(10.0, 0.0).angle(&vec2::new(0.0, 5.0)).fuzzy_eq(&Float::frac_pi_2()));
-    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&Float::frac_pi_2()));
+    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&-Float::frac_pi_2::<f32>()));
     
     assert!(vec2::new(3.0, 4.0).normalize().fuzzy_eq(&vec2::new(3.0/5.0, 4.0/5.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
@@ -121,7 +120,7 @@ fn test_vec2_euclidean() {
     assert!(c.lerp(&d, 0.75) == vec2::new(0.250, -0.250));
     
     let mut mut_c = c;
-    mut_c.lerp_self(&d, &0.75);
+    mut_c.lerp_self(&d, 0.75);
     assert!(mut_c == c.lerp(&d, 0.75));
 }
 
@@ -211,11 +210,11 @@ fn test_vec3() {
     assert!(mut_a == -a);
     mut_a = a;
     
-    mut_a.mul_self_t(&f1);
+    mut_a.mul_self_t(f1);
     assert!(mut_a == a.mul_t(f1));
     mut_a = a;
     
-    mut_a.div_self_t(&f2);
+    mut_a.div_self_t(f2);
     assert!(mut_a == a.div_t(f2));
     mut_a = a;
     
@@ -278,7 +277,7 @@ fn test_vec3_euclidean() {
     assert!(c.lerp(&d, 0.75) == vec3::new(0.250, -0.250, 0.625));
     
     let mut mut_c = c;
-    mut_c.lerp_self(&d, &0.75);
+    mut_c.lerp_self(&d, 0.75);
     assert!(mut_c == c.lerp(&d, 0.75));
 }
 
@@ -368,11 +367,11 @@ fn test_vec4() {
     assert!(mut_a == -a);
     mut_a = a;
     
-    mut_a.mul_self_t(&f1);
+    mut_a.mul_self_t(f1);
     assert!(mut_a == a.mul_t(f1));
     mut_a = a;
     
-    mut_a.div_self_t(&f2);
+    mut_a.div_self_t(f2);
     assert!(mut_a == a.div_t(f2));
     mut_a = a;
     
@@ -431,7 +430,7 @@ fn test_vec4_euclidean() {
     assert!(c.lerp(&d, 0.75) == vec4::new(0.250, -0.250, 0.625, 1.250));
     
     let mut mut_c = c;
-    mut_c.lerp_self(&d, &0.75);
+    mut_c.lerp_self(&d, 0.75);
     assert!(mut_c == c.lerp(&d, 0.75));
 }
 

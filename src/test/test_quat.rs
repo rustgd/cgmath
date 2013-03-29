@@ -1,3 +1,4 @@
+use std::cmp::FuzzyEq;
 use numeric::*;
 
 use mat::*;
