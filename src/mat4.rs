@@ -1,7 +1,6 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
-use core::util::swap;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
