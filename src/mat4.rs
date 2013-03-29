@@ -413,8 +413,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        swap(self.col_mut(a),
-             self.col_mut(b));
+        *self.col_mut(a) <-> *self.col_mut(b);
     }
 
     #[inline(always)]
@@ -474,21 +473,21 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
-        swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
-        swap(self.col_mut(0).index_mut(3), self.col_mut(3).index_mut(0));
+        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
+        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
+        *self.col_mut(0).index_mut(3) <-> *self.col_mut(3).index_mut(0);
 
-        swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
-        swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
-        swap(self.col_mut(1).index_mut(3), self.col_mut(3).index_mut(1));
+        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
+        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
+        *self.col_mut(1).index_mut(3) <-> *self.col_mut(3).index_mut(1);
 
-        swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
-        swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
-        swap(self.col_mut(2).index_mut(3), self.col_mut(3).index_mut(2));
+        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
+        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
+        *self.col_mut(2).index_mut(3) <-> *self.col_mut(3).index_mut(2);
 
-        swap(self.col_mut(3).index_mut(0), self.col_mut(0).index_mut(3));
-        swap(self.col_mut(3).index_mut(1), self.col_mut(1).index_mut(3));
-        swap(self.col_mut(3).index_mut(2), self.col_mut(2).index_mut(3));
+        *self.col_mut(3).index_mut(0) <-> *self.col_mut(0).index_mut(3);
+        *self.col_mut(3).index_mut(1) <-> *self.col_mut(1).index_mut(3);
+        *self.col_mut(3).index_mut(2) <-> *self.col_mut(2).index_mut(3);
     }
 }
 

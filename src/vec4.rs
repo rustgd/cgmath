@@ -87,8 +87,7 @@ impl<T:Copy> MutableVector<T> for Vec4<T> {
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        swap(self.index_mut(a),
-             self.index_mut(b));
+        *self.index_mut(a) <-> *self.index_mut(b);
     }
 }
 

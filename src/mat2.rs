@@ -220,8 +220,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        swap(self.col_mut(a),
-             self.col_mut(b));
+        *self.col_mut(a) <-> *self.col_mut(b);
     }
 
     #[inline(always)]
