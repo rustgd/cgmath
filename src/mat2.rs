@@ -220,8 +220,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        swap(self.col_mut(a),
-             self.col_mut(b));
+        *self.col_mut(a) <-> *self.col_mut(b);
     }
 
     #[inline(always)]
@@ -381,10 +380,10 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
 impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
-    fn index(&self, i: &uint) -> Vec2<T> {
+    fn index(&self, i: uint) -> Vec2<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat2<T>, *Vec2<T>>(
-                to_unsafe_ptr(self)), 2) |slice| { slice[*i] }
+                to_unsafe_ptr(self)), 2) |slice| { slice[i] }
         }
     }
 }

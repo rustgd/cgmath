@@ -2,7 +2,6 @@ use core::cast::transmute;
 use core::cmp::{Eq, Ord};
 use core::ptr::to_unsafe_ptr;
 use core::sys::size_of;
-use core::util::swap;
 use core::vec::raw::buf_as_slice;
 
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
@@ -68,8 +67,8 @@ impl<T> Vector2<T> for Vec2<T> {
 
 impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
+    fn index(&self, i: uint) -> T {
+        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[i] } }
     }
 }
 
@@ -85,8 +84,7 @@ impl<T:Copy> MutableVector<T> for Vec2<T> {
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        swap(self.index_mut(a),
-             self.index_mut(b));
+        *self.index_mut(a) <-> *self.index_mut(b);
     }
 }
 

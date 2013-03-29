@@ -1,7 +1,6 @@
 use core::cast::transmute;
 use core::cmp::Eq;
 use core::ptr::to_unsafe_ptr;
-use core::util::swap;
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
@@ -488,8 +487,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        swap(self.col_mut(a),
-             self.col_mut(b));
+        *self.col_mut(a) <-> *self.col_mut(b);
     }
 
     #[inline(always)]
@@ -545,23 +543,23 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
-        swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
+        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
 
-        swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
-        swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
+        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
 
-        swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
-        swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
+        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
+        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
     }
 }
 
 impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     #[inline(always)]
-    fn index(&self, i: &uint) -> Vec3<T> {
+    fn index(&self, i: uint) -> Vec3<T> {
         unsafe { do buf_as_slice(
             transmute::<*Mat3<T>, *Vec3<T>>(
-                to_unsafe_ptr(self)), 3) |slice| { slice[*i] }
+                to_unsafe_ptr(self)), 3) |slice| { slice[i] }
         }
     }
 }
