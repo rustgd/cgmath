@@ -1,7 +1,3 @@
-use core::cast::transmute;
-use core::sys::size_of;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -45,7 +41,7 @@ impl<T:Copy + Eq> Vector<T> for Vec2<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
     
     #[inline(always)]
@@ -73,7 +69,7 @@ impl<T> Vector2<T> for Vec2<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
     }
 }
 
@@ -365,7 +361,7 @@ pub impl vec2 {
     #[inline(always)] fn unit_y() -> vec2 { NumericVector2::unit_y() }
 
     #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<vec2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec2>() }
 }
 
 pub impl dvec2 {
@@ -378,7 +374,7 @@ pub impl dvec2 {
     #[inline(always)] fn unit_y() -> dvec2 { NumericVector2::unit_y() }
 
     #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<dvec2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec2>() }
 }
 
 pub impl bvec2 {
@@ -386,7 +382,7 @@ pub impl bvec2 {
     #[inline(always)] fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
 
     #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<bvec2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec2>() }
 }
 
 pub impl ivec2 {
@@ -399,7 +395,7 @@ pub impl ivec2 {
     #[inline(always)] fn unit_y() -> ivec2 { NumericVector2::unit_y() }
 
     #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<ivec2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec2>() }
 }
 
 pub impl uvec2 {
@@ -412,7 +408,7 @@ pub impl uvec2 {
     #[inline(always)] fn unit_y() -> uvec2 { NumericVector2::unit_y() }
 
     #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<uvec2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec2>() }
 }
 
 // Type aliases named in a more 'Rustic' style

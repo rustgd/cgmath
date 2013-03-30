@@ -7,9 +7,6 @@
  *   Sir William Hamilton
  */
 
-use core::cast::transmute;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -351,7 +348,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
      */
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
 
     /**
@@ -386,7 +383,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
 impl<T:Copy> Index<uint, T> for Quat<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(transmute(self), 4) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 4) |slice| { slice[*i] } }
     }
 }
 

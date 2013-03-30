@@ -1,7 +1,3 @@
-use core::cast::transmute;
-use core::sys::size_of;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -44,7 +40,7 @@ impl<T:Copy + Eq> Vector<T> for Vec4<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
     
     #[inline(always)]
@@ -74,7 +70,7 @@ impl<T> Vector4<T> for Vec4<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
     }
 }
 
@@ -410,7 +406,7 @@ pub impl vec4 {
     #[inline(always)] fn unit_w() -> vec4 { NumericVector4::unit_w() }
 
     #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { size_of::<vec4>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec4>() }
 }
 
 pub impl dvec4 {
@@ -425,7 +421,7 @@ pub impl dvec4 {
     #[inline(always)] fn unit_w() -> dvec4 { NumericVector4::unit_w() }
 
     #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { size_of::<dvec4>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec4>() }
 }
 
 
@@ -434,7 +430,7 @@ pub impl bvec4 {
     #[inline(always)] fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
 
     #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { size_of::<bvec4>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec4>() }
 }
 
 pub impl ivec4 {
@@ -449,7 +445,7 @@ pub impl ivec4 {
     #[inline(always)] fn unit_w() -> ivec4 { NumericVector4::unit_w() }
 
     #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { size_of::<ivec4>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec4>() }
 }
 
 pub impl uvec4 {
@@ -464,5 +460,5 @@ pub impl uvec4 {
     #[inline(always)] fn unit_w() -> uvec4 { NumericVector4::unit_w() }
 
     #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { size_of::<uvec4>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec4>() }
 }

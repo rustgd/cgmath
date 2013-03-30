@@ -1,7 +1,3 @@
-use core::cast::transmute;
-use core::sys::size_of;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -313,7 +309,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
 }
 
@@ -547,7 +543,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec3<T> {
-        unsafe { do buf_as_slice(transmute(self), 3) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 3) |slice| { slice[*i] } }
     }
 }
 
@@ -603,7 +599,7 @@ pub impl mat3 {
     #[inline(always)] fn dim() -> uint { 3 }
     #[inline(always)] fn rows() -> uint { 3 }
     #[inline(always)] fn cols() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<mat3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<mat3>() }
 }
 
 
@@ -620,5 +616,5 @@ pub impl dmat3 {
     #[inline(always)] fn dim() -> uint { 3 }
     #[inline(always)] fn rows() -> uint { 3 }
     #[inline(always)] fn cols() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<dmat3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dmat3>() }
 }

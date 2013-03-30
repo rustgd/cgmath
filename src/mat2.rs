@@ -1,8 +1,3 @@
-use core::cast::transmute;
-use core::sys::size_of;
-use core::util::swap;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -230,8 +225,8 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        swap(self.x.index_mut(1), self.y.index_mut(0));
-        swap(self.y.index_mut(0), self.x.index_mut(1));
+        *self.x.index_mut(1) <-> *self.y.index_mut(0);
+        *self.y.index_mut(0) <-> *self.x.index_mut(1);
     }
 
     #[inline(always)]
@@ -263,7 +258,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
 }
 
@@ -371,7 +366,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec2<T> {
-        unsafe { do buf_as_slice(transmute(self), 2) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 2) |slice| { slice[*i] } }
     }
 }
 
@@ -420,7 +415,7 @@ pub impl mat2 {
     #[inline(always)] fn dim() -> uint { 2 }
     #[inline(always)] fn rows() -> uint { 2 }
     #[inline(always)] fn cols() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<mat2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<mat2>() }
 }
 
 pub impl dmat2 {
@@ -438,5 +433,5 @@ pub impl dmat2 {
     #[inline(always)] fn dim() -> uint { 2 }
     #[inline(always)] fn rows() -> uint { 2 }
     #[inline(always)] fn cols() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { size_of::<dmat2>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dmat2>() }
 }

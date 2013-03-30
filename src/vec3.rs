@@ -1,7 +1,3 @@
-use core::cast::transmute;
-use core::sys::size_of;
-use core::vec::raw::buf_as_slice;
-
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
@@ -46,7 +42,7 @@ impl<T:Copy + Eq> Vector<T> for Vec3<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { transmute(self) }
+        unsafe { cast::transmute(self) }
     }
     
     #[inline(always)]
@@ -75,7 +71,7 @@ impl<T> Vector3<T> for Vec3<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
     }
 }
 
@@ -402,7 +398,7 @@ pub impl vec3 {
     #[inline(always)] fn unit_z() -> vec3 { NumericVector3::unit_z() }
 
     #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<vec3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec3>() }
 }
 
 pub impl dvec3 {
@@ -416,7 +412,7 @@ pub impl dvec3 {
     #[inline(always)] fn unit_z() -> dvec3 { NumericVector3::unit_z() }
 
     #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<dvec3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec3>() }
 }
 
 pub impl bvec3 {
@@ -424,7 +420,7 @@ pub impl bvec3 {
     #[inline(always)] fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
 
     #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<bvec3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec3>() }
 }
 
 pub impl ivec3 {
@@ -438,7 +434,7 @@ pub impl ivec3 {
     #[inline(always)] fn unit_z() -> ivec3 { NumericVector3::unit_z() }
 
     #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<ivec3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec3>() }
 }
 
 pub impl uvec3 {
@@ -452,5 +448,5 @@ pub impl uvec3 {
     #[inline(always)] fn unit_z() -> uvec3 { NumericVector3::unit_z() }
 
     #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { size_of::<uvec3>() }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec3>() }
 }
