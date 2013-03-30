@@ -1,5 +1,4 @@
 use core::cast::transmute;
-use core::cmp::Eq;
 use core::sys::size_of;
 use core::util::swap;
 use core::vec::raw::buf_as_slice;

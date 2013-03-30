@@ -1,5 +1,3 @@
-use core::cmp::Eq;
-
 use vec::Vec3;
 use quat::Quat;
 

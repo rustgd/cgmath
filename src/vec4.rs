@@ -1,5 +1,4 @@
 use core::cast::transmute;
-use core::cmp::{Eq, Ord};
 use core::sys::size_of;
 use core::vec::raw::buf_as_slice;
 
@@ -13,7 +12,6 @@ use vec::{
     Vector4,
     NumericVector,
     NumericVector4,
-    ToHomogeneous,
     EuclideanVector,
     EquableVector,
     OrdinalVector,
