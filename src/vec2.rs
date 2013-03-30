@@ -343,11 +343,16 @@ impl BooleanVector for Vec2<bool> {
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type vec2  = Vec2<f32>;     // a two-component single-precision floating-point vector
-pub type dvec2 = Vec2<f64>;     // a two-component double-precision floating-point vector
-pub type bvec2 = Vec2<bool>;    // a two-component Boolean vector
-pub type ivec2 = Vec2<i32>;     // a two-component signed integer vector
-pub type uvec2 = Vec2<u32>;     // a two-component unsigned integer vector
+/// a two-component single-precision floating-point vector
+pub type vec2  = Vec2<f32>;
+/// a two-component double-precision floating-point vector
+pub type dvec2 = Vec2<f64>;
+/// a two-component Boolean vector
+pub type bvec2 = Vec2<bool>;
+/// a two-component signed integer vector
+pub type ivec2 = Vec2<i32>;
+/// a two-component unsigned integer vector
+pub type uvec2 = Vec2<u32>;
 
 // Static method wrappers for GLSL-style types
 

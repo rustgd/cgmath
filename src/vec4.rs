@@ -387,11 +387,16 @@ impl BooleanVector for Vec4<bool> {
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type vec4  = Vec4<f32>;     // a four-component single-precision floating-point vector
-pub type dvec4 = Vec4<f64>;     // a four-component double-precision floating-point vector
-pub type bvec4 = Vec4<bool>;    // a four-component Boolean vector
-pub type ivec4 = Vec4<i32>;     // a four-component signed integer vector
-pub type uvec4 = Vec4<u32>;     // a four-component unsigned integer vector
+// a four-component single-precision floating-point vector
+pub type vec4  = Vec4<f32>;
+// a four-component double-precision floating-point vector
+pub type dvec4 = Vec4<f64>;
+// a four-component Boolean vector
+pub type bvec4 = Vec4<bool>;
+// a four-component signed integer vector
+pub type ivec4 = Vec4<i32>;
+// a four-component unsigned integer vector
+pub type uvec4 = Vec4<u32>;
 
 // Static method wrappers for GLSL-style types
 

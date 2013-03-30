@@ -513,8 +513,10 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
 // GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type mat4 = Mat4<f32>;      // a 4×4 single-precision floating-point matrix
-pub type dmat4 = Mat4<f64>;     // a 4×4 double-precision floating-point matrix
+/// a 4×4 single-precision floating-point matrix
+pub type mat4 = Mat4<f32>;
+/// a 4×4 double-precision floating-point matrix
+pub type dmat4 = Mat4<f64>;
 
 // Static method wrappers for GLSL-style types
 

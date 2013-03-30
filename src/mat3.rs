@@ -576,8 +576,10 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
 // GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type mat3 = Mat3<f32>;      // a 3×3 single-precision floating-point matrix
-pub type dmat3 = Mat3<f64>;     // a 3×3 double-precision floating-point matrix
+/// a 3×3 single-precision floating-point matrix
+pub type mat3 = Mat3<f32>;
+/// a 3×3 double-precision floating-point matrix
+pub type dmat3 = Mat3<f64>;
 
 // Static method wrappers for GLSL-style types
 

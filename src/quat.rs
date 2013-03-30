@@ -416,8 +416,10 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
 // GLSL-style type aliases for quaternions. These are not present in the GLSL
 // specification, but they roughly follow the same nomenclature.
 
-pub type quat  = Quat<f32>;             /// a single-precision floating-point quaternion
-pub type dquat = Quat<f64>;             /// a double-precision floating-point quaternion
+/// a single-precision floating-point quaternion
+pub type quat  = Quat<f32>;
+/// a double-precision floating-point quaternion
+pub type dquat = Quat<f64>;
 
 // Static method wrappers for GLSL-style types
 

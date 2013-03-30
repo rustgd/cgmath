@@ -379,11 +379,16 @@ impl BooleanVector for Vec3<bool> {
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-pub type vec3  = Vec3<f32>;     // a three-component single-precision floating-point vector
-pub type dvec3 = Vec3<f64>;     // a three-component double-precision floating-point vector
-pub type bvec3 = Vec3<bool>;    // a three-component Boolean vector
-pub type ivec3 = Vec3<i32>;     // a three-component signed integer vector
-pub type uvec3 = Vec3<u32>;     // a three-component unsigned integer vector
+/// a three-component single-precision floating-point vector
+pub type vec3  = Vec3<f32>;
+/// a three-component double-precision floating-point vector
+pub type dvec3 = Vec3<f64>;
+/// a three-component Boolean vector
+pub type bvec3 = Vec3<bool>;
+/// a three-component signed integer vector
+pub type ivec3 = Vec3<i32>;
+/// a three-component unsigned integer vector
+pub type uvec3 = Vec3<u32>;
 
 // Static method wrappers for GLSL-style types
 
