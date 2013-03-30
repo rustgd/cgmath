@@ -418,12 +418,12 @@ pub impl uvec2 {
 
 // Type aliases named in a more 'Rustic' style
 
-pub type vec2i   = Vec2<int>;
-pub type vec2i8  = Vec2<i8>;
-pub type vec2i16 = Vec2<i16>;
-pub type vec2i32 = Vec2<i32>;
-pub type vec2i64 = Vec2<i64>;
-pub type vec2f   = Vec2<float>;
-pub type vec2f32 = Vec2<f32>;
-pub type vec2f64 = Vec2<f64>;
-pub type vec2b   = Vec2<bool>;
+pub type Vec2f   = Vec2<float>;
+pub type Vec2f32 = Vec2<f32>;
+pub type Vec2f64 = Vec2<f64>;
+pub type Vec2i   = Vec2<int>;
+pub type Vec2i8  = Vec2<i8>;
+pub type Vec2i16 = Vec2<i16>;
+pub type Vec2i32 = Vec2<i32>;
+pub type Vec2i64 = Vec2<i64>;
+pub type Vec2b   = Vec2<bool>;
