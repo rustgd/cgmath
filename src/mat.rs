@@ -665,51 +665,47 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
     }
 }
 
+macro_rules! mat2_type(
+    ($name:ident <$T:ty, $V:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c1r0: $T, c1r1: $T)
+                -> $name { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
+            #[inline(always)] fn from_cols(c0: $V, c1: $V)
+                -> $name { Matrix2::from_cols(c0, c1) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
+
+            #[inline(always)] fn identity() -> $name { Matrix::identity() }
+            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+
+            #[inline(always)] fn from_angle(radians: $T) -> $name { Matrix2::from_angle(radians) }
+
+            #[inline(always)] fn dim() -> uint { 2 }
+            #[inline(always)] fn rows() -> uint { 2 }
+            #[inline(always)] fn cols() -> uint { 2 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    )
+)
+
 // GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-/// a 2×2 single-precision floating-point matrix
-pub type mat2 = Mat2<f32>;
-/// a 2×2 double-precision floating-point matrix
+// a 2×2 single-precision floating-point matrix
+pub type mat2  = Mat2<f32>;
+// a 2×2 double-precision floating-point matrix
 pub type dmat2 = Mat2<f64>;
 
-// Static method wrappers for GLSL-style types
+mat2_type!(mat2<f32,vec2>)
+mat2_type!(dmat2<f64,dvec2>)
 
-pub impl mat2 {
-    #[inline(always)] fn new(c0r0: f32, c0r1: f32, c1r0: f32, c1r1: f32)
-        -> mat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
-    #[inline(always)] fn from_cols(c0: vec2, c1: vec2)
-        -> mat2 { Matrix2::from_cols(c0, c1) }
-    #[inline(always)] fn from_value(v: f32) -> mat2 { Matrix::from_value(v) }
+// Rust-style type aliases
+pub type Mat2f   = Mat2<float>;
+pub type Mat2f32 = Mat2<f32>;
+pub type Mat2f64 = Mat2<f64>;
 
-    #[inline(always)] fn identity() -> mat2 { Matrix::identity() }
-    #[inline(always)] fn zero() -> mat2 { Matrix::zero() }
-
-    #[inline(always)] fn from_angle(radians: f32) -> mat2 { Matrix2::from_angle(radians) }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn rows() -> uint { 2 }
-    #[inline(always)] fn cols() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<mat2>() }
-}
-
-pub impl dmat2 {
-    #[inline(always)] fn new(c0r0: f64, c0r1: f64, c1r0: f64, c1r1: f64)
-        -> dmat2 { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
-    #[inline(always)] fn from_cols(c0: dvec2, c1: dvec2)
-        -> dmat2 { Matrix2::from_cols(c0, c1) }
-    #[inline(always)] fn from_value(v: f64) -> dmat2 { Matrix::from_value(v) }
-
-    #[inline(always)] fn identity() -> dmat2 { Matrix::identity() }
-    #[inline(always)] fn zero() -> dmat2 { Matrix::zero() }
-
-    #[inline(always)] fn from_angle(radians: f64) -> dmat2 { Matrix2::from_angle(radians) }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn rows() -> uint { 2 }
-    #[inline(always)] fn cols() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dmat2>() }
-}
+mat2_type!(Mat2f<float,Vec2f>)
+mat2_type!(Mat2f32<f32,Vec2f32>)
+mat2_type!(Mat2f64<f64,Vec2f64>)
 
 /**
  *  A 3 x 3 column major matrix
@@ -1256,56 +1252,50 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 }
 
-// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+macro_rules! mat3_type(
+    ($name:ident <$T:ty, $V:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c1r0: $T, c1r1: $T, c1r2: $T, c2r0: $T, c2r1: $T, c2r2: $T)
+                -> $name { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
+            #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V)
+                -> $name { Matrix3::from_cols(c0, c1, c2) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
 
-/// a 3×3 single-precision floating-point matrix
-pub type mat3 = Mat3<f32>;
-/// a 3×3 double-precision floating-point matrix
+            #[inline(always)] fn identity() -> $name { Matrix::identity() }
+            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+
+            #[inline(always)] fn from_angle_x(radians: $T) -> $name { Matrix3::from_angle_x(radians) }
+            #[inline(always)] fn from_angle_y(radians: $T) -> $name { Matrix3::from_angle_y(radians) }
+            #[inline(always)] fn from_angle_z(radians: $T) -> $name { Matrix3::from_angle_z(radians) }
+            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T) -> $name { Matrix3::from_angle_xyz(radians_x, radians_y, radians_z) }
+            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { Matrix3::from_angle_axis(radians, axis) }
+            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { Matrix3::from_axes(x, y, z) }
+            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { Matrix3::look_at(dir, up) }
+
+            #[inline(always)] fn dim() -> uint { 3 }
+            #[inline(always)] fn rows() -> uint { 3 }
+            #[inline(always)] fn cols() -> uint { 3 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    )
+)
+
+// a 3×3 single-precision floating-point matrix
+pub type mat3  = Mat3<f32>;
+// a 3×3 double-precision floating-point matrix
 pub type dmat3 = Mat3<f64>;
 
-// Static method wrappers for GLSL-style types
+mat3_type!(mat3<f32,vec3>)
+mat3_type!(dmat3<f64,dvec3>)
 
-pub impl mat3 {
-    #[inline(always)] fn new(c0r0: f32, c0r1: f32, c0r2: f32, c1r0: f32, c1r1: f32, c1r2: f32, c2r0: f32, c2r1: f32, c2r2: f32)
-        -> mat3 { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
-    #[inline(always)] fn from_cols(c0: vec3, c1: vec3, c2: vec3)
-        -> mat3 { Matrix3::from_cols(c0, c1, c2) }
-    #[inline(always)] fn from_value(v: f32) -> mat3 { Matrix::from_value(v) }
+// Rust-style type aliases
+pub type Mat3f   = Mat3<float>;
+pub type Mat3f32 = Mat3<f32>;
+pub type Mat3f64 = Mat3<f64>;
 
-    #[inline(always)] fn identity() -> mat3 { Matrix::identity() }
-    #[inline(always)] fn zero() -> mat3 { Matrix::zero() }
-
-    #[inline(always)] fn from_angle_x(radians: f32) -> mat3 { Matrix3::from_angle_x(radians) }
-    #[inline(always)] fn from_angle_y(radians: f32) -> mat3 { Matrix3::from_angle_y(radians) }
-    #[inline(always)] fn from_angle_z(radians: f32) -> mat3 { Matrix3::from_angle_z(radians) }
-    #[inline(always)] fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32) -> mat3 { Matrix3::from_angle_xyz(radians_x, radians_y, radians_z) }
-    #[inline(always)] fn from_angle_axis(radians: f32, axis: &vec3) -> mat3 { Matrix3::from_angle_axis(radians, axis) }
-    #[inline(always)] fn from_axes(x: vec3, y: vec3, z: vec3) -> mat3 { Matrix3::from_axes(x, y, z) }
-    #[inline(always)] fn look_at(dir: &vec3, up: &vec3) -> mat3 { Matrix3::look_at(dir, up) }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn rows() -> uint { 3 }
-    #[inline(always)] fn cols() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<mat3>() }
-}
-
-
-pub impl dmat3 {
-    #[inline(always)] fn new(c0r0: f64, c0r1: f64, c0r2: f64, c1r0: f64, c1r1: f64, c1r2: f64, c2r0: f64, c2r1: f64, c2r2: f64)
-        -> dmat3 { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
-    #[inline(always)] fn from_cols(c0: dvec3, c1: dvec3, c2: dvec3)
-        -> dmat3 { Matrix3::from_cols(c0, c1, c2) }
-    #[inline(always)] fn from_value(v: f64) -> dmat3 { Matrix::from_value(v) }
-
-    #[inline(always)] fn identity() -> dmat3 { Matrix::identity() }
-    #[inline(always)] fn zero() -> dmat3 { Matrix::zero() }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn rows() -> uint { 3 }
-    #[inline(always)] fn cols() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dmat3>() }
-}
+mat3_type!(Mat3f<float,Vec3f>)
+mat3_type!(Mat3f32<f32,Vec3f32>)
+mat3_type!(Mat3f64<f64,Vec3f64>)
 
 /**
  *  A 4 x 4 column major matrix
@@ -1793,44 +1783,42 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
     }
 }
 
+macro_rules! mat4_type(
+    ($name:ident <$T:ty, $V:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c0r3: $T, c1r0: $T, c1r1: $T, c1r2: $T, c1r3: $T, c2r0: $T, c2r1: $T, c2r2: $T, c2r3: $T, c3r0: $T, c3r1: $T, c3r2: $T, c3r3: $T)
+                -> $name { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+            #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V, c3: $V)
+                -> $name { Matrix4::from_cols(c0, c1, c2, c3) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
+
+            #[inline(always)] fn identity() -> $name { Matrix::identity() }
+            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+
+            #[inline(always)] fn dim() -> uint { 4 }
+            #[inline(always)] fn rows() -> uint { 4 }
+            #[inline(always)] fn cols() -> uint { 4 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    )
+)
+
 // GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-/// a 4×4 single-precision floating-point matrix
-pub type mat4 = Mat4<f32>;
-/// a 4×4 double-precision floating-point matrix
+// a 4×4 single-precision floating-point matrix
+pub type mat4  = Mat4<f32>;
+// a 4×4 double-precision floating-point matrix
 pub type dmat4 = Mat4<f64>;
 
-// Static method wrappers for GLSL-style types
+mat4_type!(mat4<f32,vec4>)
+mat4_type!(dmat4<f64,dvec4>)
 
-pub impl mat4 {
-    #[inline(always)] fn new(c0r0: f32, c0r1: f32, c0r2: f32, c0r3: f32, c1r0: f32, c1r1: f32, c1r2: f32, c1r3: f32, c2r0: f32, c2r1: f32, c2r2: f32, c2r3: f32, c3r0: f32, c3r1: f32, c3r2: f32, c3r3: f32)
-        -> mat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] fn from_cols(c0: vec4, c1: vec4, c2: vec4, c3: vec4)
-        -> mat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] fn from_value(v: f32) -> mat4 { Matrix::from_value(v) }
+// Rust-style type aliases
+pub type Mat4f   = Mat4<float>;
+pub type Mat4f32 = Mat4<f32>;
+pub type Mat4f64 = Mat4<f64>;
 
-    #[inline(always)] fn identity() -> mat4 { Matrix::identity() }
-    #[inline(always)] fn zero() -> mat4 { Matrix::zero() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn rows() -> uint { 4 }
-    #[inline(always)] fn cols() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<mat4>() }
-}
-
-pub impl dmat4 {
-    #[inline(always)] fn new(c0r0: f64, c0r1: f64, c0r2: f64, c0r3: f64, c1r0: f64, c1r1: f64, c1r2: f64, c1r3: f64, c2r0: f64, c2r1: f64, c2r2: f64, c2r3: f64, c3r0: f64, c3r1: f64, c3r2: f64, c3r3: f64)
-        -> dmat4 { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-    #[inline(always)] fn from_cols(c0: dvec4, c1: dvec4, c2: dvec4, c3: dvec4)
-        -> dmat4 { Matrix4::from_cols(c0, c1, c2, c3) }
-    #[inline(always)] fn from_value(v: f64) -> dmat4 { Matrix::from_value(v) }
-
-    #[inline(always)] fn identity() -> dmat4 { Matrix::identity() }
-    #[inline(always)] fn zero() -> dmat4 { Matrix::zero() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn rows() -> uint { 4 }
-    #[inline(always)] fn cols() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dmat4>() }
-}
+mat4_type!(Mat4f<float,Vec4f>)
+mat4_type!(Mat4f32<f32,Vec4f32>)
+mat4_type!(Mat4f64<f64,Vec4f64>)

@@ -772,84 +772,53 @@ impl BooleanVector for Vec2<bool> {
     }
 }
 
+macro_rules! vec2_type(
+    ($name:ident <bool>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: bool, y: bool) -> $name { Vector2::new(x, y) }
+            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+
+            #[inline(always)] fn dim() -> uint { 2 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+    ($name:ident <$T:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: $T, y: $T) -> $name { Vector2::new(x, y) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
+            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+
+            #[inline(always)] fn unit_x() -> $name { NumericVector2::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumericVector2::unit_y() }
+
+            #[inline(always)] fn dim() -> uint { 2 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+)
+
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-/// a two-component single-precision floating-point vector
+// a two-component single-precision floating-point vector
 pub type vec2  = Vec2<f32>;
-/// a two-component double-precision floating-point vector
+// a two-component double-precision floating-point vector
 pub type dvec2 = Vec2<f64>;
-/// a two-component Boolean vector
+// a two-component Boolean vector
 pub type bvec2 = Vec2<bool>;
-/// a two-component signed integer vector
+// a two-component signed integer vector
 pub type ivec2 = Vec2<i32>;
-/// a two-component unsigned integer vector
+// a two-component unsigned integer vector
 pub type uvec2 = Vec2<u32>;
 
-// Static method wrappers for GLSL-style types
+vec2_type!(vec2<f32>)
+vec2_type!(dvec2<f64>)
+vec2_type!(bvec2<bool>)
+vec2_type!(ivec2<i32>)
+vec2_type!(uvec2<u32>)
 
-pub impl vec2 {
-    #[inline(always)] fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
-    #[inline(always)] fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> vec2 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> vec2 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> vec2 { NumericVector2::unit_x() }
-    #[inline(always)] fn unit_y() -> vec2 { NumericVector2::unit_y() }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec2>() }
-}
-
-pub impl dvec2 {
-    #[inline(always)] fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
-    #[inline(always)] fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> dvec2 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> dvec2 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> dvec2 { NumericVector2::unit_x() }
-    #[inline(always)] fn unit_y() -> dvec2 { NumericVector2::unit_y() }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec2>() }
-}
-
-pub impl bvec2 {
-    #[inline(always)] fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
-    #[inline(always)] fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec2>() }
-}
-
-pub impl ivec2 {
-    #[inline(always)] fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
-    #[inline(always)] fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> ivec2 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> ivec2 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> ivec2 { NumericVector2::unit_x() }
-    #[inline(always)] fn unit_y() -> ivec2 { NumericVector2::unit_y() }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec2>() }
-}
-
-pub impl uvec2 {
-    #[inline(always)] fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
-    #[inline(always)] fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> uvec2 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> uvec2 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> uvec2 { NumericVector2::unit_x() }
-    #[inline(always)] fn unit_y() -> uvec2 { NumericVector2::unit_y() }
-
-    #[inline(always)] fn dim() -> uint { 2 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec2>() }
-}
-
-// Type aliases named in a more 'Rustic' style
-
+// Rust-style type aliases
 pub type Vec2f   = Vec2<float>;
 pub type Vec2f32 = Vec2<f32>;
 pub type Vec2f64 = Vec2<f64>;
@@ -858,7 +827,27 @@ pub type Vec2i8  = Vec2<i8>;
 pub type Vec2i16 = Vec2<i16>;
 pub type Vec2i32 = Vec2<i32>;
 pub type Vec2i64 = Vec2<i64>;
+pub type Vec2u   = Vec2<uint>;
+pub type Vec2u8  = Vec2<u8>;
+pub type Vec2u16 = Vec2<u16>;
+pub type Vec2u32 = Vec2<u32>;
+pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
+
+vec2_type!(Vec2f<float>)
+vec2_type!(Vec2f32<f32>)
+vec2_type!(Vec2f64<f64>)
+vec2_type!(Vec2i<int>)
+vec2_type!(Vec2i8<i8>)
+vec2_type!(Vec2i16<i16>)
+vec2_type!(Vec2i32<i32>)
+vec2_type!(Vec2i64<i64>)
+vec2_type!(Vec2u<uint>)
+vec2_type!(Vec2u8<u8>)
+vec2_type!(Vec2u16<u16>)
+vec2_type!(Vec2u32<u32>)
+vec2_type!(Vec2u64<u64>)
+vec2_type!(Vec2b<bool>)
 
 /**
  * A 3-dimensional vector
@@ -1214,85 +1203,83 @@ impl BooleanVector for Vec3<bool> {
     }
 }
 
+macro_rules! vec3_type(
+    ($name:ident <bool>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: bool, y: bool, z: bool) -> $name { Vector3::new(x, y, z) }
+            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+
+            #[inline(always)] fn dim() -> uint { 3 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+    ($name:ident <$T:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: $T, y: $T, z: $T) -> $name { Vector3::new(x, y, z) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
+            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+
+            #[inline(always)] fn unit_x() -> $name { NumericVector3::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumericVector3::unit_y() }
+            #[inline(always)] fn unit_z() -> $name { NumericVector3::unit_z() }
+
+            #[inline(always)] fn dim() -> uint { 3 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+)
+
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
-/// a three-component single-precision floating-point vector
+// a three-component single-precision floating-point vector
 pub type vec3  = Vec3<f32>;
-/// a three-component double-precision floating-point vector
+// a three-component double-precision floating-point vector
 pub type dvec3 = Vec3<f64>;
-/// a three-component Boolean vector
+// a three-component Boolean vector
 pub type bvec3 = Vec3<bool>;
-/// a three-component signed integer vector
+// a three-component signed integer vector
 pub type ivec3 = Vec3<i32>;
-/// a three-component unsigned integer vector
+// a three-component unsigned integer vector
 pub type uvec3 = Vec3<u32>;
 
-// Static method wrappers for GLSL-style types
+vec3_type!(vec3<f32>)
+vec3_type!(dvec3<f64>)
+vec3_type!(bvec3<bool>)
+vec3_type!(ivec3<i32>)
+vec3_type!(uvec3<u32>)
 
-pub impl vec3 {
-    #[inline(always)] fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
-    #[inline(always)] fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> vec3 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> vec3 { NumericVector::zero() }
+// Rust-style type aliases
+pub type Vec3f   = Vec3<float>;
+pub type Vec3f32 = Vec3<f32>;
+pub type Vec3f64 = Vec3<f64>;
+pub type Vec3i   = Vec3<int>;
+pub type Vec3i8  = Vec3<i8>;
+pub type Vec3i16 = Vec3<i16>;
+pub type Vec3i32 = Vec3<i32>;
+pub type Vec3i64 = Vec3<i64>;
+pub type Vec3u   = Vec3<uint>;
+pub type Vec3u8  = Vec3<u8>;
+pub type Vec3u16 = Vec3<u16>;
+pub type Vec3u32 = Vec3<u32>;
+pub type Vec3u64 = Vec3<u64>;
+pub type Vec3b   = Vec3<bool>;
 
-    #[inline(always)] fn unit_x() -> vec3 { NumericVector3::unit_x() }
-    #[inline(always)] fn unit_y() -> vec3 { NumericVector3::unit_y() }
-    #[inline(always)] fn unit_z() -> vec3 { NumericVector3::unit_z() }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec3>() }
-}
-
-pub impl dvec3 {
-    #[inline(always)] fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> dvec3 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> dvec3 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> dvec3 { NumericVector3::unit_x() }
-    #[inline(always)] fn unit_y() -> dvec3 { NumericVector3::unit_y() }
-    #[inline(always)] fn unit_z() -> dvec3 { NumericVector3::unit_z() }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec3>() }
-}
-
-pub impl bvec3 {
-    #[inline(always)] fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec3>() }
-}
-
-pub impl ivec3 {
-    #[inline(always)] fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
-    #[inline(always)] fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> ivec3 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> ivec3 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> ivec3 { NumericVector3::unit_x() }
-    #[inline(always)] fn unit_y() -> ivec3 { NumericVector3::unit_y() }
-    #[inline(always)] fn unit_z() -> ivec3 { NumericVector3::unit_z() }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec3>() }
-}
-
-pub impl uvec3 {
-    #[inline(always)] fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
-    #[inline(always)] fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> uvec3 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> uvec3 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> uvec3 { NumericVector3::unit_x() }
-    #[inline(always)] fn unit_y() -> uvec3 { NumericVector3::unit_y() }
-    #[inline(always)] fn unit_z() -> uvec3 { NumericVector3::unit_z() }
-
-    #[inline(always)] fn dim() -> uint { 3 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec3>() }
-}
+vec3_type!(Vec3f<float>)
+vec3_type!(Vec3f32<f32>)
+vec3_type!(Vec3f64<f64>)
+vec3_type!(Vec3i<int>)
+vec3_type!(Vec3i8<i8>)
+vec3_type!(Vec3i16<i16>)
+vec3_type!(Vec3i32<i32>)
+vec3_type!(Vec3i64<i64>)
+vec3_type!(Vec3u<uint>)
+vec3_type!(Vec3u8<u8>)
+vec3_type!(Vec3u16<u16>)
+vec3_type!(Vec3u32<u32>)
+vec3_type!(Vec3u64<u64>)
+vec3_type!(Vec3b<bool>)
 
 /**
  * A 4-dimensional vector
@@ -1658,6 +1645,34 @@ impl BooleanVector for Vec4<bool> {
     }
 }
 
+macro_rules! vec4_type(
+    ($name:ident <bool>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> $name { Vector4::new(x, y, z, w) }
+            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+
+            #[inline(always)] fn dim() -> uint { 4 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+    ($name:ident <$T:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(x: $T, y: $T, z: $T, w: $T) -> $name { Vector4::new(x, y, z, w) }
+            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
+            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+
+            #[inline(always)] fn unit_x() -> $name { NumericVector4::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumericVector4::unit_y() }
+            #[inline(always)] fn unit_z() -> $name { NumericVector4::unit_z() }
+            #[inline(always)] fn unit_w() -> $name { NumericVector4::unit_w() }
+
+            #[inline(always)] fn dim() -> uint { 4 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+)
+
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
@@ -1672,73 +1687,39 @@ pub type ivec4 = Vec4<i32>;
 // a four-component unsigned integer vector
 pub type uvec4 = Vec4<u32>;
 
-// Static method wrappers for GLSL-style types
+vec4_type!(vec4<f32>)
+vec4_type!(dvec4<f64>)
+vec4_type!(bvec4<bool>)
+vec4_type!(ivec4<i32>)
+vec4_type!(uvec4<u32>)
 
-pub impl vec4 {
-    #[inline(always)] fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> vec4 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> vec4 { NumericVector::zero() }
+// Rust-style type aliases
+pub type Vec4f   = Vec4<float>;
+pub type Vec4f32 = Vec4<f32>;
+pub type Vec4f64 = Vec4<f64>;
+pub type Vec4i   = Vec4<int>;
+pub type Vec4i8  = Vec4<i8>;
+pub type Vec4i16 = Vec4<i16>;
+pub type Vec4i32 = Vec4<i32>;
+pub type Vec4i64 = Vec4<i64>;
+pub type Vec4u   = Vec4<uint>;
+pub type Vec4u8  = Vec4<u8>;
+pub type Vec4u16 = Vec4<u16>;
+pub type Vec4u32 = Vec4<u32>;
+pub type Vec4u64 = Vec4<u64>;
+pub type Vec4b   = Vec4<bool>;
 
-    #[inline(always)] fn unit_x() -> vec4 { NumericVector4::unit_x() }
-    #[inline(always)] fn unit_y() -> vec4 { NumericVector4::unit_y() }
-    #[inline(always)] fn unit_z() -> vec4 { NumericVector4::unit_z() }
-    #[inline(always)] fn unit_w() -> vec4 { NumericVector4::unit_w() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec4>() }
-}
-
-pub impl dvec4 {
-    #[inline(always)] fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> dvec4 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> dvec4 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> dvec4 { NumericVector4::unit_x() }
-    #[inline(always)] fn unit_y() -> dvec4 { NumericVector4::unit_y() }
-    #[inline(always)] fn unit_z() -> dvec4 { NumericVector4::unit_z() }
-    #[inline(always)] fn unit_w() -> dvec4 { NumericVector4::unit_w() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec4>() }
-}
-
-
-pub impl bvec4 {
-    #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec4>() }
-}
-
-pub impl ivec4 {
-    #[inline(always)] fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> ivec4 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> ivec4 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> ivec4 { NumericVector4::unit_x() }
-    #[inline(always)] fn unit_y() -> ivec4 { NumericVector4::unit_y() }
-    #[inline(always)] fn unit_z() -> ivec4 { NumericVector4::unit_z() }
-    #[inline(always)] fn unit_w() -> ivec4 { NumericVector4::unit_w() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec4>() }
-}
-
-pub impl uvec4 {
-    #[inline(always)] fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
-    #[inline(always)] fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
-    #[inline(always)] fn identity() -> uvec4 { NumericVector::identity() }
-    #[inline(always)] fn zero() -> uvec4 { NumericVector::zero() }
-
-    #[inline(always)] fn unit_x() -> uvec4 { NumericVector4::unit_x() }
-    #[inline(always)] fn unit_y() -> uvec4 { NumericVector4::unit_y() }
-    #[inline(always)] fn unit_z() -> uvec4 { NumericVector4::unit_z() }
-    #[inline(always)] fn unit_w() -> uvec4 { NumericVector4::unit_w() }
-
-    #[inline(always)] fn dim() -> uint { 4 }
-    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec4>() }
-}
+vec4_type!(Vec4f<float>)
+vec4_type!(Vec4f32<f32>)
+vec4_type!(Vec4f64<f64>)
+vec4_type!(Vec4i<int>)
+vec4_type!(Vec4i8<i8>)
+vec4_type!(Vec4i16<i16>)
+vec4_type!(Vec4i32<i32>)
+vec4_type!(Vec4i64<i64>)
+vec4_type!(Vec4u<uint>)
+vec4_type!(Vec4u8<u8>)
+vec4_type!(Vec4u16<u16>)
+vec4_type!(Vec4u32<u32>)
+vec4_type!(Vec4u64<u64>)
+vec4_type!(Vec4b<bool>)

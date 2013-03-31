@@ -12,20 +12,10 @@ use numeric::*;
 use numeric::number::Number;
 use numeric::number::Number::{zero,one};
 
-use mat::{
-    Mat3,
-    Matrix3
-};
-
-use vec::{
-    Vec3,
-    Vector3,
-    EuclideanVector,
-    NumericVector,
-    NumericVector3,
-    vec3,
-    dvec3,
-};
+use mat::{Mat3, Matrix3};
+use vec::{Vec3, Vector3, EuclideanVector};
+use vec::{NumericVector, NumericVector3};
+use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
 
 /**
  * A quaternion in scalar/vector form
@@ -409,44 +399,45 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
     }
 }
 
+macro_rules! quat_type(
+    ($name:ident <$T:ty, $V:ty>) => (
+        pub impl $name {
+            #[inline(always)] fn new(w: $T, xi: $T, yj: $T, zk: $T) -> $name { Quat::new(w, xi, yj, zk) }
+            #[inline(always)] fn from_sv(s: $T, v: $V) -> $name { Quat::from_sv(s, v) }
+            #[inline(always)] fn identity() -> $name { Quat::identity() }
+            #[inline(always)] fn zero() -> $name { Quat::zero() }
+
+            #[inline(always)] fn from_angle_x(radians: $T) -> $name { Quat::from_angle_x(radians) }
+            #[inline(always)] fn from_angle_y(radians: $T) -> $name { Quat::from_angle_y(radians) }
+            #[inline(always)] fn from_angle_z(radians: $T) -> $name { Quat::from_angle_z(radians) }
+            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T)
+                -> $name { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
+            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { Quat::from_angle_axis(radians, axis) }
+            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { Quat::from_axes(x, y, z) }
+            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { Quat::look_at(dir, up) }
+
+            #[inline(always)] fn dim() -> uint { 4 }
+            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
+        }
+    );
+)
+
 // GLSL-style type aliases for quaternions. These are not present in the GLSL
 // specification, but they roughly follow the same nomenclature.
 
 /// a single-precision floating-point quaternion
-pub type quat  = Quat<f32>;
+type quat  = Quat<f32>;
 /// a double-precision floating-point quaternion
-pub type dquat = Quat<f64>;
+type dquat = Quat<f64>;
 
-// Static method wrappers for GLSL-style types
+quat_type!(quat<f32,vec3>)
+quat_type!(dquat<f64,dvec3>)
 
-pub impl quat {
-    #[inline(always)] fn new(w: f32, xi: f32, yj: f32, zk: f32) -> quat { Quat::new(w, xi, yj, zk) }
-    #[inline(always)] fn from_sv(s: f32, v: vec3) -> quat { Quat::from_sv(s, v) }
-    #[inline(always)] fn identity() -> quat { Quat::identity() }
-    #[inline(always)] fn zero() -> quat { Quat::zero() }
+// Rust-style type aliases
+type Quatf   = Quat<float>;
+type Quatf32 = Quat<f32>;
+type Quatf64 = Quat<f64>;
 
-    #[inline(always)] fn from_angle_x(radians: f32) -> quat { Quat::from_angle_x(radians) }
-    #[inline(always)] fn from_angle_y(radians: f32) -> quat { Quat::from_angle_y(radians) }
-    #[inline(always)] fn from_angle_z(radians: f32) -> quat { Quat::from_angle_z(radians) }
-    #[inline(always)] fn from_angle_xyz(radians_x: f32, radians_y: f32, radians_z: f32)
-        -> quat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-    #[inline(always)] fn from_angle_axis(radians: f32, axis: &vec3) -> quat { Quat::from_angle_axis(radians, axis) }
-    #[inline(always)] fn from_axes(x: vec3, y: vec3, z: vec3) -> quat { Quat::from_axes(x, y, z) }
-    #[inline(always)] fn look_at(dir: &vec3, up: &vec3) -> quat { Quat::look_at(dir, up) }
-}
-
-pub impl dquat {
-    #[inline(always)] fn new(w: f64, xi: f64, yj: f64, zk: f64) -> dquat { Quat::new(w, xi, yj, zk) }
-    #[inline(always)] fn from_sv(s: f64, v: dvec3) -> dquat { Quat::from_sv(s, v) }
-    #[inline(always)] fn identity() -> dquat { Quat::identity() }
-    #[inline(always)] fn zero() -> dquat { Quat::zero() }
-
-    #[inline(always)] fn from_angle_x(radians: f64) -> dquat { Quat::from_angle_x(radians) }
-    #[inline(always)] fn from_angle_y(radians: f64) -> dquat { Quat::from_angle_y(radians) }
-    #[inline(always)] fn from_angle_z(radians: f64) -> dquat { Quat::from_angle_z(radians) }
-    #[inline(always)] fn from_angle_xyz(radians_x: f64, radians_y: f64, radians_z: f64)
-        -> dquat { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-    #[inline(always)] fn from_angle_axis(radians: f64, axis: &dvec3) -> dquat { Quat::from_angle_axis(radians, axis) }
-    #[inline(always)] fn from_axes(x: dvec3, y: dvec3, z: dvec3) -> dquat { Quat::from_axes(x, y, z) }
-    #[inline(always)] fn look_at(dir: &dvec3, up: &dvec3) -> dquat { Quat::look_at(dir, up) }
-}
+quat_type!(Quatf<float,Vec3f>)
+quat_type!(Quatf32<f32,Vec3f32>)
+quat_type!(Quatf64<f64,Vec3f64>)
