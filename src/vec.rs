@@ -1,7 +1,7 @@
-pub use vec2::{Vec2, vec2, dvec2, bvec2, ivec2, uvec2};
-pub use vec3::{Vec3, vec3, dvec3, bvec3, ivec3, uvec3};
-pub use vec4::{Vec4, vec4, dvec4, bvec4, ivec4, uvec4};
-
+use std::cmp::{FuzzyEq, FUZZY_EPSILON};
+use numeric::*;
+use numeric::number::Number;
+use numeric::number::Number::{zero,one};
 
 /**
  * The base generic vector trait.
@@ -452,4 +452,1293 @@ pub trait MixVec<T>: Vector<T> {
     fn mix(&self, other: Self, value: Self) -> Self;
     fn smooth_step(&self, edge0: Self, edge1: Self) -> Self;
     fn step(&self, edge: Self) -> Self;
+}
+
+/**
+ * A 2-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
+ */
+ #[deriving(Eq)]
+pub struct Vec2<T> { x: T, y: T }
+
+impl<T:Copy + Eq> Vector<T> for Vec2<T> {
+    #[inline(always)]
+    fn from_value(value: T) -> Vec2<T> {
+        Vector2::new(value, value)
+    }
+
+    #[inline(always)]
+    fn to_ptr(&self) -> *T {
+        unsafe { cast::transmute(self) }
+    }
+    
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &'self mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        }
+    }
+
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        *self.index_mut(a) <-> *self.index_mut(b);
+    }
+}
+
+impl<T> Vector2<T> for Vec2<T> {
+    #[inline(always)]
+    fn new(x: T, y: T ) -> Vec2<T> {
+        Vec2 { x: x, y: y }
+    }
+}
+
+impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
+    #[inline(always)]
+    fn index(&self, i: &uint) -> T {
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec2<T> {
+    #[inline(always)]
+    fn identity() -> Vec2<T> {
+        Vector2::new(one::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn zero() -> Vec2<T> {
+        Vector2::new(zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn is_zero(&self) -> bool {
+        self[0] == zero() &&
+        self[1] == zero()
+    }
+
+    #[inline(always)]
+    fn mul_t(&self, value: T) -> Vec2<T> {
+        Vector2::new(self[0] * value,
+                     self[1] * value)
+    }
+
+    #[inline(always)]
+    fn div_t(&self, value: T) -> Vec2<T> {
+        Vector2::new(self[0] / value,
+                     self[1] / value)
+    }
+
+    #[inline(always)]
+    fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vector2::new(self[0] + other[0],
+                     self[1] + other[1])
+    }
+
+    #[inline(always)]
+    fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vector2::new(self[0] - other[0],
+                     self[1] - other[1])
+    }
+
+    #[inline(always)]
+    fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vector2::new(self[0] * other[0],
+                     self[1] * other[1])
+    }
+
+    #[inline(always)]
+    fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vector2::new(self[0] / other[0],
+                     self[1] / other[1])
+    }
+
+    #[inline(always)]
+    fn dot(&self, other: &Vec2<T>) -> T {
+        self[0] * other[0] +
+        self[1] * other[1]
+    }
+    
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+    }
+
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+    }
+
+    #[inline(always)]
+    fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+    }
+
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+    }
+
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+    }
+
+    #[inline(always)]
+    fn mul_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) *= other[0];
+        *self.index_mut(1) *= other[1];
+    }
+
+    #[inline(always)]
+    fn div_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) /= other[0];
+        *self.index_mut(1) /= other[1];
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec2<T>> for Vec2<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec2<T> {
+        Vector2::new(-self[0], -self[1])
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector2<T> for Vec2<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec2<T> {
+        Vector2::new(one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec2<T> {
+        Vector2::new(zero::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn perp_dot(&self, other: &Vec2<T>) ->T {
+        (self[0] * other[1]) - (self[1] * other[0])
+    }
+}
+
+impl<T:Copy + Number> ToHomogeneous<Vec3<T>> for Vec2<T> {
+    #[inline(always)]
+    fn to_homogeneous(&self) -> Vec3<T> {
+        Vector3::new(self.x, self.y, zero())
+    }
+}
+
+impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec2<T> {
+    #[inline(always)]
+    fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline(always)]
+    fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline(always)]
+    fn distance2(&self, other: &Vec2<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline(always)]
+    fn distance(&self, other: &Vec2<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline(always)]
+    fn angle(&self, other: &Vec2<T>) -> T {
+        atan2(self.perp_dot(other), self.dot(other))
+    }
+
+    #[inline(always)]
+    fn normalize(&self) -> Vec2<T> {
+        self.mul_t(one::<T>()/self.length())
+    }
+
+    #[inline(always)]
+    fn normalize_to(&self, length: T) -> Vec2<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline(always)]
+    fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+    
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let n = one::<T>() / self.length();
+        self.mul_self_t(n);
+    }
+
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
+    #[inline(always)]
+    fn fuzzy_eq(&self, other: &Vec2<T>) -> bool {
+        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+    }
+
+    #[inline(always)]
+    fn fuzzy_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
+        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
+        self[1].fuzzy_eq_eps(&other[1], epsilon)
+    }
+}
+
+impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec2<bool>> for Vec2<T> {
+    #[inline(always)]
+    fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] < other[0],
+                     self[1] < other[1])
+    }
+
+    #[inline(always)]
+    fn less_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] <= other[0],
+                     self[1] <= other[1])
+    }
+
+    #[inline(always)]
+    fn greater_than(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] > other[0],
+                     self[1] > other[1])
+    }
+
+    #[inline(always)]
+    fn greater_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] >= other[0],
+                     self[1] >= other[1])
+    }
+}
+
+impl<T:Copy + Eq> EquableVector<T, Vec2<bool>> for Vec2<T> {
+    #[inline(always)]
+    fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] == other[0],
+                     self[1] == other[1])
+    }
+
+    #[inline(always)]
+    fn not_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vector2::new(self[0] != other[0],
+                     self[1] != other[1])
+    }
+}
+
+impl BooleanVector for Vec2<bool> {
+    #[inline(always)]
+    fn any(&self) -> bool {
+        self[0] || self[1]
+    }
+
+    #[inline(always)]
+    fn all(&self) -> bool {
+        self[0] && self[1]
+    }
+
+    #[inline(always)]
+    fn not(&self) -> Vec2<bool> {
+        Vector2::new(!self[0], !self[1])
+    }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+/// a two-component single-precision floating-point vector
+pub type vec2  = Vec2<f32>;
+/// a two-component double-precision floating-point vector
+pub type dvec2 = Vec2<f64>;
+/// a two-component Boolean vector
+pub type bvec2 = Vec2<bool>;
+/// a two-component signed integer vector
+pub type ivec2 = Vec2<i32>;
+/// a two-component unsigned integer vector
+pub type uvec2 = Vec2<u32>;
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec2 {
+    #[inline(always)] fn new(x: f32, y: f32) -> vec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: f32) -> vec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec2 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> vec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> vec2 { NumericVector2::unit_y() }
+
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec2>() }
+}
+
+pub impl dvec2 {
+    #[inline(always)] fn new(x: f64, y: f64) -> dvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: f64) -> dvec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec2 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> dvec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec2 { NumericVector2::unit_y() }
+
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec2>() }
+}
+
+pub impl bvec2 {
+    #[inline(always)] fn new(x: bool, y: bool) -> bvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: bool) -> bvec2 { Vector::from_value(v) }
+
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec2>() }
+}
+
+pub impl ivec2 {
+    #[inline(always)] fn new(x: i32, y: i32) -> ivec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: i32) -> ivec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec2 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> ivec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec2 { NumericVector2::unit_y() }
+
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec2>() }
+}
+
+pub impl uvec2 {
+    #[inline(always)] fn new(x: u32, y: u32) -> uvec2 { Vector2::new(x, y) }
+    #[inline(always)] fn from_value(v: u32) -> uvec2 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec2 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec2 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> uvec2 { NumericVector2::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec2 { NumericVector2::unit_y() }
+
+    #[inline(always)] fn dim() -> uint { 2 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec2>() }
+}
+
+// Type aliases named in a more 'Rustic' style
+
+pub type Vec2f   = Vec2<float>;
+pub type Vec2f32 = Vec2<f32>;
+pub type Vec2f64 = Vec2<f64>;
+pub type Vec2i   = Vec2<int>;
+pub type Vec2i8  = Vec2<i8>;
+pub type Vec2i16 = Vec2<i16>;
+pub type Vec2i32 = Vec2<i32>;
+pub type Vec2i64 = Vec2<i64>;
+pub type Vec2b   = Vec2<bool>;
+
+/**
+ * A 3-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
+ * * `z` - the third component of the vector
+ */
+#[deriving(Eq)]
+pub struct Vec3<T> { x: T, y: T, z: T }
+
+impl<T:Copy + Eq> Vector<T> for Vec3<T> {
+    #[inline(always)]
+    fn from_value(value: T) -> Vec3<T> {
+        Vector3::new(value, value, value)
+    }
+
+    #[inline(always)]
+    fn to_ptr(&self) -> *T {
+        unsafe { cast::transmute(self) }
+    }
+    
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &'self mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        }
+    }
+
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        *self.index_mut(a) <-> *self.index_mut(b);
+    }
+}
+
+impl<T> Vector3<T> for Vec3<T> {
+    #[inline(always)]
+    fn new(x: T, y: T, z: T) -> Vec3<T> {
+        Vec3 { x: x, y: y, z: z }
+    }
+}
+
+impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
+    #[inline(always)]
+    fn index(&self, i: &uint) -> T {
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec3<T> {
+    #[inline(always)]
+    fn identity() -> Vec3<T> {
+        Vector3::new(one::<T>(), one::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn zero() -> Vec3<T> {
+        Vector3::new(zero::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn is_zero(&self) -> bool {
+        self[0] == zero() &&
+        self[1] == zero() &&
+        self[2] == zero()
+    }
+
+    #[inline(always)]
+    fn mul_t(&self, value: T) -> Vec3<T> {
+        Vector3::new(self[0] * value,
+                     self[1] * value,
+                     self[2] * value)
+    }
+
+    #[inline(always)]
+    fn div_t(&self, value: T) -> Vec3<T> {
+        Vector3::new(self[0] / value,
+                     self[1] / value,
+                     self[2] / value)
+    }
+
+    #[inline(always)]
+    fn add_v(&self, other: &Vec3<T>) -> Vec3<T>{
+        Vector3::new(self[0] + other[0],
+                     self[1] + other[1],
+                     self[2] + other[2])
+    }
+
+    #[inline(always)]
+    fn sub_v(&self, other: &Vec3<T>) -> Vec3<T>{
+        Vector3::new(self[0] - other[0],
+                     self[1] - other[1],
+                     self[2] - other[2])
+    }
+
+    #[inline(always)]
+    fn mul_v(&self, other: &Vec3<T>) -> Vec3<T>{
+        Vector3::new(self[0] * other[0],
+                     self[1] * other[1],
+                     self[2] * other[2])
+    }
+
+    #[inline(always)]
+    fn div_v(&self, other: &Vec3<T>) -> Vec3<T>{
+        Vector3::new(self[0] / other[0],
+                     self[1] / other[1],
+                     self[2] / other[2])
+    }
+
+    #[inline(always)]
+    fn dot(&self, other: &Vec3<T>) -> T {
+        self[0] * other[0] +
+        self[1] * other[1] +
+        self[2] * other[2]
+    }
+    
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+        *self.index_mut(2) = -*self.index_mut(2);
+    }
+
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+        *self.index_mut(2) *= value;
+    }
+
+    #[inline(always)]
+    fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+        *self.index_mut(2) /= value;
+    }
+
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+        *self.index_mut(2) += other[2];
+    }
+
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+        *self.index_mut(2) -= other[2];
+    }
+
+    #[inline(always)]
+    fn mul_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) *= other[0];
+        *self.index_mut(1) *= other[1];
+        *self.index_mut(2) *= other[2];
+    }
+
+    #[inline(always)]
+    fn div_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) /= other[0];
+        *self.index_mut(1) /= other[1];
+        *self.index_mut(2) /= other[2];
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec3<T>> for Vec3<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec3<T> {
+        Vector3::new(-self[0], -self[1], -self[2])
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector3<T> for Vec3<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec3<T> {
+        Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec3<T> {
+        Vector3::new(zero::<T>(), one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_z() -> Vec3<T> {
+        Vector3::new(zero::<T>(), zero::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vector3::new((self[1] * other[2]) - (self[2] * other[1]),
+                     (self[2] * other[0]) - (self[0] * other[2]),
+                     (self[0] * other[1]) - (self[1] * other[0]))
+    }
+    
+    #[inline(always)]
+    fn cross_self(&mut self, other: &Vec3<T>) {
+        *self = self.cross(other);
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> ToHomogeneous<Vec4<T>> for Vec3<T> {
+    #[inline(always)]
+    fn to_homogeneous(&self) -> Vec4<T> {
+        Vector4::new(self.x, self.y, self.z, zero())
+    }
+}
+
+impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec3<T> {
+    #[inline(always)]
+    fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline(always)]
+    fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline(always)]
+    fn distance2(&self, other: &Vec3<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline(always)]
+    fn distance(&self, other: &Vec3<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline(always)]
+    fn angle(&self, other: &Vec3<T>) -> T {
+        atan2(self.cross(other).length(), self.dot(other))
+    }
+
+    #[inline(always)]
+    fn normalize(&self) -> Vec3<T> {
+        self.mul_t(one::<T>()/self.length())
+    }
+
+    #[inline(always)]
+    fn normalize_to(&self, length: T) -> Vec3<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline(always)]
+    fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+    
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let n = one::<T>() / self.length();
+        self.mul_self_t(n);
+    }
+
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
+    #[inline(always)]
+    fn fuzzy_eq(&self, other: &Vec3<T>) -> bool {
+        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+    }
+
+    #[inline(always)]
+    fn fuzzy_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
+        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
+        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
+        self[2].fuzzy_eq_eps(&other[2], epsilon)
+    }
+}
+
+impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec3<bool>> for Vec3<T> {
+    #[inline(always)]
+    fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] < other[0],
+                     self[1] < other[1],
+                     self[2] < other[2])
+    }
+
+    #[inline(always)]
+    fn less_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] <= other[0],
+                     self[1] <= other[1],
+                     self[2] <= other[2])
+    }
+
+    #[inline(always)]
+    fn greater_than(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] > other[0],
+                     self[1] > other[1],
+                     self[2] > other[2])
+    }
+
+    #[inline(always)]
+    fn greater_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] >= other[0],
+                     self[1] >= other[1],
+                     self[2] >= other[2])
+    }
+}
+
+impl<T:Copy + Eq> EquableVector<T, Vec3<bool>> for Vec3<T> {
+    #[inline(always)]
+    fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] == other[0],
+                     self[1] == other[1],
+                     self[2] == other[2])
+    }
+
+    #[inline(always)]
+    fn not_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vector3::new(self[0] != other[0],
+                     self[1] != other[1],
+                     self[2] != other[2])
+    }
+}
+
+impl BooleanVector for Vec3<bool> {
+    #[inline(always)]
+    fn any(&self) -> bool {
+        self[0] || self[1] || self[2]
+    }
+
+    #[inline(always)]
+    fn all(&self) -> bool {
+        self[0] && self[1] && self[2]
+    }
+
+    #[inline(always)]
+    fn not(&self) -> Vec3<bool> {
+        Vector3::new(!self[0], !self[1], !self[2])
+    }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+/// a three-component single-precision floating-point vector
+pub type vec3  = Vec3<f32>;
+/// a three-component double-precision floating-point vector
+pub type dvec3 = Vec3<f64>;
+/// a three-component Boolean vector
+pub type bvec3 = Vec3<bool>;
+/// a three-component signed integer vector
+pub type ivec3 = Vec3<i32>;
+/// a three-component unsigned integer vector
+pub type uvec3 = Vec3<u32>;
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec3 {
+    #[inline(always)] fn new(x: f32, y: f32, z: f32) -> vec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: f32) -> vec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec3 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> vec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> vec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> vec3 { NumericVector3::unit_z() }
+
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec3>() }
+}
+
+pub impl dvec3 {
+    #[inline(always)] fn new(x: f64, y: f64, z: f64) -> dvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: f64) -> dvec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec3 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> dvec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> dvec3 { NumericVector3::unit_z() }
+
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec3>() }
+}
+
+pub impl bvec3 {
+    #[inline(always)] fn new(x: bool, y: bool, z: bool) -> bvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: bool) -> bvec3 { Vector::from_value(v) }
+
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec3>() }
+}
+
+pub impl ivec3 {
+    #[inline(always)] fn new(x: i32, y: i32, z: i32) -> ivec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: i32) -> ivec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec3 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> ivec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> ivec3 { NumericVector3::unit_z() }
+
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec3>() }
+}
+
+pub impl uvec3 {
+    #[inline(always)] fn new(x: u32, y: u32, z: u32) -> uvec3 { Vector3::new(x, y, z) }
+    #[inline(always)] fn from_value(v: u32) -> uvec3 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec3 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec3 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> uvec3 { NumericVector3::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec3 { NumericVector3::unit_y() }
+    #[inline(always)] fn unit_z() -> uvec3 { NumericVector3::unit_z() }
+
+    #[inline(always)] fn dim() -> uint { 3 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec3>() }
+}
+
+/**
+ * A 4-dimensional vector
+ *
+ * # Type parameters
+ *
+ * * `T` - The type of the components. This is intended to support boolean,
+ *         integer, unsigned integer, and floating point types.
+ *
+ * # Fields
+ *
+ * * `x` - the first component of the vector
+ * * `y` - the second component of the vector
+ * * `z` - the third component of the vector
+ * * `w` - the fourth component of the vector
+ */
+#[deriving(Eq)]
+pub struct Vec4<T> { x: T, y: T, z: T, w: T }
+
+impl<T:Copy + Eq> Vector<T> for Vec4<T> {
+    #[inline(always)]
+    fn from_value(value: T) -> Vec4<T> {
+        Vector4::new(value, value, value, value)
+    }
+
+    #[inline(always)]
+    fn to_ptr(&self) -> *T {
+        unsafe { cast::transmute(self) }
+    }
+    
+    #[inline(always)]
+    fn index_mut(&mut self, i: uint) -> &'self mut T {
+        match i {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            3 => &mut self.w,
+            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", i))
+        }
+    }
+
+    #[inline(always)]
+    fn swap(&mut self, a: uint, b: uint) {
+        *self.index_mut(a) <-> *self.index_mut(b);
+    }
+}
+
+impl<T> Vector4<T> for Vec4<T> {
+    #[inline(always)]
+    fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
+    }
+}
+
+impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
+    #[inline(always)]
+    fn index(&self, i: &uint) -> T {
+        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec4<T> {
+    #[inline(always)]
+    fn identity() -> Vec4<T> {
+        Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
+    }
+
+    #[inline(always)]
+    fn zero() -> Vec4<T> {
+        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn is_zero(&self) -> bool {
+        self[0] == zero() &&
+        self[1] == zero() &&
+        self[2] == zero() &&
+        self[3] == zero()
+    }
+
+    #[inline(always)]
+    fn mul_t(&self, value: T) -> Vec4<T> {
+        Vector4::new(self[0] * value,
+                     self[1] * value,
+                     self[2] * value,
+                     self[3] * value)
+    }
+
+    #[inline(always)]
+    fn div_t(&self, value: T) -> Vec4<T> {
+        Vector4::new(self[0] / value,
+                     self[1] / value,
+                     self[2] / value,
+                     self[3] / value)
+    }
+
+    #[inline(always)]
+    fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vector4::new(self[0] + other[0],
+                     self[1] + other[1],
+                     self[2] + other[2],
+                     self[3] + other[3])
+    }
+
+    #[inline(always)]
+    fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vector4::new(self[0] - other[0],
+                     self[1] - other[1],
+                     self[2] - other[2],
+                     self[3] - other[3])
+    }
+
+    #[inline(always)]
+    fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vector4::new(self[0] * other[0],
+                     self[1] * other[1],
+                     self[2] * other[2],
+                     self[3] * other[3])
+    }
+
+    #[inline(always)]
+    fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vector4::new(self[0] / other[0],
+                     self[1] / other[1],
+                     self[2] / other[2],
+                     self[3] / other[3])
+    }
+
+    #[inline(always)]
+    fn dot(&self, other: &Vec4<T>) -> T {
+        self[0] * other[0] +
+        self[1] * other[1] +
+        self[2] * other[2] +
+        self[3] * other[3]
+    }
+    
+    #[inline(always)]
+    fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index_mut(0);
+        *self.index_mut(1) = -*self.index_mut(1);
+        *self.index_mut(2) = -*self.index_mut(2);
+        *self.index_mut(3) = -*self.index_mut(3);
+    }
+
+    #[inline(always)]
+    fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+        *self.index_mut(2) *= value;
+        *self.index_mut(3) *= value;
+    }
+
+    #[inline(always)]
+    fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+        *self.index_mut(2) /= value;
+        *self.index_mut(3) /= value;
+    }
+
+    #[inline(always)]
+    fn add_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) += other[0];
+        *self.index_mut(1) += other[1];
+        *self.index_mut(2) += other[2];
+        *self.index_mut(3) += other[3];
+    }
+
+    #[inline(always)]
+    fn sub_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) -= other[0];
+        *self.index_mut(1) -= other[1];
+        *self.index_mut(2) -= other[2];
+        *self.index_mut(3) -= other[3];
+    }
+
+    #[inline(always)]
+    fn mul_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) *= other[0];
+        *self.index_mut(1) *= other[1];
+        *self.index_mut(2) *= other[2];
+        *self.index_mut(3) *= other[3];
+    }
+
+    #[inline(always)]
+    fn div_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) /= other[0];
+        *self.index_mut(1) /= other[1];
+        *self.index_mut(2) /= other[2];
+        *self.index_mut(3) /= other[3];
+    }
+}
+
+impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec4<T>> for Vec4<T> {
+    #[inline(always)]
+    fn neg(&self) -> Vec4<T> {
+        Vector4::new(-self[0], -self[1], -self[2], -self[3])
+    }
+}
+
+impl<T:Copy + Number> NumericVector4<T> for Vec4<T> {
+    #[inline(always)]
+    fn unit_x() -> Vec4<T> {
+        Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_y() -> Vec4<T> {
+        Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_z() -> Vec4<T> {
+        Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
+    }
+
+    #[inline(always)]
+    fn unit_w() -> Vec4<T> {
+        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
+    }
+}
+
+impl<T:Copy + Float + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
+    #[inline(always)]
+    fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline(always)]
+    fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline(always)]
+    fn distance2(&self, other: &Vec4<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline(always)]
+    fn distance(&self, other: &Vec4<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline(always)]
+    fn angle(&self, other: &Vec4<T>) -> T {
+        acos(self.dot(other) / (self.length() * other.length()))
+    }
+
+    #[inline(always)]
+    fn normalize(&self) -> Vec4<T> {
+        self.mul_t(one::<T>()/self.length())
+    }
+
+    #[inline(always)]
+    fn normalize_to(&self, length: T) -> Vec4<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline(always)]
+    fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+    
+    #[inline(always)]
+    fn normalize_self(&mut self) {
+        let n = one::<T>() / self.length();
+        self.mul_self_t(n);
+    }
+
+    #[inline(always)]
+    fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
+    #[inline(always)]
+    fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
+        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+    }
+
+    #[inline(always)]
+    fn fuzzy_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
+        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
+        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
+        self[2].fuzzy_eq_eps(&other[2], epsilon) &&
+        self[3].fuzzy_eq_eps(&other[3], epsilon)
+    }
+}
+
+impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
+    #[inline(always)]
+    fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] < other[0],
+                     self[1] < other[1],
+                     self[2] < other[2],
+                     self[3] < other[3])
+    }
+
+    #[inline(always)]
+    fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] <= other[0],
+                     self[1] <= other[1],
+                     self[2] <= other[2],
+                     self[3] <= other[3])
+    }
+
+    #[inline(always)]
+    fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] > other[0],
+                     self[1] > other[1],
+                     self[2] > other[2],
+                     self[3] > other[3])
+    }
+
+    #[inline(always)]
+    fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] >= other[0],
+                     self[1] >= other[1],
+                     self[2] >= other[2],
+                     self[3] >= other[3])
+    }
+}
+
+impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
+    #[inline(always)]
+    fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] == other[0],
+                     self[1] == other[1],
+                     self[2] == other[2],
+                     self[3] == other[3])
+    }
+
+    #[inline(always)]
+    fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vector4::new(self[0] != other[0],
+                     self[1] != other[1],
+                     self[2] != other[2],
+                     self[3] != other[3])
+    }
+}
+
+impl BooleanVector for Vec4<bool> {
+    #[inline(always)]
+    fn any(&self) -> bool {
+        self[0] || self[1] || self[2] || self[3]
+    }
+
+    #[inline(always)]
+    fn all(&self) -> bool {
+        self[0] && self[1] && self[2] && self[3]
+    }
+
+    #[inline(always)]
+    fn not(&self) -> Vec4<bool> {
+        Vector4::new(!self[0], !self[1], !self[2], !self[3])
+    }
+}
+
+// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
+// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
+
+// a four-component single-precision floating-point vector
+pub type vec4  = Vec4<f32>;
+// a four-component double-precision floating-point vector
+pub type dvec4 = Vec4<f64>;
+// a four-component Boolean vector
+pub type bvec4 = Vec4<bool>;
+// a four-component signed integer vector
+pub type ivec4 = Vec4<i32>;
+// a four-component unsigned integer vector
+pub type uvec4 = Vec4<u32>;
+
+// Static method wrappers for GLSL-style types
+
+pub impl vec4 {
+    #[inline(always)] fn new(x: f32, y: f32, z: f32, w: f32) -> vec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: f32) -> vec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> vec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> vec4 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> vec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> vec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> vec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> vec4 { NumericVector4::unit_w() }
+
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<vec4>() }
+}
+
+pub impl dvec4 {
+    #[inline(always)] fn new(x: f64, y: f64, z: f64, w: f64) -> dvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: f64) -> dvec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> dvec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> dvec4 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> dvec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> dvec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> dvec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> dvec4 { NumericVector4::unit_w() }
+
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<dvec4>() }
+}
+
+
+pub impl bvec4 {
+    #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> bvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: bool) -> bvec4 { Vector::from_value(v) }
+
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<bvec4>() }
+}
+
+pub impl ivec4 {
+    #[inline(always)] fn new(x: i32, y: i32, z: i32, w: i32) -> ivec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: i32) -> ivec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> ivec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> ivec4 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> ivec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> ivec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> ivec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> ivec4 { NumericVector4::unit_w() }
+
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<ivec4>() }
+}
+
+pub impl uvec4 {
+    #[inline(always)] fn new(x: u32, y: u32, z: u32, w: u32) -> uvec4 { Vector4::new(x, y, z, w) }
+    #[inline(always)] fn from_value(v: u32) -> uvec4 { Vector::from_value(v) }
+    #[inline(always)] fn identity() -> uvec4 { NumericVector::identity() }
+    #[inline(always)] fn zero() -> uvec4 { NumericVector::zero() }
+
+    #[inline(always)] fn unit_x() -> uvec4 { NumericVector4::unit_x() }
+    #[inline(always)] fn unit_y() -> uvec4 { NumericVector4::unit_y() }
+    #[inline(always)] fn unit_z() -> uvec4 { NumericVector4::unit_z() }
+    #[inline(always)] fn unit_w() -> uvec4 { NumericVector4::unit_w() }
+
+    #[inline(always)] fn dim() -> uint { 4 }
+    #[inline(always)] fn size_of() -> uint { sys::size_of::<uvec4>() }
 }
