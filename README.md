@@ -1,14 +1,15 @@
 # Lmath-rs
 
-Lmath is generic linear algebra library for Rust. There is still much to do, unit tests to write, bugs to fix, and performance enhancements to make. Help is much appreciated, so please don't hesitate to send me a pull request.
-
-## Installation
-
-`$ cargo install lmath`
+A linear algebra library for Rust, targeted at computer graphics.
 
 ## Dependencies
 
-[numeric-rs](https://github.com/bjz/numeric-rs/) (can be installed via `$ cargo install numeric`)
+[numeric-rs](https://github.com/bjz/numeric-rs/) (drop the library binary into lmath/extern)
+
+
+## Examples
+
+- [luqmana/rray](https://github.com/luqmana/rray) - Raytracer written in rust.
 
 
 ~B☼
