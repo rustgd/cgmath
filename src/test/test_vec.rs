@@ -1,5 +1,6 @@
 use std::cmp::FuzzyEq;
-use numeric::float::Float;
+use numeric::float::Float::frac_pi_2;
+use numeric::float::Float::frac_pi_3;
 
 use vec::*;
 
@@ -107,9 +108,9 @@ fn test_vec2_euclidean() {
     assert!(a.distance(&b) == 5.0);
     assert!(a.distance2(&b) == 5.0 * 5.0);
     
-    assert!(vec2::new(1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&Float::frac_pi_2()));
-    assert!(vec2::new(10.0, 0.0).angle(&vec2::new(0.0, 5.0)).fuzzy_eq(&Float::frac_pi_2()));
-    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&-Float::frac_pi_2::<f32>()));
+    assert!(vec2::new(1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
+    assert!(vec2::new(10.0, 0.0).angle(&vec2::new(0.0, 5.0)).fuzzy_eq(&frac_pi_2()));
+    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&-frac_pi_2::<f32>()));
     
     assert!(vec2::new(3.0, 4.0).normalize().fuzzy_eq(&vec2::new(3.0/5.0, 4.0/5.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
@@ -264,9 +265,9 @@ fn test_vec3_euclidean() {
     assert!(a.distance(&b) == 9.0);
     assert!(a.distance2(&b) == 9.0 * 9.0);
     
-    assert!(vec3::new(1.0, 0.0, 1.0).angle(&vec3::new(1.0, 1.0, 0.0)).fuzzy_eq(&Float::frac_pi_3()));
-    assert!(vec3::new(10.0, 0.0, 10.0).angle(&vec3::new(5.0, 5.0, 0.0)).fuzzy_eq(&Float::frac_pi_3()));
-    assert!(vec3::new(-1.0, 0.0, -1.0).angle(&vec3::new(1.0, -1.0, 0.0)).fuzzy_eq(&(2.0 * Float::frac_pi_3())));
+    assert!(vec3::new(1.0, 0.0, 1.0).angle(&vec3::new(1.0, 1.0, 0.0)).fuzzy_eq(&frac_pi_3()));
+    assert!(vec3::new(10.0, 0.0, 10.0).angle(&vec3::new(5.0, 5.0, 0.0)).fuzzy_eq(&frac_pi_3()));
+    assert!(vec3::new(-1.0, 0.0, -1.0).angle(&vec3::new(1.0, -1.0, 0.0)).fuzzy_eq(&(2.0 * frac_pi_3())));
     
     assert!(vec3::new(2.0, 3.0, 6.0).normalize().fuzzy_eq(&vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
@@ -417,9 +418,9 @@ fn test_vec4_euclidean() {
     assert!(a.distance(&b) == 13.0);
     assert!(a.distance2(&b) == 13.0 * 13.0);
     
-    assert!(vec4::new(1.0, 0.0, 1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&Float::frac_pi_2()));
-    assert!(vec4::new(10.0, 0.0, 10.0, 0.0).angle(&vec4::new(0.0, 5.0, 0.0, 5.0)).fuzzy_eq(&Float::frac_pi_2()));
-    assert!(vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&Float::frac_pi_2()));
+    assert!(vec4::new(1.0, 0.0, 1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
+    assert!(vec4::new(10.0, 0.0, 10.0, 0.0).angle(&vec4::new(0.0, 5.0, 0.0, 5.0)).fuzzy_eq(&frac_pi_2()));
+    assert!(vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
     
     assert!(vec4::new(1.0, 2.0, 4.0, 10.0).normalize().fuzzy_eq(&vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
