@@ -454,6 +454,57 @@ pub trait MixVec<T>: Vector<T> {
     fn step(&self, edge: Self) -> Self;
 }
 
+// Utility macros
+
+macro_rules! zip_vec2(
+    ($a:ident[] $method:ident $b:ident[]) => (
+        Vector2::new($a[0].$method(&($b[0])),
+                     $a[1].$method(&($b[1])))
+    );
+    ($a:ident[] $method:ident $b:ident) => (
+        Vector2::new($a[0].$method(&($b)),
+                     $a[1].$method(&($b)))
+    );
+)
+
+macro_rules! zip_vec3(
+    ($a:ident[] $method:ident $b:ident[]) => (
+        Vector3::new($a[0].$method(&($b[0])),
+                     $a[1].$method(&($b[1])),
+                     $a[2].$method(&($b[2])))
+    );
+    ($a:ident[] $method:ident $b:ident) => (
+        Vector3::new($a[0].$method(&($b)),
+                     $a[1].$method(&($b)),
+                     $a[2].$method(&($b)))
+    );
+)
+
+macro_rules! zip_vec4(
+    ($a:ident[] $method:ident $b:ident[]) => (
+        Vector4::new($a[0].$method(&($b[0])),
+                     $a[1].$method(&($b[1])),
+                     $a[2].$method(&($b[2])),
+                     $a[3].$method(&($b[3])))
+    );
+    ($a:ident[] $method:ident $b:ident) => (
+        Vector4::new($a[0].$method(&($b)),
+                     $a[1].$method(&($b)),
+                     $a[2].$method(&($b)),
+                     $a[3].$method(&($b)))
+    );
+)
+
+macro_rules! zip_assign(
+    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method($b[0]);     $a.index_mut(1).$method($b[1]); });
+    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method($b[2]); });
+    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method($b[3]); });
+    
+    ($a:ident[] $method:ident $b:ident   ..2) => ({ $a.index_mut(0).$method($b);        $a.index_mut(1).$method($b);    });
+    ($a:ident[] $method:ident $b:ident   ..3) => ({ zip_assign!($a[] $method $b ..2);   $a.index_mut(2).$method($b);    });
+    ($a:ident[] $method:ident $b:ident   ..4) => ({ zip_assign!($a[] $method $b ..3);   $a.index_mut(3).$method($b);    });
+)
+
 /**
  * A 2-dimensional vector
  *
@@ -529,38 +580,32 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Vec2<T> {
-        Vector2::new(self[0] * value,
-                     self[1] * value)
+        zip_vec2!(self[] mul value)
     }
 
     #[inline(always)]
     fn div_t(&self, value: T) -> Vec2<T> {
-        Vector2::new(self[0] / value,
-                     self[1] / value)
+        zip_vec2!(self[] div value)
     }
 
     #[inline(always)]
     fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vector2::new(self[0] + other[0],
-                     self[1] + other[1])
+        zip_vec2!(self[] add other[])
     }
 
     #[inline(always)]
     fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vector2::new(self[0] - other[0],
-                     self[1] - other[1])
+        zip_vec2!(self[] sub other[])
     }
 
     #[inline(always)]
     fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vector2::new(self[0] * other[0],
-                     self[1] * other[1])
+        zip_vec2!(self[] mul other[])
     }
 
     #[inline(always)]
     fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vector2::new(self[0] / other[0],
-                     self[1] / other[1])
+        zip_vec2!(self[] div other[])
     }
 
     #[inline(always)]
@@ -571,44 +616,38 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index_mut(0);
-        *self.index_mut(1) = -*self.index_mut(1);
+        *self.index_mut(0) = -self[0];
+        *self.index_mut(1) = -self[1];
     }
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        *self.index_mut(0) *= value;
-        *self.index_mut(1) *= value;
+        zip_assign!(self[] mul_assign value ..2);
     }
 
     #[inline(always)]
     fn div_self_t(&mut self, value: T) {
-        *self.index_mut(0) /= value;
-        *self.index_mut(1) /= value;
+        zip_assign!(self[] div_assign value ..2);
     }
 
     #[inline(always)]
     fn add_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) += other[0];
-        *self.index_mut(1) += other[1];
+        zip_assign!(self[] add_assign other[] ..2);
     }
 
     #[inline(always)]
     fn sub_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) -= other[0];
-        *self.index_mut(1) -= other[1];
+        zip_assign!(self[] sub_assign other[] ..2);
     }
 
     #[inline(always)]
     fn mul_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) *= other[0];
-        *self.index_mut(1) *= other[1];
+        zip_assign!(self[] mul_assign other[] ..2);
     }
 
     #[inline(always)]
     fn div_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) /= other[0];
-        *self.index_mut(1) /= other[1];
+        zip_assign!(self[] div_assign other[] ..2);
     }
 }
 
@@ -718,40 +757,34 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
 impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec2<bool>> for Vec2<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] < other[0],
-                     self[1] < other[1])
+        zip_vec2!(self[] lt other[])
     }
 
     #[inline(always)]
     fn less_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] <= other[0],
-                     self[1] <= other[1])
+        zip_vec2!(self[] le other[])
     }
 
     #[inline(always)]
     fn greater_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] > other[0],
-                     self[1] > other[1])
+        zip_vec2!(self[] gt other[])
     }
 
     #[inline(always)]
     fn greater_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] >= other[0],
-                     self[1] >= other[1])
+        zip_vec2!(self[] ge other[])
     }
 }
 
 impl<T:Copy + Eq> EquableVector<T, Vec2<bool>> for Vec2<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] == other[0],
-                     self[1] == other[1])
+        zip_vec2!(self[] eq other[])
     }
 
     #[inline(always)]
     fn not_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vector2::new(self[0] != other[0],
-                     self[1] != other[1])
+        zip_vec2!(self[] ne other[])
     }
 }
 
@@ -927,44 +960,32 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Vec3<T> {
-        Vector3::new(self[0] * value,
-                     self[1] * value,
-                     self[2] * value)
+        zip_vec3!(self[] mul value)
     }
 
     #[inline(always)]
     fn div_t(&self, value: T) -> Vec3<T> {
-        Vector3::new(self[0] / value,
-                     self[1] / value,
-                     self[2] / value)
+        zip_vec3!(self[] div value)
     }
 
     #[inline(always)]
-    fn add_v(&self, other: &Vec3<T>) -> Vec3<T>{
-        Vector3::new(self[0] + other[0],
-                     self[1] + other[1],
-                     self[2] + other[2])
+    fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        zip_vec3!(self[] add other[])
     }
 
     #[inline(always)]
-    fn sub_v(&self, other: &Vec3<T>) -> Vec3<T>{
-        Vector3::new(self[0] - other[0],
-                     self[1] - other[1],
-                     self[2] - other[2])
+    fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        zip_vec3!(self[] sub other[])
     }
 
     #[inline(always)]
-    fn mul_v(&self, other: &Vec3<T>) -> Vec3<T>{
-        Vector3::new(self[0] * other[0],
-                     self[1] * other[1],
-                     self[2] * other[2])
+    fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        zip_vec3!(self[] mul other[])
     }
 
     #[inline(always)]
-    fn div_v(&self, other: &Vec3<T>) -> Vec3<T>{
-        Vector3::new(self[0] / other[0],
-                     self[1] / other[1],
-                     self[2] / other[2])
+    fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        zip_vec3!(self[] div other[])
     }
 
     #[inline(always)]
@@ -976,51 +997,39 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index_mut(0);
-        *self.index_mut(1) = -*self.index_mut(1);
-        *self.index_mut(2) = -*self.index_mut(2);
+        *self.index_mut(0) = -self[0];
+        *self.index_mut(1) = -self[1];
+        *self.index_mut(2) = -self[2];
     }
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        *self.index_mut(0) *= value;
-        *self.index_mut(1) *= value;
-        *self.index_mut(2) *= value;
+        zip_assign!(self[] mul_assign value ..3);
     }
 
     #[inline(always)]
     fn div_self_t(&mut self, value: T) {
-        *self.index_mut(0) /= value;
-        *self.index_mut(1) /= value;
-        *self.index_mut(2) /= value;
+        zip_assign!(self[] div_assign value ..3);
     }
 
     #[inline(always)]
     fn add_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) += other[0];
-        *self.index_mut(1) += other[1];
-        *self.index_mut(2) += other[2];
+        zip_assign!(self[] add_assign other[] ..3);
     }
 
     #[inline(always)]
     fn sub_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) -= other[0];
-        *self.index_mut(1) -= other[1];
-        *self.index_mut(2) -= other[2];
+        zip_assign!(self[] sub_assign other[] ..3);
     }
 
     #[inline(always)]
     fn mul_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) *= other[0];
-        *self.index_mut(1) *= other[1];
-        *self.index_mut(2) *= other[2];
+        zip_assign!(self[] mul_assign other[] ..3);
     }
 
     #[inline(always)]
     fn div_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) /= other[0];
-        *self.index_mut(1) /= other[1];
-        *self.index_mut(2) /= other[2];
+        zip_assign!(self[] div_assign other[] ..3);
     }
 }
 
@@ -1143,46 +1152,34 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
 impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] < other[0],
-                     self[1] < other[1],
-                     self[2] < other[2])
+        zip_vec3!(self[] lt other[])
     }
 
     #[inline(always)]
     fn less_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] <= other[0],
-                     self[1] <= other[1],
-                     self[2] <= other[2])
+        zip_vec3!(self[] le other[])
     }
 
     #[inline(always)]
     fn greater_than(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] > other[0],
-                     self[1] > other[1],
-                     self[2] > other[2])
+        zip_vec3!(self[] gt other[])
     }
 
     #[inline(always)]
     fn greater_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] >= other[0],
-                     self[1] >= other[1],
-                     self[2] >= other[2])
+        zip_vec3!(self[] ge other[])
     }
 }
 
 impl<T:Copy + Eq> EquableVector<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] == other[0],
-                     self[1] == other[1],
-                     self[2] == other[2])
+        zip_vec3!(self[] eq other[])
     }
 
     #[inline(always)]
     fn not_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vector3::new(self[0] != other[0],
-                     self[1] != other[1],
-                     self[2] != other[2])
+        zip_vec3!(self[] ne other[])
     }
 }
 
@@ -1362,50 +1359,32 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Vec4<T> {
-        Vector4::new(self[0] * value,
-                     self[1] * value,
-                     self[2] * value,
-                     self[3] * value)
+        zip_vec4!(self[] mul value)
     }
 
     #[inline(always)]
     fn div_t(&self, value: T) -> Vec4<T> {
-        Vector4::new(self[0] / value,
-                     self[1] / value,
-                     self[2] / value,
-                     self[3] / value)
+        zip_vec4!(self[] div value)
     }
 
     #[inline(always)]
     fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vector4::new(self[0] + other[0],
-                     self[1] + other[1],
-                     self[2] + other[2],
-                     self[3] + other[3])
+        zip_vec4!(self[] add other[])
     }
 
     #[inline(always)]
     fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vector4::new(self[0] - other[0],
-                     self[1] - other[1],
-                     self[2] - other[2],
-                     self[3] - other[3])
+        zip_vec4!(self[] sub other[])
     }
 
     #[inline(always)]
     fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vector4::new(self[0] * other[0],
-                     self[1] * other[1],
-                     self[2] * other[2],
-                     self[3] * other[3])
+        zip_vec4!(self[] mul other[])
     }
 
     #[inline(always)]
     fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vector4::new(self[0] / other[0],
-                     self[1] / other[1],
-                     self[2] / other[2],
-                     self[3] / other[3])
+        zip_vec4!(self[] div other[])
     }
 
     #[inline(always)]
@@ -1418,58 +1397,40 @@ impl<T:Copy + Number + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Numer
     
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index_mut(0);
-        *self.index_mut(1) = -*self.index_mut(1);
-        *self.index_mut(2) = -*self.index_mut(2);
-        *self.index_mut(3) = -*self.index_mut(3);
+        *self.index_mut(0) = -self[0];
+        *self.index_mut(1) = -self[1];
+        *self.index_mut(2) = -self[2];
+        *self.index_mut(3) = -self[3];
     }
 
     #[inline(always)]
     fn mul_self_t(&mut self, value: T) {
-        *self.index_mut(0) *= value;
-        *self.index_mut(1) *= value;
-        *self.index_mut(2) *= value;
-        *self.index_mut(3) *= value;
+        zip_assign!(self[] mul_assign value ..4);
     }
 
     #[inline(always)]
     fn div_self_t(&mut self, value: T) {
-        *self.index_mut(0) /= value;
-        *self.index_mut(1) /= value;
-        *self.index_mut(2) /= value;
-        *self.index_mut(3) /= value;
+        zip_assign!(self[] div_assign value ..4);
     }
 
     #[inline(always)]
     fn add_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) += other[0];
-        *self.index_mut(1) += other[1];
-        *self.index_mut(2) += other[2];
-        *self.index_mut(3) += other[3];
+        zip_assign!(self[] add_assign other[] ..4);
     }
 
     #[inline(always)]
     fn sub_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) -= other[0];
-        *self.index_mut(1) -= other[1];
-        *self.index_mut(2) -= other[2];
-        *self.index_mut(3) -= other[3];
+        zip_assign!(self[] sub_assign other[] ..4);
     }
 
     #[inline(always)]
     fn mul_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) *= other[0];
-        *self.index_mut(1) *= other[1];
-        *self.index_mut(2) *= other[2];
-        *self.index_mut(3) *= other[3];
+        zip_assign!(self[] mul_assign other[] ..4);
     }
 
     #[inline(always)]
     fn div_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) /= other[0];
-        *self.index_mut(1) /= other[1];
-        *self.index_mut(2) /= other[2];
-        *self.index_mut(3) /= other[3];
+        zip_assign!(self[] div_assign other[] ..4);
     }
 }
 
@@ -1579,52 +1540,34 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
 impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] < other[0],
-                     self[1] < other[1],
-                     self[2] < other[2],
-                     self[3] < other[3])
+        zip_vec4!(self[] lt other[])
     }
 
     #[inline(always)]
     fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] <= other[0],
-                     self[1] <= other[1],
-                     self[2] <= other[2],
-                     self[3] <= other[3])
+        zip_vec4!(self[] le other[])
     }
 
     #[inline(always)]
     fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] > other[0],
-                     self[1] > other[1],
-                     self[2] > other[2],
-                     self[3] > other[3])
+        zip_vec4!(self[] gt other[])
     }
 
     #[inline(always)]
     fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] >= other[0],
-                     self[1] >= other[1],
-                     self[2] >= other[2],
-                     self[3] >= other[3])
+        zip_vec4!(self[] ge other[])
     }
 }
 
 impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] == other[0],
-                     self[1] == other[1],
-                     self[2] == other[2],
-                     self[3] == other[3])
+        zip_vec4!(self[] eq other[])
     }
 
     #[inline(always)]
     fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vector4::new(self[0] != other[0],
-                     self[1] != other[1],
-                     self[2] != other[2],
-                     self[3] != other[3])
+        zip_vec4!(self[] ne other[])
     }
 }
 
