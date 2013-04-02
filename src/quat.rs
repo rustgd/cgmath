@@ -13,9 +13,8 @@ use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 
-use mat::{Mat3, Matrix3};
-use vec::{Vec3, Vector3, EuclideanVector};
-use vec::{NumericVector, NumericVector3};
+use mat::{Mat3, BaseMat3};
+use vec::{Vec3, BaseVec3, AffineVec, NumVec, NumVec3};
 use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
 
 /**
@@ -47,7 +46,7 @@ pub impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,
      */
     #[inline(always)]
     fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
-        Quat::from_sv(w, Vector3::new(xi, yj, zk))
+        Quat::from_sv(w, BaseVec3::new(xi, yj, zk))
     }
 
     /**
@@ -122,7 +121,7 @@ pub impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,
 
     #[inline(always)]
     fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
-        let m: Mat3<T> = Matrix3::from_axes(x, y, z); m.to_quat()
+        let m: Mat3<T> = BaseMat3::from_axes(x, y, z); m.to_quat()
     }
 
     fn get_angle_axis(&self) -> (T, Vec3<T>) {
@@ -131,7 +130,7 @@ pub impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,
 
     #[inline(always)]
     fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
-        let m: Mat3<T> = Matrix3::look_at(dir, up); m.to_quat()
+        let m: Mat3<T> = BaseMat3::look_at(dir, up); m.to_quat()
     }
 
     /**
@@ -365,9 +364,9 @@ pub impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,
 
         let _1: T = one();
 
-        Matrix3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
-                          xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
-                          xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
+        BaseMat3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
+                           xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
+                           xz2 + sy2,      yz2 - sx2, _1 - xx2 - yy2)
     }
 }
 

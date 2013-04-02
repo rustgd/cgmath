@@ -3,7 +3,7 @@ use numeric::*;
 
 use std::cmp::FuzzyEq;
 
-use mat::{Mat4, Matrix4};
+use mat::{Mat4, BaseMat4};
 
 /**
  * Create a perspective projection matrix
@@ -51,8 +51,8 @@ pub fn frustum<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + 
     let c3r2 = -(_2 * far * near) / (far - near);
     let c3r3 = _0;
 
-    Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                 c1r0, c1r1, c1r2, c1r3,
-                 c2r0, c2r1, c2r2, c2r3,
-                 c3r0, c3r1, c3r2, c3r3)
+    BaseMat4::new(c0r0, c0r1, c0r2, c0r3,
+                  c1r0, c1r1, c1r2, c1r3,
+                  c2r0, c2r1, c2r2, c2r3,
+                  c3r0, c3r1, c3r2, c3r3)
 }

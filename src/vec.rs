@@ -12,7 +12,7 @@ use numeric::*;
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait Vector<T>: Index<uint,T> + Eq {
+pub trait BaseVec<T>: Index<uint,T> + Eq {
     /**
      * Construct the vector from a single value, copying it to each component
      */
@@ -39,28 +39,28 @@ pub trait Vector<T>: Index<uint,T> + Eq {
 /**
  * A generic 2-dimensional vector
  */
-pub trait Vector2<T>: Vector<T> {
+pub trait BaseVec2<T>: BaseVec<T> {
     fn new(x: T, y: T) -> Self;
 }
 
 /**
  * A generic 3-dimensional vector
  */
-pub trait Vector3<T>: Vector<T> {
+pub trait BaseVec3<T>: BaseVec<T> {
     fn new(x: T, y: T, z: T) -> Self;
 }
 
 /**
  * A generic 4-dimensional vector
  */
-pub trait Vector4<T>: Vector<T> {
+pub trait BaseVec4<T>: BaseVec<T> {
     fn new(x: T, y: T, z: T, w: T) -> Self;
 }
 
 /**
  * A vector with numeric components
  */
-pub trait NumericVector<T>: Vector<T> + Neg<Self> {
+pub trait NumVec<T>: BaseVec<T> + Neg<Self> {
     /**
      * The standard basis vector
      *
@@ -166,7 +166,7 @@ pub trait NumericVector<T>: Vector<T> + Neg<Self> {
 /**
  * A 2-dimensional vector with numeric components
  */
-pub trait NumericVector2<T>: NumericVector<T> {
+pub trait NumVec2<T>: NumVec<T> {
     fn unit_x() -> Self;
     fn unit_y() -> Self;
 
@@ -181,7 +181,7 @@ pub trait NumericVector2<T>: NumericVector<T> {
 /**
  * A 3-dimensional vector with numeric components
  */
-pub trait NumericVector3<T>: NumericVector<T> {
+pub trait NumVec3<T>: NumVec<T> {
     fn unit_x() -> Self;
     fn unit_y() -> Self;
     fn unit_z() -> Self;
@@ -202,7 +202,7 @@ pub trait NumericVector3<T>: NumericVector<T> {
 /**
  * A 4-dimensional vector with numeric components
  */
-pub trait NumericVector4<T>: NumericVector<T> {
+pub trait NumVec4<T>: NumVec<T> {
     fn unit_x() -> Self;
     fn unit_y() -> Self;
     fn unit_z() -> Self;
@@ -223,7 +223,7 @@ pub trait ToHomogeneous<H> {
  *
  * * `T` - The type of the components. This should be a floating point type.
  */
-pub trait EuclideanVector<T>: NumericVector<T> {
+pub trait AffineVec<T>: NumVec<T> {
     /**
      * # Return value
      *
@@ -310,7 +310,7 @@ pub trait EuclideanVector<T>: NumericVector<T> {
  * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
-pub trait OrdinalVector<T, BoolVec>: Vector<T> {
+pub trait OrdVec<T, BoolVec>: BaseVec<T> {
     /**
      * Component-wise compare of `self < other`
      */
@@ -339,7 +339,7 @@ pub trait OrdinalVector<T, BoolVec>: Vector<T> {
  * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
-pub trait EquableVector<T, BoolVec>: Vector<T> {
+pub trait EqVec<T, BoolVec>: BaseVec<T> {
     /**
      * Component-wise compare of `self == other`
      */
@@ -358,7 +358,7 @@ pub trait EquableVector<T, BoolVec>: Vector<T> {
  * mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
  * (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
  */
-pub trait BooleanVector: Vector<bool> {
+pub trait BoolVec: BaseVec<bool> {
     /**
      * # Return value
      *
@@ -381,7 +381,7 @@ pub trait BooleanVector: Vector<bool> {
     fn not(&self) -> Self;
 }
 
-pub trait TrigVec<T>: Vector<T> {
+pub trait TrigVec<T>: BaseVec<T> {
     fn radians(&self) -> Self;
     fn degrees(&self) -> Self;
 
@@ -405,7 +405,7 @@ pub trait TrigVec<T>: Vector<T> {
     // fn atanh()                      -> Self;
 }
 
-pub trait ExpVec<T>: Vector<T> {
+pub trait ExpVec<T>: BaseVec<T> {
     // Exponential functions
     fn pow_t(&self, n: Self)           -> Self;
     fn pow_v(&self, n: T)              -> Self;
@@ -417,7 +417,7 @@ pub trait ExpVec<T>: Vector<T> {
     fn inv_sqrt(&self)                 -> Self;
 }
 
-pub trait ApproxVec<T>: Vector<T> {
+pub trait ApproxVec<T>: BaseVec<T> {
     // Whole-number approximation functions
     fn floor(&self)                    -> Self;
     fn trunc(&self)                    -> Self;
@@ -427,7 +427,7 @@ pub trait ApproxVec<T>: Vector<T> {
     fn fract(&self)                    -> Self;
 }
 
-pub trait SignedVec<T,BV>: Vector<T> {
+pub trait SignedVec<T,BV>: BaseVec<T> {
     fn is_positive(&self)    -> BV;
     fn is_negative(&self)    -> BV;
     fn is_nonpositive(&self) -> BV;
@@ -438,7 +438,7 @@ pub trait SignedVec<T,BV>: Vector<T> {
     fn copysign(&self, other: Self) -> Self;
 }
 
-pub trait ExtentVec<T>: Vector<T> {
+pub trait ExtentVec<T>: BaseVec<T> {
     fn min_v(&self, other: &Self) -> Self;
     fn max_v(&self, other: &Self) -> Self;
     fn clamp_v(&self, mn: &Self, mx: &Self) -> Self;
@@ -448,7 +448,7 @@ pub trait ExtentVec<T>: Vector<T> {
     fn clamp_t(&self, mn: T, mx: T) -> Self;
 }
 
-pub trait MixVec<T>: Vector<T> {
+pub trait MixVec<T>: BaseVec<T> {
     // Functions for blending numbers together
     fn mix(&self, other: Self, value: Self) -> Self;
     fn smooth_step(&self, edge0: Self, edge1: Self) -> Self;
@@ -459,40 +459,40 @@ pub trait MixVec<T>: Vector<T> {
 
 macro_rules! zip_vec2(
     ($a:ident[] $method:ident $b:ident[]) => (
-        Vector2::new($a[0].$method(&($b[0])),
-                     $a[1].$method(&($b[1])))
+        BaseVec2::new($a[0].$method(&($b[0])),
+                      $a[1].$method(&($b[1])))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        Vector2::new($a[0].$method(&($b)),
-                     $a[1].$method(&($b)))
+        BaseVec2::new($a[0].$method(&($b)),
+                      $a[1].$method(&($b)))
     );
 )
 
 macro_rules! zip_vec3(
     ($a:ident[] $method:ident $b:ident[]) => (
-        Vector3::new($a[0].$method(&($b[0])),
-                     $a[1].$method(&($b[1])),
-                     $a[2].$method(&($b[2])))
+        BaseVec3::new($a[0].$method(&($b[0])),
+                      $a[1].$method(&($b[1])),
+                      $a[2].$method(&($b[2])))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        Vector3::new($a[0].$method(&($b)),
-                     $a[1].$method(&($b)),
-                     $a[2].$method(&($b)))
+        BaseVec3::new($a[0].$method(&($b)),
+                      $a[1].$method(&($b)),
+                      $a[2].$method(&($b)))
     );
 )
 
 macro_rules! zip_vec4(
     ($a:ident[] $method:ident $b:ident[]) => (
-        Vector4::new($a[0].$method(&($b[0])),
-                     $a[1].$method(&($b[1])),
-                     $a[2].$method(&($b[2])),
-                     $a[3].$method(&($b[3])))
+        BaseVec4::new($a[0].$method(&($b[0])),
+                      $a[1].$method(&($b[1])),
+                      $a[2].$method(&($b[2])),
+                      $a[3].$method(&($b[3])))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        Vector4::new($a[0].$method(&($b)),
-                     $a[1].$method(&($b)),
-                     $a[2].$method(&($b)),
-                     $a[3].$method(&($b)))
+        BaseVec4::new($a[0].$method(&($b)),
+                      $a[1].$method(&($b)),
+                      $a[2].$method(&($b)),
+                      $a[3].$method(&($b)))
     );
 )
 
@@ -522,10 +522,10 @@ macro_rules! zip_assign(
  #[deriving(Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
-impl<T:Copy + Eq> Vector<T> for Vec2<T> {
+impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
     #[inline(always)]
     fn from_value(value: T) -> Vec2<T> {
-        Vector2::new(value, value)
+        BaseVec2::new(value, value)
     }
 
     #[inline(always)]
@@ -548,7 +548,7 @@ impl<T:Copy + Eq> Vector<T> for Vec2<T> {
     }
 }
 
-impl<T> Vector2<T> for Vec2<T> {
+impl<T> BaseVec2<T> for Vec2<T> {
     #[inline(always)]
     fn new(x: T, y: T ) -> Vec2<T> {
         Vec2 { x: x, y: y }
@@ -562,15 +562,15 @@ impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec2<T> {
+impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumVec<T> for Vec2<T> {
     #[inline(always)]
     fn identity() -> Vec2<T> {
-        Vector2::new(one::<T>(), one::<T>())
+        BaseVec2::new(one::<T>(), one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec2<T> {
-        Vector2::new(zero::<T>(), zero::<T>())
+        BaseVec2::new(zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
@@ -655,19 +655,19 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
 impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec2<T>> for Vec2<T> {
     #[inline(always)]
     fn neg(&self) -> Vec2<T> {
-        Vector2::new(-self[0], -self[1])
+        BaseVec2::new(-self[0], -self[1])
     }
 }
 
-impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector2<T> for Vec2<T> {
+impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumVec2<T> for Vec2<T> {
     #[inline(always)]
     fn unit_x() -> Vec2<T> {
-        Vector2::new(one::<T>(), zero::<T>())
+        BaseVec2::new(one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec2<T> {
-        Vector2::new(zero::<T>(), one::<T>())
+        BaseVec2::new(zero::<T>(), one::<T>())
     }
 
     #[inline(always)]
@@ -679,11 +679,11 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
 impl<T:Copy + Number + Zero> ToHomogeneous<Vec3<T>> for Vec2<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec3<T> {
-        Vector3::new(self.x, self.y, zero())
+        BaseVec3::new(self.x, self.y, zero())
     }
 }
 
-impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec2<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> AffineVec<T> for Vec2<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -755,7 +755,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec2<bool>> for Vec2<T> {
+impl<T:Copy + Ord + Eq> OrdVec<T, Vec2<bool>> for Vec2<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
         zip_vec2!(self[] lt other[])
@@ -777,7 +777,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec2<bool>> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Eq> EquableVector<T, Vec2<bool>> for Vec2<T> {
+impl<T:Copy + Eq> EqVec<T, Vec2<bool>> for Vec2<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
         zip_vec2!(self[] eq other[])
@@ -789,7 +789,7 @@ impl<T:Copy + Eq> EquableVector<T, Vec2<bool>> for Vec2<T> {
     }
 }
 
-impl BooleanVector for Vec2<bool> {
+impl BoolVec for Vec2<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
         self[0] || self[1]
@@ -802,15 +802,15 @@ impl BooleanVector for Vec2<bool> {
 
     #[inline(always)]
     fn not(&self) -> Vec2<bool> {
-        Vector2::new(!self[0], !self[1])
+        BaseVec2::new(!self[0], !self[1])
     }
 }
 
 macro_rules! vec2_type(
     ($name:ident <bool>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool) -> $name { Vector2::new(x, y) }
-            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn new(x: bool, y: bool) -> $name { BaseVec2::new(x, y) }
+            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
 
             #[inline(always)] fn dim() -> uint { 2 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
@@ -818,13 +818,13 @@ macro_rules! vec2_type(
     );
     ($name:ident <$T:ty>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T) -> $name { Vector2::new(x, y) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
-            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+            #[inline(always)] fn new(x: $T, y: $T) -> $name { BaseVec2::new(x, y) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumVec::identity() }
+            #[inline(always)] fn zero() -> $name { NumVec::zero() }
 
-            #[inline(always)] fn unit_x() -> $name { NumericVector2::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumericVector2::unit_y() }
+            #[inline(always)] fn unit_x() -> $name { NumVec2::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumVec2::unit_y() }
 
             #[inline(always)] fn dim() -> uint { 2 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
@@ -900,10 +900,10 @@ vec2_type!(Vec2b<bool>)
 #[deriving(Eq)]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
-impl<T:Copy + Eq> Vector<T> for Vec3<T> {
+impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
     #[inline(always)]
     fn from_value(value: T) -> Vec3<T> {
-        Vector3::new(value, value, value)
+        BaseVec3::new(value, value, value)
     }
 
     #[inline(always)]
@@ -927,7 +927,7 @@ impl<T:Copy + Eq> Vector<T> for Vec3<T> {
     }
 }
 
-impl<T> Vector3<T> for Vec3<T> {
+impl<T> BaseVec3<T> for Vec3<T> {
     #[inline(always)]
     fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
@@ -941,15 +941,15 @@ impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec3<T> {
+impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumVec<T> for Vec3<T> {
     #[inline(always)]
     fn identity() -> Vec3<T> {
-        Vector3::new(one::<T>(), one::<T>(), one::<T>())
+        BaseVec3::new(one::<T>(), one::<T>(), one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec3<T> {
-        Vector3::new(zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec3::new(zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
@@ -1037,31 +1037,31 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
 impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec3<T>> for Vec3<T> {
     #[inline(always)]
     fn neg(&self) -> Vec3<T> {
-        Vector3::new(-self[0], -self[1], -self[2])
+        BaseVec3::new(-self[0], -self[1], -self[2])
     }
 }
 
-impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector3<T> for Vec3<T> {
+impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumVec3<T> for Vec3<T> {
     #[inline(always)]
     fn unit_x() -> Vec3<T> {
-        Vector3::new(one::<T>(), zero::<T>(), zero::<T>())
+        BaseVec3::new(one::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec3<T> {
-        Vector3::new(zero::<T>(), one::<T>(), zero::<T>())
+        BaseVec3::new(zero::<T>(), one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_z() -> Vec3<T> {
-        Vector3::new(zero::<T>(), zero::<T>(), one::<T>())
+        BaseVec3::new(zero::<T>(), zero::<T>(), one::<T>())
     }
 
     #[inline(always)]
     fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vector3::new((self[1] * other[2]) - (self[2] * other[1]),
-                     (self[2] * other[0]) - (self[0] * other[2]),
-                     (self[0] * other[1]) - (self[1] * other[0]))
+        BaseVec3::new((self[1] * other[2]) - (self[2] * other[1]),
+                      (self[2] * other[0]) - (self[0] * other[2]),
+                      (self[0] * other[1]) - (self[1] * other[0]))
     }
     
     #[inline(always)]
@@ -1073,11 +1073,11 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
 impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> ToHomogeneous<Vec4<T>> for Vec3<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec4<T> {
-        Vector4::new(self.x, self.y, self.z, zero())
+        BaseVec4::new(self.x, self.y, self.z, zero())
     }
 }
 
-impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec3<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> AffineVec<T> for Vec3<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1150,7 +1150,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec3<bool>> for Vec3<T> {
+impl<T:Copy + Ord + Eq> OrdVec<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
         zip_vec3!(self[] lt other[])
@@ -1172,7 +1172,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec3<bool>> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Eq> EquableVector<T, Vec3<bool>> for Vec3<T> {
+impl<T:Copy + Eq> EqVec<T, Vec3<bool>> for Vec3<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
         zip_vec3!(self[] eq other[])
@@ -1184,7 +1184,7 @@ impl<T:Copy + Eq> EquableVector<T, Vec3<bool>> for Vec3<T> {
     }
 }
 
-impl BooleanVector for Vec3<bool> {
+impl BoolVec for Vec3<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
         self[0] || self[1] || self[2]
@@ -1197,15 +1197,15 @@ impl BooleanVector for Vec3<bool> {
 
     #[inline(always)]
     fn not(&self) -> Vec3<bool> {
-        Vector3::new(!self[0], !self[1], !self[2])
+        BaseVec3::new(!self[0], !self[1], !self[2])
     }
 }
 
 macro_rules! vec3_type(
     ($name:ident <bool>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool, z: bool) -> $name { Vector3::new(x, y, z) }
-            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn new(x: bool, y: bool, z: bool) -> $name { BaseVec3::new(x, y, z) }
+            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
 
             #[inline(always)] fn dim() -> uint { 3 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
@@ -1213,14 +1213,14 @@ macro_rules! vec3_type(
     );
     ($name:ident <$T:ty>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T, z: $T) -> $name { Vector3::new(x, y, z) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
-            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+            #[inline(always)] fn new(x: $T, y: $T, z: $T) -> $name { BaseVec3::new(x, y, z) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumVec::identity() }
+            #[inline(always)] fn zero() -> $name { NumVec::zero() }
 
-            #[inline(always)] fn unit_x() -> $name { NumericVector3::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumericVector3::unit_y() }
-            #[inline(always)] fn unit_z() -> $name { NumericVector3::unit_z() }
+            #[inline(always)] fn unit_x() -> $name { NumVec3::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumVec3::unit_y() }
+            #[inline(always)] fn unit_z() -> $name { NumVec3::unit_z() }
 
             #[inline(always)] fn dim() -> uint { 3 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
@@ -1297,10 +1297,10 @@ vec3_type!(Vec3b<bool>)
 #[deriving(Eq)]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-impl<T:Copy + Eq> Vector<T> for Vec4<T> {
+impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
     #[inline(always)]
     fn from_value(value: T) -> Vec4<T> {
-        Vector4::new(value, value, value, value)
+        BaseVec4::new(value, value, value, value)
     }
 
     #[inline(always)]
@@ -1325,7 +1325,7 @@ impl<T:Copy + Eq> Vector<T> for Vec4<T> {
     }
 }
 
-impl<T> Vector4<T> for Vec4<T> {
+impl<T> BaseVec4<T> for Vec4<T> {
     #[inline(always)]
     fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
@@ -1339,15 +1339,15 @@ impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumericVector<T> for Vec4<T> {
+impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> NumVec<T> for Vec4<T> {
     #[inline(always)]
     fn identity() -> Vec4<T> {
-        Vector4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
+        BaseVec4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec4<T> {
-        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
@@ -1438,33 +1438,33 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
 impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
     fn neg(&self) -> Vec4<T> {
-        Vector4::new(-self[0], -self[1], -self[2], -self[3])
+        BaseVec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Number + Zero + One> NumericVector4<T> for Vec4<T> {
+impl<T:Copy + Number + Zero + One> NumVec4<T> for Vec4<T> {
     #[inline(always)]
     fn unit_x() -> Vec4<T> {
-        Vector4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec4<T> {
-        Vector4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_z() -> Vec4<T> {
-        Vector4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
+        BaseVec4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn unit_w() -> Vec4<T> {
-        Vector4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
+        BaseVec4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
     }
 }
 
-impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> AffineVec<T> for Vec4<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1538,7 +1538,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
+impl<T:Copy + Ord + Eq> OrdVec<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
         zip_vec4!(self[] lt other[])
@@ -1560,7 +1560,7 @@ impl<T:Copy + Ord + Eq> OrdinalVector<T, Vec4<bool>> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
+impl<T:Copy + Eq> EqVec<T, Vec4<bool>> for Vec4<T> {
     #[inline(always)]
     fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
         zip_vec4!(self[] eq other[])
@@ -1572,7 +1572,7 @@ impl<T:Copy + Eq> EquableVector<T, Vec4<bool>> for Vec4<T> {
     }
 }
 
-impl BooleanVector for Vec4<bool> {
+impl BoolVec for Vec4<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
         self[0] || self[1] || self[2] || self[3]
@@ -1585,15 +1585,15 @@ impl BooleanVector for Vec4<bool> {
 
     #[inline(always)]
     fn not(&self) -> Vec4<bool> {
-        Vector4::new(!self[0], !self[1], !self[2], !self[3])
+        BaseVec4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
 
 macro_rules! vec4_type(
     ($name:ident <bool>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> $name { Vector4::new(x, y, z, w) }
-            #[inline(always)] fn from_value(v: bool) -> $name { Vector::from_value(v) }
+            #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> $name { BaseVec4::new(x, y, z, w) }
+            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
 
             #[inline(always)] fn dim() -> uint { 4 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
@@ -1601,15 +1601,15 @@ macro_rules! vec4_type(
     );
     ($name:ident <$T:ty>) => (
         pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T, z: $T, w: $T) -> $name { Vector4::new(x, y, z, w) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Vector::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumericVector::identity() }
-            #[inline(always)] fn zero() -> $name { NumericVector::zero() }
+            #[inline(always)] fn new(x: $T, y: $T, z: $T, w: $T) -> $name { BaseVec4::new(x, y, z, w) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
+            #[inline(always)] fn identity() -> $name { NumVec::identity() }
+            #[inline(always)] fn zero() -> $name { NumVec::zero() }
 
-            #[inline(always)] fn unit_x() -> $name { NumericVector4::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumericVector4::unit_y() }
-            #[inline(always)] fn unit_z() -> $name { NumericVector4::unit_z() }
-            #[inline(always)] fn unit_w() -> $name { NumericVector4::unit_w() }
+            #[inline(always)] fn unit_x() -> $name { NumVec4::unit_x() }
+            #[inline(always)] fn unit_y() -> $name { NumVec4::unit_y() }
+            #[inline(always)] fn unit_z() -> $name { NumVec4::unit_z() }
+            #[inline(always)] fn unit_w() -> $name { NumVec4::unit_w() }
 
             #[inline(always)] fn dim() -> uint { 4 }
             #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }

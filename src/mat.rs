@@ -17,7 +17,7 @@ use quat::Quat;
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
+pub trait BaseMat<T,V>: Index<uint, V> + Eq + Neg<Self> {
     /**
      * # Return value
      *
@@ -243,7 +243,7 @@ pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
 /**
  * A 2 x 2 matrix
  */
-pub trait Matrix2<T,V>: Matrix<T,V> {
+pub trait BaseMat2<T,V>: BaseMat<T,V> {
     fn new(c0r0: T, c0r1: T,
            c1r0: T, c1r1: T) -> Self;
 
@@ -259,7 +259,7 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
 /**
  * A 3 x 3 matrix
  */
-pub trait Matrix3<T,V>: Matrix<T,V> {
+pub trait BaseMat3<T,V>: BaseMat<T,V> {
     fn new(c0r0:T, c0r1:T, c0r2:T,
            c1r0:T, c1r1:T, c1r2:T,
            c2r0:T, c2r1:T, c2r2:T) -> Self;
@@ -288,7 +288,7 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
 /**
  * A 4 x 4 matrix
  */
-pub trait Matrix4<T,V>: Matrix<T,V> {
+pub trait BaseMat4<T,V>: BaseMat<T,V> {
     fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
            c2r0: T, c2r1: T, c2r2: T, c2r3: T,
@@ -313,13 +313,13 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 #[deriving(Eq)]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec2<T> { self[i] }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec2<T> {
-        Vector2::new(self[0][i],
+        BaseVec2::new(self[0][i],
                      self[1][i])
     }
 
@@ -341,8 +341,8 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat2<T> {
-        Matrix2::new(value, zero(),
-                     zero(), value)
+        BaseMat2::new(value, zero(),
+                      zero(), value)
     }
 
     /**
@@ -358,8 +358,8 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn identity() -> Mat2<T> {
-        Matrix2::new( one::<T>(), zero::<T>(),
-                     zero::<T>(),  one::<T>())
+        BaseMat2::new( one::<T>(), zero::<T>(),
+                      zero::<T>(),  one::<T>())
     }
 
     /**
@@ -375,38 +375,38 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn zero() -> Mat2<T> {
-        Matrix2::new(zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>())
+        BaseMat2::new(zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat2<T> {
-        Matrix2::from_cols(self[0].mul_t(value),
-                           self[1].mul_t(value))
+        BaseMat2::from_cols(self[0].mul_t(value),
+                            self[1].mul_t(value))
     }
 
     #[inline(always)]
     fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
-        Vector2::new(self.row(0).dot(vec),
+        BaseVec2::new(self.row(0).dot(vec),
                      self.row(1).dot(vec))
     }
 
     #[inline(always)]
     fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Matrix2::from_cols(self[0].add_v(&other[0]),
-                           self[1].add_v(&other[1]))
+        BaseMat2::from_cols(self[0].add_v(&other[0]),
+                            self[1].add_v(&other[1]))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Matrix2::from_cols(self[0].sub_v(&other[0]),
-                           self[1].sub_v(&other[1]))
+        BaseMat2::from_cols(self[0].sub_v(&other[0]),
+                            self[1].sub_v(&other[1]))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Matrix2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
-                     self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
+        BaseMat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
+                      self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
     }
 
     fn dot(&self, other: &Mat2<T>) -> T {
@@ -427,15 +427,15 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         if d.fuzzy_eq(&zero()) {
             None
         } else {
-            Some(Matrix2::new( self[1][1]/d, -self[0][1]/d,
-                              -self[1][0]/d,  self[0][0]/d))
+            Some(BaseMat2::new( self[1][1]/d, -self[0][1]/d,
+                               -self[1][0]/d,  self[0][0]/d))
         }
     }
 
     #[inline(always)]
     fn transpose(&self) -> Mat2<T> {
-        Matrix2::new(self[0][0], self[1][0],
-                     self[0][1], self[1][1])
+        BaseMat2::new(self[0][0], self[1][0],
+                      self[0][1], self[1][1])
     }
     
     #[inline(always)]
@@ -465,12 +465,12 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn to_identity(&mut self) {
-        (*self) = Matrix::identity();
+        (*self) = BaseMat::identity();
     }
 
     #[inline(always)]
     fn to_zero(&mut self) {
-        (*self) = Matrix::zero();
+        (*self) = BaseMat::zero();
     }
 
     #[inline(always)]
@@ -507,7 +507,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&Matrix::identity())
+        self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -518,7 +518,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&Matrix::identity())
+        !self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -538,7 +538,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
 }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -559,8 +559,8 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     #[inline(always)]
     fn new(c0r0: T, c0r1: T,
            c1r0: T, c1r1: T) -> Mat2<T> {
-        Matrix2::from_cols(Vector2::new::<T,Vec2<T>>(c0r0, c0r1),
-                           Vector2::new::<T,Vec2<T>>(c1r0, c1r1))
+        BaseMat2::from_cols(BaseVec2::new::<T,Vec2<T>>(c0r0, c0r1),
+                            BaseVec2::new::<T,Vec2<T>>(c1r0, c1r1))
     }
 
     /**
@@ -590,8 +590,8 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
 
-        Matrix2::new(cos_theta, -sin_theta,
-                     sin_theta,  cos_theta)
+        BaseMat2::new(cos_theta, -sin_theta,
+                      sin_theta,  cos_theta)
     }
 
     /**
@@ -609,9 +609,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn to_mat3(&self) -> Mat3<T> {
-        Matrix3::new(self[0][0], self[0][1], zero(),
-                     self[1][0], self[1][1], zero(),
-                         zero(),     zero(),  one())
+        BaseMat3::new(self[0][0], self[0][1], zero(),
+                      self[1][0], self[1][1], zero(),
+                          zero(),     zero(),  one())
     }
 
     /**
@@ -631,10 +631,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        Matrix4::new(self[0][0], self[0][1], zero(), zero(),
-                     self[1][0], self[1][1], zero(), zero(),
-                         zero(),     zero(),  one(), zero(),
-                         zero(),     zero(), zero(),  one())
+        BaseMat4::new(self[0][0], self[0][1], zero(), zero(),
+                      self[1][0], self[1][1], zero(), zero(),
+                          zero(),     zero(),  one(), zero(),
+                          zero(),     zero(), zero(),  one())
     }
 }
 
@@ -648,7 +648,7 @@ impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
 impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     fn neg(&self) -> Mat2<T> {
-        Matrix2::from_cols(-self[0], -self[1])
+        BaseMat2::from_cols(-self[0], -self[1])
     }
 }
 
@@ -669,15 +669,15 @@ macro_rules! mat2_type(
     ($name:ident <$T:ty, $V:ty>) => (
         pub impl $name {
             #[inline(always)] fn new(c0r0: $T, c0r1: $T, c1r0: $T, c1r1: $T)
-                -> $name { Matrix2::new(c0r0, c0r1, c1r0, c1r1) }
+                -> $name { BaseMat2::new(c0r0, c0r1, c1r0, c1r1) }
             #[inline(always)] fn from_cols(c0: $V, c1: $V)
-                -> $name { Matrix2::from_cols(c0, c1) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
+                -> $name { BaseMat2::from_cols(c0, c1) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
 
-            #[inline(always)] fn identity() -> $name { Matrix::identity() }
-            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
+            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
 
-            #[inline(always)] fn from_angle(radians: $T) -> $name { Matrix2::from_angle(radians) }
+            #[inline(always)] fn from_angle(radians: $T) -> $name { BaseMat2::from_angle(radians) }
 
             #[inline(always)] fn dim() -> uint { 2 }
             #[inline(always)] fn rows() -> uint { 2 }
@@ -723,13 +723,13 @@ mat2_type!(Mat2f64<f64,Vec2f64>)
 #[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec3<T> { self[i] }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec3<T> {
-        Vector3::new(self[0][i],
+        BaseVec3::new(self[0][i],
                      self[1][i],
                      self[2][i])
     }
@@ -754,9 +754,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat3<T> {
-        Matrix3::new(value, zero(), zero(),
-                     zero(), value, zero(),
-                     zero(), zero(), value)
+        BaseMat3::new(value, zero(), zero(),
+                      zero(), value, zero(),
+                      zero(), zero(), value)
     }
 
     /**
@@ -774,9 +774,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn identity() -> Mat3<T> {
-        Matrix3::new( one::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(),  one::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(),  one::<T>())
+        BaseMat3::new( one::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(),  one::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(),  one::<T>())
     }
 
     /**
@@ -794,52 +794,52 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn zero() -> Mat3<T> {
-        Matrix3::new(zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>())
+        BaseMat3::new(zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat3<T> {
-        Matrix3::from_cols(self[0].mul_t(value),
-                           self[1].mul_t(value),
-                           self[2].mul_t(value))
+        BaseMat3::from_cols(self[0].mul_t(value),
+                            self[1].mul_t(value),
+                            self[2].mul_t(value))
     }
 
     #[inline(always)]
     fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> {
-        Vector3::new(self.row(0).dot(vec),
+        BaseVec3::new(self.row(0).dot(vec),
                      self.row(1).dot(vec),
                      self.row(2).dot(vec))
     }
 
     #[inline(always)]
     fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Matrix3::from_cols(self[0].add_v(&other[0]),
-                           self[1].add_v(&other[1]),
-                           self[2].add_v(&other[2]))
+        BaseMat3::from_cols(self[0].add_v(&other[0]),
+                            self[1].add_v(&other[1]),
+                            self[2].add_v(&other[2]))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Matrix3::from_cols(self[0].sub_v(&other[0]),
-                           self[1].sub_v(&other[1]),
-                           self[2].sub_v(&other[2]))
+        BaseMat3::from_cols(self[0].sub_v(&other[0]),
+                            self[1].sub_v(&other[1]),
+                            self[2].sub_v(&other[2]))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Matrix3::new(self.row(0).dot(&other.col(0)),
-                     self.row(1).dot(&other.col(0)),
-                     self.row(2).dot(&other.col(0)),
+        BaseMat3::new(self.row(0).dot(&other.col(0)),
+                      self.row(1).dot(&other.col(0)),
+                      self.row(2).dot(&other.col(0)),
 
-                     self.row(0).dot(&other.col(1)),
-                     self.row(1).dot(&other.col(1)),
-                     self.row(2).dot(&other.col(1)),
+                      self.row(0).dot(&other.col(1)),
+                      self.row(1).dot(&other.col(1)),
+                      self.row(2).dot(&other.col(1)),
 
-                     self.row(0).dot(&other.col(2)),
-                     self.row(1).dot(&other.col(2)),
-                     self.row(2).dot(&other.col(2)))
+                      self.row(0).dot(&other.col(2)),
+                      self.row(1).dot(&other.col(2)),
+                      self.row(2).dot(&other.col(2)))
     }
 
     fn dot(&self, other: &Mat3<T>) -> T {
@@ -860,18 +860,18 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         if d.fuzzy_eq(&zero()) {
             None
         } else {
-            let m: Mat3<T> = Matrix3::from_cols(self[1].cross(&self[2]).div_t(d),
-                                                self[2].cross(&self[0]).div_t(d),
-                                                self[0].cross(&self[1]).div_t(d));
+            let m: Mat3<T> = BaseMat3::from_cols(self[1].cross(&self[2]).div_t(d),
+                                                 self[2].cross(&self[0]).div_t(d),
+                                                 self[0].cross(&self[1]).div_t(d));
             Some(m.transpose())
         }
     }
 
     #[inline(always)]
     fn transpose(&self) -> Mat3<T> {
-        Matrix3::new(self[0][0], self[1][0], self[2][0],
-                     self[0][1], self[1][1], self[2][1],
-                     self[0][2], self[1][2], self[2][2])
+        BaseMat3::new(self[0][0], self[1][0], self[2][0],
+                      self[0][1], self[1][1], self[2][1],
+                      self[0][2], self[1][2], self[2][2])
     }
     
     #[inline(always)]
@@ -903,12 +903,12 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn to_identity(&mut self) {
-        (*self) = Matrix::identity();
+        (*self) = BaseMat::identity();
     }
 
     #[inline(always)]
     fn to_zero(&mut self) {
-        (*self) = Matrix::zero();
+        (*self) = BaseMat::zero();
     }
 
     #[inline(always)]
@@ -954,7 +954,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&Matrix::identity())
+        self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -971,7 +971,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&Matrix::identity())
+        !self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -997,7 +997,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
 }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix3<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat3<T, Vec3<T>> for Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
      *
@@ -1022,9 +1022,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     fn new(c0r0:T, c0r1:T, c0r2:T,
            c1r0:T, c1r1:T, c1r2:T,
            c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
-        Matrix3::from_cols(Vector3::new::<T,Vec3<T>>(c0r0, c0r1, c0r2),
-                           Vector3::new::<T,Vec3<T>>(c1r0, c1r1, c1r2),
-                           Vector3::new::<T,Vec3<T>>(c2r0, c2r1, c2r2))
+        BaseMat3::from_cols(BaseVec3::new::<T,Vec3<T>>(c0r0, c0r1, c0r2),
+                            BaseVec3::new::<T,Vec3<T>>(c1r0, c1r1, c1r2),
+                            BaseVec3::new::<T,Vec3<T>>(c2r0, c2r1, c2r2))
     }
 
     /**
@@ -1061,9 +1061,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
 
-        Matrix3::new( one(),     zero(),    zero(),
-                     zero(),  cos_theta, sin_theta,
-                     zero(), -sin_theta, cos_theta)
+        BaseMat3::new( one(),     zero(),    zero(),
+                      zero(),  cos_theta, sin_theta,
+                      zero(), -sin_theta, cos_theta)
     }
 
     /**
@@ -1075,9 +1075,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
 
-        Matrix3::new(cos_theta, zero(), -sin_theta,
-                        zero(),  one(),     zero(),
-                     sin_theta, zero(),  cos_theta)
+        BaseMat3::new(cos_theta, zero(), -sin_theta,
+                         zero(),  one(),     zero(),
+                      sin_theta, zero(),  cos_theta)
     }
 
     /**
@@ -1089,9 +1089,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let cos_theta = cos(radians);
         let sin_theta = sin(radians);
 
-        Matrix3::new( cos_theta, sin_theta, zero(),
-                     -sin_theta, cos_theta, zero(),
-                         zero(),    zero(),  one())
+        BaseMat3::new( cos_theta, sin_theta, zero(),
+                      -sin_theta, cos_theta, zero(),
+                          zero(),    zero(),  one())
     }
 
     /**
@@ -1113,9 +1113,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let cz = cos(radians_z);
         let sz = sin(radians_z);
 
-        Matrix3::new(            cy*cz,             cy*sz,   -sy,
-                     -cx*sz + sx*sy*cz,  cx*cz + sx*sy*sz, sx*cy,
-                      sx*sz + cx*sy*cz, -sx*cz + cx*sy*sz, cx*cy)
+        BaseMat3::new(            cy*cz,             cy*sz,   -sy,
+                      -cx*sz + sx*sy*cz,  cx*cz + sx*sy*sz, sx*cy,
+                       sx*sz + cx*sy*cz, -sx*cz + cx*sy*sz, cx*cy)
     }
 
     /**
@@ -1131,14 +1131,14 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let y = axis.y;
         let z = axis.z;
 
-        Matrix3::new(_1_c*x*x + c,   _1_c*x*y + s*z, _1_c*x*z - s*y,
-                   _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
-                   _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
+        BaseMat3::new(_1_c*x*x + c,   _1_c*x*y + s*z, _1_c*x*z - s*y,
+                    _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
+                    _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
     }
 
     #[inline(always)]
     fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Mat3<T> {
-        Matrix3::from_cols(x, y, z)
+        BaseMat3::from_cols(x, y, z)
     }
 
     #[inline(always)]
@@ -1147,7 +1147,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
         let side = dir_.cross(&up.normalize());
         let up_  = side.cross(&dir_).normalize();
 
-        Matrix3::from_axes(up_, side, dir_)
+        BaseMat3::from_axes(up_, side, dir_)
     }
 
     /**
@@ -1167,10 +1167,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        Matrix4::new(self[0][0], self[0][1], self[0][2], zero(),
-                     self[1][0], self[1][1], self[1][2], zero(),
-                     self[2][0], self[2][1], self[2][2], zero(),
-                         zero(),     zero(),     zero(),  one())
+        BaseMat4::new(self[0][0], self[0][1], self[0][2], zero(),
+                      self[1][0], self[1][1], self[1][2], zero(),
+                      self[2][0], self[2][1], self[2][2], zero(),
+                          zero(),     zero(),     zero(),  one())
     }
 
     /**
@@ -1232,7 +1232,7 @@ impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
 impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat3<T>> for Mat3<T> {
     #[inline(always)]
     fn neg(&self) -> Mat3<T> {
-        Matrix3::from_cols(-self[0], -self[1], -self[2])
+        BaseMat3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
@@ -1254,21 +1254,21 @@ macro_rules! mat3_type(
     ($name:ident <$T:ty, $V:ty>) => (
         pub impl $name {
             #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c1r0: $T, c1r1: $T, c1r2: $T, c2r0: $T, c2r1: $T, c2r2: $T)
-                -> $name { Matrix3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
+                -> $name { BaseMat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
             #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V)
-                -> $name { Matrix3::from_cols(c0, c1, c2) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
+                -> $name { BaseMat3::from_cols(c0, c1, c2) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
 
-            #[inline(always)] fn identity() -> $name { Matrix::identity() }
-            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
+            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
 
-            #[inline(always)] fn from_angle_x(radians: $T) -> $name { Matrix3::from_angle_x(radians) }
-            #[inline(always)] fn from_angle_y(radians: $T) -> $name { Matrix3::from_angle_y(radians) }
-            #[inline(always)] fn from_angle_z(radians: $T) -> $name { Matrix3::from_angle_z(radians) }
-            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T) -> $name { Matrix3::from_angle_xyz(radians_x, radians_y, radians_z) }
-            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { Matrix3::from_angle_axis(radians, axis) }
-            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { Matrix3::from_axes(x, y, z) }
-            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { Matrix3::look_at(dir, up) }
+            #[inline(always)] fn from_angle_x(radians: $T) -> $name { BaseMat3::from_angle_x(radians) }
+            #[inline(always)] fn from_angle_y(radians: $T) -> $name { BaseMat3::from_angle_y(radians) }
+            #[inline(always)] fn from_angle_z(radians: $T) -> $name { BaseMat3::from_angle_z(radians) }
+            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T) -> $name { BaseMat3::from_angle_xyz(radians_x, radians_y, radians_z) }
+            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { BaseMat3::from_angle_axis(radians, axis) }
+            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { BaseMat3::from_axes(x, y, z) }
+            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { BaseMat3::look_at(dir, up) }
 
             #[inline(always)] fn dim() -> uint { 3 }
             #[inline(always)] fn rows() -> uint { 3 }
@@ -1312,13 +1312,13 @@ mat3_type!(Mat3f64<f64,Vec3f64>)
 #[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec4<T> { self[i] }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec4<T> {
-        Vector4::new(self[0][i],
+        BaseVec4::new(self[0][i],
                      self[1][i],
                      self[2][i],
                      self[3][i])
@@ -1346,10 +1346,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat4<T> {
-        Matrix4::new(value, zero(), zero(), zero(),
-                     zero(), value, zero(), zero(),
-                     zero(), zero(), value, zero(),
-                     zero(), zero(), zero(), value)
+        BaseMat4::new(value, zero(), zero(), zero(),
+                      zero(), value, zero(), zero(),
+                      zero(), zero(), value, zero(),
+                      zero(), zero(), zero(), value)
     }
 
     /**
@@ -1369,10 +1369,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn identity() -> Mat4<T> {
-        Matrix4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>(),  one::<T>())
+        BaseMat4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>(),  one::<T>())
     }
 
     /**
@@ -1392,65 +1392,65 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn zero() -> Mat4<T> {
-        Matrix4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                     zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseMat4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
+                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
     }
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat4<T> {
-        Matrix4::from_cols(self[0].mul_t(value),
-                           self[1].mul_t(value),
-                           self[2].mul_t(value),
-                           self[3].mul_t(value))
+        BaseMat4::from_cols(self[0].mul_t(value),
+                            self[1].mul_t(value),
+                            self[2].mul_t(value),
+                            self[3].mul_t(value))
     }
 
     #[inline(always)]
     fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
-        Vector4::new(self.row(0).dot(vec),
-                     self.row(1).dot(vec),
-                     self.row(2).dot(vec),
-                     self.row(3).dot(vec))
+        BaseVec4::new(self.row(0).dot(vec),
+                      self.row(1).dot(vec),
+                      self.row(2).dot(vec),
+                      self.row(3).dot(vec))
     }
 
     #[inline(always)]
     fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Matrix4::from_cols(self[0].add_v(&other[0]),
-                           self[1].add_v(&other[1]),
-                           self[2].add_v(&other[2]),
-                           self[3].add_v(&other[3]))
+        BaseMat4::from_cols(self[0].add_v(&other[0]),
+                            self[1].add_v(&other[1]),
+                            self[2].add_v(&other[2]),
+                            self[3].add_v(&other[3]))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Matrix4::from_cols(self[0].sub_v(&other[0]),
-                           self[1].sub_v(&other[1]),
-                           self[2].sub_v(&other[2]),
-                           self[3].sub_v(&other[3]))
+        BaseMat4::from_cols(self[0].sub_v(&other[0]),
+                            self[1].sub_v(&other[1]),
+                            self[2].sub_v(&other[2]),
+                            self[3].sub_v(&other[3]))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Matrix4::new(self.row(0).dot(&other.col(0)),
-                     self.row(1).dot(&other.col(0)),
-                     self.row(2).dot(&other.col(0)),
-                     self.row(3).dot(&other.col(0)),
+        BaseMat4::new(self.row(0).dot(&other.col(0)),
+                      self.row(1).dot(&other.col(0)),
+                      self.row(2).dot(&other.col(0)),
+                      self.row(3).dot(&other.col(0)),
 
-                     self.row(0).dot(&other.col(1)),
-                     self.row(1).dot(&other.col(1)),
-                     self.row(2).dot(&other.col(1)),
-                     self.row(3).dot(&other.col(1)),
+                      self.row(0).dot(&other.col(1)),
+                      self.row(1).dot(&other.col(1)),
+                      self.row(2).dot(&other.col(1)),
+                      self.row(3).dot(&other.col(1)),
 
-                     self.row(0).dot(&other.col(2)),
-                     self.row(1).dot(&other.col(2)),
-                     self.row(2).dot(&other.col(2)),
-                     self.row(3).dot(&other.col(2)),
+                      self.row(0).dot(&other.col(2)),
+                      self.row(1).dot(&other.col(2)),
+                      self.row(2).dot(&other.col(2)),
+                      self.row(3).dot(&other.col(2)),
 
-                     self.row(0).dot(&other.col(3)),
-                     self.row(1).dot(&other.col(3)),
-                     self.row(2).dot(&other.col(3)),
-                     self.row(3).dot(&other.col(3)))
+                      self.row(0).dot(&other.col(3)),
+                      self.row(1).dot(&other.col(3)),
+                      self.row(2).dot(&other.col(3)),
+                      self.row(3).dot(&other.col(3)))
 
     }
 
@@ -1459,18 +1459,18 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
 
     fn determinant(&self) -> T {
-        let m0: Mat3<T> = Matrix3::new(self[1][1], self[2][1], self[3][1],
-                                       self[1][2], self[2][2], self[3][2],
-                                       self[1][3], self[2][3], self[3][3]);
-        let m1: Mat3<T> = Matrix3::new(self[0][1], self[2][1], self[3][1],
-                                       self[0][2], self[2][2], self[3][2],
-                                       self[0][3], self[2][3], self[3][3]);
-        let m2: Mat3<T> = Matrix3::new(self[0][1], self[1][1], self[3][1],
-                                       self[0][2], self[1][2], self[3][2],
-                                       self[0][3], self[1][3], self[3][3]);
-        let m3: Mat3<T> = Matrix3::new(self[0][1], self[1][1], self[2][1],
-                                       self[0][2], self[1][2], self[2][2],
-                                       self[0][3], self[1][3], self[2][3]);
+        let m0: Mat3<T> = BaseMat3::new(self[1][1], self[2][1], self[3][1],
+                                        self[1][2], self[2][2], self[3][2],
+                                        self[1][3], self[2][3], self[3][3]);
+        let m1: Mat3<T> = BaseMat3::new(self[0][1], self[2][1], self[3][1],
+                                        self[0][2], self[2][2], self[3][2],
+                                        self[0][3], self[2][3], self[3][3]);
+        let m2: Mat3<T> = BaseMat3::new(self[0][1], self[1][1], self[3][1],
+                                        self[0][2], self[1][2], self[3][2],
+                                        self[0][3], self[1][3], self[3][3]);
+        let m3: Mat3<T> = BaseMat3::new(self[0][1], self[1][1], self[2][1],
+                                        self[0][2], self[1][2], self[2][2],
+                                        self[0][3], self[1][3], self[2][3]);
 
         self[0][0] * m0.determinant() -
         self[1][0] * m1.determinant() +
@@ -1493,7 +1493,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
             // and essentially reduce [A|I]
 
             let mut A = *self;
-            let mut I: Mat4<T> = Matrix::identity();
+            let mut I: Mat4<T> = BaseMat::identity();
 
             for uint::range(0, 4) |j| {
                 // Find largest element in col j
@@ -1530,10 +1530,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn transpose(&self) -> Mat4<T> {
-        Matrix4::new(self[0][0], self[1][0], self[2][0], self[3][0],
-                     self[0][1], self[1][1], self[2][1], self[3][1],
-                     self[0][2], self[1][2], self[2][2], self[3][2],
-                     self[0][3], self[1][3], self[2][3], self[3][3])
+        BaseMat4::new(self[0][0], self[1][0], self[2][0], self[3][0],
+                      self[0][1], self[1][1], self[2][1], self[3][1],
+                      self[0][2], self[1][2], self[2][2], self[3][2],
+                      self[0][3], self[1][3], self[2][3], self[3][3])
     }
     
     #[inline(always)]
@@ -1567,12 +1567,12 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn to_identity(&mut self) {
-        (*self) = Matrix::identity();
+        (*self) = BaseMat::identity();
     }
 
     #[inline(always)]
     fn to_zero(&mut self) {
-        (*self) = Matrix::zero();
+        (*self) = BaseMat::zero();
     }
 
     #[inline(always)]
@@ -1628,7 +1628,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&Matrix::identity())
+        self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -1652,7 +1652,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&Matrix::identity())
+        !self.fuzzy_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
@@ -1685,7 +1685,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
 }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix4<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> BaseMat4<T, Vec4<T>> for Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
      *
@@ -1714,10 +1714,10 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
            c2r0: T, c2r1: T, c2r2: T, c2r3: T,
            c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
-        Matrix4::from_cols(Vector4::new::<T,Vec4<T>>(c0r0, c0r1, c0r2, c0r3),
-                           Vector4::new::<T,Vec4<T>>(c1r0, c1r1, c1r2, c1r3),
-                           Vector4::new::<T,Vec4<T>>(c2r0, c2r1, c2r2, c2r3),
-                           Vector4::new::<T,Vec4<T>>(c3r0, c3r1, c3r2, c3r3))
+        BaseMat4::from_cols(BaseVec4::new::<T,Vec4<T>>(c0r0, c0r1, c0r2, c0r3),
+                            BaseVec4::new::<T,Vec4<T>>(c1r0, c1r1, c1r2, c1r3),
+                            BaseVec4::new::<T,Vec4<T>>(c2r0, c2r1, c2r2, c2r3),
+                            BaseVec4::new::<T,Vec4<T>>(c3r0, c3r1, c3r2, c3r3))
     }
 
     /**
@@ -1752,7 +1752,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
 impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
     fn neg(&self) -> Mat4<T> {
-        Matrix4::from_cols(-self[0], -self[1], -self[2], -self[3])
+        BaseMat4::from_cols(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
@@ -1782,13 +1782,13 @@ macro_rules! mat4_type(
     ($name:ident <$T:ty, $V:ty>) => (
         pub impl $name {
             #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c0r3: $T, c1r0: $T, c1r1: $T, c1r2: $T, c1r3: $T, c2r0: $T, c2r1: $T, c2r2: $T, c2r3: $T, c3r0: $T, c3r1: $T, c3r2: $T, c3r3: $T)
-                -> $name { Matrix4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
+                -> $name { BaseMat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
             #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V, c3: $V)
-                -> $name { Matrix4::from_cols(c0, c1, c2, c3) }
-            #[inline(always)] fn from_value(v: $T) -> $name { Matrix::from_value(v) }
+                -> $name { BaseMat4::from_cols(c0, c1, c2, c3) }
+            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
 
-            #[inline(always)] fn identity() -> $name { Matrix::identity() }
-            #[inline(always)] fn zero() -> $name { Matrix::zero() }
+            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
+            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
 
             #[inline(always)] fn dim() -> uint { 4 }
             #[inline(always)] fn rows() -> uint { 4 }

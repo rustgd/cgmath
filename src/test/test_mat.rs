@@ -238,7 +238,7 @@ fn test_mat3() {
                      0.0,   0.5, -2.0,
                      0.0,   0.0,  1.0));
     
-    let ident: Mat3<float> = Matrix::identity();
+    let ident: Mat3<float> = BaseMat::identity();
 
     assert!(ident.inverse().unwrap() == ident);
     
