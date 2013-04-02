@@ -683,7 +683,7 @@ impl<T:Copy + Number + Zero> ToHomogeneous<Vec3<T>> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec2<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec2<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -742,7 +742,7 @@ impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Di
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec2<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1077,7 +1077,7 @@ impl<T:Copy + Number + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + 
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec3<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec3<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1136,7 +1136,7 @@ impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Di
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec3<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1464,7 +1464,7 @@ impl<T:Copy + Number + Zero + One> NumericVector4<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
+impl<T:Copy + Float + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> EuclideanVector<T> for Vec4<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1523,7 +1523,7 @@ impl<T:Copy + Float + NumCast + Zero + One + Add<T,T> + Sub<T,T> + Mul<T,T> + Di
     }
 }
 
-impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
+impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
