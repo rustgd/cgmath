@@ -245,7 +245,7 @@ pub trait Matrix<T,V>: Index<uint, V> + Eq + Neg<Self> {
  */
 pub trait Matrix2<T,V>: Matrix<T,V> {
     fn new(c0r0: T, c0r1: T,
-                       c1r0: T, c1r1: T) -> Self;
+           c1r0: T, c1r1: T) -> Self;
 
     fn from_cols(c0: V, c1: V) -> Self;
 
@@ -261,8 +261,8 @@ pub trait Matrix2<T,V>: Matrix<T,V> {
  */
 pub trait Matrix3<T,V>: Matrix<T,V> {
     fn new(c0r0:T, c0r1:T, c0r2:T,
-                       c1r0:T, c1r1:T, c1r2:T,
-                       c2r0:T, c2r1:T, c2r2:T) -> Self;
+           c1r0:T, c1r1:T, c1r2:T,
+           c2r0:T, c2r1:T, c2r2:T) -> Self;
 
     fn from_cols(c0: V, c1: V, c2: V) -> Self;
 
@@ -290,9 +290,9 @@ pub trait Matrix3<T,V>: Matrix<T,V> {
  */
 pub trait Matrix4<T,V>: Matrix<T,V> {
     fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
-                       c1r0: T, c1r1: T, c1r2: T, c1r3: T,
-                       c2r0: T, c2r1: T, c2r2: T, c2r3: T,
-                       c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Self;
+           c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+           c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+           c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Self;
 
     fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
 }
@@ -558,7 +558,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn new(c0r0: T, c0r1: T,
-                       c1r0: T, c1r1: T) -> Mat2<T> {
+           c1r0: T, c1r1: T) -> Mat2<T> {
         Matrix2::from_cols(Vector2::new::<T,Vec2<T>>(c0r0, c0r1),
                            Vector2::new::<T,Vec2<T>>(c1r0, c1r1))
     }
@@ -581,8 +581,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      * ~~~
      */
     #[inline(always)]
-    fn from_cols(c0: Vec2<T>,
-                             c1: Vec2<T>) -> Mat2<T> {
+    fn from_cols(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
     }
 
@@ -1021,8 +1020,8 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn new(c0r0:T, c0r1:T, c0r2:T,
-                       c1r0:T, c1r1:T, c1r2:T,
-                       c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
+           c1r0:T, c1r1:T, c1r2:T,
+           c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
         Matrix3::from_cols(Vector3::new::<T,Vec3<T>>(c0r0, c0r1, c0r2),
                            Vector3::new::<T,Vec3<T>>(c1r0, c1r1, c1r2),
                            Vector3::new::<T,Vec3<T>>(c2r0, c2r1, c2r2))
@@ -1049,9 +1048,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      * ~~~
      */
     #[inline(always)]
-    fn from_cols(c0: Vec3<T>,
-                             c1: Vec3<T>,
-                             c2: Vec3<T>) -> Mat3<T> {
+    fn from_cols(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
 
@@ -1714,9 +1711,9 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      */
     #[inline(always)]
     fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
-                       c1r0: T, c1r1: T, c1r2: T, c1r3: T,
-                       c2r0: T, c2r1: T, c2r2: T, c2r3: T,
-                       c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
+           c1r0: T, c1r1: T, c1r2: T, c1r3: T,
+           c2r0: T, c2r1: T, c2r2: T, c2r3: T,
+           c3r0: T, c3r1: T, c3r2: T, c3r3: T) -> Mat4<T>  {
         Matrix4::from_cols(Vector4::new::<T,Vec4<T>>(c0r0, c0r1, c0r2, c0r3),
                            Vector4::new::<T,Vec4<T>>(c1r0, c1r1, c1r2, c1r3),
                            Vector4::new::<T,Vec4<T>>(c2r0, c2r1, c2r2, c2r3),
@@ -1747,10 +1744,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
      * ~~~
      */
     #[inline(always)]
-    fn from_cols(c0: Vec4<T>,
-                             c1: Vec4<T>,
-                             c2: Vec4<T>,
-                             c3: Vec4<T>) -> Mat4<T> {
+    fn from_cols(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
         Mat4 { x: c0, y: c1, z: c2, w: c3 }
     }
 }
