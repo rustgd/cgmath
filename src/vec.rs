@@ -3,7 +3,6 @@ use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
-use numeric::number::Number;
 
 /**
  * The base generic vector trait.

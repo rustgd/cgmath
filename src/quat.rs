@@ -12,7 +12,6 @@ use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
-use numeric::number::Number;
 
 use mat::{Mat3, Matrix3};
 use vec::{Vec3, Vector3, EuclideanVector};
