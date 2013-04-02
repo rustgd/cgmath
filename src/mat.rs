@@ -1,7 +1,8 @@
+use core::num::{Zero, One};
+use core::num::Zero::zero;
+use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
-use numeric::number::Number;
-use numeric::number::Number::{zero,one};
 
 use vec::*;
 use quat::Quat;
@@ -312,7 +313,7 @@ pub trait Matrix4<T,V>: Matrix<T,V> {
 #[deriving(Eq)]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec2<T> { self[i] }
 
@@ -537,7 +538,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -645,17 +646,17 @@ impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     fn neg(&self) -> Mat2<T> {
         Matrix2::from_cols(-self[0], -self[1])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat2<T>) -> bool {
-        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
     }
 
     #[inline(always)]
@@ -723,7 +724,7 @@ mat2_type!(Mat2f64<f64,Vec2f64>)
 #[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec3<T> { self[i] }
 
@@ -997,7 +998,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix3<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix3<T, Vec3<T>> for Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
      *
@@ -1187,8 +1188,8 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
         let w, x, y, z;
         let trace = self.trace();
 
-        let _1:   T = Number::from(1.0);
-        let half: T = Number::from(0.5);
+        let _1:   T = num::cast(1.0);
+        let half: T = num::cast(0.5);
 
         if trace >= zero() {
             s = (_1 + trace).sqrt();
@@ -1231,17 +1232,17 @@ impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat3<T>> for Mat3<T> {
     #[inline(always)]
     fn neg(&self) -> Mat3<T> {
         Matrix3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> FuzzyEq<T> for Mat3<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> FuzzyEq<T> for Mat3<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat3<T>) -> bool {
-        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
     }
 
     #[inline(always)]
@@ -1314,7 +1315,7 @@ mat3_type!(Mat3f64<f64,Vec3f64>)
 #[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec4<T> { self[i] }
 
@@ -1687,7 +1688,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix4<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Matrix4<T, Vec4<T>> for Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
      *
@@ -1754,7 +1755,7 @@ impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + N
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
     fn neg(&self) -> Mat4<T> {
         Matrix4::from_cols(-self[0], -self[1], -self[2], -self[3])
@@ -1768,10 +1769,10 @@ impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
-        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
     }
 
     #[inline(always)]

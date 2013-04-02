@@ -7,10 +7,12 @@
  *   Sir William Hamilton
  */
 
+use core::num::{Zero, One};
+use core::num::Zero::zero;
+use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 use numeric::*;
 use numeric::number::Number;
-use numeric::number::Number::{zero,one};
 
 use mat::{Mat3, Matrix3};
 use vec::{Vec3, Vector3, EuclideanVector};
@@ -32,7 +34,7 @@ use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
+pub impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -84,26 +86,26 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
 
     #[inline(always)]
     fn from_angle_x(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
+        let _2 = num::cast(2);
         Quat::new(cos(radians / _2), sin(radians), zero(), zero())
     }
 
     #[inline(always)]
     fn from_angle_y(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
+        let _2 = num::cast(2);
         Quat::new(cos(radians / _2), zero(), sin(radians), zero())
     }
 
     #[inline(always)]
     fn from_angle_z(radians: T) -> Quat<T> {
-        let _2 = Number::from(2);
+        let _2 = num::cast(2);
         Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
     }
 
     #[inline(always)]
     fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let _2 = Number::from(2);
+        let _2 = num::cast(2);
         let xdiv2 = radians_x / _2;
         let ydiv2 = radians_y / _2;
         let zdiv2 = radians_z / _2;
@@ -115,7 +117,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
 
     #[inline(always)]
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
-        let half = radians / Number::from(2);
+        let half = radians / num::cast(2);
         Quat::from_sv(cos(half), axis.mul_t(sin(half)))
     }
 
@@ -167,7 +169,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
     #[inline(always)]
     fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
-        self.v.cross(&tmp).mul_t(Number::from(2)).add_v(vec)
+        self.v.cross(&tmp).mul_t(num::cast(2)).add_v(vec)
     }
 
     /**
@@ -314,7 +316,7 @@ pub impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T>
     fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot = self.dot(other);
 
-        let dot_threshold = Number::from(0.9995);
+        let dot_threshold = num::cast(0.9995);
 
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
@@ -377,17 +379,17 @@ impl<T:Copy> Index<uint, T> for Quat<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Quat<T>> for Quat<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
+impl<T:Copy + Float + NumCast + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
-        self.fuzzy_eq_eps(other, &Number::from(FUZZY_EPSILON))
+        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
     }
 
     #[inline(always)]
