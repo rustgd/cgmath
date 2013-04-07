@@ -60,3 +60,22 @@ pub fn frustum<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + 
                   c2r0, c2r1, c2r2, c2r3,
                   c3r0, c3r1, c3r2, c3r3)
 }
+
+/**
+ * Create an orthographic projection matrix
+ *
+ * This is the equivalent of the now deprecated [glOrtho]
+ * (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
+ */
+#[inline(always)]
+pub fn orthographic<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+    let _0: T = num::cast(0);
+    let _1: T = num::cast(1);
+    let _2: T = num::cast(2);
+
+    BaseMat4::new(_2 / (right - left), _0, _0, _0,
+                  _0, _2 / (top - bottom), _0, _0,
+                  _0, _0, -_2 / (far - near), _0,
+                  -(right + left) / (right - left), -(top + bottom) / (top - bottom),
+                    -(far + near) / (far - near), _1)
+}
