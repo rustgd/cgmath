@@ -8,12 +8,16 @@ use mat::{Mat4, BaseMat4};
 /**
  * Create a perspective projection matrix
  *
+ * Note: the fovy parameter should be specified in degrees.
+ *
  * This is the equivalent of the gluPerspective function, the algorithm of which
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
 pub fn perspective<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let ymax = near * tan(radians(fovy));
+    let _2: T = num::cast(2);
+
+    let ymax = near * tan(radians(fovy / _2));
     let xmax = ymax * aspectRatio;
 
     frustum(-xmax, xmax, -ymax, ymax, near, far)
