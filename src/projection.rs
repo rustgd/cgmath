@@ -76,21 +76,21 @@ pub fn ortho<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mu
     let c0r0 = _2 / (right - left);
     let c0r1 = _0;
     let c0r2 = _0;
-    let c0r3 = -(right + left) / (right - left);
+    let c0r3 = _0;
 
     let c1r0 = _0;
     let c1r1 = _2 / (top - bottom);
     let c1r2 = _0;
-    let c1r3 = -(top + bottom) / (top - bottom);
+    let c1r3 = _0;
 
     let c2r0 = _0;
     let c2r1 = _0;
     let c2r2 = -_2 / (far - near);
-    let c2r3 = -(far + near) / (far - near);
+    let c2r3 = _0;
 
-    let c3r0 = _0;
-    let c3r1 = _0;
-    let c3r2 = _0;
+    let c3r0 = -(right + left) / (right - left);
+    let c3r1 = -(top + bottom) / (top - bottom);
+    let c3r2 = -(far + near) / (far - near);
     let c3r3 = _1;
 
     BaseMat4::new(c0r0, c0r1, c0r2, c0r3,
