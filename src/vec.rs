@@ -28,7 +28,7 @@ pub trait BaseVec<T>: Index<uint,T> + Eq {
     /**
      * Get a mutable reference to the component at `i`
      */
-    fn index_mut(&mut self, i: uint) -> &'self mut T;
+    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
 
     /**
      * Swap two components of the vector in place
@@ -534,7 +534,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
     }
     
     #[inline(always)]
-    fn index_mut(&mut self, i: uint) -> &'self mut T {
+    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
@@ -912,7 +912,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
     }
     
     #[inline(always)]
-    fn index_mut(&mut self, i: uint) -> &'self mut T {
+    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
@@ -1309,7 +1309,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
     }
     
     #[inline(always)]
-    fn index_mut(&mut self, i: uint) -> &'self mut T {
+    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,

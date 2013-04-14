@@ -129,7 +129,7 @@ pub trait BaseMat<T,V>: Index<uint, V> + Eq + Neg<Self> {
      *
      * A mutable reference to the column at `i`
      */
-    fn col_mut(&mut self, i: uint) -> &'self mut V;
+    fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut V;
 
     /**
      * Swap two columns of the matrix in place
@@ -439,7 +439,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
     
     #[inline(always)]
-    fn col_mut(&mut self, i: uint) -> &'self mut Vec2<T> {
+    fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
@@ -875,7 +875,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
     
     #[inline(always)]
-    fn col_mut(&mut self, i: uint) -> &'self mut Vec3<T> {
+    fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
@@ -1537,7 +1537,7 @@ impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> +
     }
     
     #[inline(always)]
-    fn col_mut(&mut self, i: uint) -> &'self mut Vec4<T> {
+    fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
         match i {
             0 => &mut self.x,
             1 => &mut self.y,
