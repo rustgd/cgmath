@@ -7,7 +7,6 @@
  *   Sir William Hamilton
  */
 
-use core::num::{Zero, One};
 use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
@@ -32,7 +31,7 @@ use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Quat<T> {
+pub impl<T:Copy + Float> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -377,14 +376,14 @@ impl<T:Copy> Index<uint, T> for Quat<T> {
     }
 }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>> Neg<Quat<T>> for Quat<T> {
+impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Float + Zero + One + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
+impl<T:Copy + Float> FuzzyEq<T> for Quat<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))

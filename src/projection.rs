@@ -1,7 +1,4 @@
-use core::num::{Zero, One};
 use numeric::*;
-
-use std::cmp::FuzzyEq;
 
 use mat::{Mat4, BaseMat4};
 
@@ -14,7 +11,7 @@ use mat::{Mat4, BaseMat4};
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pub fn perspective<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub fn perspective<T:Copy + Float>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let _2: T = num::cast(2);
 
     let ymax = near * tan(radians(fovy / _2));
@@ -30,7 +27,7 @@ pub fn perspective<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
  */
 #[inline(always)]
-pub fn frustum<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn frustum<T:Copy + Float>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = num::cast(0);
     let _1: T = num::cast(1);
     let _2: T = num::cast(2);
@@ -68,7 +65,7 @@ pub fn frustum<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + 
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
  */
 #[inline(always)]
-pub fn ortho<T:Copy + Float + Zero + One + FuzzyEq<T> + Add<T,T> + Sub<T,T> + Mul<T,T> + Div<T,T> + Neg<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn ortho<T:Copy + Float>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = num::cast(0);
     let _1: T = num::cast(1);
     let _2: T = num::cast(2);
