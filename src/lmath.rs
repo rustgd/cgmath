@@ -9,7 +9,8 @@
 #[crate_type = "lib"];
 
 extern mod std;
-extern mod numeric;
+
+pub mod num;
 
 pub mod mat;
 pub mod quat;

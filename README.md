@@ -2,10 +2,6 @@
 
 A linear algebra library for Rust, targeted at computer graphics.
 
-## Dependencies
-
-[numeric-rs](https://github.com/bjz/numeric-rs/) (drop the library binary into lmath/extern)
-
 
 ## Examples
 

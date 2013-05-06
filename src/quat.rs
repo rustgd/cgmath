@@ -10,11 +10,11 @@
 use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
-use numeric::*;
 
 use mat::{Mat3, BaseMat3};
 use vec::{Vec3, BaseVec3, AffineVec, NumVec, NumVec3};
-use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
+
+use num::NumAssign;
 
 /**
  * A quaternion in scalar/vector form
@@ -31,7 +31,7 @@ use vec::{vec3, dvec3, Vec3f, Vec3f32, Vec3f64};
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy + Float> Quat<T> {
+pub impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -84,19 +84,19 @@ pub impl<T:Copy + Float> Quat<T> {
     #[inline(always)]
     fn from_angle_x(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new(cos(radians / _2), sin(radians), zero(), zero())
+        Quat::new((radians / _2).cos(), radians.sin(), zero(), zero())
     }
 
     #[inline(always)]
     fn from_angle_y(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new(cos(radians / _2), zero(), sin(radians), zero())
+        Quat::new((radians / _2).cos(), zero(), radians.sin(), zero())
     }
 
     #[inline(always)]
     fn from_angle_z(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new(cos(radians / _2), zero(), zero(), sin(radians))
+        Quat::new((radians / _2).cos(), zero(), zero(), radians.sin())
     }
 
     #[inline(always)]
@@ -106,16 +106,16 @@ pub impl<T:Copy + Float> Quat<T> {
         let xdiv2 = radians_x / _2;
         let ydiv2 = radians_y / _2;
         let zdiv2 = radians_z / _2;
-        Quat::new(cos(zdiv2) * cos(xdiv2) * cos(ydiv2) + sin(zdiv2) * sin(xdiv2) * sin(ydiv2),
-                  sin(zdiv2) * cos(xdiv2) * cos(ydiv2) - cos(zdiv2) * sin(xdiv2) * sin(ydiv2),
-                  cos(zdiv2) * sin(xdiv2) * cos(ydiv2) + sin(zdiv2) * cos(xdiv2) * sin(ydiv2),
-                  cos(zdiv2) * cos(xdiv2) * sin(ydiv2) - sin(zdiv2) * sin(xdiv2) * cos(ydiv2))
+        Quat::new(zdiv2.cos() * xdiv2.cos() * ydiv2.cos() + zdiv2.sin() * xdiv2.sin() * ydiv2.sin(),
+                  zdiv2.sin() * xdiv2.cos() * ydiv2.cos() - zdiv2.cos() * xdiv2.sin() * ydiv2.sin(),
+                  zdiv2.cos() * xdiv2.sin() * ydiv2.cos() + zdiv2.sin() * xdiv2.cos() * ydiv2.sin(),
+                  zdiv2.cos() * xdiv2.cos() * ydiv2.sin() - zdiv2.sin() * xdiv2.sin() * ydiv2.cos())
     }
 
     #[inline(always)]
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
         let half = radians / num::cast(2);
-        Quat::from_sv(cos(half), axis.mul_t(sin(half)))
+        Quat::from_sv(half.cos(), axis.mul_t(half.sin()))
     }
 
     #[inline(always)]
@@ -318,15 +318,16 @@ pub impl<T:Copy + Float> Quat<T> {
         if dot > dot_threshold {
             return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
         } else {
-            let robust_dot = dot.clamp(-one::<T>(), one());     // stay within the domain of acos()
+            let robust_dot = dot.clamp(&-one::<T>(), &one());   // stay within the domain of acos()
 
-            let theta_0 = acos(robust_dot);                     // the angle between the quaternions
+            let theta_0 = robust_dot.acos();                    // the angle between the quaternions
             let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
 
             let q = other.sub_q(&self.mul_t(robust_dot))
                          .normalize();
 
-            return self.mul_t(cos(theta)).add_q(&q.mul_t(sin(theta)));
+            return self.mul_t(theta.cos())
+                       .add_q(&q.mul_t(theta.sin()));
         }
     }
 
@@ -376,14 +377,14 @@ impl<T:Copy> Index<uint, T> for Quat<T> {
     }
 }
 
-impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Float> FuzzyEq<T> for Quat<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -397,46 +398,3 @@ impl<T:Copy + Float> FuzzyEq<T> for Quat<T> {
         self[3].fuzzy_eq_eps(&other[3], epsilon)
     }
 }
-
-macro_rules! quat_type(
-    ($name:ident <$T:ty, $V:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(w: $T, xi: $T, yj: $T, zk: $T) -> $name { Quat::new(w, xi, yj, zk) }
-            #[inline(always)] fn from_sv(s: $T, v: $V) -> $name { Quat::from_sv(s, v) }
-            #[inline(always)] fn identity() -> $name { Quat::identity() }
-            #[inline(always)] fn zero() -> $name { Quat::zero() }
-
-            #[inline(always)] fn from_angle_x(radians: $T) -> $name { Quat::from_angle_x(radians) }
-            #[inline(always)] fn from_angle_y(radians: $T) -> $name { Quat::from_angle_y(radians) }
-            #[inline(always)] fn from_angle_z(radians: $T) -> $name { Quat::from_angle_z(radians) }
-            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T)
-                -> $name { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { Quat::from_angle_axis(radians, axis) }
-            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { Quat::from_axes(x, y, z) }
-            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { Quat::look_at(dir, up) }
-
-            #[inline(always)] fn dim() -> uint { 4 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
-// GLSL-style type aliases for quaternions. These are not present in the GLSL
-// specification, but they roughly follow the same nomenclature.
-
-/// a single-precision floating-point quaternion
-type quat  = Quat<f32>;
-/// a double-precision floating-point quaternion
-type dquat = Quat<f64>;
-
-quat_type!(quat<f32,vec3>)
-quat_type!(dquat<f64,dvec3>)
-
-// Rust-style type aliases
-type Quatf   = Quat<float>;
-type Quatf32 = Quat<f32>;
-type Quatf64 = Quat<f64>;
-
-quat_type!(Quatf<float,Vec3f>)
-quat_type!(Quatf32<f32,Vec3f32>)
-quat_type!(Quatf64<f64,Vec3f64>)

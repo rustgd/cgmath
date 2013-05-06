@@ -1,7 +1,8 @@
 use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
-use numeric::*;
+
+use num::NumAssign;
 
 /**
  * The base generic vector trait.
@@ -496,13 +497,13 @@ macro_rules! zip_vec4(
 )
 
 macro_rules! zip_assign(
-    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method($b[0]);     $a.index_mut(1).$method($b[1]); });
-    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method($b[2]); });
-    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method($b[3]); });
+    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method(&$b[0]);    $a.index_mut(1).$method(&$b[1]); });
+    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method(&$b[2]); });
+    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method(&$b[3]); });
     
-    ($a:ident[] $method:ident $b:ident   ..2) => ({ $a.index_mut(0).$method($b);        $a.index_mut(1).$method($b);    });
-    ($a:ident[] $method:ident $b:ident   ..3) => ({ zip_assign!($a[] $method $b ..2);   $a.index_mut(2).$method($b);    });
-    ($a:ident[] $method:ident $b:ident   ..4) => ({ zip_assign!($a[] $method $b ..3);   $a.index_mut(3).$method($b);    });
+    ($a:ident[] $method:ident $b:ident   ..2) => ({ $a.index_mut(0).$method(&$b);       $a.index_mut(1).$method(&$b);    });
+    ($a:ident[] $method:ident $b:ident   ..3) => ({ zip_assign!($a[] $method $b ..2);   $a.index_mut(2).$method(&$b);    });
+    ($a:ident[] $method:ident $b:ident   ..4) => ({ zip_assign!($a[] $method $b ..3);   $a.index_mut(3).$method(&$b);    });
 )
 
 /**
@@ -561,7 +562,7 @@ impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Number> NumVec<T> for Vec2<T> {
+impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
     #[inline(always)]
     fn identity() -> Vec2<T> {
         BaseVec2::new(one::<T>(), one::<T>())
@@ -651,14 +652,14 @@ impl<T:Copy + Number> NumVec<T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Number> Neg<Vec2<T>> for Vec2<T> {
+impl<T:Copy + Num> Neg<Vec2<T>> for Vec2<T> {
     #[inline(always)]
     fn neg(&self) -> Vec2<T> {
         BaseVec2::new(-self[0], -self[1])
     }
 }
 
-impl<T:Copy + Number> NumVec2<T> for Vec2<T> {
+impl<T:Copy + Num> NumVec2<T> for Vec2<T> {
     #[inline(always)]
     fn unit_x() -> Vec2<T> {
         BaseVec2::new(one::<T>(), zero::<T>())
@@ -675,14 +676,14 @@ impl<T:Copy + Number> NumVec2<T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Number> ToHomogeneous<Vec3<T>> for Vec2<T> {
+impl<T:Copy + Num> ToHomogeneous<Vec3<T>> for Vec2<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec3<T> {
         BaseVec3::new(self.x, self.y, zero())
     }
 }
 
-impl<T:Copy + Float> AffineVec<T> for Vec2<T> {
+impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -705,7 +706,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn angle(&self, other: &Vec2<T>) -> T {
-        atan2(self.perp_dot(other), self.dot(other))
+        self.perp_dot(other).atan2(self.dot(other))
     }
 
     #[inline(always)]
@@ -741,7 +742,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
+impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec2<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -805,83 +806,6 @@ impl BoolVec for Vec2<bool> {
     }
 }
 
-macro_rules! vec2_type(
-    ($name:ident <bool>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool) -> $name { BaseVec2::new(x, y) }
-            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-
-            #[inline(always)] fn dim() -> uint { 2 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T) -> $name { BaseVec2::new(x, y) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] fn zero() -> $name { NumVec::zero() }
-
-            #[inline(always)] fn unit_x() -> $name { NumVec2::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumVec2::unit_y() }
-
-            #[inline(always)] fn dim() -> uint { 2 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a two-component single-precision floating-point vector
-pub type vec2  = Vec2<f32>;
-// a two-component double-precision floating-point vector
-pub type dvec2 = Vec2<f64>;
-// a two-component Boolean vector
-pub type bvec2 = Vec2<bool>;
-// a two-component signed integer vector
-pub type ivec2 = Vec2<i32>;
-// a two-component unsigned integer vector
-pub type uvec2 = Vec2<u32>;
-
-vec2_type!(vec2<f32>)
-vec2_type!(dvec2<f64>)
-vec2_type!(bvec2<bool>)
-vec2_type!(ivec2<i32>)
-vec2_type!(uvec2<u32>)
-
-// Rust-style type aliases
-pub type Vec2f   = Vec2<float>;
-pub type Vec2f32 = Vec2<f32>;
-pub type Vec2f64 = Vec2<f64>;
-pub type Vec2i   = Vec2<int>;
-pub type Vec2i8  = Vec2<i8>;
-pub type Vec2i16 = Vec2<i16>;
-pub type Vec2i32 = Vec2<i32>;
-pub type Vec2i64 = Vec2<i64>;
-pub type Vec2u   = Vec2<uint>;
-pub type Vec2u8  = Vec2<u8>;
-pub type Vec2u16 = Vec2<u16>;
-pub type Vec2u32 = Vec2<u32>;
-pub type Vec2u64 = Vec2<u64>;
-pub type Vec2b   = Vec2<bool>;
-
-vec2_type!(Vec2f<float>)
-vec2_type!(Vec2f32<f32>)
-vec2_type!(Vec2f64<f64>)
-vec2_type!(Vec2i<int>)
-vec2_type!(Vec2i8<i8>)
-vec2_type!(Vec2i16<i16>)
-vec2_type!(Vec2i32<i32>)
-vec2_type!(Vec2i64<i64>)
-vec2_type!(Vec2u<uint>)
-vec2_type!(Vec2u8<u8>)
-vec2_type!(Vec2u16<u16>)
-vec2_type!(Vec2u32<u32>)
-vec2_type!(Vec2u64<u64>)
-vec2_type!(Vec2b<bool>)
-
 /**
  * A 3-dimensional vector
  *
@@ -940,7 +864,7 @@ impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Number> NumVec<T> for Vec3<T> {
+impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
     #[inline(always)]
     fn identity() -> Vec3<T> {
         BaseVec3::new(one::<T>(), one::<T>(), one::<T>())
@@ -1033,14 +957,14 @@ impl<T:Copy + Number> NumVec<T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Number> Neg<Vec3<T>> for Vec3<T> {
+impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
     #[inline(always)]
     fn neg(&self) -> Vec3<T> {
         BaseVec3::new(-self[0], -self[1], -self[2])
     }
 }
 
-impl<T:Copy + Number> NumVec3<T> for Vec3<T> {
+impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
     #[inline(always)]
     fn unit_x() -> Vec3<T> {
         BaseVec3::new(one::<T>(), zero::<T>(), zero::<T>())
@@ -1069,14 +993,14 @@ impl<T:Copy + Number> NumVec3<T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Number> ToHomogeneous<Vec4<T>> for Vec3<T> {
+impl<T:Copy + Num> ToHomogeneous<Vec4<T>> for Vec3<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec4<T> {
         BaseVec4::new(self.x, self.y, self.z, zero())
     }
 }
 
-impl<T:Copy + Float> AffineVec<T> for Vec3<T> {
+impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1099,7 +1023,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn angle(&self, other: &Vec3<T>) -> T {
-        atan2(self.cross(other).length(), self.dot(other))
+        self.cross(other).length().atan2(self.dot(other))
     }
 
     #[inline(always)]
@@ -1135,7 +1059,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
+impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec3<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1200,84 +1124,6 @@ impl BoolVec for Vec3<bool> {
     }
 }
 
-macro_rules! vec3_type(
-    ($name:ident <bool>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool, z: bool) -> $name { BaseVec3::new(x, y, z) }
-            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-
-            #[inline(always)] fn dim() -> uint { 3 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T, z: $T) -> $name { BaseVec3::new(x, y, z) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] fn zero() -> $name { NumVec::zero() }
-
-            #[inline(always)] fn unit_x() -> $name { NumVec3::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumVec3::unit_y() }
-            #[inline(always)] fn unit_z() -> $name { NumVec3::unit_z() }
-
-            #[inline(always)] fn dim() -> uint { 3 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a three-component single-precision floating-point vector
-pub type vec3  = Vec3<f32>;
-// a three-component double-precision floating-point vector
-pub type dvec3 = Vec3<f64>;
-// a three-component Boolean vector
-pub type bvec3 = Vec3<bool>;
-// a three-component signed integer vector
-pub type ivec3 = Vec3<i32>;
-// a three-component unsigned integer vector
-pub type uvec3 = Vec3<u32>;
-
-vec3_type!(vec3<f32>)
-vec3_type!(dvec3<f64>)
-vec3_type!(bvec3<bool>)
-vec3_type!(ivec3<i32>)
-vec3_type!(uvec3<u32>)
-
-// Rust-style type aliases
-pub type Vec3f   = Vec3<float>;
-pub type Vec3f32 = Vec3<f32>;
-pub type Vec3f64 = Vec3<f64>;
-pub type Vec3i   = Vec3<int>;
-pub type Vec3i8  = Vec3<i8>;
-pub type Vec3i16 = Vec3<i16>;
-pub type Vec3i32 = Vec3<i32>;
-pub type Vec3i64 = Vec3<i64>;
-pub type Vec3u   = Vec3<uint>;
-pub type Vec3u8  = Vec3<u8>;
-pub type Vec3u16 = Vec3<u16>;
-pub type Vec3u32 = Vec3<u32>;
-pub type Vec3u64 = Vec3<u64>;
-pub type Vec3b   = Vec3<bool>;
-
-vec3_type!(Vec3f<float>)
-vec3_type!(Vec3f32<f32>)
-vec3_type!(Vec3f64<f64>)
-vec3_type!(Vec3i<int>)
-vec3_type!(Vec3i8<i8>)
-vec3_type!(Vec3i16<i16>)
-vec3_type!(Vec3i32<i32>)
-vec3_type!(Vec3i64<i64>)
-vec3_type!(Vec3u<uint>)
-vec3_type!(Vec3u8<u8>)
-vec3_type!(Vec3u16<u16>)
-vec3_type!(Vec3u32<u32>)
-vec3_type!(Vec3u64<u64>)
-vec3_type!(Vec3b<bool>)
-
 /**
  * A 4-dimensional vector
  *
@@ -1338,7 +1184,7 @@ impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Number> NumVec<T> for Vec4<T> {
+impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
     #[inline(always)]
     fn identity() -> Vec4<T> {
         BaseVec4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
@@ -1434,14 +1280,14 @@ impl<T:Copy + Number> NumVec<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Number> Neg<Vec4<T>> for Vec4<T> {
+impl<T:Copy + Num> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
     fn neg(&self) -> Vec4<T> {
         BaseVec4::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Number> NumVec4<T> for Vec4<T> {
+impl<T:Copy + Num> NumVec4<T> for Vec4<T> {
     #[inline(always)]
     fn unit_x() -> Vec4<T> {
         BaseVec4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
@@ -1463,7 +1309,7 @@ impl<T:Copy + Number> NumVec4<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Float> AffineVec<T> for Vec4<T> {
+impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
     #[inline(always)]
     fn length2(&self) -> T {
         self.dot(self)
@@ -1486,7 +1332,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn angle(&self, other: &Vec4<T>) -> T {
-        acos(self.dot(other) / (self.length() * other.length()))
+        (self.dot(other) / (self.length() * other.length())).acos()
     }
 
     #[inline(always)]
@@ -1522,7 +1368,7 @@ impl<T:Copy + Float> AffineVec<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
+impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1587,82 +1433,3 @@ impl BoolVec for Vec4<bool> {
         BaseVec4::new(!self[0], !self[1], !self[2], !self[3])
     }
 }
-
-macro_rules! vec4_type(
-    ($name:ident <bool>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: bool, y: bool, z: bool, w: bool) -> $name { BaseVec4::new(x, y, z, w) }
-            #[inline(always)] fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-
-            #[inline(always)] fn dim() -> uint { 4 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(x: $T, y: $T, z: $T, w: $T) -> $name { BaseVec4::new(x, y, z, w) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] fn zero() -> $name { NumVec::zero() }
-
-            #[inline(always)] fn unit_x() -> $name { NumVec4::unit_x() }
-            #[inline(always)] fn unit_y() -> $name { NumVec4::unit_y() }
-            #[inline(always)] fn unit_z() -> $name { NumVec4::unit_z() }
-            #[inline(always)] fn unit_w() -> $name { NumVec4::unit_w() }
-
-            #[inline(always)] fn dim() -> uint { 4 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a four-component single-precision floating-point vector
-pub type vec4  = Vec4<f32>;
-// a four-component double-precision floating-point vector
-pub type dvec4 = Vec4<f64>;
-// a four-component Boolean vector
-pub type bvec4 = Vec4<bool>;
-// a four-component signed integer vector
-pub type ivec4 = Vec4<i32>;
-// a four-component unsigned integer vector
-pub type uvec4 = Vec4<u32>;
-
-vec4_type!(vec4<f32>)
-vec4_type!(dvec4<f64>)
-vec4_type!(bvec4<bool>)
-vec4_type!(ivec4<i32>)
-vec4_type!(uvec4<u32>)
-
-// Rust-style type aliases
-pub type Vec4f   = Vec4<float>;
-pub type Vec4f32 = Vec4<f32>;
-pub type Vec4f64 = Vec4<f64>;
-pub type Vec4i   = Vec4<int>;
-pub type Vec4i8  = Vec4<i8>;
-pub type Vec4i16 = Vec4<i16>;
-pub type Vec4i32 = Vec4<i32>;
-pub type Vec4i64 = Vec4<i64>;
-pub type Vec4u   = Vec4<uint>;
-pub type Vec4u8  = Vec4<u8>;
-pub type Vec4u16 = Vec4<u16>;
-pub type Vec4u32 = Vec4<u32>;
-pub type Vec4u64 = Vec4<u64>;
-pub type Vec4b   = Vec4<bool>;
-
-vec4_type!(Vec4f<float>)
-vec4_type!(Vec4f32<f32>)
-vec4_type!(Vec4f64<f64>)
-vec4_type!(Vec4i<int>)
-vec4_type!(Vec4i8<i8>)
-vec4_type!(Vec4i16<i16>)
-vec4_type!(Vec4i32<i32>)
-vec4_type!(Vec4i64<i64>)
-vec4_type!(Vec4u<uint>)
-vec4_type!(Vec4u8<u8>)
-vec4_type!(Vec4u16<u16>)
-vec4_type!(Vec4u32<u32>)
-vec4_type!(Vec4u64<u64>)
-vec4_type!(Vec4b<bool>)

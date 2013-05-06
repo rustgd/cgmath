@@ -1,10 +1,11 @@
 use core::num::Zero::zero;
 use core::num::One::one;
 use std::cmp::{FuzzyEq, FUZZY_EPSILON};
-use numeric::*;
 
 use vec::*;
 use quat::Quat;
+
+use num::NumAssign;
 
 /**
  * The base square matrix trait
@@ -312,7 +313,7 @@ pub trait BaseMat4<T,V>: BaseMat<T,V> {
 #[deriving(Eq)]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-impl<T:Copy + Float> BaseMat<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec2<T> { self[i] }
 
@@ -537,7 +538,7 @@ impl<T:Copy + Float> BaseMat<T, Vec2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Copy + Float> BaseMat2<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -586,8 +587,8 @@ impl<T:Copy + Float> BaseMat2<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn from_angle(radians: T) -> Mat2<T> {
-        let cos_theta = cos(radians);
-        let sin_theta = sin(radians);
+        let cos_theta = radians.cos();
+        let sin_theta = radians.sin();
 
         BaseMat2::new(cos_theta, -sin_theta,
                       sin_theta,  cos_theta)
@@ -644,14 +645,14 @@ impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Copy + Float> Neg<Mat2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     fn neg(&self) -> Mat2<T> {
         BaseMat2::from_cols(-self[0], -self[1])
     }
 }
 
-impl<T:Copy + Float> FuzzyEq<T> for Mat2<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat2<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -663,48 +664,6 @@ impl<T:Copy + Float> FuzzyEq<T> for Mat2<T> {
         self[1].fuzzy_eq_eps(&other[1], epsilon)
     }
 }
-
-macro_rules! mat2_type(
-    ($name:ident <$T:ty, $V:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c1r0: $T, c1r1: $T)
-                -> $name { BaseMat2::new(c0r0, c0r1, c1r0, c1r1) }
-            #[inline(always)] fn from_cols(c0: $V, c1: $V)
-                -> $name { BaseMat2::from_cols(c0, c1) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
-
-            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
-            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
-
-            #[inline(always)] fn from_angle(radians: $T) -> $name { BaseMat2::from_angle(radians) }
-
-            #[inline(always)] fn dim() -> uint { 2 }
-            #[inline(always)] fn rows() -> uint { 2 }
-            #[inline(always)] fn cols() -> uint { 2 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    )
-)
-
-// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a 2×2 single-precision floating-point matrix
-pub type mat2  = Mat2<f32>;
-// a 2×2 double-precision floating-point matrix
-pub type dmat2 = Mat2<f64>;
-
-mat2_type!(mat2<f32,vec2>)
-mat2_type!(dmat2<f64,dvec2>)
-
-// Rust-style type aliases
-pub type Mat2f   = Mat2<float>;
-pub type Mat2f32 = Mat2<f32>;
-pub type Mat2f64 = Mat2<f64>;
-
-mat2_type!(Mat2f<float,Vec2f>)
-mat2_type!(Mat2f32<f32,Vec2f32>)
-mat2_type!(Mat2f64<f64,Vec2f64>)
 
 /**
  *  A 3 x 3 column major matrix
@@ -722,15 +681,15 @@ mat2_type!(Mat2f64<f64,Vec2f64>)
 #[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-impl<T:Copy + Float> BaseMat<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec3<T> { self[i] }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec3<T> {
         BaseVec3::new(self[0][i],
-                     self[1][i],
-                     self[2][i])
+                      self[1][i],
+                      self[2][i])
     }
 
     /**
@@ -808,8 +767,8 @@ impl<T:Copy + Float> BaseMat<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> {
         BaseVec3::new(self.row(0).dot(vec),
-                     self.row(1).dot(vec),
-                     self.row(2).dot(vec))
+                      self.row(1).dot(vec),
+                      self.row(2).dot(vec))
     }
 
     #[inline(always)]
@@ -996,7 +955,7 @@ impl<T:Copy + Float> BaseMat<T, Vec3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat3<T, Vec3<T>> for Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
      *
@@ -1057,8 +1016,8 @@ impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(radians);
-        let sin_theta = sin(radians);
+        let cos_theta = radians.cos();
+        let sin_theta = radians.sin();
 
         BaseMat3::new( one(),     zero(),    zero(),
                       zero(),  cos_theta, sin_theta,
@@ -1071,8 +1030,8 @@ impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn from_angle_y(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(radians);
-        let sin_theta = sin(radians);
+        let cos_theta = radians.cos();
+        let sin_theta = radians.sin();
 
         BaseMat3::new(cos_theta, zero(), -sin_theta,
                          zero(),  one(),     zero(),
@@ -1085,8 +1044,8 @@ impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn from_angle_z(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let cos_theta = cos(radians);
-        let sin_theta = sin(radians);
+        let cos_theta = radians.cos();
+        let sin_theta = radians.sin();
 
         BaseMat3::new( cos_theta, sin_theta, zero(),
                       -sin_theta, cos_theta, zero(),
@@ -1105,12 +1064,12 @@ impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let cx = cos(radians_x);
-        let sx = sin(radians_x);
-        let cy = cos(radians_y);
-        let sy = sin(radians_y);
-        let cz = cos(radians_z);
-        let sz = sin(radians_z);
+        let cx = radians_x.cos();
+        let sx = radians_x.sin();
+        let cy = radians_y.cos();
+        let sy = radians_y.sin();
+        let cz = radians_z.cos();
+        let sz = radians_z.sin();
 
         BaseMat3::new(            cy*cz,             cy*sz,   -sy,
                       -cx*sz + sx*sy*cz,  cx*cz + sx*sy*sz, sx*cy,
@@ -1122,8 +1081,8 @@ impl<T:Copy + Float> BaseMat3<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Mat3<T> {
-        let c = cos(radians);
-        let s = sin(radians);
+        let c = radians.cos();
+        let s = radians.sin();
         let _1_c = one::<T>() - c;
 
         let x = axis.x;
@@ -1228,14 +1187,14 @@ impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Copy + Float> Neg<Mat3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat3<T>> for Mat3<T> {
     #[inline(always)]
     fn neg(&self) -> Mat3<T> {
         BaseMat3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
-impl<T:Copy + Float> FuzzyEq<T> for Mat3<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat3<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat3<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1248,51 +1207,6 @@ impl<T:Copy + Float> FuzzyEq<T> for Mat3<T> {
         self[2].fuzzy_eq_eps(&other[2], epsilon)
     }
 }
-
-macro_rules! mat3_type(
-    ($name:ident <$T:ty, $V:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c1r0: $T, c1r1: $T, c1r2: $T, c2r0: $T, c2r1: $T, c2r2: $T)
-                -> $name { BaseMat3::new(c0r0, c0r1, c0r2, c1r0, c1r1, c1r2, c2r0, c2r1, c2r2) }
-            #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V)
-                -> $name { BaseMat3::from_cols(c0, c1, c2) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
-
-            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
-            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
-
-            #[inline(always)] fn from_angle_x(radians: $T) -> $name { BaseMat3::from_angle_x(radians) }
-            #[inline(always)] fn from_angle_y(radians: $T) -> $name { BaseMat3::from_angle_y(radians) }
-            #[inline(always)] fn from_angle_z(radians: $T) -> $name { BaseMat3::from_angle_z(radians) }
-            #[inline(always)] fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T) -> $name { BaseMat3::from_angle_xyz(radians_x, radians_y, radians_z) }
-            #[inline(always)] fn from_angle_axis(radians: $T, axis: &$V) -> $name { BaseMat3::from_angle_axis(radians, axis) }
-            #[inline(always)] fn from_axes(x: $V, y: $V, z: $V) -> $name { BaseMat3::from_axes(x, y, z) }
-            #[inline(always)] fn look_at(dir: &$V, up: &$V) -> $name { BaseMat3::look_at(dir, up) }
-
-            #[inline(always)] fn dim() -> uint { 3 }
-            #[inline(always)] fn rows() -> uint { 3 }
-            #[inline(always)] fn cols() -> uint { 3 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    )
-)
-
-// a 3×3 single-precision floating-point matrix
-pub type mat3  = Mat3<f32>;
-// a 3×3 double-precision floating-point matrix
-pub type dmat3 = Mat3<f64>;
-
-mat3_type!(mat3<f32,vec3>)
-mat3_type!(dmat3<f64,dvec3>)
-
-// Rust-style type aliases
-pub type Mat3f   = Mat3<float>;
-pub type Mat3f32 = Mat3<f32>;
-pub type Mat3f64 = Mat3<f64>;
-
-mat3_type!(Mat3f<float,Vec3f>)
-mat3_type!(Mat3f32<f32,Vec3f32>)
-mat3_type!(Mat3f64<f64,Vec3f64>)
 
 /**
  *  A 4 x 4 column major matrix
@@ -1311,7 +1225,7 @@ mat3_type!(Mat3f64<f64,Vec3f64>)
 #[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-impl<T:Copy + Float> BaseMat<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec4<T> { self[i] }
 
@@ -1498,28 +1412,26 @@ impl<T:Copy + Float> BaseMat<T, Vec4<T>> for Mat4<T> {
                 // Find largest element in col j
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    if abs(A[j][i]) > abs(A[j][i1]) {
+                    if A[j][i].abs() > A[j][i1].abs() {
                         i1 = i;
                     }
                 }
 
-                unsafe {
-                    // Swap columns i1 and j in A and I to
-                    // put pivot on diagonal
-                    A.swap_cols(i1, j);
-                    I.swap_cols(i1, j);
+                // Swap columns i1 and j in A and I to
+                // put pivot on diagonal
+                A.swap_cols(i1, j);
+                I.swap_cols(i1, j);
 
-                    // Scale col j to have a unit diagonal
-                    I.col_mut(j).div_self_t(A[j][j]);
-                    A.col_mut(j).div_self_t(A[j][j]);
+                // Scale col j to have a unit diagonal
+                I.col_mut(j).div_self_t(A[j][j]);
+                A.col_mut(j).div_self_t(A[j][j]);
 
-                    // Eliminate off-diagonal elems in col j of A,
-                    // doing identical ops to I
-                    for uint::range(0, 4) |i| {
-                        if i != j {
-                            I.col_mut(i).sub_self_v(&I[j].mul_t(A[i][j]));
-                            A.col_mut(i).sub_self_v(&A[j].mul_t(A[i][j]));
-                        }
+                // Eliminate off-diagonal elems in col j of A,
+                // doing identical ops to I
+                for uint::range(0, 4) |i| {
+                    if i != j {
+                        I.col_mut(i).sub_self_v(&I[j].mul_t(A[i][j]));
+                        A.col_mut(i).sub_self_v(&A[j].mul_t(A[i][j]));
                     }
                 }
             }
@@ -1684,7 +1596,7 @@ impl<T:Copy + Float> BaseMat<T, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float> BaseMat4<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat4<T, Vec4<T>> for Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
      *
@@ -1748,7 +1660,7 @@ impl<T:Copy + Float> BaseMat4<T, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float> Neg<Mat4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
     fn neg(&self) -> Mat4<T> {
         BaseMat4::from_cols(-self[0], -self[1], -self[2], -self[3])
@@ -1762,7 +1674,7 @@ impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float> FuzzyEq<T> for Mat4<T> {
+impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
     #[inline(always)]
     fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
         self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
@@ -1776,43 +1688,3 @@ impl<T:Copy + Float> FuzzyEq<T> for Mat4<T> {
         self[3].fuzzy_eq_eps(&other[3], epsilon)
     }
 }
-
-macro_rules! mat4_type(
-    ($name:ident <$T:ty, $V:ty>) => (
-        pub impl $name {
-            #[inline(always)] fn new(c0r0: $T, c0r1: $T, c0r2: $T, c0r3: $T, c1r0: $T, c1r1: $T, c1r2: $T, c1r3: $T, c2r0: $T, c2r1: $T, c2r2: $T, c2r3: $T, c3r0: $T, c3r1: $T, c3r2: $T, c3r3: $T)
-                -> $name { BaseMat4::new(c0r0, c0r1, c0r2, c0r3, c1r0, c1r1, c1r2, c1r3, c2r0, c2r1, c2r2, c2r3, c3r0, c3r1, c3r2, c3r3) }
-            #[inline(always)] fn from_cols(c0: $V, c1: $V, c2: $V, c3: $V)
-                -> $name { BaseMat4::from_cols(c0, c1, c2, c3) }
-            #[inline(always)] fn from_value(v: $T) -> $name { BaseMat::from_value(v) }
-
-            #[inline(always)] fn identity() -> $name { BaseMat::identity() }
-            #[inline(always)] fn zero() -> $name { BaseMat::zero() }
-
-            #[inline(always)] fn dim() -> uint { 4 }
-            #[inline(always)] fn rows() -> uint { 4 }
-            #[inline(always)] fn cols() -> uint { 4 }
-            #[inline(always)] fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    )
-)
-
-// GLSL-style type aliases, corresponding to Section 4.1.6 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a 4×4 single-precision floating-point matrix
-pub type mat4  = Mat4<f32>;
-// a 4×4 double-precision floating-point matrix
-pub type dmat4 = Mat4<f64>;
-
-mat4_type!(mat4<f32,vec4>)
-mat4_type!(dmat4<f64,dvec4>)
-
-// Rust-style type aliases
-pub type Mat4f   = Mat4<float>;
-pub type Mat4f32 = Mat4<f32>;
-pub type Mat4f64 = Mat4<f64>;
-
-mat4_type!(Mat4f<float,Vec4f>)
-mat4_type!(Mat4f32<f32,Vec4f32>)
-mat4_type!(Mat4f64<f64,Vec4f64>)
