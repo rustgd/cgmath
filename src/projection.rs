@@ -1,5 +1,3 @@
-use std::cmp::FuzzyEq;
-
 use mat::{Mat4, BaseMat4};
 
 use num::NumAssign;
@@ -13,7 +11,7 @@ use num::NumAssign;
  * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
  */
 #[inline(always)]
-pub fn perspective<T:Copy + Float + NumAssign + FuzzyEq<T>>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub fn perspective<T:Copy + Float + NumAssign>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let _2: T = num::cast(2);
 
     let ymax = near * (fovy / _2).to_radians().tan();
@@ -29,7 +27,7 @@ pub fn perspective<T:Copy + Float + NumAssign + FuzzyEq<T>>(fovy: T, aspectRatio
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
  */
 #[inline(always)]
-pub fn frustum<T:Copy + Float + NumAssign + FuzzyEq<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn frustum<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = num::cast(0);
     let _1: T = num::cast(1);
     let _2: T = num::cast(2);
@@ -67,7 +65,7 @@ pub fn frustum<T:Copy + Float + NumAssign + FuzzyEq<T>>(left: T, right: T, botto
  * (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
  */
 #[inline(always)]
-pub fn ortho<T:Copy + Float + NumAssign + FuzzyEq<T>>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn ortho<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let _0: T = num::cast(0);
     let _1: T = num::cast(1);
     let _2: T = num::cast(2);

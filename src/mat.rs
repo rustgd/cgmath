@@ -1,6 +1,6 @@
+use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
-use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 
 use vec::*;
 use quat::Quat;
@@ -123,7 +123,7 @@ pub trait BaseMat<T,V>: Index<uint, V> + Eq + Neg<Self> {
      * The transposed matrix
      */
     fn transpose(&self) -> Self;
-    
+
     /**
      * # Return value
      *
@@ -313,7 +313,7 @@ pub trait BaseMat4<T,V>: BaseMat<T,V> {
 #[deriving(Eq)]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec2<T> { self[i] }
 
@@ -424,7 +424,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
-        if d.fuzzy_eq(&zero()) {
+        if d.approx_eq(&zero()) {
             None
         } else {
             Some(BaseMat2::new( self[1][1]/d, -self[0][1]/d,
@@ -437,7 +437,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
         BaseMat2::new(self[0][0], self[1][0],
                       self[0][1], self[1][1])
     }
-    
+
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
         match i {
@@ -507,29 +507,29 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&BaseMat::identity())
+        self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].fuzzy_eq(&zero()) &&
-        self[1][0].fuzzy_eq(&zero())
+        self[0][1].approx_eq(&zero()) &&
+        self[1][0].approx_eq(&zero())
     }
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&BaseMat::identity())
+        !self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[1][0].fuzzy_eq(&self[0][1])
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[1][0].approx_eq(&self[0][1])
     }
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&zero())
+        !self.determinant().approx_eq(&zero())
     }
 
     #[inline(always)]
@@ -538,7 +538,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat2<T, Vec2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
     /**
      * Construct a 2 x 2 matrix
      *
@@ -645,23 +645,28 @@ impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat2<T>> for Mat2<T> {
+impl<T:Copy + Float + NumAssign> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     fn neg(&self) -> Mat2<T> {
         BaseMat2::from_cols(-self[0], -self[1])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat2<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Mat2<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon)
+    fn approx_eq(&self, other: &Mat2<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon)
     }
 }
 
@@ -681,7 +686,7 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat2<T> {
 #[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec3<T> { self[i] }
 
@@ -815,7 +820,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
     // #[inline(always)]
     fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
-        if d.fuzzy_eq(&zero()) {
+        if d.approx_eq(&zero()) {
             None
         } else {
             let m: Mat3<T> = BaseMat3::from_cols(self[1].cross(&self[2]).div_t(d),
@@ -831,7 +836,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
                       self[0][1], self[1][1], self[2][1],
                       self[0][2], self[1][2], self[2][2])
     }
-    
+
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
         match i {
@@ -912,41 +917,41 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&BaseMat::identity())
+        self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].fuzzy_eq(&zero()) &&
-        self[0][2].fuzzy_eq(&zero()) &&
+        self[0][1].approx_eq(&zero()) &&
+        self[0][2].approx_eq(&zero()) &&
 
-        self[1][0].fuzzy_eq(&zero()) &&
-        self[1][2].fuzzy_eq(&zero()) &&
+        self[1][0].approx_eq(&zero()) &&
+        self[1][2].approx_eq(&zero()) &&
 
-        self[2][0].fuzzy_eq(&zero()) &&
-        self[2][1].fuzzy_eq(&zero())
+        self[2][0].approx_eq(&zero()) &&
+        self[2][1].approx_eq(&zero())
     }
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&BaseMat::identity())
+        !self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[0][2].fuzzy_eq(&self[2][0]) &&
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[0][2].approx_eq(&self[2][0]) &&
 
-        self[1][0].fuzzy_eq(&self[0][1]) &&
-        self[1][2].fuzzy_eq(&self[2][1]) &&
+        self[1][0].approx_eq(&self[0][1]) &&
+        self[1][2].approx_eq(&self[2][1]) &&
 
-        self[2][0].fuzzy_eq(&self[0][2]) &&
-        self[2][1].fuzzy_eq(&self[1][2])
+        self[2][0].approx_eq(&self[0][2]) &&
+        self[2][1].approx_eq(&self[1][2])
     }
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&zero())
+        !self.determinant().approx_eq(&zero())
     }
 
     #[inline(always)]
@@ -955,7 +960,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat3<T, Vec3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
     /**
      * Construct a 3 x 3 matrix
      *
@@ -1187,24 +1192,29 @@ impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat3<T>> for Mat3<T> {
+impl<T:Copy + Float + NumAssign> Neg<Mat3<T>> for Mat3<T> {
     #[inline(always)]
     fn neg(&self) -> Mat3<T> {
         BaseMat3::from_cols(-self[0], -self[1], -self[2])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat3<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat3<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Mat3<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
-        self[2].fuzzy_eq_eps(&other[2], epsilon)
+    fn approx_eq(&self, other: &Mat3<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon)
     }
 }
 
@@ -1225,7 +1235,7 @@ impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat3<T> {
 #[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
     fn col(&self, i: uint) -> Vec4<T> { self[i] }
 
@@ -1397,7 +1407,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
-        if d.fuzzy_eq(&zero()) {
+        if d.approx_eq(&zero()) {
             None
         } else {
 
@@ -1446,7 +1456,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
                       self[0][2], self[1][2], self[2][2], self[3][2],
                       self[0][3], self[1][3], self[2][3], self[3][3])
     }
-    
+
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
         match i {
@@ -1539,55 +1549,55 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn is_identity(&self) -> bool {
-        self.fuzzy_eq(&BaseMat::identity())
+        self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].fuzzy_eq(&zero()) &&
-        self[0][2].fuzzy_eq(&zero()) &&
-        self[0][3].fuzzy_eq(&zero()) &&
+        self[0][1].approx_eq(&zero()) &&
+        self[0][2].approx_eq(&zero()) &&
+        self[0][3].approx_eq(&zero()) &&
 
-        self[1][0].fuzzy_eq(&zero()) &&
-        self[1][2].fuzzy_eq(&zero()) &&
-        self[1][3].fuzzy_eq(&zero()) &&
+        self[1][0].approx_eq(&zero()) &&
+        self[1][2].approx_eq(&zero()) &&
+        self[1][3].approx_eq(&zero()) &&
 
-        self[2][0].fuzzy_eq(&zero()) &&
-        self[2][1].fuzzy_eq(&zero()) &&
-        self[2][3].fuzzy_eq(&zero()) &&
+        self[2][0].approx_eq(&zero()) &&
+        self[2][1].approx_eq(&zero()) &&
+        self[2][3].approx_eq(&zero()) &&
 
-        self[3][0].fuzzy_eq(&zero()) &&
-        self[3][1].fuzzy_eq(&zero()) &&
-        self[3][2].fuzzy_eq(&zero())
+        self[3][0].approx_eq(&zero()) &&
+        self[3][1].approx_eq(&zero()) &&
+        self[3][2].approx_eq(&zero())
     }
 
     #[inline(always)]
     fn is_rotated(&self) -> bool {
-        !self.fuzzy_eq(&BaseMat::identity())
+        !self.approx_eq(&BaseMat::identity())
     }
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].fuzzy_eq(&self[1][0]) &&
-        self[0][2].fuzzy_eq(&self[2][0]) &&
-        self[0][3].fuzzy_eq(&self[3][0]) &&
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[0][2].approx_eq(&self[2][0]) &&
+        self[0][3].approx_eq(&self[3][0]) &&
 
-        self[1][0].fuzzy_eq(&self[0][1]) &&
-        self[1][2].fuzzy_eq(&self[2][1]) &&
-        self[1][3].fuzzy_eq(&self[3][1]) &&
+        self[1][0].approx_eq(&self[0][1]) &&
+        self[1][2].approx_eq(&self[2][1]) &&
+        self[1][3].approx_eq(&self[3][1]) &&
 
-        self[2][0].fuzzy_eq(&self[0][2]) &&
-        self[2][1].fuzzy_eq(&self[1][2]) &&
-        self[2][3].fuzzy_eq(&self[3][2]) &&
+        self[2][0].approx_eq(&self[0][2]) &&
+        self[2][1].approx_eq(&self[1][2]) &&
+        self[2][3].approx_eq(&self[3][2]) &&
 
-        self[3][0].fuzzy_eq(&self[0][3]) &&
-        self[3][1].fuzzy_eq(&self[1][3]) &&
-        self[3][2].fuzzy_eq(&self[2][3])
+        self[3][0].approx_eq(&self[0][3]) &&
+        self[3][1].approx_eq(&self[1][3]) &&
+        self[3][2].approx_eq(&self[2][3])
     }
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().fuzzy_eq(&zero())
+        !self.determinant().approx_eq(&zero())
     }
 
     #[inline(always)]
@@ -1596,7 +1606,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat<T, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat4<T, Vec4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign> BaseMat4<T, Vec4<T>> for Mat4<T> {
     /**
      * Construct a 4 x 4 matrix
      *
@@ -1660,7 +1670,7 @@ impl<T:Copy + Float + NumAssign + FuzzyEq<T>> BaseMat4<T, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Mat4<T>> for Mat4<T> {
+impl<T:Copy + Float + NumAssign> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
     fn neg(&self) -> Mat4<T> {
         BaseMat4::from_cols(-self[0], -self[1], -self[2], -self[3])
@@ -1674,17 +1684,22 @@ impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Mat4<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat4<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Mat4<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
-        self[2].fuzzy_eq_eps(&other[2], epsilon) &&
-        self[3].fuzzy_eq_eps(&other[3], epsilon)
+    fn approx_eq(&self, other: &Mat4<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon) &&
+        self[3].approx_eq_eps(&other[3], epsilon)
     }
 }

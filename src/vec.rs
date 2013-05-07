@@ -1,6 +1,6 @@
+use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
-use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 
 use num::NumAssign;
 
@@ -24,7 +24,7 @@ pub trait BaseVec<T>: Index<uint,T> + Eq {
      * A pointer to the first component of the vector
      */
     fn to_ptr(&self) -> *T;
-    
+
     /**
      * Get a mutable reference to the component at `i`
      */
@@ -126,7 +126,7 @@ pub trait NumVec<T>: BaseVec<T> + Neg<Self> {
      * The dot product of the vector and `other`
      */
     fn dot(&self, other: &Self) -> T;
-    
+
     /**
      * Negate the vector
      */
@@ -192,7 +192,7 @@ pub trait NumVec3<T>: NumVec<T> {
      * The cross product of the vector and `other`
      */
     fn cross(&self, other: &Self) -> Self;
-    
+
     /**
      * Set to the cross product of the vector and `other`
      */
@@ -286,7 +286,7 @@ pub trait AffineVec<T>: NumVec<T> {
      * The intoperlated vector
      */
     fn lerp(&self, other: &Self, amount: T) -> Self;
-    
+
     /**
      * Normalize the vector
      */
@@ -500,7 +500,7 @@ macro_rules! zip_assign(
     ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method(&$b[0]);    $a.index_mut(1).$method(&$b[1]); });
     ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method(&$b[2]); });
     ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method(&$b[3]); });
-    
+
     ($a:ident[] $method:ident $b:ident   ..2) => ({ $a.index_mut(0).$method(&$b);       $a.index_mut(1).$method(&$b);    });
     ($a:ident[] $method:ident $b:ident   ..3) => ({ zip_assign!($a[] $method $b ..2);   $a.index_mut(2).$method(&$b);    });
     ($a:ident[] $method:ident $b:ident   ..4) => ({ zip_assign!($a[] $method $b ..3);   $a.index_mut(3).$method(&$b);    });
@@ -532,7 +532,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
     fn to_ptr(&self) -> *T {
         unsafe { cast::transmute(self) }
     }
-    
+
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
@@ -614,7 +614,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
         self[0] * other[0] +
         self[1] * other[1]
     }
-    
+
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -self[0];
@@ -723,7 +723,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
     fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-    
+
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
@@ -742,16 +742,21 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
     }
 }
 
-impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec2<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Vec2<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon)
+    fn approx_eq(&self, other: &Vec2<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon)
     }
 }
 
@@ -833,7 +838,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
     fn to_ptr(&self) -> *T {
         unsafe { cast::transmute(self) }
     }
-    
+
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
@@ -918,7 +923,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
         self[1] * other[1] +
         self[2] * other[2]
     }
-    
+
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -self[0];
@@ -986,7 +991,7 @@ impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
                       (self[2] * other[0]) - (self[0] * other[2]),
                       (self[0] * other[1]) - (self[1] * other[0]))
     }
-    
+
     #[inline(always)]
     fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other);
@@ -1040,7 +1045,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
     fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-    
+
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
@@ -1059,17 +1064,22 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
     }
 }
 
-impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec3<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Vec3<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
-        self[2].fuzzy_eq_eps(&other[2], epsilon)
+    fn approx_eq(&self, other: &Vec3<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon)
     }
 }
 
@@ -1152,7 +1162,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
     fn to_ptr(&self) -> *T {
         unsafe { cast::transmute(self) }
     }
-    
+
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         match i {
@@ -1240,7 +1250,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
         self[2] * other[2] +
         self[3] * other[3]
     }
-    
+
     #[inline(always)]
     fn neg_self(&mut self) {
         *self.index_mut(0) = -self[0];
@@ -1349,7 +1359,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
     fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
-    
+
     #[inline(always)]
     fn normalize_self(&mut self) {
         let n = one::<T>() / self.length();
@@ -1368,18 +1378,23 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + NumCast + Eq + FuzzyEq<T>> FuzzyEq<T> for Vec4<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Vec4<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
-        self[2].fuzzy_eq_eps(&other[2], epsilon) &&
-        self[3].fuzzy_eq_eps(&other[3], epsilon)
+    fn approx_eq(&self, other: &Vec4<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon) &&
+        self[3].approx_eq_eps(&other[3], epsilon)
     }
 }
 

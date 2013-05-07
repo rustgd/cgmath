@@ -7,9 +7,9 @@
  *   Sir William Hamilton
  */
 
+use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
-use std::cmp::{FuzzyEq, FUZZY_EPSILON};
 
 use mat::{Mat3, BaseMat3};
 use vec::{Vec3, BaseVec3, AffineVec, NumVec, NumVec3};
@@ -31,7 +31,7 @@ use num::NumAssign;
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Quat<T> {
+pub impl<T:Copy + Float + NumAssign> Quat<T> {
     /**
      * Construct the quaternion from one scalar component and three
      * imaginary components
@@ -377,24 +377,29 @@ impl<T:Copy> Index<uint, T> for Quat<T> {
     }
 }
 
-impl<T:Copy + Float + NumAssign + FuzzyEq<T>> Neg<Quat<T>> for Quat<T> {
+impl<T:Copy + Float + NumAssign> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     fn neg(&self) -> Quat<T> {
         Quat::new(-self[0], -self[1], -self[2], -self[3])
     }
 }
 
-impl<T:Copy + Float + FuzzyEq<T>> FuzzyEq<T> for Quat<T> {
+impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
     #[inline(always)]
-    fn fuzzy_eq(&self, other: &Quat<T>) -> bool {
-        self.fuzzy_eq_eps(other, &num::cast(FUZZY_EPSILON))
+    fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn fuzzy_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
-        self[0].fuzzy_eq_eps(&other[0], epsilon) &&
-        self[1].fuzzy_eq_eps(&other[1], epsilon) &&
-        self[2].fuzzy_eq_eps(&other[2], epsilon) &&
-        self[3].fuzzy_eq_eps(&other[3], epsilon)
+    fn approx_eq(&self, other: &Quat<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline(always)]
+    fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon) &&
+        self[3].approx_eq_eps(&other[3], epsilon)
     }
 }
