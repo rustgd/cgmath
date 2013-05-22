@@ -1,3 +1,4 @@
+use core::cast::transmute;
 use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
@@ -441,10 +442,11 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Mat2<T>,
+                &'a mut [Vec2<T>,..2]
+            >(self)[i]
         }
     }
 
@@ -535,7 +537,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 }
 
@@ -642,7 +644,7 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
 impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec2<T> {
-        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 2) |slice| { slice[*i] } }
+        unsafe { transmute::<Mat2<T>,[Vec2<T>,..2]>(*self)[*i] }
     }
 }
 
@@ -840,11 +842,11 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            2 => &mut self.z,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Mat3<T>,
+                &'a mut [Vec3<T>,..3]
+            >(self)[i]
         }
     }
 
@@ -957,7 +959,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 }
 
@@ -1189,7 +1191,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
 impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec3<T> {
-        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 3) |slice| { slice[*i] } }
+        unsafe { transmute::<Mat3<T>,[Vec3<T>,..3]>(*self)[*i] }
     }
 }
 
@@ -1460,12 +1462,11 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            2 => &mut self.z,
-            3 => &mut self.w,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Mat4<T>,
+                &'a mut [Vec4<T>,..4]
+            >(self)[i]
         }
     }
 
@@ -1603,7 +1604,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 }
 
@@ -1681,7 +1682,7 @@ impl<T:Copy + Float + NumAssign> Neg<Mat4<T>> for Mat4<T> {
 impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> Vec4<T> {
-        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 4) |slice| { slice[*i] } }
+        unsafe { transmute::<Mat4<T>,[Vec4<T>,..4]>(*self)[*i] }
     }
 }
 

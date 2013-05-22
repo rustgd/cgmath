@@ -1,3 +1,4 @@
+use core::cast::transmute;
 use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
@@ -536,10 +537,11 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 1, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Vec2<T>,
+                &'a mut [T,..2]
+            >(self)[i]
         }
     }
 
@@ -559,7 +561,7 @@ impl<T> BaseVec2<T> for Vec2<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 2) |slice| { slice[*i] } }
+        unsafe { transmute::<Vec2<T>,[T,..2]>(*self)[*i] }
     }
 }
 
@@ -842,11 +844,11 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            2 => &mut self.z,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 2, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Vec3<T>,
+                &'a mut [T,..3]
+            >(self)[i]
         }
     }
 
@@ -866,7 +868,7 @@ impl<T> BaseVec3<T> for Vec3<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 3) |slice| { slice[*i] } }
+        unsafe { transmute::<Vec3<T>,[T,..3]>(*self)[*i] }
     }
 }
 
@@ -1166,12 +1168,11 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        match i {
-            0 => &mut self.x,
-            1 => &mut self.y,
-            2 => &mut self.z,
-            3 => &mut self.w,
-            _ => fail!(fmt!("index out of bounds: expected an index from 0 to 3, but found %u", i))
+        unsafe {
+            &'a mut transmute::<
+                &'a mut Vec4<T>,
+                &'a mut [T,..4]
+            >(self)[i]
         }
     }
 
@@ -1191,7 +1192,7 @@ impl<T> BaseVec4<T> for Vec4<T> {
 impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do vec::raw::buf_as_slice(self.to_ptr(), 4) |slice| { slice[*i] } }
+        unsafe { transmute::<Vec4<T>,[T,..4]>(*self)[*i] }
     }
 }
 
