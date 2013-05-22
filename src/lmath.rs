@@ -18,7 +18,7 @@ pub mod vec;
 
 pub mod projection;
 
-#[test]
+#[cfg(test)]
 mod test {
     #[path = "test_mat.rs" ] mod mat;
     #[path = "test_quat.rs"] mod quat;
