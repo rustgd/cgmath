@@ -1,6 +1,7 @@
 use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
+use core::util;
 
 use vec::*;
 use quat::Quat;
@@ -449,7 +450,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        *self.col_mut(a) <-> *self.col_mut(b);
+        util::swap(self.col_mut(a), self.col_mut(b));
     }
 
     #[inline(always)]
@@ -501,8 +502,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        *self.x.index_mut(1) <-> *self.y.index_mut(0);
-        *self.y.index_mut(0) <-> *self.x.index_mut(1);
+        util::swap(self.x.index_mut(1), self.y.index_mut(0));
+        util::swap(self.y.index_mut(0), self.x.index_mut(1));
     }
 
     #[inline(always)]
@@ -849,7 +850,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        *self.col_mut(a) <-> *self.col_mut(b);
+        util::swap(self.col_mut(a), self.col_mut(b));
     }
 
     #[inline(always)]
@@ -905,14 +906,14 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
-        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
+        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
 
-        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
-        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
+        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
 
-        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
-        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
+        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
     }
 
     #[inline(always)]
@@ -1470,7 +1471,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        *self.col_mut(a) <-> *self.col_mut(b);
+        util::swap(self.col_mut(a), self.col_mut(b));
     }
 
     #[inline(always)]
@@ -1530,21 +1531,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        *self.col_mut(0).index_mut(1) <-> *self.col_mut(1).index_mut(0);
-        *self.col_mut(0).index_mut(2) <-> *self.col_mut(2).index_mut(0);
-        *self.col_mut(0).index_mut(3) <-> *self.col_mut(3).index_mut(0);
+        util::swap(self.col_mut(0).index_mut(1), self.col_mut(1).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(2), self.col_mut(2).index_mut(0));
+        util::swap(self.col_mut(0).index_mut(3), self.col_mut(3).index_mut(0));
 
-        *self.col_mut(1).index_mut(0) <-> *self.col_mut(0).index_mut(1);
-        *self.col_mut(1).index_mut(2) <-> *self.col_mut(2).index_mut(1);
-        *self.col_mut(1).index_mut(3) <-> *self.col_mut(3).index_mut(1);
+        util::swap(self.col_mut(1).index_mut(0), self.col_mut(0).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(2), self.col_mut(2).index_mut(1));
+        util::swap(self.col_mut(1).index_mut(3), self.col_mut(3).index_mut(1));
 
-        *self.col_mut(2).index_mut(0) <-> *self.col_mut(0).index_mut(2);
-        *self.col_mut(2).index_mut(1) <-> *self.col_mut(1).index_mut(2);
-        *self.col_mut(2).index_mut(3) <-> *self.col_mut(3).index_mut(2);
+        util::swap(self.col_mut(2).index_mut(0), self.col_mut(0).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(1), self.col_mut(1).index_mut(2));
+        util::swap(self.col_mut(2).index_mut(3), self.col_mut(3).index_mut(2));
 
-        *self.col_mut(3).index_mut(0) <-> *self.col_mut(0).index_mut(3);
-        *self.col_mut(3).index_mut(1) <-> *self.col_mut(1).index_mut(3);
-        *self.col_mut(3).index_mut(2) <-> *self.col_mut(2).index_mut(3);
+        util::swap(self.col_mut(3).index_mut(0), self.col_mut(0).index_mut(3));
+        util::swap(self.col_mut(3).index_mut(1), self.col_mut(1).index_mut(3));
+        util::swap(self.col_mut(3).index_mut(2), self.col_mut(2).index_mut(3));
     }
 
     #[inline(always)]

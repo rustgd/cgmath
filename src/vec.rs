@@ -1,6 +1,7 @@
 use core::cmp::ApproxEq;
 use core::num::Zero::zero;
 use core::num::One::one;
+use core::util;
 
 use num::NumAssign;
 
@@ -544,7 +545,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        *self.index_mut(a) <-> *self.index_mut(b);
+        util::swap(self.index_mut(a), self.index_mut(b));
     }
 }
 
@@ -851,7 +852,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        *self.index_mut(a) <-> *self.index_mut(b);
+        util::swap(self.index_mut(a), self.index_mut(b));
     }
 }
 
@@ -1176,7 +1177,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        *self.index_mut(a) <-> *self.index_mut(b);
+        util::swap(self.index_mut(a), self.index_mut(b));
     }
 }
 
