@@ -1,8 +1,7 @@
-use core::cast::transmute;
-use core::cmp::ApproxEq;
-use core::num::Zero::zero;
-use core::num::One::one;
-use core::util;
+use std::cast::transmute;
+use std::cmp::ApproxEq;
+use std::num::{Zero, One};
+use std::util;
 
 use vec::*;
 use quat::Quat;
@@ -343,8 +342,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat2<T> {
-        BaseMat2::new(value, zero(),
-                      zero(), value)
+        BaseMat2::new(value, Zero::zero(),
+                      Zero::zero(), value)
     }
 
     /**
@@ -360,8 +359,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn identity() -> Mat2<T> {
-        BaseMat2::new( one::<T>(), zero::<T>(),
-                      zero::<T>(),  one::<T>())
+        BaseMat2::new(  One::one::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(),   One::one::<T>())
     }
 
     /**
@@ -377,8 +376,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn zero() -> Mat2<T> {
-        BaseMat2::new(zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>())
+        BaseMat2::new(Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
@@ -426,7 +425,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
     fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
-        if d.approx_eq(&zero()) {
+        if d.approx_eq(&Zero::zero()) {
             None
         } else {
             Some(BaseMat2::new( self[1][1]/d, -self[0][1]/d,
@@ -515,8 +514,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&zero()) &&
-        self[1][0].approx_eq(&zero())
+        self[0][1].approx_eq(&Zero::zero()) &&
+        self[1][0].approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -532,7 +531,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().approx_eq(&zero())
+        !self.determinant().approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -612,9 +611,9 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn to_mat3(&self) -> Mat3<T> {
-        BaseMat3::new(self[0][0], self[0][1], zero(),
-                      self[1][0], self[1][1], zero(),
-                          zero(),     zero(),  one())
+        BaseMat3::new(  self[0][0],   self[0][1], Zero::zero(),
+                        self[1][0],   self[1][1], Zero::zero(),
+                      Zero::zero(), Zero::zero(),   One::one())
     }
 
     /**
@@ -634,10 +633,10 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        BaseMat4::new(self[0][0], self[0][1], zero(), zero(),
-                      self[1][0], self[1][1], zero(), zero(),
-                          zero(),     zero(),  one(), zero(),
-                          zero(),     zero(), zero(),  one())
+        BaseMat4::new(  self[0][0],   self[0][1], Zero::zero(), Zero::zero(),
+                        self[1][0],   self[1][1], Zero::zero(), Zero::zero(),
+                      Zero::zero(), Zero::zero(),   One::one(), Zero::zero(),
+                      Zero::zero(), Zero::zero(), Zero::zero(),   One::one())
     }
 }
 
@@ -720,9 +719,9 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat3<T> {
-        BaseMat3::new(value, zero(), zero(),
-                      zero(), value, zero(),
-                      zero(), zero(), value)
+        BaseMat3::new(value, Zero::zero(), Zero::zero(),
+                      Zero::zero(), value, Zero::zero(),
+                      Zero::zero(), Zero::zero(), value)
     }
 
     /**
@@ -740,9 +739,9 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn identity() -> Mat3<T> {
-        BaseMat3::new( one::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(),  one::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(),  one::<T>())
+        BaseMat3::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
     /**
@@ -760,9 +759,9 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn zero() -> Mat3<T> {
-        BaseMat3::new(zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>())
+        BaseMat3::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
@@ -823,7 +822,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
     // #[inline(always)]
     fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
-        if d.approx_eq(&zero()) {
+        if d.approx_eq(&Zero::zero()) {
             None
         } else {
             let m: Mat3<T> = BaseMat3::from_cols(self[1].cross(&self[2]).div_t(d),
@@ -925,14 +924,14 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&zero()) &&
-        self[0][2].approx_eq(&zero()) &&
+        self[0][1].approx_eq(&Zero::zero()) &&
+        self[0][2].approx_eq(&Zero::zero()) &&
 
-        self[1][0].approx_eq(&zero()) &&
-        self[1][2].approx_eq(&zero()) &&
+        self[1][0].approx_eq(&Zero::zero()) &&
+        self[1][2].approx_eq(&Zero::zero()) &&
 
-        self[2][0].approx_eq(&zero()) &&
-        self[2][1].approx_eq(&zero())
+        self[2][0].approx_eq(&Zero::zero()) &&
+        self[2][1].approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -954,7 +953,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().approx_eq(&zero())
+        !self.determinant().approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -1027,9 +1026,9 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        BaseMat3::new( one(),     zero(),    zero(),
-                      zero(),  cos_theta, sin_theta,
-                      zero(), -sin_theta, cos_theta)
+        BaseMat3::new(  One::one(), Zero::zero(), Zero::zero(),
+                      Zero::zero(),    cos_theta,    sin_theta,
+                      Zero::zero(),   -sin_theta,    cos_theta)
     }
 
     /**
@@ -1041,9 +1040,9 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        BaseMat3::new(cos_theta, zero(), -sin_theta,
-                         zero(),  one(),     zero(),
-                      sin_theta, zero(),  cos_theta)
+        BaseMat3::new(   cos_theta, Zero::zero(),   -sin_theta,
+                      Zero::zero(),   One::one(), Zero::zero(),
+                         sin_theta, Zero::zero(),    cos_theta)
     }
 
     /**
@@ -1055,9 +1054,9 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        BaseMat3::new( cos_theta, sin_theta, zero(),
-                      -sin_theta, cos_theta, zero(),
-                          zero(),    zero(),  one())
+        BaseMat3::new(   cos_theta,    sin_theta, Zero::zero(),
+                        -sin_theta,    cos_theta, Zero::zero(),
+                      Zero::zero(), Zero::zero(),   One::one())
     }
 
     /**
@@ -1091,15 +1090,15 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Mat3<T> {
         let c = radians.cos();
         let s = radians.sin();
-        let _1_c = one::<T>() - c;
+        let _1_c =  One::one::<T>() - c;
 
         let x = axis.x;
         let y = axis.y;
         let z = axis.z;
 
         BaseMat3::new(_1_c*x*x + c,   _1_c*x*y + s*z, _1_c*x*z - s*y,
-                    _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
-                    _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
+                      _1_c*x*y - s*z, _1_c*y*y + c,   _1_c*y*z + s*x,
+                      _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
     }
 
     #[inline(always)]
@@ -1133,10 +1132,10 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        BaseMat4::new(self[0][0], self[0][1], self[0][2], zero(),
-                      self[1][0], self[1][1], self[1][2], zero(),
-                      self[2][0], self[2][1], self[2][2], zero(),
-                          zero(),     zero(),     zero(),  one())
+        BaseMat4::new(  self[0][0],   self[0][1],   self[0][2], Zero::zero(),
+                        self[1][0],   self[1][1],   self[1][2], Zero::zero(),
+                        self[2][0],   self[2][1],   self[2][2], Zero::zero(),
+                      Zero::zero(), Zero::zero(), Zero::zero(),   One::one())
     }
 
     /**
@@ -1154,7 +1153,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let _1:   T = num::cast(1.0);
         let half: T = num::cast(0.5);
 
-        if trace >= zero() {
+        if trace >= Zero::zero() {
             s = (_1 + trace).sqrt();
             w = half * s;
             s = half / s;
@@ -1272,10 +1271,10 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
      */
     #[inline(always)]
     fn from_value(value: T) -> Mat4<T> {
-        BaseMat4::new(value, zero(), zero(), zero(),
-                      zero(), value, zero(), zero(),
-                      zero(), zero(), value, zero(),
-                      zero(), zero(), zero(), value)
+        BaseMat4::new(value, Zero::zero(), Zero::zero(), Zero::zero(),
+                      Zero::zero(), value, Zero::zero(), Zero::zero(),
+                      Zero::zero(), Zero::zero(), value, Zero::zero(),
+                      Zero::zero(), Zero::zero(), Zero::zero(), value)
     }
 
     /**
@@ -1295,10 +1294,10 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
      */
     #[inline(always)]
     fn identity() -> Mat4<T> {
-        BaseMat4::new( one::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(),  one::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(),  one::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>(),  one::<T>())
+        BaseMat4::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
     /**
@@ -1318,10 +1317,10 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
      */
     #[inline(always)]
     fn zero() -> Mat4<T> {
-        BaseMat4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>(),
-                      zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseMat4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
+                      Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
@@ -1410,7 +1409,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     fn inverse(&self) -> Option<Mat4<T>> {
         let d = self.determinant();
-        if d.approx_eq(&zero()) {
+        if d.approx_eq(&Zero::zero()) {
             None
         } else {
 
@@ -1556,21 +1555,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&zero()) &&
-        self[0][2].approx_eq(&zero()) &&
-        self[0][3].approx_eq(&zero()) &&
+        self[0][1].approx_eq(&Zero::zero()) &&
+        self[0][2].approx_eq(&Zero::zero()) &&
+        self[0][3].approx_eq(&Zero::zero()) &&
 
-        self[1][0].approx_eq(&zero()) &&
-        self[1][2].approx_eq(&zero()) &&
-        self[1][3].approx_eq(&zero()) &&
+        self[1][0].approx_eq(&Zero::zero()) &&
+        self[1][2].approx_eq(&Zero::zero()) &&
+        self[1][3].approx_eq(&Zero::zero()) &&
 
-        self[2][0].approx_eq(&zero()) &&
-        self[2][1].approx_eq(&zero()) &&
-        self[2][3].approx_eq(&zero()) &&
+        self[2][0].approx_eq(&Zero::zero()) &&
+        self[2][1].approx_eq(&Zero::zero()) &&
+        self[2][3].approx_eq(&Zero::zero()) &&
 
-        self[3][0].approx_eq(&zero()) &&
-        self[3][1].approx_eq(&zero()) &&
-        self[3][2].approx_eq(&zero())
+        self[3][0].approx_eq(&Zero::zero()) &&
+        self[3][1].approx_eq(&Zero::zero()) &&
+        self[3][2].approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -1599,7 +1598,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn is_invertible(&self) -> bool {
-        !self.determinant().approx_eq(&zero())
+        !self.determinant().approx_eq(&Zero::zero())
     }
 
     #[inline(always)]

@@ -7,9 +7,9 @@
  *   Sir William Hamilton
  */
 
-use core::cmp::ApproxEq;
-use core::num::Zero::zero;
-use core::num::One::one;
+use std::cast::transmute;
+use std::cmp::ApproxEq;
+use std::num::{Zero, One};
 
 use mat::{Mat3, BaseMat3};
 use vec::{Vec3, BaseVec3, AffineVec, NumVec, NumVec3};
@@ -68,7 +68,10 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn identity() -> Quat<T> {
-        Quat::new(one(), zero(), zero(), zero())
+        Quat::new(One::one(),
+                  Zero::zero(),
+                  Zero::zero(),
+                  Zero::zero())
     }
 
     /**
@@ -78,25 +81,37 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn zero() -> Quat<T> {
-        Quat::new(zero(), zero(), zero(), zero())
+        Quat::new(Zero::zero(),
+                  Zero::zero(),
+                  Zero::zero(),
+                  Zero::zero())
     }
 
     #[inline(always)]
     fn from_angle_x(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new((radians / _2).cos(), radians.sin(), zero(), zero())
+        Quat::new((radians / _2).cos(),
+                  radians.sin(),
+                  Zero::zero(),
+                  Zero::zero())
     }
 
     #[inline(always)]
     fn from_angle_y(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new((radians / _2).cos(), zero(), radians.sin(), zero())
+        Quat::new((radians / _2).cos(),
+                  Zero::zero(),
+                  radians.sin(),
+                  Zero::zero())
     }
 
     #[inline(always)]
     fn from_angle_z(radians: T) -> Quat<T> {
         let _2 = num::cast(2);
-        Quat::new((radians / _2).cos(), zero(), zero(), radians.sin())
+        Quat::new((radians / _2).cos(),
+                  Zero::zero(),
+                  Zero::zero(),
+                  radians.sin())
     }
 
     #[inline(always)]
@@ -273,7 +288,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn normalize(&self) -> Quat<T> {
-        self.mul_t(one::<T>()/self.magnitude())
+        self.mul_t(One::one::<T>()/self.magnitude())
     }
 
     /**
@@ -285,7 +300,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        self.mul_t(one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
+        self.mul_t(One::one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
     }
 
     /**
@@ -316,12 +331,13 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
         let dot_threshold = num::cast(0.9995);
 
         if dot > dot_threshold {
-            return self.nlerp(other, amount);                   // if quaternions are close together use `nlerp`
+            return self.nlerp(other, amount);               // if quaternions are close together use `nlerp`
         } else {
-            let robust_dot = dot.clamp(&-one::<T>(), &one());   // stay within the domain of acos()
+            let robust_dot = dot.clamp(&-One::one::<T>(),
+                                       &One::one());        // stay within the domain of acos()
 
-            let theta_0 = robust_dot.acos();                    // the angle between the quaternions
-            let theta = theta_0 * amount;                       // the fraction of theta specified by `amount`
+            let theta_0 = robust_dot.acos();                // the angle between the quaternions
+            let theta = theta_0 * amount;                   // the fraction of theta specified by `amount`
 
             let q = other.sub_q(&self.mul_t(robust_dot))
                          .normalize();
@@ -362,7 +378,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
 
-        let _1: T = one();
+        let _1: T = One::one();
 
         BaseMat3::new(_1 - yy2 - zz2,      xy2 + sz2,      xz2 - sy2,
                            xy2 - sz2, _1 - xx2 - zz2,      yz2 + sx2,
@@ -373,7 +389,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
 impl<T:Copy> Index<uint, T> for Quat<T> {
     #[inline(always)]
     fn index(&self, i: &uint) -> T {
-        unsafe { do vec::raw::buf_as_slice(cast::transmute(self), 4) |slice| { slice[*i] } }
+        unsafe { transmute::<Quat<T>,[T,..4]>(*self)[*i] }
     }
 }
 

@@ -1,8 +1,7 @@
-use core::cast::transmute;
-use core::cmp::ApproxEq;
-use core::num::Zero::zero;
-use core::num::One::one;
-use core::util;
+use std::cast::transmute;
+use std::cmp::ApproxEq;
+use std::num::{Zero, One};
+use std::util;
 
 use num::NumAssign;
 
@@ -538,7 +537,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         unsafe {
-            &'a mut transmute::<
+            &mut transmute::<
                 &'a mut Vec2<T>,
                 &'a mut [T,..2]
             >(self)[i]
@@ -568,18 +567,20 @@ impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
 impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
     #[inline(always)]
     fn identity() -> Vec2<T> {
-        BaseVec2::new(one::<T>(), one::<T>())
+        BaseVec2::new(One::one::<T>(),
+                      One::one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec2<T> {
-        BaseVec2::new(zero::<T>(), zero::<T>())
+        BaseVec2::new(Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == zero() &&
-        self[1] == zero()
+        self[0] == Zero::zero() &&
+        self[1] == Zero::zero()
     }
 
     #[inline(always)]
@@ -665,12 +666,14 @@ impl<T:Copy + Num> Neg<Vec2<T>> for Vec2<T> {
 impl<T:Copy + Num> NumVec2<T> for Vec2<T> {
     #[inline(always)]
     fn unit_x() -> Vec2<T> {
-        BaseVec2::new(one::<T>(), zero::<T>())
+        BaseVec2::new(One::one::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec2<T> {
-        BaseVec2::new(zero::<T>(), one::<T>())
+        BaseVec2::new(Zero::zero::<T>(),
+                      One::one::<T>())
     }
 
     #[inline(always)]
@@ -682,7 +685,7 @@ impl<T:Copy + Num> NumVec2<T> for Vec2<T> {
 impl<T:Copy + Num> ToHomogeneous<Vec3<T>> for Vec2<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec3<T> {
-        BaseVec3::new(self.x, self.y, zero())
+        BaseVec3::new(self.x, self.y, Zero::zero())
     }
 }
 
@@ -714,7 +717,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn normalize(&self) -> Vec2<T> {
-        self.mul_t(one::<T>()/self.length())
+        self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
@@ -729,7 +732,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn normalize_self(&mut self) {
-        let n = one::<T>() / self.length();
+        let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
@@ -845,7 +848,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         unsafe {
-            &'a mut transmute::<
+            &mut transmute::<
                 &'a mut Vec3<T>,
                 &'a mut [T,..3]
             >(self)[i]
@@ -875,19 +878,23 @@ impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
 impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
     #[inline(always)]
     fn identity() -> Vec3<T> {
-        BaseVec3::new(one::<T>(), one::<T>(), one::<T>())
+        BaseVec3::new(One::one::<T>(),
+                      One::one::<T>(),
+                      One::one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec3<T> {
-        BaseVec3::new(zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec3::new(Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == zero() &&
-        self[1] == zero() &&
-        self[2] == zero()
+        self[0] == Zero::zero() &&
+        self[1] == Zero::zero() &&
+        self[2] == Zero::zero()
     }
 
     #[inline(always)]
@@ -975,17 +982,23 @@ impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
 impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
     #[inline(always)]
     fn unit_x() -> Vec3<T> {
-        BaseVec3::new(one::<T>(), zero::<T>(), zero::<T>())
+        BaseVec3::new(One::one::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec3<T> {
-        BaseVec3::new(zero::<T>(), one::<T>(), zero::<T>())
+        BaseVec3::new(Zero::zero::<T>(),
+                      One::one::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_z() -> Vec3<T> {
-        BaseVec3::new(zero::<T>(), zero::<T>(), one::<T>())
+        BaseVec3::new(Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      One::one::<T>())
     }
 
     #[inline(always)]
@@ -1004,7 +1017,7 @@ impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
 impl<T:Copy + Num> ToHomogeneous<Vec4<T>> for Vec3<T> {
     #[inline(always)]
     fn to_homogeneous(&self) -> Vec4<T> {
-        BaseVec4::new(self.x, self.y, self.z, zero())
+        BaseVec4::new(self.x, self.y, self.z, Zero::zero())
     }
 }
 
@@ -1036,7 +1049,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn normalize(&self) -> Vec3<T> {
-        self.mul_t(one::<T>()/self.length())
+        self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
@@ -1051,7 +1064,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn normalize_self(&mut self) {
-        let n = one::<T>() / self.length();
+        let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
@@ -1169,7 +1182,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         unsafe {
-            &'a mut transmute::<
+            &mut transmute::<
                 &'a mut Vec4<T>,
                 &'a mut [T,..4]
             >(self)[i]
@@ -1199,20 +1212,26 @@ impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
 impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
     #[inline(always)]
     fn identity() -> Vec4<T> {
-        BaseVec4::new(one::<T>(), one::<T>(), one::<T>(), one::<T>())
+        BaseVec4::new(One::one::<T>(),
+                      One::one::<T>(),
+                      One::one::<T>(),
+                      One::one::<T>())
     }
 
     #[inline(always)]
     fn zero() -> Vec4<T> {
-        BaseVec4::new(zero::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == zero() &&
-        self[1] == zero() &&
-        self[2] == zero() &&
-        self[3] == zero()
+        self[0] == Zero::zero() &&
+        self[1] == Zero::zero() &&
+        self[2] == Zero::zero() &&
+        self[3] == Zero::zero()
     }
 
     #[inline(always)]
@@ -1302,22 +1321,34 @@ impl<T:Copy + Num> Neg<Vec4<T>> for Vec4<T> {
 impl<T:Copy + Num> NumVec4<T> for Vec4<T> {
     #[inline(always)]
     fn unit_x() -> Vec4<T> {
-        BaseVec4::new(one::<T>(), zero::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(One::one::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_y() -> Vec4<T> {
-        BaseVec4::new(zero::<T>(), one::<T>(), zero::<T>(), zero::<T>())
+        BaseVec4::new(Zero::zero::<T>(),
+                      One::one::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_z() -> Vec4<T> {
-        BaseVec4::new(zero::<T>(), zero::<T>(), one::<T>(), zero::<T>())
+        BaseVec4::new(Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      One::one::<T>(),
+                      Zero::zero::<T>())
     }
 
     #[inline(always)]
     fn unit_w() -> Vec4<T> {
-        BaseVec4::new(zero::<T>(), zero::<T>(), zero::<T>(), one::<T>())
+        BaseVec4::new(Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      Zero::zero::<T>(),
+                      One::one::<T>())
     }
 }
 
@@ -1349,7 +1380,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn normalize(&self) -> Vec4<T> {
-        self.mul_t(one::<T>()/self.length())
+        self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
@@ -1364,7 +1395,7 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn normalize_self(&mut self) {
-        let n = one::<T>() / self.length();
+        let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 

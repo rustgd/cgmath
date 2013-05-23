@@ -1,5 +1,4 @@
 use std::cmp::FuzzyEq;
-use numeric::*;
 
 use mat::*;
 use quat::*;
@@ -32,13 +31,13 @@ fn test_quat() {
 fn test_quat_2() {
     let v = vec3::new(1f32, 0f32, 0f32);
     
-    let q = quat::from_angle_axis(radians(-45f32), &vec3::new(0f32, 0f32, -1f32));
+    let q = quat::from_angle_axis((-45f32).radians(), &vec3::new(0f32, 0f32, -1f32));
     
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert!(q.mul_v(&v).fuzzy_eq(&vec3::new(1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32)));
+    assert!(q.mul_v(&v).fuzzy_eq(&vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32)));
     assert!(q.mul_v(&v).length() == v.length());
-    assert!(q.to_mat3().fuzzy_eq(&mat3::new( 1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32,
-                                            -1f32/sqrt(2f32), 1f32/sqrt(2f32), 0f32,
+    assert!(q.to_mat3().fuzzy_eq(&mat3::new( 1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
+                                            -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
                                                        0f32,           0f32, 1f32)));
 }
 
