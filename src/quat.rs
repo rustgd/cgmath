@@ -138,6 +138,16 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
         let m: Mat3<T> = BaseMat3::from_axes(x, y, z); m.to_quat()
     }
 
+    #[inline(always)]
+    fn index<'a>(&'a self, i: uint) -> &'a T {
+        unsafe { &'a transmute::<&'a Quat<T>, &'a [T,..4]>(self)[i] }
+    }
+
+    #[inline(always)]
+    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
+        unsafe { &'a mut transmute::< &'a mut Quat<T>, &'a mut [T,..4]>(self)[i] }
+    }
+
     fn get_angle_axis(&self) -> (T, Vec3<T>) {
         fail!(~"Not yet implemented.")
     }
@@ -154,10 +164,10 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn mul_t(&self, value: T) -> Quat<T> {
-        Quat::new(self[0] * value,
-                  self[1] * value,
-                  self[2] * value,
-                  self[3] * value)
+        Quat::new(*self.index(0) * value,
+                  *self.index(1) * value,
+                  *self.index(2) * value,
+                  *self.index(3) * value)
     }
 
     /**
@@ -167,10 +177,10 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn div_t(&self, value: T) -> Quat<T> {
-        Quat::new(self[0] / value,
-                  self[1] / value,
-                  self[2] / value,
-                  self[3] / value)
+        Quat::new(*self.index(0) / value,
+                  *self.index(1) / value,
+                  *self.index(2) / value,
+                  *self.index(3) / value)
     }
 
     /**
@@ -191,10 +201,10 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn add_q(&self, other: &Quat<T>) -> Quat<T> {
-        Quat::new(self[0] + other[0],
-                  self[1] + other[1],
-                  self[2] + other[2],
-                  self[3] + other[3])
+        Quat::new(*self.index(0) + *other.index(0),
+                  *self.index(1) + *other.index(1),
+                  *self.index(2) + *other.index(2),
+                  *self.index(3) + *other.index(3))
     }
 
     /**
@@ -204,10 +214,10 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
      */
     #[inline(always)]
     fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
-        Quat::new(self[0] - other[0],
-                  self[1] - other[1],
-                  self[2] - other[2],
-                  self[3] - other[3])
+        Quat::new(*self.index(0) - *other.index(0),
+                  *self.index(1) - *other.index(1),
+                  *self.index(2) - *other.index(2),
+                  *self.index(3) - *other.index(3))
     }
 
     /**
@@ -386,21 +396,17 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
     }
 }
 
-impl<T:Copy> Index<uint, T> for Quat<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { transmute::<Quat<T>,[T,..4]>(*self)[*i] }
-    }
-}
-
 impl<T:Copy + Float + NumAssign> Neg<Quat<T>> for Quat<T> {
     #[inline(always)]
     fn neg(&self) -> Quat<T> {
-        Quat::new(-self[0], -self[1], -self[2], -self[3])
+        Quat::new(-*self.index(0),
+                  -*self.index(1),
+                  -*self.index(2),
+                  -*self.index(3))
     }
 }
 
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
+impl<T:Copy + Eq + Float + NumAssign> ApproxEq<T> for Quat<T> {
     #[inline(always)]
     fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
@@ -413,9 +419,9 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon) &&
-        self[3].approx_eq_eps(&other[3], epsilon)
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
+        self.index(2).approx_eq_eps(other.index(2), epsilon) &&
+        self.index(3).approx_eq_eps(other.index(3), epsilon)
     }
 }

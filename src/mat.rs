@@ -1,7 +1,6 @@
 use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One};
-use std::util;
 
 use vec::*;
 use quat::Quat;
@@ -18,13 +17,13 @@ use num::NumAssign;
  *         floating point type and have the same number of dimensions as the
  *         number of rows and columns in the matrix.
  */
-pub trait BaseMat<T,V>: Index<uint, V> + Eq + Neg<Self> {
+pub trait BaseMat<T,V>: Eq + Neg<Self> {
     /**
      * # Return value
      *
      * The column vector at `i`
      */
-    fn col(&self, i: uint) -> V;
+    fn col<'a>(&'a self, i: uint) -> &'a V;
 
     /**
      * # Return value
@@ -316,12 +315,14 @@ pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
     #[inline(always)]
-    fn col(&self, i: uint) -> Vec2<T> { self[i] }
+    fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
+        unsafe { &'a transmute::<&'a Mat2<T>, &'a [Vec2<T>,..2]>(self)[i] }
+    }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec2<T> {
-        BaseVec2::new(self[0][i],
-                     self[1][i])
+        BaseVec2::new(*self.col(0).index(i),
+                      *self.col(1).index(i))
     }
 
     /**
@@ -382,32 +383,32 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat2<T> {
-        BaseMat2::from_cols(self[0].mul_t(value),
-                            self[1].mul_t(value))
+        BaseMat2::from_cols(self.col(0).mul_t(value),
+                            self.col(1).mul_t(value))
     }
 
     #[inline(always)]
     fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
         BaseVec2::new(self.row(0).dot(vec),
-                     self.row(1).dot(vec))
+                      self.row(1).dot(vec))
     }
 
     #[inline(always)]
     fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        BaseMat2::from_cols(self[0].add_v(&other[0]),
-                            self[1].add_v(&other[1]))
+        BaseMat2::from_cols(self.col(0).add_v(other.col(0)),
+                            self.col(1).add_v(other.col(1)))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        BaseMat2::from_cols(self[0].sub_v(&other[0]),
-                            self[1].sub_v(&other[1]))
+        BaseMat2::from_cols(self.col(0).sub_v(other.col(0)),
+                            self.col(1).sub_v(other.col(1)))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        BaseMat2::new(self.row(0).dot(&other.col(0)), self.row(1).dot(&other.col(0)),
-                      self.row(0).dot(&other.col(1)), self.row(1).dot(&other.col(1)))
+        BaseMat2::new(self.row(0).dot(other.col(0)), self.row(1).dot(other.col(0)),
+                      self.row(0).dot(other.col(1)), self.row(1).dot(other.col(1)))
     }
 
     fn dot(&self, other: &Mat2<T>) -> T {
@@ -415,11 +416,15 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
     }
 
     fn determinant(&self) -> T {
-       self[0][0] * self[1][1] - self[1][0] * self[0][1]
+       (*self.col(0).index(0)) *
+       (*self.col(1).index(1)) -
+       (*self.col(1).index(0)) *
+       (*self.col(0).index(1))
     }
 
     fn trace(&self) -> T {
-        self[0][0] + self[1][1]
+        (*self.col(0).index(0)) +
+        (*self.col(1).index(1))
     }
 
     #[inline(always)]
@@ -428,31 +433,26 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
         if d.approx_eq(&Zero::zero()) {
             None
         } else {
-            Some(BaseMat2::new( self[1][1]/d, -self[0][1]/d,
-                               -self[1][0]/d,  self[0][0]/d))
+            Some(BaseMat2::new( self.col(1).index(1)/d, -self.col(0).index(1)/d,
+                               -self.col(1).index(0)/d,  self.col(0).index(0)/d))
         }
     }
 
     #[inline(always)]
     fn transpose(&self) -> Mat2<T> {
-        BaseMat2::new(self[0][0], self[1][0],
-                      self[0][1], self[1][1])
+        BaseMat2::new(*self.col(0).index(0), *self.col(1).index(0),
+                      *self.col(0).index(1), *self.col(1).index(1))
     }
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
-        unsafe {
-            &'a mut transmute::<
-                &'a mut Mat2<T>,
-                &'a mut [Vec2<T>,..2]
-            >(self)[i]
-        }
+        unsafe { &'a mut transmute::<&'a mut Mat2<T>, &'a mut [Vec2<T>,..2]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.col_mut(a) = self[b];
+        let tmp = *self.col(a);
+        *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
@@ -485,14 +485,14 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn add_self_m(&mut self, other: &Mat2<T>) {
-        self.x.add_self_v(&other[0]);
-        self.y.add_self_v(&other[1]);
+        self.x.add_self_v(other.col(0));
+        self.y.add_self_v(other.col(1));
     }
 
     #[inline(always)]
     fn sub_self_m(&mut self, other: &Mat2<T>) {
-        self.x.sub_self_v(&other[0]);
-        self.y.sub_self_v(&other[1]);
+        self.x.sub_self_v(other.col(0));
+        self.y.sub_self_v(other.col(1));
     }
 
     #[inline(always)]
@@ -505,11 +505,11 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        let tmp01 = self[0][1];
-        let tmp10 = self[1][0];
+        let tmp01 = *self.col(0).index(1);
+        let tmp10 = *self.col(1).index(0);
 
-        *self.col_mut(0).index_mut(1) = self[1][0];
-        *self.col_mut(1).index_mut(0) = self[0][1];
+        *self.col_mut(0).index_mut(1) = *self.col(1).index(0);
+        *self.col_mut(1).index_mut(0) = *self.col(0).index(1);
 
         *self.col_mut(1).index_mut(0) = tmp01;
         *self.col_mut(0).index_mut(1) = tmp10;
@@ -522,8 +522,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&Zero::zero()) &&
-        self[1][0].approx_eq(&Zero::zero())
+        self.col(0).index(1).approx_eq(&Zero::zero()) &&
+        self.col(1).index(0).approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -533,8 +533,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[1][0].approx_eq(&self[0][1])
+        self.col(0).index(1).approx_eq(self.col(1).index(0)) &&
+        self.col(1).index(0).approx_eq(self.col(0).index(1))
     }
 
     #[inline(always)]
@@ -619,9 +619,9 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn to_mat3(&self) -> Mat3<T> {
-        BaseMat3::new(  self[0][0],   self[0][1], Zero::zero(),
-                        self[1][0],   self[1][1], Zero::zero(),
-                      Zero::zero(), Zero::zero(),   One::one())
+        BaseMat3::new(*self.col(0).index(0), *self.col(0).index(1), Zero::zero(),
+                      *self.col(1).index(0), *self.col(1).index(1), Zero::zero(),
+                      Zero::zero(), Zero::zero(), One::one())
     }
 
     /**
@@ -641,28 +641,21 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        BaseMat4::new(  self[0][0],   self[0][1], Zero::zero(), Zero::zero(),
-                        self[1][0],   self[1][1], Zero::zero(), Zero::zero(),
-                      Zero::zero(), Zero::zero(),   One::one(), Zero::zero(),
-                      Zero::zero(), Zero::zero(), Zero::zero(),   One::one())
-    }
-}
-
-impl<T:Copy> Index<uint, Vec2<T>> for Mat2<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> Vec2<T> {
-        unsafe { transmute::<Mat2<T>,[Vec2<T>,..2]>(*self)[*i] }
+        BaseMat4::new(*self.col(0).index(0), *self.col(0).index(1), Zero::zero(), Zero::zero(),
+                      *self.col(1).index(0), *self.col(1).index(1), Zero::zero(), Zero::zero(),
+                      Zero::zero(), Zero::zero(), One::one(), Zero::zero(),
+                      Zero::zero(), Zero::zero(), Zero::zero(), One::one())
     }
 }
 
 impl<T:Copy + Float + NumAssign> Neg<Mat2<T>> for Mat2<T> {
     #[inline(always)]
     fn neg(&self) -> Mat2<T> {
-        BaseMat2::from_cols(-self[0], -self[1])
+        BaseMat2::from_cols(-self.col(0), -self.col(1))
     }
 }
 
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat2<T> {
+impl<T:Copy + Float + NumAssign> ApproxEq<T> for Mat2<T> {
     #[inline(always)]
     fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
@@ -675,8 +668,8 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat2<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon)
+        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
+        self.col(1).approx_eq_eps(other.col(1), epsilon)
     }
 }
 
@@ -698,13 +691,15 @@ pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
     #[inline(always)]
-    fn col(&self, i: uint) -> Vec3<T> { self[i] }
+    fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
+        unsafe { &'a transmute::<&'a Mat3<T>, &'a [Vec3<T>,..3]>(self)[i] }
+    }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec3<T> {
-        BaseVec3::new(self[0][i],
-                      self[1][i],
-                      self[2][i])
+        BaseVec3::new(*self.col(0).index(i),
+                      *self.col(1).index(i),
+                      *self.col(2).index(i))
     }
 
     /**
@@ -774,9 +769,9 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat3<T> {
-        BaseMat3::from_cols(self[0].mul_t(value),
-                            self[1].mul_t(value),
-                            self[2].mul_t(value))
+        BaseMat3::from_cols(self.col(0).mul_t(value),
+                            self.col(1).mul_t(value),
+                            self.col(2).mul_t(value))
     }
 
     #[inline(always)]
@@ -788,31 +783,31 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        BaseMat3::from_cols(self[0].add_v(&other[0]),
-                            self[1].add_v(&other[1]),
-                            self[2].add_v(&other[2]))
+        BaseMat3::from_cols(self.col(0).add_v(other.col(0)),
+                            self.col(1).add_v(other.col(1)),
+                            self.col(2).add_v(other.col(2)))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        BaseMat3::from_cols(self[0].sub_v(&other[0]),
-                            self[1].sub_v(&other[1]),
-                            self[2].sub_v(&other[2]))
+        BaseMat3::from_cols(self.col(0).sub_v(other.col(0)),
+                            self.col(1).sub_v(other.col(1)),
+                            self.col(2).sub_v(other.col(2)))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        BaseMat3::new(self.row(0).dot(&other.col(0)),
-                      self.row(1).dot(&other.col(0)),
-                      self.row(2).dot(&other.col(0)),
+        BaseMat3::new(self.row(0).dot(other.col(0)),
+                      self.row(1).dot(other.col(0)),
+                      self.row(2).dot(other.col(0)),
 
-                      self.row(0).dot(&other.col(1)),
-                      self.row(1).dot(&other.col(1)),
-                      self.row(2).dot(&other.col(1)),
+                      self.row(0).dot(other.col(1)),
+                      self.row(1).dot(other.col(1)),
+                      self.row(2).dot(other.col(1)),
 
-                      self.row(0).dot(&other.col(2)),
-                      self.row(1).dot(&other.col(2)),
-                      self.row(2).dot(&other.col(2)))
+                      self.row(0).dot(other.col(2)),
+                      self.row(1).dot(other.col(2)),
+                      self.row(2).dot(other.col(2)))
     }
 
     fn dot(&self, other: &Mat3<T>) -> T {
@@ -820,11 +815,13 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
     }
 
     fn determinant(&self) -> T {
-        self.col(0).dot(&self.col(1).cross(&self.col(2)))
+        self.col(0).dot(&self.col(1).cross(self.col(2)))
     }
 
     fn trace(&self) -> T {
-        self[0][0] + self[1][1] + self[2][2]
+        *self.col(0).index(0) +
+        *self.col(1).index(1) +
+        *self.col(2).index(2)
     }
 
     // #[inline(always)]
@@ -833,34 +830,29 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
         if d.approx_eq(&Zero::zero()) {
             None
         } else {
-            let m: Mat3<T> = BaseMat3::from_cols(self[1].cross(&self[2]).div_t(d),
-                                                 self[2].cross(&self[0]).div_t(d),
-                                                 self[0].cross(&self[1]).div_t(d));
+            let m: Mat3<T> = BaseMat3::from_cols(self.col(1).cross(self.col(2)).div_t(d),
+                                                 self.col(2).cross(self.col(0)).div_t(d),
+                                                 self.col(0).cross(self.col(1)).div_t(d));
             Some(m.transpose())
         }
     }
 
     #[inline(always)]
     fn transpose(&self) -> Mat3<T> {
-        BaseMat3::new(self[0][0], self[1][0], self[2][0],
-                      self[0][1], self[1][1], self[2][1],
-                      self[0][2], self[1][2], self[2][2])
+        BaseMat3::new(*self.col(0).index(0), *self.col(1).index(0), *self.col(2).index(0),
+                      *self.col(0).index(1), *self.col(1).index(1), *self.col(2).index(1),
+                      *self.col(0).index(2), *self.col(1).index(2), *self.col(2).index(2))
     }
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
-        unsafe {
-            &'a mut transmute::<
-                &'a mut Mat3<T>,
-                &'a mut [Vec3<T>,..3]
-            >(self)[i]
-        }
+        unsafe { &'a mut transmute::<&'a mut Mat3<T>, &'a mut [Vec3<T>,..3]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.col_mut(a) = self[b];
+        let tmp = *self.col(a);
+        *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
@@ -895,16 +887,16 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn add_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).add_self_v(&other[0]);
-        self.col_mut(1).add_self_v(&other[1]);
-        self.col_mut(2).add_self_v(&other[2]);
+        self.col_mut(0).add_self_v(other.col(0));
+        self.col_mut(1).add_self_v(other.col(1));
+        self.col_mut(2).add_self_v(other.col(2));
     }
 
     #[inline(always)]
     fn sub_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).sub_self_v(&other[0]);
-        self.col_mut(1).sub_self_v(&other[1]);
-        self.col_mut(2).sub_self_v(&other[2]);
+        self.col_mut(0).sub_self_v(other.col(0));
+        self.col_mut(1).sub_self_v(other.col(1));
+        self.col_mut(2).sub_self_v(other.col(2));
     }
 
     #[inline(always)]
@@ -917,19 +909,19 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        let tmp01 = self[0][1];
-        let tmp02 = self[0][2];
-        let tmp10 = self[1][0];
-        let tmp12 = self[1][2];
-        let tmp20 = self[2][0];
-        let tmp21 = self[2][1];
+        let tmp01 = *self.col(0).index(1);
+        let tmp02 = *self.col(0).index(2);
+        let tmp10 = *self.col(1).index(0);
+        let tmp12 = *self.col(1).index(2);
+        let tmp20 = *self.col(2).index(0);
+        let tmp21 = *self.col(2).index(1);
 
-        *self.col_mut(0).index_mut(1) = self[1][0];
-        *self.col_mut(0).index_mut(2) = self[2][0];
-        *self.col_mut(1).index_mut(0) = self[0][1];
-        *self.col_mut(1).index_mut(2) = self[2][1];
-        *self.col_mut(2).index_mut(0) = self[0][2];
-        *self.col_mut(2).index_mut(1) = self[1][2];
+        *self.col_mut(0).index_mut(1) = *self.col(1).index(0);
+        *self.col_mut(0).index_mut(2) = *self.col(2).index(0);
+        *self.col_mut(1).index_mut(0) = *self.col(0).index(1);
+        *self.col_mut(1).index_mut(2) = *self.col(2).index(1);
+        *self.col_mut(2).index_mut(0) = *self.col(0).index(2);
+        *self.col_mut(2).index_mut(1) = *self.col(1).index(2);
 
         *self.col_mut(1).index_mut(0) = tmp01;
         *self.col_mut(2).index_mut(0) = tmp02;
@@ -946,14 +938,14 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&Zero::zero()) &&
-        self[0][2].approx_eq(&Zero::zero()) &&
+        self.col(0).index(1).approx_eq(&Zero::zero()) &&
+        self.col(0).index(2).approx_eq(&Zero::zero()) &&
 
-        self[1][0].approx_eq(&Zero::zero()) &&
-        self[1][2].approx_eq(&Zero::zero()) &&
+        self.col(1).index(0).approx_eq(&Zero::zero()) &&
+        self.col(1).index(2).approx_eq(&Zero::zero()) &&
 
-        self[2][0].approx_eq(&Zero::zero()) &&
-        self[2][1].approx_eq(&Zero::zero())
+        self.col(2).index(0).approx_eq(&Zero::zero()) &&
+        self.col(2).index(1).approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -963,14 +955,14 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[0][2].approx_eq(&self[2][0]) &&
+        self.col(0).index(1).approx_eq(self.col(1).index(0)) &&
+        self.col(0).index(2).approx_eq(self.col(2).index(0)) &&
 
-        self[1][0].approx_eq(&self[0][1]) &&
-        self[1][2].approx_eq(&self[2][1]) &&
+        self.col(1).index(0).approx_eq(self.col(0).index(1)) &&
+        self.col(1).index(2).approx_eq(self.col(2).index(1)) &&
 
-        self[2][0].approx_eq(&self[0][2]) &&
-        self[2][1].approx_eq(&self[1][2])
+        self.col(2).index(0).approx_eq(self.col(0).index(2)) &&
+        self.col(2).index(1).approx_eq(self.col(1).index(2))
     }
 
     #[inline(always)]
@@ -1154,9 +1146,9 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
      */
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
-        BaseMat4::new(  self[0][0],   self[0][1],   self[0][2], Zero::zero(),
-                        self[1][0],   self[1][1],   self[1][2], Zero::zero(),
-                        self[2][0],   self[2][1],   self[2][2], Zero::zero(),
+        BaseMat4::new(*self.col(0).index(0), *self.col(0).index(1), *self.col(0).index(2), Zero::zero(),
+                      *self.col(1).index(0), *self.col(1).index(1), *self.col(1).index(2), Zero::zero(),
+                      *self.col(2).index(0), *self.col(2).index(1), *self.col(2).index(2), Zero::zero(),
                       Zero::zero(), Zero::zero(), Zero::zero(),   One::one())
     }
 
@@ -1175,55 +1167,60 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let _1:   T = num::cast(1.0);
         let half: T = num::cast(0.5);
 
-        if trace >= Zero::zero() {
-            s = (_1 + trace).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[1][2] - self[2][1]) * s;
-            y = (self[2][0] - self[0][2]) * s;
-            z = (self[0][1] - self[1][0]) * s;
-        } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[0][1] - self[1][0]) * s;
-            y = (self[2][0] - self[0][2]) * s;
-            z = (self[1][2] - self[2][1]) * s;
-        } else if self[1][1] > self[2][2] {
-            s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[0][1] - self[1][0]) * s;
-            y = (self[1][2] - self[2][1]) * s;
-            z = (self[2][0] - self[0][2]) * s;
-        } else {
-            s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
-            w = half * s;
-            s = half / s;
-            x = (self[2][0] - self[0][2]) * s;
-            y = (self[1][2] - self[2][1]) * s;
-            z = (self[0][1] - self[1][0]) * s;
-        }
+        cond! (
+            (trace >= Zero::zero()) {
+                s = (_1 + trace).sqrt();
+                w = half * s;
+                s = half / s;
+                x = (*self.col(1).index(2) - *self.col(2).index(1)) * s;
+                y = (*self.col(2).index(0) - *self.col(0).index(2)) * s;
+                z = (*self.col(0).index(1) - *self.col(1).index(0)) * s;
+            }
+            ((*self.col(0).index(0) > *self.col(1).index(1))
+            && (*self.col(0).index(0) > *self.col(2).index(2))) {
+                s = (half + (*self.col(0).index(0) -
+                             *self.col(1).index(1) -
+                             *self.col(2).index(2))).sqrt();
+                w = half * s;
+                s = half / s;
+                x = (*self.col(0).index(1) - *self.col(1).index(0)) * s;
+                y = (*self.col(2).index(0) - *self.col(0).index(2)) * s;
+                z = (*self.col(1).index(2) - *self.col(2).index(1)) * s;
+            }
+            (*self.col(1).index(1) > *self.col(2).index(2)) {
+                s = (half + (*self.col(1).index(1) -
+                             *self.col(0).index(0) -
+                             *self.col(2).index(2))).sqrt();
+                w = half * s;
+                s = half / s;
+                x = (*self.col(0).index(1) - *self.col(1).index(0)) * s;
+                y = (*self.col(1).index(2) - *self.col(2).index(1)) * s;
+                z = (*self.col(2).index(0) - *self.col(0).index(2)) * s;
+            }
+            _ {
+                s = (half + (*self.col(2).index(2) -
+                             *self.col(0).index(0) -
+                             *self.col(1).index(1))).sqrt();
+                w = half * s;
+                s = half / s;
+                x = (*self.col(2).index(0) - *self.col(0).index(2)) * s;
+                y = (*self.col(1).index(2) - *self.col(2).index(1)) * s;
+                z = (*self.col(0).index(1) - *self.col(1).index(0)) * s;
+            }
+        )
 
         Quat::new(w, x, y, z)
-    }
-}
-
-impl<T:Copy> Index<uint, Vec3<T>> for Mat3<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> Vec3<T> {
-        unsafe { transmute::<Mat3<T>,[Vec3<T>,..3]>(*self)[*i] }
     }
 }
 
 impl<T:Copy + Float + NumAssign> Neg<Mat3<T>> for Mat3<T> {
     #[inline(always)]
     fn neg(&self) -> Mat3<T> {
-        BaseMat3::from_cols(-self[0], -self[1], -self[2])
+        BaseMat3::from_cols(-self.col(0), -self.col(1), -self.col(2))
     }
 }
 
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat3<T> {
+impl<T:Copy + Float + NumAssign> ApproxEq<T> for Mat3<T> {
     #[inline(always)]
     fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
@@ -1236,9 +1233,9 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat3<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon)
+        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
+        self.col(1).approx_eq_eps(other.col(1), epsilon) &&
+        self.col(2).approx_eq_eps(other.col(2), epsilon)
     }
 }
 
@@ -1261,14 +1258,16 @@ pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
     #[inline(always)]
-    fn col(&self, i: uint) -> Vec4<T> { self[i] }
+    fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
+        unsafe { &'a transmute::<&'a Mat4<T>, &'a [Vec4<T>,..4]>(self)[i] }
+    }
 
     #[inline(always)]
     fn row(&self, i: uint) -> Vec4<T> {
-        BaseVec4::new(self[0][i],
-                     self[1][i],
-                     self[2][i],
-                     self[3][i])
+        BaseVec4::new(*self.col(0).index(i),
+                      *self.col(1).index(i),
+                      *self.col(2).index(i),
+                      *self.col(3).index(i))
     }
 
     /**
@@ -1347,10 +1346,10 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn mul_t(&self, value: T) -> Mat4<T> {
-        BaseMat4::from_cols(self[0].mul_t(value),
-                            self[1].mul_t(value),
-                            self[2].mul_t(value),
-                            self[3].mul_t(value))
+        BaseMat4::from_cols(self.col(0).mul_t(value),
+                            self.col(1).mul_t(value),
+                            self.col(2).mul_t(value),
+                            self.col(3).mul_t(value))
     }
 
     #[inline(always)]
@@ -1363,41 +1362,41 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        BaseMat4::from_cols(self[0].add_v(&other[0]),
-                            self[1].add_v(&other[1]),
-                            self[2].add_v(&other[2]),
-                            self[3].add_v(&other[3]))
+        BaseMat4::from_cols(self.col(0).add_v(other.col(0)),
+                            self.col(1).add_v(other.col(1)),
+                            self.col(2).add_v(other.col(2)),
+                            self.col(3).add_v(other.col(3)))
     }
 
     #[inline(always)]
     fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        BaseMat4::from_cols(self[0].sub_v(&other[0]),
-                            self[1].sub_v(&other[1]),
-                            self[2].sub_v(&other[2]),
-                            self[3].sub_v(&other[3]))
+        BaseMat4::from_cols(self.col(0).sub_v(other.col(0)),
+                            self.col(1).sub_v(other.col(1)),
+                            self.col(2).sub_v(other.col(2)),
+                            self.col(3).sub_v(other.col(3)))
     }
 
     #[inline(always)]
     fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        BaseMat4::new(self.row(0).dot(&other.col(0)),
-                      self.row(1).dot(&other.col(0)),
-                      self.row(2).dot(&other.col(0)),
-                      self.row(3).dot(&other.col(0)),
+        BaseMat4::new(self.row(0).dot(other.col(0)),
+                      self.row(1).dot(other.col(0)),
+                      self.row(2).dot(other.col(0)),
+                      self.row(3).dot(other.col(0)),
 
-                      self.row(0).dot(&other.col(1)),
-                      self.row(1).dot(&other.col(1)),
-                      self.row(2).dot(&other.col(1)),
-                      self.row(3).dot(&other.col(1)),
+                      self.row(0).dot(other.col(1)),
+                      self.row(1).dot(other.col(1)),
+                      self.row(2).dot(other.col(1)),
+                      self.row(3).dot(other.col(1)),
 
-                      self.row(0).dot(&other.col(2)),
-                      self.row(1).dot(&other.col(2)),
-                      self.row(2).dot(&other.col(2)),
-                      self.row(3).dot(&other.col(2)),
+                      self.row(0).dot(other.col(2)),
+                      self.row(1).dot(other.col(2)),
+                      self.row(2).dot(other.col(2)),
+                      self.row(3).dot(other.col(2)),
 
-                      self.row(0).dot(&other.col(3)),
-                      self.row(1).dot(&other.col(3)),
-                      self.row(2).dot(&other.col(3)),
-                      self.row(3).dot(&other.col(3)))
+                      self.row(0).dot(other.col(3)),
+                      self.row(1).dot(other.col(3)),
+                      self.row(2).dot(other.col(3)),
+                      self.row(3).dot(other.col(3)))
 
     }
 
@@ -1406,27 +1405,30 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
     }
 
     fn determinant(&self) -> T {
-        let m0: Mat3<T> = BaseMat3::new(self[1][1], self[2][1], self[3][1],
-                                        self[1][2], self[2][2], self[3][2],
-                                        self[1][3], self[2][3], self[3][3]);
-        let m1: Mat3<T> = BaseMat3::new(self[0][1], self[2][1], self[3][1],
-                                        self[0][2], self[2][2], self[3][2],
-                                        self[0][3], self[2][3], self[3][3]);
-        let m2: Mat3<T> = BaseMat3::new(self[0][1], self[1][1], self[3][1],
-                                        self[0][2], self[1][2], self[3][2],
-                                        self[0][3], self[1][3], self[3][3]);
-        let m3: Mat3<T> = BaseMat3::new(self[0][1], self[1][1], self[2][1],
-                                        self[0][2], self[1][2], self[2][2],
-                                        self[0][3], self[1][3], self[2][3]);
+        let m0: Mat3<T> = BaseMat3::new(*self.col(1).index(1), *self.col(2).index(1), *self.col(3).index(1),
+                                        *self.col(1).index(2), *self.col(2).index(2), *self.col(3).index(2),
+                                        *self.col(1).index(3), *self.col(2).index(3), *self.col(3).index(3));
+        let m1: Mat3<T> = BaseMat3::new(*self.col(0).index(1), *self.col(2).index(1), *self.col(3).index(1),
+                                        *self.col(0).index(2), *self.col(2).index(2), *self.col(3).index(2),
+                                        *self.col(0).index(3), *self.col(2).index(3), *self.col(3).index(3));
+        let m2: Mat3<T> = BaseMat3::new(*self.col(0).index(1), *self.col(1).index(1), *self.col(3).index(1),
+                                        *self.col(0).index(2), *self.col(1).index(2), *self.col(3).index(2),
+                                        *self.col(0).index(3), *self.col(1).index(3), *self.col(3).index(3));
+        let m3: Mat3<T> = BaseMat3::new(*self.col(0).index(1), *self.col(1).index(1), *self.col(2).index(1),
+                                        *self.col(0).index(2), *self.col(1).index(2), *self.col(2).index(2),
+                                        *self.col(0).index(3), *self.col(1).index(3), *self.col(2).index(3));
 
-        self[0][0] * m0.determinant() -
-        self[1][0] * m1.determinant() +
-        self[2][0] * m2.determinant() -
-        self[3][0] * m3.determinant()
+        self.col(0).index(0) * m0.determinant() -
+        self.col(1).index(0) * m1.determinant() +
+        self.col(2).index(0) * m2.determinant() -
+        self.col(3).index(0) * m3.determinant()
     }
 
     fn trace(&self) -> T {
-        self[0][0] + self[1][1] + self[2][2] + self[3][3]
+        *self.col(0).index(0) +
+        *self.col(1).index(1) +
+        *self.col(2).index(2) +
+        *self.col(3).index(3)
     }
 
     fn inverse(&self) -> Option<Mat4<T>> {
@@ -1446,7 +1448,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
                 // Find largest element in col j
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    if A[j][i].abs() > A[j][i1].abs() {
+                    if A.col(j).index(i).abs() > A.col(j).index(i1).abs() {
                         i1 = i;
                     }
                 }
@@ -1457,7 +1459,7 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
                 I.swap_cols(i1, j);
 
                 // Scale col j to have a unit diagonal
-                let ajj = A[j][j];
+                let ajj = *A.col(j).index(j);
                 I.col_mut(j).div_self_t(ajj);
                 A.col_mut(j).div_self_t(ajj);
 
@@ -1465,8 +1467,8 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
                 // doing identical ops to I
                 for uint::range(0, 4) |i| {
                     if i != j {
-                        let ij_mul_aij = I[j].mul_t(A[i][j]);
-                        let aj_mul_aij = A[j].mul_t(A[i][j]);
+                        let ij_mul_aij = I.col(j).mul_t(*A.col(i).index(j));
+                        let aj_mul_aij = A.col(j).mul_t(*A.col(i).index(j));
                         I.col_mut(i).sub_self_v(&ij_mul_aij);
                         A.col_mut(i).sub_self_v(&aj_mul_aij);
                     }
@@ -1478,26 +1480,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn transpose(&self) -> Mat4<T> {
-        BaseMat4::new(self[0][0], self[1][0], self[2][0], self[3][0],
-                      self[0][1], self[1][1], self[2][1], self[3][1],
-                      self[0][2], self[1][2], self[2][2], self[3][2],
-                      self[0][3], self[1][3], self[2][3], self[3][3])
+        BaseMat4::new(*self.col(0).index(0), *self.col(1).index(0), *self.col(2).index(0), *self.col(3).index(0),
+                      *self.col(0).index(1), *self.col(1).index(1), *self.col(2).index(1), *self.col(3).index(1),
+                      *self.col(0).index(2), *self.col(1).index(2), *self.col(2).index(2), *self.col(3).index(2),
+                      *self.col(0).index(3), *self.col(1).index(3), *self.col(2).index(3), *self.col(3).index(3))
     }
 
     #[inline(always)]
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
-        unsafe {
-            &'a mut transmute::<
-                &'a mut Mat4<T>,
-                &'a mut [Vec4<T>,..4]
-            >(self)[i]
-        }
+        unsafe { &'a mut transmute::<&'a mut Mat4<T>, &'a mut [Vec4<T>,..4]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.col_mut(a) = self[b];
+        let tmp = *self.col(a);
+        *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
@@ -1534,18 +1531,18 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn add_self_m(&mut self, other: &Mat4<T>) {
-        self.col_mut(0).add_self_v(&other[0]);
-        self.col_mut(1).add_self_v(&other[1]);
-        self.col_mut(2).add_self_v(&other[2]);
-        self.col_mut(3).add_self_v(&other[3]);
+        self.col_mut(0).add_self_v(other.col(0));
+        self.col_mut(1).add_self_v(other.col(1));
+        self.col_mut(2).add_self_v(other.col(2));
+        self.col_mut(3).add_self_v(other.col(3));
     }
 
     #[inline(always)]
     fn sub_self_m(&mut self, other: &Mat4<T>) {
-        self.col_mut(0).sub_self_v(&other[0]);
-        self.col_mut(1).sub_self_v(&other[1]);
-        self.col_mut(2).sub_self_v(&other[2]);
-        self.col_mut(3).sub_self_v(&other[3]);
+        self.col_mut(0).sub_self_v(other.col(0));
+        self.col_mut(1).sub_self_v(other.col(1));
+        self.col_mut(2).sub_self_v(other.col(2));
+        self.col_mut(3).sub_self_v(other.col(3));
     }
 
     #[inline(always)]
@@ -1558,31 +1555,31 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn transpose_self(&mut self) {
-        let tmp01 = self[0][1];
-        let tmp02 = self[0][2];
-        let tmp03 = self[0][3];
-        let tmp10 = self[1][0];
-        let tmp12 = self[1][2];
-        let tmp13 = self[1][3];
-        let tmp20 = self[2][0];
-        let tmp21 = self[2][1];
-        let tmp23 = self[2][3];
-        let tmp30 = self[3][0];
-        let tmp31 = self[3][1];
-        let tmp32 = self[3][2];
+        let tmp01 = *self.col(0).index(1);
+        let tmp02 = *self.col(0).index(2);
+        let tmp03 = *self.col(0).index(3);
+        let tmp10 = *self.col(1).index(0);
+        let tmp12 = *self.col(1).index(2);
+        let tmp13 = *self.col(1).index(3);
+        let tmp20 = *self.col(2).index(0);
+        let tmp21 = *self.col(2).index(1);
+        let tmp23 = *self.col(2).index(3);
+        let tmp30 = *self.col(3).index(0);
+        let tmp31 = *self.col(3).index(1);
+        let tmp32 = *self.col(3).index(2);
 
-        *self.col_mut(0).index_mut(1) = self[1][0];
-        *self.col_mut(0).index_mut(2) = self[2][0];
-        *self.col_mut(0).index_mut(3) = self[3][0];
-        *self.col_mut(1).index_mut(0) = self[0][1];
-        *self.col_mut(1).index_mut(2) = self[2][1];
-        *self.col_mut(1).index_mut(3) = self[3][1];
-        *self.col_mut(2).index_mut(0) = self[0][2];
-        *self.col_mut(2).index_mut(1) = self[1][2];
-        *self.col_mut(2).index_mut(3) = self[3][2];
-        *self.col_mut(3).index_mut(0) = self[0][3];
-        *self.col_mut(3).index_mut(1) = self[1][3];
-        *self.col_mut(3).index_mut(2) = self[2][3];
+        *self.col_mut(0).index_mut(1) = *self.col(1).index(0);
+        *self.col_mut(0).index_mut(2) = *self.col(2).index(0);
+        *self.col_mut(0).index_mut(3) = *self.col(3).index(0);
+        *self.col_mut(1).index_mut(0) = *self.col(0).index(1);
+        *self.col_mut(1).index_mut(2) = *self.col(2).index(1);
+        *self.col_mut(1).index_mut(3) = *self.col(3).index(1);
+        *self.col_mut(2).index_mut(0) = *self.col(0).index(2);
+        *self.col_mut(2).index_mut(1) = *self.col(1).index(2);
+        *self.col_mut(2).index_mut(3) = *self.col(3).index(2);
+        *self.col_mut(3).index_mut(0) = *self.col(0).index(3);
+        *self.col_mut(3).index_mut(1) = *self.col(1).index(3);
+        *self.col_mut(3).index_mut(2) = *self.col(2).index(3);
 
         *self.col_mut(1).index_mut(0) = tmp01;
         *self.col_mut(2).index_mut(0) = tmp02;
@@ -1605,21 +1602,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&Zero::zero()) &&
-        self[0][2].approx_eq(&Zero::zero()) &&
-        self[0][3].approx_eq(&Zero::zero()) &&
+        self.col(0).index(1).approx_eq(&Zero::zero()) &&
+        self.col(0).index(2).approx_eq(&Zero::zero()) &&
+        self.col(0).index(3).approx_eq(&Zero::zero()) &&
 
-        self[1][0].approx_eq(&Zero::zero()) &&
-        self[1][2].approx_eq(&Zero::zero()) &&
-        self[1][3].approx_eq(&Zero::zero()) &&
+        self.col(1).index(0).approx_eq(&Zero::zero()) &&
+        self.col(1).index(2).approx_eq(&Zero::zero()) &&
+        self.col(1).index(3).approx_eq(&Zero::zero()) &&
 
-        self[2][0].approx_eq(&Zero::zero()) &&
-        self[2][1].approx_eq(&Zero::zero()) &&
-        self[2][3].approx_eq(&Zero::zero()) &&
+        self.col(2).index(0).approx_eq(&Zero::zero()) &&
+        self.col(2).index(1).approx_eq(&Zero::zero()) &&
+        self.col(2).index(3).approx_eq(&Zero::zero()) &&
 
-        self[3][0].approx_eq(&Zero::zero()) &&
-        self[3][1].approx_eq(&Zero::zero()) &&
-        self[3][2].approx_eq(&Zero::zero())
+        self.col(3).index(0).approx_eq(&Zero::zero()) &&
+        self.col(3).index(1).approx_eq(&Zero::zero()) &&
+        self.col(3).index(2).approx_eq(&Zero::zero())
     }
 
     #[inline(always)]
@@ -1629,21 +1626,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 
     #[inline(always)]
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[0][2].approx_eq(&self[2][0]) &&
-        self[0][3].approx_eq(&self[3][0]) &&
+        self.col(0).index(1).approx_eq(self.col(1).index(0)) &&
+        self.col(0).index(2).approx_eq(self.col(2).index(0)) &&
+        self.col(0).index(3).approx_eq(self.col(3).index(0)) &&
 
-        self[1][0].approx_eq(&self[0][1]) &&
-        self[1][2].approx_eq(&self[2][1]) &&
-        self[1][3].approx_eq(&self[3][1]) &&
+        self.col(1).index(0).approx_eq(self.col(0).index(1)) &&
+        self.col(1).index(2).approx_eq(self.col(2).index(1)) &&
+        self.col(1).index(3).approx_eq(self.col(3).index(1)) &&
 
-        self[2][0].approx_eq(&self[0][2]) &&
-        self[2][1].approx_eq(&self[1][2]) &&
-        self[2][3].approx_eq(&self[3][2]) &&
+        self.col(2).index(0).approx_eq(self.col(0).index(2)) &&
+        self.col(2).index(1).approx_eq(self.col(1).index(2)) &&
+        self.col(2).index(3).approx_eq(self.col(3).index(2)) &&
 
-        self[3][0].approx_eq(&self[0][3]) &&
-        self[3][1].approx_eq(&self[1][3]) &&
-        self[3][2].approx_eq(&self[2][3])
+        self.col(3).index(0).approx_eq(self.col(0).index(3)) &&
+        self.col(3).index(1).approx_eq(self.col(1).index(3)) &&
+        self.col(3).index(2).approx_eq(self.col(2).index(3))
     }
 
     #[inline(always)]
@@ -1724,18 +1721,11 @@ impl<T:Copy + Float + NumAssign> BaseMat4<T, Vec4<T>> for Mat4<T> {
 impl<T:Copy + Float + NumAssign> Neg<Mat4<T>> for Mat4<T> {
     #[inline(always)]
     fn neg(&self) -> Mat4<T> {
-        BaseMat4::from_cols(-self[0], -self[1], -self[2], -self[3])
+        BaseMat4::from_cols(-self.col(0), -self.col(1), -self.col(2), -self.col(3))
     }
 }
 
-impl<T:Copy> Index<uint, Vec4<T>> for Mat4<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> Vec4<T> {
-        unsafe { transmute::<Mat4<T>,[Vec4<T>,..4]>(*self)[*i] }
-    }
-}
-
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat4<T> {
+impl<T:Copy + Float + NumAssign> ApproxEq<T> for Mat4<T> {
     #[inline(always)]
     fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
@@ -1748,9 +1738,9 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat4<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon) &&
-        self[3].approx_eq_eps(&other[3], epsilon)
+        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
+        self.col(1).approx_eq_eps(other.col(1), epsilon) &&
+        self.col(2).approx_eq_eps(other.col(2), epsilon) &&
+        self.col(3).approx_eq_eps(other.col(3), epsilon)
     }
 }

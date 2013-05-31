@@ -1,7 +1,6 @@
 use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One};
-use std::util;
 
 use num::NumAssign;
 
@@ -13,7 +12,9 @@ use num::NumAssign;
  * * `T` - The type of the components. This is intended to support boolean,
  *         integer, unsigned integer, and floating point types.
  */
-pub trait BaseVec<T>: Index<uint,T> + Eq {
+pub trait BaseVec<T>: Eq {
+    fn index<'a>(&'a self, i: uint) -> &'a T;
+
     /**
      * Construct the vector from a single value, copying it to each component
      */
@@ -460,51 +461,51 @@ pub trait MixVec<T>: BaseVec<T> {
 
 macro_rules! zip_vec2(
     ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec2::new($a[0].$method(&($b[0])),
-                      $a[1].$method(&($b[1])))
+        BaseVec2::new($a.index(0).$method($b.index(0)),
+                      $a.index(1).$method($b.index(1)))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        BaseVec2::new($a[0].$method(&($b)),
-                      $a[1].$method(&($b)))
+        BaseVec2::new($a.index(0).$method(&$b),
+                      $a.index(1).$method(&$b))
     );
 )
 
 macro_rules! zip_vec3(
     ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec3::new($a[0].$method(&($b[0])),
-                      $a[1].$method(&($b[1])),
-                      $a[2].$method(&($b[2])))
+        BaseVec3::new($a.index(0).$method($b.index(0)),
+                      $a.index(1).$method($b.index(1)),
+                      $a.index(2).$method($b.index(2)))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        BaseVec3::new($a[0].$method(&($b)),
-                      $a[1].$method(&($b)),
-                      $a[2].$method(&($b)))
+        BaseVec3::new($a.index(0).$method(&$b),
+                      $a.index(1).$method(&$b),
+                      $a.index(2).$method(&$b))
     );
 )
 
 macro_rules! zip_vec4(
     ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec4::new($a[0].$method(&($b[0])),
-                      $a[1].$method(&($b[1])),
-                      $a[2].$method(&($b[2])),
-                      $a[3].$method(&($b[3])))
+        BaseVec4::new($a.index(0).$method($b.index(0)),
+                      $a.index(1).$method($b.index(1)),
+                      $a.index(2).$method($b.index(2)),
+                      $a.index(3).$method($b.index(3)))
     );
     ($a:ident[] $method:ident $b:ident) => (
-        BaseVec4::new($a[0].$method(&($b)),
-                      $a[1].$method(&($b)),
-                      $a[2].$method(&($b)),
-                      $a[3].$method(&($b)))
+        BaseVec4::new($a.index(0).$method(&$b),
+                      $a.index(1).$method(&$b),
+                      $a.index(2).$method(&$b),
+                      $a.index(3).$method(&$b))
     );
 )
 
 macro_rules! zip_assign(
-    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method(&$b[0]);    $a.index_mut(1).$method(&$b[1]); });
-    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method(&$b[2]); });
-    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method(&$b[3]); });
+    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method($b.index(0)); $a.index_mut(1).$method($b.index(1)); });
+    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method($b.index(2)); });
+    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method($b.index(3)); });
 
-    ($a:ident[] $method:ident $b:ident   ..2) => ({ $a.index_mut(0).$method(&$b);       $a.index_mut(1).$method(&$b);    });
-    ($a:ident[] $method:ident $b:ident   ..3) => ({ zip_assign!($a[] $method $b ..2);   $a.index_mut(2).$method(&$b);    });
-    ($a:ident[] $method:ident $b:ident   ..4) => ({ zip_assign!($a[] $method $b ..3);   $a.index_mut(3).$method(&$b);    });
+    ($a:ident[] $method:ident $b:ident ..2) => ({ $a.index_mut(0).$method(&$b); $a.index_mut(1).$method(&$b); });
+    ($a:ident[] $method:ident $b:ident ..3) => ({ zip_assign!($a[] $method $b ..2); $a.index_mut(2).$method(&$b); });
+    ($a:ident[] $method:ident $b:ident ..4) => ({ zip_assign!($a[] $method $b ..3); $a.index_mut(3).$method(&$b); });
 )
 
 /**
@@ -525,6 +526,11 @@ pub struct Vec2<T> { x: T, y: T }
 
 impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
     #[inline(always)]
+    fn index<'a>(&'a self, i: uint) -> &'a T {
+        unsafe { &'a transmute::<&'a Vec2<T>, &'a [T,..2]>(self)[i] }
+    }
+
+    #[inline(always)]
     fn from_value(value: T) -> Vec2<T> {
         BaseVec2::new(value, value)
     }
@@ -536,18 +542,13 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe {
-            &mut transmute::<
-                &'a mut Vec2<T>,
-                &'a mut [T,..2]
-            >(self)[i]
-        }
+        unsafe { &'a mut transmute::<&'a mut Vec2<T>, &'a mut [T,..2]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.index_mut(a) = self[b];
+        let tmp = *self.index(a);
+        *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
 }
@@ -556,13 +557,6 @@ impl<T> BaseVec2<T> for Vec2<T> {
     #[inline(always)]
     fn new(x: T, y: T ) -> Vec2<T> {
         Vec2 { x: x, y: y }
-    }
-}
-
-impl<T:Copy + Eq> Index<uint, T> for Vec2<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { transmute::<Vec2<T>,[T,..2]>(*self)[*i] }
     }
 }
 
@@ -581,8 +575,8 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == Zero::zero() &&
-        self[1] == Zero::zero()
+        *self.index(0) == Zero::zero() &&
+        *self.index(1) == Zero::zero()
     }
 
     #[inline(always)]
@@ -617,14 +611,14 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn dot(&self, other: &Vec2<T>) -> T {
-        self[0] * other[0] +
-        self[1] * other[1]
+        (*self.index(0)) * (*other.index(0)) +
+        (*self.index(1)) * (*other.index(1))
     }
 
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -self[0];
-        *self.index_mut(1) = -self[1];
+        *self.index_mut(0) = -self.index(0);
+        *self.index_mut(1) = -self.index(1);
     }
 
     #[inline(always)]
@@ -661,7 +655,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
 impl<T:Copy + Num> Neg<Vec2<T>> for Vec2<T> {
     #[inline(always)]
     fn neg(&self) -> Vec2<T> {
-        BaseVec2::new(-self[0], -self[1])
+        BaseVec2::new(-self.index(0), -self.index(1))
     }
 }
 
@@ -680,7 +674,7 @@ impl<T:Copy + Num> NumVec2<T> for Vec2<T> {
 
     #[inline(always)]
     fn perp_dot(&self, other: &Vec2<T>) ->T {
-        (self[0] * other[1]) - (self[1] * other[0])
+        (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0))
     }
 }
 
@@ -763,8 +757,8 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon)
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon)
     }
 }
 
@@ -805,17 +799,17 @@ impl<T:Copy + Eq> EqVec<T, Vec2<bool>> for Vec2<T> {
 impl BoolVec for Vec2<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
-        self[0] || self[1]
+        *self.index(0) || *self.index(1)
     }
 
     #[inline(always)]
     fn all(&self) -> bool {
-        self[0] && self[1]
+        *self.index(0) && *self.index(1)
     }
 
     #[inline(always)]
     fn not(&self) -> Vec2<bool> {
-        BaseVec2::new(!self[0], !self[1])
+        BaseVec2::new(!*self.index(0), !*self.index(1))
     }
 }
 
@@ -838,6 +832,11 @@ pub struct Vec3<T> { x: T, y: T, z: T }
 
 impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
     #[inline(always)]
+    fn index<'a>(&'a self, i: uint) -> &'a T {
+        unsafe { &'a transmute::<&'a Vec3<T>, &'a [T,..3]>(self)[i] }
+    }
+
+    #[inline(always)]
     fn from_value(value: T) -> Vec3<T> {
         BaseVec3::new(value, value, value)
     }
@@ -849,18 +848,13 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe {
-            &mut transmute::<
-                &'a mut Vec3<T>,
-                &'a mut [T,..3]
-            >(self)[i]
-        }
+        unsafe { &mut transmute::<&'a mut Vec3<T>, &'a mut [T,..3]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.index_mut(a) = self[b];
+        let tmp = *self.index(a);
+        *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
 }
@@ -869,13 +863,6 @@ impl<T> BaseVec3<T> for Vec3<T> {
     #[inline(always)]
     fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
-    }
-}
-
-impl<T:Copy + Eq> Index<uint, T> for Vec3<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { transmute::<Vec3<T>,[T,..3]>(*self)[*i] }
     }
 }
 
@@ -896,9 +883,9 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == Zero::zero() &&
-        self[1] == Zero::zero() &&
-        self[2] == Zero::zero()
+        *self.index(0) == Zero::zero() &&
+        *self.index(1) == Zero::zero() &&
+        *self.index(2) == Zero::zero()
     }
 
     #[inline(always)]
@@ -933,16 +920,16 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn dot(&self, other: &Vec3<T>) -> T {
-        self[0] * other[0] +
-        self[1] * other[1] +
-        self[2] * other[2]
+        (*self.index(0)) * (*other.index(0)) +
+        (*self.index(1)) * (*other.index(1)) +
+        (*self.index(2)) * (*other.index(2))
     }
 
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -self[0];
-        *self.index_mut(1) = -self[1];
-        *self.index_mut(2) = -self[2];
+        *self.index_mut(0) = -self.index(0);
+        *self.index_mut(1) = -self.index(1);
+        *self.index_mut(2) = -self.index(2);
     }
 
     #[inline(always)]
@@ -979,7 +966,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
 impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
     #[inline(always)]
     fn neg(&self) -> Vec3<T> {
-        BaseVec3::new(-self[0], -self[1], -self[2])
+        BaseVec3::new(-self.index(0), -self.index(1), -self.index(2))
     }
 }
 
@@ -1007,9 +994,9 @@ impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
 
     #[inline(always)]
     fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        BaseVec3::new((self[1] * other[2]) - (self[2] * other[1]),
-                      (self[2] * other[0]) - (self[0] * other[2]),
-                      (self[0] * other[1]) - (self[1] * other[0]))
+        BaseVec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
+                      (*self.index(2) * *other.index(0)) - (*self.index(0) * *other.index(2)),
+                      (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
     }
 
     #[inline(always)]
@@ -1097,9 +1084,9 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon)
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
+        self.index(2).approx_eq_eps(other.index(2), epsilon)
     }
 }
 
@@ -1140,17 +1127,17 @@ impl<T:Copy + Eq> EqVec<T, Vec3<bool>> for Vec3<T> {
 impl BoolVec for Vec3<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
-        self[0] || self[1] || self[2]
+        *self.index(0) || *self.index(1) || *self.index(2)
     }
 
     #[inline(always)]
     fn all(&self) -> bool {
-        self[0] && self[1] && self[2]
+        *self.index(0) && *self.index(1) && *self.index(2)
     }
 
     #[inline(always)]
     fn not(&self) -> Vec3<bool> {
-        BaseVec3::new(!self[0], !self[1], !self[2])
+        BaseVec3::new(!*self.index(0), !*self.index(1), !*self.index(2))
     }
 }
 
@@ -1174,6 +1161,11 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
     #[inline(always)]
+    fn index<'a>(&'a self, i: uint) -> &'a T {
+        unsafe { &'a transmute::<&'a Vec4<T>, &'a [T,..4]>(self)[i] }
+    }
+
+    #[inline(always)]
     fn from_value(value: T) -> Vec4<T> {
         BaseVec4::new(value, value, value, value)
     }
@@ -1185,18 +1177,13 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe {
-            &mut transmute::<
-                &'a mut Vec4<T>,
-                &'a mut [T,..4]
-            >(self)[i]
-        }
+        unsafe { &'a mut transmute::< &'a mut Vec4<T>, &'a mut [T,..4]>(self)[i] }
     }
 
     #[inline(always)]
     fn swap(&mut self, a: uint, b: uint) {
-        let tmp = self[a];
-        *self.index_mut(a) = self[b];
+        let tmp = *self.index(a);
+        *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
 }
@@ -1205,13 +1192,6 @@ impl<T> BaseVec4<T> for Vec4<T> {
     #[inline(always)]
     fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
-    }
-}
-
-impl<T:Copy + Eq> Index<uint, T> for Vec4<T> {
-    #[inline(always)]
-    fn index(&self, i: &uint) -> T {
-        unsafe { transmute::<Vec4<T>,[T,..4]>(*self)[*i] }
     }
 }
 
@@ -1234,10 +1214,10 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn is_zero(&self) -> bool {
-        self[0] == Zero::zero() &&
-        self[1] == Zero::zero() &&
-        self[2] == Zero::zero() &&
-        self[3] == Zero::zero()
+        *self.index(0) == Zero::zero() &&
+        *self.index(1) == Zero::zero() &&
+        *self.index(2) == Zero::zero() &&
+        *self.index(3) == Zero::zero()
     }
 
     #[inline(always)]
@@ -1272,18 +1252,18 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn dot(&self, other: &Vec4<T>) -> T {
-        self[0] * other[0] +
-        self[1] * other[1] +
-        self[2] * other[2] +
-        self[3] * other[3]
+        (*self.index(0)) * (*other.index(0)) +
+        (*self.index(1)) * (*other.index(1)) +
+        (*self.index(2)) * (*other.index(2)) +
+        (*self.index(3)) * (*other.index(3))
     }
 
     #[inline(always)]
     fn neg_self(&mut self) {
-        *self.index_mut(0) = -self[0];
-        *self.index_mut(1) = -self[1];
-        *self.index_mut(2) = -self[2];
-        *self.index_mut(3) = -self[3];
+        *self.index_mut(0) = -self.index(0);
+        *self.index_mut(1) = -self.index(1);
+        *self.index_mut(2) = -self.index(2);
+        *self.index_mut(3) = -self.index(3);
     }
 
     #[inline(always)]
@@ -1320,7 +1300,7 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
 impl<T:Copy + Num> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
     fn neg(&self) -> Vec4<T> {
-        BaseVec4::new(-self[0], -self[1], -self[2], -self[3])
+        BaseVec4::new(-self.index(0), -self.index(1), -self.index(2), -self.index(3))
     }
 }
 
@@ -1430,10 +1410,10 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
 
     #[inline(always)]
     fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon) &&
-        self[3].approx_eq_eps(&other[3], epsilon)
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
+        self.index(2).approx_eq_eps(other.index(2), epsilon) &&
+        self.index(3).approx_eq_eps(other.index(3), epsilon)
     }
 }
 
@@ -1474,16 +1454,16 @@ impl<T:Copy + Eq> EqVec<T, Vec4<bool>> for Vec4<T> {
 impl BoolVec for Vec4<bool> {
     #[inline(always)]
     fn any(&self) -> bool {
-        self[0] || self[1] || self[2] || self[3]
+        *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
     }
 
     #[inline(always)]
     fn all(&self) -> bool {
-        self[0] && self[1] && self[2] && self[3]
+        *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
     }
 
     #[inline(always)]
     fn not(&self) -> Vec4<bool> {
-        BaseVec4::new(!self[0], !self[1], !self[2], !self[3])
+        BaseVec4::new(!*self.index(0), !*self.index(1), !*self.index(2), !*self.index(3))
     }
 }
