@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::cmp::FuzzyEq;
-use std::num::Real::{frac_pi_2, frac_pi_3};
-
 use vec::*;
 
 // TODO
@@ -45,14 +42,14 @@ fn test_vec2() {
     mut_a = a;
 
     mut_a.swap(0, 1);
-    assert!(mut_a[0] == a[1]);
-    assert!(mut_a[1] == a[0]);
+    assert!(*mut_a.index(0) == *a.index(1));
+    assert!(*mut_a.index(1) == *a.index(0));
     mut_a = a;
 
     assert!(a.x == 1.0);
     assert!(a.y == 2.0);
-    assert!(a[0] == 1.0);
-    assert!(a[1] == 2.0);
+    assert!(*a.index(0) == 1.0);
+    assert!(*a.index(1) == 2.0);
 
     assert!(-a      == vec2::new(-1.0, -2.0));
     assert!(a.neg() == vec2::new(-1.0, -2.0));
@@ -102,9 +99,9 @@ fn test_vec2() {
 }
 
 #[test]
-fn test_vec2_fuzzy_eq() {
-    assert!(!vec2::new(0.000001, 0.000001).fuzzy_eq(&vec2::new(0.0, 0.0)));
-    assert!(vec2::new(0.0000001, 0.0000001).fuzzy_eq(&vec2::new(0.0, 0.0)));
+fn test_vec2_approx_eq() {
+    assert!(!vec2::new(0.000001, 0.000001).approx_eq(&vec2::new(0.0, 0.0)));
+    assert!(vec2::new(0.0000001, 0.0000001).approx_eq(&vec2::new(0.0, 0.0)));
 }
 
 #[test]
@@ -122,11 +119,11 @@ fn test_vec2_euclidean() {
     assert!(a.distance(&b) == 5.0);
     assert!(a.distance2(&b) == 5.0 * 5.0);
 
-    assert!(vec2::new(1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
-    assert!(vec2::new(10.0, 0.0).angle(&vec2::new(0.0, 5.0)).fuzzy_eq(&frac_pi_2()));
-    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).fuzzy_eq(&-frac_pi_2::<f32>()));
+    assert!(vec2::new(1.0, 0.0).angle(&vec2::new(0.0, 1.0)).approx_eq(&Real::frac_pi_2()));
+    assert!(vec2::new(10.0, 0.0).angle(&vec2::new(0.0, 5.0)).approx_eq(&Real::frac_pi_2()));
+    assert!(vec2::new(-1.0, 0.0).angle(&vec2::new(0.0, 1.0)).approx_eq(&-frac_pi_2::<f32>()));
 
-    assert!(vec2::new(3.0, 4.0).normalize().fuzzy_eq(&vec2::new(3.0/5.0, 4.0/5.0)));
+    assert!(vec2::new(3.0, 4.0).normalize().approx_eq(&vec2::new(3.0/5.0, 4.0/5.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
 
     let c = vec2::new(-2.0, -1.0);
@@ -185,21 +182,21 @@ fn test_vec3() {
     mut_a = a;
 
     mut_a.swap(0, 2);
-    assert!(mut_a[0] == a[2]);
-    assert!(mut_a[2] == a[0]);
+    assert!(*mut_a.index(0) == *a.index(2));
+    assert!(*mut_a.index(2) == *a.index(0));
     mut_a = a;
 
     mut_a.swap(1, 2);
-    assert!(mut_a[1] == a[2]);
-    assert!(mut_a[2] == a[1]);
+    assert!(*mut_a.index(1) == *a.index(2));
+    assert!(*mut_a.index(2) == *a.index(1));
     mut_a = a;
 
     assert!(a.x == 1.0);
     assert!(a.y == 2.0);
     assert!(a.z == 3.0);
-    assert!(a[0] == 1.0);
-    assert!(a[1] == 2.0);
-    assert!(a[2] == 3.0);
+    assert!(*a.index(0) == 1.0);
+    assert!(*a.index(1) == 2.0);
+    assert!(*a.index(2) == 3.0);
 
     assert!(a.cross(&b) == vec3::new(-3.0, 6.0, -3.0));
 
@@ -250,7 +247,7 @@ fn test_vec3() {
     // mut_a = a;
 
     // exact_eq
-    // fuzzy_eq
+    // approx_eq
     // eq
 
     // assert!(c.abs()        == vec3::new( 2.0,  1.0, 1.0));
@@ -259,9 +256,9 @@ fn test_vec3() {
 }
 
 #[test]
-fn test_vec3_fuzzy_eq() {
-    assert!(!vec3::new(0.000001, 0.000001, 0.000001).fuzzy_eq(&vec3::new(0.0, 0.0, 0.0)));
-    assert!(vec3::new(0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&vec3::new(0.0, 0.0, 0.0)));
+fn test_vec3_approx_eq() {
+    assert!(!vec3::new(0.000001, 0.000001, 0.000001).approx_eq(&vec3::new(0.0, 0.0, 0.0)));
+    assert!(vec3::new(0.0000001, 0.0000001, 0.0000001).approx_eq(&vec3::new(0.0, 0.0, 0.0)));
 }
 
 #[test]
@@ -279,11 +276,11 @@ fn test_vec3_euclidean() {
     assert!(a.distance(&b) == 9.0);
     assert!(a.distance2(&b) == 9.0 * 9.0);
 
-    assert!(vec3::new(1.0, 0.0, 1.0).angle(&vec3::new(1.0, 1.0, 0.0)).fuzzy_eq(&frac_pi_3()));
-    assert!(vec3::new(10.0, 0.0, 10.0).angle(&vec3::new(5.0, 5.0, 0.0)).fuzzy_eq(&frac_pi_3()));
-    assert!(vec3::new(-1.0, 0.0, -1.0).angle(&vec3::new(1.0, -1.0, 0.0)).fuzzy_eq(&(2.0 * frac_pi_3())));
+    assert!(vec3::new(1.0, 0.0, 1.0).angle(&vec3::new(1.0, 1.0, 0.0)).approx_eq(&Real::frac_pi_3()));
+    assert!(vec3::new(10.0, 0.0, 10.0).angle(&vec3::new(5.0, 5.0, 0.0)).approx_eq(&Real::frac_pi_3()));
+    assert!(vec3::new(-1.0, 0.0, -1.0).angle(&vec3::new(1.0, -1.0, 0.0)).approx_eq(&(2.0 * Real::frac_pi_3())));
 
-    assert!(vec3::new(2.0, 3.0, 6.0).normalize().fuzzy_eq(&vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0)));
+    assert!(vec3::new(2.0, 3.0, 6.0).normalize().approx_eq(&vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
 
     let c = vec3::new(-2.0, -1.0, 1.0);
@@ -337,13 +334,13 @@ fn test_vec4() {
     mut_a = a;
 
     mut_a.swap(0, 3);
-    assert!(mut_a[0] == a[3]);
-    assert!(mut_a[3] == a[0]);
+    assert!(*mut_a.index(0) == *a.index(3));
+    assert!(*mut_a.index(3) == *a.index(0));
     mut_a = a;
 
     mut_a.swap(1, 2);
-    assert!(mut_a[1] == a[2]);
-    assert!(mut_a[2] == a[1]);
+    assert!(*mut_a.index(1) == *a.index(2));
+    assert!(*mut_a.index(2) == *a.index(1));
     mut_a = a;
 
     assert!(vec4::zero()     == vec4::new(0.0, 0.0, 0.0, 0.0));
@@ -357,10 +354,10 @@ fn test_vec4() {
     assert!(a.y == 2.0);
     assert!(a.z == 3.0);
     assert!(a.w == 4.0);
-    assert!(a[0] == 1.0);
-    assert!(a[1] == 2.0);
-    assert!(a[2] == 3.0);
-    assert!(a[3] == 4.0);
+    assert!(*a.index(0) == 1.0);
+    assert!(*a.index(1) == 2.0);
+    assert!(*a.index(2) == 3.0);
+    assert!(*a.index(3) == 4.0);
 
     assert!(-a      == vec4::new(-1.0, -2.0, -3.0, -4.0));
     assert!(a.neg() == vec4::new(-1.0, -2.0, -3.0, -4.0));
@@ -412,9 +409,9 @@ fn test_vec4() {
 }
 
 #[test]
-fn test_vec4_fuzzy_eq() {
-    assert!(!vec4::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&vec4::new(0.0, 0.0, 0.0, 0.0)));
-    assert!(vec4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&vec4::new(0.0, 0.0, 0.0, 0.0)));
+fn test_vec4_approx_eq() {
+    assert!(!vec4::new(0.000001, 0.000001, 0.000001, 0.000001).approx_eq(&vec4::new(0.0, 0.0, 0.0, 0.0)));
+    assert!(vec4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&vec4::new(0.0, 0.0, 0.0, 0.0)));
 }
 
 #[test]
@@ -432,11 +429,11 @@ fn test_vec4_euclidean() {
     assert!(a.distance(&b) == 13.0);
     assert!(a.distance2(&b) == 13.0 * 13.0);
 
-    assert!(vec4::new(1.0, 0.0, 1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
-    assert!(vec4::new(10.0, 0.0, 10.0, 0.0).angle(&vec4::new(0.0, 5.0, 0.0, 5.0)).fuzzy_eq(&frac_pi_2()));
-    assert!(vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).fuzzy_eq(&frac_pi_2()));
+    assert!(vec4::new(1.0, 0.0, 1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq(&Real::frac_pi_2()));
+    assert!(vec4::new(10.0, 0.0, 10.0, 0.0).angle(&vec4::new(0.0, 5.0, 0.0, 5.0)).approx_eq(&Real::frac_pi_2()));
+    assert!(vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq(&Real::frac_pi_2()));
 
-    assert!(vec4::new(1.0, 2.0, 4.0, 10.0).normalize().fuzzy_eq(&vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0)));
+    assert!(vec4::new(1.0, 2.0, 4.0, 10.0).normalize().approx_eq(&vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0)));
     // TODO: test normalize_to, normalize_self, and normalize_self_to
 
     let c = vec4::new(-2.0, -1.0, 1.0, 2.0);

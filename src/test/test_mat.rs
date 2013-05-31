@@ -15,7 +15,6 @@
 
 use mat::*;
 use vec::*;
-use std::cmp::FuzzyEq;
 
 // TODO
 
@@ -38,8 +37,8 @@ fn test_mat2() {
     assert!(mat2::from_value(4.0) == mat2::new(4.0, 0.0,
                                                 0.0, 4.0));
 
-    assert!(a[0] == vec2::new(1.0, 3.0));
-    assert!(a[1] == vec2::new(2.0, 4.0));
+    assert!(*a.col(0) == vec2::new(1.0, 3.0));
+    assert!(*a.col(1) == vec2::new(2.0, 4.0));
 
     assert!(a.row(0) == vec2::new(1.0, 2.0));
     assert!(a.row(1) == vec2::new(3.0, 4.0));
@@ -169,11 +168,11 @@ fn test_mat2_mut() {
 }
 
 #[test]
-fn test_mat2_fuzzy_eq() {
+fn test_mat2_approx_eq() {
     assert!(!mat2::new(0.000001, 0.000001,
-                       0.000001, 0.000001).fuzzy_eq(&mat2::zero()));
+                       0.000001, 0.000001).approx_eq(&mat2::zero()));
     assert!(mat2::new(0.0000001, 0.0000001,
-                      0.0000001, 0.0000001).fuzzy_eq(&mat2::zero()));
+                      0.0000001, 0.0000001).approx_eq(&mat2::zero()));
 }
 
 #[test]
@@ -196,9 +195,9 @@ fn test_mat3() {
                                  vec3::new(2.0, 5.0, 8.0),
                                  vec3::new(3.0, 6.0, 9.0)));
 
-    assert!(a[0] == vec3::new(1.0, 4.0, 7.0));
-    assert!(a[1] == vec3::new(2.0, 5.0, 8.0));
-    assert!(a[2] == vec3::new(3.0, 6.0, 9.0));
+    assert!(*a.col(0) == vec3::new(1.0, 4.0, 7.0));
+    assert!(*a.col(1) == vec3::new(2.0, 5.0, 8.0));
+    assert!(*a.col(2) == vec3::new(3.0, 6.0, 9.0));
 
     assert!(a.row(0) == vec3::new(1.0, 2.0, 3.0));
     assert!(a.row(1) == vec3::new(4.0, 5.0, 6.0));
@@ -358,13 +357,13 @@ fn test_mat3_mut() {
 }
 
 #[test]
-fn test_mat3_fuzzy_eq() {
+fn test_mat3_approx_eq() {
     assert!(!mat3::new(0.000001, 0.000001, 0.000001,
                        0.000001, 0.000001, 0.000001,
-                       0.000001, 0.000001, 0.000001).fuzzy_eq(&mat3::zero()));
+                       0.000001, 0.000001, 0.000001).approx_eq(&mat3::zero()));
     assert!(mat3::new(0.0000001, 0.0000001, 0.0000001,
                       0.0000001, 0.0000001, 0.0000001,
-                      0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat3::zero()));
+                      0.0000001, 0.0000001, 0.0000001).approx_eq(&mat3::zero()));
 }
 
 #[test]
@@ -400,10 +399,10 @@ fn test_mat4() {
                                                0.0, 0.0, 4.0, 0.0,
                                                0.0, 0.0, 0.0, 4.0));
 
-    assert!(a[0] == vec4::new(1.0, 5.0,  9.0, 13.0));
-    assert!(a[1] == vec4::new(2.0, 6.0, 10.0, 14.0));
-    assert!(a[2] == vec4::new(3.0, 7.0, 11.0, 15.0));
-    assert!(a[3] == vec4::new(4.0, 8.0, 12.0, 16.0));
+    assert!(*a.col(0) == vec4::new(1.0, 5.0,  9.0, 13.0));
+    assert!(*a.col(1) == vec4::new(2.0, 6.0, 10.0, 14.0));
+    assert!(*a.col(2) == vec4::new(3.0, 7.0, 11.0, 15.0));
+    assert!(*a.col(3) == vec4::new(4.0, 8.0, 12.0, 16.0));
 
     assert!(a.row(0) == vec4::new( 1.0,  2.0,  3.0,  4.0));
     assert!(a.row(1) == vec4::new( 5.0,  6.0,  7.0,  8.0));
@@ -460,7 +459,7 @@ fn test_mat4() {
                                        13.0, 14.0, 15.0, 16.0));
 
     assert!(c.inverse().unwrap()
-        .fuzzy_eq(&mat4::new( 5.0, -4.0,  1.0,  0.0,
+        .approx_eq(&mat4::new( 5.0, -4.0,  1.0,  0.0,
                              -4.0,  8.0, -4.0,  0.0,
                               4.0, -8.0,  4.0,  8.0,
                              -3.0,  4.0,  1.0, -8.0).mul_t(0.125)));
@@ -567,13 +566,13 @@ fn test_mat4_mut() {
 }
 
 #[test]
-fn test_mat4_fuzzy_eq() {
+fn test_mat4_approx_eq() {
     assert!(!mat4::new(0.000001, 0.000001, 0.000001, 0.000001,
                        0.000001, 0.000001, 0.000001, 0.000001,
                        0.000001, 0.000001, 0.000001, 0.000001,
-                       0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&mat4::zero()));
+                       0.000001, 0.000001, 0.000001, 0.000001).approx_eq(&mat4::zero()));
     assert!(mat4::new(0.0000001, 0.0000001, 0.0000001, 0.0000001,
                       0.0000001, 0.0000001, 0.0000001, 0.0000001,
                       0.0000001, 0.0000001, 0.0000001, 0.0000001,
-                      0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&mat4::zero()));
+                      0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&mat4::zero()));
 }

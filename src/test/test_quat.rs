@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::cmp::FuzzyEq;
-
 use mat::*;
 use quat::*;
 use vec::*;
@@ -35,10 +33,10 @@ fn test_quat() {
     assert!(a.v.x == 2.0);
     assert!(a.v.y == 3.0);
     assert!(a.v.z == 4.0);
-    assert!(a[0] == 1.0);
-    assert!(a[1] == 2.0);
-    assert!(a[2] == 3.0);
-    assert!(a[3] == 4.0);
+    assert!(*a.index(0) == 1.0);
+    assert!(*a.index(1) == 2.0);
+    assert!(*a.index(2) == 3.0);
+    assert!(*a.index(3) == 4.0);
     // TODO
 }
 
@@ -49,15 +47,15 @@ fn test_quat_2() {
     let q = quat::from_angle_axis((-45f32).radians(), &vec3::new(0f32, 0f32, -1f32));
 
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert!(q.mul_v(&v).fuzzy_eq(&vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32)));
+    assert!(q.mul_v(&v).approx_eq(&vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32)));
     assert!(q.mul_v(&v).length() == v.length());
-    assert!(q.to_mat3().fuzzy_eq(&mat3::new( 1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                            -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                                       0f32,           0f32, 1f32)));
+    assert!(q.to_mat3().approx_eq(&mat3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
+                                             -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
+                                             0f32, 0f32, 1f32)));
 }
 
 #[test]
-fn test_quat_fuzzy_eq() {
-    assert!(!quat::new(0.000001, 0.000001, 0.000001, 0.000001).fuzzy_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
-    assert!(quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).fuzzy_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
+fn test_quat_approx_eq() {
+    assert!(!quat::new(0.000001, 0.000001, 0.000001, 0.000001).approx_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
+    assert!(quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
 }
