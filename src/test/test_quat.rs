@@ -23,20 +23,20 @@ use vec::*;
 fn test_quat() {
     let a = Quat { s: 1.0, v: Vec3 { x: 2.0, y: 3.0, z: 4.0 } };
 
-    assert!(a == quat::from_sv(1.0, vec3::new(2.0, 3.0, 4.0)));
-    assert!(a == quat::new(1.0, 2.0, 3.0, 4.0));
+    assert_eq!(a, quat::from_sv(1.0, vec3::new(2.0, 3.0, 4.0)));
+    assert_eq!(a, quat::new(1.0, 2.0, 3.0, 4.0));
 
-    assert!(quat::zero()     == quat::new(0.0, 0.0, 0.0, 0.0));
-    assert!(quat::identity() == quat::new(1.0, 0.0, 0.0, 0.0));
+    assert_eq!(quat::zero(), quat::new(0.0, 0.0, 0.0, 0.0));
+    assert_eq!(quat::identity(), quat::new(1.0, 0.0, 0.0, 0.0));
 
-    assert!(a.s == 1.0);
-    assert!(a.v.x == 2.0);
-    assert!(a.v.y == 3.0);
-    assert!(a.v.z == 4.0);
-    assert!(*a.index(0) == 1.0);
-    assert!(*a.index(1) == 2.0);
-    assert!(*a.index(2) == 3.0);
-    assert!(*a.index(3) == 4.0);
+    assert_eq!(a.s, 1.0);
+    assert_eq!(a.v.x, 2.0);
+    assert_eq!(a.v.y, 3.0);
+    assert_eq!(a.v.z, 4.0);
+    assert_eq!(*a.index(0), 1.0);
+    assert_eq!(*a.index(1), 2.0);
+    assert_eq!(*a.index(2), 3.0);
+    assert_eq!(*a.index(3), 4.0);
     // TODO
 }
 
@@ -44,14 +44,14 @@ fn test_quat() {
 fn test_quat_2() {
     let v = vec3::new(1f32, 0f32, 0f32);
 
-    let q = quat::from_angle_axis((-45f32).radians(), &vec3::new(0f32, 0f32, -1f32));
+    let q = quat::from_angle_axis((-45f32).to_radians(), &vec3::new(0f32, 0f32, -1f32));
 
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert!(q.mul_v(&v).approx_eq(&vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32)));
-    assert!(q.mul_v(&v).length() == v.length());
-    assert!(q.to_mat3().approx_eq(&mat3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
+    assert_approx_eq!(q.mul_v(&v), vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32));
+    assert_eq!(q.mul_v(&v).length(), v.length());
+    assert_approx_eq!(q.to_mat3(), mat3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
                                              -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                             0f32, 0f32, 1f32)));
+                                             0f32, 0f32, 1f32));
 }
 
 #[test]
