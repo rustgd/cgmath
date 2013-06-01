@@ -22,256 +22,150 @@ use quat::Quat;
 
 use num::NumAssign;
 
-/**
- * The base square matrix trait
- *
- * # Type parameters
- *
- * * `T` - The type of the elements of the matrix. Should be a floating point type.
- * * `V` - The type of the row and column vectors. Should have components of a
- *         floating point type and have the same number of dimensions as the
- *         number of rows and columns in the matrix.
- */
+/// The base square matrix trait
+///
+/// # Type parameters
+///
+/// - `T`: The type of the elements of the matrix. Should be a floating point type.
+/// - `V`: The type of the row and column vectors. Should have components of a
+///        floating point type and have the same number of dimensions as the
+///        number of rows and columns in the matrix.
 pub trait BaseMat<T,V>: Eq + Neg<Self> {
-    /**
-     * # Return value
-     *
-     * The column vector at `i`
-     */
+    /// The column vector at `i`
     fn col<'a>(&'a self, i: uint) -> &'a V;
 
-    /**
-     * # Return value
-     *
-     * The row vector at `i`
-     */
+    /// The row vector at `i`
     fn row(&self, i: uint) -> V;
 
-    /**
-     * # Return value
-     *
-     * The matrix element at `i`, `j`
-     */
+    /// The matrix element at `i`, `j`
     fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T;
 
-    /**
-     * Construct a diagonal matrix with the major diagonal set to `value`
-     */
+    /// Construct a diagonal matrix with the major diagonal set to `value`
     fn from_value(value: T) -> Self;
 
-    /**
-     * # Return value
-     *
-     * The identity matrix
-     */
+    /// The identity matrix
     fn identity() -> Self;
 
-    /**
-     * # Return value
-     *
-     * A matrix with all elements set to zero
-     */
+    /// A matrix with all elements set to zero
     fn zero() -> Self;
 
-    /**
-     * # Return value
-     *
-     * The scalar multiplication of this matrix and `value`
-     */
+    /// The scalar multiplication of this matrix and `value`
     fn mul_t(&self, value: T) -> Self;
 
-    /**
-     * # Return value
-     *
-     * The matrix vector product of the matrix and `vec`
-     */
+    /// The matrix vector product of the matrix and `vec`
     fn mul_v(&self, vec: &V) -> V;
 
-    /**
-     * # Return value
-     *
-     * The matrix addition of the matrix and `other`
-     */
+    /// The matrix addition of the matrix and `other`
     fn add_m(&self, other: &Self) -> Self;
 
-    /**
-     * # Return value
-     *
-     * The difference between the matrix and `other`
-     */
+    /// The difference between the matrix and `other`
     fn sub_m(&self, other: &Self) -> Self;
 
-    /**
-     * # Return value
-     *
-     * The matrix product of the matrix and `other`
-     */
+    /// The matrix product of the matrix and `other`
     fn mul_m(&self, other: &Self) -> Self;
 
-    /**
-     * # Return value
-     *
-     * The matrix dot product of the matrix and `other`
-     */
+    /// The matrix dot product of the matrix and `other`
     fn dot(&self, other: &Self) -> T;
 
-    /**
-     * # Return value
-     *
-     * The determinant of the matrix
-     */
+    /// The determinant of the matrix
     fn determinant(&self) -> T;
 
-    /**
-     * # Return value
-     *
-     * The sum of the main diagonal of the matrix
-     */
+    /// The sum of the main diagonal of the matrix
     fn trace(&self) -> T;
 
-    /**
-     * Returns the inverse of the matrix
-     *
-     * # Return value
-     *
-     * * `Some(m)` - if the inversion was successful, where `m` is the inverted matrix
-     * * `None` - if the inversion was unsuccessful (because the matrix was not invertable)
-     */
+    /// Returns the inverse of the matrix
+    ///
+    /// # Return value
+    ///
+    /// - `Some(m)`: if the inversion was successful, where `m` is the inverted matrix
+    /// - `None`: if the inversion was unsuccessful (because the matrix was not invertable)
     fn inverse(&self) -> Option<Self>;
 
-    /**
-     * # Return value
-     *
-     * The transposed matrix
-     */
+    /// The transposed matrix
     fn transpose(&self) -> Self;
 
-    /**
-     * # Return value
-     *
-     * A mutable reference to the column at `i`
-     */
+    /// A mutable reference to the column at `i`
     fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut V;
 
-    /**
-     * # Return value
-     *
-     * A mutable reference to the matrix element at `i`, `j`
-     */
+    /// A mutable reference to the matrix element at `i`, `j`
     fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T;
 
-    /**
-     * Swap two columns of the matrix in place
-     */
+    /// Swap two columns of the matrix in place
     fn swap_cols(&mut self, a: uint, b: uint);
 
-    /**
-     * Swap two rows of the matrix in place
-     */
+    /// Swap two rows of the matrix in place
     fn swap_rows(&mut self, a: uint, b: uint);
 
-    /**
-     * Sets the matrix to `other`
-     */
+    /// Sets the matrix to `other`
     fn set(&mut self, other: &Self);
 
-    /**
-     * Sets the matrix to the identity matrix
-     */
+    /// Sets the matrix to the identity matrix
     fn to_identity(&mut self);
 
-    /**
-     * Sets each element of the matrix to zero
-     */
+    /// Sets each element of the matrix to zero
     fn to_zero(&mut self);
 
-    /**
-     * Multiplies the matrix by a scalar
-     */
+    /// Multiplies the matrix by a scalar
     fn mul_self_t(&mut self, value: T);
 
-    /**
-     * Add the matrix `other` to `self`
-     */
+    /// Add the matrix `other` to `self`
     fn add_self_m(&mut self, other: &Self);
 
-    /**
-     * Subtract the matrix `other` from `self`
-     */
+    /// Subtract the matrix `other` from `self`
     fn sub_self_m(&mut self, other: &Self);
 
-    /**
-     * Sets the matrix to its inverse
-     *
-     * # Failure
-     *
-     * Fails if the matrix is not invertable. Make sure you check with the
-     * `is_invertible` method before you attempt this!
-     */
+    /// Sets the matrix to its inverse
+    ///
+    /// # Failure
+    ///
+    /// Fails if the matrix is not invertable. Make sure you check with the
+    /// `is_invertible` method before you attempt this!
     fn invert_self(&mut self);
 
-    /**
-     * Sets the matrix to its transpose
-     */
+    /// Sets the matrix to its transpose
     fn transpose_self(&mut self);
 
-    /**
-     * Check to see if the matrix is an identity matrix
-     *
-     * # Return value
-     *
-     * `true` if the matrix is approximately equal to the identity matrix
-     */
+    /// Check to see if the matrix is an identity matrix
+    ///
+    /// # Return value
+    ///
+    /// `true` if the matrix is approximately equal to the identity matrix
     fn is_identity(&self) -> bool;
 
-    /**
-     * Check to see if the matrix is diagonal
-     *
-     * # Return value
-     *
-     * `true` all the elements outside the main diagonal are approximately
-     * equal to zero.
-     */
+    /// Check to see if the matrix is diagonal
+    ///
+    /// # Return value
+    ///
+    /// `true` all the elements outside the main diagonal are approximately
+    /// equal to zero.
     fn is_diagonal(&self) -> bool;
 
-    /**
-     * Check to see if the matrix is rotated
-     *
-     * # Return value
-     *
-     * `true` if the matrix is not approximately equal to the identity matrix.
-     */
+    /// Check to see if the matrix is rotated
+    ///
+    /// # Return value
+    ///
+    /// `true` if the matrix is not approximately equal to the identity matrix.
     fn is_rotated(&self) -> bool;
 
-    /**
-     * Check to see if the matrix is symmetric
-     *
-     * # Return value
-     *
-     * `true` if the matrix is approximately equal to its transpose).
-     */
+    /// Check to see if the matrix is symmetric
+    ///
+    /// # Return value
+    ///
+    /// `true` if the matrix is approximately equal to its transpose).
     fn is_symmetric(&self) -> bool;
 
-    /**
-     * Check to see if the matrix is invertable
-     *
-     * # Return value
-     *
-     * `true` if  the matrix is invertable
-     */
+    /// Check to see if the matrix is invertable
+    ///
+    /// # Return value
+    ///
+    /// `true` if  the matrix is invertable
     fn is_invertible(&self) -> bool;
 
-    /**
-     * # Return value
-     *
-     * A pointer to the first element of the matrix
-     */
+    /// A pointer to the first element of the matrix
     fn to_ptr(&self) -> *T;
 }
 
-/**
- * A 2 x 2 matrix
- */
+/// A 2 x 2 matrix
 pub trait BaseMat2<T,V>: BaseMat<T,V> {
     fn new(c0r0: T, c0r1: T,
            c1r0: T, c1r1: T) -> Self;
@@ -285,9 +179,7 @@ pub trait BaseMat2<T,V>: BaseMat<T,V> {
     fn to_mat4(&self) -> Mat4<T>;
 }
 
-/**
- * A 3 x 3 matrix
- */
+/// A 3 x 3 matrix
 pub trait BaseMat3<T,V>: BaseMat<T,V> {
     fn new(c0r0:T, c0r1:T, c0r2:T,
            c1r0:T, c1r1:T, c1r2:T,
@@ -314,9 +206,7 @@ pub trait BaseMat3<T,V>: BaseMat<T,V> {
     fn to_quat(&self) -> Quat<T>;
 }
 
-/**
- * A 4 x 4 matrix
- */
+/// A 4 x 4 matrix
 pub trait BaseMat4<T,V>: BaseMat<T,V> {
     fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
@@ -326,19 +216,17 @@ pub trait BaseMat4<T,V>: BaseMat<T,V> {
     fn from_cols(c0: V, c1: V, c2: V, c3: V) -> Self;
 }
 
-/**
- *  A 2 x 2 column major matrix
- *
- * # Type parameters
- *
- * * `T` - The type of the elements of the matrix. Should be a floating point type.
- *
- * # Fields
- *
- * * `x` - the first column vector of the matrix
- * * `y` - the second column vector of the matrix
- * * `z` - the third column vector of the matrix
- */
+///  A 2 x 2 column major matrix
+///
+/// # Type parameters
+///
+/// - `T`: The type of the elements of the matrix. Should be a floating point type.
+///
+/// # Fields
+///
+/// - `x`: the first column vector of the matrix
+/// - `y`: the second column vector of the matrix
+/// - `z`: the third column vector of the matrix
 #[deriving(Eq)]
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
@@ -359,56 +247,50 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
         self.col(i).index(j)
     }
 
-    /**
-     * Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
-     *
-     * # Arguments
-     *
-     * * `value` - the value to set the major diagonal to
-     *
-     * ~~~
-     *        c0    c1
-     *     +-----+-----+
-     *  r0 | val |   0 |
-     *     +-----+-----+
-     *  r1 |   0 | val |
-     *     +-----+-----+
-     * ~~~
-     */
+    /// Construct a 2 x 2 diagonal matrix with the major diagonal set to `value`
+    ///
+    /// # Arguments
+    ///
+    /// - `value`: the value to set the major diagonal to
+    ///
+    /// ~~~
+    ///        c0    c1
+    ///     +-----+-----+
+    ///  r0 | val |   0 |
+    ///     +-----+-----+
+    ///  r1 |   0 | val |
+    ///     +-----+-----+
+    /// ~~~
     #[inline(always)]
     fn from_value(value: T) -> Mat2<T> {
         BaseMat2::new(value, Zero::zero(),
                       Zero::zero(), value)
     }
 
-    /**
-     * Returns the multiplicative identity matrix
-     * ~~~
-     *       c0   c1
-     *     +----+----+
-     *  r0 |  1 |  0 |
-     *     +----+----+
-     *  r1 |  0 |  1 |
-     *     +----+----+
-     * ~~~
-     */
+    /// Returns the multiplicative identity matrix
+    /// ~~~
+    ///       c0   c1
+    ///     +----+----+
+    ///  r0 |  1 |  0 |
+    ///     +----+----+
+    ///  r1 |  0 |  1 |
+    ///     +----+----+
+    /// ~~~
     #[inline(always)]
     fn identity() -> Mat2<T> {
         BaseMat2::new(  One::one::<T>(), Zero::zero::<T>(),
                       Zero::zero::<T>(),   One::one::<T>())
     }
 
-    /**
-     * Returns the additive identity matrix
-     * ~~~
-     *       c0   c1
-     *     +----+----+
-     *  r0 |  0 |  0 |
-     *     +----+----+
-     *  r1 |  0 |  0 |
-     *     +----+----+
-     * ~~~
-     */
+    /// Returns the additive identity matrix
+    /// ~~~
+    ///       c0   c1
+    ///     +----+----+
+    ///  r0 |  0 |  0 |
+    ///     +----+----+
+    ///  r1 |  0 |  0 |
+    ///     +----+----+
+    /// ~~~
     #[inline(always)]
     fn zero() -> Mat2<T> {
         BaseMat2::new(Zero::zero::<T>(), Zero::zero::<T>(),
@@ -588,23 +470,21 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec2<T>> for Mat2<T> {
 }
 
 impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
-    /**
-     * Construct a 2 x 2 matrix
-     *
-     * # Arguments
-     *
-     * * `c0r0`, `c0r1` - the first column of the matrix
-     * * `c1r0`, `c1r1` - the second column of the matrix
-     *
-     * ~~~
-     *        c0     c1
-     *     +------+------+
-     *  r0 | c0r0 | c1r0 |
-     *     +------+------+
-     *  r1 | c0r1 | c1r1 |
-     *     +------+------+
-     * ~~~
-     */
+    /// Construct a 2 x 2 matrix
+    ///
+    /// # Arguments
+    ///
+    /// - `c0r0`, `c0r1`: the first column of the matrix
+    /// - `c1r0`, `c1r1`: the second column of the matrix
+    ///
+    /// ~~~
+    ///        c0     c1
+    ///     +------+------+
+    ///  r0 | c0r0 | c1r0 |
+    ///     +------+------+
+    ///  r1 | c0r1 | c1r1 |
+    ///     +------+------+
+    /// ~~~
     #[inline(always)]
     fn new(c0r0: T, c0r1: T,
            c1r0: T, c1r1: T) -> Mat2<T> {
@@ -612,23 +492,21 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
                             BaseVec2::new::<T,Vec2<T>>(c1r0, c1r1))
     }
 
-    /**
-     * Construct a 2 x 2 matrix from column vectors
-     *
-     * # Arguments
-     *
-     * * `c0` - the first column vector of the matrix
-     * * `c1` - the second column vector of the matrix
-     *
-     * ~~~
-     *        c0     c1
-     *     +------+------+
-     *  r0 | c0.x | c1.x |
-     *     +------+------+
-     *  r1 | c0.y | c1.y |
-     *     +------+------+
-     * ~~~
-     */
+    /// Construct a 2 x 2 matrix from column vectors
+    ///
+    /// # Arguments
+    ///
+    /// - `c0`: the first column vector of the matrix
+    /// - `c1`: the second column vector of the matrix
+    ///
+    /// ~~~
+    ///        c0     c1
+    ///     +------+------+
+    ///  r0 | c0.x | c1.x |
+    ///     +------+------+
+    ///  r1 | c0.y | c1.y |
+    ///     +------+------+
+    /// ~~~
     #[inline(always)]
     fn from_cols(c0: Vec2<T>, c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
@@ -643,19 +521,17 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
                       sin_theta,  cos_theta)
     }
 
-    /**
-     * Returns the the matrix with an extra row and column added
-     * ~~~
-     *       c0   c1                 c0   c1   c2
-     *     +----+----+             +----+----+----+
-     *  r0 |  a |  b |          r0 |  a |  b |  0 |
-     *     +----+----+             +----+----+----+
-     *  r1 |  c |  d |    =>    r1 |  c |  d |  0 |
-     *     +----+----+             +----+----+----+
-     *                          r2 |  0 |  0 |  1 |
-     *                             +----+----+----+
-     * ~~~
-     */
+    /// Returns the the matrix with an extra row and column added
+    /// ~~~
+    ///       c0   c1                 c0   c1   c2
+    ///     +----+----+             +----+----+----+
+    ///  r0 |  a |  b |          r0 |  a |  b |  0 |
+    ///     +----+----+             +----+----+----+
+    ///  r1 |  c |  d |    =>    r1 |  c |  d |  0 |
+    ///     +----+----+             +----+----+----+
+    ///                          r2 |  0 |  0 |  1 |
+    ///                             +----+----+----+
+    /// ~~~
     #[inline(always)]
     fn to_mat3(&self) -> Mat3<T> {
         BaseMat3::new(*self.elem(0, 0), *self.elem(0, 1), Zero::zero(),
@@ -663,21 +539,19 @@ impl<T:Copy + Float + NumAssign> BaseMat2<T, Vec2<T>> for Mat2<T> {
                       Zero::zero(), Zero::zero(), One::one())
     }
 
-    /**
-     * Returns the the matrix with an extra two rows and columns added
-     * ~~~
-     *       c0   c1                 c0   c1   c2   c3
-     *     +----+----+             +----+----+----+----+
-     *  r0 |  a |  b |          r0 |  a |  b |  0 |  0 |
-     *     +----+----+             +----+----+----+----+
-     *  r1 |  c |  d |    =>    r1 |  c |  d |  0 |  0 |
-     *     +----+----+             +----+----+----+----+
-     *                          r2 |  0 |  0 |  1 |  0 |
-     *                             +----+----+----+----+
-     *                          r3 |  0 |  0 |  0 |  1 |
-     *                             +----+----+----+----+
-     * ~~~
-     */
+    /// Returns the the matrix with an extra two rows and columns added
+    /// ~~~
+    ///       c0   c1                 c0   c1   c2   c3
+    ///     +----+----+             +----+----+----+----+
+    ///  r0 |  a |  b |          r0 |  a |  b |  0 |  0 |
+    ///     +----+----+             +----+----+----+----+
+    ///  r1 |  c |  d |    =>    r1 |  c |  d |  0 |  0 |
+    ///     +----+----+             +----+----+----+----+
+    ///                          r2 |  0 |  0 |  1 |  0 |
+    ///                             +----+----+----+----+
+    ///                          r3 |  0 |  0 |  0 |  1 |
+    ///                             +----+----+----+----+
+    /// ~~~
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
         BaseMat4::new(*self.elem(0, 0), *self.elem(0, 1), Zero::zero(), Zero::zero(),
@@ -753,19 +627,17 @@ mat2_type!(Mat2f<float,Vec2f>)
 mat2_type!(Mat2f32<f32,Vec2f32>)
 mat2_type!(Mat2f64<f64,Vec2f64>)
 
-/**
- *  A 3 x 3 column major matrix
- *
- * # Type parameters
- *
- * * `T` - The type of the elements of the matrix. Should be a floating point type.
- *
- * # Fields
- *
- * * `x` - the first column vector of the matrix
- * * `y` - the second column vector of the matrix
- * * `z` - the third column vector of the matrix
- */
+///  A 3 x 3 column major matrix
+///
+/// # Type parameters
+///
+/// - `T`: The type of the elements of the matrix. Should be a floating point type.
+///
+/// # Fields
+///
+/// - `x`: the first column vector of the matrix
+/// - `y`: the second column vector of the matrix
+/// - `z`: the third column vector of the matrix
 #[deriving(Eq)]
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
@@ -787,24 +659,22 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
         self.col(i).index(j)
     }
 
-    /**
-     * Construct a 3 x 3 diagonal matrix with the major diagonal set to `value`
-     *
-     * # Arguments
-     *
-     * * `value` - the value to set the major diagonal to
-     *
-     * ~~~
-     *        c0    c1    c2
-     *     +-----+-----+-----+
-     *  r0 | val |   0 |   0 |
-     *     +-----+-----+-----+
-     *  r1 |   0 | val |   0 |
-     *     +-----+-----+-----+
-     *  r2 |   0 |   0 | val |
-     *     +-----+-----+-----+
-     * ~~~
-     */
+    /// Construct a 3 x 3 diagonal matrix with the major diagonal set to `value`
+    ///
+    /// # Arguments
+    ///
+    /// - `value`: the value to set the major diagonal to
+    ///
+    /// ~~~
+    ///        c0    c1    c2
+    ///     +-----+-----+-----+
+    ///  r0 | val |   0 |   0 |
+    ///     +-----+-----+-----+
+    ///  r1 |   0 | val |   0 |
+    ///     +-----+-----+-----+
+    ///  r2 |   0 |   0 | val |
+    ///     +-----+-----+-----+
+    /// ~~~
     #[inline(always)]
     fn from_value(value: T) -> Mat3<T> {
         BaseMat3::new(value, Zero::zero(), Zero::zero(),
@@ -812,19 +682,17 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
                       Zero::zero(), Zero::zero(), value)
     }
 
-    /**
-     * Returns the multiplicative identity matrix
-     * ~~~
-     *       c0   c1   c2
-     *     +----+----+----+
-     *  r0 |  1 |  0 |  0 |
-     *     +----+----+----+
-     *  r1 |  0 |  1 |  0 |
-     *     +----+----+----+
-     *  r2 |  0 |  0 |  1 |
-     *     +----+----+----+
-     * ~~~
-     */
+    /// Returns the multiplicative identity matrix
+    /// ~~~
+    ///       c0   c1   c2
+    ///     +----+----+----+
+    ///  r0 |  1 |  0 |  0 |
+    ///     +----+----+----+
+    ///  r1 |  0 |  1 |  0 |
+    ///     +----+----+----+
+    ///  r2 |  0 |  0 |  1 |
+    ///     +----+----+----+
+    /// ~~~
     #[inline(always)]
     fn identity() -> Mat3<T> {
         BaseMat3::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -832,19 +700,17 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
                       Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
-    /**
-     * Returns the additive identity matrix
-     * ~~~
-     *       c0   c1   c2
-     *     +----+----+----+
-     *  r0 |  0 |  0 |  0 |
-     *     +----+----+----+
-     *  r1 |  0 |  0 |  0 |
-     *     +----+----+----+
-     *  r2 |  0 |  0 |  0 |
-     *     +----+----+----+
-     * ~~~
-     */
+    /// Returns the additive identity matrix
+    /// ~~~
+    ///       c0   c1   c2
+    ///     +----+----+----+
+    ///  r0 |  0 |  0 |  0 |
+    ///     +----+----+----+
+    ///  r1 |  0 |  0 |  0 |
+    ///     +----+----+----+
+    ///  r2 |  0 |  0 |  0 |
+    ///     +----+----+----+
+    /// ~~~
     #[inline(always)]
     fn zero() -> Mat3<T> {
         BaseMat3::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -909,7 +775,6 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
         *self.elem(2, 2)
     }
 
-    // #[inline(always)]
     fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
         if d.approx_eq(&Zero::zero()) {
@@ -1067,26 +932,24 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec3<T>> for Mat3<T> {
 }
 
 impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
-    /**
-     * Construct a 3 x 3 matrix
-     *
-     * # Arguments
-     *
-     * * `c0r0`, `c0r1`, `c0r2` - the first column of the matrix
-     * * `c1r0`, `c1r1`, `c1r2` - the second column of the matrix
-     * * `c2r0`, `c2r1`, `c2r2` - the third column of the matrix
-     *
-     * ~~~
-     *         c0     c1     c2
-     *      +------+------+------+
-     *   r0 | c0r0 | c1r0 | c2r0 |
-     *      +------+------+------+
-     *   r1 | c0r1 | c1r1 | c2r1 |
-     *      +------+------+------+
-     *   r2 | c0r2 | c1r2 | c2r2 |
-     *      +------+------+------+
-     * ~~~
-     */
+    /// Construct a 3 x 3 matrix
+    ///
+    /// # Arguments
+    ///
+    /// - `c0r0`, `c0r1`, `c0r2`: the first column of the matrix
+    /// - `c1r0`, `c1r1`, `c1r2`: the second column of the matrix
+    /// - `c2r0`, `c2r1`, `c2r2`: the third column of the matrix
+    ///
+    /// ~~~
+    ///         c0     c1     c2
+    ///      +------+------+------+
+    ///   r0 | c0r0 | c1r0 | c2r0 |
+    ///      +------+------+------+
+    ///   r1 | c0r1 | c1r1 | c2r1 |
+    ///      +------+------+------+
+    ///   r2 | c0r2 | c1r2 | c2r2 |
+    ///      +------+------+------+
+    /// ~~~
     #[inline(always)]
     fn new(c0r0:T, c0r1:T, c0r2:T,
            c1r0:T, c1r1:T, c1r2:T,
@@ -1096,34 +959,30 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                             BaseVec3::new::<T,Vec3<T>>(c2r0, c2r1, c2r2))
     }
 
-    /**
-     * Construct a 3 x 3 matrix from column vectors
-     *
-     * # Arguments
-     *
-     * * `c0` - the first column vector of the matrix
-     * * `c1` - the second column vector of the matrix
-     * * `c2` - the third column vector of the matrix
-     *
-     * ~~~
-     *        c0     c1     c2
-     *     +------+------+------+
-     *  r0 | c0.x | c1.x | c2.x |
-     *     +------+------+------+
-     *  r1 | c0.y | c1.y | c2.y |
-     *     +------+------+------+
-     *  r2 | c0.z | c1.z | c2.z |
-     *     +------+------+------+
-     * ~~~
-     */
+    /// Construct a 3 x 3 matrix from column vectors
+    ///
+    /// # Arguments
+    ///
+    /// - `c0`: the first column vector of the matrix
+    /// - `c1`: the second column vector of the matrix
+    /// - `c2`: the third column vector of the matrix
+    ///
+    /// ~~~
+    ///        c0     c1     c2
+    ///     +------+------+------+
+    ///  r0 | c0.x | c1.x | c2.x |
+    ///     +------+------+------+
+    ///  r1 | c0.y | c1.y | c2.y |
+    ///     +------+------+------+
+    ///  r2 | c0.z | c1.z | c2.z |
+    ///     +------+------+------+
+    /// ~~~
     #[inline(always)]
     fn from_cols(c0: Vec3<T>, c1: Vec3<T>, c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
 
-    /**
-     * Construct a matrix from an angular rotation around the `x` axis
-     */
+    /// Construct a matrix from an angular rotation around the `x` axis
     #[inline(always)]
     fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -1135,9 +994,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                       Zero::zero(),   -sin_theta,    cos_theta)
     }
 
-    /**
-     * Construct a matrix from an angular rotation around the `y` axis
-     */
+    /// Construct a matrix from an angular rotation around the `y` axis
     #[inline(always)]
     fn from_angle_y(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -1149,9 +1006,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                          sin_theta, Zero::zero(),    cos_theta)
     }
 
-    /**
-     * Construct a matrix from an angular rotation around the `z` axis
-     */
+    /// Construct a matrix from an angular rotation around the `z` axis
     #[inline(always)]
     fn from_angle_z(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -1163,15 +1018,13 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                       Zero::zero(), Zero::zero(),   One::one())
     }
 
-    /**
-     * Construct a matrix from Euler angles
-     *
-     * # Arguments
-     *
-     * * `theta_x` - the angular rotation around the `x` axis (pitch)
-     * * `theta_y` - the angular rotation around the `y` axis (yaw)
-     * * `theta_z` - the angular rotation around the `z` axis (roll)
-     */
+    /// Construct a matrix from Euler angles
+    ///
+    /// # Arguments
+    ///
+    /// - `theta_x`: the angular rotation around the `x` axis (pitch)
+    /// - `theta_y`: the angular rotation around the `y` axis (yaw)
+    /// - `theta_z`: the angular rotation around the `z` axis (roll)
     #[inline(always)]
     fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
@@ -1187,9 +1040,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                        sx*sz + cx*sy*cz, -sx*cz + cx*sy*sz, cx*cy)
     }
 
-    /**
-     * Construct a matrix from an axis and an angular rotation
-     */
+    /// Construct a matrix from an axis and an angular rotation
     #[inline(always)]
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Mat3<T> {
         let c = radians.cos();
@@ -1219,21 +1070,19 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         BaseMat3::from_axes(up_, side, dir_)
     }
 
-    /**
-     * Returns the the matrix with an extra row and column added
-     * ~~~
-     *       c0   c1   c2                 c0   c1   c2   c3
-     *     +----+----+----+             +----+----+----+----+
-     *  r0 |  a |  b |  c |          r0 |  a |  b |  c |  0 |
-     *     +----+----+----+             +----+----+----+----+
-     *  r1 |  d |  e |  f |    =>    r1 |  d |  e |  f |  0 |
-     *     +----+----+----+             +----+----+----+----+
-     *  r2 |  g |  h |  i |          r2 |  g |  h |  i |  0 |
-     *     +----+----+----+             +----+----+----+----+
-     *                               r3 |  0 |  0 |  0 |  1 |
-     *                                  +----+----+----+----+
-     * ~~~
-     */
+    /// Returns the the matrix with an extra row and column added
+    /// ~~~
+    ///       c0   c1   c2                 c0   c1   c2   c3
+    ///     +----+----+----+             +----+----+----+----+
+    ///  r0 |  a |  b |  c |          r0 |  a |  b |  c |  0 |
+    ///     +----+----+----+             +----+----+----+----+
+    ///  r1 |  d |  e |  f |    =>    r1 |  d |  e |  f |  0 |
+    ///     +----+----+----+             +----+----+----+----+
+    ///  r2 |  g |  h |  i |          r2 |  g |  h |  i |  0 |
+    ///     +----+----+----+             +----+----+----+----+
+    ///                               r3 |  0 |  0 |  0 |  1 |
+    ///                                  +----+----+----+----+
+    /// ~~~
     #[inline(always)]
     fn to_mat4(&self) -> Mat4<T> {
         BaseMat4::new(*self.elem(0, 0), *self.elem(0, 1), *self.elem(0, 2), Zero::zero(),
@@ -1242,9 +1091,7 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
                       Zero::zero(), Zero::zero(), Zero::zero(),   One::one())
     }
 
-    /**
-     * Convert the matrix to a quaternion
-     */
+    /// Convert the matrix to a quaternion
     #[inline(always)]
     fn to_quat(&self) -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
@@ -1372,20 +1219,18 @@ mat3_type!(Mat3f<float,Vec3f>)
 mat3_type!(Mat3f32<f32,Vec3f32>)
 mat3_type!(Mat3f64<f64,Vec3f64>)
 
-/**
- *  A 4 x 4 column major matrix
- *
- * # Type parameters
- *
- * * `T` - The type of the elements of the matrix. Should be a floating point type.
- *
- * # Fields
- *
- * * `x` - the first column vector of the matrix
- * * `y` - the second column vector of the matrix
- * * `z` - the third column vector of the matrix
- * * `w` - the fourth column vector of the matrix
- */
+///  A 4 x 4 column major matrix
+///
+/// # Type parameters
+///
+/// - `T` - The type of the elements of the matrix. Should be a floating point type.
+///
+/// # Fields
+///
+/// - `x`: the first column vector of the matrix
+/// - `y`: the second column vector of the matrix
+/// - `z`: the third column vector of the matrix
+/// - `w`: the fourth column vector of the matrix
 #[deriving(Eq)]
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
@@ -1408,26 +1253,24 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
         self.col(i).index(j)
     }
 
-    /**
-     * Construct a 4 x 4 diagonal matrix with the major diagonal set to `value`
-     *
-     * # Arguments
-     *
-     * * `value` - the value to set the major diagonal to
-     *
-     * ~~~
-     *        c0    c1    c2    c3
-     *     +-----+-----+-----+-----+
-     *  r0 | val |   0 |   0 |   0 |
-     *     +-----+-----+-----+-----+
-     *  r1 |   0 | val |   0 |   0 |
-     *     +-----+-----+-----+-----+
-     *  r2 |   0 |   0 | val |   0 |
-     *     +-----+-----+-----+-----+
-     *  r3 |   0 |   0 |   0 | val |
-     *     +-----+-----+-----+-----+
-     * ~~~
-     */
+    /// Construct a 4 x 4 diagonal matrix with the major diagonal set to `value`
+    ///
+    /// # Arguments
+    ///
+    /// - `value`: the value to set the major diagonal to
+    ///
+    /// ~~~
+    ///        c0    c1    c2    c3
+    ///     +-----+-----+-----+-----+
+    ///  r0 | val |   0 |   0 |   0 |
+    ///     +-----+-----+-----+-----+
+    ///  r1 |   0 | val |   0 |   0 |
+    ///     +-----+-----+-----+-----+
+    ///  r2 |   0 |   0 | val |   0 |
+    ///     +-----+-----+-----+-----+
+    ///  r3 |   0 |   0 |   0 | val |
+    ///     +-----+-----+-----+-----+
+    /// ~~~
     #[inline(always)]
     fn from_value(value: T) -> Mat4<T> {
         BaseMat4::new(value, Zero::zero(), Zero::zero(), Zero::zero(),
@@ -1436,21 +1279,19 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
                       Zero::zero(), Zero::zero(), Zero::zero(), value)
     }
 
-    /**
-     * Returns the multiplicative identity matrix
-     * ~~~
-     *       c0   c1   c2   c3
-     *     +----+----+----+----+
-     *  r0 |  1 |  0 |  0 |  0 |
-     *     +----+----+----+----+
-     *  r1 |  0 |  1 |  0 |  0 |
-     *     +----+----+----+----+
-     *  r2 |  0 |  0 |  1 |  0 |
-     *     +----+----+----+----+
-     *  r3 |  0 |  0 |  0 |  1 |
-     *     +----+----+----+----+
-     * ~~~
-     */
+    /// Returns the multiplicative identity matrix
+    /// ~~~
+    ///       c0   c1   c2   c3
+    ///     +----+----+----+----+
+    ///  r0 |  1 |  0 |  0 |  0 |
+    ///     +----+----+----+----+
+    ///  r1 |  0 |  1 |  0 |  0 |
+    ///     +----+----+----+----+
+    ///  r2 |  0 |  0 |  1 |  0 |
+    ///     +----+----+----+----+
+    ///  r3 |  0 |  0 |  0 |  1 |
+    ///     +----+----+----+----+
+    /// ~~~
     #[inline(always)]
     fn identity() -> Mat4<T> {
         BaseMat4::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -1459,21 +1300,19 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
                       Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
-    /**
-     * Returns the additive identity matrix
-     * ~~~
-     *       c0   c1   c2   c3
-     *     +----+----+----+----+
-     *  r0 |  0 |  0 |  0 |  0 |
-     *     +----+----+----+----+
-     *  r1 |  0 |  0 |  0 |  0 |
-     *     +----+----+----+----+
-     *  r2 |  0 |  0 |  0 |  0 |
-     *     +----+----+----+----+
-     *  r3 |  0 |  0 |  0 |  0 |
-     *     +----+----+----+----+
-     * ~~~
-     */
+    /// Returns the additive identity matrix
+    /// ~~~
+    ///       c0   c1   c2   c3
+    ///     +----+----+----+----+
+    ///  r0 |  0 |  0 |  0 |  0 |
+    ///     +----+----+----+----+
+    ///  r1 |  0 |  0 |  0 |  0 |
+    ///     +----+----+----+----+
+    ///  r2 |  0 |  0 |  0 |  0 |
+    ///     +----+----+----+----+
+    ///  r3 |  0 |  0 |  0 |  0 |
+    ///     +----+----+----+----+
+    /// ~~~
     #[inline(always)]
     fn zero() -> Mat4<T> {
         BaseMat4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -1574,7 +1413,6 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
         if d.approx_eq(&Zero::zero()) {
             None
         } else {
-
             // Gauss Jordan Elimination with partial pivoting
             // So take this matrix, A, augmented with the identity
             // and essentially reduce [A|I]
@@ -1798,29 +1636,27 @@ impl<T:Copy + Float + NumAssign> BaseMat<T, Vec4<T>> for Mat4<T> {
 }
 
 impl<T:Copy + Float + NumAssign> BaseMat4<T, Vec4<T>> for Mat4<T> {
-    /**
-     * Construct a 4 x 4 matrix
-     *
-     * # Arguments
-     *
-     * * `c0r0`, `c0r1`, `c0r2`, `c0r3` - the first column of the matrix
-     * * `c1r0`, `c1r1`, `c1r2`, `c1r3` - the second column of the matrix
-     * * `c2r0`, `c2r1`, `c2r2`, `c2r3` - the third column of the matrix
-     * * `c3r0`, `c3r1`, `c3r2`, `c3r3` - the fourth column of the matrix
-     *
-     * ~~~
-     *        c0     c1     c2     c3
-     *     +------+------+------+------+
-     *  r0 | c0r0 | c1r0 | c2r0 | c3r0 |
-     *     +------+------+------+------+
-     *  r1 | c0r1 | c1r1 | c2r1 | c3r1 |
-     *     +------+------+------+------+
-     *  r2 | c0r2 | c1r2 | c2r2 | c3r2 |
-     *     +------+------+------+------+
-     *  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
-     *     +------+------+------+------+
-     * ~~~
-     */
+    /// Construct a 4 x 4 matrix
+    ///
+    /// # Arguments
+    ///
+    /// - `c0r0`, `c0r1`, `c0r2`, `c0r3`: the first column of the matrix
+    /// - `c1r0`, `c1r1`, `c1r2`, `c1r3`: the second column of the matrix
+    /// - `c2r0`, `c2r1`, `c2r2`, `c2r3`: the third column of the matrix
+    /// - `c3r0`, `c3r1`, `c3r2`, `c3r3`: the fourth column of the matrix
+    ///
+    /// ~~~
+    ///        c0     c1     c2     c3
+    ///     +------+------+------+------+
+    ///  r0 | c0r0 | c1r0 | c2r0 | c3r0 |
+    ///     +------+------+------+------+
+    ///  r1 | c0r1 | c1r1 | c2r1 | c3r1 |
+    ///     +------+------+------+------+
+    ///  r2 | c0r2 | c1r2 | c2r2 | c3r2 |
+    ///     +------+------+------+------+
+    ///  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
+    ///     +------+------+------+------+
+    /// ~~~
     #[inline(always)]
     fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
            c1r0: T, c1r1: T, c1r2: T, c1r3: T,
@@ -1832,29 +1668,27 @@ impl<T:Copy + Float + NumAssign> BaseMat4<T, Vec4<T>> for Mat4<T> {
                             BaseVec4::new::<T,Vec4<T>>(c3r0, c3r1, c3r2, c3r3))
     }
 
-    /**
-     * Construct a 4 x 4 matrix from column vectors
-     *
-     * # Arguments
-     *
-     * * `c0` - the first column vector of the matrix
-     * * `c1` - the second column vector of the matrix
-     * * `c2` - the third column vector of the matrix
-     * * `c3` - the fourth column vector of the matrix
-     *
-     * ~~~
-     *        c0     c1     c2     c3
-     *     +------+------+------+------+
-     *  r0 | c0.x | c1.x | c2.x | c3.x |
-     *     +------+------+------+------+
-     *  r1 | c0.y | c1.y | c2.y | c3.y |
-     *     +------+------+------+------+
-     *  r2 | c0.z | c1.z | c2.z | c3.z |
-     *     +------+------+------+------+
-     *  r3 | c0.w | c1.w | c2.w | c3.w |
-     *     +------+------+------+------+
-     * ~~~
-     */
+    /// Construct a 4 x 4 matrix from column vectors
+    ///
+    /// # Arguments
+    ///
+    /// - `c0`: the first column vector of the matrix
+    /// - `c1`: the second column vector of the matrix
+    /// - `c2`: the third column vector of the matrix
+    /// - `c3`: the fourth column vector of the matrix
+    ///
+    /// ~~~
+    ///        c0     c1     c2     c3
+    ///     +------+------+------+------+
+    ///  r0 | c0.x | c1.x | c2.x | c3.x |
+    ///     +------+------+------+------+
+    ///  r1 | c0.y | c1.y | c2.y | c3.y |
+    ///     +------+------+------+------+
+    ///  r2 | c0.z | c1.z | c2.z | c3.z |
+    ///     +------+------+------+------+
+    ///  r3 | c0.w | c1.w | c2.w | c3.w |
+    ///     +------+------+------+------+
+    /// ~~~
     #[inline(always)]
     fn from_cols(c0: Vec4<T>, c1: Vec4<T>, c2: Vec4<T>, c3: Vec4<T>) -> Mat4<T> {
         Mat4 { x: c0, y: c1, z: c2, w: c3 }
