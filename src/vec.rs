@@ -405,7 +405,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 
     #[inline(always)]
@@ -739,7 +739,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 
     #[inline(always)]
@@ -1096,7 +1096,7 @@ impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
 
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 
     #[inline(always)]

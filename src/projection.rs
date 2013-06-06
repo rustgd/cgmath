@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::num::cast;
 use mat::{Mat4, BaseMat4};
-
 use num::NumAssign;
 
 /**
@@ -27,7 +27,7 @@ use num::NumAssign;
  */
 #[inline(always)]
 pub fn perspective<T:Copy + Float + NumAssign>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let _2: T = num::cast(2);
+    let _2: T = cast(2);
 
     let ymax = near * (fovy / _2).to_radians().tan();
     let xmax = ymax * aspectRatio;
@@ -43,9 +43,9 @@ pub fn perspective<T:Copy + Float + NumAssign>(fovy: T, aspectRatio: T, near: T,
  */
 #[inline(always)]
 pub fn frustum<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let _0: T = num::cast(0);
-    let _1: T = num::cast(1);
-    let _2: T = num::cast(2);
+    let _0: T = cast(0);
+    let _1: T = cast(1);
+    let _2: T = cast(2);
 
     let c0r0 = (_2 * near) / (right - left);
     let c0r1 = _0;
@@ -81,9 +81,9 @@ pub fn frustum<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T,
  */
 #[inline(always)]
 pub fn ortho<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let _0: T = num::cast(0);
-    let _1: T = num::cast(1);
-    let _2: T = num::cast(2);
+    let _0: T = cast(0);
+    let _1: T = cast(1);
+    let _2: T = cast(2);
 
     let c0r0 = _2 / (right - left);
     let c0r1 = _0;

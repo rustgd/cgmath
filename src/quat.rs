@@ -15,7 +15,7 @@
 
 use std::cast::transmute;
 use std::cmp::ApproxEq;
-use std::num::{Zero, One};
+use std::num::{Zero, One, cast};
 
 use mat::{Mat3, BaseMat3};
 use vec::{Vec3, BaseVec3, AffineVec, NumVec, NumVec3};
@@ -81,7 +81,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
 
     #[inline(always)]
     fn from_angle_x(radians: T) -> Quat<T> {
-        let _2 = num::cast(2);
+        let _2 = cast(2);
         Quat::new((radians / _2).cos(),
                   radians.sin(),
                   Zero::zero(),
@@ -90,7 +90,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
 
     #[inline(always)]
     fn from_angle_y(radians: T) -> Quat<T> {
-        let _2 = num::cast(2);
+        let _2 = cast(2);
         Quat::new((radians / _2).cos(),
                   Zero::zero(),
                   radians.sin(),
@@ -99,7 +99,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
 
     #[inline(always)]
     fn from_angle_z(radians: T) -> Quat<T> {
-        let _2 = num::cast(2);
+        let _2 = cast(2);
         Quat::new((radians / _2).cos(),
                   Zero::zero(),
                   Zero::zero(),
@@ -109,7 +109,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
     #[inline(always)]
     fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let _2 = num::cast(2);
+        let _2 = cast(2);
         let xdiv2 = radians_x / _2;
         let ydiv2 = radians_y / _2;
         let zdiv2 = radians_z / _2;
@@ -121,7 +121,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
 
     #[inline(always)]
     fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
-        let half = radians / num::cast(2);
+        let half = radians / cast(2);
         Quat::from_sv(half.cos(), axis.mul_t(half.sin()))
     }
 
@@ -171,7 +171,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
     #[inline(always)]
     fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
-        self.v.cross(&tmp).mul_t(num::cast(2)).add_v(vec)
+        self.v.cross(&tmp).mul_t(cast(2)).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -278,7 +278,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
     fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot = self.dot(other);
 
-        let dot_threshold = num::cast(0.9995);
+        let dot_threshold = cast(0.9995);
 
         if dot > dot_threshold {
             return self.nlerp(other, amount);               // if quaternions are close together use `nlerp`
@@ -300,7 +300,7 @@ pub impl<T:Copy + Float + NumAssign> Quat<T> {
     /// A pointer to the first component of the quaternion
     #[inline(always)]
     fn to_ptr(&self) -> *T {
-        unsafe { cast::transmute(self) }
+        unsafe { transmute(self) }
     }
 
     /// Convert the quaternion to a 3 x 3 rotation matrix

@@ -15,7 +15,8 @@
 
 use std::cast::transmute;
 use std::cmp::ApproxEq;
-use std::num::{Zero, One};
+use std::num::{Zero, One, cast};
+use std::uint;
 
 use vec::*;
 use quat::Quat;
@@ -1073,8 +1074,8 @@ impl<T:Copy + Float + NumAssign> BaseMat3<T, Vec3<T>> for Mat3<T> {
         let w, x, y, z;
         let trace = self.trace();
 
-        let _1:   T = num::cast(1.0);
-        let half: T = num::cast(0.5);
+        let _1:   T = cast(1.0);
+        let half: T = cast(0.5);
 
         cond! (
             (trace >= Zero::zero()) {
