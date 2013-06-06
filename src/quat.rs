@@ -360,29 +360,6 @@ impl<T:Copy + Eq + Float + NumAssign> ApproxEq<T> for Quat<T> {
     }
 }
 
-macro_rules! quat_type(
-    ($name:ident <$T:ty, $V:ty>) => (
-        pub mod $name {
-            use vec::*;
-            use super::*;
-            #[inline(always)] pub fn new(w: $T, xi: $T, yj: $T, zk: $T) -> $name { Quat::new(w, xi, yj, zk) }
-            #[inline(always)] pub fn from_sv(s: $T, v: $V) -> $name { Quat::from_sv(s, v) }
-            #[inline(always)] pub fn identity() -> $name { Quat::identity() }
-            #[inline(always)] pub fn zero() -> $name { Quat::zero() }
-            #[inline(always)] pub fn from_angle_x(radians: $T) -> $name { Quat::from_angle_x(radians) }
-            #[inline(always)] pub fn from_angle_y(radians: $T) -> $name { Quat::from_angle_y(radians) }
-            #[inline(always)] pub fn from_angle_z(radians: $T) -> $name { Quat::from_angle_z(radians) }
-            #[inline(always)] pub fn from_angle_xyz(radians_x: $T, radians_y: $T, radians_z: $T)
-                -> $name { Quat::from_angle_xyz(radians_x, radians_y, radians_z) }
-            #[inline(always)] pub fn from_angle_axis(radians: $T, axis: &$V) -> $name { Quat::from_angle_axis(radians, axis) }
-            #[inline(always)] pub fn from_axes(x: $V, y: $V, z: $V) -> $name { Quat::from_axes(x, y, z) }
-            #[inline(always)] pub fn look_at(dir: &$V, up: &$V) -> $name { Quat::look_at(dir, up) }
-            #[inline(always)] pub fn dim() -> uint { 4 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
 // GLSL-style type aliases for quaternions. These are not present in the GLSL
 // specification, but they roughly follow the same nomenclature.
 
@@ -391,14 +368,7 @@ type quat  = Quat<f32>;
 /// a double-precision floating-point quaternion
 type dquat = Quat<f64>;
 
-quat_type!(quat<f32,vec3>)
-quat_type!(dquat<f64,dvec3>)
-
 // Rust-style type aliases
 type Quatf   = Quat<float>;
 type Quatf32 = Quat<f32>;
 type Quatf64 = Quat<f64>;
-
-quat_type!(Quatf<float,Vec3f>)
-quat_type!(Quatf32<f32,Vec3f32>)
-quat_type!(Quatf64<f64,Vec3f64>)

@@ -681,31 +681,6 @@ impl BoolVec for Vec2<bool> {
     }
 }
 
-macro_rules! vec2_type(
-    ($name:ident <bool>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: bool, y: bool) -> $name { BaseVec2::new(x, y) }
-            #[inline(always)] pub fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn dim() -> uint { 2 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: $T, y: $T) -> $name { BaseVec2::new(x, y) }
-            #[inline(always)] pub fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] pub fn zero() -> $name { NumVec::zero() }
-            #[inline(always)] pub fn unit_x() -> $name { NumVec2::unit_x() }
-            #[inline(always)] pub fn unit_y() -> $name { NumVec2::unit_y() }
-            #[inline(always)] pub fn dim() -> uint { 2 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
@@ -719,12 +694,6 @@ pub type bvec2 = Vec2<bool>;
 pub type ivec2 = Vec2<i32>;
 // a two-component unsigned integer vector
 pub type uvec2 = Vec2<u32>;
-
-vec2_type!(vec2<f32>)
-vec2_type!(dvec2<f64>)
-vec2_type!(bvec2<bool>)
-vec2_type!(ivec2<i32>)
-vec2_type!(uvec2<u32>)
 
 // Rust-style type aliases
 pub type Vec2f   = Vec2<float>;
@@ -741,21 +710,6 @@ pub type Vec2u16 = Vec2<u16>;
 pub type Vec2u32 = Vec2<u32>;
 pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
-
-vec2_type!(Vec2f<float>)
-vec2_type!(Vec2f32<f32>)
-vec2_type!(Vec2f64<f64>)
-vec2_type!(Vec2i<int>)
-vec2_type!(Vec2i8<i8>)
-vec2_type!(Vec2i16<i16>)
-vec2_type!(Vec2i32<i32>)
-vec2_type!(Vec2i64<i64>)
-vec2_type!(Vec2u<uint>)
-vec2_type!(Vec2u8<u8>)
-vec2_type!(Vec2u16<u16>)
-vec2_type!(Vec2u32<u32>)
-vec2_type!(Vec2u64<u64>)
-vec2_type!(Vec2b<bool>)
 
 /// A 3-dimensional vector
 ///
@@ -1083,32 +1037,6 @@ impl BoolVec for Vec3<bool> {
     }
 }
 
-macro_rules! vec3_type(
-    ($name:ident <bool>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: bool, y: bool, z: bool) -> $name { BaseVec3::new(x, y, z) }
-            #[inline(always)] pub fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn dim() -> uint { 3 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: $T, y: $T, z: $T) -> $name { BaseVec3::new(x, y, z) }
-            #[inline(always)] pub fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] pub fn zero() -> $name { NumVec::zero() }
-            #[inline(always)] pub fn unit_x() -> $name { NumVec3::unit_x() }
-            #[inline(always)] pub fn unit_y() -> $name { NumVec3::unit_y() }
-            #[inline(always)] pub fn unit_z() -> $name { NumVec3::unit_z() }
-            #[inline(always)] pub fn dim() -> uint { 3 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
@@ -1122,12 +1050,6 @@ pub type bvec3 = Vec3<bool>;
 pub type ivec3 = Vec3<i32>;
 // a three-component unsigned integer vector
 pub type uvec3 = Vec3<u32>;
-
-vec3_type!(vec3<f32>)
-vec3_type!(dvec3<f64>)
-vec3_type!(bvec3<bool>)
-vec3_type!(ivec3<i32>)
-vec3_type!(uvec3<u32>)
 
 // Rust-style type aliases
 pub type Vec3f   = Vec3<float>;
@@ -1144,21 +1066,6 @@ pub type Vec3u16 = Vec3<u16>;
 pub type Vec3u32 = Vec3<u32>;
 pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
-
-vec3_type!(Vec3f<float>)
-vec3_type!(Vec3f32<f32>)
-vec3_type!(Vec3f64<f64>)
-vec3_type!(Vec3i<int>)
-vec3_type!(Vec3i8<i8>)
-vec3_type!(Vec3i16<i16>)
-vec3_type!(Vec3i32<i32>)
-vec3_type!(Vec3i64<i64>)
-vec3_type!(Vec3u<uint>)
-vec3_type!(Vec3u8<u8>)
-vec3_type!(Vec3u16<u16>)
-vec3_type!(Vec3u32<u32>)
-vec3_type!(Vec3u64<u64>)
-vec3_type!(Vec3b<bool>)
 
 /// A 4-dimensional vector
 ///
@@ -1485,33 +1392,6 @@ impl BoolVec for Vec4<bool> {
     }
 }
 
-macro_rules! vec4_type(
-    ($name:ident <bool>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: bool, y: bool, z: bool, w: bool) -> $name { BaseVec4::new(x, y, z, w) }
-            #[inline(always)] pub fn from_value(v: bool) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn dim() -> uint { 4 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-    ($name:ident <$T:ty>) => (
-        pub mod $name {
-            use super::*;
-            #[inline(always)] pub fn new(x: $T, y: $T, z: $T, w: $T) -> $name { BaseVec4::new(x, y, z, w) }
-            #[inline(always)] pub fn from_value(v: $T) -> $name { BaseVec::from_value(v) }
-            #[inline(always)] pub fn identity() -> $name { NumVec::identity() }
-            #[inline(always)] pub fn zero() -> $name { NumVec::zero() }
-            #[inline(always)] pub fn unit_x() -> $name { NumVec4::unit_x() }
-            #[inline(always)] pub fn unit_y() -> $name { NumVec4::unit_y() }
-            #[inline(always)] pub fn unit_z() -> $name { NumVec4::unit_z() }
-            #[inline(always)] pub fn unit_w() -> $name { NumVec4::unit_w() }
-            #[inline(always)] pub fn dim() -> uint { 4 }
-            #[inline(always)] pub fn size_of() -> uint { sys::size_of::<$name>() }
-        }
-    );
-)
-
 // GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
 // (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
 
@@ -1525,12 +1405,6 @@ pub type bvec4 = Vec4<bool>;
 pub type ivec4 = Vec4<i32>;
 // a four-component unsigned integer vector
 pub type uvec4 = Vec4<u32>;
-
-vec4_type!(vec4<f32>)
-vec4_type!(dvec4<f64>)
-vec4_type!(bvec4<bool>)
-vec4_type!(ivec4<i32>)
-vec4_type!(uvec4<u32>)
 
 // Rust-style type aliases
 pub type Vec4f   = Vec4<float>;
@@ -1547,18 +1421,3 @@ pub type Vec4u16 = Vec4<u16>;
 pub type Vec4u32 = Vec4<u32>;
 pub type Vec4u64 = Vec4<u64>;
 pub type Vec4b   = Vec4<bool>;
-
-vec4_type!(Vec4f<float>)
-vec4_type!(Vec4f32<f32>)
-vec4_type!(Vec4f64<f64>)
-vec4_type!(Vec4i<int>)
-vec4_type!(Vec4i8<i8>)
-vec4_type!(Vec4i16<i16>)
-vec4_type!(Vec4i32<i32>)
-vec4_type!(Vec4i64<i64>)
-vec4_type!(Vec4u<uint>)
-vec4_type!(Vec4u8<u8>)
-vec4_type!(Vec4u16<u16>)
-vec4_type!(Vec4u32<u32>)
-vec4_type!(Vec4u64<u64>)
-vec4_type!(Vec4b<bool>)
