@@ -13,100 +13,95 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::cast;
-use mat::{Mat4, BaseMat4};
-use num::NumAssign;
+use std::num::{Zero, One};
+use mat::Mat4;
 
-/**
- * Create a perspective projection matrix
- *
- * Note: the fovy parameter should be specified in degrees.
- *
- * This is the equivalent of the gluPerspective function, the algorithm of which
- * can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
- */
+// FIXME: We can remove this once we have numeric conversions in std
 #[inline(always)]
-pub fn perspective<T:Copy + Float + NumAssign>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let _2: T = cast(2);
+priv fn two<T:Num>() -> T {
+    One::one::<T>() + One::one::<T>()
+}
 
-    let ymax = near * (fovy / _2).to_radians().tan();
+///
+/// Create a perspective projection matrix
+///
+/// Note: the fovy parameter should be specified in degrees.
+///
+/// This is the equivalent of the gluPerspective function, the algorithm of which
+/// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
+///
+#[inline(always)]
+pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+    let ymax = near * (fovy / two::<T>()).to_radians().tan();
     let xmax = ymax * aspectRatio;
 
     frustum(-xmax, xmax, -ymax, ymax, near, far)
 }
 
-/**
- * Define a view frustrum
- *
- * This is the equivalent of the now deprecated [glFrustrum]
- * (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
- */
+///
+/// Define a view frustrum
+///
+/// This is the equivalent of the now deprecated [glFrustrum]
+/// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
+///
 #[inline(always)]
-pub fn frustum<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let _0: T = cast(0);
-    let _1: T = cast(1);
-    let _2: T = cast(2);
+pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+    let c0r0 = (two::<T>() * near) / (right - left);
+    let c0r1 = Zero::zero();
+    let c0r2 = Zero::zero();
+    let c0r3 = Zero::zero();
 
-    let c0r0 = (_2 * near) / (right - left);
-    let c0r1 = _0;
-    let c0r2 = _0;
-    let c0r3 = _0;
-
-    let c1r0 = _0;
-    let c1r1 = (_2 * near) / (top - bottom);
-    let c1r2 = _0;
-    let c1r3 = _0;
+    let c1r0 = Zero::zero();
+    let c1r1 = (two::<T>() * near) / (top - bottom);
+    let c1r2 = Zero::zero();
+    let c1r3 = Zero::zero();
 
     let c2r0 = (right + left) / (right - left);
     let c2r1 = (top + bottom) / (top - bottom);
     let c2r2 = -(far + near) / (far - near);
-    let c2r3 = -_1;
+    let c2r3 = -One::one::<T>();
 
-    let c3r0 = _0;
-    let c3r1 = _0;
-    let c3r2 = -(_2 * far * near) / (far - near);
-    let c3r3 = _0;
+    let c3r0 = Zero::zero();
+    let c3r1 = Zero::zero();
+    let c3r2 = -(two::<T>() * far * near) / (far - near);
+    let c3r3 = Zero::zero();
 
-    BaseMat4::new(c0r0, c0r1, c0r2, c0r3,
-                  c1r0, c1r1, c1r2, c1r3,
-                  c2r0, c2r1, c2r2, c2r3,
-                  c3r0, c3r1, c3r2, c3r3)
+    Mat4::new(c0r0, c0r1, c0r2, c0r3,
+              c1r0, c1r1, c1r2, c1r3,
+              c2r0, c2r1, c2r2, c2r3,
+              c3r0, c3r1, c3r2, c3r3)
 }
 
-/**
- * Create an orthographic projection matrix
- *
- * This is the equivalent of the now deprecated [glOrtho]
- * (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
- */
+///
+/// Create an orthographic projection matrix
+///
+/// This is the equivalent of the now deprecated [glOrtho]
+/// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
+///
 #[inline(always)]
-pub fn ortho<T:Copy + Float + NumAssign>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let _0: T = cast(0);
-    let _1: T = cast(1);
-    let _2: T = cast(2);
+pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+    let c0r0 = two::<T>() / (right - left);
+    let c0r1 = Zero::zero();
+    let c0r2 = Zero::zero();
+    let c0r3 = Zero::zero();
 
-    let c0r0 = _2 / (right - left);
-    let c0r1 = _0;
-    let c0r2 = _0;
-    let c0r3 = _0;
+    let c1r0 = Zero::zero();
+    let c1r1 = two::<T>() / (top - bottom);
+    let c1r2 = Zero::zero();
+    let c1r3 = Zero::zero();
 
-    let c1r0 = _0;
-    let c1r1 = _2 / (top - bottom);
-    let c1r2 = _0;
-    let c1r3 = _0;
-
-    let c2r0 = _0;
-    let c2r1 = _0;
-    let c2r2 = -_2 / (far - near);
-    let c2r3 = _0;
+    let c2r0 = Zero::zero();
+    let c2r1 = Zero::zero();
+    let c2r2 = -two::<T>() / (far - near);
+    let c2r3 = Zero::zero();
 
     let c3r0 = -(right + left) / (right - left);
     let c3r1 = -(top + bottom) / (top - bottom);
     let c3r2 = -(far + near) / (far - near);
-    let c3r3 = _1;
+    let c3r3 = One::one();
 
-    BaseMat4::new(c0r0, c0r1, c0r2, c0r3,
-                  c1r0, c1r1, c1r2, c1r3,
-                  c2r0, c2r1, c2r2, c2r3,
-                  c3r0, c3r1, c3r2, c3r3)
+    Mat4::new(c0r0, c0r1, c0r2, c0r3,
+              c1r0, c1r1, c1r2, c1r3,
+              c2r0, c2r1, c2r2, c2r3,
+              c3r0, c3r1, c3r2, c3r3)
 }

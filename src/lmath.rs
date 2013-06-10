@@ -25,8 +25,6 @@
 
 extern mod std;
 
-pub mod num;
-
 pub mod mat;
 pub mod quat;
 pub mod vec;

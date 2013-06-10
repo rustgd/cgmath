@@ -23,11 +23,11 @@ use vec::*;
 fn test_quat() {
     let a = Quat { s: 1.0, v: Vec3 { x: 2.0, y: 3.0, z: 4.0 } };
 
-    assert_eq!(a, quat::from_sv(1.0, vec3::new(2.0, 3.0, 4.0)));
-    assert_eq!(a, quat::new(1.0, 2.0, 3.0, 4.0));
+    assert_eq!(a, Quat::from_sv::<float>(1.0, Vec3::new::<float>(2.0, 3.0, 4.0)));
+    assert_eq!(a, Quat::new::<float>(1.0, 2.0, 3.0, 4.0));
 
-    assert_eq!(quat::zero(), quat::new(0.0, 0.0, 0.0, 0.0));
-    assert_eq!(quat::identity(), quat::new(1.0, 0.0, 0.0, 0.0));
+    assert_eq!(Quat::zero::<float>(), Quat::new::<float>(0.0, 0.0, 0.0, 0.0));
+    assert_eq!(Quat::identity::<float>(), Quat::new::<float>(1.0, 0.0, 0.0, 0.0));
 
     assert_eq!(a.s, 1.0);
     assert_eq!(a.v.x, 2.0);
@@ -42,20 +42,22 @@ fn test_quat() {
 
 #[test]
 fn test_quat_2() {
-    let v = vec3::new(1f32, 0f32, 0f32);
+    let v = Vec3::new(1f32, 0f32, 0f32);
 
-    let q = quat::from_angle_axis((-45f32).to_radians(), &vec3::new(0f32, 0f32, -1f32));
+    let q = Quat::from_angle_axis((-45f32).to_radians(), &Vec3::new(0f32, 0f32, -1f32));
 
     // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-    assert_approx_eq!(q.mul_v(&v), vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32));
+    assert_approx_eq!(q.mul_v(&v), Vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32));
     assert_eq!(q.mul_v(&v).length(), v.length());
-    assert_approx_eq!(q.to_mat3(), mat3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
+    assert_approx_eq!(q.to_mat3(), Mat3::new( 1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
                                              -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                             0f32, 0f32, 1f32));
+                                                          0f32,             0f32, 1f32));
 }
 
 #[test]
 fn test_quat_approx_eq() {
-    assert!(!quat::new(0.000001, 0.000001, 0.000001, 0.000001).approx_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
-    assert!(quat::new(0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&quat::new(0.0, 0.0, 0.0, 0.0)));
+    assert!(!Quat::new::<float>(0.000001, 0.000001, 0.000001, 0.000001)
+            .approx_eq(&Quat::new::<float>(0.0, 0.0, 0.0, 0.0)));
+    assert!(Quat::new::<float>(0.0000001, 0.0000001, 0.0000001, 0.0000001)
+            .approx_eq(&Quat::new::<float>(0.0, 0.0, 0.0, 0.0)));
 }

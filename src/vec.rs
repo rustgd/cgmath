@@ -17,596 +17,288 @@ use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 
-use num::NumAssign;
-
-/// The base generic vector trait.
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. This is intended to support boolean,
-///        integer, unsigned integer, and floating point types.
-pub trait BaseVec<T>: Eq {
-    /// The component of the vector at the index `i`
-    fn index<'a>(&'a self, i: uint) -> &'a T;
-
-    /// Construct the vector from a single value, copying it to each component
-    fn from_value(value: T) -> Self;
-
-    /// A pointer to the first component of the vector
-    fn to_ptr(&self) -> *T;
-
-    /// Get a mutable reference to the component at `i`
-    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
-
-    /// Swap two components of the vector in place
-    fn swap(&mut self, a: uint, b: uint);
-}
-
-/// A generic 2-dimensional vector
-pub trait BaseVec2<T>: BaseVec<T> {
-    fn new(x: T, y: T) -> Self;
-}
-
-/// A generic 3-dimensional vector
-pub trait BaseVec3<T>: BaseVec<T> {
-    fn new(x: T, y: T, z: T) -> Self;
-}
-
-/// A generic 4-dimensional vector
-pub trait BaseVec4<T>: BaseVec<T> {
-    fn new(x: T, y: T, z: T, w: T) -> Self;
-}
-
-/// A vector with numeric components
-pub trait NumVec<T>: BaseVec<T> + Neg<Self> {
-    /// The standard basis vector
-    ///
-    /// # Return value
-    ///
-    /// A vector with each component set to one
-    fn identity() -> Self;
-
-    /// The null vector
-    ///
-    /// # Return value
-    ///
-    /// A vector with each component set to zero
-    fn zero() -> Self;
-
-    /// True if the vector is equal to zero
-    fn is_zero(&self) -> bool;
-
-    /// The scalar multiplication of the vector and `value`
-    fn mul_t(&self, value: T) -> Self;
-
-    /// The scalar division of the vector and `value`
-    fn div_t(&self, value: T) -> Self;
-
-    /// Component-wise vector addition
-    fn add_v(&self, other: &Self) -> Self;
-
-    /// Component-wise vector subtraction
-    fn sub_v(&self, other: &Self) -> Self;
-
-    /// Component-wise vector multiplication
-    fn mul_v(&self, other: &Self) -> Self;
-
-    /// Component-wise vector division
-    fn div_v(&self, other: &Self) -> Self;
-
-    /// The dot product of the vector and `other`
-    fn dot(&self, other: &Self) -> T;
-
-    /// Negate the vector
-    fn neg_self(&mut self);
-
-    /// Multiply the vector by a scalar
-    fn mul_self_t(&mut self, value: T);
-
-    /// Divide the vector by a scalar
-    fn div_self_t(&mut self, value: T);
-
-    /// Set the vector to the component-wise vector sum
-    fn add_self_v(&mut self, other: &Self);
-
-    /// Set the vector to the component-wise vector difference
-    fn sub_self_v(&mut self, other: &Self);
-
-    /// Set the vector to the component-wise vector product
-    fn mul_self_v(&mut self, other: &Self);
-
-    /// Set the vector to the component-wise vector quotient
-    fn div_self_v(&mut self, other: &Self);
-}
-
-/// A 2-dimensional vector with numeric components
-pub trait NumVec2<T>: NumVec<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-
-    /// The perp dot product of the vector and `other`
-    fn perp_dot(&self, other: &Self) -> T;
-}
-
-/// A 3-dimensional vector with numeric components
-pub trait NumVec3<T>: NumVec<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-    fn unit_z() -> Self;
-
-    /// The cross product of the vector and `other`
-    fn cross(&self, other: &Self) -> Self;
-
-    /// Set to the cross product of the vector and `other`
-    fn cross_self(&mut self, other: &Self);
-}
-
-/// A 4-dimensional vector with numeric components
-pub trait NumVec4<T>: NumVec<T> {
-    fn unit_x() -> Self;
-    fn unit_y() -> Self;
-    fn unit_z() -> Self;
-    fn unit_w() -> Self;
-}
-
-pub trait ToHomogeneous<H> {
-    /// Convert to a homogenous coordinate
-    fn to_homogeneous(&self) -> H;
-}
-
-/// A Euclidean (or Affine) vector
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. This should be a floating point type.
-pub trait AffineVec<T>: NumVec<T> {
-    /// The squared length of the vector. This is useful for comparisons where
-    /// the exact length does not need to be calculated.
-    fn length2(&self) -> T;
-
-    /// The length of the vector
-    ///
-    /// # Performance notes
-    ///
-    /// For instances where the exact length of the vector does not need to be
-    /// known, for example for quaternion-quaternion length comparisons,
-    /// it is advisable to use the `length2` method instead.
-    fn length(&self) -> T;
-
-    /// The squared distance between the vector and `other`.
-    fn distance2(&self, other: &Self) -> T;
-
-    /// The distance between the vector and `other`
-    fn distance(&self, other: &Self) -> T;
-
-    /// The angle between the vector and `other` in radians
-    fn angle(&self, other: &Self) -> T;
-
-    /// The normalized vector
-    fn normalize(&self) -> Self;
-
-    /// Set the length of the vector whilst preserving the direction
-    fn normalize_to(&self, length: T) -> Self;
-
-    /// Linearly intoperlate between the vector and `other`
-    ///
-    /// # Return value
-    ///
-    /// The intoperlated vector
-    fn lerp(&self, other: &Self, amount: T) -> Self;
-
-    /// Normalize the vector
-    fn normalize_self(&mut self);
-
-    /// Set the vector to a specified length whilst preserving the direction
-    fn normalize_self_to(&mut self, length: T);
-
-    /// Linearly intoperlate the vector towards `other`
-    fn lerp_self(&mut self, other: &Self, amount: T);
-}
-
-/// Component-wise vector comparison methods
-///
-/// The methods contained in this trait correspond to the relational functions
-/// mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
-/// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-pub trait OrdVec<T, BoolVec>: BaseVec<T> {
-    /// Component-wise compare of `self < other`
-    fn less_than(&self, other: &Self) -> BoolVec;
-
-    /// Component-wise compare of `self <= other`
-    fn less_than_equal(&self, other: &Self) -> BoolVec;
-
-    /// Component-wise compare of `self > other`
-    fn greater_than(&self, other: &Self) -> BoolVec;
-
-    /// Component-wise compare of `self >= other`
-    fn greater_than_equal(&self, other: &Self) -> BoolVec;
-}
-
-/// Component-wise equality comparison methods
-///
-/// The methods contained in this trait correspond to the relational functions
-/// mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
-/// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-pub trait EqVec<T, BoolVec>: BaseVec<T> {
-    /// Component-wise compare of `self == other`
-    fn equal(&self, other: &Self) -> BoolVec;
-
-    /// Component-wise compare of `self != other`
-    fn not_equal(&self, other: &Self) -> BoolVec;
-}
-
-/// A vector with boolean components
-///
-/// The methods contained in this trait correspond to the relational functions
-/// mentioned in Section 8.7 of the [GLSL 4.30.6 specification]
-/// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-pub trait BoolVec: BaseVec<bool> {
-    /// `true` if of any component is `true`
-    fn any(&self) -> bool;
-
-    /// `true` only if all components are `true`
-    fn all(&self) -> bool;
-
-    /// the component-wise logical complement
-    fn not(&self) -> Self;
-}
-
-pub trait TrigVec<T>: BaseVec<T> {
-    fn radians(&self) -> Self;
-    fn degrees(&self) -> Self;
-
-    // Triganometric functions
-    fn sin(&self)                      -> Self;
-    fn cos(&self)                      -> Self;
-    fn tan(&self)                      -> Self;
-
-    // Inverse triganometric functions
-    fn asin(&self)                     -> Self;
-    fn acos(&self)                     -> Self;
-    fn atan(&self)                     -> Self;
-    fn atan2(&self, other: Self)       -> Self;
-
-    // Hyperbolic triganometric functions
-    fn sinh(&self)                     -> Self;
-    fn cosh(&self)                     -> Self;
-    fn tanh(&self)                     -> Self;
-    // fn asinh()                      -> Self;
-    // fn acosh()                      -> Self;
-    // fn atanh()                      -> Self;
-}
-
-pub trait ExpVec<T>: BaseVec<T> {
-    // Exponential functions
-    fn pow_t(&self, n: Self)           -> Self;
-    fn pow_v(&self, n: T)              -> Self;
-    fn exp(&self)                      -> Self;
-    fn exp2(&self)                     -> Self;
-    fn ln(&self)                       -> Self;
-    fn ln2(&self)                      -> Self;
-    fn sqrt(&self)                     -> Self;
-    fn inv_sqrt(&self)                 -> Self;
-}
-
-pub trait ApproxVec<T>: BaseVec<T> {
-    // Whole-number approximation functions
-    fn floor(&self)                    -> Self;
-    fn trunc(&self)                    -> Self;
-    fn round(&self)                    -> Self;
-    // fn round_even(&self)            -> Self;
-    fn ceil(&self)                     -> Self;
-    fn fract(&self)                    -> Self;
-}
-
-pub trait SignedVec<T,BV>: BaseVec<T> {
-    fn is_positive(&self)    -> BV;
-    fn is_negative(&self)    -> BV;
-    fn is_nonpositive(&self) -> BV;
-    fn is_nonnegative(&self) -> BV;
-
-    fn abs(&self) -> Self;
-    fn sign(&self) -> Self;
-    fn copysign(&self, other: Self) -> Self;
-}
-
-pub trait ExtentVec<T>: BaseVec<T> {
-    fn min_v(&self, other: &Self) -> Self;
-    fn max_v(&self, other: &Self) -> Self;
-    fn clamp_v(&self, mn: &Self, mx: &Self) -> Self;
-
-    fn min_t(&self, other: T) -> Self;
-    fn max_t(&self, other: T) -> Self;
-    fn clamp_t(&self, mn: T, mx: T) -> Self;
-}
-
-pub trait MixVec<T>: BaseVec<T> {
-    // Functions for blending numbers together
-    fn mix(&self, other: Self, value: Self) -> Self;
-    fn smooth_step(&self, edge0: Self, edge1: Self) -> Self;
-    fn step(&self, edge: Self) -> Self;
-}
-
-// Utility macros
-
-macro_rules! zip_vec2(
-    ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec2::new($a.index(0).$method($b.index(0)),
-                      $a.index(1).$method($b.index(1)))
-    );
-    ($a:ident[] $method:ident $b:ident) => (
-        BaseVec2::new($a.index(0).$method(&$b),
-                      $a.index(1).$method(&$b))
-    );
-)
-
-macro_rules! zip_vec3(
-    ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec3::new($a.index(0).$method($b.index(0)),
-                      $a.index(1).$method($b.index(1)),
-                      $a.index(2).$method($b.index(2)))
-    );
-    ($a:ident[] $method:ident $b:ident) => (
-        BaseVec3::new($a.index(0).$method(&$b),
-                      $a.index(1).$method(&$b),
-                      $a.index(2).$method(&$b))
-    );
-)
-
-macro_rules! zip_vec4(
-    ($a:ident[] $method:ident $b:ident[]) => (
-        BaseVec4::new($a.index(0).$method($b.index(0)),
-                      $a.index(1).$method($b.index(1)),
-                      $a.index(2).$method($b.index(2)),
-                      $a.index(3).$method($b.index(3)))
-    );
-    ($a:ident[] $method:ident $b:ident) => (
-        BaseVec4::new($a.index(0).$method(&$b),
-                      $a.index(1).$method(&$b),
-                      $a.index(2).$method(&$b),
-                      $a.index(3).$method(&$b))
-    );
-)
-
-macro_rules! zip_assign(
-    ($a:ident[] $method:ident $b:ident[] ..2) => ({ $a.index_mut(0).$method($b.index(0)); $a.index_mut(1).$method($b.index(1)); });
-    ($a:ident[] $method:ident $b:ident[] ..3) => ({ zip_assign!($a[] $method $b[] ..2); $a.index_mut(2).$method($b.index(2)); });
-    ($a:ident[] $method:ident $b:ident[] ..4) => ({ zip_assign!($a[] $method $b[] ..3); $a.index_mut(3).$method($b.index(3)); });
-
-    ($a:ident[] $method:ident $b:ident ..2) => ({ $a.index_mut(0).$method(&$b); $a.index_mut(1).$method(&$b); });
-    ($a:ident[] $method:ident $b:ident ..3) => ({ zip_assign!($a[] $method $b ..2); $a.index_mut(2).$method(&$b); });
-    ($a:ident[] $method:ident $b:ident ..4) => ({ zip_assign!($a[] $method $b ..3); $a.index_mut(3).$method(&$b); });
-)
-
-/// A 2-dimensional vector
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. This is intended to support boolean,
-///        integer, unsigned integer, and floating point types.
-///
-/// # Fields
-///
-/// - `x`: the first component of the vector
-/// - `y`: the second component of the vector
  #[deriving(Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
-impl<T:Copy + Eq> BaseVec<T> for Vec2<T> {
+impl<T> Vec2<T> {
     #[inline(always)]
-    fn index<'a>(&'a self, i: uint) -> &'a T {
-        unsafe { &'a transmute::<&'a Vec2<T>, &'a [T,..2]>(self)[i] }
+    pub fn index<'a>(&'a self, i: uint) -> &'a T {
+        &'a self.as_slice()[i]
     }
 
     #[inline(always)]
-    fn from_value(value: T) -> Vec2<T> {
-        BaseVec2::new(value, value)
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
+        &'a mut self.as_mut_slice()[i]
     }
 
     #[inline(always)]
-    fn to_ptr(&self) -> *T {
+    pub fn as_slice<'a>(&'a self) -> &'a [T,..2] {
         unsafe { transmute(self) }
     }
 
     #[inline(always)]
-    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe { &'a mut transmute::<&'a mut Vec2<T>, &'a mut [T,..2]>(self)[i] }
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..2] {
+        unsafe { transmute(self) }
+    }
+}
+
+impl<T:Copy> Vec2<T> {
+    #[inline(always)]
+    pub fn new(x: T, y: T ) -> Vec2<T> {
+        Vec2 { x: x, y: y }
     }
 
     #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
+    pub fn from_value(value: T) -> Vec2<T> {
+        Vec2::new(value, value)
+    }
+
+    #[inline(always)]
+    pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
-}
 
-impl<T> BaseVec2<T> for Vec2<T> {
     #[inline(always)]
-    fn new(x: T, y: T ) -> Vec2<T> {
-        Vec2 { x: x, y: y }
+    pub fn map(&self, f: &fn(&T) -> T) -> Vec2<T> {
+        Vec2::new(f(self.index(0)),
+                  f(self.index(1)))
     }
 }
 
-impl<T:Copy + Num + NumAssign> NumVec<T> for Vec2<T> {
+impl<T:Copy + Num> Vec2<T> {
     #[inline(always)]
-    fn identity() -> Vec2<T> {
-        BaseVec2::new(One::one::<T>(),
-                      One::one::<T>())
+    pub fn identity() -> Vec2<T> {
+        Vec2::new(One::one::<T>(), One::one::<T>())
     }
 
     #[inline(always)]
-    fn zero() -> Vec2<T> {
-        BaseVec2::new(Zero::zero::<T>(),
-                      Zero::zero::<T>())
+    pub fn zero() -> Vec2<T> {
+        Vec2::new(Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
-    fn is_zero(&self) -> bool {
+    pub fn unit_x() -> Vec2<T> {
+        Vec2::new(One::one::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_y() -> Vec2<T> {
+        Vec2::new(Zero::zero::<T>(), One::one::<T>())
+    }
+
+    #[inline(always)]
+    pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero()
     }
 
     #[inline(always)]
-    fn mul_t(&self, value: T) -> Vec2<T> {
-        zip_vec2!(self[] mul value)
+    pub fn add_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(*self.index(0) + value,
+                  *self.index(1) + value)
     }
 
     #[inline(always)]
-    fn div_t(&self, value: T) -> Vec2<T> {
-        zip_vec2!(self[] div value)
+    pub fn sub_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(*self.index(0) - value,
+                  *self.index(1) - value)
     }
 
     #[inline(always)]
-    fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        zip_vec2!(self[] add other[])
+    pub fn mul_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(*self.index(0) * value,
+                  *self.index(1) * value)
     }
 
     #[inline(always)]
-    fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        zip_vec2!(self[] sub other[])
+    pub fn div_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(*self.index(0) / value,
+                  *self.index(1) / value)
     }
 
     #[inline(always)]
-    fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        zip_vec2!(self[] mul other[])
+    pub fn rem_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(*self.index(0) % value,
+                  *self.index(1) % value)
     }
 
     #[inline(always)]
-    fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        zip_vec2!(self[] div other[])
+    pub fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(*self.index(0) + *other.index(0),
+                  *self.index(1) + *other.index(1))
     }
 
     #[inline(always)]
-    fn dot(&self, other: &Vec2<T>) -> T {
-        (*self.index(0)) * (*other.index(0)) +
-        (*self.index(1)) * (*other.index(1))
+    pub fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(*self.index(0) - *other.index(0),
+                  *self.index(1) - *other.index(1))
     }
 
     #[inline(always)]
-    fn neg_self(&mut self) {
-        *self.index_mut(0) = -self.index(0);
-        *self.index_mut(1) = -self.index(1);
+    pub fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(*self.index(0) * *other.index(0),
+                  *self.index(1) * *other.index(1))
     }
 
     #[inline(always)]
-    fn mul_self_t(&mut self, value: T) {
-        zip_assign!(self[] mul_assign value ..2);
+    pub fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(*self.index(0) / *other.index(0),
+                  *self.index(1) / *other.index(1))
     }
 
     #[inline(always)]
-    fn div_self_t(&mut self, value: T) {
-        zip_assign!(self[] div_assign value ..2);
+    pub fn rem_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(*self.index(0) % *other.index(0),
+                  *self.index(1) % *other.index(1))
     }
 
     #[inline(always)]
-    fn add_self_v(&mut self, other: &Vec2<T>) {
-        zip_assign!(self[] add_assign other[] ..2);
+    pub fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index(0);
+        *self.index_mut(1) = -*self.index(1);
     }
 
     #[inline(always)]
-    fn sub_self_v(&mut self, other: &Vec2<T>) {
-        zip_assign!(self[] sub_assign other[] ..2);
+    pub fn add_self_t(&mut self, value: T) {
+        *self.index_mut(0) += value;
+        *self.index_mut(1) += value;
     }
 
     #[inline(always)]
-    fn mul_self_v(&mut self, other: &Vec2<T>) {
-        zip_assign!(self[] mul_assign other[] ..2);
+    pub fn sub_self_t(&mut self, value: T) {
+        *self.index_mut(0) -= value;
+        *self.index_mut(1) -= value;
     }
 
     #[inline(always)]
-    fn div_self_v(&mut self, other: &Vec2<T>) {
-        zip_assign!(self[] div_assign other[] ..2);
+    pub fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+    }
+
+    #[inline(always)]
+    pub fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+    }
+
+    #[inline(always)]
+    pub fn rem_self_t(&mut self, value: T) {
+        *self.index_mut(0) %= value;
+        *self.index_mut(1) %= value;
+    }
+
+    #[inline(always)]
+    pub fn add_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) += *other.index(0);
+        *self.index_mut(1) += *other.index(1);
+    }
+
+    #[inline(always)]
+    pub fn sub_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) -= *other.index(0);
+        *self.index_mut(1) -= *other.index(1);
+    }
+
+    #[inline(always)]
+    pub fn mul_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) *= *other.index(0);
+        *self.index_mut(1) *= *other.index(1);
+    }
+
+    #[inline(always)]
+    pub fn div_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+    }
+
+    #[inline(always)]
+    pub fn rem_self_v(&mut self, other: &Vec2<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+    }
+
+    #[inline(always)]
+    pub fn dot(&self, other: &Vec2<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1)
+    }
+
+    #[inline(always)]
+    pub fn perp_dot(&self, other: &Vec2<T>) -> T {
+        (*self.index(0) * *other.index(1)) -
+        (*self.index(1) * *other.index(0))
+    }
+
+    #[inline(always)]
+    pub fn to_homogeneous(&self) -> Vec3<T> {
+        Vec3::new(self.x, self.y, Zero::zero())
     }
 }
 
 impl<T:Copy + Num> Neg<Vec2<T>> for Vec2<T> {
     #[inline(always)]
-    fn neg(&self) -> Vec2<T> {
-        BaseVec2::new(-self.index(0), -self.index(1))
+    pub fn neg(&self) -> Vec2<T> {
+        Vec2::new(-self.index(0), -self.index(1))
     }
 }
 
-impl<T:Copy + Num> NumVec2<T> for Vec2<T> {
+impl<T:Copy + Real> Vec2<T> {
     #[inline(always)]
-    fn unit_x() -> Vec2<T> {
-        BaseVec2::new(One::one::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec2<T> {
-        BaseVec2::new(Zero::zero::<T>(),
-                      One::one::<T>())
-    }
-
-    #[inline(always)]
-    fn perp_dot(&self, other: &Vec2<T>) ->T {
-        (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0))
-    }
-}
-
-impl<T:Copy + Num> ToHomogeneous<Vec3<T>> for Vec2<T> {
-    #[inline(always)]
-    fn to_homogeneous(&self) -> Vec3<T> {
-        BaseVec3::new(self.x, self.y, Zero::zero())
-    }
-}
-
-impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
-    #[inline(always)]
-    fn length2(&self) -> T {
+    pub fn length2(&self) -> T {
         self.dot(self)
     }
 
     #[inline(always)]
-    fn length(&self) -> T {
+    pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
     #[inline(always)]
-    fn distance2(&self, other: &Vec2<T>) -> T {
+    pub fn distance2(&self, other: &Vec2<T>) -> T {
         other.sub_v(self).length2()
     }
 
     #[inline(always)]
-    fn distance(&self, other: &Vec2<T>) -> T {
+    pub fn distance(&self, other: &Vec2<T>) -> T {
         other.distance2(self).sqrt()
     }
 
     #[inline(always)]
-    fn angle(&self, other: &Vec2<T>) -> T {
+    pub fn angle(&self, other: &Vec2<T>) -> T {
         self.perp_dot(other).atan2(self.dot(other))
     }
 
     #[inline(always)]
-    fn normalize(&self) -> Vec2<T> {
+    pub fn normalize(&self) -> Vec2<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
-    fn normalize_to(&self, length: T) -> Vec2<T> {
+    pub fn normalize_to(&self, length: T) -> Vec2<T> {
         self.mul_t(length / self.length())
     }
 
     #[inline(always)]
-    fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
+    pub fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
     #[inline(always)]
-    fn normalize_self(&mut self) {
+    pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
     #[inline(always)]
-    fn normalize_self_to(&mut self, length: T) {
+    pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
     }
 
-    fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
+    pub fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
     }
@@ -614,85 +306,120 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec2<T> {
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
     #[inline(always)]
-    fn approx_epsilon() -> T {
+    pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn approx_eq(&self, other: &Vec2<T>) -> bool {
+    pub fn approx_eq(&self, other: &Vec2<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
     #[inline(always)]
-    fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
+    pub fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon)
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdVec<T, Vec2<bool>> for Vec2<T> {
+impl<T:Copy + Ord> Vec2<T> {
     #[inline(always)]
-    fn less_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] lt other[])
+    pub fn lt_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) < value,
+                  *self.index(1) < value)
     }
 
     #[inline(always)]
-    fn less_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] le other[])
+    pub fn le_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) <= value,
+                  *self.index(1) <= value)
     }
 
     #[inline(always)]
-    fn greater_than(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] gt other[])
+    pub fn ge_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) >= value,
+                  *self.index(1) >= value)
     }
 
     #[inline(always)]
-    fn greater_than_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] ge other[])
+    pub fn gt_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) > value,
+                  *self.index(1) > value)
+    }
+
+    #[inline(always)]
+    pub fn lt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) < *other.index(0),
+                  *self.index(1) < *other.index(1))
+    }
+
+    #[inline(always)]
+    pub fn le_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) <= *other.index(0),
+                  *self.index(1) <= *other.index(1))
+    }
+
+    #[inline(always)]
+    pub fn ge_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) >= *other.index(0),
+                  *self.index(1) >= *other.index(1))
+    }
+
+    #[inline(always)]
+    pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) > *other.index(0),
+                  *self.index(1) > *other.index(1))
     }
 }
 
-impl<T:Copy + Eq> EqVec<T, Vec2<bool>> for Vec2<T> {
+impl<T:Copy + Eq> Vec2<T> {
     #[inline(always)]
-    fn equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] eq other[])
+    pub fn eq_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) == value,
+                  *self.index(1) == value)
     }
 
     #[inline(always)]
-    fn not_equal(&self, other: &Vec2<T>) -> Vec2<bool> {
-        zip_vec2!(self[] ne other[])
+    pub fn ne_t(&self, value: T) -> Vec2<bool> {
+        Vec2::new(*self.index(0) != value,
+                  *self.index(1) != value)
+    }
+
+    #[inline(always)]
+    pub fn eq_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) == *other.index(0),
+                  *self.index(1) == *other.index(1))
+    }
+
+    #[inline(always)]
+    pub fn ne_v(&self, other: &Vec2<T>) -> Vec2<bool> {
+        Vec2::new(*self.index(0) != *other.index(0),
+                  *self.index(1) != *other.index(1))
     }
 }
 
-impl BoolVec for Vec2<bool> {
+impl Vec2<bool> {
     #[inline(always)]
-    fn any(&self) -> bool {
+    pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1)
     }
 
     #[inline(always)]
-    fn all(&self) -> bool {
+    pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1)
     }
 
     #[inline(always)]
-    fn not(&self) -> Vec2<bool> {
-        BaseVec2::new(!*self.index(0), !*self.index(1))
+    pub fn not(&self) -> Vec2<bool> {
+        Vec2::new(!*self.index(0), !*self.index(1))
     }
 }
 
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a two-component single-precision floating-point vector
+// GLSL-style type aliases
 pub type vec2  = Vec2<f32>;
-// a two-component double-precision floating-point vector
 pub type dvec2 = Vec2<f64>;
-// a two-component Boolean vector
 pub type bvec2 = Vec2<bool>;
-// a two-component signed integer vector
 pub type ivec2 = Vec2<i32>;
-// a two-component unsigned integer vector
 pub type uvec2 = Vec2<u32>;
 
 // Rust-style type aliases
@@ -711,257 +438,323 @@ pub type Vec2u32 = Vec2<u32>;
 pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
 
-/// A 3-dimensional vector
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. This is intended to support boolean,
-///         integer, unsigned integer, and floating point types.
-///
-/// # Fields
-///
-/// - `x`: the first component of the vector
-/// - `y`: the second component of the vector
-/// - `z`: the third component of the vector
 #[deriving(Eq)]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
-impl<T:Copy + Eq> BaseVec<T> for Vec3<T> {
+impl<T> Vec3<T> {
     #[inline(always)]
-    fn index<'a>(&'a self, i: uint) -> &'a T {
-        unsafe { &'a transmute::<&'a Vec3<T>, &'a [T,..3]>(self)[i] }
+    pub fn index<'a>(&'a self, i: uint) -> &'a T {
+        &'a self.as_slice()[i]
     }
 
     #[inline(always)]
-    fn from_value(value: T) -> Vec3<T> {
-        BaseVec3::new(value, value, value)
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
+        &'a mut self.as_mut_slice()[i]
     }
 
     #[inline(always)]
-    fn to_ptr(&self) -> *T {
+    pub fn as_slice<'a>(&'a self) -> &'a [T,..3] {
         unsafe { transmute(self) }
     }
 
     #[inline(always)]
-    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe { &mut transmute::<&'a mut Vec3<T>, &'a mut [T,..3]>(self)[i] }
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..3] {
+        unsafe { transmute(self) }
+    }
+}
+
+impl<T:Copy> Vec3<T> {
+    #[inline(always)]
+    pub fn new(x: T, y: T, z: T ) -> Vec3<T> {
+        Vec3 { x: x, y: y, z: z }
     }
 
     #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
+    pub fn from_value(value: T) -> Vec3<T> {
+        Vec3::new(value, value, value)
+    }
+
+    #[inline(always)]
+    pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
-}
 
-impl<T> BaseVec3<T> for Vec3<T> {
     #[inline(always)]
-    fn new(x: T, y: T, z: T) -> Vec3<T> {
-        Vec3 { x: x, y: y, z: z }
+    pub fn map(&self, f: &fn(&T) -> T) -> Vec3<T> {
+        Vec3::new(f(self.index(0)),
+                  f(self.index(1)),
+                  f(self.index(2)))
     }
 }
 
-impl<T:Copy + Num + NumAssign> NumVec<T> for Vec3<T> {
+impl<T:Copy + Num> Vec3<T> {
     #[inline(always)]
-    fn identity() -> Vec3<T> {
-        BaseVec3::new(One::one::<T>(),
-                      One::one::<T>(),
-                      One::one::<T>())
+    pub fn identity() -> Vec3<T> {
+        Vec3::new(One::one::<T>(), One::one::<T>(), One::one::<T>())
     }
 
     #[inline(always)]
-    fn zero() -> Vec3<T> {
-        BaseVec3::new(Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>())
+    pub fn zero() -> Vec3<T> {
+        Vec3::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
-    fn is_zero(&self) -> bool {
+    pub fn unit_x() -> Vec3<T> {
+        Vec3::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_y() -> Vec3<T> {
+        Vec3::new(Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_z() -> Vec3<T> {
+        Vec3::new(Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
+    }
+
+    #[inline(always)]
+    pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero() &&
         *self.index(2) == Zero::zero()
     }
 
     #[inline(always)]
-    fn mul_t(&self, value: T) -> Vec3<T> {
-        zip_vec3!(self[] mul value)
+    pub fn add_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(*self.index(0) + value,
+                  *self.index(1) + value,
+                  *self.index(2) + value)
     }
 
     #[inline(always)]
-    fn div_t(&self, value: T) -> Vec3<T> {
-        zip_vec3!(self[] div value)
+    pub fn sub_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(*self.index(0) - value,
+                  *self.index(1) - value,
+                  *self.index(2) - value)
     }
 
     #[inline(always)]
-    fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        zip_vec3!(self[] add other[])
+    pub fn mul_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(*self.index(0) * value,
+                  *self.index(1) * value,
+                  *self.index(2) * value)
     }
 
     #[inline(always)]
-    fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        zip_vec3!(self[] sub other[])
+    pub fn div_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(*self.index(0) / value,
+                  *self.index(1) / value,
+                  *self.index(2) / value)
     }
 
     #[inline(always)]
-    fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        zip_vec3!(self[] mul other[])
+    pub fn rem_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(*self.index(0) % value,
+                  *self.index(1) % value,
+                  *self.index(2) % value)
     }
 
     #[inline(always)]
-    fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        zip_vec3!(self[] div other[])
+    pub fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(*self.index(0) + *other.index(0),
+                  *self.index(1) + *other.index(1),
+                  *self.index(2) + *other.index(2))
     }
 
     #[inline(always)]
-    fn dot(&self, other: &Vec3<T>) -> T {
-        (*self.index(0)) * (*other.index(0)) +
-        (*self.index(1)) * (*other.index(1)) +
-        (*self.index(2)) * (*other.index(2))
+    pub fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(*self.index(0) - *other.index(0),
+                  *self.index(1) - *other.index(1),
+                  *self.index(2) - *other.index(2))
     }
 
     #[inline(always)]
-    fn neg_self(&mut self) {
-        *self.index_mut(0) = -self.index(0);
-        *self.index_mut(1) = -self.index(1);
-        *self.index_mut(2) = -self.index(2);
+    pub fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(*self.index(0) * *other.index(0),
+                  *self.index(1) * *other.index(1),
+                  *self.index(2) * *other.index(2))
     }
 
     #[inline(always)]
-    fn mul_self_t(&mut self, value: T) {
-        zip_assign!(self[] mul_assign value ..3);
+    pub fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(*self.index(0) / *other.index(0),
+                  *self.index(1) / *other.index(1),
+                  *self.index(2) / *other.index(2))
     }
 
     #[inline(always)]
-    fn div_self_t(&mut self, value: T) {
-        zip_assign!(self[] div_assign value ..3);
+    pub fn rem_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(*self.index(0) % *other.index(0),
+                  *self.index(1) % *other.index(1),
+                  *self.index(2) % *other.index(2))
     }
 
     #[inline(always)]
-    fn add_self_v(&mut self, other: &Vec3<T>) {
-        zip_assign!(self[] add_assign other[] ..3);
+    pub fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index(0);
+        *self.index_mut(1) = -*self.index(1);
+        *self.index_mut(2) = -*self.index(2);
     }
 
     #[inline(always)]
-    fn sub_self_v(&mut self, other: &Vec3<T>) {
-        zip_assign!(self[] sub_assign other[] ..3);
+    pub fn add_self_t(&mut self, value: T) {
+        *self.index_mut(0) += value;
+        *self.index_mut(1) += value;
+        *self.index_mut(2) += value;
     }
 
     #[inline(always)]
-    fn mul_self_v(&mut self, other: &Vec3<T>) {
-        zip_assign!(self[] mul_assign other[] ..3);
+    pub fn sub_self_t(&mut self, value: T) {
+        *self.index_mut(0) -= value;
+        *self.index_mut(1) -= value;
+        *self.index_mut(2) -= value;
     }
 
     #[inline(always)]
-    fn div_self_v(&mut self, other: &Vec3<T>) {
-        zip_assign!(self[] div_assign other[] ..3);
+    pub fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+        *self.index_mut(2) *= value;
+    }
+
+    #[inline(always)]
+    pub fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+        *self.index_mut(2) /= value;
+    }
+
+    #[inline(always)]
+    pub fn rem_self_t(&mut self, value: T) {
+        *self.index_mut(0) %= value;
+        *self.index_mut(1) %= value;
+        *self.index_mut(2) %= value;
+    }
+
+    #[inline(always)]
+    pub fn add_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) += *other.index(0);
+        *self.index_mut(1) += *other.index(1);
+        *self.index_mut(2) += *other.index(2);
+    }
+
+    #[inline(always)]
+    pub fn sub_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) -= *other.index(0);
+        *self.index_mut(1) -= *other.index(1);
+        *self.index_mut(2) -= *other.index(2);
+    }
+
+    #[inline(always)]
+    pub fn mul_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) *= *other.index(0);
+        *self.index_mut(1) *= *other.index(1);
+        *self.index_mut(2) *= *other.index(2);
+    }
+
+    #[inline(always)]
+    pub fn div_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+        *self.index_mut(2) /= *other.index(2);
+    }
+
+    #[inline(always)]
+    pub fn rem_self_v(&mut self, other: &Vec3<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+        *self.index_mut(2) /= *other.index(2);
+    }
+
+    #[inline(always)]
+    pub fn dot(&self, other: &Vec3<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1) +
+        *self.index(2) * *other.index(2)
+    }
+
+    #[inline(always)]
+    pub fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
+                  (*self.index(2) * *other.index(0)) - (*self.index(0) * *other.index(2)),
+                  (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
+    }
+
+    #[inline(always)]
+    pub fn cross_self(&mut self, other: &Vec3<T>) {
+        *self = self.cross(other)
+    }
+
+    #[inline(always)]
+    pub fn to_homogeneous(&self) -> Vec4<T> {
+        Vec4::new(self.x, self.y, self.z, Zero::zero())
     }
 }
 
 impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
     #[inline(always)]
-    fn neg(&self) -> Vec3<T> {
-        BaseVec3::new(-self.index(0), -self.index(1), -self.index(2))
+    pub fn neg(&self) -> Vec3<T> {
+        Vec3::new(-self.index(0), -self.index(1), -self.index(2))
     }
 }
 
-impl<T:Copy + Num> NumVec3<T> for Vec3<T> {
+impl<T:Copy + Real> Vec3<T> {
     #[inline(always)]
-    fn unit_x() -> Vec3<T> {
-        BaseVec3::new(One::one::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec3<T> {
-        BaseVec3::new(Zero::zero::<T>(),
-                      One::one::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_z() -> Vec3<T> {
-        BaseVec3::new(Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      One::one::<T>())
-    }
-
-    #[inline(always)]
-    fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        BaseVec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
-                      (*self.index(2) * *other.index(0)) - (*self.index(0) * *other.index(2)),
-                      (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
-    }
-
-    #[inline(always)]
-    fn cross_self(&mut self, other: &Vec3<T>) {
-        *self = self.cross(other);
-    }
-}
-
-impl<T:Copy + Num> ToHomogeneous<Vec4<T>> for Vec3<T> {
-    #[inline(always)]
-    fn to_homogeneous(&self) -> Vec4<T> {
-        BaseVec4::new(self.x, self.y, self.z, Zero::zero())
-    }
-}
-
-impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
-    #[inline(always)]
-    fn length2(&self) -> T {
+    pub fn length2(&self) -> T {
         self.dot(self)
     }
 
     #[inline(always)]
-    fn length(&self) -> T {
+    pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
     #[inline(always)]
-    fn distance2(&self, other: &Vec3<T>) -> T {
+    pub fn distance2(&self, other: &Vec3<T>) -> T {
         other.sub_v(self).length2()
     }
 
     #[inline(always)]
-    fn distance(&self, other: &Vec3<T>) -> T {
+    pub fn distance(&self, other: &Vec3<T>) -> T {
         other.distance2(self).sqrt()
     }
 
     #[inline(always)]
-    fn angle(&self, other: &Vec3<T>) -> T {
+    pub fn angle(&self, other: &Vec3<T>) -> T {
         self.cross(other).length().atan2(self.dot(other))
     }
 
     #[inline(always)]
-    fn normalize(&self) -> Vec3<T> {
+    pub fn normalize(&self) -> Vec3<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
-    fn normalize_to(&self, length: T) -> Vec3<T> {
+    pub fn normalize_to(&self, length: T) -> Vec3<T> {
         self.mul_t(length / self.length())
     }
 
     #[inline(always)]
-    fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
+    pub fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
     #[inline(always)]
-    fn normalize_self(&mut self) {
+    pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
     #[inline(always)]
-    fn normalize_self_to(&mut self, length: T) {
+    pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
     }
 
-    fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
+    pub fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
     }
@@ -969,86 +762,133 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec3<T> {
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
     #[inline(always)]
-    fn approx_epsilon() -> T {
+    pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn approx_eq(&self, other: &Vec3<T>) -> bool {
+    pub fn approx_eq(&self, other: &Vec3<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
     #[inline(always)]
-    fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
+    pub fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon) &&
         self.index(2).approx_eq_eps(other.index(2), epsilon)
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdVec<T, Vec3<bool>> for Vec3<T> {
+impl<T:Copy + Ord> Vec3<T> {
     #[inline(always)]
-    fn less_than(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] lt other[])
+    pub fn lt_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) < value,
+                  *self.index(1) < value,
+                  *self.index(2) < value)
     }
 
     #[inline(always)]
-    fn less_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] le other[])
+    pub fn le_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) <= value,
+                  *self.index(1) <= value,
+                  *self.index(2) <= value)
     }
 
     #[inline(always)]
-    fn greater_than(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] gt other[])
+    pub fn ge_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) >= value,
+                  *self.index(1) >= value,
+                  *self.index(2) >= value)
     }
 
     #[inline(always)]
-    fn greater_than_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] ge other[])
+    pub fn gt_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) > value,
+                  *self.index(1) > value,
+                  *self.index(2) > value)
+    }
+
+    #[inline(always)]
+    pub fn lt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) < *other.index(0),
+                  *self.index(1) < *other.index(1),
+                  *self.index(2) < *other.index(2))
+    }
+
+    #[inline(always)]
+    pub fn le_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) <= *other.index(0),
+                  *self.index(1) <= *other.index(1),
+                  *self.index(2) <= *other.index(2))
+    }
+
+    #[inline(always)]
+    pub fn ge_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) >= *other.index(0),
+                  *self.index(1) >= *other.index(1),
+                  *self.index(2) >= *other.index(2))
+    }
+
+    #[inline(always)]
+    pub fn gt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) > *other.index(0),
+                  *self.index(1) > *other.index(1),
+                  *self.index(2) > *other.index(2))
     }
 }
 
-impl<T:Copy + Eq> EqVec<T, Vec3<bool>> for Vec3<T> {
+impl<T:Copy + Eq> Vec3<T> {
     #[inline(always)]
-    fn equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] eq other[])
+    pub fn eq_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) == value,
+                  *self.index(1) == value,
+                  *self.index(2) == value)
     }
 
     #[inline(always)]
-    fn not_equal(&self, other: &Vec3<T>) -> Vec3<bool> {
-        zip_vec3!(self[] ne other[])
+    pub fn ne_t(&self, value: T) -> Vec3<bool> {
+        Vec3::new(*self.index(0) != value,
+                  *self.index(1) != value,
+                  *self.index(2) != value)
+    }
+
+    #[inline(always)]
+    pub fn eq_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) == *other.index(0),
+                  *self.index(1) == *other.index(1),
+                  *self.index(2) == *other.index(2))
+    }
+
+    #[inline(always)]
+    pub fn ne_v(&self, other: &Vec3<T>) -> Vec3<bool> {
+        Vec3::new(*self.index(0) != *other.index(0),
+                  *self.index(1) != *other.index(1),
+                  *self.index(2) != *other.index(2))
     }
 }
 
-impl BoolVec for Vec3<bool> {
+impl Vec3<bool> {
     #[inline(always)]
-    fn any(&self) -> bool {
+    pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2)
     }
 
     #[inline(always)]
-    fn all(&self) -> bool {
+    pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2)
     }
 
     #[inline(always)]
-    fn not(&self) -> Vec3<bool> {
-        BaseVec3::new(!*self.index(0), !*self.index(1), !*self.index(2))
+    pub fn not(&self) -> Vec3<bool> {
+        Vec3::new(!*self.index(0), !*self.index(1), !*self.index(2))
     }
 }
 
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a three-component single-precision floating-point vector
+// GLSL-style type aliases
 pub type vec3  = Vec3<f32>;
-// a three-component double-precision floating-point vector
 pub type dvec3 = Vec3<f64>;
-// a three-component Boolean vector
 pub type bvec3 = Vec3<bool>;
-// a three-component signed integer vector
 pub type ivec3 = Vec3<i32>;
-// a three-component unsigned integer vector
 pub type uvec3 = Vec3<u32>;
 
 // Rust-style type aliases
@@ -1067,77 +907,91 @@ pub type Vec3u32 = Vec3<u32>;
 pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
 
-/// A 4-dimensional vector
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. This is intended to support boolean,
-///         integer, unsigned integer, and floating point types.
-///
-/// # Fields
-///
-/// - `x`: the first component of the vector
-/// - `y`: the second component of the vector
-/// - `z`: the third component of the vector
-/// - `w`: the fourth component of the vector
 #[deriving(Eq)]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
-impl<T:Copy + Eq> BaseVec<T> for Vec4<T> {
+impl<T> Vec4<T> {
     #[inline(always)]
-    fn index<'a>(&'a self, i: uint) -> &'a T {
-        unsafe { &'a transmute::<&'a Vec4<T>, &'a [T,..4]>(self)[i] }
+    pub fn index<'a>(&'a self, i: uint) -> &'a T {
+        &'a self.as_slice()[i]
     }
 
     #[inline(always)]
-    fn from_value(value: T) -> Vec4<T> {
-        BaseVec4::new(value, value, value, value)
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
+        &'a mut self.as_mut_slice()[i]
     }
 
     #[inline(always)]
-    fn to_ptr(&self) -> *T {
+    pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
         unsafe { transmute(self) }
     }
 
     #[inline(always)]
-    fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        unsafe { &'a mut transmute::< &'a mut Vec4<T>, &'a mut [T,..4]>(self)[i] }
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
+        unsafe { transmute(self) }
+    }
+}
+
+impl<T:Copy> Vec4<T> {
+    #[inline(always)]
+    pub fn new(x: T, y: T, z: T, w: T ) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
     }
 
     #[inline(always)]
-    fn swap(&mut self, a: uint, b: uint) {
+    pub fn from_value(value: T) -> Vec4<T> {
+        Vec4::new(value, value, value, value)
+    }
+
+    #[inline(always)]
+    pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
-}
 
-impl<T> BaseVec4<T> for Vec4<T> {
     #[inline(always)]
-    fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
-        Vec4 { x: x, y: y, z: z, w: w }
+    pub fn map(&self, f: &fn(&T) -> T) -> Vec4<T> {
+        Vec4::new(f(self.index(0)),
+                  f(self.index(1)),
+                  f(self.index(2)),
+                  f(self.index(3)))
     }
 }
 
-impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
+impl<T:Copy + Num> Vec4<T> {
     #[inline(always)]
-    fn identity() -> Vec4<T> {
-        BaseVec4::new(One::one::<T>(),
-                      One::one::<T>(),
-                      One::one::<T>(),
-                      One::one::<T>())
+    pub fn identity() -> Vec4<T> {
+        Vec4::new(One::one::<T>(), One::one::<T>(), One::one::<T>(), One::one::<T>())
     }
 
     #[inline(always)]
-    fn zero() -> Vec4<T> {
-        BaseVec4::new(Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>())
+    pub fn zero() -> Vec4<T> {
+        Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
     #[inline(always)]
-    fn is_zero(&self) -> bool {
+    pub fn unit_x() -> Vec4<T> {
+        Vec4::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_y() -> Vec4<T> {
+        Vec4::new(Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_z() -> Vec4<T> {
+        Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>())
+    }
+
+    #[inline(always)]
+    pub fn unit_w() -> Vec4<T> {
+        Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
+    }
+
+    #[inline(always)]
+    pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero() &&
         *self.index(2) == Zero::zero() &&
@@ -1145,177 +999,243 @@ impl<T:Copy + Num + NumAssign> NumVec<T> for Vec4<T> {
     }
 
     #[inline(always)]
-    fn mul_t(&self, value: T) -> Vec4<T> {
-        zip_vec4!(self[] mul value)
+    pub fn add_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(*self.index(0) + value,
+                  *self.index(1) + value,
+                  *self.index(2) + value,
+                  *self.index(3) + value)
     }
 
     #[inline(always)]
-    fn div_t(&self, value: T) -> Vec4<T> {
-        zip_vec4!(self[] div value)
+    pub fn sub_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(*self.index(0) - value,
+                  *self.index(1) - value,
+                  *self.index(2) - value,
+                  *self.index(3) - value)
     }
 
     #[inline(always)]
-    fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        zip_vec4!(self[] add other[])
+    pub fn mul_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(*self.index(0) * value,
+                  *self.index(1) * value,
+                  *self.index(2) * value,
+                  *self.index(3) * value)
     }
 
     #[inline(always)]
-    fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        zip_vec4!(self[] sub other[])
+    pub fn div_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(*self.index(0) / value,
+                  *self.index(1) / value,
+                  *self.index(2) / value,
+                  *self.index(3) / value)
     }
 
     #[inline(always)]
-    fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        zip_vec4!(self[] mul other[])
+    pub fn rem_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(*self.index(0) % value,
+                  *self.index(1) % value,
+                  *self.index(2) % value,
+                  *self.index(3) % value)
     }
 
     #[inline(always)]
-    fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        zip_vec4!(self[] div other[])
+    pub fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(*self.index(0) + *other.index(0),
+                  *self.index(1) + *other.index(1),
+                  *self.index(2) + *other.index(2),
+                  *self.index(3) + *other.index(3))
     }
 
     #[inline(always)]
-    fn dot(&self, other: &Vec4<T>) -> T {
-        (*self.index(0)) * (*other.index(0)) +
-        (*self.index(1)) * (*other.index(1)) +
-        (*self.index(2)) * (*other.index(2)) +
-        (*self.index(3)) * (*other.index(3))
+    pub fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(*self.index(0) - *other.index(0),
+                  *self.index(1) - *other.index(1),
+                  *self.index(2) - *other.index(2),
+                  *self.index(3) - *other.index(3))
     }
 
     #[inline(always)]
-    fn neg_self(&mut self) {
-        *self.index_mut(0) = -self.index(0);
-        *self.index_mut(1) = -self.index(1);
-        *self.index_mut(2) = -self.index(2);
-        *self.index_mut(3) = -self.index(3);
+    pub fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(*self.index(0) * *other.index(0),
+                  *self.index(1) * *other.index(1),
+                  *self.index(2) * *other.index(2),
+                  *self.index(3) * *other.index(3))
     }
 
     #[inline(always)]
-    fn mul_self_t(&mut self, value: T) {
-        zip_assign!(self[] mul_assign value ..4);
+    pub fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(*self.index(0) / *other.index(0),
+                  *self.index(1) / *other.index(1),
+                  *self.index(2) / *other.index(2),
+                  *self.index(3) / *other.index(3))
     }
 
     #[inline(always)]
-    fn div_self_t(&mut self, value: T) {
-        zip_assign!(self[] div_assign value ..4);
+    pub fn rem_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(*self.index(0) % *other.index(0),
+                  *self.index(1) % *other.index(1),
+                  *self.index(2) % *other.index(2),
+                  *self.index(3) % *other.index(3))
     }
 
     #[inline(always)]
-    fn add_self_v(&mut self, other: &Vec4<T>) {
-        zip_assign!(self[] add_assign other[] ..4);
+    pub fn neg_self(&mut self) {
+        *self.index_mut(0) = -*self.index(0);
+        *self.index_mut(1) = -*self.index(1);
+        *self.index_mut(2) = -*self.index(2);
+        *self.index_mut(3) = -*self.index(3);
     }
 
     #[inline(always)]
-    fn sub_self_v(&mut self, other: &Vec4<T>) {
-        zip_assign!(self[] sub_assign other[] ..4);
+    pub fn add_self_t(&mut self, value: T) {
+        *self.index_mut(0) += value;
+        *self.index_mut(1) += value;
+        *self.index_mut(2) += value;
+        *self.index_mut(3) += value;
     }
 
     #[inline(always)]
-    fn mul_self_v(&mut self, other: &Vec4<T>) {
-        zip_assign!(self[] mul_assign other[] ..4);
+    pub fn sub_self_t(&mut self, value: T) {
+        *self.index_mut(0) -= value;
+        *self.index_mut(1) -= value;
+        *self.index_mut(2) -= value;
+        *self.index_mut(3) -= value;
     }
 
     #[inline(always)]
-    fn div_self_v(&mut self, other: &Vec4<T>) {
-        zip_assign!(self[] div_assign other[] ..4);
+    pub fn mul_self_t(&mut self, value: T) {
+        *self.index_mut(0) *= value;
+        *self.index_mut(1) *= value;
+        *self.index_mut(2) *= value;
+        *self.index_mut(3) *= value;
+    }
+
+    #[inline(always)]
+    pub fn div_self_t(&mut self, value: T) {
+        *self.index_mut(0) /= value;
+        *self.index_mut(1) /= value;
+        *self.index_mut(2) /= value;
+        *self.index_mut(3) /= value;
+    }
+
+    #[inline(always)]
+    pub fn rem_self_t(&mut self, value: T) {
+        *self.index_mut(0) %= value;
+        *self.index_mut(1) %= value;
+        *self.index_mut(2) %= value;
+        *self.index_mut(3) %= value;
+    }
+
+    #[inline(always)]
+    pub fn add_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) += *other.index(0);
+        *self.index_mut(1) += *other.index(1);
+        *self.index_mut(2) += *other.index(2);
+        *self.index_mut(3) += *other.index(3);
+    }
+
+    #[inline(always)]
+    pub fn sub_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) -= *other.index(0);
+        *self.index_mut(1) -= *other.index(1);
+        *self.index_mut(2) -= *other.index(2);
+        *self.index_mut(3) -= *other.index(3);
+    }
+
+    #[inline(always)]
+    pub fn mul_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) *= *other.index(0);
+        *self.index_mut(1) *= *other.index(1);
+        *self.index_mut(2) *= *other.index(2);
+        *self.index_mut(3) *= *other.index(3);
+    }
+
+    #[inline(always)]
+    pub fn div_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+        *self.index_mut(2) /= *other.index(2);
+        *self.index_mut(3) /= *other.index(3);
+    }
+
+    #[inline(always)]
+    pub fn rem_self_v(&mut self, other: &Vec4<T>) {
+        *self.index_mut(0) /= *other.index(0);
+        *self.index_mut(1) /= *other.index(1);
+        *self.index_mut(2) /= *other.index(2);
+        *self.index_mut(3) /= *other.index(3);
+    }
+
+    #[inline(always)]
+    pub fn dot(&self, other: &Vec4<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1) +
+        *self.index(2) * *other.index(2) +
+        *self.index(3) * *other.index(3)
     }
 }
 
 impl<T:Copy + Num> Neg<Vec4<T>> for Vec4<T> {
     #[inline(always)]
-    fn neg(&self) -> Vec4<T> {
-        BaseVec4::new(-self.index(0), -self.index(1), -self.index(2), -self.index(3))
+    pub fn neg(&self) -> Vec4<T> {
+        Vec4::new(-self.index(0), -self.index(1), -self.index(2), -self.index(3))
     }
 }
 
-impl<T:Copy + Num> NumVec4<T> for Vec4<T> {
+impl<T:Copy + Real> Vec4<T> {
     #[inline(always)]
-    fn unit_x() -> Vec4<T> {
-        BaseVec4::new(One::one::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_y() -> Vec4<T> {
-        BaseVec4::new(Zero::zero::<T>(),
-                      One::one::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_z() -> Vec4<T> {
-        BaseVec4::new(Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      One::one::<T>(),
-                      Zero::zero::<T>())
-    }
-
-    #[inline(always)]
-    fn unit_w() -> Vec4<T> {
-        BaseVec4::new(Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      Zero::zero::<T>(),
-                      One::one::<T>())
-    }
-}
-
-impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
-    #[inline(always)]
-    fn length2(&self) -> T {
+    pub fn length2(&self) -> T {
         self.dot(self)
     }
 
     #[inline(always)]
-    fn length(&self) -> T {
+    pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
     #[inline(always)]
-    fn distance2(&self, other: &Vec4<T>) -> T {
+    pub fn distance2(&self, other: &Vec4<T>) -> T {
         other.sub_v(self).length2()
     }
 
     #[inline(always)]
-    fn distance(&self, other: &Vec4<T>) -> T {
+    pub fn distance(&self, other: &Vec4<T>) -> T {
         other.distance2(self).sqrt()
     }
 
     #[inline(always)]
-    fn angle(&self, other: &Vec4<T>) -> T {
+    pub fn angle(&self, other: &Vec4<T>) -> T {
         (self.dot(other) / (self.length() * other.length())).acos()
     }
 
     #[inline(always)]
-    fn normalize(&self) -> Vec4<T> {
+    pub fn normalize(&self) -> Vec4<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
     #[inline(always)]
-    fn normalize_to(&self, length: T) -> Vec4<T> {
+    pub fn normalize_to(&self, length: T) -> Vec4<T> {
         self.mul_t(length / self.length())
     }
 
     #[inline(always)]
-    fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
+    pub fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
     #[inline(always)]
-    fn normalize_self(&mut self) {
+    pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
     #[inline(always)]
-    fn normalize_self_to(&mut self, length: T) {
+    pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
     }
 
-    fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
+    pub fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
     }
@@ -1323,17 +1243,17 @@ impl<T:Copy + Real + NumAssign> AffineVec<T> for Vec4<T> {
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
     #[inline(always)]
-    fn approx_epsilon() -> T {
+    pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline(always)]
-    fn approx_eq(&self, other: &Vec4<T>) -> bool {
+    pub fn approx_eq(&self, other: &Vec4<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
     #[inline(always)]
-    fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
+    pub fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon) &&
         self.index(2).approx_eq_eps(other.index(2), epsilon) &&
@@ -1341,69 +1261,128 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
     }
 }
 
-impl<T:Copy + Ord + Eq> OrdVec<T, Vec4<bool>> for Vec4<T> {
+impl<T:Copy + Ord> Vec4<T> {
     #[inline(always)]
-    fn less_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] lt other[])
+    pub fn lt_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) < value,
+                  *self.index(1) < value,
+                  *self.index(2) < value,
+                  *self.index(3) < value)
     }
 
     #[inline(always)]
-    fn less_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] le other[])
+    pub fn le_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) <= value,
+                  *self.index(1) <= value,
+                  *self.index(2) <= value,
+                  *self.index(3) <= value)
     }
 
     #[inline(always)]
-    fn greater_than(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] gt other[])
+    pub fn ge_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) >= value,
+                  *self.index(1) >= value,
+                  *self.index(2) >= value,
+                  *self.index(3) >= value)
     }
 
     #[inline(always)]
-    fn greater_than_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] ge other[])
+    pub fn gt_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) > value,
+                  *self.index(1) > value,
+                  *self.index(2) > value,
+                  *self.index(3) > value)
+    }
+
+    #[inline(always)]
+    pub fn lt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) < *other.index(0),
+                  *self.index(1) < *other.index(1),
+                  *self.index(2) < *other.index(2),
+                  *self.index(3) < *other.index(3))
+    }
+
+    #[inline(always)]
+    pub fn le_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) <= *other.index(0),
+                  *self.index(1) <= *other.index(1),
+                  *self.index(2) <= *other.index(2),
+                  *self.index(3) <= *other.index(3))
+    }
+
+    #[inline(always)]
+    pub fn ge_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) >= *other.index(0),
+                  *self.index(1) >= *other.index(1),
+                  *self.index(2) >= *other.index(2),
+                  *self.index(3) >= *other.index(3))
+    }
+
+    #[inline(always)]
+    pub fn gt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) > *other.index(0),
+                  *self.index(1) > *other.index(1),
+                  *self.index(2) > *other.index(2),
+                  *self.index(3) > *other.index(3))
     }
 }
 
-impl<T:Copy + Eq> EqVec<T, Vec4<bool>> for Vec4<T> {
+impl<T:Copy + Eq> Vec4<T> {
     #[inline(always)]
-    fn equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] eq other[])
+    pub fn eq_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) == value,
+                  *self.index(1) == value,
+                  *self.index(2) == value,
+                  *self.index(3) == value)
     }
 
     #[inline(always)]
-    fn not_equal(&self, other: &Vec4<T>) -> Vec4<bool> {
-        zip_vec4!(self[] ne other[])
+    pub fn ne_t(&self, value: T) -> Vec4<bool> {
+        Vec4::new(*self.index(0) != value,
+                  *self.index(1) != value,
+                  *self.index(2) != value,
+                  *self.index(3) != value)
+    }
+
+    #[inline(always)]
+    pub fn eq_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) == *other.index(0),
+                  *self.index(1) == *other.index(1),
+                  *self.index(2) == *other.index(2),
+                  *self.index(3) == *other.index(3))
+    }
+
+    #[inline(always)]
+    pub fn ne_v(&self, other: &Vec4<T>) -> Vec4<bool> {
+        Vec4::new(*self.index(0) != *other.index(0),
+                  *self.index(1) != *other.index(1),
+                  *self.index(2) != *other.index(2),
+                  *self.index(3) != *other.index(3))
     }
 }
 
-impl BoolVec for Vec4<bool> {
+impl Vec4<bool> {
     #[inline(always)]
-    fn any(&self) -> bool {
+    pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
     }
 
     #[inline(always)]
-    fn all(&self) -> bool {
+    pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
     }
 
     #[inline(always)]
-    fn not(&self) -> Vec4<bool> {
-        BaseVec4::new(!*self.index(0), !*self.index(1), !*self.index(2), !*self.index(3))
+    pub fn not(&self) -> Vec4<bool> {
+        Vec4::new(!*self.index(0), !*self.index(1), !*self.index(2), !*self.index(3))
     }
 }
 
-// GLSL-style type aliases, corresponding to Section 4.1.5 of the [GLSL 4.30.6 specification]
-// (http://www.opengl.org/registry/doc/GLSLangSpec.4.30.6.pdf).
-
-// a four-component single-precision floating-point vector
+// GLSL-style type aliases
 pub type vec4  = Vec4<f32>;
-// a four-component double-precision floating-point vector
 pub type dvec4 = Vec4<f64>;
-// a four-component Boolean vector
 pub type bvec4 = Vec4<bool>;
-// a four-component signed integer vector
 pub type ivec4 = Vec4<i32>;
-// a four-component unsigned integer vector
 pub type uvec4 = Vec4<u32>;
 
 // Rust-style type aliases
