@@ -17,7 +17,7 @@ use std::num::{Zero, One};
 use mat::Mat4;
 
 // FIXME: We can remove this once we have numeric conversions in std
-#[inline(always)]
+#[inline]
 priv fn two<T:Num>() -> T {
     One::one::<T>() + One::one::<T>()
 }
@@ -30,7 +30,6 @@ priv fn two<T:Num>() -> T {
 /// This is the equivalent of the gluPerspective function, the algorithm of which
 /// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
 ///
-#[inline(always)]
 pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * (fovy / two::<T>()).to_radians().tan();
     let xmax = ymax * aspectRatio;
@@ -44,7 +43,6 @@ pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> M
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 ///
-#[inline(always)]
 pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = (two::<T>() * near) / (right - left);
     let c0r1 = Zero::zero();
@@ -78,7 +76,6 @@ pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
 ///
-#[inline(always)]
 pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = two::<T>() / (right - left);
     let c0r1 = Zero::zero();

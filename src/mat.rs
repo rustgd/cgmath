@@ -25,32 +25,32 @@ use quat::Quat;
 pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
 
 impl<T> Mat2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [Vec2<T>,..2] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec2<T>,..2] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
         self.col(i).index(j)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
         self.col_mut(i).index_mut(j)
     }
@@ -72,7 +72,7 @@ impl<T:Copy> Mat2<T> {
     ///  r1 | c0r1 | c1r1 |
     ///     +------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn new(c0r0: T, c0r1: T,
                c1r0: T, c1r1: T) -> Mat2<T> {
         Mat2::from_cols(Vec2::new(c0r0, c0r1),
@@ -94,38 +94,38 @@ impl<T:Copy> Mat2<T> {
     ///  r1 | c0.y | c1.y |
     ///     +------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_cols(c0: Vec2<T>,
                      c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn row(&self, i: uint) -> Vec2<T> {
         Vec2::new(*self.elem(0, i),
                   *self.elem(1, i))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_cols(&mut self, a: uint, b: uint) {
         let tmp = *self.col(a);
         *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_rows(&mut self, a: uint, b: uint) {
         self.x.swap(a, b);
         self.y.swap(a, b);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose(&self) -> Mat2<T> {
         Mat2::new(*self.elem(0, 0), *self.elem(1, 0),
                   *self.elem(0, 1), *self.elem(1, 1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose_self(&mut self) {
         let tmp01 = *self.elem(0, 1);
         let tmp10 = *self.elem(1, 0);
@@ -148,7 +148,7 @@ impl<T:Copy + Num> Mat2<T> {
     ///  r1 |   0 | val |
     ///     +-----+-----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Mat2<T> {
         Mat2::new(value, Zero::zero(),
                   Zero::zero(), value)
@@ -163,7 +163,7 @@ impl<T:Copy + Num> Mat2<T> {
     ///  r1 |  0 |  1 |
     ///     +----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Mat2<T> {
         Mat2::new(One::one::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), One::one::<T>())
@@ -178,55 +178,55 @@ impl<T:Copy + Num> Mat2<T> {
     ///  r1 |  0 |  0 |
     ///     +----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Mat2<T> {
         Mat2::new(Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Mat2<T> {
         Mat2::from_cols(self.col(0).mul_t(value),
                         self.col(1).mul_t(value))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self.row(0).dot(vec),
                   self.row(1).dot(vec))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self.col(0).add_v(other.col(0)),
                         self.col(1).add_v(other.col(1)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::from_cols(self.col(0).sub_v(other.col(0)),
                         self.col(1).sub_v(other.col(1)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
         Mat2::new(self.row(0).dot(other.col(0)), self.row(1).dot(other.col(0)),
                   self.row(0).dot(other.col(1)), self.row(1).dot(other.col(1)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         self.x.mul_self_t(value);
         self.y.mul_self_t(value);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_m(&mut self, other: &Mat2<T>) {
         self.x.add_self_v(other.col(0));
         self.y.add_self_v(other.col(1));
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_m(&mut self, other: &Mat2<T>) {
         self.x.sub_self_v(other.col(0));
         self.y.sub_self_v(other.col(1));
@@ -248,12 +248,12 @@ impl<T:Copy + Num> Mat2<T> {
         *self.col(1).index(1)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_identity(&mut self) {
         *self = Mat2::identity();
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_zero(&mut self) {
         *self = Mat2::zero();
     }
@@ -269,7 +269,7 @@ impl<T:Copy + Num> Mat2<T> {
     ///                          r2 |  0 |  0 |  1 |
     ///                             +----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn to_mat3(&self) -> Mat3<T> {
         Mat3::new(*self.elem(0, 0), *self.elem(0, 1), Zero::zero(),
                   *self.elem(1, 0), *self.elem(1, 1), Zero::zero(),
@@ -289,7 +289,7 @@ impl<T:Copy + Num> Mat2<T> {
     ///                          r3 |  0 |  0 |  0 |  1 |
     ///                             +----+----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
         Mat4::new(*self.elem(0, 0), *self.elem(0, 1), Zero::zero(), Zero::zero(),
                   *self.elem(1, 0), *self.elem(1, 1), Zero::zero(), Zero::zero(),
@@ -299,14 +299,14 @@ impl<T:Copy + Num> Mat2<T> {
 }
 
 impl<T:Copy + Num> Neg<Mat2<T>> for Mat2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Mat2<T> {
         Mat2::from_cols(-self.col(0), -self.col(1))
     }
 }
 
 impl<T:Copy + Real> Mat2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn from_angle(radians: T) -> Mat2<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
@@ -317,7 +317,7 @@ impl<T:Copy + Real> Mat2<T> {
 }
 
 impl<T:Copy + Real + ApproxEq<T>> Mat2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
         if d.approx_eq(&Zero::zero()) {
@@ -328,51 +328,51 @@ impl<T:Copy + Real + ApproxEq<T>> Mat2<T> {
         }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn invert_self(&mut self) {
         *self = self.inverse().expect("Couldn't invert the matrix!");
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_identity(&self) -> bool {
         self.approx_eq(&Mat2::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_diagonal(&self) -> bool {
         self.elem(0, 1).approx_eq(&Zero::zero()) &&
         self.elem(1, 0).approx_eq(&Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_rotated(&self) -> bool {
         !self.approx_eq(&Mat2::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_symmetric(&self) -> bool {
         self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
         self.elem(1, 0).approx_eq(self.elem(0, 1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&Zero::zero())
     }
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Mat2<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
         self.col(0).approx_eq_eps(other.col(0), epsilon) &&
         self.col(1).approx_eq_eps(other.col(1), epsilon)
@@ -392,32 +392,32 @@ pub type Mat2f64 = Mat2<f64>;
 pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
 
 impl<T> Mat3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [Vec3<T>,..3] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec3<T>,..3] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
         self.col(i).index(j)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
         self.col_mut(i).index_mut(j)
     }
@@ -442,7 +442,7 @@ impl<T:Copy> Mat3<T> {
     ///   r2 | c0r2 | c1r2 | c2r2 |
     ///      +------+------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn new(c0r0:T, c0r1:T, c0r2:T,
                c1r0:T, c1r1:T, c1r2:T,
                c2r0:T, c2r1:T, c2r2:T) -> Mat3<T> {
@@ -469,42 +469,42 @@ impl<T:Copy> Mat3<T> {
     ///  r2 | c0.z | c1.z | c2.z |
     ///     +------+------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_cols(c0: Vec3<T>,
                      c1: Vec3<T>,
                      c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn row(&self, i: uint) -> Vec3<T> {
         Vec3::new(*self.elem(0, i),
                   *self.elem(1, i),
                   *self.elem(2, i))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_cols(&mut self, a: uint, b: uint) {
         let tmp = *self.col(a);
         *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_rows(&mut self, a: uint, b: uint) {
         self.x.swap(a, b);
         self.y.swap(a, b);
         self.z.swap(a, b);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose(&self) -> Mat3<T> {
         Mat3::new(*self.elem(0, 0), *self.elem(1, 0), *self.elem(2, 0),
                   *self.elem(0, 1), *self.elem(1, 1), *self.elem(2, 1),
                   *self.elem(0, 2), *self.elem(1, 2), *self.elem(2, 2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose_self(&mut self) {
         let tmp01 = *self.elem(0, 1);
         let tmp02 = *self.elem(0, 2);
@@ -546,7 +546,7 @@ impl<T:Copy + Num> Mat3<T> {
     ///  r2 |   0 |   0 | val |
     ///     +-----+-----+-----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Mat3<T> {
         Mat3::new(value, Zero::zero(), Zero::zero(),
                   Zero::zero(), value, Zero::zero(),
@@ -564,7 +564,7 @@ impl<T:Copy + Num> Mat3<T> {
     ///  r2 |  0 |  0 |  1 |
     ///     +----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Mat3<T> {
         Mat3::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(),
@@ -582,42 +582,42 @@ impl<T:Copy + Num> Mat3<T> {
     ///  r2 |  0 |  0 |  0 |
     ///     +----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Mat3<T> {
         Mat3::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Mat3<T> {
         Mat3::from_cols(self.col(0).mul_t(value),
                         self.col(1).mul_t(value),
                         self.col(2).mul_t(value))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self.row(0).dot(vec),
                   self.row(1).dot(vec),
                   self.row(2).dot(vec))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self.col(0).add_v(other.col(0)),
                         self.col(1).add_v(other.col(1)),
                         self.col(2).add_v(other.col(2)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::from_cols(self.col(0).sub_v(other.col(0)),
                         self.col(1).sub_v(other.col(1)),
                         self.col(2).sub_v(other.col(2)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
         Mat3::new(self.row(0).dot(other.col(0)),
                   self.row(1).dot(other.col(0)),
@@ -632,21 +632,21 @@ impl<T:Copy + Num> Mat3<T> {
                   self.row(2).dot(other.col(2)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         self.col_mut(0).mul_self_t(value);
         self.col_mut(1).mul_self_t(value);
         self.col_mut(2).mul_self_t(value);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_m(&mut self, other: &Mat3<T>) {
         self.col_mut(0).add_self_v(other.col(0));
         self.col_mut(1).add_self_v(other.col(1));
         self.col_mut(2).add_self_v(other.col(2));
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_m(&mut self, other: &Mat3<T>) {
         self.col_mut(0).sub_self_v(other.col(0));
         self.col_mut(1).sub_self_v(other.col(1));
@@ -667,12 +667,12 @@ impl<T:Copy + Num> Mat3<T> {
         *self.elem(2, 2)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_identity(&mut self) {
         *self = Mat3::identity();
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_zero(&mut self) {
         *self = Mat3::zero();
     }
@@ -690,7 +690,7 @@ impl<T:Copy + Num> Mat3<T> {
     ///                               r3 |  0 |  0 |  0 |  1 |
     ///                                  +----+----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
         Mat4::new(*self.elem(0, 0), *self.elem(0, 1), *self.elem(0, 2), Zero::zero(),
                   *self.elem(1, 0), *self.elem(1, 1), *self.elem(1, 2), Zero::zero(),
@@ -700,7 +700,7 @@ impl<T:Copy + Num> Mat3<T> {
 }
 
 impl<T:Copy + Num> Neg<Mat3<T>> for Mat3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Mat3<T> {
         Mat3::from_cols(-self.col(0), -self.col(1), -self.col(2))
     }
@@ -708,7 +708,6 @@ impl<T:Copy + Num> Neg<Mat3<T>> for Mat3<T> {
 
 impl<T:Copy + Real> Mat3<T> {
     /// Construct a matrix from an angular rotation around the `x` axis
-    #[inline(always)]
     pub fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = radians.cos();
@@ -720,7 +719,6 @@ impl<T:Copy + Real> Mat3<T> {
     }
 
     /// Construct a matrix from an angular rotation around the `y` axis
-    #[inline(always)]
     pub fn from_angle_y(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = radians.cos();
@@ -732,7 +730,6 @@ impl<T:Copy + Real> Mat3<T> {
     }
 
     /// Construct a matrix from an angular rotation around the `z` axis
-    #[inline(always)]
     pub fn from_angle_z(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let cos_theta = radians.cos();
@@ -750,7 +747,6 @@ impl<T:Copy + Real> Mat3<T> {
     /// - `theta_x`: the angular rotation around the `x` axis (pitch)
     /// - `theta_y`: the angular rotation around the `y` axis (yaw)
     /// - `theta_z`: the angular rotation around the `z` axis (roll)
-    #[inline(always)]
     pub fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
         let cx = radians_x.cos();
@@ -766,7 +762,6 @@ impl<T:Copy + Real> Mat3<T> {
     }
 
     /// Construct a matrix from an axis and an angular rotation
-    #[inline(always)]
     pub fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Mat3<T> {
         let c = radians.cos();
         let s = radians.sin();
@@ -781,12 +776,11 @@ impl<T:Copy + Real> Mat3<T> {
                   _1_c*x*z + s*y, _1_c*y*z - s*x, _1_c*z*z + c)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Mat3<T> {
         Mat3::from_cols(x, y, z)
     }
 
-    #[inline(always)]
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Mat3<T> {
         let dir_ = dir.normalize();
         let side = dir_.cross(&up.normalize());
@@ -796,7 +790,6 @@ impl<T:Copy + Real> Mat3<T> {
     }
 
     /// Convert the matrix to a quaternion
-    #[inline(always)]
     pub fn to_quat(&self) -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
@@ -859,17 +852,17 @@ impl<T:Copy + Real + ApproxEq<T>> Mat3<T> {
         }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn invert_self(&mut self) {
         *self = self.inverse().expect("Couldn't invert the matrix!");
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_identity(&self) -> bool {
         self.approx_eq(&Mat3::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_diagonal(&self) -> bool {
         self.elem(0, 1).approx_eq(&Zero::zero()) &&
         self.elem(0, 2).approx_eq(&Zero::zero()) &&
@@ -881,12 +874,12 @@ impl<T:Copy + Real + ApproxEq<T>> Mat3<T> {
         self.elem(2, 1).approx_eq(&Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_rotated(&self) -> bool {
         !self.approx_eq(&Mat3::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_symmetric(&self) -> bool {
         self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
         self.elem(0, 2).approx_eq(self.elem(2, 0)) &&
@@ -898,24 +891,24 @@ impl<T:Copy + Real + ApproxEq<T>> Mat3<T> {
         self.elem(2, 1).approx_eq(self.elem(1, 2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&Zero::zero())
     }
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Mat3<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
         self.col(0).approx_eq_eps(other.col(0), epsilon) &&
         self.col(1).approx_eq_eps(other.col(1), epsilon) &&
@@ -948,32 +941,32 @@ pub type Mat3f64 = Mat3<f64>;
 pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
 
 impl<T> Mat4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [Vec4<T>,..4] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec4<T>,..4] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
         self.col(i).index(j)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
         self.col_mut(i).index_mut(j)
     }
@@ -1001,7 +994,7 @@ impl<T:Copy> Mat4<T> {
     ///  r3 | c0r3 | c1r3 | c2r3 | c3r3 |
     ///     +------+------+------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn new(c0r0: T, c0r1: T, c0r2: T, c0r3: T,
                c1r0: T, c1r1: T, c1r2: T, c1r3: T,
                c2r0: T, c2r1: T, c2r2: T, c2r3: T,
@@ -1033,7 +1026,7 @@ impl<T:Copy> Mat4<T> {
     ///  r3 | c0.w | c1.w | c2.w | c3.w |
     ///     +------+------+------+------+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_cols(c0: Vec4<T>,
                      c1: Vec4<T>,
                      c2: Vec4<T>,
@@ -1041,7 +1034,7 @@ impl<T:Copy> Mat4<T> {
         Mat4 { x: c0, y: c1, z: c2, w: c3 }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn row(&self, i: uint) -> Vec4<T> {
         Vec4::new(*self.elem(0, i),
                   *self.elem(1, i),
@@ -1049,14 +1042,14 @@ impl<T:Copy> Mat4<T> {
                   *self.elem(3, i))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_cols(&mut self, a: uint, b: uint) {
         let tmp = *self.col(a);
         *self.col_mut(a) = *self.col(b);
         *self.col_mut(b) = tmp;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap_rows(&mut self, a: uint, b: uint) {
         self.x.swap(a, b);
         self.y.swap(a, b);
@@ -1064,7 +1057,7 @@ impl<T:Copy> Mat4<T> {
         self.w.swap(a, b);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose(&self) -> Mat4<T> {
         Mat4::new(*self.elem(0, 0), *self.elem(1, 0), *self.elem(2, 0), *self.elem(3, 0),
                   *self.elem(0, 1), *self.elem(1, 1), *self.elem(2, 1), *self.elem(3, 1),
@@ -1072,7 +1065,7 @@ impl<T:Copy> Mat4<T> {
                   *self.elem(0, 3), *self.elem(1, 3), *self.elem(2, 3), *self.elem(3, 3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn transpose_self(&mut self) {
         let tmp01 = *self.elem(0, 1);
         let tmp02 = *self.elem(0, 2);
@@ -1134,7 +1127,7 @@ impl<T:Copy + Num> Mat4<T> {
     ///  r3 |   0 |   0 |   0 | val |
     ///     +-----+-----+-----+-----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Mat4<T> {
         Mat4::new(value, Zero::zero(), Zero::zero(), Zero::zero(),
                   Zero::zero(), value, Zero::zero(), Zero::zero(),
@@ -1155,7 +1148,7 @@ impl<T:Copy + Num> Mat4<T> {
     ///  r3 |  0 |  0 |  0 |  1 |
     ///     +----+----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Mat4<T> {
         Mat4::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -1176,7 +1169,7 @@ impl<T:Copy + Num> Mat4<T> {
     ///  r3 |  0 |  0 |  0 |  0 |
     ///     +----+----+----+----+
     /// ~~~
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Mat4<T> {
         Mat4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
                   Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(),
@@ -1184,7 +1177,7 @@ impl<T:Copy + Num> Mat4<T> {
                   Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Mat4<T> {
         Mat4::from_cols(self.col(0).mul_t(value),
                         self.col(1).mul_t(value),
@@ -1192,7 +1185,7 @@ impl<T:Copy + Num> Mat4<T> {
                         self.col(3).mul_t(value))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self.row(0).dot(vec),
                   self.row(1).dot(vec),
@@ -1200,7 +1193,7 @@ impl<T:Copy + Num> Mat4<T> {
                   self.row(3).dot(vec))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self.col(0).add_v(other.col(0)),
                         self.col(1).add_v(other.col(1)),
@@ -1208,7 +1201,7 @@ impl<T:Copy + Num> Mat4<T> {
                         self.col(3).add_v(other.col(3)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Mat4::from_cols(self.col(0).sub_v(other.col(0)),
                         self.col(1).sub_v(other.col(1)),
@@ -1216,7 +1209,7 @@ impl<T:Copy + Num> Mat4<T> {
                         self.col(3).sub_v(other.col(3)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
         Mat4::new(self.row(0).dot(other.col(0)),
                   self.row(1).dot(other.col(0)),
@@ -1239,7 +1232,7 @@ impl<T:Copy + Num> Mat4<T> {
                   self.row(3).dot(other.col(3)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         self.col_mut(0).mul_self_t(value);
         self.col_mut(1).mul_self_t(value);
@@ -1247,7 +1240,7 @@ impl<T:Copy + Num> Mat4<T> {
         self.col_mut(3).mul_self_t(value);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_m(&mut self, other: &Mat4<T>) {
         self.col_mut(0).add_self_v(other.col(0));
         self.col_mut(1).add_self_v(other.col(1));
@@ -1255,7 +1248,7 @@ impl<T:Copy + Num> Mat4<T> {
         self.col_mut(3).add_self_v(other.col(3));
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_m(&mut self, other: &Mat4<T>) {
         self.col_mut(0).sub_self_v(other.col(0));
         self.col_mut(1).sub_self_v(other.col(1));
@@ -1294,19 +1287,19 @@ impl<T:Copy + Num> Mat4<T> {
         *self.elem(3, 3)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_identity(&mut self) {
         *self = Mat4::identity();
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_zero(&mut self) {
         *self = Mat4::zero();
     }
 }
 
 impl<T:Copy + Num> Neg<Mat4<T>> for Mat4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Mat4<T> {
         Mat4::from_cols(-self.col(0), -self.col(1), -self.col(2), -self.col(3))
     }
@@ -1359,17 +1352,17 @@ impl<T:Copy + Real + ApproxEq<T>> Mat4<T> {
         }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn invert_self(&mut self) {
         *self = self.inverse().expect("Couldn't invert the matrix!");
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_identity(&self) -> bool {
         self.approx_eq(&Mat4::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_diagonal(&self) -> bool {
         self.elem(0, 1).approx_eq(&Zero::zero()) &&
         self.elem(0, 2).approx_eq(&Zero::zero()) &&
@@ -1388,12 +1381,12 @@ impl<T:Copy + Real + ApproxEq<T>> Mat4<T> {
         self.elem(3, 2).approx_eq(&Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_rotated(&self) -> bool {
         !self.approx_eq(&Mat4::identity())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_symmetric(&self) -> bool {
         self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
         self.elem(0, 2).approx_eq(self.elem(2, 0)) &&
@@ -1412,24 +1405,24 @@ impl<T:Copy + Real + ApproxEq<T>> Mat4<T> {
         self.elem(3, 2).approx_eq(self.elem(2, 3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&Zero::zero())
     }
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Mat4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Mat4<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
         self.col(0).approx_eq_eps(other.col(0), epsilon) &&
         self.col(1).approx_eq_eps(other.col(1), epsilon) &&

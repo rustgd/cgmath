@@ -21,7 +21,7 @@ use mat::Mat3;
 use vec::Vec3;
 
 // FIXME: We can remove this once we have numeric conversions in std
-#[inline(always)]
+#[inline]
 priv fn two<T:Num>() -> T {
     One::one::<T>() + One::one::<T>()
 }
@@ -40,22 +40,22 @@ priv fn two<T:Num>() -> T {
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl<T> Quat<T> {
-    #[inline(always)]
+    #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
         unsafe { transmute(self) }
     }
@@ -71,7 +71,7 @@ impl<T:Copy> Quat<T> {
     /// - `xi`: the fist imaginary component
     /// - `yj`: the second imaginary component
     /// - `zk`: the third imaginary component
-    #[inline(always)]
+    #[inline]
     pub fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
         Quat::from_sv(w, Vec3::new(xi, yj, zk))
     }
@@ -82,19 +82,19 @@ impl<T:Copy> Quat<T> {
     ///
     /// - `s`: the scalar component
     /// - `v`: a vector containing the three imaginary components
-    #[inline(always)]
+    #[inline]
     pub fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: s, v: v }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn map(&self, f: &fn(&T) -> T) -> Quat<T> {
         Quat::new(f(self.index(0)),
                   f(self.index(1)),
@@ -105,7 +105,7 @@ impl<T:Copy> Quat<T> {
 
 impl<T:Copy + Real> Quat<T> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Quat<T> {
         Quat::new(One::one(),
                   Zero::zero(),
@@ -114,7 +114,7 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Quat<T> {
         Quat::new(Zero::zero(),
                   Zero::zero(),
@@ -122,7 +122,7 @@ impl<T:Copy + Real> Quat<T> {
                   Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_x(radians: T) -> Quat<T> {
         Quat::new((radians / two()).cos(),
                   radians.sin(),
@@ -130,7 +130,7 @@ impl<T:Copy + Real> Quat<T> {
                   Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_y(radians: T) -> Quat<T> {
         Quat::new((radians / two()).cos(),
                   Zero::zero(),
@@ -138,7 +138,7 @@ impl<T:Copy + Real> Quat<T> {
                   Zero::zero())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_z(radians: T) -> Quat<T> {
         Quat::new((radians / two()).cos(),
                   Zero::zero(),
@@ -146,7 +146,6 @@ impl<T:Copy + Real> Quat<T> {
                   radians.sin())
     }
 
-    #[inline(always)]
     pub fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
         let xdiv2 = radians_x / two();
@@ -158,7 +157,7 @@ impl<T:Copy + Real> Quat<T> {
                   zdiv2.cos() * xdiv2.cos() * ydiv2.sin() - zdiv2.sin() * xdiv2.sin() * ydiv2.cos())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
         let half = radians / two();
         Quat::from_sv(half.cos(), axis.mul_t(half.sin()))
@@ -169,7 +168,7 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The result of multiplying the quaternion a scalar
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Quat<T> {
         Quat::new(*self.index(0) * value,
                   *self.index(1) * value,
@@ -178,7 +177,7 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The result of dividing the quaternion a scalar
-    #[inline(always)]
+    #[inline]
     pub fn div_t(&self, value: T) -> Quat<T> {
         Quat::new(*self.index(0) / value,
                   *self.index(1) / value,
@@ -187,14 +186,14 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The result of multiplying the quaternion by a vector
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
         self.v.cross(&tmp).mul_t(two()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
-    #[inline(always)]
+    #[inline]
     pub fn add_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(*self.index(0) + *other.index(0),
                   *self.index(1) + *other.index(1),
@@ -203,7 +202,7 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The sum of this quaternion and `other`
-    #[inline(always)]
+    #[inline]
     pub fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(*self.index(0) - *other.index(0),
                   *self.index(1) - *other.index(1),
@@ -212,7 +211,6 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The the result of multipliplying the quaternion by `other`
-    #[inline(always)]
     pub fn mul_q(&self, other: &Quat<T>) -> Quat<T> {
         Quat::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
                   self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
@@ -221,19 +219,19 @@ impl<T:Copy + Real> Quat<T> {
     }
 
     /// The dot product of the quaternion and `other`
-    #[inline(always)]
+    #[inline]
     pub fn dot(&self, other: &Quat<T>) -> T {
         self.s * other.s + self.v.dot(&other.v)
     }
 
     /// The conjugate of the quaternion
-    #[inline(always)]
+    #[inline]
     pub fn conjugate(&self) -> Quat<T> {
         Quat::from_sv(self.s, -self.v)
     }
 
     /// The multiplicative inverse of the quaternion
-    #[inline(always)]
+    #[inline]
     pub fn inverse(&self) -> Quat<T> {
         self.conjugate().div_t(self.magnitude2())
     }
@@ -241,7 +239,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The squared magnitude of the quaternion. This is useful for
     /// magnitude comparisons where the exact magnitude does not need to be
     /// calculated.
-    #[inline(always)]
+    #[inline]
     pub fn magnitude2(&self) -> T {
         self.s * self.s + self.v.length2()
     }
@@ -253,19 +251,18 @@ impl<T:Copy + Real> Quat<T> {
     /// For instances where the exact magnitude of the quaternion does not need
     /// to be known, for example for quaternion-quaternion magnitude comparisons,
     /// it is advisable to use the `magnitude2` method instead.
-    #[inline(always)]
+    #[inline]
     pub fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
 
     /// The normalized quaternion
-    #[inline(always)]
+    #[inline]
     pub fn normalize(&self) -> Quat<T> {
         self.mul_t(One::one::<T>() / self.magnitude())
     }
 
     /// Convert the quaternion to a 3 x 3 rotation matrix
-    #[inline(always)]
     pub fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
@@ -295,14 +292,13 @@ impl<T:Copy + Real> Quat<T> {
     /// # Return value
     ///
     /// The intoperlated quaternion
-    #[inline(always)]
     pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         self.mul_t(One::one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
     }
 }
 
 impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Quat<T> {
         Quat::new(-*self.index(0),
                   -*self.index(1),
@@ -312,12 +308,12 @@ impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
 }
 
 impl<T:Copy + Float> Quat<T> {
-    #[inline(always)]
+    #[inline]
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
         Mat3::look_at(dir, up).to_quat()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
         Mat3::from_axes(x, y, z).to_quat()
     }
@@ -341,7 +337,6 @@ impl<T:Copy + Float> Quat<T> {
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-    #[inline(always)]
     pub fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995);
@@ -365,17 +360,17 @@ impl<T:Copy + Float> Quat<T> {
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Quat<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon) &&

@@ -21,39 +21,39 @@ use std::num::{Zero, One};
 pub struct Vec2<T> { x: T, y: T }
 
 impl<T> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T,..2] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..2] {
         unsafe { transmute(self) }
     }
 }
 
 impl<T:Copy> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn new(x: T, y: T ) -> Vec2<T> {
         Vec2 { x: x, y: y }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value, value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
@@ -68,231 +68,231 @@ impl<T:Copy> Vec2<T> {
 }
 
 impl<T:Copy + Num> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Vec2<T> {
         Vec2::new(One::one::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Vec2<T> {
         Vec2::new(Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_x() -> Vec2<T> {
         Vec2::new(One::one::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_y() -> Vec2<T> {
         Vec2::new(Zero::zero::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) + value,
                   *self.index(1) + value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) - value,
                   *self.index(1) - value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) * value,
                   *self.index(1) * value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) / value,
                   *self.index(1) / value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) % value,
                   *self.index(1) % value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) + *other.index(0),
                   *self.index(1) + *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) - *other.index(0),
                   *self.index(1) - *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) * *other.index(0),
                   *self.index(1) * *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) / *other.index(0),
                   *self.index(1) / *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) % *other.index(0),
                   *self.index(1) % *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
         *self.index_mut(1) = -*self.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) += value;
         *self.index_mut(1) += value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) -= value;
         *self.index_mut(1) -= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         *self.index_mut(0) *= value;
         *self.index_mut(1) *= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_t(&mut self, value: T) {
         *self.index_mut(0) /= value;
         *self.index_mut(1) /= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_t(&mut self, value: T) {
         *self.index_mut(0) %= value;
         *self.index_mut(1) %= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) += *other.index(0);
         *self.index_mut(1) += *other.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) -= *other.index(0);
         *self.index_mut(1) -= *other.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) *= *other.index(0);
         *self.index_mut(1) *= *other.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_v(&mut self, other: &Vec2<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn dot(&self, other: &Vec2<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn perp_dot(&self, other: &Vec2<T>) -> T {
         (*self.index(0) * *other.index(1)) -
         (*self.index(1) * *other.index(0))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_homogeneous(&self) -> Vec3<T> {
         Vec3::new(self.x, self.y, Zero::zero())
     }
 }
 
 impl<T:Copy + Num> Neg<Vec2<T>> for Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Vec2<T> {
         Vec2::new(-self.index(0), -self.index(1))
     }
 }
 
 impl<T:Copy + Real> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn length2(&self) -> T {
         self.dot(self)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance2(&self, other: &Vec2<T>) -> T {
         other.sub_v(self).length2()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance(&self, other: &Vec2<T>) -> T {
         other.distance2(self).sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn angle(&self, other: &Vec2<T>) -> T {
         self.perp_dot(other).atan2(self.dot(other))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize(&self) -> Vec2<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_to(&self, length: T) -> Vec2<T> {
         self.mul_t(length / self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
@@ -305,17 +305,17 @@ impl<T:Copy + Real> Vec2<T> {
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Vec2<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon)
@@ -323,49 +323,49 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
 }
 
 impl<T:Copy + Ord> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn lt_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) < value,
                   *self.index(1) < value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) <= value,
                   *self.index(1) <= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) >= value,
                   *self.index(1) >= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) > value,
                   *self.index(1) > value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) < *other.index(0),
                   *self.index(1) < *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) <= *other.index(0),
                   *self.index(1) <= *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) >= *other.index(0),
                   *self.index(1) >= *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1))
@@ -373,25 +373,25 @@ impl<T:Copy + Ord> Vec2<T> {
 }
 
 impl<T:Copy + Eq> Vec2<T> {
-    #[inline(always)]
+    #[inline]
     pub fn eq_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) == value,
                   *self.index(1) == value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) != value,
                   *self.index(1) != value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn eq_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) == *other.index(0),
                   *self.index(1) == *other.index(1))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) != *other.index(0),
                   *self.index(1) != *other.index(1))
@@ -399,17 +399,17 @@ impl<T:Copy + Eq> Vec2<T> {
 }
 
 impl Vec2<bool> {
-    #[inline(always)]
+    #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn not(&self) -> Vec2<bool> {
         Vec2::new(!*self.index(0), !*self.index(1))
     }
@@ -442,39 +442,39 @@ pub type Vec2b   = Vec2<bool>;
 pub struct Vec3<T> { x: T, y: T, z: T }
 
 impl<T> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T,..3] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..3] {
         unsafe { transmute(self) }
     }
 }
 
 impl<T:Copy> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn new(x: T, y: T, z: T ) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Vec3<T> {
         Vec3::new(value, value, value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
@@ -490,265 +490,265 @@ impl<T:Copy> Vec3<T> {
 }
 
 impl<T:Copy + Num> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Vec3<T> {
         Vec3::new(One::one::<T>(), One::one::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Vec3<T> {
         Vec3::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_x() -> Vec3<T> {
         Vec3::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_y() -> Vec3<T> {
         Vec3::new(Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_z() -> Vec3<T> {
         Vec3::new(Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero() &&
         *self.index(2) == Zero::zero()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) + value,
                   *self.index(1) + value,
                   *self.index(2) + value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) - value,
                   *self.index(1) - value,
                   *self.index(2) - value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) * value,
                   *self.index(1) * value,
                   *self.index(2) * value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) / value,
                   *self.index(1) / value,
                   *self.index(2) / value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) % value,
                   *self.index(1) % value,
                   *self.index(2) % value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) + *other.index(0),
                   *self.index(1) + *other.index(1),
                   *self.index(2) + *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) - *other.index(0),
                   *self.index(1) - *other.index(1),
                   *self.index(2) - *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) * *other.index(0),
                   *self.index(1) * *other.index(1),
                   *self.index(2) * *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) / *other.index(0),
                   *self.index(1) / *other.index(1),
                   *self.index(2) / *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) % *other.index(0),
                   *self.index(1) % *other.index(1),
                   *self.index(2) % *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
         *self.index_mut(1) = -*self.index(1);
         *self.index_mut(2) = -*self.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) += value;
         *self.index_mut(1) += value;
         *self.index_mut(2) += value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) -= value;
         *self.index_mut(1) -= value;
         *self.index_mut(2) -= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         *self.index_mut(0) *= value;
         *self.index_mut(1) *= value;
         *self.index_mut(2) *= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_t(&mut self, value: T) {
         *self.index_mut(0) /= value;
         *self.index_mut(1) /= value;
         *self.index_mut(2) /= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_t(&mut self, value: T) {
         *self.index_mut(0) %= value;
         *self.index_mut(1) %= value;
         *self.index_mut(2) %= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_v(&mut self, other: &Vec3<T>) {
         *self.index_mut(0) += *other.index(0);
         *self.index_mut(1) += *other.index(1);
         *self.index_mut(2) += *other.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_v(&mut self, other: &Vec3<T>) {
         *self.index_mut(0) -= *other.index(0);
         *self.index_mut(1) -= *other.index(1);
         *self.index_mut(2) -= *other.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_v(&mut self, other: &Vec3<T>) {
         *self.index_mut(0) *= *other.index(0);
         *self.index_mut(1) *= *other.index(1);
         *self.index_mut(2) *= *other.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_v(&mut self, other: &Vec3<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
         *self.index_mut(2) /= *other.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_v(&mut self, other: &Vec3<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
         *self.index_mut(2) /= *other.index(2);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn dot(&self, other: &Vec3<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1) +
         *self.index(2) * *other.index(2)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
                   (*self.index(2) * *other.index(0)) - (*self.index(0) * *other.index(2)),
                   (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn to_homogeneous(&self) -> Vec4<T> {
         Vec4::new(self.x, self.y, self.z, Zero::zero())
     }
 }
 
 impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Vec3<T> {
         Vec3::new(-self.index(0), -self.index(1), -self.index(2))
     }
 }
 
 impl<T:Copy + Real> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn length2(&self) -> T {
         self.dot(self)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance2(&self, other: &Vec3<T>) -> T {
         other.sub_v(self).length2()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance(&self, other: &Vec3<T>) -> T {
         other.distance2(self).sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn angle(&self, other: &Vec3<T>) -> T {
         self.cross(other).length().atan2(self.dot(other))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize(&self) -> Vec3<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_to(&self, length: T) -> Vec3<T> {
         self.mul_t(length / self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
@@ -761,17 +761,17 @@ impl<T:Copy + Real> Vec3<T> {
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Vec3<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon) &&
@@ -780,56 +780,56 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
 }
 
 impl<T:Copy + Ord> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn lt_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) < value,
                   *self.index(1) < value,
                   *self.index(2) < value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) <= value,
                   *self.index(1) <= value,
                   *self.index(2) <= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) >= value,
                   *self.index(1) >= value,
                   *self.index(2) >= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) > value,
                   *self.index(1) > value,
                   *self.index(2) > value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) < *other.index(0),
                   *self.index(1) < *other.index(1),
                   *self.index(2) < *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) <= *other.index(0),
                   *self.index(1) <= *other.index(1),
                   *self.index(2) <= *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) >= *other.index(0),
                   *self.index(1) >= *other.index(1),
                   *self.index(2) >= *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1),
@@ -838,28 +838,28 @@ impl<T:Copy + Ord> Vec3<T> {
 }
 
 impl<T:Copy + Eq> Vec3<T> {
-    #[inline(always)]
+    #[inline]
     pub fn eq_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) == value,
                   *self.index(1) == value,
                   *self.index(2) == value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) != value,
                   *self.index(1) != value,
                   *self.index(2) != value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn eq_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) == *other.index(0),
                   *self.index(1) == *other.index(1),
                   *self.index(2) == *other.index(2))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_v(&self, other: &Vec3<T>) -> Vec3<bool> {
         Vec3::new(*self.index(0) != *other.index(0),
                   *self.index(1) != *other.index(1),
@@ -868,17 +868,17 @@ impl<T:Copy + Eq> Vec3<T> {
 }
 
 impl Vec3<bool> {
-    #[inline(always)]
+    #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn not(&self) -> Vec3<bool> {
         Vec3::new(!*self.index(0), !*self.index(1), !*self.index(2))
     }
@@ -911,39 +911,39 @@ pub type Vec3b   = Vec3<bool>;
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 impl<T> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
         &'a mut self.as_mut_slice()[i]
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
         unsafe { transmute(self) }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
         unsafe { transmute(self) }
     }
 }
 
 impl<T:Copy> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn new(x: T, y: T, z: T, w: T ) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value, value, value, value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn swap(&mut self, a: uint, b: uint) {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
@@ -960,37 +960,37 @@ impl<T:Copy> Vec4<T> {
 }
 
 impl<T:Copy + Num> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn identity() -> Vec4<T> {
         Vec4::new(One::one::<T>(), One::one::<T>(), One::one::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn zero() -> Vec4<T> {
         Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_x() -> Vec4<T> {
         Vec4::new(One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_y() -> Vec4<T> {
         Vec4::new(Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_z() -> Vec4<T> {
         Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>(), Zero::zero::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn unit_w() -> Vec4<T> {
         Vec4::new(Zero::zero::<T>(), Zero::zero::<T>(), Zero::zero::<T>(), One::one::<T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn is_zero(&self) -> bool {
         *self.index(0) == Zero::zero() &&
         *self.index(1) == Zero::zero() &&
@@ -998,7 +998,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index(3) == Zero::zero()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) + value,
                   *self.index(1) + value,
@@ -1006,7 +1006,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) + value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) - value,
                   *self.index(1) - value,
@@ -1014,7 +1014,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) - value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) * value,
                   *self.index(1) * value,
@@ -1022,7 +1022,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) * value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) / value,
                   *self.index(1) / value,
@@ -1030,7 +1030,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) / value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) % value,
                   *self.index(1) % value,
@@ -1038,7 +1038,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) % value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) + *other.index(0),
                   *self.index(1) + *other.index(1),
@@ -1046,7 +1046,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) + *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) - *other.index(0),
                   *self.index(1) - *other.index(1),
@@ -1054,7 +1054,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) - *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) * *other.index(0),
                   *self.index(1) * *other.index(1),
@@ -1062,7 +1062,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) * *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) / *other.index(0),
                   *self.index(1) / *other.index(1),
@@ -1070,7 +1070,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) / *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) % *other.index(0),
                   *self.index(1) % *other.index(1),
@@ -1078,7 +1078,7 @@ impl<T:Copy + Num> Vec4<T> {
                   *self.index(3) % *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
         *self.index_mut(1) = -*self.index(1);
@@ -1086,7 +1086,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) = -*self.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) += value;
         *self.index_mut(1) += value;
@@ -1094,7 +1094,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) += value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) -= value;
         *self.index_mut(1) -= value;
@@ -1102,7 +1102,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) -= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
         *self.index_mut(0) *= value;
         *self.index_mut(1) *= value;
@@ -1110,7 +1110,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) *= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_t(&mut self, value: T) {
         *self.index_mut(0) /= value;
         *self.index_mut(1) /= value;
@@ -1118,7 +1118,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) /= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_t(&mut self, value: T) {
         *self.index_mut(0) %= value;
         *self.index_mut(1) %= value;
@@ -1126,7 +1126,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) %= value;
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn add_self_v(&mut self, other: &Vec4<T>) {
         *self.index_mut(0) += *other.index(0);
         *self.index_mut(1) += *other.index(1);
@@ -1134,7 +1134,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) += *other.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn sub_self_v(&mut self, other: &Vec4<T>) {
         *self.index_mut(0) -= *other.index(0);
         *self.index_mut(1) -= *other.index(1);
@@ -1142,7 +1142,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) -= *other.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn mul_self_v(&mut self, other: &Vec4<T>) {
         *self.index_mut(0) *= *other.index(0);
         *self.index_mut(1) *= *other.index(1);
@@ -1150,7 +1150,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) *= *other.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn div_self_v(&mut self, other: &Vec4<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
@@ -1158,7 +1158,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) /= *other.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn rem_self_v(&mut self, other: &Vec4<T>) {
         *self.index_mut(0) /= *other.index(0);
         *self.index_mut(1) /= *other.index(1);
@@ -1166,7 +1166,7 @@ impl<T:Copy + Num> Vec4<T> {
         *self.index_mut(3) /= *other.index(3);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn dot(&self, other: &Vec4<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1) +
@@ -1176,60 +1176,60 @@ impl<T:Copy + Num> Vec4<T> {
 }
 
 impl<T:Copy + Num> Neg<Vec4<T>> for Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn neg(&self) -> Vec4<T> {
         Vec4::new(-self.index(0), -self.index(1), -self.index(2), -self.index(3))
     }
 }
 
 impl<T:Copy + Real> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn length2(&self) -> T {
         self.dot(self)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn length(&self) -> T {
         self.length2().sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance2(&self, other: &Vec4<T>) -> T {
         other.sub_v(self).length2()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn distance(&self, other: &Vec4<T>) -> T {
         other.distance2(self).sqrt()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn angle(&self, other: &Vec4<T>) -> T {
         (self.dot(other) / (self.length() * other.length())).acos()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize(&self) -> Vec4<T> {
         self.mul_t(One::one::<T>()/self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_to(&self, length: T) -> Vec4<T> {
         self.mul_t(length / self.length())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self(&mut self) {
         let n = One::one::<T>() / self.length();
         self.mul_self_t(n);
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn normalize_self_to(&mut self, length: T) {
         let n = length / self.length();
         self.mul_self_t(n);
@@ -1242,17 +1242,17 @@ impl<T:Copy + Real> Vec4<T> {
 }
 
 impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq(&self, other: &Vec4<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
         self.index(0).approx_eq_eps(other.index(0), epsilon) &&
         self.index(1).approx_eq_eps(other.index(1), epsilon) &&
@@ -1262,7 +1262,7 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
 }
 
 impl<T:Copy + Ord> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn lt_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) < value,
                   *self.index(1) < value,
@@ -1270,7 +1270,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) < value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) <= value,
                   *self.index(1) <= value,
@@ -1278,7 +1278,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) <= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) >= value,
                   *self.index(1) >= value,
@@ -1286,7 +1286,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) >= value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) > value,
                   *self.index(1) > value,
@@ -1294,7 +1294,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) > value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn lt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) < *other.index(0),
                   *self.index(1) < *other.index(1),
@@ -1302,7 +1302,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) < *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn le_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) <= *other.index(0),
                   *self.index(1) <= *other.index(1),
@@ -1310,7 +1310,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) <= *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ge_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) >= *other.index(0),
                   *self.index(1) >= *other.index(1),
@@ -1318,7 +1318,7 @@ impl<T:Copy + Ord> Vec4<T> {
                   *self.index(3) >= *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn gt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1),
@@ -1328,7 +1328,7 @@ impl<T:Copy + Ord> Vec4<T> {
 }
 
 impl<T:Copy + Eq> Vec4<T> {
-    #[inline(always)]
+    #[inline]
     pub fn eq_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) == value,
                   *self.index(1) == value,
@@ -1336,7 +1336,7 @@ impl<T:Copy + Eq> Vec4<T> {
                   *self.index(3) == value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) != value,
                   *self.index(1) != value,
@@ -1344,7 +1344,7 @@ impl<T:Copy + Eq> Vec4<T> {
                   *self.index(3) != value)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn eq_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) == *other.index(0),
                   *self.index(1) == *other.index(1),
@@ -1352,7 +1352,7 @@ impl<T:Copy + Eq> Vec4<T> {
                   *self.index(3) == *other.index(3))
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn ne_v(&self, other: &Vec4<T>) -> Vec4<bool> {
         Vec4::new(*self.index(0) != *other.index(0),
                   *self.index(1) != *other.index(1),
@@ -1362,17 +1362,17 @@ impl<T:Copy + Eq> Vec4<T> {
 }
 
 impl Vec4<bool> {
-    #[inline(always)]
+    #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
     }
 
-    #[inline(always)]
+    #[inline]
     pub fn not(&self) -> Vec4<bool> {
         Vec4::new(!*self.index(0), !*self.index(1), !*self.index(2), !*self.index(3))
     }
