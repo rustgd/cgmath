@@ -18,14 +18,18 @@ use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 
 use vec::*;
-use quat::Quat;
-use super::Mat4;
+use quat::{Quat, ToQuat};
+use super::{Mat4, ToMat4};
 
 #[deriving(Eq)]
 pub struct Mat3<T> {
     x: Vec3<T>,
     y: Vec3<T>,
     z: Vec3<T>,
+}
+
+pub trait ToMat3<T> {
+    pub fn to_mat3(&self) -> Mat3<T>;
 }
 
 impl<T> Mat3<T> {
@@ -320,7 +324,9 @@ impl<T:Copy + Num> Mat3<T> {
     pub fn to_zero(&mut self) {
         *self = Mat3::zero();
     }
+}
 
+impl<T:Copy + Num> ToMat4<T> for Mat3<T> {
     /// Returns the the matrix with an extra row and column added
     /// ~~~
     ///       c0   c1   c2                 c0   c1   c2   c3
@@ -432,7 +438,9 @@ impl<T:Copy + Real> Mat3<T> {
 
         Mat3::from_axes(up_, side, dir_)
     }
+}
 
+impl<T:Copy + Real> ToQuat<T> for Mat3<T> {
     /// Convert the matrix to a quaternion
     pub fn to_quat(&self) -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's

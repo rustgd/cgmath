@@ -29,6 +29,10 @@ pub struct Mat4<T> {
     w: Vec4<T>,
 }
 
+pub trait ToMat4<T> {
+    pub fn to_mat4(&self) -> Mat4<T>;
+}
+
 impl<T> Mat4<T> {
     /// Construct a 4 x 4 matrix
     ///

@@ -17,7 +17,7 @@ use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One, cast};
 
-use mat::Mat3;
+use mat::{Mat3, ToMat3};
 use vec::Vec3;
 
 // GLSL-style type aliases
@@ -43,6 +43,10 @@ pub type Quatf64 = Quat<f64>;
 /// - `v`: a vector containing the three imaginary components
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
+
+pub trait ToQuat<T> {
+    pub fn to_quat(&self) -> Quat<T>;
+}
 
 impl<T> Quat<T> {
     /// Construct the quaternion from one scalar component and three
@@ -267,6 +271,17 @@ impl<T:Copy + Real> Quat<T> {
         self.mul_t(One::one::<T>() / self.magnitude())
     }
 
+    /// Normalised linear interpolation
+    ///
+    /// # Return value
+    ///
+    /// The intoperlated quaternion
+    pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
+        self.mul_t(One::one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
+    }
+}
+
+impl<T:Copy + Num> ToMat3<T> for Quat<T> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
     pub fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
@@ -290,15 +305,6 @@ impl<T:Copy + Real> Quat<T> {
         Mat3::new(_1 - yy2 - zz2, xy2 + sz2, xz2 - sy2,
                   xy2 - sz2, _1 - xx2 - zz2, yz2 + sx2,
                   xz2 + sy2, yz2 - sx2, _1 - xx2 - yy2)
-    }
-
-    /// Normalised linear interpolation
-    ///
-    /// # Return value
-    ///
-    /// The intoperlated quaternion
-    pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        self.mul_t(One::one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
     }
 }
 

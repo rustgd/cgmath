@@ -18,12 +18,17 @@ use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 
 use vec::*;
-use super::{Mat3, Mat4};
+use super::{Mat3, ToMat3};
+use super::{Mat4, ToMat4};
 
 #[deriving(Eq)]
 pub struct Mat2<T> {
     x: Vec2<T>,
     y: Vec2<T>,
+}
+
+pub trait ToMat2<T> {
+    pub fn to_mat2(&self) -> Mat2<T>;
 }
 
 impl<T> Mat2<T> {
@@ -265,7 +270,9 @@ impl<T:Copy + Num> Mat2<T> {
     pub fn to_zero(&mut self) {
         *self = Mat2::zero();
     }
+}
 
+impl<T:Copy + Num> ToMat3<T> for Mat2<T> {
     /// Returns the the matrix with an extra row and column added
     /// ~~~
     ///       c0   c1                 c0   c1   c2
@@ -283,7 +290,9 @@ impl<T:Copy + Num> Mat2<T> {
                   *self.elem(1, 0), *self.elem(1, 1), Zero::zero(),
                   Zero::zero(), Zero::zero(), One::one())
     }
+}
 
+impl<T:Copy + Num> ToMat4<T> for Mat2<T> {
     /// Returns the the matrix with an extra two rows and columns added
     /// ~~~
     ///       c0   c1                 c0   c1   c2   c3
