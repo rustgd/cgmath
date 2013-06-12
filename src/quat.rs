@@ -128,10 +128,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quat<T> {
-        Quat::new(One::one(),
-                  Zero::zero(),
-                  Zero::zero(),
-                  Zero::zero())
+        Quat::from_sv(One::one(), Vec3::zero())
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
@@ -191,19 +188,13 @@ impl<T:Copy + Real> Quat<T> {
     /// The result of multiplying the quaternion a scalar
     #[inline]
     pub fn mul_t(&self, value: T) -> Quat<T> {
-        Quat::new(*self.index(0) * value,
-                  *self.index(1) * value,
-                  *self.index(2) * value,
-                  *self.index(3) * value)
+        self.map(|&x| x * value)
     }
 
     /// The result of dividing the quaternion a scalar
     #[inline]
     pub fn div_t(&self, value: T) -> Quat<T> {
-        Quat::new(*self.index(0) / value,
-                  *self.index(1) / value,
-                  *self.index(2) / value,
-                  *self.index(3) / value)
+        self.map(|&x| x / value)
     }
 
     /// The result of multiplying the quaternion by a vector
@@ -323,10 +314,7 @@ impl<T:Copy + Num> ToMat3<T> for Quat<T> {
 impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
     #[inline]
     pub fn neg(&self) -> Quat<T> {
-        Quat::new(-*self.index(0),
-                  -*self.index(1),
-                  -*self.index(2),
-                  -*self.index(3))
+        self.map(|&x| -x)
     }
 }
 

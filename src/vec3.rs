@@ -63,7 +63,6 @@ impl<T> Dimensional<T,[T,..3]> for Vec3<T> {
         f(self.index_mut(0));
         f(self.index_mut(1));
         f(self.index_mut(2));
-        f(self.index_mut(3));
     }
 }
 
@@ -116,37 +115,27 @@ impl<T:Copy + Num> Vec3<T> {
 
     #[inline]
     pub fn add_t(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) + value,
-                  *self.index(1) + value,
-                  *self.index(2) + value)
+        self.map(|&x| x + value)
     }
 
     #[inline]
     pub fn sub_t(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) - value,
-                  *self.index(1) - value,
-                  *self.index(2) - value)
+        self.map(|&x| x - value)
     }
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) * value,
-                  *self.index(1) * value,
-                  *self.index(2) * value)
+        self.map(|&x| x * value)
     }
 
     #[inline]
     pub fn div_t(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) / value,
-                  *self.index(1) / value,
-                  *self.index(2) / value)
+        self.map(|&x| x / value)
     }
 
     #[inline]
     pub fn rem_t(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) % value,
-                  *self.index(1) % value,
-                  *self.index(2) % value)
+        self.map(|&x| x % value)
     }
 
     #[inline]
@@ -186,44 +175,32 @@ impl<T:Copy + Num> Vec3<T> {
 
     #[inline]
     pub fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index(0);
-        *self.index_mut(1) = -*self.index(1);
-        *self.index_mut(2) = -*self.index(2);
+        self.map_mut(|x| *x = -*x)
     }
 
     #[inline]
     pub fn add_self_t(&mut self, value: T) {
-        *self.index_mut(0) += value;
-        *self.index_mut(1) += value;
-        *self.index_mut(2) += value;
+        self.map_mut(|x| *x += value)
     }
 
     #[inline]
     pub fn sub_self_t(&mut self, value: T) {
-        *self.index_mut(0) -= value;
-        *self.index_mut(1) -= value;
-        *self.index_mut(2) -= value;
+        self.map_mut(|x| *x -= value)
     }
 
     #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        *self.index_mut(0) *= value;
-        *self.index_mut(1) *= value;
-        *self.index_mut(2) *= value;
+        self.map_mut(|x| *x *= value)
     }
 
     #[inline]
     pub fn div_self_t(&mut self, value: T) {
-        *self.index_mut(0) /= value;
-        *self.index_mut(1) /= value;
-        *self.index_mut(2) /= value;
+        self.map_mut(|x| *x /= value)
     }
 
     #[inline]
     pub fn rem_self_t(&mut self, value: T) {
-        *self.index_mut(0) %= value;
-        *self.index_mut(1) %= value;
-        *self.index_mut(2) %= value;
+        self.map_mut(|x| *x %= value)
     }
 
     #[inline]
@@ -289,7 +266,7 @@ impl<T:Copy + Num> Vec3<T> {
 impl<T:Copy + Num> Neg<Vec3<T>> for Vec3<T> {
     #[inline]
     pub fn neg(&self) -> Vec3<T> {
-        Vec3::new(-self.index(0), -self.index(1), -self.index(2))
+        self.map(|&x| -x)
     }
 }
 
@@ -472,7 +449,7 @@ impl Vec3<bool> {
 
     #[inline]
     pub fn not(&self) -> Vec3<bool> {
-        Vec3::new(!*self.index(0), !*self.index(1), !*self.index(2))
+        self.map(|&x| !x)
     }
 }
 

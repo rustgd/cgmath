@@ -301,10 +301,7 @@ impl<T:Copy + Num> Mat4<T> {
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat4<T> {
-        Mat4::from_cols(self.col(0).mul_t(value),
-                        self.col(1).mul_t(value),
-                        self.col(2).mul_t(value),
-                        self.col(3).mul_t(value))
+        self.map(|&c| c.mul_t(value))
     }
 
     #[inline]
@@ -356,10 +353,7 @@ impl<T:Copy + Num> Mat4<T> {
 
     #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(value);
-        self.col_mut(1).mul_self_t(value);
-        self.col_mut(2).mul_self_t(value);
-        self.col_mut(3).mul_self_t(value);
+        self.map_mut(|x| x.mul_self_t(value))
     }
 
     #[inline]
@@ -423,7 +417,7 @@ impl<T:Copy + Num> Mat4<T> {
 impl<T:Copy + Num> Neg<Mat4<T>> for Mat4<T> {
     #[inline]
     pub fn neg(&self) -> Mat4<T> {
-        Mat4::from_cols(-self.col(0), -self.col(1), -self.col(2), -self.col(3))
+        self.map(|&x| -x)
     }
 }
 

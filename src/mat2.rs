@@ -218,8 +218,7 @@ impl<T:Copy + Num> Mat2<T> {
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat2<T> {
-        Mat2::from_cols(self.col(0).mul_t(value),
-                        self.col(1).mul_t(value))
+        self.map(|&c| c.mul_t(value))
     }
 
     #[inline]
@@ -248,8 +247,7 @@ impl<T:Copy + Num> Mat2<T> {
 
     #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        self.x.mul_self_t(value);
-        self.y.mul_self_t(value);
+        self.map_mut(|x| x.mul_self_t(value))
     }
 
     #[inline]
@@ -337,7 +335,7 @@ impl<T:Copy + Num> ToMat4<T> for Mat2<T> {
 impl<T:Copy + Num> Neg<Mat2<T>> for Mat2<T> {
     #[inline]
     pub fn neg(&self) -> Mat2<T> {
-        Mat2::from_cols(-self.col(0), -self.col(1))
+        self.map(|&x| -x)
     }
 }
 
