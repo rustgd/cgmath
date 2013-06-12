@@ -16,12 +16,6 @@
 use std::num::{Zero, One};
 use mat::Mat4;
 
-// FIXME: We can remove this once we have numeric conversions in std
-#[inline]
-priv fn two<T:Num>() -> T {
-    One::one::<T>() + One::one::<T>()
-}
-
 ///
 /// Create a perspective projection matrix
 ///
@@ -101,4 +95,10 @@ pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: 
               c1r0, c1r1, c1r2, c1r3,
               c2r0, c2r1, c2r2, c2r3,
               c3r0, c3r1, c3r2, c3r3)
+}
+
+// FIXME: We can remove this once we have numeric conversions in std
+#[inline]
+priv fn two<T:Num>() -> T {
+    One::one::<T>() + One::one::<T>()
 }

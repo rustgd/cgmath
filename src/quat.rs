@@ -20,11 +20,16 @@ use std::num::{Zero, One, cast};
 use mat::Mat3;
 use vec::Vec3;
 
-// FIXME: We can remove this once we have numeric conversions in std
-#[inline]
-priv fn two<T:Num>() -> T {
-    One::one::<T>() + One::one::<T>()
-}
+// GLSL-style type aliases
+
+pub type quat  = Quat<f32>;
+pub type dquat = Quat<f64>;
+
+// Rust-style type aliases
+
+pub type Quatf   = Quat<float>;
+pub type Quatf32 = Quat<f32>;
+pub type Quatf64 = Quat<f64>;
 
 /// A quaternion in scalar/vector form
 ///
@@ -379,11 +384,8 @@ impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
     }
 }
 
-// GLSL-style type aliases
-type quat  = Quat<f32>;
-type dquat = Quat<f64>;
-
-// Rust-style type aliases
-type Quatf   = Quat<float>;
-type Quatf32 = Quat<f32>;
-type Quatf64 = Quat<f64>;
+// FIXME: We can remove this once we have numeric conversions in std
+#[inline]
+priv fn two<T:Num>() -> T {
+    One::one::<T>() + One::one::<T>()
+}
