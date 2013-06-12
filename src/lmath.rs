@@ -23,17 +23,8 @@
 #[license = "ASL2"];
 #[crate_type = "lib"];
 
-extern mod std;
-
 pub mod mat;
 pub mod quat;
 pub mod vec;
 
 pub mod projection;
-
-#[cfg(test)]
-mod test {
-    #[path = "test_mat.rs" ] mod mat;
-    #[path = "test_quat.rs"] mod quat;
-    #[path = "test_vec.rs" ] mod vec;
-}
