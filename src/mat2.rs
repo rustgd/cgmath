@@ -21,41 +21,12 @@ use vec::*;
 use super::{Mat3, Mat4};
 
 #[deriving(Eq)]
-pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
-
-impl<T> Mat2<T> {
-    #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
-        &'a self.as_slice()[i]
-    }
-
-    #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
-        &'a mut self.as_mut_slice()[i]
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [Vec2<T>,..2] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec2<T>,..2] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
-        self.col(i).index(j)
-    }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
-        self.col_mut(i).index_mut(j)
-    }
+pub struct Mat2<T> {
+    x: Vec2<T>,
+    y: Vec2<T>,
 }
 
-impl<T:Copy> Mat2<T> {
+impl<T> Mat2<T> {
     /// Construct a 2 x 2 matrix
     ///
     /// # Arguments
@@ -99,6 +70,44 @@ impl<T:Copy> Mat2<T> {
         Mat2 { x: c0, y: c1 }
     }
 
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
+        &'a mut self.as_mut_slice()[i]
+    }
+
+    #[inline]
+    pub fn as_slice<'a>(&'a self) -> &'a [Vec2<T>,..2] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec2<T>,..2] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
+        self.col(i).index(j)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
+        self.col_mut(i).index_mut(j)
+    }
+
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&Vec2<T>) -> Vec2<T>) -> Mat2<T> {
+        Mat2::from_cols(f(self.col(0)),
+                        f(self.col(1)))
+    }
+}
+
+impl<T:Copy> Mat2<T> {
     #[inline]
     pub fn row(&self, i: uint) -> Vec2<T> {
         Vec2::new(*self.elem(0, i),

@@ -45,28 +45,6 @@ pub type Quatf64 = Quat<f64>;
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl<T> Quat<T> {
-    #[inline]
-    pub fn index<'a>(&'a self, i: uint) -> &'a T {
-        &'a self.as_slice()[i]
-    }
-
-    #[inline]
-    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        &'a mut self.as_mut_slice()[i]
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
-        unsafe { transmute(self) }
-    }
-}
-
-impl<T:Copy> Quat<T> {
     /// Construct the quaternion from one scalar component and three
     /// imaginary components
     ///
@@ -93,10 +71,23 @@ impl<T:Copy> Quat<T> {
     }
 
     #[inline]
-    pub fn swap(&mut self, a: uint, b: uint) {
-        let tmp = *self.index(a);
-        *self.index_mut(a) = *self.index(b);
-        *self.index_mut(b) = tmp;
+    pub fn index<'a>(&'a self, i: uint) -> &'a T {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
+        &'a mut self.as_mut_slice()[i]
+    }
+
+    #[inline]
+    pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
+        unsafe { transmute(self) }
     }
 
     #[inline]
@@ -105,6 +96,15 @@ impl<T:Copy> Quat<T> {
                   f(self.index(1)),
                   f(self.index(2)),
                   f(self.index(3)))
+    }
+}
+
+impl<T:Copy> Quat<T> {
+    #[inline]
+    pub fn swap(&mut self, a: uint, b: uint) {
+        let tmp = *self.index(a);
+        *self.index_mut(a) = *self.index(b);
+        *self.index_mut(b) = tmp;
     }
 }
 

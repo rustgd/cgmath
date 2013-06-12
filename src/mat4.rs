@@ -21,54 +21,15 @@ use std::uint;
 use vec::*;
 use super::Mat3;
 
-///  A 4 x 4 column major matrix
-///
-/// # Type parameters
-///
-/// - `T` - The type of the elements of the matrix. Should be a floating point type.
-///
-/// # Fields
-///
-/// - `x`: the first column vector of the matrix
-/// - `y`: the second column vector of the matrix
-/// - `z`: the third column vector of the matrix
-/// - `w`: the fourth column vector of the matrix
 #[deriving(Eq)]
-pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }
-
-impl<T> Mat4<T> {
-    #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
-        &'a self.as_slice()[i]
-    }
-
-    #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
-        &'a mut self.as_mut_slice()[i]
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [Vec4<T>,..4] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec4<T>,..4] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
-        self.col(i).index(j)
-    }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
-        self.col_mut(i).index_mut(j)
-    }
+pub struct Mat4<T> {
+    x: Vec4<T>,
+    y: Vec4<T>,
+    z: Vec4<T>,
+    w: Vec4<T>,
 }
 
-impl<T:Copy> Mat4<T> {
+impl<T> Mat4<T> {
     /// Construct a 4 x 4 matrix
     ///
     /// # Arguments
@@ -130,6 +91,46 @@ impl<T:Copy> Mat4<T> {
         Mat4 { x: c0, y: c1, z: c2, w: c3 }
     }
 
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
+        &'a mut self.as_mut_slice()[i]
+    }
+
+    #[inline]
+    pub fn as_slice<'a>(&'a self) -> &'a [Vec4<T>,..4] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec4<T>,..4] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
+        self.col(i).index(j)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
+        self.col_mut(i).index_mut(j)
+    }
+
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&Vec4<T>) -> Vec4<T>) -> Mat4<T> {
+        Mat4::from_cols(f(self.col(0)),
+                        f(self.col(1)),
+                        f(self.col(2)),
+                        f(self.col(3)))
+    }
+}
+
+impl<T:Copy> Mat4<T> {
     #[inline]
     pub fn row(&self, i: uint) -> Vec4<T> {
         Vec4::new(*self.elem(0, i),

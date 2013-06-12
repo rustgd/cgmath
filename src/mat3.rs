@@ -22,41 +22,13 @@ use quat::Quat;
 use super::Mat4;
 
 #[deriving(Eq)]
-pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
-
-impl<T> Mat3<T> {
-    #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
-        &'a self.as_slice()[i]
-    }
-
-    #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
-        &'a mut self.as_mut_slice()[i]
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [Vec3<T>,..3] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec3<T>,..3] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
-        self.col(i).index(j)
-    }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
-        self.col_mut(i).index_mut(j)
-    }
+pub struct Mat3<T> {
+    x: Vec3<T>,
+    y: Vec3<T>,
+    z: Vec3<T>,
 }
 
-impl<T:Copy> Mat3<T> {
+impl<T> Mat3<T> {
     /// Construct a 3 x 3 matrix
     ///
     /// # Arguments
@@ -109,6 +81,45 @@ impl<T:Copy> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
 
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
+        &'a mut self.as_mut_slice()[i]
+    }
+
+    #[inline]
+    pub fn as_slice<'a>(&'a self) -> &'a [Vec3<T>,..3] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [Vec3<T>,..3] {
+        unsafe { transmute(self) }
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
+        self.col(i).index(j)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
+        self.col_mut(i).index_mut(j)
+    }
+
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&Vec3<T>) -> Vec3<T>) -> Mat3<T> {
+        Mat3::from_cols(f(self.col(0)),
+                        f(self.col(1)),
+                        f(self.col(2)))
+    }
+}
+
+impl<T:Copy> Mat3<T> {
     #[inline]
     pub fn row(&self, i: uint) -> Vec3<T> {
         Vec3::new(*self.elem(0, i),

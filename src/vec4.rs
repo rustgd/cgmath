@@ -22,6 +22,11 @@ pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 impl<T> Vec4<T> {
     #[inline]
+    pub fn new(x: T, y: T, z: T, w: T ) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
+    }
+
+    #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
     }
@@ -40,14 +45,17 @@ impl<T> Vec4<T> {
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
         unsafe { transmute(self) }
     }
+
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&T) -> T) -> Vec4<T> {
+        Vec4::new(f(self.index(0)),
+                  f(self.index(1)),
+                  f(self.index(2)),
+                  f(self.index(3)))
+    }
 }
 
 impl<T:Copy> Vec4<T> {
-    #[inline]
-    pub fn new(x: T, y: T, z: T, w: T ) -> Vec4<T> {
-        Vec4 { x: x, y: y, z: z, w: w }
-    }
-
     #[inline]
     pub fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value, value, value, value)
@@ -58,14 +66,6 @@ impl<T:Copy> Vec4<T> {
         let tmp = *self.index(a);
         *self.index_mut(a) = *self.index(b);
         *self.index_mut(b) = tmp;
-    }
-
-    #[inline(always)]
-    pub fn map(&self, f: &fn(&T) -> T) -> Vec4<T> {
-        Vec4::new(f(self.index(0)),
-                  f(self.index(1)),
-                  f(self.index(2)),
-                  f(self.index(3)))
     }
 }
 
