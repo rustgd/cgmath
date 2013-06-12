@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub use super::Dimensional;
+
 use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One, cast};
@@ -73,7 +75,9 @@ impl<T> Quat<T> {
     pub fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
         Quat { s: s, v: v }
     }
+}
 
+impl<T> Dimensional<T,[T,..4]> for Quat<T> {
     #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
@@ -100,6 +104,14 @@ impl<T> Quat<T> {
                   f(self.index(1)),
                   f(self.index(2)),
                   f(self.index(3)))
+    }
+
+    #[inline(always)]
+    pub fn map_mut(&mut self, f: &fn(&mut T)) {
+        f(self.index_mut(0));
+        f(self.index_mut(1));
+        f(self.index_mut(2));
+        f(self.index_mut(3));
     }
 }
 

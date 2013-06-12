@@ -17,7 +17,8 @@ use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 
-use vec::*;
+use super::Dimensional;
+use vec::Vec2;
 use super::{Mat3, ToMat3};
 use super::{Mat4, ToMat4};
 
@@ -77,11 +78,33 @@ impl<T> Mat2<T> {
 
     #[inline]
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
-        &'a self.as_slice()[i]
+        self.index(i)
     }
 
     #[inline]
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
+        self.index_mut(i)
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
+        self.index(i).index(j)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
+        self.index_mut(i).index_mut(j)
+    }
+}
+
+impl<T> Dimensional<Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
+    #[inline]
+    pub fn index<'a>(&'a self, i: uint) -> &'a Vec2<T> {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
         &'a mut self.as_mut_slice()[i]
     }
 
@@ -95,20 +118,16 @@ impl<T> Mat2<T> {
         unsafe { transmute(self) }
     }
 
-    #[inline]
-    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
-        self.col(i).index(j)
-    }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
-        self.col_mut(i).index_mut(j)
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&Vec2<T>) -> Vec2<T>) -> Mat2<T> {
+        Mat2::from_cols(f(self.index(0)),
+                        f(self.index(1)))
     }
 
     #[inline(always)]
-    pub fn map(&self, f: &fn(&Vec2<T>) -> Vec2<T>) -> Mat2<T> {
-        Mat2::from_cols(f(self.col(0)),
-                        f(self.col(1)))
+    pub fn map_mut(&mut self, f: &fn(&mut Vec2<T>)) {
+        f(self.index_mut(0));
+        f(self.index_mut(1));
     }
 }
 

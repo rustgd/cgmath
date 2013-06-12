@@ -17,6 +17,8 @@ use std::cast::transmute;
 use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 
+use super::Dimensional;
+
 #[deriving(Eq)]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
@@ -25,7 +27,9 @@ impl<T> Vec4<T> {
     pub fn new(x: T, y: T, z: T, w: T ) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
     }
+}
 
+impl<T> Dimensional<T,[T,..4]> for Vec4<T> {
     #[inline]
     pub fn index<'a>(&'a self, i: uint) -> &'a T {
         &'a self.as_slice()[i]
@@ -52,6 +56,14 @@ impl<T> Vec4<T> {
                   f(self.index(1)),
                   f(self.index(2)),
                   f(self.index(3)))
+    }
+
+    #[inline(always)]
+    pub fn map_mut(&mut self, f: &fn(&mut T)) {
+        f(self.index_mut(0));
+        f(self.index_mut(1));
+        f(self.index_mut(2));
+        f(self.index_mut(3));
     }
 }
 

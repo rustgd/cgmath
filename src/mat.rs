@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub use super::Dimensional;
 pub use self::mat2::{Mat2, ToMat2};
 pub use self::mat3::{Mat3, ToMat3};
 pub use self::mat4::{Mat4, ToMat4};

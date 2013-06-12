@@ -18,7 +18,8 @@ use std::cmp::ApproxEq;
 use std::num::{Zero, One};
 use std::uint;
 
-use vec::*;
+use super::Dimensional;
+use vec::Vec4;
 use super::Mat3;
 
 #[deriving(Eq)]
@@ -97,11 +98,33 @@ impl<T> Mat4<T> {
 
     #[inline]
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
-        &'a self.as_slice()[i]
+        self.index(i)
     }
 
     #[inline]
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
+        self.index_mut(i)
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
+        self.index(i).index(j)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
+        self.index_mut(i).index_mut(j)
+    }
+}
+
+impl<T> Dimensional<Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
+    #[inline]
+    pub fn index<'a>(&'a self, i: uint) -> &'a Vec4<T> {
+        &'a self.as_slice()[i]
+    }
+
+    #[inline]
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
         &'a mut self.as_mut_slice()[i]
     }
 
@@ -115,22 +138,20 @@ impl<T> Mat4<T> {
         unsafe { transmute(self) }
     }
 
-    #[inline]
-    pub fn elem<'a>(&'a self, i: uint, j: uint) -> &'a T {
-        self.col(i).index(j)
-    }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, i: uint, j: uint) -> &'a mut T {
-        self.col_mut(i).index_mut(j)
+    #[inline(always)]
+    pub fn map(&self, f: &fn(&Vec4<T>) -> Vec4<T>) -> Mat4<T> {
+        Mat4::from_cols(f(self.index(0)),
+                        f(self.index(1)),
+                        f(self.index(2)),
+                        f(self.index(3)))
     }
 
     #[inline(always)]
-    pub fn map(&self, f: &fn(&Vec4<T>) -> Vec4<T>) -> Mat4<T> {
-        Mat4::from_cols(f(self.col(0)),
-                        f(self.col(1)),
-                        f(self.col(2)),
-                        f(self.col(3)))
+    pub fn map_mut(&mut self, f: &fn(&mut Vec4<T>)) {
+        f(self.index_mut(0));
+        f(self.index_mut(1));
+        f(self.index_mut(2));
+        f(self.index_mut(3));
     }
 }
 
