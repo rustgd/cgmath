@@ -15,12 +15,11 @@
 
 pub use super::Dimensional;
 
-use std::cast::transmute;
-use std::cmp::ApproxEq;
-use std::num::{Zero, One, cast};
-
+use std::num::cast;
 use mat::{Mat3, ToMat3};
 use vec::Vec3;
+
+mod macros;
 
 // GLSL-style type aliases
 
@@ -34,17 +33,13 @@ pub type Quatf32 = Quat<f32>;
 pub type Quatf64 = Quat<f64>;
 
 /// A quaternion in scalar/vector form
-///
-/// # Type parameters
-///
-/// - `T`: The type of the components. Should be a floating point type.
-///
-/// # Fields
-///
-/// - `s`: the scalar component
-/// - `v`: a vector containing the three imaginary components
 #[deriving(Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
+
+impl_dimensional!(Quat, T, 4)
+impl_dimensional_fns!(Quat, T, 4)
+impl_swap!(Quat)
+impl_approx!(Quat)
 
 pub trait ToQuat<T> {
     pub fn to_quat(&self) -> Quat<T>;
@@ -77,98 +72,39 @@ impl<T> Quat<T> {
     }
 }
 
-impl<T> Dimensional<T,[T,..4]> for Quat<T> {
-    #[inline]
-    pub fn index<'a>(&'a self, i: uint) -> &'a T {
-        &'a self.as_slice()[i]
-    }
-
-    #[inline]
-    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T {
-        &'a mut self.as_mut_slice()[i]
-    }
-
-    #[inline]
-    pub fn as_slice<'a>(&'a self) -> &'a [T,..4] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T,..4] {
-        unsafe { transmute(self) }
-    }
-
-    #[inline]
-    pub fn map(&self, f: &fn(&T) -> T) -> Quat<T> {
-        Quat::new(f(self.index(0)),
-                  f(self.index(1)),
-                  f(self.index(2)),
-                  f(self.index(3)))
-    }
-
-    #[inline(always)]
-    pub fn map_mut(&mut self, f: &fn(&mut T)) {
-        f(self.index_mut(0));
-        f(self.index_mut(1));
-        f(self.index_mut(2));
-        f(self.index_mut(3));
-    }
-}
-
-impl<T:Copy> Quat<T> {
-    #[inline]
-    pub fn swap(&mut self, a: uint, b: uint) {
-        let tmp = *self.index(a);
-        *self.index_mut(a) = *self.index(b);
-        *self.index_mut(b) = tmp;
-    }
-}
-
 impl<T:Copy + Real> Quat<T> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quat<T> {
-        Quat::from_sv(One::one(), Vec3::zero())
+        Quat::from_sv(one!(T), Vec3::zero())
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
     #[inline]
     pub fn zero() -> Quat<T> {
-        Quat::new(Zero::zero(),
-                  Zero::zero(),
-                  Zero::zero(),
-                  Zero::zero())
+        Quat::new(zero!(T), zero!(T), zero!(T), zero!(T))
     }
 
     #[inline]
     pub fn from_angle_x(radians: T) -> Quat<T> {
-        Quat::new((radians / two()).cos(),
-                  radians.sin(),
-                  Zero::zero(),
-                  Zero::zero())
+        Quat::new((radians / two!(T)).cos(), radians.sin(), zero!(T), zero!(T))
     }
 
     #[inline]
     pub fn from_angle_y(radians: T) -> Quat<T> {
-        Quat::new((radians / two()).cos(),
-                  Zero::zero(),
-                  radians.sin(),
-                  Zero::zero())
+        Quat::new((radians / two!(T)).cos(), zero!(T), radians.sin(), zero!(T))
     }
 
     #[inline]
     pub fn from_angle_z(radians: T) -> Quat<T> {
-        Quat::new((radians / two()).cos(),
-                  Zero::zero(),
-                  Zero::zero(),
-                  radians.sin())
+        Quat::new((radians / two!(T)).cos(), zero!(T), zero!(T), radians.sin())
     }
 
     pub fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let xdiv2 = radians_x / two();
-        let ydiv2 = radians_y / two();
-        let zdiv2 = radians_z / two();
+        let xdiv2 = radians_x / two!(T);
+        let ydiv2 = radians_y / two!(T);
+        let zdiv2 = radians_z / two!(T);
         Quat::new(zdiv2.cos() * xdiv2.cos() * ydiv2.cos() + zdiv2.sin() * xdiv2.sin() * ydiv2.sin(),
                   zdiv2.sin() * xdiv2.cos() * ydiv2.cos() - zdiv2.cos() * xdiv2.sin() * ydiv2.sin(),
                   zdiv2.cos() * xdiv2.sin() * ydiv2.cos() + zdiv2.sin() * xdiv2.cos() * ydiv2.sin(),
@@ -177,7 +113,7 @@ impl<T:Copy + Real> Quat<T> {
 
     #[inline]
     pub fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
-        let half = radians / two();
+        let half = radians / two!(T);
         Quat::from_sv(half.cos(), axis.mul_t(half.sin()))
     }
 
@@ -188,20 +124,20 @@ impl<T:Copy + Real> Quat<T> {
     /// The result of multiplying the quaternion a scalar
     #[inline]
     pub fn mul_t(&self, value: T) -> Quat<T> {
-        self.map(|&x| x * value)
+        Quat::from_slice(self.map(|&x| x * value))
     }
 
     /// The result of dividing the quaternion a scalar
     #[inline]
     pub fn div_t(&self, value: T) -> Quat<T> {
-        self.map(|&x| x / value)
+        Quat::from_slice(self.map(|&x| x / value))
     }
 
     /// The result of multiplying the quaternion by a vector
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
-        self.v.cross(&tmp).mul_t(two()).add_v(vec)
+        self.v.cross(&tmp).mul_t(two!(T)).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -271,7 +207,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The normalized quaternion
     #[inline]
     pub fn normalize(&self) -> Quat<T> {
-        self.mul_t(One::one::<T>() / self.magnitude())
+        self.mul_t(one!(T) / self.magnitude())
     }
 
     /// Normalised linear interpolation
@@ -280,7 +216,7 @@ impl<T:Copy + Real> Quat<T> {
     ///
     /// The intoperlated quaternion
     pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        self.mul_t(One::one::<T>() - amount).add_q(&other.mul_t(amount)).normalize()
+        self.mul_t(one!(T) - amount).add_q(&other.mul_t(amount)).normalize()
     }
 }
 
@@ -303,7 +239,7 @@ impl<T:Copy + Num> ToMat3<T> for Quat<T> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
 
-        let _1: T = One::one();
+        let _1: T = one!(T);
 
         Mat3::new(_1 - yy2 - zz2, xy2 + sz2, xz2 - sy2,
                   xy2 - sz2, _1 - xx2 - zz2, yz2 + sx2,
@@ -314,7 +250,7 @@ impl<T:Copy + Num> ToMat3<T> for Quat<T> {
 impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
     #[inline]
     pub fn neg(&self) -> Quat<T> {
-        self.map(|&x| -x)
+        Quat::from_slice(self.map(|&x| -x))
     }
 }
 
@@ -352,14 +288,15 @@ impl<T:Copy + Float> Quat<T> {
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995);
 
+        // if quaternions are close together use `nlerp`
         if dot > dot_threshold {
-            self.nlerp(other, amount)                       // if quaternions are close together use `nlerp`
+            self.nlerp(other, amount)
         } else {
-            let robust_dot = dot.clamp(&-One::one::<T>(),
-                                       &One::one());        // stay within the domain of acos()
+            // stay within the domain of acos()
+            let robust_dot = dot.clamp(&-one!(T), &one!(T));
 
-            let theta_0 = robust_dot.acos();                // the angle between the quaternions
-            let theta = theta_0 * amount;                   // the fraction of theta specified by `amount`
+            let theta_0 = robust_dot.acos();    // the angle between the quaternions
+            let theta = theta_0 * amount;       // the fraction of theta specified by `amount`
 
             let q = other.sub_q(&self.mul_t(robust_dot))
                          .normalize();
@@ -368,32 +305,6 @@ impl<T:Copy + Float> Quat<T> {
                 .add_q(&q.mul_t(theta.sin()))
         }
     }
-}
-
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Quat<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
-        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
-        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
-        self.index(2).approx_eq_eps(other.index(2), epsilon) &&
-        self.index(3).approx_eq_eps(other.index(3), epsilon)
-    }
-}
-
-// FIXME: We can remove this once we have numeric conversions in std
-#[inline]
-priv fn two<T:Num>() -> T {
-    One::one::<T>() + One::one::<T>()
 }
 
 #[cfg(test)]

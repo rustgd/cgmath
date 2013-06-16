@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{Zero, One};
 use mat::Mat4;
+
+mod macros;
 
 ///
 /// Create a perspective projection matrix
@@ -25,7 +26,7 @@ use mat::Mat4;
 /// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
 ///
 pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
-    let ymax = near * (fovy / two::<T>()).to_radians().tan();
+    let ymax = near * (fovy / two!(T)).to_radians().tan();
     let xmax = ymax * aspectRatio;
 
     frustum(-xmax, xmax, -ymax, ymax, near, far)
@@ -38,25 +39,25 @@ pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> M
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 ///
 pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let c0r0 = (two::<T>() * near) / (right - left);
-    let c0r1 = Zero::zero();
-    let c0r2 = Zero::zero();
-    let c0r3 = Zero::zero();
+    let c0r0 = (two!(T) * near) / (right - left);
+    let c0r1 = zero!(T);
+    let c0r2 = zero!(T);
+    let c0r3 = zero!(T);
 
-    let c1r0 = Zero::zero();
-    let c1r1 = (two::<T>() * near) / (top - bottom);
-    let c1r2 = Zero::zero();
-    let c1r3 = Zero::zero();
+    let c1r0 = zero!(T);
+    let c1r1 = (two!(T) * near) / (top - bottom);
+    let c1r2 = zero!(T);
+    let c1r3 = zero!(T);
 
     let c2r0 = (right + left) / (right - left);
     let c2r1 = (top + bottom) / (top - bottom);
     let c2r2 = -(far + near) / (far - near);
-    let c2r3 = -One::one::<T>();
+    let c2r3 = -one!(T);
 
-    let c3r0 = Zero::zero();
-    let c3r1 = Zero::zero();
-    let c3r2 = -(two::<T>() * far * near) / (far - near);
-    let c3r3 = Zero::zero();
+    let c3r0 = zero!(T);
+    let c3r1 = zero!(T);
+    let c3r2 = -(two!(T) * far * near) / (far - near);
+    let c3r3 = zero!(T);
 
     Mat4::new(c0r0, c0r1, c0r2, c0r3,
               c1r0, c1r1, c1r2, c1r3,
@@ -71,34 +72,28 @@ pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
 ///
 pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
-    let c0r0 = two::<T>() / (right - left);
-    let c0r1 = Zero::zero();
-    let c0r2 = Zero::zero();
-    let c0r3 = Zero::zero();
+    let c0r0 = two!(T) / (right - left);
+    let c0r1 = zero!(T);
+    let c0r2 = zero!(T);
+    let c0r3 = zero!(T);
 
-    let c1r0 = Zero::zero();
-    let c1r1 = two::<T>() / (top - bottom);
-    let c1r2 = Zero::zero();
-    let c1r3 = Zero::zero();
+    let c1r0 = zero!(T);
+    let c1r1 = two!(T) / (top - bottom);
+    let c1r2 = zero!(T);
+    let c1r3 = zero!(T);
 
-    let c2r0 = Zero::zero();
-    let c2r1 = Zero::zero();
-    let c2r2 = -two::<T>() / (far - near);
-    let c2r3 = Zero::zero();
+    let c2r0 = zero!(T);
+    let c2r1 = zero!(T);
+    let c2r2 = -two!(T) / (far - near);
+    let c2r3 = zero!(T);
 
     let c3r0 = -(right + left) / (right - left);
     let c3r1 = -(top + bottom) / (top - bottom);
     let c3r2 = -(far + near) / (far - near);
-    let c3r3 = One::one();
+    let c3r3 = one!(T);
 
     Mat4::new(c0r0, c0r1, c0r2, c0r3,
               c1r0, c1r1, c1r2, c1r3,
               c2r0, c2r1, c2r2, c2r3,
               c3r0, c3r1, c3r2, c3r3)
-}
-
-// FIXME: We can remove this once we have numeric conversions in std
-#[inline]
-priv fn two<T:Num>() -> T {
-    One::one::<T>() + One::one::<T>()
 }

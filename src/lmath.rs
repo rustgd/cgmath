@@ -34,6 +34,4 @@ pub trait Dimensional<T,Slice> {
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
     pub fn as_slice<'a>(&'a self) -> &'a Slice;
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
-    pub fn map(&self, f: &fn(&T) -> T) -> Self;
-    pub fn map_mut(&mut self, f: &fn(&mut T));
 }
