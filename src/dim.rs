@@ -13,22 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[macro_escape];
-
-macro_rules! zero(
-    ($T:ty) => ({
-        use std::num::Zero;
-        Zero::zero::<$T>()
-    });
-)
-
-macro_rules! one(
-    ($T:ty) => ({
-        use std::num::One;
-        One::one::<$T>()
-    });
-)
-
-macro_rules! two(
-    ($T:ty) => (one!(T) + one!(T));
-)
+pub trait Dimensional<T,Slice> {
+    pub fn index<'a>(&'a self, i: uint) -> &'a T;
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
+    pub fn as_slice<'a>(&'a self) -> &'a Slice;
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
+}

@@ -16,6 +16,7 @@
 pub use super::Dimensional;
 
 mod macros;
+mod dim_macros;
 mod vec_macros;
 
 #[deriving(Eq)]

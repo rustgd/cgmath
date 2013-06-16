@@ -15,11 +15,11 @@
 
 pub use super::Dimensional;
 
-use std::num::cast;
 use mat::{Mat3, ToMat3};
 use vec::Vec3;
 
 mod macros;
+mod dim_macros;
 
 // GLSL-style type aliases
 
@@ -285,6 +285,8 @@ impl<T:Copy + Float> Quat<T> {
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
     pub fn slerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
+        use std::num::cast;
+
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995);
 

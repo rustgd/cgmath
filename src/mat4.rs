@@ -19,6 +19,7 @@ use mat::Mat3;
 use vec::Vec4;
 
 mod macros;
+mod dim_macros;
 mod mat_macros;
 
 #[deriving(Eq)]

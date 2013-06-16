@@ -20,6 +20,7 @@ use quat::{Quat, ToQuat};
 use vec::Vec3;
 
 mod macros;
+mod dim_macros;
 mod mat_macros;
 
 #[deriving(Eq)]
