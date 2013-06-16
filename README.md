@@ -1,6 +1,6 @@
 # Lmath-rs
 
-A linear algebra library for Rust, targeted at computer graphics.
+A mathematics library for computer graphics.
 
 
 ## Examples
