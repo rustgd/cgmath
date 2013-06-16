@@ -19,7 +19,7 @@
        author = "Brendan Zabarauskas",
        url = "https://github.com/bjz/lmath-rs")];
 
-#[comment = "A generic linear algebra library."];
+#[comment = "A mathematics library for computer graphics."];
 #[license = "ASL2"];
 #[crate_type = "lib"];
 
@@ -29,4 +29,8 @@ pub mod mat;
 pub mod quat;
 pub mod vec;
 
+pub mod frustum;
+pub mod plane;
+pub mod point;
 pub mod projection;
+pub mod ray;
