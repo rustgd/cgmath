@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use super::Dimensional;
+pub use dim::Dimensional;
 pub use self::vec2::Vec2;
 pub use self::vec3::Vec3;
 pub use self::vec4::Vec4;

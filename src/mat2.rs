@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use super::Dimensional;
-
+use dim::Dimensional;
 use mat::{Mat3, ToMat3};
 use mat::{Mat4, ToMat4};
 use vec::Vec2;
