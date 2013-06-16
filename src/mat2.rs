@@ -18,7 +18,7 @@ use mat::{Mat3, ToMat3};
 use mat::{Mat4, ToMat4};
 use vec::Vec2;
 
-mod macros;
+mod num_macros;
 mod dim_macros;
 mod mat_macros;
 

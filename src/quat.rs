@@ -18,7 +18,7 @@ pub use dim::Dimensional;
 use mat::{Mat3, ToMat3};
 use vec::Vec3;
 
-mod macros;
+mod num_macros;
 mod dim_macros;
 
 // GLSL-style type aliases

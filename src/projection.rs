@@ -15,7 +15,7 @@
 
 use mat::Mat4;
 
-mod macros;
+mod num_macros;
 
 ///
 /// Create a perspective projection matrix

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use dim::Dimensional;
-mod macros;
+mod num_macros;
 mod dim_macros;
 mod vec_macros;
 
