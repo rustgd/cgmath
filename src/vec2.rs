@@ -269,7 +269,7 @@ impl<T:Copy + Real> Vec2<T> {
 
     #[inline]
     pub fn angle(&self, other: &Vec2<T>) -> T {
-        self.perp_dot(other).atan2(self.dot(other))
+        self.perp_dot(other).atan2(&self.dot(other))
     }
 
     #[inline]

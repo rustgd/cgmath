@@ -293,7 +293,7 @@ impl<T:Copy + Real> Vec3<T> {
 
     #[inline]
     pub fn angle(&self, other: &Vec3<T>) -> T {
-        self.cross(other).length().atan2(self.dot(other))
+        self.cross(other).length().atan2(&self.dot(other))
     }
 
     #[inline]
