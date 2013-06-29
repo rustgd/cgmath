@@ -215,8 +215,8 @@ macro_rules! impl_approx(
 
             #[inline]
             pub fn approx_eq_eps(&self, other: &$Self<T>, epsilon: &T) -> bool {
-                true
-                //self.zip(other, |a, b| a.approx_eq_eps(b, epsilon)).all(|&x| x)
+                
+                self.zip(other, |a, b| a.approx_eq_eps(b, epsilon)).all(|&x| x)
             }
         }
     )
