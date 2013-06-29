@@ -22,13 +22,13 @@ use point::Point3;
 ///
 /// - `pos`: the endpoint of the ray
 /// - `dir`: the direction vector
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Ray3<T> {
     pos: Point3<T>,
     dir: Vec3<T>,
 }
 
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Ray3<T> {
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Ray3<T> {
     #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()

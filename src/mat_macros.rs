@@ -41,18 +41,18 @@ macro_rules! impl_mat(
     )
 )
 
-macro_rules! impl_mat_copyable(
+macro_rules! impl_mat_clonable(
     ($Mat:ident, $Vec:ident) => (
-        impl<T:Copy> $Mat<T> {
+        impl<T:Clone> $Mat<T> {
             #[inline]
             pub fn row(&self, i: uint) -> $Vec<T> {
-                $Vec::from_slice(self.map(|c| copy *c.index(i)))
+                $Vec::from_slice(self.map(|c| c.index(i).clone()))
             }
 
             #[inline]
             pub fn swap_cols(&mut self, a: uint, b: uint) {
-                let tmp = copy *self.col(a);
-                *self.col_mut(a) = copy *self.col(b);
+                let tmp = self.col(a).clone();
+                *self.col_mut(a) = self.col(b).clone();
                 *self.col_mut(b) = tmp;
             }
 
@@ -63,8 +63,8 @@ macro_rules! impl_mat_copyable(
 
             #[inline]
             pub fn swap_elem(&mut self, (ai, aj): (uint, uint), (bi, bj): (uint, uint)) {
-                let tmp = copy *self.elem(ai, aj);
-                *self.elem_mut(ai, aj) = copy *self.elem(bi, bj);
+                let tmp = self.elem(ai, aj).clone();
+                *self.elem_mut(ai, aj) = self.elem(bi, bj).clone();
                 *self.elem_mut(bi, bj) = tmp;
             }
 
@@ -77,19 +77,19 @@ macro_rules! impl_mat_copyable(
 
 macro_rules! mat_transpose(
     (Mat2) => (
-        Mat2::new(copy *self.elem(0, 0), copy *self.elem(1, 0),
-                  copy *self.elem(0, 1), copy *self.elem(1, 1))
+        Mat2::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(),
+                  self.elem(0, 1).clone(), self.elem(1, 1).clone())
     );
     (Mat3) => (
-        Mat3::new(copy *self.elem(0, 0), copy *self.elem(1, 0), copy *self.elem(2, 0),
-                  copy *self.elem(0, 1), copy *self.elem(1, 1), copy *self.elem(2, 1),
-                  copy *self.elem(0, 2), copy *self.elem(1, 2), copy *self.elem(2, 2))
+        Mat3::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(), self.elem(2, 0).clone(),
+                  self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(),
+                  self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone())
     );
     (Mat4) => (
-        Mat4::new(copy *self.elem(0, 0), copy *self.elem(1, 0), copy *self.elem(2, 0), copy *self.elem(3, 0),
-                  copy *self.elem(0, 1), copy *self.elem(1, 1), copy *self.elem(2, 1), copy *self.elem(3, 1),
-                  copy *self.elem(0, 2), copy *self.elem(1, 2), copy *self.elem(2, 2), copy *self.elem(3, 2),
-                  copy *self.elem(0, 3), copy *self.elem(1, 3), copy *self.elem(2, 3), copy *self.elem(3, 3))
+        Mat4::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(), self.elem(2, 0).clone(), self.elem(3, 0).clone(),
+                  self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
+                  self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
+                  self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone())
     );
 )
 
@@ -129,7 +129,7 @@ macro_rules! mat_transpose_self(
 
 macro_rules! impl_mat_numeric(
     ($Mat:ident, $Vec:ident) => (
-        impl<T:Copy + Num> $Mat<T> {
+        impl<T:Clone + Num> $Mat<T> {
             #[inline]
             pub fn from_value(value: T) -> $Mat<T> { mat_from_value!($Mat) }
 
@@ -141,7 +141,7 @@ macro_rules! impl_mat_numeric(
 
             #[inline]
             pub fn mul_t(&self, value: T) -> $Mat<T> {
-                $Mat::from_slice(self.map(|&c| c.mul_t(copy value)))
+                $Mat::from_slice(self.map(|&c| c.mul_t(value.clone())))
             }
 
             #[inline]
@@ -166,7 +166,7 @@ macro_rules! impl_mat_numeric(
 
             #[inline]
             pub fn mul_self_t(&mut self, value: T) {
-                self.map_mut(|x| x.mul_self_t(copy value))
+                self.map_mut(|x| x.mul_self_t(value.clone()))
             }
 
             #[inline]
@@ -206,19 +206,19 @@ macro_rules! impl_mat_numeric(
 
 macro_rules! mat_from_value(
     (Mat2) => (
-        Mat2::new(copy value, zero!(T),
-                  zero!(T), copy value)
+        Mat2::new(value.clone(), zero!(T),
+                  zero!(T), value.clone())
     );
     (Mat3) => (
-        Mat3::new(copy value, zero!(T), zero!(T),
-                  zero!(T), copy value, zero!(T),
-                  zero!(T), zero!(T), copy value)
+        Mat3::new(value.clone(), zero!(T), zero!(T),
+                  zero!(T), value.clone(), zero!(T),
+                  zero!(T), zero!(T), value.clone())
     );
     (Mat4) => (
-        Mat4::new(copy value, zero!(T), zero!(T), zero!(T),
-                  zero!(T), copy value, zero!(T), zero!(T),
-                  zero!(T), zero!(T), copy value, zero!(T),
-                  zero!(T), zero!(T), zero!(T), copy value)
+        Mat4::new(value.clone(), zero!(T), zero!(T), zero!(T),
+                  zero!(T), value.clone(), zero!(T), zero!(T),
+                  zero!(T), zero!(T), value.clone(), zero!(T),
+                  zero!(T), zero!(T), zero!(T), value.clone())
     );
 )
 
@@ -292,18 +292,18 @@ macro_rules! mat_determinant(
         self.col(0).dot(&self.col(1).cross(self.col(2)))
     );
     (Mat4) => ({
-        let m0 = Mat3::new(copy *self.elem(1, 1), copy *self.elem(2, 1), copy *self.elem(3, 1),
-                           copy *self.elem(1, 2), copy *self.elem(2, 2), copy *self.elem(3, 2),
-                           copy *self.elem(1, 3), copy *self.elem(2, 3), copy *self.elem(3, 3));
-        let m1 = Mat3::new(copy *self.elem(0, 1), copy *self.elem(2, 1), copy *self.elem(3, 1),
-                           copy *self.elem(0, 2), copy *self.elem(2, 2), copy *self.elem(3, 2),
-                           copy *self.elem(0, 3), copy *self.elem(2, 3), copy *self.elem(3, 3));
-        let m2 = Mat3::new(copy *self.elem(0, 1), copy *self.elem(1, 1), copy *self.elem(3, 1),
-                           copy *self.elem(0, 2), copy *self.elem(1, 2), copy *self.elem(3, 2),
-                           copy *self.elem(0, 3), copy *self.elem(1, 3), copy *self.elem(3, 3));
-        let m3 = Mat3::new(copy *self.elem(0, 1), copy *self.elem(1, 1), copy *self.elem(2, 1),
-                           copy *self.elem(0, 2), copy *self.elem(1, 2), copy *self.elem(2, 2),
-                           copy *self.elem(0, 3), copy *self.elem(1, 3), copy *self.elem(2, 3));
+        let m0 = Mat3::new(self.elem(1, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
+                           self.elem(1, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
+                           self.elem(1, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone());
+        let m1 = Mat3::new(self.elem(0, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
+                           self.elem(0, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
+                           self.elem(0, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone());
+        let m2 = Mat3::new(self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(3, 1).clone(),
+                           self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(3, 2).clone(),
+                           self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(3, 3).clone());
+        let m3 = Mat3::new(self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(),
+                           self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone(),
+                           self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(2, 3).clone());
 
         self.elem(0, 0) * m0.determinant() -
         self.elem(1, 0) * m1.determinant() +
@@ -320,7 +320,7 @@ macro_rules! mat_trace(
 
 macro_rules! impl_mat_approx_numeric(
     ($Mat:ident) => (
-        impl<T:Copy + Real + ApproxEq<T>> $Mat<T> {
+        impl<T:Clone + Real + ApproxEq<T>> $Mat<T> {
             #[inline]
             pub fn inverse(&self) -> Option<$Mat<T>> {
                 mat_inverse!($Mat)
@@ -374,9 +374,9 @@ macro_rules! mat_inverse(
         if d.approx_eq(&zero!(T)) {
             None
         } else {
-            Some(Mat3::from_cols(self.col(1).cross(self.col(2)).div_t(copy d),
-                                 self.col(2).cross(self.col(0)).div_t(copy d),
-                                 self.col(0).cross(self.col(1)).div_t(copy d)).transpose())
+            Some(Mat3::from_cols(self.col(1).cross(self.col(2)).div_t(d.clone()),
+                                 self.col(2).cross(self.col(0)).div_t(d.clone()),
+                                 self.col(0).cross(self.col(1)).div_t(d.clone())).transpose())
         }
     });
     (Mat4) => ({
@@ -390,7 +390,7 @@ macro_rules! mat_inverse(
             // So take this matrix, A, augmented with the identity
             // and essentially reduce [A|I]
 
-            let mut A = copy *self;
+            let mut A = self.clone();
             let mut I = Mat4::identity::<T>();
 
             for uint::range(0, 4) |j| {
@@ -408,16 +408,16 @@ macro_rules! mat_inverse(
                 I.swap_cols(i1, j);
 
                 // Scale col j to have a unit diagonal
-                let ajj = copy *A.elem(j, j);
-                I.col_mut(j).div_self_t(copy ajj);
-                A.col_mut(j).div_self_t(copy ajj);
+                let ajj = A.elem(j, j).clone();
+                I.col_mut(j).div_self_t(ajj.clone());
+                A.col_mut(j).div_self_t(ajj.clone());
 
                 // Eliminate off-diagonal elems in col j of A,
                 // doing identical ops to I
                 for uint::range(0, 4) |i| {
                     if i != j {
-                        let ij_mul_aij = I.col(j).mul_t(copy *A.elem(i, j));
-                        let aj_mul_aij = A.col(j).mul_t(copy *A.elem(i, j));
+                        let ij_mul_aij = I.col(j).mul_t(A.elem(i, j).clone());
+                        let aj_mul_aij = A.col(j).mul_t(A.elem(i, j).clone());
                         I.col_mut(i).sub_self_v(&ij_mul_aij);
                         A.col_mut(i).sub_self_v(&aj_mul_aij);
                     }
@@ -498,7 +498,7 @@ macro_rules! mat_is_symmetric(
 
 macro_rules! impl_mat_neg(
     ($Mat:ident) => (
-        impl<T:Copy + Num> Neg<$Mat<T>> for $Mat<T> {
+        impl<T:Clone + Num> Neg<$Mat<T>> for $Mat<T> {
             #[inline]
             pub fn neg(&self) -> $Mat<T> {
                 $Mat::from_slice(self.map(|&x| -x))

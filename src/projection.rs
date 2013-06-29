@@ -27,7 +27,7 @@ mod num_macros;
 /// This is the equivalent of the gluPerspective function, the algorithm of which
 /// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
 ///
-pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub fn perspective<T:Clone + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * (fovy / two!(T)).to_radians().tan();
     let xmax = ymax * aspectRatio;
 
@@ -40,7 +40,7 @@ pub fn perspective<T:Copy + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> M
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 ///
-pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn frustum<T:Clone + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = (two!(T) * near) / (right - left);
     let c0r1 = zero!(T);
     let c0r2 = zero!(T);
@@ -73,7 +73,7 @@ pub fn frustum<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
 ///
-pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn ortho<T:Clone + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = two!(T) / (right - left);
     let c0r1 = zero!(T);
     let c0r2 = zero!(T);
@@ -101,13 +101,13 @@ pub fn ortho<T:Copy + Real>(left: T, right: T, bottom: T, top: T, near: T, far: 
 }
 
 pub trait Projection<T> {
-    pub fn if_valid<U:Copy>(&self, f: &fn() -> U) -> Result<U, ~str>;
+    pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str>;
     pub fn to_mat4(&self) -> Result<Mat4<T>, ~str>;
     pub fn to_frustum(&self) -> Result<Frustum<T>, ~str>;
 }
 
 /// A symmetrical perspective projection based on a field-of-view angle
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct PerspectiveFOV<T> {
     fovy:   T,  //radians
     aspect: T,
@@ -115,7 +115,7 @@ pub struct PerspectiveFOV<T> {
     far:    T,
 }
 
-impl<T:Copy + Real> PerspectiveFOV<T> {
+impl<T:Clone + Real> PerspectiveFOV<T> {
     pub fn to_perspective(&self) -> Result<Perspective<T>, ~str> {
         do self.if_valid {
             let angle = self.fovy / two!(T);
@@ -127,15 +127,15 @@ impl<T:Copy + Real> PerspectiveFOV<T> {
                 right:   xmax,
                 bottom: -ymax,
                 top:     ymax,
-                near:    copy self.near,
-                far:     copy self.far,
+                near:    self.near.clone(),
+                far:     self.far.clone(),
             }
         }
     }
 }
 
-impl<T:Copy + Real> Projection<T> for PerspectiveFOV<T> {
-    pub fn if_valid<U:Copy>(&self, f: &fn() -> U) -> Result<U, ~str> {
+impl<T:Clone + Real> Projection<T> for PerspectiveFOV<T> {
+    pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         let frac_pi_2: T = Real::frac_pi_2();
         cond! (
             (self.fovy   < zero!(T))  { Err(fmt!("The vertical field of view cannot be below zero, found: %?", self.fovy)) }
@@ -158,7 +158,7 @@ impl<T:Copy + Real> Projection<T> for PerspectiveFOV<T> {
 }
 
 /// A perspective projection with arbitrary left/right/bottom/top distances
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Perspective<T> {
     left:   T,
     right:  T,
@@ -168,8 +168,8 @@ pub struct Perspective<T> {
     far:    T,
 }
 
-impl<T:Copy + Real> Projection<T> for Perspective<T> {
-    pub fn if_valid<U:Copy>(&self, f: &fn() -> U) -> Result<U, ~str> {
+impl<T:Clone + Real> Projection<T> for Perspective<T> {
+    pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         cond! (
             (self.left   > self.right) { Err(fmt!("`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right)) }
             (self.bottom > self.top)   { Err(fmt!("`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top)) }
@@ -256,15 +256,15 @@ impl<T:Copy + Real> Projection<T> for Perspective<T> {
                 right:  Plane::from_abcd(theta_r.cos(), zero!(T), theta_r.sin(), zero!(T)),
                 bottom: Plane::from_abcd(zero!(T), theta_b.cos(), theta_b.sin(), zero!(T)),
                 top:    Plane::from_abcd(zero!(T), theta_t.cos(), theta_t.sin(), zero!(T)),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), copy -self.near),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), copy self.far),
+                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), -self.near.clone()),
+                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), self.far.clone()),
             }
         }
     }
 }
 
 /// An orthographic projection with arbitrary left/right/bottom/top distances
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Ortho<T> {
     left:   T,
     right:  T,
@@ -274,8 +274,8 @@ pub struct Ortho<T> {
     far:    T,
 }
 
-impl<T:Copy + Real> Projection<T> for Ortho<T> {
-    pub fn if_valid<U:Copy>(&self, f: &fn() -> U) -> Result<U, ~str> {
+impl<T:Clone + Real> Projection<T> for Ortho<T> {
+    pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         cond! (
             (self.left   > self.right) { Err(fmt!("`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right)) }
             (self.bottom > self.top)   { Err(fmt!("`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top)) }
@@ -316,12 +316,12 @@ impl<T:Copy + Real> Projection<T> for Ortho<T> {
     pub fn to_frustum(&self) -> Result<Frustum<T>, ~str> {
         do self.if_valid {
             Frustum {
-                left:   Plane::from_abcd(one!(T), zero!(T), zero!(T), copy self.left),
-                right:  Plane::from_abcd(-one!(T), zero!(T), zero!(T), copy self.right),
-                bottom: Plane::from_abcd(zero!(T), one!(T), zero!(T), copy self.bottom),
-                top:    Plane::from_abcd(zero!(T), -one!(T), zero!(T), copy self.top),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), copy self.near),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T),copy self.far),
+                left:   Plane::from_abcd(one!(T), zero!(T), zero!(T), self.left.clone()),
+                right:  Plane::from_abcd(-one!(T), zero!(T), zero!(T), self.right.clone()),
+                bottom: Plane::from_abcd(zero!(T), one!(T), zero!(T), self.bottom.clone()),
+                top:    Plane::from_abcd(zero!(T), -one!(T), zero!(T), self.top.clone()),
+                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), self.near.clone()),
+                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T),self.far.clone()),
             }
         }
     }

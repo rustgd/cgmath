@@ -25,7 +25,7 @@ pub trait Point<T,V>: Eq + ApproxEq<T> + ToStr {
 }
 
 /// A two-dimensional point
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Point2<T>(Vec2<T>);
 
 impl_dimensional!(Point2, T, 2)
@@ -38,7 +38,7 @@ impl<T> Point2<T> {
     }
 }
 
-impl<T:Copy + Real> Point<T,Vec2<T>> for Point2<T> {
+impl<T:Clone + Real> Point<T,Vec2<T>> for Point2<T> {
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
         Point2(self.add_v(offset))
     }
@@ -55,7 +55,7 @@ impl<T> ToStr for Point2<T> {
 }
 
 /// A three-dimensional point
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Point3<T>(Vec3<T>);
 
 impl_dimensional!(Point3, T, 3)
@@ -68,7 +68,7 @@ impl<T> Point3<T> {
     }
 }
 
-impl<T:Copy + Real> Point<T,Vec3<T>> for Point3<T> {
+impl<T:Clone + Real> Point<T,Vec3<T>> for Point3<T> {
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
         Point3(self.add_v(offset))
     }

@@ -22,7 +22,7 @@ mod num_macros;
 mod dim_macros;
 mod mat_macros;
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Mat2<T> {
     x: Vec2<T>,
     y: Vec2<T>,
@@ -42,7 +42,7 @@ impl_dimensional_fns!(Mat2, Vec2<T>, 2)
 impl_approx!(Mat2)
 
 impl_mat!(Mat2, Vec2)
-impl_mat_copyable!(Mat2, Vec2)
+impl_mat_clonable!(Mat2, Vec2)
 impl_mat_numeric!(Mat2, Vec2)
 impl_mat_approx_numeric!(Mat2)
 impl_mat_neg!(Mat2)
@@ -66,33 +66,33 @@ impl<T> Mat2<T> {
     }
 }
 
-impl<T:Copy + Num> ToMat3<T> for Mat2<T> {
+impl<T:Clone + Num> ToMat3<T> for Mat2<T> {
     #[inline]
     pub fn to_mat3(&self) -> Mat3<T> {
-        Mat3::new(copy *self.elem(0, 0), copy *self.elem(0, 1), zero!(T),
-                  copy *self.elem(1, 0), copy *self.elem(1, 1), zero!(T),
+        Mat3::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), zero!(T),
+                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), zero!(T),
                   zero!(T), zero!(T), one!(T))
     }
 }
 
-impl<T:Copy + Num> ToMat4<T> for Mat2<T> {
+impl<T:Clone + Num> ToMat4<T> for Mat2<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(copy  *self.elem(0, 0), copy   *self.elem(0, 1), zero!(T), zero!(T),
-                  copy  *self.elem(1, 0), copy   *self.elem(1, 1), zero!(T), zero!(T),
+        Mat4::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), zero!(T), zero!(T),
+                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), zero!(T), zero!(T),
                   zero!(T), zero!(T), one!(T), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
 }
 
-impl<T:Copy + Real> Mat2<T> {
+impl<T:Clone + Real> Mat2<T> {
     #[inline]
     pub fn from_angle(radians: T) -> Mat2<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat2::new(copy cos_theta,  copy -sin_theta,
-                  copy sin_theta,  copy cos_theta)
+        Mat2::new(cos_theta.clone(),  -sin_theta.clone(),
+                  sin_theta.clone(),  cos_theta.clone())
     }
 }
 
@@ -265,7 +265,7 @@ mod mat2_tests{
     }
 }
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Mat3<T> {
     x: Vec3<T>,
     y: Vec3<T>,
@@ -286,7 +286,7 @@ impl_dimensional_fns!(Mat3, Vec3<T>, 3)
 impl_approx!(Mat3)
 
 impl_mat!(Mat3, Vec3)
-impl_mat_copyable!(Mat3, Vec3)
+impl_mat_clonable!(Mat3, Vec3)
 impl_mat_numeric!(Mat3, Vec3)
 impl_mat_approx_numeric!(Mat3)
 impl_mat_neg!(Mat3)
@@ -313,17 +313,17 @@ impl<T> Mat3<T> {
     }
 }
 
-impl<T:Copy + Num> ToMat4<T> for Mat3<T> {
+impl<T:Clone + Num> ToMat4<T> for Mat3<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(copy *self.elem(0, 0), copy *self.elem(0, 1), copy *self.elem(0, 2), zero!(T),
-                  copy *self.elem(1, 0), copy *self.elem(1, 1), copy *self.elem(1, 2), zero!(T),
-                  copy *self.elem(2, 0), copy *self.elem(2, 1), copy *self.elem(2, 2), zero!(T),
+        Mat4::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), self.elem(0, 2).clone(), zero!(T),
+                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), self.elem(1, 2).clone(), zero!(T),
+                  self.elem(2, 0).clone(), self.elem(2, 1).clone(), self.elem(2, 2).clone(), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
 }
 
-impl<T:Copy + Real> Mat3<T> {
+impl<T:Clone + Real> Mat3<T> {
     /// Construct a matrix from an angular rotation around the `x` axis
     pub fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -331,8 +331,8 @@ impl<T:Copy + Real> Mat3<T> {
         let sin_theta = radians.sin();
 
         Mat3::new(one!(T), zero!(T), zero!(T),
-                  zero!(T), copy cos_theta, copy sin_theta,
-                  zero!(T), copy -sin_theta, copy cos_theta)
+                  zero!(T), cos_theta.clone(), sin_theta.clone(),
+                  zero!(T), -sin_theta.clone(), cos_theta.clone())
     }
 
     /// Construct a matrix from an angular rotation around the `y` axis
@@ -341,9 +341,9 @@ impl<T:Copy + Real> Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat3::new(copy cos_theta, zero!(T), copy -sin_theta,
+        Mat3::new(cos_theta.clone(), zero!(T), -sin_theta.clone(),
                   zero!(T), one!(T), zero!(T),
-                  copy sin_theta, zero!(T), copy cos_theta)
+                  sin_theta.clone(), zero!(T), cos_theta.clone())
     }
 
     /// Construct a matrix from an angular rotation around the `z` axis
@@ -352,8 +352,8 @@ impl<T:Copy + Real> Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat3::new(copy cos_theta, copy sin_theta, zero!(T),
-                  copy -sin_theta, copy cos_theta, zero!(T),
+        Mat3::new(cos_theta.clone(), sin_theta.clone(), zero!(T),
+                  -sin_theta.clone(), cos_theta.clone(), zero!(T),
                   zero!(T), zero!(T), one!(T))
     }
 
@@ -384,9 +384,9 @@ impl<T:Copy + Real> Mat3<T> {
         let s = radians.sin();
         let _1_c = one!(T) - c;
 
-        let x = copy axis.x;
-        let y = copy axis.y;
-        let z = copy axis.z;
+        let x = axis.x.clone();
+        let y = axis.y.clone();
+        let z = axis.z.clone();
 
         Mat3::new(_1_c*x*x + c, _1_c*x*y + s*z, _1_c*x*z - s*y,
                   _1_c*x*y - s*z, _1_c*y*y + c, _1_c*y*z + s*x,
@@ -407,7 +407,7 @@ impl<T:Copy + Real> Mat3<T> {
     }
 }
 
-impl<T:Copy + Real> ToQuat<T> for Mat3<T> {
+impl<T:Clone + Real> ToQuat<T> for Mat3<T> {
     /// Convert the matrix to a quaternion
     pub fn to_quat(&self) -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
@@ -663,7 +663,7 @@ mod mat3_tests{
     }
 }
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Mat4<T> {
     x: Vec4<T>,
     y: Vec4<T>,
@@ -685,7 +685,7 @@ impl_dimensional_fns!(Mat4, Vec4<T>, 4)
 impl_approx!(Mat4)
 
 impl_mat!(Mat4, Vec4)
-impl_mat_copyable!(Mat4, Vec4)
+impl_mat_clonable!(Mat4, Vec4)
 impl_mat_numeric!(Mat4, Vec4)
 impl_mat_approx_numeric!(Mat4)
 impl_mat_neg!(Mat4)

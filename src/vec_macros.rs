@@ -26,9 +26,9 @@ macro_rules! impl_vec(
     )
 )
 
-macro_rules! impl_vec_copyable(
+macro_rules! impl_vec_clonable(
     ($Vec:ident) => (
-        impl<T:Copy> $Vec<T> {
+        impl<T:Clone> $Vec<T> {
             #[inline]
             pub fn from_value(value: T) -> $Vec<T> {
                 vec_from_value!($Vec)
@@ -38,14 +38,14 @@ macro_rules! impl_vec_copyable(
 )
 
 macro_rules! vec_from_value(
-    (Vec2) => (Vec2::new(copy value, copy value));
-    (Vec3) => (Vec3::new(copy value, copy value, copy value));
-    (Vec4) => (Vec4::new(copy value, copy value, copy value, copy value));
+    (Vec2) => (Vec2::new(value.clone(), value.clone()));
+    (Vec3) => (Vec3::new(value.clone(), value.clone(), value.clone()));
+    (Vec4) => (Vec4::new(value.clone(), value.clone(), value.clone(), value.clone()));
 )
 
 macro_rules! impl_vec_numeric(
     ($Vec:ident) => (
-        impl<T:Copy + Num> $Vec<T> {
+        impl<T:Clone + Num> $Vec<T> {
             #[inline] pub fn identity() -> $Vec<T> { $Vec::from_value(one!(T)) }
             #[inline] pub fn zero() -> $Vec<T> { $Vec::from_value(zero!(T)) }
 
@@ -62,11 +62,11 @@ macro_rules! impl_vec_numeric(
             #[inline] pub fn rem_v(&self, other: &$Vec<T>) -> $Vec<T> { $Vec::from_slice(self.zip(other, |&a, &b| a % b)) }
 
             #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
-            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x += copy value) }
-            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x -= copy value) }
-            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x *= copy value) }
-            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x /= copy value) }
-            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x %= copy value) }
+            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x += value.clone()) }
+            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x -= value.clone()) }
+            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x *= value.clone()) }
+            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x /= value.clone()) }
+            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x %= value.clone()) }
 
             #[inline] pub fn add_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a += b) }
             #[inline] pub fn sub_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a -= b) }
@@ -99,7 +99,7 @@ macro_rules! vec_dot(
 
 macro_rules! impl_vec_neg(
     ($Vec:ident) => (
-        impl<T:Copy + Num> Neg<$Vec<T>> for $Vec<T> {
+        impl<T:Clone + Num> Neg<$Vec<T>> for $Vec<T> {
             #[inline]
             pub fn neg(&self) -> $Vec<T> {
                 $Vec::from_slice(self.map(|&x| -x))
@@ -110,7 +110,7 @@ macro_rules! impl_vec_neg(
 
 macro_rules! impl_vec_euclidean(
     ($Vec:ident) => (
-        impl<T:Copy + Real> $Vec<T> {
+        impl<T:Clone + Real> $Vec<T> {
             #[inline]
             pub fn length2(&self) -> T {
                 self.dot(self)
@@ -179,7 +179,7 @@ macro_rules! vec_angle(
 
 macro_rules! impl_vec_ord(
     ($Vec:ident) => (
-        impl<T:Copy + Ord> $Vec<T> {
+        impl<T:Clone + Ord> $Vec<T> {
             #[inline] pub fn lt_t(&self, value: T) -> $Vec<bool> { $Vec::from_slice(self.map(|&x| x < value)) }
             #[inline] pub fn le_t(&self, value: T) -> $Vec<bool> { $Vec::from_slice(self.map(|&x| x <= value)) }
             #[inline] pub fn ge_t(&self, value: T) -> $Vec<bool> { $Vec::from_slice(self.map(|&x| x >= value)) }
@@ -195,7 +195,7 @@ macro_rules! impl_vec_ord(
 
 macro_rules! impl_vec_eq(
     ($Vec:ident) => (
-        impl<T:Copy + Eq> $Vec<T> {
+        impl<T:Clone + Eq> $Vec<T> {
             #[inline] pub fn eq_t(&self, value: T) -> $Vec<bool> { $Vec::from_slice(self.map(|&x| x == value)) }
             #[inline] pub fn ne_t(&self, value: T) -> $Vec<bool> { $Vec::from_slice(self.map(|&x| x != value)) }
 
@@ -236,7 +236,7 @@ macro_rules! vec_all(
 
 macro_rules! impl_vec_not(
     ($Vec:ident) => (
-        impl<T:Copy + Not<T>> Not<$Vec<T>> for $Vec<T> {
+        impl<T:Clone + Not<T>> Not<$Vec<T>> for $Vec<T> {
             pub fn not(&self) -> $Vec<T> {
                 $Vec::from_slice(self.map(|&x| !x))
             }

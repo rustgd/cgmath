@@ -19,7 +19,7 @@ mod num_macros;
 mod dim_macros;
 mod vec_macros;
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
 // GLSL-style type aliases
@@ -51,7 +51,7 @@ impl_swap!(Vec2)
 impl_approx!(Vec2)
 
 impl_vec!(Vec2 { x, y })
-impl_vec_copyable!(Vec2)
+impl_vec_clonable!(Vec2)
 impl_vec_numeric!(Vec2)
 impl_vec_neg!(Vec2)
 impl_vec_euclidean!(Vec2)
@@ -60,7 +60,7 @@ impl_vec_eq!(Vec2)
 impl_vec_bool!(Vec2)
 impl_vec_not!(Vec2)
 
-impl<T:Copy + Num> Vec2<T> {
+impl<T:Clone + Num> Vec2<T> {
     #[inline] pub fn unit_x() -> Vec2<T> { Vec2::new(one!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec2<T> { Vec2::new(zero!(T), one!(T)) }
 
@@ -204,7 +204,7 @@ mod vec2_tests {
     }
 }
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Vec3<T> { x: T, y: T, z: T }
 
 // GLSL-style type aliases
@@ -236,7 +236,7 @@ impl_swap!(Vec3)
 impl_approx!(Vec3)
 
 impl_vec!(Vec3 { x, y, z })
-impl_vec_copyable!(Vec3)
+impl_vec_clonable!(Vec3)
 impl_vec_numeric!(Vec3)
 impl_vec_neg!(Vec3)
 impl_vec_euclidean!(Vec3)
@@ -245,7 +245,7 @@ impl_vec_eq!(Vec3)
 impl_vec_bool!(Vec3)
 impl_vec_not!(Vec3)
 
-impl<T:Copy + Num> Vec3<T> {
+impl<T:Clone + Num> Vec3<T> {
     #[inline] pub fn unit_x() -> Vec3<T> { Vec3::new(one!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec3<T> { Vec3::new(zero!(T), one!(T), zero!(T)) }
     #[inline] pub fn unit_z() -> Vec3<T> { Vec3::new(zero!(T), zero!(T), one!(T)) }
@@ -411,7 +411,7 @@ mod vec3_tests{
     }
 }
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Vec4<T> { x: T, y: T, z: T, w: T }
 
 // GLSL-style type aliases
@@ -443,7 +443,7 @@ impl_approx!(Vec4)
 impl_swap!(Vec4)
 
 impl_vec!(Vec4 { x, y, z, w })
-impl_vec_copyable!(Vec4)
+impl_vec_clonable!(Vec4)
 impl_vec_numeric!(Vec4)
 impl_vec_neg!(Vec4)
 impl_vec_euclidean!(Vec4)
@@ -452,7 +452,7 @@ impl_vec_eq!(Vec4)
 impl_vec_bool!(Vec4)
 impl_vec_not!(Vec4)
 
-impl<T:Copy + Num> Vec4<T> {
+impl<T:Clone + Num> Vec4<T> {
     #[inline] pub fn unit_x() -> Vec4<T> { Vec4::new(one!(T), zero!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec4<T> { Vec4::new(zero!(T), one!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_z() -> Vec4<T> { Vec4::new(zero!(T), zero!(T), one!(T), zero!(T)) }

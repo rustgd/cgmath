@@ -19,7 +19,7 @@ use point::Point3;
 
 mod num_macros;
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Frustum<T> {
     left:   Plane<T>,
     right:  Plane<T>,
@@ -29,7 +29,7 @@ pub struct Frustum<T> {
     far:    Plane<T>,
 }
 
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct FrustumPoints<T> {
     near_top_left:     Point3<T>,
     near_top_right:    Point3<T>,
@@ -41,7 +41,7 @@ pub struct FrustumPoints<T> {
     far_bottom_right:  Point3<T>,
 }
 
-impl<T:Copy + Real> Frustum<T> {
+impl<T:Clone + Real> Frustum<T> {
     /// Constructs a frustum
     pub fn from_planes(left:   Plane<T>, right:  Plane<T>,
                        bottom: Plane<T>, top:    Plane<T>,
@@ -80,7 +80,7 @@ impl<T:Copy + Real> Frustum<T> {
     }
 }
 
-impl<T:Copy + Real + ApproxEq<T>> Frustum<T> {
+impl<T:Clone + Real + ApproxEq<T>> Frustum<T> {
     /// Computes where the frustum planes intersect to form corners and returns
     /// a struct containing the eight resulting position vectors.
     pub fn to_points(&self) -> FrustumPoints<T> {
@@ -97,7 +97,7 @@ impl<T:Copy + Real + ApproxEq<T>> Frustum<T> {
     }
 }
 
-impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for Frustum<T> {
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Frustum<T> {
     #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()

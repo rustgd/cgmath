@@ -31,7 +31,7 @@ mod dim_macros;
 ///   - `n.y`: corresponds to `B` in the plane equation
 ///   - `n.z`: corresponds to `C` in the plane equation
 /// - `d`: the distance value, corresponding to `D` in the plane equation
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Plane<T> {
     norm: Vec3<T>,
     dist: T,
@@ -42,7 +42,7 @@ impl_dimensional_fns!(Plane, T, 4)
 impl_swap!(Plane)
 impl_approx!(Plane)
 
-impl<T:Copy + Real> Plane<T> {
+impl<T:Clone + Real> Plane<T> {
     /// # Arguments
     ///
     /// - `a`: the `x` component of the normal
@@ -63,7 +63,7 @@ impl<T:Copy + Real> Plane<T> {
 
     /// Construct a plane from the components of a four-dimensional vector
     pub fn from_vec4(vec: Vec4<T>) -> Plane<T> {
-        Plane::from_abcd(copy vec.x, copy vec.y, copy vec.z, copy vec.w)
+        Plane::from_abcd(vec.x.clone(), vec.y.clone(), vec.z.clone(), vec.w.clone())
     }
 
     /// Compute the distance from the plane to the point
@@ -87,7 +87,7 @@ impl<T:Copy + Real> Plane<T> {
     }
 }
 
-impl<T:Copy + Real + ApproxEq<T>> Plane<T> {
+impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`
     pub fn from_3p(a: Point3<T>,
                    b: Point3<T>,
@@ -123,10 +123,10 @@ impl<T:Copy + Real + ApproxEq<T>> Plane<T> {
         } else {
             // The end-point of the ray is at the three-plane intersection between
             // `self`, `other`, and a tempory plane positioned at the origin
-            do Plane::from_nd(copy ray_dir, zero!(T)).intersection_3pl(self, other).map |ray_pos| {
+            do Plane::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |ray_pos| {
                 Ray3 {
-                    pos: copy *ray_pos,
-                    dir: copy ray_dir,
+                    pos: ray_pos.clone(),
+                    dir: ray_dir.clone(),
                 }
             }
         }
@@ -140,11 +140,13 @@ impl<T:Copy + Real + ApproxEq<T>> Plane<T> {
     /// - `None`:    No valid intersection was found. The normals of the three
     ///              planes are probably coplanar.
     pub fn intersection_3pl(&self, other_a: &Plane<T>, other_b: &Plane<T>) -> Option<Point3<T>> {
-        let mx = Mat3::new(copy self.norm.x, copy other_a.norm.x, copy other_b.norm.x,
-                           copy self.norm.y, copy other_a.norm.y, copy other_b.norm.y,
-                           copy self.norm.z, copy other_a.norm.z, copy other_b.norm.z);
+        let mx = Mat3::new(self.norm.x.clone(), other_a.norm.x.clone(), other_b.norm.x.clone(),
+                           self.norm.y.clone(), other_a.norm.y.clone(), other_b.norm.y.clone(),
+                           self.norm.z.clone(), other_a.norm.z.clone(), other_b.norm.z.clone());
         do mx.inverse().map |m| {
-            Point3(m.mul_v(&Vec3::new(copy self.dist, copy other_a.dist, copy other_b.dist)))
+            Point3(m.mul_v(&Vec3::new(self.dist.clone(),
+                                      other_a.dist.clone(),
+                                      other_b.dist.clone())))
         }
     }
 }

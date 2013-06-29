@@ -189,11 +189,11 @@ macro_rules! impl_dimensional_fns(
 
 macro_rules! impl_swap(
     ($Self:ident) => (
-        impl<T:Copy> $Self<T> {
+        impl<T:Clone> $Self<T> {
             #[inline]
             pub fn swap(&mut self, a: uint, b: uint) {
-                let tmp = copy *self.index(a);
-                *self.index_mut(a) = copy *self.index(b);
+                let tmp = self.index(a).clone();
+                *self.index_mut(a) = self.index(b).clone();
                 *self.index_mut(b) = tmp;
             }
         }
@@ -202,7 +202,7 @@ macro_rules! impl_swap(
 
 macro_rules! impl_approx(
     ($Self:ident) => (
-        impl<T:Copy + Eq + ApproxEq<T>> ApproxEq<T> for $Self<T> {
+        impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for $Self<T> {
             #[inline]
             pub fn approx_epsilon() -> T {
                 ApproxEq::approx_epsilon::<T,T>()
@@ -215,8 +215,7 @@ macro_rules! impl_approx(
 
             #[inline]
             pub fn approx_eq_eps(&self, other: &$Self<T>, epsilon: &T) -> bool {
-                
-                self.zip(other, |a, b| a.approx_eq_eps(b, epsilon)).all(|&x| x)
+                self.zip(other, |a, b| a.approx_eq_eps(b, epsilon)).iter().all(|&x| x)
             }
         }
     )

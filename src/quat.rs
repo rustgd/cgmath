@@ -33,7 +33,7 @@ pub type Quatf32 = Quat<f32>;
 pub type Quatf64 = Quat<f64>;
 
 /// A quaternion in scalar/vector form
-#[deriving(Eq)]
+#[deriving(Clone, Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl_dimensional!(Quat, T, 4)
@@ -72,7 +72,7 @@ impl<T> Quat<T> {
     }
 }
 
-impl<T:Copy + Real> Quat<T> {
+impl<T:Clone + Real> Quat<T> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quat<T> {
@@ -136,7 +136,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The result of multiplying the quaternion by a vector
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
-        let tmp = self.v.cross(vec).add_v(&vec.mul_t(copy self.s));
+        let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s.clone()));
         self.v.cross(&tmp).mul_t(two!(T)).add_v(vec)
     }
 
@@ -175,7 +175,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The conjugate of the quaternion
     #[inline]
     pub fn conjugate(&self) -> Quat<T> {
-        Quat::from_sv(copy self.s, copy -self.v)
+        Quat::from_sv(self.s.clone(), -self.v.clone())
     }
 
     /// The multiplicative inverse of the quaternion
@@ -220,7 +220,7 @@ impl<T:Copy + Real> Quat<T> {
     }
 }
 
-impl<T:Copy + Num> ToMat3<T> for Quat<T> {
+impl<T:Clone + Num> ToMat3<T> for Quat<T> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
     pub fn to_mat3(&self) -> Mat3<T> {
         let x2 = self.v.x + self.v.x;
@@ -247,14 +247,14 @@ impl<T:Copy + Num> ToMat3<T> for Quat<T> {
     }
 }
 
-impl<T:Copy + Float> Neg<Quat<T>> for Quat<T> {
+impl<T:Clone + Float> Neg<Quat<T>> for Quat<T> {
     #[inline]
     pub fn neg(&self) -> Quat<T> {
         Quat::from_slice(self.map(|&x| -x))
     }
 }
 
-impl<T:Copy + Float> Quat<T> {
+impl<T:Clone + Float> Quat<T> {
     #[inline]
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
         Mat3::look_at(dir, up).to_quat()
