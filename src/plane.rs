@@ -63,7 +63,7 @@ impl<T:Copy + Real> Plane<T> {
 
     /// Construct a plane from the components of a four-dimensional vector
     pub fn from_vec4(vec: Vec4<T>) -> Plane<T> {
-        Plane::from_abcd(vec.x, vec.y, vec.z, vec.w)
+        Plane::from_abcd(copy vec.x, copy vec.y, copy vec.z, copy vec.w)
     }
 
     /// Compute the distance from the plane to the point
@@ -123,10 +123,10 @@ impl<T:Copy + Real + ApproxEq<T>> Plane<T> {
         } else {
             // The end-point of the ray is at the three-plane intersection between
             // `self`, `other`, and a tempory plane positioned at the origin
-            do Plane::from_nd(ray_dir, zero!(T)).intersection_3pl(self, other).map |ray_pos| {
+            do Plane::from_nd(copy ray_dir, zero!(T)).intersection_3pl(self, other).map |ray_pos| {
                 Ray3 {
-                    pos: *ray_pos,
-                    dir: ray_dir,
+                    pos: copy *ray_pos,
+                    dir: copy ray_dir,
                 }
             }
         }
@@ -140,11 +140,11 @@ impl<T:Copy + Real + ApproxEq<T>> Plane<T> {
     /// - `None`:    No valid intersection was found. The normals of the three
     ///              planes are probably coplanar.
     pub fn intersection_3pl(&self, other_a: &Plane<T>, other_b: &Plane<T>) -> Option<Point3<T>> {
-        let mx = Mat3::new(self.norm.x, other_a.norm.x, other_b.norm.x,
-                           self.norm.y, other_a.norm.y, other_b.norm.y,
-                           self.norm.z, other_a.norm.z, other_b.norm.z);
+        let mx = Mat3::new(copy self.norm.x, copy other_a.norm.x, copy other_b.norm.x,
+                           copy self.norm.y, copy other_a.norm.y, copy other_b.norm.y,
+                           copy self.norm.z, copy other_a.norm.z, copy other_b.norm.z);
         do mx.inverse().map |m| {
-            Point3(m.mul_v(&Vec3::new(self.dist, other_a.dist, other_b.dist)))
+            Point3(m.mul_v(&Vec3::new(copy self.dist, copy other_a.dist, copy other_b.dist)))
         }
     }
 }

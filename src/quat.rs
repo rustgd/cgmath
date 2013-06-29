@@ -136,7 +136,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The result of multiplying the quaternion by a vector
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
-        let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s));
+        let tmp = self.v.cross(vec).add_v(&vec.mul_t(copy self.s));
         self.v.cross(&tmp).mul_t(two!(T)).add_v(vec)
     }
 
@@ -175,7 +175,7 @@ impl<T:Copy + Real> Quat<T> {
     /// The conjugate of the quaternion
     #[inline]
     pub fn conjugate(&self) -> Quat<T> {
-        Quat::from_sv(self.s, -self.v)
+        Quat::from_sv(copy self.s, copy -self.v)
     }
 
     /// The multiplicative inverse of the quaternion

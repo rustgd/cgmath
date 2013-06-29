@@ -127,8 +127,8 @@ impl<T:Copy + Real> PerspectiveFOV<T> {
                 right:   xmax,
                 bottom: -ymax,
                 top:     ymax,
-                near:    self.near,
-                far:     self.far,
+                near:    copy self.near,
+                far:     copy self.far,
             }
         }
     }
@@ -256,8 +256,8 @@ impl<T:Copy + Real> Projection<T> for Perspective<T> {
                 right:  Plane::from_abcd(theta_r.cos(), zero!(T), theta_r.sin(), zero!(T)),
                 bottom: Plane::from_abcd(zero!(T), theta_b.cos(), theta_b.sin(), zero!(T)),
                 top:    Plane::from_abcd(zero!(T), theta_t.cos(), theta_t.sin(), zero!(T)),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), -self.near),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), self.far),
+                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), copy -self.near),
+                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), copy self.far),
             }
         }
     }
@@ -316,12 +316,12 @@ impl<T:Copy + Real> Projection<T> for Ortho<T> {
     pub fn to_frustum(&self) -> Result<Frustum<T>, ~str> {
         do self.if_valid {
             Frustum {
-                left:   Plane::from_abcd(one!(T), zero!(T), zero!(T), self.left),
-                right:  Plane::from_abcd(-one!(T), zero!(T), zero!(T), self.right),
-                bottom: Plane::from_abcd(zero!(T), one!(T), zero!(T), self.bottom),
-                top:    Plane::from_abcd(zero!(T), -one!(T), zero!(T), self.top),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), self.near),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), self.far),
+                left:   Plane::from_abcd(one!(T), zero!(T), zero!(T), copy self.left),
+                right:  Plane::from_abcd(-one!(T), zero!(T), zero!(T), copy self.right),
+                bottom: Plane::from_abcd(zero!(T), one!(T), zero!(T), copy self.bottom),
+                top:    Plane::from_abcd(zero!(T), -one!(T), zero!(T), copy self.top),
+                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), copy self.near),
+                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T),copy self.far),
             }
         }
     }

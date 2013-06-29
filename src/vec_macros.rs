@@ -38,9 +38,9 @@ macro_rules! impl_vec_copyable(
 )
 
 macro_rules! vec_from_value(
-    (Vec2) => (Vec2::new(value, value));
-    (Vec3) => (Vec3::new(value, value, value));
-    (Vec4) => (Vec4::new(value, value, value, value));
+    (Vec2) => (Vec2::new(copy value, copy value));
+    (Vec3) => (Vec3::new(copy value, copy value, copy value));
+    (Vec4) => (Vec4::new(copy value, copy value, copy value, copy value));
 )
 
 macro_rules! impl_vec_numeric(
@@ -62,11 +62,11 @@ macro_rules! impl_vec_numeric(
             #[inline] pub fn rem_v(&self, other: &$Vec<T>) -> $Vec<T> { $Vec::from_slice(self.zip(other, |&a, &b| a % b)) }
 
             #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
-            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x += value) }
-            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x -= value) }
-            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x *= value) }
-            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x /= value) }
-            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x %= value) }
+            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x += copy value) }
+            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x -= copy value) }
+            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x *= copy value) }
+            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x /= copy value) }
+            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x %= copy value) }
 
             #[inline] pub fn add_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a += b) }
             #[inline] pub fn sub_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a -= b) }

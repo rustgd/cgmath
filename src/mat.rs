@@ -69,8 +69,8 @@ impl<T> Mat2<T> {
 impl<T:Copy + Num> ToMat3<T> for Mat2<T> {
     #[inline]
     pub fn to_mat3(&self) -> Mat3<T> {
-        Mat3::new(*self.elem(0, 0), *self.elem(0, 1), zero!(T),
-                  *self.elem(1, 0), *self.elem(1, 1), zero!(T),
+        Mat3::new(copy *self.elem(0, 0), copy *self.elem(0, 1), zero!(T),
+                  copy *self.elem(1, 0), copy *self.elem(1, 1), zero!(T),
                   zero!(T), zero!(T), one!(T))
     }
 }
@@ -78,8 +78,8 @@ impl<T:Copy + Num> ToMat3<T> for Mat2<T> {
 impl<T:Copy + Num> ToMat4<T> for Mat2<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(*self.elem(0, 0), *self.elem(0, 1), zero!(T), zero!(T),
-                  *self.elem(1, 0), *self.elem(1, 1), zero!(T), zero!(T),
+        Mat4::new(copy  *self.elem(0, 0), copy   *self.elem(0, 1), zero!(T), zero!(T),
+                  copy  *self.elem(1, 0), copy   *self.elem(1, 1), zero!(T), zero!(T),
                   zero!(T), zero!(T), one!(T), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
@@ -91,8 +91,8 @@ impl<T:Copy + Real> Mat2<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat2::new(cos_theta, -sin_theta,
-                  sin_theta,  cos_theta)
+        Mat2::new(copy cos_theta,  copy -sin_theta,
+                  copy sin_theta,  copy cos_theta)
     }
 }
 
@@ -316,9 +316,9 @@ impl<T> Mat3<T> {
 impl<T:Copy + Num> ToMat4<T> for Mat3<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(*self.elem(0, 0), *self.elem(0, 1), *self.elem(0, 2), zero!(T),
-                  *self.elem(1, 0), *self.elem(1, 1), *self.elem(1, 2), zero!(T),
-                  *self.elem(2, 0), *self.elem(2, 1), *self.elem(2, 2), zero!(T),
+        Mat4::new(copy *self.elem(0, 0), copy *self.elem(0, 1), copy *self.elem(0, 2), zero!(T),
+                  copy *self.elem(1, 0), copy *self.elem(1, 1), copy *self.elem(1, 2), zero!(T),
+                  copy *self.elem(2, 0), copy *self.elem(2, 1), copy *self.elem(2, 2), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
 }
@@ -331,8 +331,8 @@ impl<T:Copy + Real> Mat3<T> {
         let sin_theta = radians.sin();
 
         Mat3::new(one!(T), zero!(T), zero!(T),
-                  zero!(T), cos_theta, sin_theta,
-                  zero!(T), -sin_theta, cos_theta)
+                  zero!(T), copy cos_theta, copy sin_theta,
+                  zero!(T), copy -sin_theta, copy cos_theta)
     }
 
     /// Construct a matrix from an angular rotation around the `y` axis
@@ -341,9 +341,9 @@ impl<T:Copy + Real> Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat3::new(cos_theta, zero!(T), -sin_theta,
+        Mat3::new(copy cos_theta, zero!(T), copy -sin_theta,
                   zero!(T), one!(T), zero!(T),
-                  sin_theta, zero!(T), cos_theta)
+                  copy sin_theta, zero!(T), copy cos_theta)
     }
 
     /// Construct a matrix from an angular rotation around the `z` axis
@@ -352,8 +352,8 @@ impl<T:Copy + Real> Mat3<T> {
         let cos_theta = radians.cos();
         let sin_theta = radians.sin();
 
-        Mat3::new(cos_theta, sin_theta, zero!(T),
-                  -sin_theta, cos_theta, zero!(T),
+        Mat3::new(copy cos_theta, copy sin_theta, zero!(T),
+                  copy -sin_theta, copy cos_theta, zero!(T),
                   zero!(T), zero!(T), one!(T))
     }
 
@@ -384,9 +384,9 @@ impl<T:Copy + Real> Mat3<T> {
         let s = radians.sin();
         let _1_c = one!(T) - c;
 
-        let x = axis.x;
-        let y = axis.y;
-        let z = axis.z;
+        let x = copy axis.x;
+        let y = copy axis.y;
+        let z = copy axis.z;
 
         Mat3::new(_1_c*x*x + c, _1_c*x*y + s*z, _1_c*x*z - s*y,
                   _1_c*x*y - s*z, _1_c*y*y + c, _1_c*y*z + s*x,
