@@ -62,17 +62,17 @@ macro_rules! impl_vec_numeric(
             #[inline] pub fn rem_v(&self, other: &$Vec<T>) -> $Vec<T> { $Vec::from_slice(self.zip(other, |&a, &b| a % b)) }
 
             #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
-            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x += value.clone()) }
-            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x -= value.clone()) }
-            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x *= value.clone()) }
-            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x /= value.clone()) }
-            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x %= value.clone()) }
+            #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x + value.clone()) }
+            #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x - value.clone()) }
+            #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x * value.clone()) }
+            #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x / value.clone()) }
+            #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x % value.clone()) }
 
-            #[inline] pub fn add_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a += b) }
-            #[inline] pub fn sub_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a -= b) }
-            #[inline] pub fn mul_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a *= b) }
-            #[inline] pub fn div_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a /= b) }
-            #[inline] pub fn rem_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a %= b) }
+            #[inline] pub fn add_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a =*a + b) }
+            #[inline] pub fn sub_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a =*a - b) }
+            #[inline] pub fn mul_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a =*a * b) }
+            #[inline] pub fn div_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a =*a / b) }
+            #[inline] pub fn rem_self_v(&mut self, other: &$Vec<T>) { self.zip_mut(other, |a, &b| *a =*a % b) }
 
             #[inline] pub fn dot(&self, other: &$Vec<T>) -> T { vec_dot!($Vec) }
         }
