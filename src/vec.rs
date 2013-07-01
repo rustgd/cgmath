@@ -17,7 +17,6 @@ pub use dim::Dimensional;
 
 mod num_macros;
 mod dim_macros;
-mod vec_macros;
 
 #[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
@@ -50,17 +49,24 @@ impl_dimensional_fns!(Vec2, T, 2)
 impl_swap!(Vec2)
 impl_approx!(Vec2)
 
-impl_vec!(Vec2 { x, y })
-impl_vec_clonable!(Vec2)
-impl_vec_numeric!(Vec2)
-impl_vec_neg!(Vec2)
-impl_vec_euclidean!(Vec2)
-impl_vec_ord!(Vec2)
-impl_vec_eq!(Vec2)
-impl_vec_bool!(Vec2)
-impl_vec_not!(Vec2)
+impl<T> Vec2<T> {
+    #[inline]
+    pub fn new(x: T, y: T) -> Vec2<T> {
+        Vec2 { x: x, y: y }
+    }
+}
+
+impl<T:Clone> Vec2<T> {
+    #[inline]
+    pub fn from_value(value: T) -> Vec2<T> {
+        Vec2::new(value.clone(), value.clone())
+    }
+}
 
 impl<T:Clone + Num> Vec2<T> {
+    #[inline] pub fn identity() -> Vec2<T> { Vec2::from_value(one!(T)) }
+    #[inline] pub fn zero() -> Vec2<T> { Vec2::from_value(zero!(T)) }
+
     #[inline] pub fn unit_x() -> Vec2<T> { Vec2::new(one!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec2<T> { Vec2::new(zero!(T), one!(T)) }
 
@@ -68,6 +74,145 @@ impl<T:Clone + Num> Vec2<T> {
     pub fn perp_dot(&self, other: &Vec2<T>) -> T {
         (*self.index(0) * *other.index(1)) -
         (*self.index(1) * *other.index(0))
+    }
+
+    #[inline] pub fn add_t(&self, value: T) -> Vec2<T> { Vec2::from_slice(self.map(|&x| x + value)) }
+    #[inline] pub fn sub_t(&self, value: T) -> Vec2<T> { Vec2::from_slice(self.map(|&x| x - value)) }
+    #[inline] pub fn mul_t(&self, value: T) -> Vec2<T> { Vec2::from_slice(self.map(|&x| x * value)) }
+    #[inline] pub fn div_t(&self, value: T) -> Vec2<T> { Vec2::from_slice(self.map(|&x| x / value)) }
+    #[inline] pub fn rem_t(&self, value: T) -> Vec2<T> { Vec2::from_slice(self.map(|&x| x % value)) }
+
+    #[inline] pub fn add_v(&self, other: &Vec2<T>) -> Vec2<T> { Vec2::from_slice(self.zip(other, |&a, &b| a + b)) }
+    #[inline] pub fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> { Vec2::from_slice(self.zip(other, |&a, &b| a - b)) }
+    #[inline] pub fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> { Vec2::from_slice(self.zip(other, |&a, &b| a * b)) }
+    #[inline] pub fn div_v(&self, other: &Vec2<T>) -> Vec2<T> { Vec2::from_slice(self.zip(other, |&a, &b| a / b)) }
+    #[inline] pub fn rem_v(&self, other: &Vec2<T>) -> Vec2<T> { Vec2::from_slice(self.zip(other, |&a, &b| a % b)) }
+
+    #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
+    #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x + value.clone()) }
+    #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x - value.clone()) }
+    #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x * value.clone()) }
+    #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x / value.clone()) }
+    #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x % value.clone()) }
+
+    #[inline] pub fn add_self_v(&mut self, other: &Vec2<T>) { self.zip_mut(other, |a, &b| *a =*a + b) }
+    #[inline] pub fn sub_self_v(&mut self, other: &Vec2<T>) { self.zip_mut(other, |a, &b| *a =*a - b) }
+    #[inline] pub fn mul_self_v(&mut self, other: &Vec2<T>) { self.zip_mut(other, |a, &b| *a =*a * b) }
+    #[inline] pub fn div_self_v(&mut self, other: &Vec2<T>) { self.zip_mut(other, |a, &b| *a =*a / b) }
+    #[inline] pub fn rem_self_v(&mut self, other: &Vec2<T>) { self.zip_mut(other, |a, &b| *a =*a % b) }
+
+    #[inline] pub fn dot(&self, other: &Vec2<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1)
+    }
+}
+
+impl<T:Clone + Num> Neg<Vec2<T>> for Vec2<T> {
+    #[inline]
+    pub fn neg(&self) -> Vec2<T> {
+        Vec2::from_slice(self.map(|&x| -x))
+    }
+}
+
+impl<T:Clone + Not<T>> Not<Vec2<T>> for Vec2<T> {
+    pub fn not(&self) -> Vec2<T> {
+        Vec2::from_slice(self.map(|&x| !x))
+    }
+}
+
+impl<T:Clone + Real> Vec2<T> {
+    #[inline]
+    pub fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline]
+    pub fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline]
+    pub fn distance2(&self, other: &Vec2<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline]
+    pub fn distance(&self, other: &Vec2<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline]
+    pub fn angle(&self, other: &Vec2<T>) -> T {
+        self.perp_dot(other).atan2(&self.dot(other))
+    }
+
+    #[inline]
+    pub fn normalize(&self) -> Vec2<T> {
+        self.mul_t(one!(T)/self.length())
+    }
+
+    #[inline]
+    pub fn normalize_to(&self, length: T) -> Vec2<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline]
+    pub fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+
+    #[inline]
+    pub fn normalize_self(&mut self) {
+        let rlen = self.length().recip();
+        self.mul_self_t(rlen);
+    }
+
+    #[inline]
+    pub fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    pub fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Clone + Ord> Vec2<T> {
+    #[inline] pub fn lt_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x < value)) }
+    #[inline] pub fn le_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x <= value)) }
+    #[inline] pub fn ge_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x >= value)) }
+    #[inline] pub fn gt_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x > value)) }
+
+    #[inline] pub fn lt_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a < b)) }
+    #[inline] pub fn le_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a <= b)) }
+    #[inline] pub fn ge_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a >= b)) }
+    #[inline] pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a > b)) }
+}
+
+impl<T:Clone + Eq> Vec2<T> {
+    #[inline] pub fn eq_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x == value)) }
+    #[inline] pub fn ne_t(&self, value: T) -> Vec2<bool> { Vec2::from_slice(self.map(|&x| x != value)) }
+
+    #[inline] pub fn eq_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a == b)) }
+    #[inline] pub fn ne_v(&self, other: &Vec2<T>) -> Vec2<bool> { Vec2::from_slice(self.zip(other, |&a, &b| a != b)) }
+}
+
+impl Vec2<bool> {
+    #[inline]
+    pub fn any(&self) -> bool {
+        *self.index(0) || *self.index(1)
+    }
+
+    #[inline]
+    pub fn all(&self) -> bool {
+        *self.index(0) && *self.index(1)
+    }
+
+    #[inline]
+    pub fn not(&self) -> Vec2<bool> {
+        Vec2::from_slice(self.map(|&x| !x))
     }
 }
 
@@ -235,17 +380,24 @@ impl_dimensional_fns!(Vec3, T, 3)
 impl_swap!(Vec3)
 impl_approx!(Vec3)
 
-impl_vec!(Vec3 { x, y, z })
-impl_vec_clonable!(Vec3)
-impl_vec_numeric!(Vec3)
-impl_vec_neg!(Vec3)
-impl_vec_euclidean!(Vec3)
-impl_vec_ord!(Vec3)
-impl_vec_eq!(Vec3)
-impl_vec_bool!(Vec3)
-impl_vec_not!(Vec3)
+impl<T> Vec3<T> {
+    #[inline]
+    pub fn new(x: T, y: T, z: T) -> Vec3<T> {
+        Vec3 { x: x, y: y, z: z }
+    }
+}
+
+impl<T:Clone> Vec3<T> {
+    #[inline]
+    pub fn from_value(value: T) -> Vec3<T> {
+        Vec3::new(value.clone(), value.clone(), value.clone())
+    }
+}
 
 impl<T:Clone + Num> Vec3<T> {
+    #[inline] pub fn identity() -> Vec3<T> { Vec3::from_value(one!(T)) }
+    #[inline] pub fn zero() -> Vec3<T> { Vec3::from_value(zero!(T)) }
+
     #[inline] pub fn unit_x() -> Vec3<T> { Vec3::new(one!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec3<T> { Vec3::new(zero!(T), one!(T), zero!(T)) }
     #[inline] pub fn unit_z() -> Vec3<T> { Vec3::new(zero!(T), zero!(T), one!(T)) }
@@ -260,6 +412,146 @@ impl<T:Clone + Num> Vec3<T> {
     #[inline]
     pub fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other)
+    }
+
+    #[inline] pub fn add_t(&self, value: T) -> Vec3<T> { Vec3::from_slice(self.map(|&x| x + value)) }
+    #[inline] pub fn sub_t(&self, value: T) -> Vec3<T> { Vec3::from_slice(self.map(|&x| x - value)) }
+    #[inline] pub fn mul_t(&self, value: T) -> Vec3<T> { Vec3::from_slice(self.map(|&x| x * value)) }
+    #[inline] pub fn div_t(&self, value: T) -> Vec3<T> { Vec3::from_slice(self.map(|&x| x / value)) }
+    #[inline] pub fn rem_t(&self, value: T) -> Vec3<T> { Vec3::from_slice(self.map(|&x| x % value)) }
+
+    #[inline] pub fn add_v(&self, other: &Vec3<T>) -> Vec3<T> { Vec3::from_slice(self.zip(other, |&a, &b| a + b)) }
+    #[inline] pub fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> { Vec3::from_slice(self.zip(other, |&a, &b| a - b)) }
+    #[inline] pub fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> { Vec3::from_slice(self.zip(other, |&a, &b| a * b)) }
+    #[inline] pub fn div_v(&self, other: &Vec3<T>) -> Vec3<T> { Vec3::from_slice(self.zip(other, |&a, &b| a / b)) }
+    #[inline] pub fn rem_v(&self, other: &Vec3<T>) -> Vec3<T> { Vec3::from_slice(self.zip(other, |&a, &b| a % b)) }
+
+    #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
+    #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x + value.clone()) }
+    #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x - value.clone()) }
+    #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x * value.clone()) }
+    #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x / value.clone()) }
+    #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x % value.clone()) }
+
+    #[inline] pub fn add_self_v(&mut self, other: &Vec3<T>) { self.zip_mut(other, |a, &b| *a =*a + b) }
+    #[inline] pub fn sub_self_v(&mut self, other: &Vec3<T>) { self.zip_mut(other, |a, &b| *a =*a - b) }
+    #[inline] pub fn mul_self_v(&mut self, other: &Vec3<T>) { self.zip_mut(other, |a, &b| *a =*a * b) }
+    #[inline] pub fn div_self_v(&mut self, other: &Vec3<T>) { self.zip_mut(other, |a, &b| *a =*a / b) }
+    #[inline] pub fn rem_self_v(&mut self, other: &Vec3<T>) { self.zip_mut(other, |a, &b| *a =*a % b) }
+
+    #[inline] pub fn dot(&self, other: &Vec3<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1) +
+        *self.index(2) * *other.index(2)
+    }
+}
+
+impl<T:Clone + Num> Neg<Vec3<T>> for Vec3<T> {
+    #[inline]
+    pub fn neg(&self) -> Vec3<T> {
+        Vec3::from_slice(self.map(|&x| -x))
+    }
+}
+
+impl<T:Clone + Not<T>> Not<Vec3<T>> for Vec3<T> {
+    pub fn not(&self) -> Vec3<T> {
+        Vec3::from_slice(self.map(|&x| !x))
+    }
+}
+
+impl<T:Clone + Real> Vec3<T> {
+    #[inline]
+    pub fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline]
+    pub fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline]
+    pub fn distance2(&self, other: &Vec3<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline]
+    pub fn distance(&self, other: &Vec3<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline]
+    pub fn angle(&self, other: &Vec3<T>) -> T {
+        self.cross(other).length().atan2(&self.dot(other))
+    }
+
+    #[inline]
+    pub fn normalize(&self) -> Vec3<T> {
+        self.mul_t(one!(T)/self.length())
+    }
+
+    #[inline]
+    pub fn normalize_to(&self, length: T) -> Vec3<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline]
+    pub fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+
+    #[inline]
+    pub fn normalize_self(&mut self) {
+        let rlen = self.length().recip();
+        self.mul_self_t(rlen);
+    }
+
+    #[inline]
+    pub fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    pub fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Clone + Ord> Vec3<T> {
+    #[inline] pub fn lt_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x < value)) }
+    #[inline] pub fn le_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x <= value)) }
+    #[inline] pub fn ge_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x >= value)) }
+    #[inline] pub fn gt_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x > value)) }
+
+    #[inline] pub fn lt_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a < b)) }
+    #[inline] pub fn le_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a <= b)) }
+    #[inline] pub fn ge_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a >= b)) }
+    #[inline] pub fn gt_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a > b)) }
+}
+
+impl<T:Clone + Eq> Vec3<T> {
+    #[inline] pub fn eq_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x == value)) }
+    #[inline] pub fn ne_t(&self, value: T) -> Vec3<bool> { Vec3::from_slice(self.map(|&x| x != value)) }
+
+    #[inline] pub fn eq_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a == b)) }
+    #[inline] pub fn ne_v(&self, other: &Vec3<T>) -> Vec3<bool> { Vec3::from_slice(self.zip(other, |&a, &b| a != b)) }
+}
+
+impl Vec3<bool> {
+    #[inline]
+    pub fn any(&self) -> bool {
+        *self.index(0) || *self.index(1) || *self.index(2)
+    }
+
+    #[inline]
+    pub fn all(&self) -> bool {
+        *self.index(0) && *self.index(1) && *self.index(2)
+    }
+
+    #[inline]
+    pub fn not(&self) -> Vec3<bool> {
+        Vec3::from_slice(self.map(|&x| !x))
     }
 }
 
@@ -442,21 +734,169 @@ impl_dimensional_fns!(Vec4, T, 4)
 impl_approx!(Vec4)
 impl_swap!(Vec4)
 
-impl_vec!(Vec4 { x, y, z, w })
-impl_vec_clonable!(Vec4)
-impl_vec_numeric!(Vec4)
-impl_vec_neg!(Vec4)
-impl_vec_euclidean!(Vec4)
-impl_vec_ord!(Vec4)
-impl_vec_eq!(Vec4)
-impl_vec_bool!(Vec4)
-impl_vec_not!(Vec4)
+impl<T> Vec4<T> {
+    #[inline]
+    pub fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
+        Vec4 { x: x, y: y, z: z, w: w }
+    }
+}
+
+impl<T:Clone> Vec4<T> {
+    #[inline]
+    pub fn from_value(value: T) -> Vec4<T> {
+        Vec4::new(value.clone(), value.clone(), value.clone(), value.clone())
+    }
+}
 
 impl<T:Clone + Num> Vec4<T> {
+    #[inline] pub fn identity() -> Vec4<T> { Vec4::from_value(one!(T)) }
+    #[inline] pub fn zero() -> Vec4<T> { Vec4::from_value(zero!(T)) }
+
     #[inline] pub fn unit_x() -> Vec4<T> { Vec4::new(one!(T), zero!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_y() -> Vec4<T> { Vec4::new(zero!(T), one!(T), zero!(T), zero!(T)) }
     #[inline] pub fn unit_z() -> Vec4<T> { Vec4::new(zero!(T), zero!(T), one!(T), zero!(T)) }
     #[inline] pub fn unit_w() -> Vec4<T> { Vec4::new(zero!(T), zero!(T), zero!(T), one!(T)) }
+
+    #[inline] pub fn add_t(&self, value: T) -> Vec4<T> { Vec4::from_slice(self.map(|&x| x + value)) }
+    #[inline] pub fn sub_t(&self, value: T) -> Vec4<T> { Vec4::from_slice(self.map(|&x| x - value)) }
+    #[inline] pub fn mul_t(&self, value: T) -> Vec4<T> { Vec4::from_slice(self.map(|&x| x * value)) }
+    #[inline] pub fn div_t(&self, value: T) -> Vec4<T> { Vec4::from_slice(self.map(|&x| x / value)) }
+    #[inline] pub fn rem_t(&self, value: T) -> Vec4<T> { Vec4::from_slice(self.map(|&x| x % value)) }
+
+    #[inline] pub fn add_v(&self, other: &Vec4<T>) -> Vec4<T> { Vec4::from_slice(self.zip(other, |&a, &b| a + b)) }
+    #[inline] pub fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> { Vec4::from_slice(self.zip(other, |&a, &b| a - b)) }
+    #[inline] pub fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> { Vec4::from_slice(self.zip(other, |&a, &b| a * b)) }
+    #[inline] pub fn div_v(&self, other: &Vec4<T>) -> Vec4<T> { Vec4::from_slice(self.zip(other, |&a, &b| a / b)) }
+    #[inline] pub fn rem_v(&self, other: &Vec4<T>) -> Vec4<T> { Vec4::from_slice(self.zip(other, |&a, &b| a % b)) }
+
+    #[inline] pub fn neg_self(&mut self) { self.map_mut(|x| *x = -*x) }
+    #[inline] pub fn add_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x + value.clone()) }
+    #[inline] pub fn sub_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x - value.clone()) }
+    #[inline] pub fn mul_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x * value.clone()) }
+    #[inline] pub fn div_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x / value.clone()) }
+    #[inline] pub fn rem_self_t(&mut self, value: T) { self.map_mut(|x| *x = *x % value.clone()) }
+
+    #[inline] pub fn add_self_v(&mut self, other: &Vec4<T>) { self.zip_mut(other, |a, &b| *a =*a + b) }
+    #[inline] pub fn sub_self_v(&mut self, other: &Vec4<T>) { self.zip_mut(other, |a, &b| *a =*a - b) }
+    #[inline] pub fn mul_self_v(&mut self, other: &Vec4<T>) { self.zip_mut(other, |a, &b| *a =*a * b) }
+    #[inline] pub fn div_self_v(&mut self, other: &Vec4<T>) { self.zip_mut(other, |a, &b| *a =*a / b) }
+    #[inline] pub fn rem_self_v(&mut self, other: &Vec4<T>) { self.zip_mut(other, |a, &b| *a =*a % b) }
+
+    #[inline] pub fn dot(&self, other: &Vec4<T>) -> T {
+        *self.index(0) * *other.index(0) +
+        *self.index(1) * *other.index(1) +
+        *self.index(2) * *other.index(2) +
+        *self.index(3) * *other.index(3)
+    }
+}
+
+impl<T:Clone + Num> Neg<Vec4<T>> for Vec4<T> {
+    #[inline]
+    pub fn neg(&self) -> Vec4<T> {
+        Vec4::from_slice(self.map(|&x| -x))
+    }
+}
+
+impl<T:Clone + Not<T>> Not<Vec4<T>> for Vec4<T> {
+    pub fn not(&self) -> Vec4<T> {
+        Vec4::from_slice(self.map(|&x| !x))
+    }
+}
+
+impl<T:Clone + Real> Vec4<T> {
+    #[inline]
+    pub fn length2(&self) -> T {
+        self.dot(self)
+    }
+
+    #[inline]
+    pub fn length(&self) -> T {
+        self.length2().sqrt()
+    }
+
+    #[inline]
+    pub fn distance2(&self, other: &Vec4<T>) -> T {
+        other.sub_v(self).length2()
+    }
+
+    #[inline]
+    pub fn distance(&self, other: &Vec4<T>) -> T {
+        other.distance2(self).sqrt()
+    }
+
+    #[inline]
+    pub fn angle(&self, other: &Vec4<T>) -> T {
+        (self.dot(other) / (self.length() * other.length())).acos()
+    }
+
+    #[inline]
+    pub fn normalize(&self) -> Vec4<T> {
+        self.mul_t(one!(T)/self.length())
+    }
+
+    #[inline]
+    pub fn normalize_to(&self, length: T) -> Vec4<T> {
+        self.mul_t(length / self.length())
+    }
+
+    #[inline]
+    pub fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
+        self.add_v(&other.sub_v(self).mul_t(amount))
+    }
+
+    #[inline]
+    pub fn normalize_self(&mut self) {
+        let rlen = self.length().recip();
+        self.mul_self_t(rlen);
+    }
+
+    #[inline]
+    pub fn normalize_self_to(&mut self, length: T) {
+        let n = length / self.length();
+        self.mul_self_t(n);
+    }
+
+    pub fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
+        let v = other.sub_v(self).mul_t(amount);
+        self.add_self_v(&v);
+    }
+}
+
+impl<T:Clone + Ord> Vec4<T> {
+    #[inline] pub fn lt_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x < value)) }
+    #[inline] pub fn le_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x <= value)) }
+    #[inline] pub fn ge_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x >= value)) }
+    #[inline] pub fn gt_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x > value)) }
+
+    #[inline] pub fn lt_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a < b)) }
+    #[inline] pub fn le_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a <= b)) }
+    #[inline] pub fn ge_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a >= b)) }
+    #[inline] pub fn gt_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a > b)) }
+}
+
+impl<T:Clone + Eq> Vec4<T> {
+    #[inline] pub fn eq_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x == value)) }
+    #[inline] pub fn ne_t(&self, value: T) -> Vec4<bool> { Vec4::from_slice(self.map(|&x| x != value)) }
+
+    #[inline] pub fn eq_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a == b)) }
+    #[inline] pub fn ne_v(&self, other: &Vec4<T>) -> Vec4<bool> { Vec4::from_slice(self.zip(other, |&a, &b| a != b)) }
+}
+
+impl Vec4<bool> {
+    #[inline]
+    pub fn any(&self) -> bool {
+        *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
+    }
+
+    #[inline]
+    pub fn all(&self) -> bool {
+        *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
+    }
+
+    #[inline]
+    pub fn not(&self) -> Vec4<bool> {
+        Vec4::from_slice(self.map(|&x| !x))
+    }
 }
 
 #[cfg(test)]
