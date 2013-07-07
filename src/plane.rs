@@ -38,9 +38,8 @@ pub struct Plane<T> {
 }
 
 impl_dimensional!(Plane, T, 4)
-impl_dimensional_fns!(Plane, T, 4)
+impl_approx!(Plane, 4)
 impl_swap!(Plane)
-impl_approx!(Plane)
 
 impl<T:Clone + Real> Plane<T> {
     /// # Arguments

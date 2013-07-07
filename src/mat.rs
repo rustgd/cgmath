@@ -47,24 +47,14 @@ macro_rules! impl_mat(
     )
 )
 
-macro_rules! impl_mat_clonable(
+macro_rules! impl_mat_swap(
     ($Mat:ident, $Vec:ident) => (
         impl<T:Clone> $Mat<T> {
-            #[inline]
-            pub fn row(&self, i: uint) -> $Vec<T> {
-                $Vec::from_slice(self.map(|c| c.index(i).clone()))
-            }
-
             #[inline]
             pub fn swap_cols(&mut self, a: uint, b: uint) {
                 let tmp = self.col(a).clone();
                 *self.col_mut(a) = self.col(b).clone();
                 *self.col_mut(b) = tmp;
-            }
-
-            #[inline]
-            pub fn swap_rows(&mut self, a: uint, b: uint) {
-                self.map_mut(|x| x.swap(a, b))
             }
 
             #[inline]
@@ -136,11 +126,10 @@ pub type Mat2f32 = Mat2<f32>;
 pub type Mat2f64 = Mat2<f64>;
 
 impl_dimensional!(Mat2, Vec2<T>, 2)
-impl_dimensional_fns!(Mat2, Vec2<T>, 2)
-impl_approx!(Mat2)
+impl_approx!(Mat2, 2)
 
 impl_mat!(Mat2, Vec2)
-impl_mat_clonable!(Mat2, Vec2)
+impl_mat_swap!(Mat2, Vec2)
 
 pub trait ToMat2<T> {
     pub fn to_mat2(&self) -> Mat2<T>;
@@ -158,6 +147,20 @@ impl<T> Mat2<T> {
     pub fn from_cols(c0: Vec2<T>,
                      c1: Vec2<T>) -> Mat2<T> {
         Mat2 { x: c0, y: c1 }
+    }
+}
+
+impl<T:Clone> Mat2<T> {
+    #[inline]
+    pub fn row(&self, i: uint) -> Vec2<T> {
+        Vec2::new(self.col(0).index(i).clone(),
+                  self.col(1).index(i).clone())
+    }
+
+    #[inline]
+    pub fn swap_rows(&mut self, a: uint, b: uint) {
+        self.col_mut(0).swap(a, b);
+        self.col_mut(1).swap(a, b);
     }
 }
 
@@ -195,13 +198,26 @@ impl<T:Clone + Num> Mat2<T> {
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat2<T> {
-        Mat2::from_slice(self.map(|&c| c.mul_t(value.clone())))
+        Mat2::from_cols(self.col(0).mul_t(value.clone()),
+                        self.col(1).mul_t(value.clone()))
     }
 
     #[inline]
     pub fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self.row(0).dot(vec),
                   self.row(1).dot(vec))
+    }
+
+    #[inline]
+    pub fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
+        Mat2::from_cols(self.col(0).add_v(other.col(0)),
+                        self.col(1).add_v(other.col(1)))
+    }
+
+    #[inline]
+    pub fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
+        Mat2::from_cols(self.col(0).sub_v(other.col(0)),
+                        self.col(1).sub_v(other.col(1)))
     }
 
     #[inline]
@@ -214,28 +230,21 @@ impl<T:Clone + Num> Mat2<T> {
     }
 
     #[inline]
-    pub fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_slice(self.zip(other, |a, b| a.add_v(b)))
-    }
-
-    #[inline]
-    pub fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_slice(self.zip(other, |a, b| a.sub_v(b)))
-    }
-
-    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        self.map_mut(|x| x.mul_self_t(value.clone()))
+        self.col_mut(0).mul_self_t(value.clone());
+        self.col_mut(1).mul_self_t(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat2<T>) {
-        self.zip_mut(other, |a, b| a.add_self_v(b))
+        self.col_mut(0).add_self_v(other.col(0));
+        self.col_mut(1).add_self_v(other.col(1));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat2<T>) {
-        self.zip_mut(other, |a, b| a.sub_self_v(b))
+        self.col_mut(0).sub_self_v(other.col(0));
+        self.col_mut(1).sub_self_v(other.col(1));
     }
 
     pub fn dot(&self, other: &Mat2<T>) -> T {
@@ -264,7 +273,8 @@ impl<T:Clone + Num> Mat2<T> {
 impl<T:Clone + Num> Neg<Mat2<T>> for Mat2<T> {
     #[inline]
     pub fn neg(&self) -> Mat2<T> {
-        Mat2::from_slice(self.map(|&x| -x))
+        Mat2::from_cols(-*self.col(0),
+                        -*self.col(1))
     }
 }
 
@@ -529,11 +539,10 @@ pub type Mat3f32 = Mat3<f32>;
 pub type Mat3f64 = Mat3<f64>;
 
 impl_dimensional!(Mat3, Vec3<T>, 3)
-impl_dimensional_fns!(Mat3, Vec3<T>, 3)
-impl_approx!(Mat3)
+impl_approx!(Mat3, 3)
 
 impl_mat!(Mat3, Vec3)
-impl_mat_clonable!(Mat3, Vec3)
+impl_mat_swap!(Mat3, Vec3)
 
 pub trait ToMat3<T> {
     pub fn to_mat3(&self) -> Mat3<T>;
@@ -554,6 +563,22 @@ impl<T> Mat3<T> {
                      c1: Vec3<T>,
                      c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
+    }
+}
+
+impl<T:Clone> Mat3<T> {
+    #[inline]
+    pub fn row(&self, i: uint) -> Vec3<T> {
+        Vec3::new(self.col(0).index(i).clone(),
+                  self.col(1).index(i).clone(),
+                  self.col(2).index(i).clone())
+    }
+
+    #[inline]
+    pub fn swap_rows(&mut self, a: uint, b: uint) {
+        self.col_mut(0).swap(a, b);
+        self.col_mut(1).swap(a, b);
+        self.col_mut(2).swap(a, b);
     }
 }
 
@@ -583,7 +608,9 @@ impl<T:Clone + Num> Mat3<T> {
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat3<T> {
-        Mat3::from_slice(self.map(|&c| c.mul_t(value.clone())))
+        Mat3::from_cols(self.col(0).mul_t(value.clone()),
+                        self.col(1).mul_t(value.clone()),
+                        self.col(2).mul_t(value.clone()))
     }
 
     #[inline]
@@ -591,6 +618,20 @@ impl<T:Clone + Num> Mat3<T> {
         Vec3::new(self.row(0).dot(vec),
                   self.row(1).dot(vec),
                   self.row(2).dot(vec))
+    }
+
+    #[inline]
+    pub fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
+        Mat3::from_cols(self.col(0).add_v(other.col(0)),
+                        self.col(1).add_v(other.col(1)),
+                        self.col(2).add_v(other.col(2)))
+    }
+
+    #[inline]
+    pub fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
+        Mat3::from_cols(self.col(0).sub_v(other.col(0)),
+                        self.col(1).sub_v(other.col(1)),
+                        self.col(2).sub_v(other.col(2)))
     }
 
     #[inline]
@@ -609,28 +650,24 @@ impl<T:Clone + Num> Mat3<T> {
     }
 
     #[inline]
-    pub fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_slice(self.zip(other, |a, b| a.add_v(b)))
-    }
-
-    #[inline]
-    pub fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_slice(self.zip(other, |a, b| a.sub_v(b)))
-    }
-
-    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        self.map_mut(|x| x.mul_self_t(value.clone()))
+        self.col_mut(0).mul_self_t(value.clone());
+        self.col_mut(1).mul_self_t(value.clone());
+        self.col_mut(2).mul_self_t(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat3<T>) {
-        self.zip_mut(other, |a, b| a.add_self_v(b))
+        self.col_mut(0).add_self_v(other.col(0));
+        self.col_mut(1).add_self_v(other.col(1));
+        self.col_mut(2).add_self_v(other.col(2));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat3<T>) {
-        self.zip_mut(other, |a, b| a.sub_self_v(b))
+        self.col_mut(0).sub_self_v(other.col(0));
+        self.col_mut(1).sub_self_v(other.col(1));
+        self.col_mut(2).sub_self_v(other.col(2));
     }
 
     pub fn dot(&self, other: &Mat3<T>) -> T {
@@ -661,7 +698,9 @@ impl<T:Clone + Num> Mat3<T> {
 impl<T:Clone + Num> Neg<Mat3<T>> for Mat3<T> {
     #[inline]
     pub fn neg(&self) -> Mat3<T> {
-        Mat3::from_slice(self.map(|&x| -x))
+        Mat3::from_cols(-*self.col(0),
+                        -*self.col(1),
+                        -*self.col(2))
     }
 }
 
@@ -1065,8 +1104,8 @@ mod mat3_tests{
                                     0.000001, 0.000001, 0.000001)
                 .approx_eq(&Mat3::zero::<float>()));
         assert!(Mat3::new::<float>(0.0000001, 0.0000001, 0.0000001,
-                                    0.0000001, 0.0000001, 0.0000001,
-                                    0.0000001, 0.0000001, 0.0000001)
+                                   0.0000001, 0.0000001, 0.0000001,
+                                   0.0000001, 0.0000001, 0.0000001)
                 .approx_eq(&Mat3::zero::<float>()));
     }
 }
@@ -1089,11 +1128,10 @@ pub type Mat4f32 = Mat4<f32>;
 pub type Mat4f64 = Mat4<f64>;
 
 impl_dimensional!(Mat4, Vec4<T>, 4)
-impl_dimensional_fns!(Mat4, Vec4<T>, 4)
-impl_approx!(Mat4)
+impl_approx!(Mat4, 4)
 
 impl_mat!(Mat4, Vec4)
-impl_mat_clonable!(Mat4, Vec4)
+impl_mat_swap!(Mat4, Vec4)
 
 pub trait ToMat4<T> {
     pub fn to_mat4(&self) -> Mat4<T>;
@@ -1120,6 +1158,24 @@ impl<T> Mat4<T> {
     }
 }
 
+impl<T:Clone> Mat4<T> {
+    #[inline]
+    pub fn row(&self, i: uint) -> Vec4<T> {
+        Vec4::new(self.col(0).index(i).clone(),
+                  self.col(1).index(i).clone(),
+                  self.col(2).index(i).clone(),
+                  self.col(3).index(i).clone())
+    }
+
+    #[inline]
+    pub fn swap_rows(&mut self, a: uint, b: uint) {
+        self.col_mut(0).swap(a, b);
+        self.col_mut(1).swap(a, b);
+        self.col_mut(2).swap(a, b);
+        self.col_mut(3).swap(a, b);
+    }
+}
+
 impl<T:Clone + Num> Mat4<T> {
     #[inline]
     pub fn from_value(value: T) -> Mat4<T> {
@@ -1137,7 +1193,10 @@ impl<T:Clone + Num> Mat4<T> {
 
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat4<T> {
-        Mat4::from_slice(self.map(|&c| c.mul_t(value.clone())))
+        Mat4::from_cols(self.col(0).mul_t(value.clone()),
+                        self.col(1).mul_t(value.clone()),
+                        self.col(2).mul_t(value.clone()),
+                        self.col(3).mul_t(value.clone()))
     }
 
     #[inline]
@@ -1146,6 +1205,22 @@ impl<T:Clone + Num> Mat4<T> {
                   self.row(1).dot(vec),
                   self.row(2).dot(vec),
                   self.row(3).dot(vec))
+    }
+
+    #[inline]
+    pub fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
+        Mat4::from_cols(self.col(0).add_v(other.col(0)),
+                        self.col(1).add_v(other.col(1)),
+                        self.col(2).add_v(other.col(2)),
+                        self.col(3).add_v(other.col(3)))
+    }
+
+    #[inline]
+    pub fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
+        Mat4::from_cols(self.col(0).sub_v(other.col(0)),
+                        self.col(1).sub_v(other.col(1)),
+                        self.col(2).sub_v(other.col(2)),
+                        self.col(3).sub_v(other.col(3)))
     }
 
     #[inline]
@@ -1172,28 +1247,27 @@ impl<T:Clone + Num> Mat4<T> {
     }
 
     #[inline]
-    pub fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_slice(self.zip(other, |a, b| a.add_v(b)))
-    }
-
-    #[inline]
-    pub fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_slice(self.zip(other, |a, b| a.sub_v(b)))
-    }
-
-    #[inline]
     pub fn mul_self_t(&mut self, value: T) {
-        self.map_mut(|x| x.mul_self_t(value.clone()))
+        self.col_mut(0).mul_self_t(value.clone());
+        self.col_mut(1).mul_self_t(value.clone());
+        self.col_mut(2).mul_self_t(value.clone());
+        self.col_mut(3).mul_self_t(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat4<T>) {
-        self.zip_mut(other, |a, b| a.add_self_v(b))
+        self.col_mut(0).add_self_v(other.col(0));
+        self.col_mut(1).add_self_v(other.col(1));
+        self.col_mut(2).add_self_v(other.col(2));
+        self.col_mut(3).add_self_v(other.col(3));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat4<T>) {
-        self.zip_mut(other, |a, b| a.sub_self_v(b))
+        self.col_mut(0).sub_self_v(other.col(0));
+        self.col_mut(1).sub_self_v(other.col(1));
+        self.col_mut(2).sub_self_v(other.col(2));
+        self.col_mut(3).sub_self_v(other.col(3));
     }
 
     pub fn dot(&self, other: &Mat4<T>) -> T {
@@ -1238,7 +1312,10 @@ impl<T:Clone + Num> Mat4<T> {
 impl<T:Clone + Num> Neg<Mat4<T>> for Mat4<T> {
     #[inline]
     pub fn neg(&self) -> Mat4<T> {
-        Mat4::from_slice(self.map(|&x| -x))
+        Mat4::from_cols(-*self.col(0),
+                        -*self.col(1),
+                        -*self.col(2),
+                        -*self.col(3))
     }
 }
 

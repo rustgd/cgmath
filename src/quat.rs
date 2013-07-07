@@ -37,9 +37,8 @@ pub type Quatf64 = Quat<f64>;
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl_dimensional!(Quat, T, 4)
-impl_dimensional_fns!(Quat, T, 4)
+impl_approx!(Quat, 4)
 impl_swap!(Quat)
-impl_approx!(Quat)
 
 pub trait ToQuat<T> {
     pub fn to_quat(&self) -> Quat<T>;
@@ -124,13 +123,13 @@ impl<T:Clone + Real> Quat<T> {
     /// The result of multiplying the quaternion a scalar
     #[inline]
     pub fn mul_t(&self, value: T) -> Quat<T> {
-        Quat::from_slice(self.map(|&x| x * value))
+        Quat::from_sv(self.s * value, self.v.mul_t(value))
     }
 
     /// The result of dividing the quaternion a scalar
     #[inline]
     pub fn div_t(&self, value: T) -> Quat<T> {
-        Quat::from_slice(self.map(|&x| x / value))
+        Quat::from_sv(self.s / value, self.v.div_t(value))
     }
 
     /// The result of multiplying the quaternion by a vector
@@ -250,7 +249,7 @@ impl<T:Clone + Num> ToMat3<T> for Quat<T> {
 impl<T:Clone + Float> Neg<Quat<T>> for Quat<T> {
     #[inline]
     pub fn neg(&self) -> Quat<T> {
-        Quat::from_slice(self.map(|&x| -x))
+        Quat::from_sv(-self.s, -self.v)
     }
 }
 
@@ -316,42 +315,21 @@ mod tests {
     use vec::*;
 
     #[test]
-    fn test_quat() {
-        let a = Quat { s: 1.0, v: Vec3 { x: 2.0, y: 3.0, z: 4.0 } };
+    fn test_from_angle_axis() {
+        let v = Vec3::new(1f, 0f, 0f);
 
-        assert_eq!(a, Quat::from_sv::<float>(1.0, Vec3::new::<float>(2.0, 3.0, 4.0)));
-        assert_eq!(a, Quat::new::<float>(1.0, 2.0, 3.0, 4.0));
-
-        assert_eq!(Quat::zero::<float>(), Quat::new::<float>(0.0, 0.0, 0.0, 0.0));
-        assert_eq!(Quat::identity::<float>(), Quat::new::<float>(1.0, 0.0, 0.0, 0.0));
-
-        assert_eq!(a.s, 1.0);
-        assert_eq!(a.v.x, 2.0);
-        assert_eq!(a.v.y, 3.0);
-        assert_eq!(a.v.z, 4.0);
-        assert_eq!(*a.index(0), 1.0);
-        assert_eq!(*a.index(1), 2.0);
-        assert_eq!(*a.index(2), 3.0);
-        assert_eq!(*a.index(3), 4.0);
-        // TODO
-    }
-
-    #[test]
-    fn test_quat_2() {
-        let v = Vec3::new(1f32, 0f32, 0f32);
-
-        let q = Quat::from_angle_axis((-45f32).to_radians(), &Vec3::new(0f32, 0f32, -1f32));
+        let q = Quat::from_angle_axis((-45f).to_radians(), &Vec3::new(0f, 0f, -1f));
 
         // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-        assert_approx_eq!(q.mul_v(&v), Vec3::new(1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32));
+        assert_approx_eq!(q.mul_v(&v), Vec3::new(1f/2f.sqrt(), 1f/2f.sqrt(), 0f));
         assert_eq!(q.mul_v(&v).length(), v.length());
-        assert_approx_eq!(q.to_mat3(), Mat3::new( 1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                                 -1f32/2f32.sqrt(), 1f32/2f32.sqrt(), 0f32,
-                                                              0f32,             0f32, 1f32));
+        assert_approx_eq!(q.to_mat3(), Mat3::new( 1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
+                                                 -1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
+                                                            0f,           0f, 1f));
     }
 
     #[test]
-    fn test_quat_approx_eq() {
+    fn test_approx_eq() {
         assert!(!Quat::new::<float>(0.000001, 0.000001, 0.000001, 0.000001)
                 .approx_eq(&Quat::new::<float>(0.0, 0.0, 0.0, 0.0)));
         assert!(Quat::new::<float>(0.0000001, 0.0000001, 0.0000001, 0.0000001)

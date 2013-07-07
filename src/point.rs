@@ -29,8 +29,7 @@ pub trait Point<T,V>: Eq + ApproxEq<T> + ToStr {
 pub struct Point2<T>(Vec2<T>);
 
 impl_dimensional!(Point2, T, 2)
-impl_dimensional_fns!(Point2, T, 2)
-impl_approx!(Point2)
+impl_approx!(Point2, 2)
 
 impl<T> Point2<T> {
     pub fn new(x: T, y: T) -> Point2<T> {
@@ -59,8 +58,7 @@ impl<T> ToStr for Point2<T> {
 pub struct Point3<T>(Vec3<T>);
 
 impl_dimensional!(Point3, T, 3)
-impl_dimensional_fns!(Point3, T, 3)
-impl_approx!(Point3)
+impl_approx!(Point3, 3)
 
 impl<T> Point3<T> {
     pub fn new(x: T, y: T, z: T) -> Point3<T> {
