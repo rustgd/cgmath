@@ -13,13 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::plane::Plane;
-pub use self::point::{Point2, Point3};
-pub use self::ray::Ray3;
+// TODO
 
-pub mod plane;
-pub mod point;
-pub mod ray;
-
-pub mod octree;
-pub mod quadtree;
+// http://gameprogrammingpatterns.com/spatial-partition.html
