@@ -22,7 +22,7 @@ SRC_CRATE      = $(TARGET).rs
 EXTERN_DIR     = $(ROOT_DIR)/extern
 BUILD_DIR      = $(ROOT_DIR)/lib
 
-CFG            = --cfg=geom --cfg=noise --cfg=world
+CFG            = --cfg=color --cfg=geom --cfg=noise --cfg=world
 
 TEST           = $(TARGET)
 TEST_BUILD_DIR = $(ROOT_DIR)/test
