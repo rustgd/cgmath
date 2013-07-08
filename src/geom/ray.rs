@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use vec::Vec3;
-use point::Point3;
+use core::Vec3;
+use geom::Point3;
 
 /// A three-dimensional ray
 ///

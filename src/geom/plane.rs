@@ -13,14 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use dim::Dimensional;
-use mat::Mat3;
-use point::Point3;
-use ray::Ray3;
-use vec::{Vec3, Vec4};
+use core::{Vec3, Vec4, Mat3};
+use geom::{Point3, Ray3};
 
+#[path = "../num_macros.rs"]
 mod num_macros;
-mod dim_macros;
 
 /// A plane formed from the equation: `Ax + Bx + Cx + D = 0`
 ///
@@ -36,10 +33,6 @@ pub struct Plane<T> {
     norm: Vec3<T>,
     dist: T,
 }
-
-impl_dimensional!(Plane, T, 4)
-impl_approx!(Plane, 4)
-impl_swap!(Plane)
 
 impl<T:Clone + Real> Plane<T> {
     /// # Arguments
@@ -150,6 +143,24 @@ impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
     }
 }
 
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Plane<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Plane<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Plane<T>, epsilon: &T) -> bool {
+        self.norm.approx_eq_eps(&other.norm, epsilon) &&
+        self.dist.approx_eq_eps(&other.dist, epsilon)
+    }
+}
+
 impl<T> ToStr for Plane<T> {
     pub fn to_str(&self) -> ~str {
         fmt!("%?x + %?y + %?z + %? = 0", self.norm.x, self.norm.y, self.norm.z, self.dist)
@@ -158,8 +169,8 @@ impl<T> ToStr for Plane<T> {
 
 #[cfg(test)]
 mod tests {
-    use plane::*;
-    use point::*;
+    use geom::plane::*;
+    use geom::point::*;
 
     #[test]
     fn test_from_3p() {

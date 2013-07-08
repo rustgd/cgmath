@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use dim::Dimensional;
+use core::Dimensional;
+use core::{Quat, ToQuat};
+use core::{Vec2, Vec3, Vec4};
 
-use quat::{Quat, ToQuat};
-use vec::{Vec2, Vec3, Vec4};
-
+#[path = "../num_macros.rs"]
 mod num_macros;
 mod dim_macros;
 
@@ -336,8 +336,8 @@ impl<T:Clone + Real + ApproxEq<T>> Mat2<T> {
 
 #[cfg(test)]
 mod mat2_tests{
-    use mat::*;
-    use vec::*;
+    use core::mat::*;
+    use core::vec::*;
 
     static a: Mat2<float> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
                                    y: Vec2 { x: 2.0, y: 4.0 } };
@@ -900,8 +900,8 @@ impl<T:Clone + Real + ApproxEq<T>> Mat3<T> {
 
 #[cfg(test)]
 mod mat3_tests{
-    use mat::*;
-    use vec::*;
+    use core::mat::*;
+    use core::vec::*;
 
     static a: Mat3<float> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
                                    y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
@@ -1429,8 +1429,8 @@ impl<T:Clone + Real + ApproxEq<T>> Mat4<T> {
 
 #[cfg(test)]
 mod mat4_tests {
-    use mat::*;
-    use vec::*;
+    use core::mat::*;
+    use core::vec::*;
 
     static a: Mat4<float> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                    y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },

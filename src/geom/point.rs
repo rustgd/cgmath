@@ -13,10 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use dim::Dimensional;
-use vec::{Vec2, Vec3};
-
-mod dim_macros;
+use core::{Vec2, Vec3};
 
 /// A geometric point
 pub trait Point<T,V>: Eq + ApproxEq<T> + ToStr {
@@ -27,9 +24,6 @@ pub trait Point<T,V>: Eq + ApproxEq<T> + ToStr {
 /// A two-dimensional point
 #[deriving(Clone, Eq)]
 pub struct Point2<T>(Vec2<T>);
-
-impl_dimensional!(Point2, T, 2)
-impl_approx!(Point2, 2)
 
 impl<T> Point2<T> {
     pub fn new(x: T, y: T) -> Point2<T> {
@@ -47,18 +41,42 @@ impl<T:Clone + Real> Point<T,Vec2<T>> for Point2<T> {
     }
 }
 
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Point2<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Point2<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Point2<T>, epsilon: &T) -> bool {
+        (**self).approx_eq_eps(&**other, epsilon)
+    }
+}
+
 impl<T> ToStr for Point2<T> {
     pub fn to_str(&self) -> ~str {
         fmt!("[%?, %?]", self.x, self.y)
     }
 }
 
+#[cfg(test)]
+mod test_point2 {
+    use geom::point::*;
+
+    #[test]
+    fn test_to_str() {
+        assert_eq!(Point2::new(1, 2).to_str(), ~"[1, 2]");
+    }
+}
+
 /// A three-dimensional point
 #[deriving(Clone, Eq)]
 pub struct Point3<T>(Vec3<T>);
-
-impl_dimensional!(Point3, T, 3)
-impl_approx!(Point3, 3)
 
 impl<T> Point3<T> {
     pub fn new(x: T, y: T, z: T) -> Point3<T> {
@@ -76,6 +94,23 @@ impl<T:Clone + Real> Point<T,Vec3<T>> for Point3<T> {
     }
 }
 
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Point3<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Point3<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Point3<T>, epsilon: &T) -> bool {
+        (**self).approx_eq_eps(&**other, epsilon)
+    }
+}
+
 impl<T> ToStr for Point3<T> {
     pub fn to_str(&self) -> ~str {
         fmt!("[%?, %?, %?]", self.x, self.y, self.z)
@@ -83,18 +118,8 @@ impl<T> ToStr for Point3<T> {
 }
 
 #[cfg(test)]
-mod test_point2 {
-    use point::*;
-
-    #[test]
-    fn test_to_str() {
-        assert_eq!(Point2::new(1, 2).to_str(), ~"[1, 2]");
-    }
-}
-
-#[cfg(test)]
 mod test_point3 {
-    use point::*;
+    use geom::point::*;
 
     #[test]
     fn test_to_str() {

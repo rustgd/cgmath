@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use dim::Dimensional;
+use core::Dimensional;
+use core::{Mat3, ToMat3};
+use core::Vec3;
 
-use mat::{Mat3, ToMat3};
-use vec::Vec3;
-
+#[path = "../num_macros.rs"]
 mod num_macros;
 mod dim_macros;
 
@@ -310,9 +310,9 @@ impl<T:Clone + Float> Quat<T> {
 
 #[cfg(test)]
 mod tests {
-    use mat::*;
-    use quat::*;
-    use vec::*;
+    use core::mat::*;
+    use core::quat::*;
+    use core::vec::*;
 
     #[test]
     fn test_from_angle_axis() {

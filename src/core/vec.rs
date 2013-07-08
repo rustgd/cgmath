@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use dim::Dimensional;
+use core::Dimensional;
 
+#[path = "../num_macros.rs"]
 mod num_macros;
 mod dim_macros;
 
@@ -392,7 +393,7 @@ impl Vec2<bool> {
 
 #[cfg(test)]
 mod vec2_tests {
-    use vec::*;
+    use core::vec::*;
 
     #[test]
     fn test_vec2() {
@@ -946,7 +947,7 @@ impl Vec3<bool> {
 
 #[cfg(test)]
 mod vec3_tests{
-    use vec::*;
+    use core::vec::*;
 
     #[test]
     fn test_vec3() {
@@ -1546,7 +1547,7 @@ impl Vec4<bool> {
 
 #[cfg(test)]
 mod vec4_tests {
-    use vec::*;
+    use core::vec::*;
 
     #[test]
     fn test_vec4() {

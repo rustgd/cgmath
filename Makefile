@@ -22,6 +22,8 @@ SRC_CRATE      = $(TARGET).rs
 EXTERN_DIR     = $(ROOT_DIR)/extern
 BUILD_DIR      = $(ROOT_DIR)/lib
 
+CFG            = --cfg=geom --cfg=world
+
 TEST           = $(TARGET)
 TEST_BUILD_DIR = $(ROOT_DIR)/test
 
@@ -30,7 +32,7 @@ TEST_BUILD_DIR = $(ROOT_DIR)/test
 $(TARGET):
 	@echo "Building $(TARGET)..."
 	@mkdir -p $(BUILD_DIR)
-	@rustc $(SRC_DIR)/$(SRC_CRATE) --out-dir=$(BUILD_DIR)
+	@rustc $(CFG) $(SRC_DIR)/$(SRC_CRATE) --out-dir=$(BUILD_DIR)
 	@echo "Success"
 
 all: $(TARGET)
@@ -38,7 +40,7 @@ all: $(TARGET)
 test:
 	@echo "Building unit tests for $(TARGET)..."
 	@mkdir -p $(TEST_BUILD_DIR)
-	@rustc $(SRC_DIR)/$(SRC_CRATE) --test --out-dir=$(TEST_BUILD_DIR)
+	@rustc  $(CFG) $(SRC_DIR)/$(SRC_CRATE) --test --out-dir=$(TEST_BUILD_DIR)
 	@echo "Success"
 	@$(TEST_BUILD_DIR)/$(TARGET)
 

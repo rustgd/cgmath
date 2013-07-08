@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use frustum::Frustum;
-use mat::Mat4;
-use plane::Plane;
+use core::Mat4;
+use geom::Plane;
+use world::Frustum;
 
+#[path = "../num_macros.rs"]
 mod num_macros;
 
 ///

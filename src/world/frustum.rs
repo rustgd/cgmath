@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mat::Mat4;
-use plane::Plane;
-use point::Point3;
+use core::Mat4;
+use geom::{Plane, Point3};
 
+#[path = "../num_macros.rs"]
 mod num_macros;
 
 #[deriving(Clone, Eq)]
