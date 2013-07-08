@@ -14,7 +14,7 @@
 // limitations under the License.
 
 pub use self::plane::Plane;
-pub use self::point::{Point2, Point3};
+pub use self::point::{Point, Point2, Point3};
 pub use self::ray::Ray3;
 
 pub mod plane;

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use core::{Vec3, Vec4, Mat3};
-use geom::{Point3, Ray3};
+use geom::{Point, Point3, Ray3};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
@@ -34,7 +34,7 @@ pub struct Plane<T> {
     dist: T,
 }
 
-impl<T:Clone + Real> Plane<T> {
+impl<T:Clone + Float> Plane<T> {
     /// # Arguments
     ///
     /// - `a`: the `x` component of the normal
@@ -60,7 +60,7 @@ impl<T:Clone + Real> Plane<T> {
 
     /// Compute the distance from the plane to the point
     pub fn distance(&self, pos: &Point3<T>) -> T {
-        self.norm.dot(&**pos) + self.dist
+        self.norm.dot(pos.as_vec()) + self.dist
     }
 
     /// Computes the point at which `ray` intersects the plane
@@ -79,14 +79,14 @@ impl<T:Clone + Real> Plane<T> {
     }
 }
 
-impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
+impl<T:Clone + Float> Plane<T> {
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`
     pub fn from_3p(a: Point3<T>,
                    b: Point3<T>,
                    c: Point3<T>) -> Option<Plane<T>> {
         // create two vectors that run parallel to the plane
-        let v0 = (*b).sub_v(&*a);
-        let v1 = (*c).sub_v(&*a);
+        let v0 = b.as_vec().sub_v(a.as_vec());
+        let v1 = c.as_vec().sub_v(a.as_vec());
         // find the vector that is perpendicular to v1 and v2
         let mut norm = v0.cross(&v1);
 
@@ -95,7 +95,7 @@ impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
         } else {
             // compute the normal and the distance to the plane
             norm.normalize_self();
-            let dist = -a.dot(&norm);
+            let dist = -a.as_vec().dot(&norm);
 
             Some(Plane::from_nd(norm, dist))
         }
@@ -115,7 +115,7 @@ impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
         } else {
             // The end-point of the ray is at the three-plane intersection between
             // `self`, `other`, and a tempory plane positioned at the origin
-            do Plane::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |ray_pos| {
+            do Plane::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |&ray_pos| {
                 Ray3 {
                     pos: ray_pos.clone(),
                     dir: ray_dir.clone(),
@@ -136,9 +136,11 @@ impl<T:Clone + Real + ApproxEq<T>> Plane<T> {
                            self.norm.y.clone(), other_a.norm.y.clone(), other_b.norm.y.clone(),
                            self.norm.z.clone(), other_a.norm.z.clone(), other_b.norm.z.clone());
         do mx.inverse().map |m| {
-            Point3(m.mul_v(&Vec3::new(self.dist.clone(),
-                                      other_a.dist.clone(),
-                                      other_b.dist.clone())))
+            Point::from_vec(
+                m.mul_v(&Vec3::new(self.dist.clone(),
+                                   other_a.dist.clone(),
+                                   other_b.dist.clone()))
+            )
         }
     }
 }
@@ -189,7 +191,7 @@ mod tests {
         let p1 = Plane::from_abcd(0.0, -1.0, 0.0, 2.0);
         let p2 = Plane::from_abcd(0.0,  0.0, 1.0, 1.0);
 
-        assert_eq!(p0.intersection_3pl(&p1, &p2).unwrap(), Point3::new(1.0, -2.0, 1.0));
+        assert_eq!(p0.intersection_3pl(&p1, &p2), Some(Point3::new(1.0, -2.0, 1.0)));
     }
 
     #[test]

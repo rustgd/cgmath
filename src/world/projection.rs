@@ -28,7 +28,7 @@ mod num_macros;
 /// This is the equivalent of the gluPerspective function, the algorithm of which
 /// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
 ///
-pub fn perspective<T:Clone + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
+pub fn perspective<T:Clone + Float>(fovy: T, aspectRatio: T, near: T, far: T) -> Mat4<T> {
     let ymax = near * (fovy / two!(T)).to_radians().tan();
     let xmax = ymax * aspectRatio;
 
@@ -41,7 +41,7 @@ pub fn perspective<T:Clone + Real>(fovy: T, aspectRatio: T, near: T, far: T) -> 
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 ///
-pub fn frustum<T:Clone + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn frustum<T:Clone + Float>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = (two!(T) * near) / (right - left);
     let c0r1 = zero!(T);
     let c0r2 = zero!(T);
@@ -74,7 +74,7 @@ pub fn frustum<T:Clone + Real>(left: T, right: T, bottom: T, top: T, near: T, fa
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
 ///
-pub fn ortho<T:Clone + Real>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
+pub fn ortho<T:Clone + Float>(left: T, right: T, bottom: T, top: T, near: T, far: T) -> Mat4<T> {
     let c0r0 = two!(T) / (right - left);
     let c0r1 = zero!(T);
     let c0r2 = zero!(T);
@@ -116,7 +116,7 @@ pub struct PerspectiveFOV<T> {
     far:    T,
 }
 
-impl<T:Clone + Real> PerspectiveFOV<T> {
+impl<T:Clone + Float> PerspectiveFOV<T> {
     pub fn to_perspective(&self) -> Result<Perspective<T>, ~str> {
         do self.if_valid {
             let angle = self.fovy / two!(T);
@@ -135,7 +135,7 @@ impl<T:Clone + Real> PerspectiveFOV<T> {
     }
 }
 
-impl<T:Clone + Real> Projection<T> for PerspectiveFOV<T> {
+impl<T:Clone + Float> Projection<T> for PerspectiveFOV<T> {
     pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         let frac_pi_2: T = Real::frac_pi_2();
         cond! (
@@ -169,7 +169,7 @@ pub struct Perspective<T> {
     far:    T,
 }
 
-impl<T:Clone + Real> Projection<T> for Perspective<T> {
+impl<T:Clone + Float> Projection<T> for Perspective<T> {
     pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         cond! (
             (self.left   > self.right) { Err(fmt!("`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right)) }
@@ -275,7 +275,7 @@ pub struct Ortho<T> {
     far:    T,
 }
 
-impl<T:Clone + Real> Projection<T> for Ortho<T> {
+impl<T:Clone + Float> Projection<T> for Ortho<T> {
     pub fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
         cond! (
             (self.left   > self.right) { Err(fmt!("`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right)) }

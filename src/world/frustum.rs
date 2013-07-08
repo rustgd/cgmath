@@ -41,7 +41,7 @@ pub struct FrustumPoints<T> {
     far_bottom_right:  Point3<T>,
 }
 
-impl<T:Clone + Real> Frustum<T> {
+impl<T:Clone + Float> Frustum<T> {
     /// Constructs a frustum
     pub fn from_planes(left:   Plane<T>, right:  Plane<T>,
                        bottom: Plane<T>, top:    Plane<T>,
@@ -80,7 +80,7 @@ impl<T:Clone + Real> Frustum<T> {
     }
 }
 
-impl<T:Clone + Real + ApproxEq<T>> Frustum<T> {
+impl<T:Clone + Float> Frustum<T> {
     /// Computes where the frustum planes intersect to form corners and returns
     /// a struct containing the eight resulting position vectors.
     pub fn to_points(&self) -> FrustumPoints<T> {
