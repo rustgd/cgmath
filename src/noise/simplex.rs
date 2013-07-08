@@ -13,28 +13,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "lmath",
-       vers = "0.1.0",
-       uuid = "A2DEEB53-EB35-4B44-B247-9044B57E3BA5",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/lmath-rs")];
-
-#[comment = "A mathematics library for computer graphics."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
-
-#[path = "core/core.rs"]
-pub mod core;
-
-#[cfg(geom)]
-#[path = "geom/geom.rs"]
-pub mod geom;
-
-#[cfg(noise)]
-#[path = "noise/noise.rs"]
-pub mod noise;
-
-#[cfg(world)]
-#[path = "world/world.rs"]
-pub mod world;
-
+// TODO
