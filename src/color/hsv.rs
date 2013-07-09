@@ -16,7 +16,7 @@
 use std::num;
 use std::cast;
 
-use color::{Channel, ToChannel, FloatChannel, ToFloatChannel};
+use color::Channel;
 use color::{RGB, ToRGB, RGBA, ToRGBA};
 
 #[path = "../num_macros.rs"]
@@ -32,19 +32,19 @@ impl<T> HSV<T> {
 }
 
 pub trait ToHSV {
-    pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U>;
+    pub fn to_hsv<U:Clone + Float + Channel>(&self) -> HSV<U>;
 }
 
-impl<T:Clone + ToFloatChannel> ToHSV for HSV<T> {
+impl<T:Clone + Float + Channel> ToHSV for HSV<T> {
     #[inline]
-    pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U> {
-        HSV::new(FloatChannel::from((*self).h.clone()),
-                 FloatChannel::from((*self).s.clone()),
-                 FloatChannel::from((*self).v.clone()))
+    pub fn to_hsv<U:Clone + Float + Channel>(&self) -> HSV<U> {
+        HSV::new(Channel::from((*self).h.clone()),
+                 Channel::from((*self).s.clone()),
+                 Channel::from((*self).v.clone()))
     }
 }
 
-impl<T:Clone + Float + ToChannel> ToRGB for HSV<T> {
+impl<T:Clone + Float + Channel> ToRGB for HSV<T> {
     pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:
         // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
@@ -102,24 +102,24 @@ impl<T> HSVA<T> {
 }
 
 pub trait ToHSVA {
-    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U>;
+    pub fn to_hsva<U:Clone + Float + Channel>(&self) -> HSVA<U>;
 }
 
-impl<C: ToHSV, T:Clone + ToFloatChannel> ToHSVA for (C, T) {
+impl<C: ToHSV, T:Clone + Float + Channel> ToHSVA for (C, T) {
     #[inline]
-    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
+    pub fn to_hsva<U:Clone + Float + Channel>(&self) -> HSVA<U> {
         match *self {
             (ref hsv, ref a) =>  {
                 HSVA::from_hsv_a(
                     hsv.to_hsv(),
-                    FloatChannel::from(a.clone())
+                    Channel::from(a.clone())
                 )
             }
         }
     }
 }
 
-impl<T:Clone + Float + ToChannel> ToRGBA for HSVA<T> {
+impl<T:Clone + Float + Channel> ToRGBA for HSVA<T> {
     #[inline]
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
         RGBA::from_rgb_a(

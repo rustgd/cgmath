@@ -16,7 +16,7 @@
 use std::num;
 use std::cast;
 
-use color::{Channel, ToChannel, FloatChannel};
+use color::Channel;
 use color::{HSV, ToHSV, HSVA, ToHSVA};
 
 #[path = "../num_macros.rs"]
@@ -36,7 +36,7 @@ pub trait ToRGB {
     pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U>;
 }
 
-impl<T:Clone + ToChannel> ToRGB for RGB<T> {
+impl<T:Clone + Channel> ToRGB for RGB<T> {
     #[inline]
     pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U> {
         RGB::new(Channel::from((*self).r.clone()),
@@ -45,9 +45,9 @@ impl<T:Clone + ToChannel> ToRGB for RGB<T> {
     }
 }
 
-impl<T:Clone + ToChannel> ToHSV for RGB<T> {
+impl<T:Clone + Channel> ToHSV for RGB<T> {
     #[inline]
-    pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U> {
+    pub fn to_hsv<U:Clone + Float + Channel>(&self) -> HSV<U> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:
         // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 
@@ -103,7 +103,7 @@ pub trait ToRGBA {
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U>;
 }
 
-impl<C: ToRGB, T:Clone + ToChannel> ToRGBA for (C, T) {
+impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
     #[inline]
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
         match *self {
@@ -114,12 +114,15 @@ impl<C: ToRGB, T:Clone + ToChannel> ToRGBA for (C, T) {
     }
 }
 
-impl<T:Clone + ToChannel> ToHSVA for RGBA<T> {
+impl<T:Clone + Channel> ToHSVA for RGBA<T> {
     #[inline]
-    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
+    pub fn to_hsva<U:Clone + Float + Channel>(&self) -> HSVA<U> {
         HSVA::from_hsv_a(
             self.rgb().to_hsv(),
             Channel::from((*self).a.clone())
         )
     }
 }
+
+// 0xFF_FF_FF_FF_u32
+// 0xFFFF_FFFF_FFFF_FFFF_u64

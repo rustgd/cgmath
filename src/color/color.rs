@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::channel::{Channel, IntChannel, FloatChannel};
-pub use self::channel::{ToChannel, ToIntChannel, ToFloatChannel};
+pub use self::channel::Channel;
 pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
 pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};
 pub use self::srgb::{SRGB, SRGBA};
