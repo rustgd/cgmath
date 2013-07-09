@@ -25,7 +25,7 @@ mod num_macros;
 #[deriving(Clone, Eq)]
 pub struct RGB<T> { r: T, g: T, b: T }
 
-impl<T> RGB<T> {
+impl<T:Channel> RGB<T> {
     #[inline]
     pub fn new(r: T, g: T, b: T) -> RGB<T> {
         RGB { r: r, g: g, b: b }
@@ -33,12 +33,12 @@ impl<T> RGB<T> {
 }
 
 pub trait ToRGB {
-    pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U>;
+    pub fn to_rgb<U:Channel>(&self) -> RGB<U>;
 }
 
 impl<T:Clone + Channel> ToRGB for RGB<T> {
     #[inline]
-    pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U> {
+    pub fn to_rgb<U:Channel>(&self) -> RGB<U> {
         RGB::new(Channel::from((*self).r.clone()),
                  Channel::from((*self).g.clone()),
                  Channel::from((*self).b.clone()))
@@ -47,7 +47,7 @@ impl<T:Clone + Channel> ToRGB for RGB<T> {
 
 impl<T:Clone + Channel> ToHSV for RGB<T> {
     #[inline]
-    pub fn to_hsv<U:Clone + Float + Channel>(&self) -> HSV<U> {
+    pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:
         // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 
@@ -77,7 +77,7 @@ impl<T:Clone + Channel> ToHSV for RGB<T> {
 #[deriving(Clone, Eq)]
 pub struct RGBA<T> { r: T, g: T, b: T, a: T }
 
-impl<T> RGBA<T> {
+impl<T:Channel> RGBA<T> {
     #[inline]
     pub fn new(r: T, g: T, b: T, a: T) -> RGBA<T> {
         RGBA { r: r, g: g, b: b, a: a }
@@ -100,12 +100,12 @@ impl<T> RGBA<T> {
 }
 
 pub trait ToRGBA {
-    pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U>;
+    pub fn to_rgba<U:Channel>(&self) -> RGBA<U>;
 }
 
 impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
     #[inline]
-    pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
+    pub fn to_rgba<U:Channel>(&self) -> RGBA<U> {
         match *self {
             (ref rgb, ref a) =>  {
                 RGBA::from_rgb_a(rgb.to_rgb(), Channel::from(a.clone()))
@@ -116,7 +116,7 @@ impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
 
 impl<T:Clone + Channel> ToHSVA for RGBA<T> {
     #[inline]
-    pub fn to_hsva<U:Clone + Float + Channel>(&self) -> HSVA<U> {
+    pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
         HSVA::from_hsv_a(
             self.rgb().to_hsv(),
             Channel::from((*self).a.clone())
