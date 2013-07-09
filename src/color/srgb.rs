@@ -22,3 +22,13 @@ impl<T> SRGB<T> {
         SRGB { r: r, g: g, b: b }
     }
 }
+
+#[deriving(Clone, Eq)]
+pub struct SRGBA<T> { r: T, g: T, b: T, a: T }
+
+impl<T> SRGBA<T> {
+    #[inline]
+    pub fn new(r: T, g: T, b: T, a: T) -> SRGBA<T> {
+        SRGBA { r: r, g: g, b: b, a: a }
+    }
+}

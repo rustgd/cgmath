@@ -15,22 +15,16 @@
 
 pub use self::channel::{Channel, IntChannel, FloatChannel};
 pub use self::channel::{ToChannel, ToIntChannel, ToFloatChannel};
-pub use self::hsv::{HSV, ToHSV};
-pub use self::hsva::{HSVA, ToHSVA};
-pub use self::rgb::{RGB, ToRGB};
-pub use self::rgba::{RGBA, ToRGBA};
-pub use self::srgb::SRGB;
-pub use self::srgba::SRGBA;
+pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
+pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};
+pub use self::srgb::{SRGB, SRGBA};
 
 pub mod channel;
 pub mod hsv;
-pub mod hsva;
 pub mod rgb;
-pub mod rgba;
 pub mod srgb;
-pub mod srgba;
 
-// pub trait Color<T>: Eq {
-//     pub fn inverse(&self) -> Self;
-//     pub fn invert_self(&mut self);
-// }
+pub trait Color<T> {
+    pub fn inverse(&self) -> Self;
+    pub fn invert_self(&mut self);
+}

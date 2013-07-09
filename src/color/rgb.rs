@@ -14,9 +14,10 @@
 // limitations under the License.
 
 use std::num;
+use std::cast;
 
 use color::{Channel, ToChannel, FloatChannel};
-use color::{HSV, ToHSV};
+use color::{HSV, ToHSV, HSVA, ToHSVA};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
@@ -70,5 +71,55 @@ impl<T:Clone + ToChannel> ToHSV for RGB<T> {
         } else {
             HSV::new(zero!(U), zero!(U), mx)
         }
+    }
+}
+
+#[deriving(Clone, Eq)]
+pub struct RGBA<T> { r: T, g: T, b: T, a: T }
+
+impl<T> RGBA<T> {
+    #[inline]
+    pub fn new(r: T, g: T, b: T, a: T) -> RGBA<T> {
+        RGBA { r: r, g: g, b: b, a: a }
+    }
+
+    #[inline]
+    pub fn from_rgb_a(rgb: RGB<T>, a: T) -> RGBA<T> {
+        unsafe { cast::transmute((rgb, a)) }
+    }
+
+    #[inline]
+    pub fn rgb<'a>(&'a self) -> &'a RGB<T> {
+        unsafe { cast::transmute(self) }
+    }
+
+    #[inline]
+    pub fn rgb_mut<'a>(&'a mut self) -> &'a mut RGB<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
+
+pub trait ToRGBA {
+    pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U>;
+}
+
+impl<C: ToRGB, T:Clone + ToChannel> ToRGBA for (C, T) {
+    #[inline]
+    pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
+        match *self {
+            (ref rgb, ref a) =>  {
+                RGBA::from_rgb_a(rgb.to_rgb(), Channel::from(a.clone()))
+            }
+        }
+    }
+}
+
+impl<T:Clone + ToChannel> ToHSVA for RGBA<T> {
+    #[inline]
+    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
+        HSVA::from_hsv_a(
+            self.rgb().to_hsv(),
+            Channel::from((*self).a.clone())
+        )
     }
 }
