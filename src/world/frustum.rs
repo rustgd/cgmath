@@ -14,19 +14,19 @@
 // limitations under the License.
 
 use core::Mat4;
-use geom::{Plane, Point3};
+use geom::{Plane3, Point3};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<T> {
-    left:   Plane<T>,
-    right:  Plane<T>,
-    bottom: Plane<T>,
-    top:    Plane<T>,
-    near:   Plane<T>,
-    far:    Plane<T>,
+    left:   Plane3<T>,
+    right:  Plane3<T>,
+    bottom: Plane3<T>,
+    top:    Plane3<T>,
+    near:   Plane3<T>,
+    far:    Plane3<T>,
 }
 
 #[deriving(Clone, Eq)]
@@ -43,9 +43,9 @@ pub struct FrustumPoints<T> {
 
 impl<T:Clone + Float> Frustum<T> {
     /// Constructs a frustum
-    pub fn from_planes(left:   Plane<T>, right:  Plane<T>,
-                       bottom: Plane<T>, top:    Plane<T>,
-                       near:   Plane<T>, far:    Plane<T>) -> Frustum<T> {
+    pub fn from_planes(left:   Plane3<T>, right:  Plane3<T>,
+                       bottom: Plane3<T>, top:    Plane3<T>,
+                       near:   Plane3<T>, far:    Plane3<T>) -> Frustum<T> {
         Frustum {
             left:   left,
             right:  right,
@@ -59,23 +59,23 @@ impl<T:Clone + Float> Frustum<T> {
     /// Extracts frustum planes from a projection matrix
     pub fn from_matrix(mat: Mat4<T>) -> Frustum<T> {
         Frustum {
-            left:   Plane::from_vec4(mat.row(3).add_v(&mat.row(0)).normalize()),
-            right:  Plane::from_vec4(mat.row(3).sub_v(&mat.row(0)).normalize()),
-            bottom: Plane::from_vec4(mat.row(3).add_v(&mat.row(1)).normalize()),
-            top:    Plane::from_vec4(mat.row(3).sub_v(&mat.row(1)).normalize()),
-            near:   Plane::from_vec4(mat.row(3).add_v(&mat.row(2)).normalize()),
-            far:    Plane::from_vec4(mat.row(3).sub_v(&mat.row(2)).normalize()),
+            left:   Plane3::from_vec4(mat.row(3).add_v(&mat.row(0)).normalize()),
+            right:  Plane3::from_vec4(mat.row(3).sub_v(&mat.row(0)).normalize()),
+            bottom: Plane3::from_vec4(mat.row(3).add_v(&mat.row(1)).normalize()),
+            top:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(1)).normalize()),
+            near:   Plane3::from_vec4(mat.row(3).add_v(&mat.row(2)).normalize()),
+            far:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(2)).normalize()),
         }
     }
 
     pub fn base() -> Frustum<T> {
         Frustum {
-            left:   Plane::from_abcd( one!(T),  zero!(T),  zero!(T), one!(T)),
-            right:  Plane::from_abcd(-one!(T),  zero!(T),  zero!(T), one!(T)),
-            bottom: Plane::from_abcd( zero!(T),  one!(T),  zero!(T), one!(T)),
-            top:    Plane::from_abcd( zero!(T), -one!(T),  zero!(T), one!(T)),
-            near:   Plane::from_abcd( zero!(T),  zero!(T), -one!(T), one!(T)),
-            far:    Plane::from_abcd( zero!(T),  zero!(T),  one!(T), one!(T)),
+            left:   Plane3::from_abcd( one!(T),  zero!(T),  zero!(T), one!(T)),
+            right:  Plane3::from_abcd(-one!(T),  zero!(T),  zero!(T), one!(T)),
+            bottom: Plane3::from_abcd( zero!(T),  one!(T),  zero!(T), one!(T)),
+            top:    Plane3::from_abcd( zero!(T), -one!(T),  zero!(T), one!(T)),
+            near:   Plane3::from_abcd( zero!(T),  zero!(T), -one!(T), one!(T)),
+            far:    Plane3::from_abcd( zero!(T),  zero!(T),  one!(T), one!(T)),
         }
     }
 }

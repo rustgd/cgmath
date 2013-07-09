@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use core::Mat4;
-use geom::Plane;
+use geom::Plane3;
 use world::Frustum;
 
 #[path = "../num_macros.rs"]
@@ -253,12 +253,12 @@ impl<T:Clone + Float> Projection<T> for Perspective<T> {
             let theta_t = (self.top / self.far).atan();
 
             Frustum {
-                left:   Plane::from_abcd(theta_l.cos(), zero!(T), theta_l.sin(), zero!(T)),
-                right:  Plane::from_abcd(theta_r.cos(), zero!(T), theta_r.sin(), zero!(T)),
-                bottom: Plane::from_abcd(zero!(T), theta_b.cos(), theta_b.sin(), zero!(T)),
-                top:    Plane::from_abcd(zero!(T), theta_t.cos(), theta_t.sin(), zero!(T)),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), -self.near.clone()),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T), self.far.clone()),
+                left:   Plane3::from_abcd(theta_l.cos(), zero!(T), theta_l.sin(), zero!(T)),
+                right:  Plane3::from_abcd(theta_r.cos(), zero!(T), theta_r.sin(), zero!(T)),
+                bottom: Plane3::from_abcd(zero!(T), theta_b.cos(), theta_b.sin(), zero!(T)),
+                top:    Plane3::from_abcd(zero!(T), theta_t.cos(), theta_t.sin(), zero!(T)),
+                near:   Plane3::from_abcd(zero!(T), zero!(T), -one!(T), -self.near.clone()),
+                far:    Plane3::from_abcd(zero!(T), zero!(T), one!(T), self.far.clone()),
             }
         }
     }
@@ -317,12 +317,12 @@ impl<T:Clone + Float> Projection<T> for Ortho<T> {
     pub fn to_frustum(&self) -> Result<Frustum<T>, ~str> {
         do self.if_valid {
             Frustum {
-                left:   Plane::from_abcd(one!(T), zero!(T), zero!(T), self.left.clone()),
-                right:  Plane::from_abcd(-one!(T), zero!(T), zero!(T), self.right.clone()),
-                bottom: Plane::from_abcd(zero!(T), one!(T), zero!(T), self.bottom.clone()),
-                top:    Plane::from_abcd(zero!(T), -one!(T), zero!(T), self.top.clone()),
-                near:   Plane::from_abcd(zero!(T), zero!(T), -one!(T), self.near.clone()),
-                far:    Plane::from_abcd(zero!(T), zero!(T), one!(T),self.far.clone()),
+                left:   Plane3::from_abcd(one!(T), zero!(T), zero!(T), self.left.clone()),
+                right:  Plane3::from_abcd(-one!(T), zero!(T), zero!(T), self.right.clone()),
+                bottom: Plane3::from_abcd(zero!(T), one!(T), zero!(T), self.bottom.clone()),
+                top:    Plane3::from_abcd(zero!(T), -one!(T), zero!(T), self.top.clone()),
+                near:   Plane3::from_abcd(zero!(T), zero!(T), -one!(T), self.near.clone()),
+                far:    Plane3::from_abcd(zero!(T), zero!(T), one!(T),self.far.clone()),
             }
         }
     }
