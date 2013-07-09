@@ -44,33 +44,31 @@ impl<T:Clone + Channel> ToRGB for RGB<T> {
     }
 }
 
-impl<T:Clone + FloatChannel> ToHSV for RGB<T> {
+impl<T:Clone + Channel> ToHSV for RGB<T> {
     #[inline]
     pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U> {
-        to_hsv(self.to_rgb::<U>())
-    }
-}
+        // Algorithm taken from the Wikipedia article on HSL and HSV:
+        // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 
-priv fn to_hsv<T:Clone + Float>(color: RGB<T>) -> HSV<T> {
-    // Algorithm taken from the Wikipedia article on HSL and HSV:
-    // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
+        let rgb_u = self.to_rgb::<U>();
 
-    let mx = color.r.max(&color.g).max(&color.b);
-    let mn = color.r.min(&color.g).min(&color.b);
-    let chr = mx - mn;
+        let mx = rgb_u.r.max(&rgb_u.g).max(&rgb_u.b);
+        let mn = rgb_u.r.min(&rgb_u.g).min(&rgb_u.b);
+        let chr = mx - mn;
 
-    if chr != zero!(T) {
-        let h = cond! (
-            (color.r == mx)       { ((color.g - color.b) / chr) % num::cast(6) }
-            (color.g == mx)       { ((color.b - color.r) / chr) + num::cast(2) }
-            _ /* color.b == mx */ { ((color.r - color.g) / chr) + num::cast(4) }
-        ) * num::cast(60);
+        if chr != zero!(U) {
+            let h = cond! (
+                (rgb_u.r == mx)       { ((rgb_u.g - rgb_u.b) / chr) % num::cast(6) }
+                (rgb_u.g == mx)       { ((rgb_u.b - rgb_u.r) / chr) + num::cast(2) }
+                _ /* rgb_u.b == mx */ { ((rgb_u.r - rgb_u.g) / chr) + num::cast(4) }
+            ) * num::cast(60);
 
-        let s = chr / mx;
+            let s = chr / mx;
 
-        HSV::new(h, s, mx)
+            HSV::new(h, s, mx)
 
-    } else {
-        HSV::new(zero!(T), zero!(T), mx)
+        } else {
+            HSV::new(zero!(U), zero!(U), mx)
+        }
     }
 }
