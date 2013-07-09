@@ -15,7 +15,8 @@
 
 use std::num;
 
-use color::{Channel, RGB, ToRGB};
+use color::{Channel, FloatChannel};
+use color::{RGB, ToRGB};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
@@ -29,38 +30,51 @@ impl<T> HSV<T> {
     }
 }
 
-pub trait ToHSV<T> {
-    pub fn to_hsv(&self) -> HSV<T>;
+pub trait ToHSV {
+    pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U>;
 }
 
-impl<T:Clone + Channel + Float> ToRGB<T> for HSV<T> {
-    pub fn to_rgb(&self) -> RGB<T> {
-        // Algorithm taken from the Wikipedia article on HSL and HSV:
-        // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
-
-        let chr = (*self).v * (*self).s;
-        let h = (*self).h / num::cast(60);
-
-        // the 2nd largest component
-        let x = chr * (one!(T) - ((h % two!(T)) - one!(T)).abs());
-
-        let mut color_rgb = cond! (
-            (h < num::cast(1)) { RGB::new(chr.clone(), x, zero!(T)) }
-            (h < num::cast(2)) { RGB::new(x, chr.clone(), zero!(T)) }
-            (h < num::cast(3)) { RGB::new(zero!(T), chr.clone(), x) }
-            (h < num::cast(4)) { RGB::new(zero!(T), x, chr.clone()) }
-            (h < num::cast(5)) { RGB::new(x, zero!(T), chr.clone()) }
-            (h < num::cast(6)) { RGB::new(chr.clone(), zero!(T), x) }
-            _                  { RGB::new(zero!(T), zero!(T), zero!(T)) }
-        );
-
-        // match the value by adding the same amount to each component
-        let mn = (*self).v - chr;
-
-        color_rgb.r = color_rgb.r + mn;
-        color_rgb.g = color_rgb.g + mn;
-        color_rgb.b = color_rgb.b + mn;
-
-        color_rgb
+impl<T:Clone + FloatChannel> ToHSV for HSV<T> {
+    #[inline]
+    pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U> {
+        HSV::new(FloatChannel::from((*self).h.clone()),
+                 FloatChannel::from((*self).s.clone()),
+                 FloatChannel::from((*self).v.clone()))
     }
+}
+
+impl<T:Clone + FloatChannel> ToRGB for HSV<T> {
+    pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U> {
+        to_rgb(self.to_hsv::<T>()).to_rgb::<U>()
+    }
+}
+
+priv fn to_rgb<T:Clone + Float>(color: HSV<T>) -> RGB<T> {
+    // Algorithm taken from the Wikipedia article on HSL and HSV:
+    // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
+
+    let chr = color.v * color.s;
+    let h = color.h / num::cast(60);
+
+    // the 2nd largest component
+    let x = chr * (one!(T) - ((h % two!(T)) - one!(T)).abs());
+
+    let mut color_rgb = cond! (
+        (h < num::cast(1)) { RGB::new(chr.clone(), x, zero!(T)) }
+        (h < num::cast(2)) { RGB::new(x, chr.clone(), zero!(T)) }
+        (h < num::cast(3)) { RGB::new(zero!(T), chr.clone(), x) }
+        (h < num::cast(4)) { RGB::new(zero!(T), x, chr.clone()) }
+        (h < num::cast(5)) { RGB::new(x, zero!(T), chr.clone()) }
+        (h < num::cast(6)) { RGB::new(chr.clone(), zero!(T), x) }
+        _                  { RGB::new(zero!(T), zero!(T), zero!(T)) }
+    );
+
+    // match the value by adding the same amount to each component
+    let mn = color.v - chr;
+
+    color_rgb.r = color_rgb.r + mn;
+    color_rgb.g = color_rgb.g + mn;
+    color_rgb.b = color_rgb.b + mn;
+
+    color_rgb
 }

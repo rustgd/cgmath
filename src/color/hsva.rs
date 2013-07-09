@@ -15,7 +15,8 @@
 
 use std::cast;
 
-use color::{Channel, HSV, ToHSV, ToRGB, RGBA, ToRGBA};
+use color::{Channel, FloatChannel};
+use color::{HSV, ToHSV, RGB, ToRGB, RGBA, ToRGBA};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
@@ -30,29 +31,33 @@ impl<T> HSVA<T> {
     }
 }
 
-pub trait ToHSVA<T> {
-    pub fn to_hsva(&self) -> HSVA<T>;
+pub trait ToHSVA {
+    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U>;
 }
 
-impl<T:Clone + Channel, C: ToHSV<T>> ToHSVA<T> for (C, T) {
+impl<C: ToHSV, T:Clone + FloatChannel> ToHSVA for (C, T) {
     #[inline]
-    pub fn to_hsva(&self) -> HSVA<T> {
+    pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
         match *self {
             (ref c, ref a) => unsafe {
-                cast::transmute((c.to_hsv(), a.clone()))
+                cast::transmute::<(HSV<U>, U), HSVA<U>>(
+                    (c.to_hsv::<U>(), Channel::from(a.clone()))
+                )
             }
         }
     }
 }
 
-impl<T:Clone + Channel + Float> ToRGBA<T> for HSVA<T> {
+impl<T:Clone + FloatChannel> ToRGBA for HSVA<T> {
     #[inline]
-    pub fn to_rgba(&self) -> RGBA<T> {
+    pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
         match unsafe {
             cast::transmute::<&HSVA<T>, &(HSV<T>, T)>(self)
         } {
             &(ref c, ref a) => unsafe {
-                cast::transmute((c.to_rgb(), a.clone()))
+                cast::transmute::<(RGB<U>, U), RGBA<U>>(
+                    (c.to_rgb::<U>(), Channel::from(a.clone()))
+                )
             },
         }
     }
