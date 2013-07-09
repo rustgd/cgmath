@@ -339,28 +339,30 @@ mod mat2_tests{
     use core::mat::*;
     use core::vec::*;
 
-    static a: Mat2<float> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
+    static A: Mat2<float> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
                                    y: Vec2 { x: 2.0, y: 4.0 } };
-    static b: Mat2<float> = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
+    static B: Mat2<float> = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
                                    y: Vec2 { x: 3.0, y: 5.0 } };
+    static C: Mat2<float> = Mat2 { x: Vec2 { x: 2.0, y: 1.0 },
+                                   y: Vec2 { x: 1.0, y: 2.0 } };
 
-    static v1: Vec2<float> = Vec2 { x: 1.0, y: 2.0 };
-    static f1: float = 0.5;
+    static V: Vec2<float> = Vec2 { x: 1.0, y: 2.0 };
+    static F: float = 0.5;
 
     #[test]
     fn test_swap_cols() {
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.swap_cols(0, 1);
-        assert_eq!(mut_a.col(0), a.col(1));
-        assert_eq!(mut_a.col(1), a.col(0));
+        assert_eq!(mut_a.col(0), A.col(1));
+        assert_eq!(mut_a.col(1), A.col(0));
     }
 
     #[test]
     fn test_swap_rows() {
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.swap_rows(0, 1);
-        assert_eq!(mut_a.row(0), a.row(1));
-        assert_eq!(mut_a.row(1), a.row(0));
+        assert_eq!(mut_a.row(0), A.row(1));
+        assert_eq!(mut_a.row(1), A.row(0));
     }
 
     #[test]
@@ -368,7 +370,7 @@ mod mat2_tests{
         assert_eq!(Mat2::identity::<float>(),
                    Mat2::new::<float>(1.0, 0.0,
                                       0.0, 1.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_identity();
         assert!(mut_a.is_identity());
     }
@@ -378,97 +380,97 @@ mod mat2_tests{
         assert_eq!(Mat2::zero::<float>(),
                    Mat2::new::<float>(0.0, 0.0,
                                       0.0, 0.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_zero();
         assert_eq!(mut_a, Mat2::zero::<float>());
     }
     #[test]
     fn test_determinant() {
-        assert_eq!(a.determinant(), -2.0);
+        assert_eq!(A.determinant(), -2.0);
     }
 
     #[test]
     fn test_trace() {
-        assert_eq!(a.trace(), 5.0);
+        assert_eq!(A.trace(), 5.0);
     }
 
     #[test]
     fn test_neg() {
-        assert_eq!(a.neg(),
+        assert_eq!(A.neg(),
                    Mat2::new::<float>(-1.0, -3.0,
                                       -2.0, -4.0));
-        assert_eq!(-a, a.neg());
+        assert_eq!(-A, A.neg());
     }
 
     #[test]
     fn test_mul_t() {
-        assert_eq!(a.mul_t(f1),
+        assert_eq!(A.mul_t(F),
                    Mat2::new::<float>(0.5, 1.5,
                                       1.0, 2.0));
-        let mut mut_a = a;
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
+        let mut mut_a = A;
+        mut_a.mul_self_t(F);
+        assert_eq!(mut_a, A.mul_t(F));
     }
 
     #[test]
     fn test_mul_v() {
-        assert_eq!(a.mul_v(&v1), Vec2::new::<float>(5.0, 11.0));
+        assert_eq!(A.mul_v(&V), Vec2::new::<float>(5.0, 11.0));
     }
 
     #[test]
     fn test_add_m() {
-        assert_eq!(a.add_m(&b),
+        assert_eq!(A.add_m(&B),
                    Mat2::new::<float>(3.0, 7.0,
                                       5.0, 9.0));
-        let mut mut_a = a;
-        mut_a.add_self_m(&b);
-        assert_eq!(mut_a, a.add_m(&b));
+        let mut mut_a = A;
+        mut_a.add_self_m(&B);
+        assert_eq!(mut_a, A.add_m(&B));
     }
 
     #[test]
     fn test_sub_m() {
-        assert_eq!(a.sub_m(&b),
+        assert_eq!(A.sub_m(&B),
                    Mat2::new::<float>(-1.0, -1.0,
                                       -1.0, -1.0));
-        let mut mut_a = a;
-        mut_a.sub_self_m(&b);
-        assert_eq!(mut_a, a.sub_m(&b));
+        let mut mut_a = A;
+        mut_a.sub_self_m(&B);
+        assert_eq!(mut_a, A.sub_m(&B));
     }
 
     #[test]
     fn test_mul_m() {
-        assert_eq!(a.mul_m(&b),
+        assert_eq!(A.mul_m(&B),
                    Mat2::new::<float>(10.0, 22.0,
                                       13.0, 29.0));
     }
 
     #[test]
     fn test_dot() {
-        assert_eq!(a.dot(&b), 40.0);
+        assert_eq!(A.dot(&B), 40.0);
     }
 
     #[test]
     fn test_transpose() {
-        assert_eq!(a.transpose(),
+        assert_eq!(A.transpose(),
                    Mat2::new::<float>(1.0, 2.0,
                                       3.0, 4.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.transpose_self();
-        assert_eq!(mut_a, a.transpose());
+        assert_eq!(mut_a, A.transpose());
     }
 
     #[test]
     fn test_inverse() {
         assert!(Mat2::identity::<float>().inverse().unwrap().is_identity());
 
-        assert_eq!(a.inverse().unwrap(),
+        assert_eq!(A.inverse().unwrap(),
                    Mat2::new::<float>(-2.0,  1.5,
                                       1.0, -0.5));
         assert!(Mat2::new::<float>(0.0, 2.0,
                                    0.0, 5.0).inverse().is_none());
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.invert_self();
-        assert_eq!(mut_a, a.inverse().unwrap());
+        assert_eq!(mut_a, A.inverse().unwrap());
     }
 
     #[test]
@@ -479,26 +481,24 @@ mod mat2_tests{
         assert!(!Mat2::identity::<float>().is_rotated());
         assert!(Mat2::identity::<float>().is_invertible());
 
-        assert!(!a.is_identity());
-        assert!(!a.is_symmetric());
-        assert!(!a.is_diagonal());
-        assert!(a.is_rotated());
-        assert!(a.is_invertible());
+        assert!(!A.is_identity());
+        assert!(!A.is_symmetric());
+        assert!(!A.is_diagonal());
+        assert!(A.is_rotated());
+        assert!(A.is_invertible());
 
-        let c = Mat2::new::<float>(2.0, 1.0,
-                                   1.0, 2.0);
-        assert!(!c.is_identity());
-        assert!(c.is_symmetric());
-        assert!(!c.is_diagonal());
-        assert!(c.is_rotated());
-        assert!(c.is_invertible());
+        assert!(!C.is_identity());
+        assert!(C.is_symmetric());
+        assert!(!C.is_diagonal());
+        assert!(C.is_rotated());
+        assert!(C.is_invertible());
 
         assert!(Mat2::from_value::<float>(6.0).is_diagonal());
     }
 
     #[test]
     fn test_to_mat3() {
-        assert_eq!(a.to_mat3(),
+        assert_eq!(A.to_mat3(),
                    Mat3::new::<float>(1.0, 3.0, 0.0,
                                       2.0, 4.0, 0.0,
                                       0.0, 0.0, 1.0));
@@ -506,7 +506,7 @@ mod mat2_tests{
 
     #[test]
     fn test_to_mat4() {
-        assert_eq!(a.to_mat4(),
+        assert_eq!(A.to_mat4(),
                    Mat4::new::<float>(1.0, 3.0, 0.0, 0.0,
                                       2.0, 4.0, 0.0, 0.0,
                                       0.0, 0.0, 1.0, 0.0,
@@ -903,43 +903,46 @@ mod mat3_tests{
     use core::mat::*;
     use core::vec::*;
 
-    static a: Mat3<float> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
+    static A: Mat3<float> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
                                    y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
                                    z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
-    static b: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+    static B: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
                                    y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
                                    z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
-    static c: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
+    static C: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
                                    y: Vec3 { x: 0.0, y: 2.0, z:  4.0 },
                                    z: Vec3 { x: 0.0, y: 0.0, z:  1.0 } };
+    static D: Mat3<float> = Mat3 { x: Vec3 { x: 3.0, y: 2.0, z:  1.0 },
+                                   y: Vec3 { x: 2.0, y: 3.0, z:  2.0 },
+                                   z: Vec3 { x: 1.0, y: 2.0, z:  3.0 } };
 
-    static v1: Vec3<float> = Vec3 { x: 1.0, y: 2.0, z:  3.0 };
-    static f1: float = 0.5;
+    static V: Vec3<float> = Vec3 { x: 1.0, y: 2.0, z:  3.0 };
+    static F: float = 0.5;
 
     #[test]
     fn test_swap_cols() {
-        let mut mut_a0 = a;
+        let mut mut_a0 = A;
         mut_a0.swap_cols(0, 2);
-        assert_eq!(mut_a0.col(0), a.col(2));
-        assert_eq!(mut_a0.col(2), a.col(0));
+        assert_eq!(mut_a0.col(0), A.col(2));
+        assert_eq!(mut_a0.col(2), A.col(0));
 
-        let mut mut_a1 = a;
+        let mut mut_a1 = A;
         mut_a1.swap_cols(1, 2);
-        assert_eq!(mut_a1.col(1), a.col(2));
-        assert_eq!(mut_a1.col(2), a.col(1));
+        assert_eq!(mut_a1.col(1), A.col(2));
+        assert_eq!(mut_a1.col(2), A.col(1));
     }
 
     #[test]
     fn test_swap_rows() {
-        let mut mut_a0 = a;
+        let mut mut_a0 = A;
         mut_a0.swap_rows(0, 2);
-        assert_eq!(mut_a0.row(0), a.row(2));
-        assert_eq!(mut_a0.row(2), a.row(0));
+        assert_eq!(mut_a0.row(0), A.row(2));
+        assert_eq!(mut_a0.row(2), A.row(0));
 
-        let mut mut_a1 = a;
+        let mut mut_a1 = A;
         mut_a1.swap_rows(1, 2);
-        assert_eq!(mut_a1.row(1), a.row(2));
-        assert_eq!(mut_a1.row(2), a.row(1));
+        assert_eq!(mut_a1.row(1), A.row(2));
+        assert_eq!(mut_a1.row(2), A.row(1));
     }
 
     #[test]
@@ -948,7 +951,7 @@ mod mat3_tests{
                    Mat3::new::<float>(1.0, 0.0, 0.0,
                                       0.0, 1.0, 0.0,
                                       0.0, 0.0, 1.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_identity();
         assert!(mut_a.is_identity());
     }
@@ -959,73 +962,73 @@ mod mat3_tests{
                    Mat3::new::<float>(0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_zero();
         assert_eq!(mut_a, Mat3::zero::<float>());
     }
 
     #[test]
     fn test_determinant() {
-        // assert_eq!(a.determinant(), 0.0);
+        // assert_eq!(A.determinant(), 0.0);
         // TODO
     }
 
     #[test]
     fn test_trace() {
-        assert_eq!(a.trace(), 15.0);
+        assert_eq!(A.trace(), 15.0);
     }
 
     #[test]
     fn test_neg() {
-        assert_eq!(a.neg(),
+        assert_eq!(A.neg(),
                    Mat3::new::<float>(-1.0, -4.0, -7.0,
                                       -2.0, -5.0, -8.0,
                                       -3.0, -6.0, -9.0));
-        assert_eq!(-a, a.neg());
+        assert_eq!(-A, A.neg());
     }
 
     #[test]
     fn test_mul_t() {
-        assert_eq!(a.mul_t(f1),
+        assert_eq!(A.mul_t(F),
                    Mat3::new::<float>(0.5, 2.0, 3.5,
                                       1.0, 2.5, 4.0,
                                       1.5, 3.0, 4.5));
-        let mut mut_a = a;
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
+        let mut mut_a = A;
+        mut_a.mul_self_t(F);
+        assert_eq!(mut_a, A.mul_t(F));
     }
 
     #[test]
     fn test_mul_v() {
-        assert_eq!(a.mul_v(&v1),
+        assert_eq!(A.mul_v(&V),
                    Vec3::new::<float>(14.0, 32.0, 50.0));
     }
 
     #[test]
     fn test_add_m() {
-        assert_eq!(a.add_m(&b),
+        assert_eq!(A.add_m(&B),
                    Mat3::new::<float>(3.0,  9.0, 15.0,
                                       5.0, 11.0, 17.0,
                                       7.0, 13.0, 19.0));
-        let mut mut_a = a;
-        mut_a.add_self_m(&b);
-        assert_eq!(mut_a, a.add_m(&b));
+        let mut mut_a = A;
+        mut_a.add_self_m(&B);
+        assert_eq!(mut_a, A.add_m(&B));
     }
 
     #[test]
     fn test_sub_m() {
-        assert_eq!(a.sub_m(&b),
+        assert_eq!(A.sub_m(&B),
                    Mat3::new::<float>(-1.0, -1.0, -1.0,
                                       -1.0, -1.0, -1.0,
                                       -1.0, -1.0, -1.0));
-        let mut mut_a = a;
-        mut_a.sub_self_m(&b);
-        assert_eq!(mut_a, a.sub_m(&b));
+        let mut mut_a = A;
+        mut_a.sub_self_m(&B);
+        assert_eq!(mut_a, A.sub_m(&B));
     }
 
     #[test]
     fn test_mul_m() {
-        assert_eq!(a.mul_m(&b),
+        assert_eq!(A.mul_m(&B),
                    Mat3::new::<float>(36.0,  81.0, 126.0,
                                       42.0,  96.0, 150.0,
                                       48.0, 111.0, 174.0));
@@ -1033,33 +1036,33 @@ mod mat3_tests{
 
     #[test]
     fn test_dot() {
-        assert_eq!(a.dot(&b), 330.0);
+        assert_eq!(A.dot(&B), 330.0);
     }
 
     #[test]
     fn test_transpose() {
-        assert_eq!(a.transpose(),
+        assert_eq!(A.transpose(),
                    Mat3::new::<float>(1.0, 2.0, 3.0,
                                       4.0, 5.0, 6.0,
                                       7.0, 8.0, 9.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.transpose_self();
-        assert_eq!(mut_a, a.transpose());
+        assert_eq!(mut_a, A.transpose());
     }
 
     #[test]
     fn test_inverse() {
         assert!(Mat3::identity::<float>().inverse().unwrap().is_identity());
 
-        assert_eq!(a.inverse(), None);
+        assert_eq!(A.inverse(), None);
 
-        assert_eq!(c.inverse().unwrap(),
+        assert_eq!(C.inverse().unwrap(),
                    Mat3::new::<float>(0.5, -1.0,  1.0,
                                       0.0,  0.5, -2.0,
                                       0.0,  0.0,  1.0));
-        let mut mut_c = c;
+        let mut mut_c = C;
         mut_c.invert_self();
-        assert_eq!(mut_c, c.inverse().unwrap());
+        assert_eq!(mut_c, C.inverse().unwrap());
     }
 
     #[test]
@@ -1070,27 +1073,24 @@ mod mat3_tests{
         assert!(!Mat3::identity::<float>().is_rotated());
         assert!(Mat3::identity::<float>().is_invertible());
 
-        assert!(!a.is_identity());
-        assert!(!a.is_symmetric());
-        assert!(!a.is_diagonal());
-        assert!(a.is_rotated());
-        assert!(!a.is_invertible());
+        assert!(!A.is_identity());
+        assert!(!A.is_symmetric());
+        assert!(!A.is_diagonal());
+        assert!(A.is_rotated());
+        assert!(!A.is_invertible());
 
-        let d = Mat3::new::<float>(3.0, 2.0, 1.0,
-                                   2.0, 3.0, 2.0,
-                                   1.0, 2.0, 3.0);
-        assert!(!d.is_identity());
-        assert!(d.is_symmetric());
-        assert!(!d.is_diagonal());
-        assert!(d.is_rotated());
-        assert!(d.is_invertible());
+        assert!(!D.is_identity());
+        assert!(D.is_symmetric());
+        assert!(!D.is_diagonal());
+        assert!(D.is_rotated());
+        assert!(D.is_invertible());
 
         assert!(Mat3::from_value::<float>(6.0).is_diagonal());
     }
 
     #[test]
     fn test_to_mat4() {
-        assert_eq!(a.to_mat4(),
+        assert_eq!(A.to_mat4(),
                    Mat4::new::<float>(1.0, 4.0, 7.0, 0.0,
                                       2.0, 5.0, 8.0, 0.0,
                                       3.0, 6.0, 9.0, 0.0,
@@ -1432,46 +1432,50 @@ mod mat4_tests {
     use core::mat::*;
     use core::vec::*;
 
-    static a: Mat4<float> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
+    static A: Mat4<float> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                    y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
                                    z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
                                    w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
-    static b: Mat4<float> = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+    static B: Mat4<float> = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
                                    y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
                                    z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
                                    w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
-    static c: Mat4<float> = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
+    static C: Mat4<float> = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
                                    y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
                                    z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
                                    w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
+    static D: Mat4<float> = Mat4 { x: Vec4 { x: 4.0, y: 3.0, z:  2.0, w:  1.0 },
+                                   y: Vec4 { x: 3.0, y: 4.0, z:  3.0, w:  2.0 },
+                                   z: Vec4 { x: 2.0, y: 3.0, z:  4.0, w:  3.0 },
+                                   w: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  4.0 } };
 
-    static v1: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
-    static f1: float = 0.5;
+    static V: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
+    static F: float = 0.5;
 
     #[test]
     fn test_swap_cols() {
-        let mut mut_a0 = a;
+        let mut mut_a0 = A;
         mut_a0.swap_cols(0, 2);
-        assert_eq!(mut_a0.col(0), a.col(2));
-        assert_eq!(mut_a0.col(2), a.col(0));
+        assert_eq!(mut_a0.col(0), A.col(2));
+        assert_eq!(mut_a0.col(2), A.col(0));
 
-        let mut mut_a1 = a;
+        let mut mut_a1 = A;
         mut_a1.swap_cols(1, 2);
-        assert_eq!(mut_a1.col(1), a.col(2));
-        assert_eq!(mut_a1.col(2), a.col(1));
+        assert_eq!(mut_a1.col(1), A.col(2));
+        assert_eq!(mut_a1.col(2), A.col(1));
     }
 
     #[test]
     fn test_swap_rows() {
-        let mut mut_a0 = a;
+        let mut mut_a0 = A;
         mut_a0.swap_rows(0, 2);
-        assert_eq!(mut_a0.row(0), a.row(2));
-        assert_eq!(mut_a0.row(2), a.row(0));
+        assert_eq!(mut_a0.row(0), A.row(2));
+        assert_eq!(mut_a0.row(2), A.row(0));
 
-        let mut mut_a1 = a;
+        let mut mut_a1 = A;
         mut_a1.swap_rows(1, 2);
-        assert_eq!(mut_a1.row(1), a.row(2));
-        assert_eq!(mut_a1.row(2), a.row(1));
+        assert_eq!(mut_a1.row(1), A.row(2));
+        assert_eq!(mut_a1.row(2), A.row(1));
     }
 
     #[test]
@@ -1481,7 +1485,7 @@ mod mat4_tests {
                                       0.0, 1.0, 0.0, 0.0,
                                       0.0, 0.0, 1.0, 0.0,
                                       0.0, 0.0, 0.0, 1.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_identity();
         assert!(mut_a.is_identity());
     }
@@ -1493,75 +1497,75 @@ mod mat4_tests {
                                       0.0, 0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0, 0.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.to_zero();
         assert_eq!(mut_a, Mat4::zero::<float>());
     }
     #[test]
     fn test_determinant() {
-        assert_eq!(a.determinant(), 0.0);
+        assert_eq!(A.determinant(), 0.0);
     }
 
     #[test]
     fn test_trace() {
-        assert_eq!(a.trace(), 34.0);
+        assert_eq!(A.trace(), 34.0);
     }
 
     #[test]
     fn test_neg() {
-        assert_eq!(a.neg(),
+        assert_eq!(A.neg(),
                    Mat4::new::<float>(-1.0, -5.0,  -9.0, -13.0,
                                       -2.0, -6.0, -10.0, -14.0,
                                       -3.0, -7.0, -11.0, -15.0,
                                       -4.0, -8.0, -12.0, -16.0));
-        assert_eq!(-a, a.neg());
+        assert_eq!(-A, A.neg());
     }
 
     #[test]
     fn test_mul_t() {
-        assert_eq!(a.mul_t(f1),
+        assert_eq!(A.mul_t(F),
                    Mat4::new::<float>(0.5, 2.5, 4.5, 6.5,
                                       1.0, 3.0, 5.0, 7.0,
                                       1.5, 3.5, 5.5, 7.5,
                                       2.0, 4.0, 6.0, 8.0));
-        let mut mut_a = a;
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
+        let mut mut_a = A;
+        mut_a.mul_self_t(F);
+        assert_eq!(mut_a, A.mul_t(F));
     }
 
     #[test]
     fn test_mul_v() {
-        assert_eq!(a.mul_v(&v1),
+        assert_eq!(A.mul_v(&V),
                    Vec4::new::<float>(30.0, 70.0, 110.0, 150.0));
     }
 
     #[test]
     fn test_add_m() {
-        assert_eq!(a.add_m(&b),
+        assert_eq!(A.add_m(&B),
                    Mat4::new::<float>(3.0, 11.0, 19.0, 27.0,
                                       5.0, 13.0, 21.0, 29.0,
                                       7.0, 15.0, 23.0, 31.0,
                                       9.0, 17.0, 25.0, 33.0));
-        let mut mut_a = a;
-        mut_a.add_self_m(&b);
-        assert_eq!(mut_a, a.add_m(&b));
+        let mut mut_a = A;
+        mut_a.add_self_m(&B);
+        assert_eq!(mut_a, A.add_m(&B));
     }
 
     #[test]
     fn test_sub_m() {
-        assert_eq!(a.sub_m(&b),
+        assert_eq!(A.sub_m(&B),
                    Mat4::new::<float>(-1.0, -1.0, -1.0, -1.0,
                                       -1.0, -1.0, -1.0, -1.0,
                                       -1.0, -1.0, -1.0, -1.0,
                                       -1.0, -1.0, -1.0, -1.0));
-        let mut mut_a = a;
-        mut_a.sub_self_m(&b);
-        assert_eq!(mut_a, a.sub_m(&b));
+        let mut mut_a = A;
+        mut_a.sub_self_m(&B);
+        assert_eq!(mut_a, A.sub_m(&B));
     }
 
     #[test]
     fn test_mul_m() {
-        assert_eq!(a.mul_m(&b),
+        assert_eq!(A.mul_m(&B),
                    Mat4::new::<float>(100.0, 228.0, 356.0, 484.0,
                                       110.0, 254.0, 398.0, 542.0,
                                       120.0, 280.0, 440.0, 600.0,
@@ -1570,33 +1574,33 @@ mod mat4_tests {
 
     #[test]
     fn test_dot() {
-        assert_eq!(a.dot(&b), 1632.0);
+        assert_eq!(A.dot(&B), 1632.0);
     }
 
     #[test]
     fn test_transpose() {
-        assert_eq!(a.transpose(),
+        assert_eq!(A.transpose(),
                    Mat4::new::<float>( 1.0,  2.0,  3.0,  4.0,
                                        5.0,  6.0,  7.0,  8.0,
                                        9.0, 10.0, 11.0, 12.0,
                                       13.0, 14.0, 15.0, 16.0));
-        let mut mut_a = a;
+        let mut mut_a = A;
         mut_a.transpose_self();
-        assert_eq!(mut_a, a.transpose());
+        assert_eq!(mut_a, A.transpose());
     }
 
     #[test]
     fn test_inverse() {
         assert!(Mat4::identity::<float>().inverse().unwrap().is_identity());
 
-        assert_approx_eq!(c.inverse().unwrap(),
+        assert_approx_eq!(C.inverse().unwrap(),
                           Mat4::new::<float>( 5.0, -4.0,  1.0,  0.0,
                                              -4.0,  8.0, -4.0,  0.0,
                                               4.0, -8.0,  4.0,  8.0,
                                              -3.0,  4.0,  1.0, -8.0).mul_t(0.125));
-        let mut mut_c = c;
+        let mut mut_c = C;
         mut_c.invert_self();
-        assert_eq!(mut_c, c.inverse().unwrap());
+        assert_eq!(mut_c, C.inverse().unwrap());
     }
 
     #[test]
@@ -1607,21 +1611,17 @@ mod mat4_tests {
         assert!(!Mat3::identity::<float>().is_rotated());
         assert!(Mat3::identity::<float>().is_invertible());
 
-        assert!(!a.is_identity());
-        assert!(!a.is_symmetric());
-        assert!(!a.is_diagonal());
-        assert!(a.is_rotated());
-        assert!(!a.is_invertible());
+        assert!(!A.is_identity());
+        assert!(!A.is_symmetric());
+        assert!(!A.is_diagonal());
+        assert!(A.is_rotated());
+        assert!(!A.is_invertible());
 
-        let d = Mat4::new::<float>(4.0, 3.0, 2.0, 1.0,
-                                   3.0, 4.0, 3.0, 2.0,
-                                   2.0, 3.0, 4.0, 3.0,
-                                   1.0, 2.0, 3.0, 4.0);
-        assert!(!d.is_identity());
-        assert!(d.is_symmetric());
-        assert!(!d.is_diagonal());
-        assert!(d.is_rotated());
-        assert!(d.is_invertible());
+        assert!(!D.is_identity());
+        assert!(D.is_symmetric());
+        assert!(!D.is_diagonal());
+        assert!(D.is_rotated());
+        assert!(D.is_invertible());
 
         assert!(Mat3::from_value::<float>(6.0).is_diagonal());
     }
