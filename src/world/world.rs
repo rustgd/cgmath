@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::frustum::Frustum;
-pub use self::projection::{Projection, Ortho, Perspective, PerspectiveFOV};
+pub use self::frustum::{Frustum, FrustumPoints};
+pub use self::projection::{Projection, Perspective, PerspectiveFOV, Ortho};
 
 pub mod frustum;
 pub mod projection;
