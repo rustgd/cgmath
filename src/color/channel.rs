@@ -57,3 +57,88 @@ impl Channel for f64 {
     #[inline] pub fn to_channel_f32(&self) -> f32 { (*self) as f32 }
     #[inline] pub fn to_channel_f64(&self) -> f64 { (*self) }
 }
+
+#[cfg(test)]
+mod tests {
+    use color::Channel;
+
+    #[test]
+    fn test_channel_u8() {
+        assert_eq!(0x00_u8.to_channel_u8(), 0x00_u8);
+        assert_eq!(0x30_u8.to_channel_u8(), 0x30_u8);
+        assert_eq!(0x66_u8.to_channel_u8(), 0x66_u8);
+        assert_eq!(0xA0_u8.to_channel_u8(), 0xA0_u8);
+        assert_eq!(0xFF_u8.to_channel_u8(), 0xFF_u8);
+
+        assert_eq!(0x00_u8.to_channel_u16(), 0x0000_u16);
+        assert_eq!(0x30_u8.to_channel_u16(), 0x3030_u16);
+        assert_eq!(0x66_u8.to_channel_u16(), 0x6666_u16);
+        assert_eq!(0xA0_u8.to_channel_u16(), 0xA0A0_u16);
+        assert_eq!(0xFF_u8.to_channel_u16(), 0xFFFF_u16);
+
+        assert_eq!(0x00_u8.to_channel_f32(), 0f32);
+        assert_eq!(0xFF_u8.to_channel_f32(), 1f32);
+
+        assert_eq!(0x00_u8.to_channel_f64(), 0f64);
+        assert_eq!(0xFF_u8.to_channel_f64(), 1f64);
+    }
+
+    #[test]
+    fn test_channel_u16() {
+        assert_eq!(0x0000_u16.to_channel_u8(), 0x00_u8);
+        assert_eq!(0x3300_u16.to_channel_u8(), 0x33_u8);
+        assert_eq!(0x6666_u16.to_channel_u8(), 0x66_u8);
+        assert_eq!(0xAA00_u16.to_channel_u8(), 0xAA_u8);
+        assert_eq!(0xFFFF_u16.to_channel_u8(), 0xFF_u8);
+
+        assert_eq!(0x0000_u16.to_channel_u16(), 0x0000_u16);
+        assert_eq!(0x3300_u16.to_channel_u16(), 0x3300_u16);
+        assert_eq!(0x6666_u16.to_channel_u16(), 0x6666_u16);
+        assert_eq!(0xAA00_u16.to_channel_u16(), 0xAA00_u16);
+        assert_eq!(0xFFFF_u16.to_channel_u16(), 0xFFFF_u16);
+
+        assert_eq!(0x0000_u16.to_channel_f32(), 0f32);
+        assert_eq!(0xFFFF_u16.to_channel_f32(), 1f32);
+
+        assert_eq!(0x0000_u16.to_channel_f64(), 0f64);
+        assert_eq!(0xFFFF_u16.to_channel_f64(), 1f64);
+    }
+
+    #[test]
+    fn test_channel_f32() {
+        assert_eq!(0.00f32.to_channel_u8(), 0x00);
+        assert_eq!(0.25f32.to_channel_u8(), 0x3F);
+        assert_eq!(0.50f32.to_channel_u8(), 0x7F);
+        assert_eq!(0.75f32.to_channel_u8(), 0xBF);
+        assert_eq!(1.00f32.to_channel_u8(), 0xFF);
+
+        assert_eq!(0.00f32.to_channel_u16(), 0x0000);
+        assert_eq!(0.25f32.to_channel_u16(), 0x3FFF);
+        assert_eq!(0.50f32.to_channel_u16(), 0x7FFF);
+        assert_eq!(0.75f32.to_channel_u16(), 0xBFFF);
+        assert_eq!(1.00f32.to_channel_u16(), 0xFFFF);
+
+        // TODO: test to_channel_f32()
+
+        // TODO: test to_channel_f64()
+    }
+
+    #[test]
+    fn test_channel_f64() {
+        assert_eq!(0.00f64.to_channel_u8(), 0x00);
+        assert_eq!(0.25f64.to_channel_u8(), 0x3F);
+        assert_eq!(0.50f64.to_channel_u8(), 0x7F);
+        assert_eq!(0.75f64.to_channel_u8(), 0xBF);
+        assert_eq!(1.00f64.to_channel_u8(), 0xFF);
+
+        assert_eq!(0.00f64.to_channel_u16(), 0x0000);
+        assert_eq!(0.25f64.to_channel_u16(), 0x3FFF);
+        assert_eq!(0.50f64.to_channel_u16(), 0x7FFF);
+        assert_eq!(0.75f64.to_channel_u16(), 0xBFFF);
+        assert_eq!(1.00f64.to_channel_u16(), 0xFFFF);
+
+        // TODO: test to_channel_f32()
+
+        // TODO: test to_channel_f64()
+    }
+}
