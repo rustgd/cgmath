@@ -15,7 +15,7 @@
 
 use std::cast;
 
-use color::{Channel, FloatChannel};
+use color::{Channel, ToChannel, FloatChannel};
 use color::{RGB, ToRGB, HSV, ToHSV, HSVA, ToHSVA};
 
 #[path = "../num_macros.rs"]
@@ -35,7 +35,7 @@ pub trait ToRGBA {
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U>;
 }
 
-impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
+impl<C: ToRGB, T:Clone + ToChannel> ToRGBA for (C, T) {
     #[inline]
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
         match *self {
@@ -48,7 +48,7 @@ impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
     }
 }
 
-impl<T:Clone + FloatChannel> ToHSVA for RGBA<T> {
+impl<T:Clone + ToChannel> ToHSVA for RGBA<T> {
     #[inline]
     pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
         match unsafe {

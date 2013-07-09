@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /// A color channel
-pub trait Channel: Num + ToChannel{
+pub trait Channel: Num + ToChannel {
     /// Convert a channel to the enclosing type
     ///
     /// # Example

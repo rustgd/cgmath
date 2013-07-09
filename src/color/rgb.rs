@@ -15,7 +15,7 @@
 
 use std::num;
 
-use color::{Channel, FloatChannel};
+use color::{Channel, ToChannel, FloatChannel};
 use color::{HSV, ToHSV};
 
 #[path = "../num_macros.rs"]
@@ -35,7 +35,7 @@ pub trait ToRGB {
     pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U>;
 }
 
-impl<T:Clone + Channel> ToRGB for RGB<T> {
+impl<T:Clone + ToChannel> ToRGB for RGB<T> {
     #[inline]
     pub fn to_rgb<U:Clone + Channel>(&self) -> RGB<U> {
         RGB::new(Channel::from((*self).r.clone()),
@@ -44,7 +44,7 @@ impl<T:Clone + Channel> ToRGB for RGB<T> {
     }
 }
 
-impl<T:Clone + Channel> ToHSV for RGB<T> {
+impl<T:Clone + ToChannel> ToHSV for RGB<T> {
     #[inline]
     pub fn to_hsv<U:Clone + FloatChannel>(&self) -> HSV<U> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:

@@ -15,7 +15,8 @@
 
 use std::cast;
 
-use color::{Channel, FloatChannel};
+use color::{Channel, ToChannel};
+use color::{FloatChannel, ToFloatChannel};
 use color::{HSV, ToHSV, RGB, ToRGB, RGBA, ToRGBA};
 
 #[path = "../num_macros.rs"]
@@ -35,20 +36,20 @@ pub trait ToHSVA {
     pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U>;
 }
 
-impl<C: ToHSV, T:Clone + FloatChannel> ToHSVA for (C, T) {
+impl<C: ToHSV, T:Clone + ToFloatChannel> ToHSVA for (C, T) {
     #[inline]
     pub fn to_hsva<U:Clone + FloatChannel>(&self) -> HSVA<U> {
         match *self {
             (ref c, ref a) => unsafe {
                 cast::transmute::<(HSV<U>, U), HSVA<U>>(
-                    (c.to_hsv::<U>(), Channel::from(a.clone()))
+                    (c.to_hsv::<U>(), FloatChannel::from(a.clone()))
                 )
             }
         }
     }
 }
 
-impl<T:Clone + FloatChannel> ToRGBA for HSVA<T> {
+impl<T:Clone + Float + ToChannel> ToRGBA for HSVA<T> {
     #[inline]
     pub fn to_rgba<U:Clone + Channel>(&self) -> RGBA<U> {
         match unsafe {
