@@ -36,6 +36,13 @@ pub trait ToRGB {
     pub fn to_rgb<U:Channel>(&self) -> RGB<U>;
 }
 
+impl ToRGB for u64 {
+    #[inline]
+    pub fn to_rgb<U:Channel>(&self) -> RGB<U> {
+        fail!("Not yet implemented")
+    }
+}
+
 impl<T:Clone + Channel> ToRGB for RGB<T> {
     #[inline]
     pub fn to_rgb<U:Channel>(&self) -> RGB<U> {

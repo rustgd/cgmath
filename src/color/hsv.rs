@@ -116,6 +116,16 @@ impl<C: ToHSV, T:Clone + Channel + Float> ToHSVA for (C, T) {
     }
 }
 
+impl<T:Clone + Channel + Float> ToHSVA for HSVA<T> {
+    #[inline]
+    pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
+        HSVA::new((*self).h.to_channel(),
+                  (*self).s.to_channel(),
+                  (*self).v.to_channel(),
+                  (*self).a.to_channel())
+    }
+}
+
 impl<T:Clone + Channel + Float> ToRGBA for HSVA<T> {
     #[inline]
     pub fn to_rgba<U:Channel>(&self) -> RGBA<U> {
