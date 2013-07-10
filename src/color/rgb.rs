@@ -16,7 +16,8 @@
 use std::num;
 use std::cast;
 
-use color::Channel;
+use color::Color;
+use color::{Channel, FloatChannel};
 use color::{HSV, ToHSV, HSVA, ToHSVA};
 
 #[path = "../num_macros.rs"]
@@ -29,6 +30,22 @@ impl<T:Channel> RGB<T> {
     #[inline]
     pub fn new(r: T, g: T, b: T) -> RGB<T> {
         RGB { r: r, g: g, b: b }
+    }
+}
+
+impl<T:Channel> Color<T> for RGB<T> {
+    #[inline]
+    pub fn clamp(&self, lo: T, hi: T) -> RGB<T> {
+        RGB::new((*self).r.clamp(&lo, &hi),
+                 (*self).g.clamp(&lo, &hi),
+                 (*self).b.clamp(&lo, &hi))
+    }
+
+    #[inline]
+    pub fn inverse(&self) -> RGB<T> {
+        RGB::new((*self).r.invert_channel(),
+                 (*self).g.invert_channel(),
+                 (*self).b.invert_channel())
     }
 }
 
@@ -61,7 +78,7 @@ impl<T:Clone + Channel> ToRGB for RGB<T> {
 
 impl<T:Clone + Channel> ToHSV for RGB<T> {
     #[inline]
-    pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
+    pub fn to_hsv<U:FloatChannel>(&self) -> HSV<U> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:
         // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 
@@ -113,6 +130,24 @@ impl<T:Channel> RGBA<T> {
     }
 }
 
+impl<T:Channel> Color<T> for RGBA<T> {
+    #[inline]
+    pub fn clamp(&self, lo: T, hi: T) -> RGBA<T> {
+        RGBA::new((*self).r.clamp(&lo, &hi),
+                  (*self).g.clamp(&lo, &hi),
+                  (*self).b.clamp(&lo, &hi),
+                  (*self).a.clamp(&lo, &hi))
+    }
+
+    #[inline]
+    pub fn inverse(&self) -> RGBA<T> {
+        RGBA::new((*self).r.invert_channel(),
+                  (*self).g.invert_channel(),
+                  (*self).b.invert_channel(),
+                  (*self).a.invert_channel())
+    }
+}
+
 pub trait ToRGBA {
     pub fn to_rgba<U:Channel>(&self) -> RGBA<U>;
 }
@@ -154,7 +189,7 @@ impl<T:Clone + Channel> ToRGBA for RGBA<T> {
 
 impl<T:Clone + Channel> ToHSVA for RGBA<T> {
     #[inline]
-    pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
+    pub fn to_hsva<U:FloatChannel>(&self) -> HSVA<U> {
         HSVA::from_hsv_a(self.rgb().to_hsv(), (*self).a.to_channel())
     }
 }

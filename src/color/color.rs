@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::channel::Channel;
+pub use self::channel::{Channel, FloatChannel};
 pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
 pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};
 pub use self::srgb::{SRGB, SRGBA};
@@ -24,6 +24,6 @@ pub mod rgb;
 pub mod srgb;
 
 pub trait Color<T> {
+    pub fn clamp(&self, lo: T, hi: T) -> Self;
     pub fn inverse(&self) -> Self;
-    pub fn invert_self(&mut self);
 }
