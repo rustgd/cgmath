@@ -27,3 +27,7 @@ pub trait Color<T> {
     pub fn clamp(&self, lo: T, hi: T) -> Self;
     pub fn inverse(&self) -> Self;
 }
+
+pub trait FloatColor<T>: Color<T> {
+    pub fn normalize(&self) -> Self;
+}

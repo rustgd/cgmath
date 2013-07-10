@@ -16,7 +16,7 @@
 use std::num;
 use std::cast;
 
-use color::Color;
+use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};
 use color::{RGB, ToRGB, RGBA, ToRGBA};
 
@@ -45,6 +45,15 @@ impl<T:FloatChannel> Color<T> for HSV<T> {
         HSV::new((*self).h.invert_degrees(),
                  (*self).s.invert_channel(),
                  (*self).v.invert_channel())
+    }
+}
+
+impl<T:FloatChannel> FloatColor<T> for HSV<T> {
+    #[inline]
+    pub fn normalize(&self) -> HSV<T> {
+        HSV::new((*self).h.normalize_degrees(),
+                 (*self).s.clamp(&zero!(T), &one!(T)),
+                 (*self).v.clamp(&zero!(T), &one!(T)))
     }
 }
 
@@ -147,6 +156,16 @@ impl<T:FloatChannel> Color<T> for HSVA<T> {
                   (*self).s.invert_channel(),
                   (*self).v.invert_channel(),
                   (*self).a.invert_channel())
+    }
+}
+
+impl<T:FloatChannel> FloatColor<T> for HSVA<T> {
+    #[inline]
+    pub fn normalize(&self) -> HSVA<T> {
+        HSVA::new((*self).h.normalize_degrees(),
+                  (*self).s.clamp(&zero!(T), &one!(T)),
+                  (*self).v.clamp(&zero!(T), &one!(T)),
+                  (*self).a.clamp(&zero!(T), &one!(T)))
     }
 }
 

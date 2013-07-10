@@ -70,14 +70,17 @@ impl Channel for f64 {
 
 pub trait FloatChannel: Float + Channel {
     pub fn invert_degrees(&self) -> Self;
+    pub fn normalize_degrees(&self) -> Self;
 }
 
 impl FloatChannel for f32 {
-    #[inline] pub fn invert_degrees(&self) -> f32 { ((*self) + 180.0) % 360.0 }
+    #[inline] pub fn invert_degrees(&self) -> f32 { ((*self) + 180.0).normalize_degrees() }
+    #[inline] pub fn normalize_degrees(&self) -> f32 { (*self) % 360.0 }
 }
 
 impl FloatChannel for f64 {
-    #[inline] pub fn invert_degrees(&self) -> f64 { ((*self) + 180.0) % 360.0 }
+    #[inline] pub fn invert_degrees(&self) -> f64 { ((*self) + 180.0).normalize_degrees() }
+    #[inline] pub fn normalize_degrees(&self) -> f64 { (*self) % 360.0 }
 }
 
 #[cfg(test)]

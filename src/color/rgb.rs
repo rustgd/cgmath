@@ -16,7 +16,7 @@
 use std::num;
 use std::cast;
 
-use color::Color;
+use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};
 use color::{HSV, ToHSV, HSVA, ToHSVA};
 
@@ -46,6 +46,15 @@ impl<T:Channel> Color<T> for RGB<T> {
         RGB::new((*self).r.invert_channel(),
                  (*self).g.invert_channel(),
                  (*self).b.invert_channel())
+    }
+}
+
+impl<T:FloatChannel> FloatColor<T> for RGB<T> {
+    #[inline]
+    pub fn normalize(&self) -> RGB<T> {
+        RGB::new((*self).r.clamp(&zero!(T), &one!(T)),
+                 (*self).g.clamp(&zero!(T), &one!(T)),
+                 (*self).b.clamp(&zero!(T), &one!(T)))
     }
 }
 
@@ -145,6 +154,16 @@ impl<T:Channel> Color<T> for RGBA<T> {
                   (*self).g.invert_channel(),
                   (*self).b.invert_channel(),
                   (*self).a.invert_channel())
+    }
+}
+
+impl<T:FloatChannel> FloatColor<T> for RGBA<T> {
+    #[inline]
+    pub fn normalize(&self) -> RGBA<T> {
+        RGBA::new((*self).r.clamp(&zero!(T), &one!(T)),
+                  (*self).g.clamp(&zero!(T), &one!(T)),
+                  (*self).b.clamp(&zero!(T), &one!(T)),
+                  (*self).a.clamp(&zero!(T), &one!(T)))
     }
 }
 
