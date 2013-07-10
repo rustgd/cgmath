@@ -15,7 +15,7 @@
 
 pub trait Channel: Num {
     pub fn from<T:Channel>(chan: T) -> Self;
-
+    pub fn to_channel<T:Channel>(&self) -> T;
     pub fn to_channel_u8(&self)  -> u8;
     pub fn to_channel_u16(&self) -> u16;
     pub fn to_channel_f32(&self) -> f32;
@@ -24,7 +24,7 @@ pub trait Channel: Num {
 
 impl Channel for u8 {
     #[inline] pub fn from<T:Channel>(chan: T) -> u8 { chan.to_channel_u8() }
-
+    #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self as u16 << 8) | (*self) as u16 }
     #[inline] pub fn to_channel_f32(&self) -> f32 { (*self as f32) / (0xFF as f32) }
@@ -33,7 +33,7 @@ impl Channel for u8 {
 
 impl Channel for u16 {
     #[inline] pub fn from<T:Channel>(chan: T) -> u16 { chan.to_channel_u16() }
-
+    #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self >> 8) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) }
     #[inline] pub fn to_channel_f32(&self) -> f32 { (*self) / 0xFFFF as f32 }
@@ -42,8 +42,8 @@ impl Channel for u16 {
 
 impl Channel for f32 {
     #[inline] pub fn from<T:Channel>(chan: T) -> f32 { chan.to_channel_f32() }
-
-    #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8    as f32) as u8  }
+    #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
+    #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8 as f32) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) * (0xFFFF_u16 as f32) as u16 }
     #[inline] pub fn to_channel_f32(&self) -> f32 { (*self) }
     #[inline] pub fn to_channel_f64(&self) -> f64 { (*self) as f64 }
@@ -51,8 +51,8 @@ impl Channel for f32 {
 
 impl Channel for f64 {
     #[inline] pub fn from<T:Channel>(chan: T) -> f64 { chan.to_channel_f64() }
-
-    #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8    as f64) as u8  }
+    #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
+    #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8 as f64) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) * (0xFFFF_u16 as f64) as u16 }
     #[inline] pub fn to_channel_f32(&self) -> f32 { (*self) as f32 }
     #[inline] pub fn to_channel_f64(&self) -> f64 { (*self) }
@@ -118,9 +118,11 @@ mod tests {
         assert_eq!(0.75f32.to_channel_u16(), 0xBFFF);
         assert_eq!(1.00f32.to_channel_u16(), 0xFFFF);
 
-        // TODO: test to_channel_f32()
+        assert_eq!(0.00f32.to_channel_f32(), 0.00f32);
+        assert_eq!(1.00f32.to_channel_f32(), 1.00f32);
 
-        // TODO: test to_channel_f64()
+        assert_eq!(0.00f32.to_channel_f64(), 0.00f64);
+        assert_eq!(1.00f32.to_channel_f64(), 1.00f64);
     }
 
     #[test]
@@ -137,8 +139,10 @@ mod tests {
         assert_eq!(0.75f64.to_channel_u16(), 0xBFFF);
         assert_eq!(1.00f64.to_channel_u16(), 0xFFFF);
 
-        // TODO: test to_channel_f32()
+        assert_eq!(0.00f64.to_channel_f32(), 0.00f32);
+        assert_eq!(1.00f64.to_channel_f32(), 1.00f32);
 
-        // TODO: test to_channel_f64()
+        assert_eq!(0.00f64.to_channel_f64(), 0.00f64);
+        assert_eq!(1.00f64.to_channel_f64(), 1.00f64);
     }
 }

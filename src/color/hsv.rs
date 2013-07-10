@@ -38,9 +38,9 @@ pub trait ToHSV {
 impl<T:Clone + Channel + Float> ToHSV for HSV<T> {
     #[inline]
     pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
-        HSV::new(Channel::from((*self).h.clone()),
-                 Channel::from((*self).s.clone()),
-                 Channel::from((*self).v.clone()))
+        HSV::new((*self).h.to_channel(),
+                 (*self).s.to_channel(),
+                 (*self).v.to_channel())
     }
 }
 
@@ -110,10 +110,7 @@ impl<C: ToHSV, T:Clone + Channel + Float> ToHSVA for (C, T) {
     pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
         match *self {
             (ref hsv, ref a) =>  {
-                HSVA::from_hsv_a(
-                    hsv.to_hsv(),
-                    Channel::from(a.clone())
-                )
+                HSVA::from_hsv_a(hsv.to_hsv(), a.to_channel())
             }
         }
     }
@@ -122,9 +119,6 @@ impl<C: ToHSV, T:Clone + Channel + Float> ToHSVA for (C, T) {
 impl<T:Clone + Channel + Float> ToRGBA for HSVA<T> {
     #[inline]
     pub fn to_rgba<U:Channel>(&self) -> RGBA<U> {
-        RGBA::from_rgb_a(
-            self.hsv().to_rgb(),
-            Channel::from((*self).a.clone())
-        )
+        RGBA::from_rgb_a(self.hsv().to_rgb(), (*self).a.to_channel())
     }
 }
