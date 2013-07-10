@@ -115,7 +115,7 @@ impl<T:Clone + Float> Plane3<T> {
         } else {
             // The end-point of the ray is at the three-plane intersection between
             // `self`, `other`, and a tempory plane positioned at the origin
-            do Plane3::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |&ray_pos| {
+            do Plane3::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |ray_pos| {
                 Ray3 {
                     pos: ray_pos.clone(),
                     dir: ray_dir.clone(),
