@@ -14,7 +14,7 @@
 // limitations under the License.
 
 pub trait Channel: Num {
-    pub fn from<T:Channel>(chan: T) -> Self;
+    priv fn from<T:Channel>(chan: T) -> Self;
     pub fn to_channel<T:Channel>(&self) -> T;
     pub fn to_channel_u8(&self)  -> u8;
     pub fn to_channel_u16(&self) -> u16;
@@ -23,7 +23,7 @@ pub trait Channel: Num {
 }
 
 impl Channel for u8 {
-    #[inline] pub fn from<T:Channel>(chan: T) -> u8 { chan.to_channel_u8() }
+    #[inline] priv fn from<T:Channel>(chan: T) -> u8 { chan.to_channel_u8() }
     #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self as u16 << 8) | (*self) as u16 }
@@ -32,7 +32,7 @@ impl Channel for u8 {
 }
 
 impl Channel for u16 {
-    #[inline] pub fn from<T:Channel>(chan: T) -> u16 { chan.to_channel_u16() }
+    #[inline] priv fn from<T:Channel>(chan: T) -> u16 { chan.to_channel_u16() }
     #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self >> 8) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) }
@@ -41,7 +41,7 @@ impl Channel for u16 {
 }
 
 impl Channel for f32 {
-    #[inline] pub fn from<T:Channel>(chan: T) -> f32 { chan.to_channel_f32() }
+    #[inline] priv fn from<T:Channel>(chan: T) -> f32 { chan.to_channel_f32() }
     #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8 as f32) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) * (0xFFFF_u16 as f32) as u16 }
@@ -50,7 +50,7 @@ impl Channel for f32 {
 }
 
 impl Channel for f64 {
-    #[inline] pub fn from<T:Channel>(chan: T) -> f64 { chan.to_channel_f64() }
+    #[inline] priv fn from<T:Channel>(chan: T) -> f64 { chan.to_channel_f64() }
     #[inlune] pub fn to_channel<T:Channel>(&self) -> T { Channel::from(*self) }
     #[inline] pub fn to_channel_u8(&self)  -> u8  { (*self) * (0xFF_u8 as f64) as u8 }
     #[inline] pub fn to_channel_u16(&self) -> u16 { (*self) * (0xFFFF_u16 as f64) as u16 }
