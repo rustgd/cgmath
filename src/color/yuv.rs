@@ -13,25 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::channel::{Channel, FloatChannel};
-pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
-pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};
-pub use self::srgb::{SRGB, SRGBA};
-pub use self::ycbcr::YCbCr;
-pub use self::yuv::YUV;
+// http://en.wikipedia.org/wiki/YUV
 
-pub mod channel;
-pub mod hsv;
-pub mod rgb;
-pub mod srgb;
-pub mod ycbcr;
-pub mod yuv;
+#[deriving(Clone, Eq)]
+pub struct YUV<T> { y: T, u: T, v: T }
 
-pub trait Color<T> {
-    pub fn clamp(&self, lo: T, hi: T) -> Self;
-    pub fn inverse(&self) -> Self;
-}
-
-pub trait FloatColor<T>: Color<T> {
-    pub fn normalize(&self) -> Self;
+impl<T> YUV<T> {
+    #[inline]
+    pub fn new(y: T, u: T, v: T) -> YUV<T> {
+        YUV { y: y, u: u, v: v }
+    }
 }
