@@ -33,13 +33,15 @@ impl<T:FloatChannel> HSV<T> {
 }
 
 impl<T:FloatChannel> Color<T> for HSV<T> {
+    /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> HSV<T> {
-        HSV::new((*self).h.clamp(&lo, &hi),
+        HSV::new((*self).h.clamp(&lo, &hi), // Should the hue component be clamped?
                  (*self).s.clamp(&lo, &hi),
                  (*self).v.clamp(&lo, &hi))
     }
 
+    /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> HSV<T> {
         HSV::new((*self).h.invert_degrees(),
@@ -49,6 +51,8 @@ impl<T:FloatChannel> Color<T> for HSV<T> {
 }
 
 impl<T:FloatChannel> FloatColor<T> for HSV<T> {
+    /// Normalizes the components of the color. Modulo `360` is applied to the
+    /// `h` component, and `s` and `v` are clamped to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> HSV<T> {
         HSV::new((*self).h.normalize_degrees(),
@@ -142,14 +146,16 @@ impl<T:FloatChannel> HSVA<T> {
 }
 
 impl<T:FloatChannel> Color<T> for HSVA<T> {
+    /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> HSVA<T> {
-        HSVA::new((*self).h.clamp(&lo, &hi),
+        HSVA::new((*self).h.clamp(&lo, &hi),    // Should the hue component be clamped?
                   (*self).s.clamp(&lo, &hi),
                   (*self).v.clamp(&lo, &hi),
                   (*self).a.clamp(&lo, &hi))
     }
 
+    /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> HSVA<T> {
         HSVA::new((*self).h.invert_degrees(),
@@ -160,6 +166,8 @@ impl<T:FloatChannel> Color<T> for HSVA<T> {
 }
 
 impl<T:FloatChannel> FloatColor<T> for HSVA<T> {
+    /// Normalizes the components of the color. Modulo `360` is applied to the
+    /// `h` component, and `s`, `v` and `a` are clamped to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> HSVA<T> {
         HSVA::new((*self).h.normalize_degrees(),

@@ -34,6 +34,7 @@ impl<T:Channel> RGB<T> {
 }
 
 impl<T:Channel> Color<T> for RGB<T> {
+    /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> RGB<T> {
         RGB::new((*self).r.clamp(&lo, &hi),
@@ -41,6 +42,7 @@ impl<T:Channel> Color<T> for RGB<T> {
                  (*self).b.clamp(&lo, &hi))
     }
 
+    /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> RGB<T> {
         RGB::new((*self).r.invert_channel(),
@@ -50,6 +52,7 @@ impl<T:Channel> Color<T> for RGB<T> {
 }
 
 impl<T:FloatChannel> FloatColor<T> for RGB<T> {
+    /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGB<T> {
         RGB::new((*self).r.clamp(&zero!(T), &one!(T)),
@@ -140,6 +143,7 @@ impl<T:Channel> RGBA<T> {
 }
 
 impl<T:Channel> Color<T> for RGBA<T> {
+    /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> RGBA<T> {
         RGBA::new((*self).r.clamp(&lo, &hi),
@@ -148,6 +152,7 @@ impl<T:Channel> Color<T> for RGBA<T> {
                   (*self).a.clamp(&lo, &hi))
     }
 
+    /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> RGBA<T> {
         RGBA::new((*self).r.invert_channel(),
@@ -158,6 +163,7 @@ impl<T:Channel> Color<T> for RGBA<T> {
 }
 
 impl<T:FloatChannel> FloatColor<T> for RGBA<T> {
+    /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGBA<T> {
         RGBA::new((*self).r.clamp(&zero!(T), &one!(T)),
