@@ -363,3 +363,44 @@ pub mod consts {
     static YELLOW:                  RGB<u8> = RGB { r: 0xFF, g: 0xFF, b: 0x00 };
     static YELLOWGREEN:             RGB<u8> = RGB { r: 0x9A, g: 0xCD, b: 0x32 };
 }
+
+#[cfg(test)]
+mod tests {
+    use color::*;
+
+    #[test]
+    fn test_rgb_to_rgb() {
+        assert_eq!(RGB::new::<u8>(0xA0, 0xA0, 0xA0).to_rgb::<u8>(), RGB::new::<u8>(0xA0, 0xA0, 0xA0));
+        assert_eq!(RGB::new::<u8>(0xA0, 0xA0, 0xA0).to_rgb::<u16>(), RGB::new::<u16>(0xA0A0, 0xA0A0, 0xA0A0));
+    }
+
+    #[test]
+    fn test_rgb_to_hsv() {
+        assert_eq!(RGB::new::<u8>(0xFF, 0xFF, 0xFF).to_hsv::<f32>(), HSV::new::<f32>(0.0, 0.0, 1.0));
+        assert_eq!(RGB::new::<u8>(0x99, 0x00, 0x00).to_hsv::<f32>(), HSV::new::<f32>(0.0, 1.0, 0.6));
+        assert_eq!(RGB::new::<u8>(0x00, 0x99, 0x00).to_hsv::<f32>(), HSV::new::<f32>(120.0, 1.0, 0.6));
+        assert_eq!(RGB::new::<u8>(0x00, 0x00, 0x99).to_hsv::<f32>(), HSV::new::<f32>(240.0, 1.0, 0.6));
+    }
+
+    #[test]
+    fn test_tuple_to_rgba() {
+        assert_eq!((RGB::new::<f64>(1.0, 1.0, 1.0), 0xFFu8).to_rgba::<f32>(), RGBA::new::<f32>(1.0, 1.0, 1.0, 1.0));
+        assert_eq!((RGB::new::<f64>(1.0, 1.0, 1.0), 0xFFu8).to_rgba::<f32>(), RGBA::new::<f32>(1.0, 1.0, 1.0, 1.0));
+        assert_eq!((RGB::new::<f64>(1.0, 1.0, 1.0), 0xFFu8).to_rgba::<f32>(), RGBA::new::<f32>(1.0, 1.0, 1.0, 1.0));
+        assert_eq!((RGB::new::<f64>(1.0, 1.0, 1.0), 0xFFu8).to_rgba::<f32>(), RGBA::new::<f32>(1.0, 1.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn test_rgba_to_rgba() {
+        assert_eq!(RGBA::new::<u8>(0xA0, 0xA0, 0xA0, 0xA0).to_rgba::<u8>(), RGBA::new::<u8>(0xA0, 0xA0, 0xA0, 0xA0));
+        assert_eq!(RGBA::new::<u8>(0xA0, 0xA0, 0xA0, 0xA0).to_rgba::<u16>(), RGBA::new::<u16>(0xA0A0, 0xA0A0, 0xA0A0, 0xA0A0));
+    }
+
+    #[test]
+    fn test_rgba_to_hsva() {
+        assert_eq!(RGBA::new::<u8>(0xFF, 0xFF, 0xFF, 0xFF).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 0.0, 1.0, 1.0));
+        assert_eq!(RGBA::new::<u8>(0x99, 0x00, 0x00, 0xFF).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 1.0, 0.6, 1.0));
+        assert_eq!(RGBA::new::<u8>(0x00, 0x99, 0x00, 0xFF).to_hsva::<f32>(), HSVA::new::<f32>(120.0, 1.0, 0.6, 1.0));
+        assert_eq!(RGBA::new::<u8>(0x00, 0x00, 0x99, 0xFF).to_hsva::<f32>(), HSVA::new::<f32>(240.0, 1.0, 0.6, 1.0));
+    }
+}
