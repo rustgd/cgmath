@@ -214,3 +214,48 @@ impl<T:Clone + FloatChannel> ToRGBA for HSVA<T> {
         RGBA::from_rgb_a(self.hsv().to_rgb(), (*self).a.to_channel())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use color::*;
+
+    #[test]
+    fn test_hsv_to_hsv() {
+        assert_eq!(HSV::new::<f64>(0.0, 0.0, 1.0).to_hsv::<f32>(), HSV::new::<f32>(0.0, 0.0, 1.0));
+        assert_eq!(HSV::new::<f64>(0.0, 1.0, 0.6).to_hsv::<f32>(), HSV::new::<f32>(0.0, 1.0, 0.6));
+        assert_eq!(HSV::new::<f64>(120.0, 1.0, 0.6).to_hsv::<f32>(), HSV::new::<f32>(120.0, 1.0, 0.6));
+        assert_eq!(HSV::new::<f64>(240.0, 1.0, 0.6).to_hsv::<f32>(), HSV::new::<f32>(240.0, 1.0, 0.6));
+    }
+
+    #[test]
+    fn test_hsv_to_rgb() {
+        assert_eq!(HSV::new::<f32>(0.0, 0.0, 1.0).to_rgb::<u8>(), RGB::new::<u8>(0xFF, 0xFF, 0xFF));
+        assert_eq!(HSV::new::<f32>(0.0, 1.0, 0.6).to_rgb::<u8>(), RGB::new::<u8>(0x99, 0x00, 0x00));
+        assert_eq!(HSV::new::<f32>(120.0, 1.0, 0.6).to_rgb::<u8>(), RGB::new::<u8>(0x00, 0x99, 0x00));
+        assert_eq!(HSV::new::<f32>(240.0, 1.0, 0.6).to_rgb::<u8>(), RGB::new::<u8>(0x00, 0x00, 0x99));
+    }
+
+    #[test]
+    fn test_tuple_to_hsva() {
+        assert_eq!((RGB::new::<u8>(0xFF, 0xFF, 0xFF), 0.5f32).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 0.0, 1.0, 0.5));
+        assert_eq!((RGB::new::<u8>(0x99, 0x00, 0x00), 0.5f32).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 1.0, 0.6, 0.5));
+        assert_eq!((RGB::new::<u8>(0x00, 0x99, 0x00), 0.5f32).to_hsva::<f32>(), HSVA::new::<f32>(120.0, 1.0, 0.6, 0.5));
+        assert_eq!((RGB::new::<u8>(0x00, 0x00, 0x99), 0.5f32).to_hsva::<f32>(), HSVA::new::<f32>(240.0, 1.0, 0.6, 0.5));
+    }
+
+    #[test]
+    fn test_hsva_to_hsva() {
+        assert_eq!(HSVA::new::<f64>(0.0, 0.0, 1.0, 0.5).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 0.0, 1.0, 0.5));
+        assert_eq!(HSVA::new::<f64>(0.0, 1.0, 0.6, 0.5).to_hsva::<f32>(), HSVA::new::<f32>(0.0, 1.0, 0.6, 0.5));
+        assert_eq!(HSVA::new::<f64>(120.0, 1.0, 0.6, 0.5).to_hsva::<f32>(), HSVA::new::<f32>(120.0, 1.0, 0.6, 0.5));
+        assert_eq!(HSVA::new::<f64>(240.0, 1.0, 0.6, 0.5).to_hsva::<f32>(), HSVA::new::<f32>(240.0, 1.0, 0.6, 0.5));
+    }
+
+    #[test]
+    fn test_hsva_to_rgba() {
+        assert_eq!(HSVA::new::<f32>(0.0, 0.0, 1.0, 0.5).to_rgba::<u8>(), RGBA::new::<u8>(0xFF, 0xFF, 0xFF, 0x7F));
+        assert_eq!(HSVA::new::<f32>(0.0, 1.0, 0.6, 0.5).to_rgba::<u8>(), RGBA::new::<u8>(0x99, 0x00, 0x00, 0x7F));
+        assert_eq!(HSVA::new::<f32>(120.0, 1.0, 0.6, 0.5).to_rgba::<u8>(), RGBA::new::<u8>(0x00, 0x99, 0x00, 0x7F));
+        assert_eq!(HSVA::new::<f32>(240.0, 1.0, 0.6, 0.5).to_rgba::<u8>(), RGBA::new::<u8>(0x00, 0x00, 0x99, 0x7F));
+    }
+}
