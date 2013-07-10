@@ -35,6 +35,20 @@ pub trait ToHSV {
     pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U>;
 }
 
+impl ToHSV for u32 {
+    #[inline]
+    pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
+        fail!("Not yet implemented")
+    }
+}
+
+impl ToHSV for u64 {
+    #[inline]
+    pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
+        fail!("Not yet implemented")
+    }
+}
+
 impl<T:Clone + Channel + Float> ToHSV for HSV<T> {
     #[inline]
     pub fn to_hsv<U:Channel + Float>(&self) -> HSV<U> {
@@ -103,6 +117,20 @@ impl<T:Channel + Float> HSVA<T> {
 
 pub trait ToHSVA {
     pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U>;
+}
+
+impl ToHSVA for u32 {
+    #[inline]
+    pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
+        fail!("Not yet implemented")
+    }
+}
+
+impl ToHSVA for u64 {
+    #[inline]
+    pub fn to_hsva<U:Channel + Float>(&self) -> HSVA<U> {
+        fail!("Not yet implemented")
+    }
 }
 
 impl<C: ToHSV, T:Clone + Channel + Float> ToHSVA for (C, T) {
