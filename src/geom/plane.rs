@@ -85,8 +85,8 @@ impl<T:Clone + Float> Plane3<T> {
                    b: Point3<T>,
                    c: Point3<T>) -> Option<Plane3<T>> {
         // create two vectors that run parallel to the plane
-        let v0 = b.as_vec().sub_v(a.as_vec());
-        let v1 = c.as_vec().sub_v(a.as_vec());
+        let v0 = (b - a);
+        let v1 = (c - a);
         // find the vector that is perpendicular to v1 and v2
         let mut norm = v0.cross(&v1);
 
@@ -136,11 +136,9 @@ impl<T:Clone + Float> Plane3<T> {
                            self.norm.y.clone(), other_a.norm.y.clone(), other_b.norm.y.clone(),
                            self.norm.z.clone(), other_a.norm.z.clone(), other_b.norm.z.clone());
         do mx.inverse().map |m| {
-            Point3::from_vec(
-                m.mul_v(&Vec3::new(self.dist.clone(),
-                                   other_a.dist.clone(),
-                                   other_b.dist.clone()))
-            )
+            Point3::origin() + m.mul_v(&Vec3::new(self.dist.clone(),
+                                                  other_a.dist.clone(),
+                                                  other_b.dist.clone()))
         }
     }
 }

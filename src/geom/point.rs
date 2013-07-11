@@ -15,20 +15,22 @@
 
 use std::cast;
 
-use core::{Vec2, Vec3, Quat};
+use core::{Mat2, Mat3, Quat, Vec2, Vec3};
+
+#[path = "../num_macros.rs"]
+mod num_macros;
 
 /// A geometric point
-pub trait Point<T, Vec, Rot>: Eq
-                            + Add<Vec, Self>
-                            + Sub<Self, Vec>
-                            + Mul<Vec, Self>
-                            + ApproxEq<T>
-                            + ToStr {
+pub trait Point<T, Vec>: Eq
+                       + Add<Vec, Self>
+                       + Sub<Self, Vec>
+                       + Mul<Vec, Self>
+                       + ApproxEq<T>
+                       + ToStr {
     pub fn as_vec<'a>(&'a self) -> &'a Vec;
     pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec;
 
     pub fn translate(&self, offset: &Vec) -> Self;
-    pub fn rotate(&self, rotation: &Rot) -> Self;
     pub fn scale(&self, factor: &Vec) -> Self;
     pub fn distance2(&self, other: &Self) -> T;
     pub fn distance(&self, other: &Self) -> T;
@@ -39,7 +41,7 @@ pub trait Point<T, Vec, Rot>: Eq
 #[deriving(Clone, Eq)]
 pub struct Point2<T> { x: T, y: T }
 
-impl<T> Point2<T> {
+impl<T:Num> Point2<T> {
     #[inline]
     pub fn new(x: T, y: T) -> Point2<T> {
         Point2 { x: x, y: y }
@@ -49,9 +51,27 @@ impl<T> Point2<T> {
     pub fn from_vec(vec: Vec2<T>) -> Point2<T> {
         unsafe { cast::transmute(vec) }
     }
+
+    #[inline]
+    pub fn origin() -> Point2<T> {
+        Point2::new(zero!(T), zero!(T))
+    }
 }
 
-impl<T:Clone + Float> Point<T, Vec2<T>, T> for Point2<T> {
+impl<T:Clone + Float> Point2<T> {
+    #[inline]
+    pub fn rotate_t(&self, radians: &T) -> Point2<T> {
+        Point2::new((*self).x.cos() * (*radians),
+                    (*self).y.sin() * (*radians))
+    }
+
+    #[inline]
+    pub fn rotate_m(&self, mat: &Mat2<T>) -> Point2<T> {
+        Point2::from_vec(mat.mul_v(self.as_vec()))
+    }
+}
+
+impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec2<T> {
         unsafe { cast::transmute(self) }
@@ -65,12 +85,6 @@ impl<T:Clone + Float> Point<T, Vec2<T>, T> for Point2<T> {
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
         (*self) + (*offset)
-    }
-
-    #[inline]
-    pub fn rotate(&self, radians: &T) -> Point2<T> {
-        Point2::new((*self).x.cos() * (*radians),
-                    (*self).y.sin() * (*radians))
     }
 
     #[inline]
@@ -153,7 +167,7 @@ mod test_point2 {
 #[deriving(Clone, Eq)]
 pub struct Point3<T> { x: T, y: T, z: T }
 
-impl<T> Point3<T> {
+impl<T:Num> Point3<T> {
     #[inline]
     pub fn new(x: T, y: T, z: T) -> Point3<T> {
         Point3 { x: x, y: y, z: z }
@@ -163,9 +177,26 @@ impl<T> Point3<T> {
     pub fn from_vec(vec: Vec3<T>) -> Point3<T> {
         unsafe { cast::transmute(vec) }
     }
+
+    #[inline]
+    pub fn origin() -> Point3<T> {
+        Point3::new(zero!(T), zero!(T), zero!(T))
+    }
 }
 
-impl<T:Clone + Float> Point<T, Vec3<T>, Quat<T>> for Point3<T> {
+impl<T:Clone + Float> Point3<T> {
+    #[inline]
+    pub fn rotate_q(&self, quat: &Quat<T>) -> Point3<T> {
+        Point3::from_vec(quat.mul_v(self.as_vec()))
+    }
+
+    #[inline]
+    pub fn rotate_m(&self, mat: &Mat3<T>) -> Point3<T> {
+        Point3::from_vec(mat.mul_v(self.as_vec()))
+    }
+}
+
+impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec3<T> {
         unsafe { cast::transmute(self) }
@@ -179,11 +210,6 @@ impl<T:Clone + Float> Point<T, Vec3<T>, Quat<T>> for Point3<T> {
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
         (*self) + (*offset)
-    }
-
-    #[inline]
-    pub fn rotate(&self, rotation: &Quat<T>) -> Point3<T> {
-        Point3::from_vec(rotation.mul_v(self.as_vec()))
     }
 
     #[inline]
