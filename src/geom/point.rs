@@ -22,7 +22,7 @@
 
 use std::cast;
 
-use core::{Mat2, Mat3, Quat, Vec2, Vec3};
+use core::{Mat2, Mat3, Quat, Vec2, Vec3, Vec4};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
@@ -62,6 +62,17 @@ impl<T:Num> Point2<T> {
     #[inline]
     pub fn origin() -> Point2<T> {
         Point2::new(zero!(T), zero!(T))
+    }
+}
+
+impl<T:Clone + Num> Point2<T> {
+    /// Converts the point to a three-dimensional homogeneous vector:
+    /// `[x, y] -> [x, y, 1]`
+    #[inline]
+    pub fn to_vec3(&self) -> Vec3<T> {
+        Vec3::new((*self).x.clone(),
+                  (*self).y.clone(),
+                  one!(T))
     }
 }
 
@@ -188,6 +199,18 @@ impl<T:Num> Point3<T> {
     #[inline]
     pub fn origin() -> Point3<T> {
         Point3::new(zero!(T), zero!(T), zero!(T))
+    }
+}
+
+impl<T:Clone + Num> Point3<T> {
+    /// Converts the point to a four-dimensional homogeneous vector:
+    /// `[x, y, z] -> [x, y, z, 1]`
+    #[inline]
+    pub fn to_vec4(&self) -> Vec4<T> {
+        Vec4::new((*self).x.clone(),
+                  (*self).y.clone(),
+                  (*self).z.clone(),
+                  one!(T))
     }
 }
 
