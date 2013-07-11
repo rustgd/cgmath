@@ -14,8 +14,7 @@
 // limitations under the License.
 
 use core::Mat4;
-use geom::Plane3;
-use world::Frustum;
+use geom::{Plane3, Frustum};
 
 #[path = "../num_macros.rs"]
 mod num_macros;

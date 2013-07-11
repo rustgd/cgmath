@@ -16,3 +16,4 @@
 // TODO
 
 // http://gameprogrammingpatterns.com/spatial-partition.html
+// http://github.com/mozilla/servo/blob/master/src/components/main/compositing/quadtree.rs

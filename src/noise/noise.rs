@@ -13,5 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Procedural noise generation utility types
+
 pub mod perlin;
 pub mod simplex;

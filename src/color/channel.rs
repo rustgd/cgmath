@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Color channel conversions and utility methods
+
 pub trait Channel: Primitive + Orderable {
     priv fn from<T:Channel>(chan: T) -> Self;
     pub fn to_channel<T:Channel>(&self) -> T;

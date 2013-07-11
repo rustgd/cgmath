@@ -26,6 +26,10 @@
 #[path = "core/core.rs"]
 pub mod core;
 
+#[cfg(color)]
+#[path = "color/color.rs"]
+pub mod color;
+
 #[cfg(geom)]
 #[path = "geom/geom.rs"]
 pub mod geom;
@@ -34,10 +38,6 @@ pub mod geom;
 #[path = "noise/noise.rs"]
 pub mod noise;
 
-#[cfg(world)]
-#[path = "world/world.rs"]
-pub mod world;
-
-#[cfg(color)]
-#[path = "color/color.rs"]
-pub mod color;
+#[cfg(transform)]
+#[path = "transform/transform.rs"]
+pub mod transform;

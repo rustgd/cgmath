@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Color types, functions and conversions
+
 pub use self::channel::{Channel, FloatChannel};
 pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
 pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};

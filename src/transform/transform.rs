@@ -13,8 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::frustum::{Frustum, FrustumPoints};
 pub use self::projection::{Projection, Perspective, PerspectiveFOV, Ortho};
 
-pub mod frustum;
+use core::{Vec3, Quat};
+
 pub mod projection;
+
+pub trait Transform<T> {}
+
+pub struct QuatTransform<T> {
+    scale: T,
+    translation: Vec3<T>,
+    rotation: Quat<T>,
+}
+
+impl<T> Transform<T> for QuatTransform<T> {}
