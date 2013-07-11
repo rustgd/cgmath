@@ -18,13 +18,21 @@ use std::cast;
 use core::{Vec2, Vec3, Quat};
 
 /// A geometric point
-pub trait Point<T,Vec,Rot>: Eq + ApproxEq<T> + ToStr {
+pub trait Point<T, Vec, Rot>: Eq
+                            + Add<Vec, Self>
+                            + Sub<Self, Vec>
+                            + Mul<Vec, Self>
+                            + ApproxEq<T>
+                            + ToStr {
     pub fn as_vec<'a>(&'a self) -> &'a Vec;
     pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec;
 
     pub fn translate(&self, offset: &Vec) -> Self;
     pub fn rotate(&self, rotation: &Rot) -> Self;
+    pub fn scale(&self, factor: &Vec) -> Self;
+    pub fn distance2(&self, other: &Self) -> T;
     pub fn distance(&self, other: &Self) -> T;
+    pub fn direction(&self, other: &Self) -> Vec;
 }
 
 /// A two-dimensional point
@@ -43,7 +51,7 @@ impl<T> Point2<T> {
     }
 }
 
-impl<T:Clone + Float> Point<T,Vec2<T>,T> for Point2<T> {
+impl<T:Clone + Float> Point<T, Vec2<T>, T> for Point2<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec2<T> {
         unsafe { cast::transmute(self) }
@@ -56,18 +64,54 @@ impl<T:Clone + Float> Point<T,Vec2<T>,T> for Point2<T> {
 
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
-        Point2::from_vec(self.as_vec().add_v(offset))
+        (*self) + (*offset)
     }
 
     #[inline]
     pub fn rotate(&self, radians: &T) -> Point2<T> {
-        Point2::new((*radians) * (*self).x.cos(),
-                    (*radians) * (*self).y.sin())
+        Point2::new((*self).x.cos() * (*radians),
+                    (*self).y.sin() * (*radians))
+    }
+
+    #[inline]
+    pub fn scale(&self, factor: &Vec2<T>) -> Point2<T> {
+        (*self) * (*factor)
+    }
+
+    #[inline]
+    pub fn distance2(&self, other: &Point2<T>) -> T {
+        ((*other) - (*self)).length2()
     }
 
     #[inline]
     pub fn distance(&self, other: &Point2<T>) -> T {
-        self.as_vec().distance(other.as_vec())
+        other.distance2(self).sqrt()
+    }
+
+    #[inline]
+    pub fn direction(&self, other: &Point2<T>) -> Vec2<T> {
+        ((*other) - (*self)).normalize()
+    }
+}
+
+impl<T:Num> Add<Vec2<T>, Point2<T>> for Point2<T> {
+    fn add(&self, other: &Vec2<T>) -> Point2<T> {
+        Point2::new((*self).x + (*other).x,
+                    (*self).y + (*other).y)
+    }
+}
+
+impl<T:Num> Sub<Point2<T>, Vec2<T>> for Point2<T> {
+    fn sub(&self, other: &Point2<T>) -> Vec2<T> {
+        Vec2::new((*self).x - (*other).x,
+                  (*self).y - (*other).y)
+    }
+}
+
+impl<T:Num> Mul<Vec2<T>, Point2<T>> for Point2<T> {
+    fn mul(&self, scale: &Vec2<T>) -> Point2<T> {
+        Point2::new((*self).x * (*scale).x,
+                    (*self).y * (*scale).y)
     }
 }
 
@@ -121,7 +165,7 @@ impl<T> Point3<T> {
     }
 }
 
-impl<T:Clone + Float> Point<T,Vec3<T>,Quat<T>> for Point3<T> {
+impl<T:Clone + Float> Point<T, Vec3<T>, Quat<T>> for Point3<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec3<T> {
         unsafe { cast::transmute(self) }
@@ -134,7 +178,7 @@ impl<T:Clone + Float> Point<T,Vec3<T>,Quat<T>> for Point3<T> {
 
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
-        Point3::from_vec(self.as_vec().add_v(offset))
+        (*self) + (*offset)
     }
 
     #[inline]
@@ -143,8 +187,47 @@ impl<T:Clone + Float> Point<T,Vec3<T>,Quat<T>> for Point3<T> {
     }
 
     #[inline]
+    pub fn scale(&self, factor: &Vec3<T>) -> Point3<T> {
+        (*self) * (*factor)
+    }
+
+    #[inline]
+    pub fn distance2(&self, other: &Point3<T>) -> T {
+        ((*other) - (*self)).length2()
+    }
+
+    #[inline]
     pub fn distance(&self, other: &Point3<T>) -> T {
-        self.as_vec().distance(other.as_vec())
+        other.distance2(self).sqrt()
+    }
+
+    #[inline]
+    pub fn direction(&self, other: &Point3<T>) -> Vec3<T> {
+        ((*other) - (*self)).normalize()
+    }
+}
+
+impl<T:Num> Add<Vec3<T>, Point3<T>> for Point3<T> {
+    fn add(&self, other: &Vec3<T>) -> Point3<T> {
+        Point3::new((*self).x + (*other).x,
+                    (*self).y + (*other).y,
+                    (*self).z + (*other).z)
+    }
+}
+
+impl<T:Num> Sub<Point3<T>, Vec3<T>> for Point3<T> {
+    fn sub(&self, other: &Point3<T>) -> Vec3<T> {
+        Vec3::new((*self).x - (*other).x,
+                  (*self).y - (*other).y,
+                  (*self).z - (*other).z)
+    }
+}
+
+impl<T:Num> Mul<Vec3<T>, Point3<T>> for Point3<T> {
+    fn mul(&self, scale: &Vec3<T>) -> Point3<T> {
+        Point3::new((*self).x * (*scale).x,
+                    (*self).y * (*scale).y,
+                    (*self).z * (*scale).z)
     }
 }
 
