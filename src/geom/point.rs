@@ -13,6 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Coordinate vectors for positional data
+//!
+//! These types differ from the vector types implemented in `core::vec` because
+//! they describe coordinates in geometric space and not a magnitude and a
+//! direction. All positional data throughout the library uses these point
+//! types, which allows for a clear, self-documenting API.
+
 use std::cast;
 
 use core::{Mat2, Mat3, Quat, Vec2, Vec3};
