@@ -37,7 +37,6 @@ pub type Quatf64 = Quat<f64>;
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
 impl_dimensional!(Quat, T, 4)
-impl_approx!(Quat, 4)
 impl_swap!(Quat)
 
 pub trait ToQuat<T> {
@@ -305,6 +304,24 @@ impl<T:Clone + Float> Quat<T> {
             self.mul_t(theta.cos())
                 .add_q(&q.mul_t(theta.sin()))
         }
+    }
+}
+
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Quat<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
+        self.s.approx_eq_eps(&other.s, epsilon) &&
+        self.v.approx_eq_eps(&other.v, epsilon)
     }
 }
 

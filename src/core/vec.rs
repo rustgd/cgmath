@@ -51,7 +51,6 @@ pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
 
 impl_dimensional!(Vec2, T, 2)
-impl_approx!(Vec2, 2)
 impl_swap!(Vec2)
 
 impl<T> Vec2<T> {
@@ -414,6 +413,24 @@ impl Vec2<bool> {
     }
 }
 
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Vec2<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon)
+    }
+}
+
 #[cfg(test)]
 mod vec2_tests {
     use core::vec::*;
@@ -574,7 +591,6 @@ pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
 
 impl_dimensional!(Vec3, T, 3)
-impl_approx!(Vec3, 3)
 impl_swap!(Vec3)
 
 impl<T> Vec3<T> {
@@ -986,6 +1002,25 @@ impl Vec3<bool> {
     }
 }
 
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Vec3<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
+        self.index(2).approx_eq_eps(other.index(2), epsilon)
+    }
+}
+
 #[cfg(test)]
 mod vec3_tests{
     use core::vec::*;
@@ -1161,7 +1196,6 @@ pub type Vec4u64 = Vec4<u64>;
 pub type Vec4b   = Vec4<bool>;
 
 impl_dimensional!(Vec4, T, 4)
-impl_approx!(Vec4, 4)
 impl_swap!(Vec4)
 
 impl<T> Vec4<T> {
@@ -1583,6 +1617,26 @@ impl Vec4<bool> {
                   !*self.index(1),
                   !*self.index(2),
                   !*self.index(3))
+    }
+}
+
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &Vec4<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
+        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
+        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
+        self.index(2).approx_eq_eps(other.index(2), epsilon) &&
+        self.index(3).approx_eq_eps(other.index(3), epsilon)
     }
 }
 
