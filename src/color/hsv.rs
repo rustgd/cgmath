@@ -56,8 +56,8 @@ impl<T:FloatChannel> FloatColor<T> for HSV<T> {
     #[inline]
     pub fn normalize(&self) -> HSV<T> {
         HSV::new((*self).h.normalize_degrees(),
-                 (*self).s.clamp(&zero!(T), &one!(T)),
-                 (*self).v.clamp(&zero!(T), &one!(T)))
+                 (*self).s.normalize_channel(),
+                 (*self).v.normalize_channel())
     }
 }
 
@@ -171,9 +171,9 @@ impl<T:FloatChannel> FloatColor<T> for HSVA<T> {
     #[inline]
     pub fn normalize(&self) -> HSVA<T> {
         HSVA::new((*self).h.normalize_degrees(),
-                  (*self).s.clamp(&zero!(T), &one!(T)),
-                  (*self).v.clamp(&zero!(T), &one!(T)),
-                  (*self).a.clamp(&zero!(T), &one!(T)))
+                  (*self).s.normalize_channel(),
+                  (*self).v.normalize_channel(),
+                  (*self).a.normalize_channel())
     }
 }
 

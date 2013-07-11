@@ -55,9 +55,9 @@ impl<T:FloatChannel> FloatColor<T> for RGB<T> {
     /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGB<T> {
-        RGB::new((*self).r.clamp(&zero!(T), &one!(T)),
-                 (*self).g.clamp(&zero!(T), &one!(T)),
-                 (*self).b.clamp(&zero!(T), &one!(T)))
+        RGB::new((*self).r.normalize_channel(),
+                 (*self).g.normalize_channel(),
+                 (*self).b.normalize_channel())
     }
 }
 
@@ -166,10 +166,10 @@ impl<T:FloatChannel> FloatColor<T> for RGBA<T> {
     /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGBA<T> {
-        RGBA::new((*self).r.clamp(&zero!(T), &one!(T)),
-                  (*self).g.clamp(&zero!(T), &one!(T)),
-                  (*self).b.clamp(&zero!(T), &one!(T)),
-                  (*self).a.clamp(&zero!(T), &one!(T)))
+        RGBA::new((*self).r.normalize_channel(),
+                  (*self).g.normalize_channel(),
+                  (*self).b.normalize_channel(),
+                  (*self).a.normalize_channel())
     }
 }
 
