@@ -77,15 +77,39 @@ pub trait FloatChannel: Float + Channel {
 }
 
 impl FloatChannel for f32 {
-    #[inline] pub fn normalize_channel(&self) -> f32 { self.clamp(&0.0, &1.0) }
-    #[inline] pub fn normalize_degrees(&self) -> f32 { (*self) % 360.0 }
-    #[inline] pub fn invert_degrees(&self) -> f32 { ((*self) + 180.0).normalize_degrees() }
+    #[inline] pub fn normalize_channel(&self) -> f32 {
+        self.clamp(&0.0, &1.0)
+    }
+
+    #[inline] pub fn normalize_degrees(&self) -> f32 {
+        if (*self) < 0.0 {
+            (*self + 360.0) % 360.0
+        } else {
+            *self % 360.0
+        }
+    }
+
+    #[inline] pub fn invert_degrees(&self) -> f32 {
+        (*self + 180.0).normalize_degrees()
+    }
 }
 
 impl FloatChannel for f64 {
-    #[inline] pub fn normalize_channel(&self) -> f64 { self.clamp(&0.0, &1.0) }
-    #[inline] pub fn normalize_degrees(&self) -> f64 { (*self) % 360.0 }
-    #[inline] pub fn invert_degrees(&self) -> f64 { ((*self) + 180.0).normalize_degrees() }
+    #[inline] pub fn normalize_channel(&self) -> f64 {
+        self.clamp(&0.0, &1.0)
+    }
+
+    #[inline] pub fn normalize_degrees(&self) -> f64 {
+        if (*self) < 0.0 {
+            (*self + 360.0) % 360.0
+        } else {
+            *self % 360.0
+        }
+    }
+
+    #[inline] pub fn invert_degrees(&self) -> f64 {
+        (*self + 180.0).normalize_degrees()
+    }
 }
 
 #[cfg(test)]
