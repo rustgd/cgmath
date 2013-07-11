@@ -13,39 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[macro_escape];
+use core::{Vec2, Vec3, Vec4, Quat};
 
-macro_rules! impl_dimensional(
-    ($Self:ident, $T:ty, $n:expr) => (
-        impl<T> Dimensional<$T,[$T,..$n]> for $Self<T> {
-            #[inline]
-            pub fn index<'a>(&'a self, i: uint) -> &'a $T {
-                &'a self.as_slice()[i]
-            }
-
-            #[inline]
-            pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut $T {
-                &'a mut self.as_mut_slice()[i]
-            }
-
-            #[inline]
-            pub fn as_slice<'a>(&'a self) -> &'a [$T,..$n] {
-                use std::cast::transmute;
-                unsafe { transmute(self) }
-            }
-
-            #[inline]
-            pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [$T,..$n] {
-                use std::cast::transmute;
-                unsafe { transmute(self) }
-            }
-        }
-    )
-)
+pub trait Swap {
+    pub fn swap(&mut self, a: uint, b: uint);
+}
 
 macro_rules! impl_swap(
     ($Self:ident) => (
-        impl<T:Clone> $Self<T> {
+        impl<T:Clone> Swap for $Self<T> {
             #[inline]
             pub fn swap(&mut self, a: uint, b: uint) {
                 let tmp = self.index(a).clone();
@@ -55,3 +31,36 @@ macro_rules! impl_swap(
         }
     )
 )
+
+impl_swap!(Vec2)
+impl_swap!(Vec3)
+impl_swap!(Vec4)
+impl_swap!(Quat)
+
+// This enclosing module is required because attributes don't play nice
+// with macros yet
+#[cfg(geom)]
+pub mod geom_impls {
+    use super::Swap;
+    use geom::{Point2, Point3};
+
+    impl_swap!(Point2)
+    impl_swap!(Point3)
+}
+
+// This enclosing module is required because attributes don't play nice
+// with macros yet
+#[cfg(color)]
+pub mod color_impls {
+    use super::Swap;
+    use color::{HSV, HSVA, YCbCr};
+    use color::{RGB, RGBA, SRGB, SRGBA};
+
+    impl_swap!(HSV)
+    impl_swap!(HSVA)
+    impl_swap!(RGB)
+    impl_swap!(RGBA)
+    impl_swap!(SRGB)
+    impl_swap!(SRGBA)
+    impl_swap!(YCbCr)
+}

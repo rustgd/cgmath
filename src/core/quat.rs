@@ -19,7 +19,6 @@ use core::Vec3;
 
 #[path = "../num_macros.rs"]
 mod num_macros;
-mod dim_macros;
 
 // GLSL-style type aliases
 
@@ -35,9 +34,6 @@ pub type Quatf64 = Quat<f64>;
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
-
-impl_dimensional!(Quat, T, 4)
-impl_swap!(Quat)
 
 pub trait ToQuat<T> {
     pub fn to_quat(&self) -> Quat<T>;

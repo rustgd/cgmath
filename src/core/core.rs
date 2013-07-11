@@ -16,11 +16,15 @@
 // Core datatypes and conversion traits for 3D mathematics
 
 pub use self::dim::Dimensional;
+pub use self::swap::Swap;
+
 pub use self::mat::{Mat2, ToMat2, Mat3, ToMat3, Mat4, ToMat4};
 pub use self::quat::{Quat, ToQuat};
 pub use self::vec::{Vec2, Vec3, Vec4};
 
 pub mod dim;
+pub mod swap;
+
 pub mod mat;
 pub mod quat;
 pub mod vec;

@@ -13,13 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::Dimensional;
+use core::{Dimensional, Swap};
 use core::{Quat, ToQuat};
 use core::{Vec2, Vec3, Vec4};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
-mod dim_macros;
 
 macro_rules! impl_mat(
     ($Mat:ident, $Vec:ident) => (
@@ -125,7 +124,6 @@ pub type Mat2f   = Mat2<float>;
 pub type Mat2f32 = Mat2<f32>;
 pub type Mat2f64 = Mat2<f64>;
 
-impl_dimensional!(Mat2, Vec2<T>, 2)
 impl_mat!(Mat2, Vec2)
 impl_mat_swap!(Mat2, Vec2)
 
@@ -554,7 +552,6 @@ pub type Mat3f   = Mat3<float>;
 pub type Mat3f32 = Mat3<f32>;
 pub type Mat3f64 = Mat3<f64>;
 
-impl_dimensional!(Mat3, Vec3<T>, 3)
 impl_mat!(Mat3, Vec3)
 impl_mat_swap!(Mat3, Vec3)
 
@@ -1160,7 +1157,6 @@ pub type Mat4f   = Mat4<float>;
 pub type Mat4f32 = Mat4<f32>;
 pub type Mat4f64 = Mat4<f64>;
 
-impl_dimensional!(Mat4, Vec4<T>, 4)
 impl_mat!(Mat4, Vec4)
 impl_mat_swap!(Mat4, Vec4)
 

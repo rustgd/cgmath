@@ -22,7 +22,6 @@ use geom::{Point2, Point3};
 
 #[path = "../num_macros.rs"]
 mod num_macros;
-mod dim_macros;
 
 #[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
@@ -49,9 +48,6 @@ pub type Vec2u16 = Vec2<u16>;
 pub type Vec2u32 = Vec2<u32>;
 pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
-
-impl_dimensional!(Vec2, T, 2)
-impl_swap!(Vec2)
 
 impl<T> Vec2<T> {
     #[inline]
@@ -589,9 +585,6 @@ pub type Vec3u16 = Vec3<u16>;
 pub type Vec3u32 = Vec3<u32>;
 pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
-
-impl_dimensional!(Vec3, T, 3)
-impl_swap!(Vec3)
 
 impl<T> Vec3<T> {
     #[inline]
@@ -1194,9 +1187,6 @@ pub type Vec4u16 = Vec4<u16>;
 pub type Vec4u32 = Vec4<u32>;
 pub type Vec4u64 = Vec4<u64>;
 pub type Vec4b   = Vec4<bool>;
-
-impl_dimensional!(Vec4, T, 4)
-impl_swap!(Vec4)
 
 impl<T> Vec4<T> {
     #[inline]
