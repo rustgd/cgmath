@@ -15,15 +15,15 @@
 
 use std::cast;
 
-use core::{Vec2, Vec3};
+use core::{Vec2, Vec3, Quat};
 
 /// A geometric point
-pub trait Point<T,V>: Eq + ApproxEq<T> + ToStr {
-    pub fn from_vec(vec: V) -> Self;
-    pub fn as_vec<'a>(&'a self) -> &'a V;
-    pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut V;
+pub trait Point<T,Vec,Rot>: Eq + ApproxEq<T> + ToStr {
+    pub fn as_vec<'a>(&'a self) -> &'a Vec;
+    pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec;
 
-    pub fn translate(&self, offset: &V) -> Self;
+    pub fn translate(&self, offset: &Vec) -> Self;
+    pub fn rotate(&self, rotation: &Rot) -> Self;
     pub fn distance(&self, other: &Self) -> T;
 }
 
@@ -36,14 +36,14 @@ impl<T> Point2<T> {
     pub fn new(x: T, y: T) -> Point2<T> {
         Point2 { x: x, y: y }
     }
-}
 
-impl<T:Clone + Float> Point<T,Vec2<T>> for Point2<T> {
     #[inline]
     pub fn from_vec(vec: Vec2<T>) -> Point2<T> {
         unsafe { cast::transmute(vec) }
     }
+}
 
+impl<T:Clone + Float> Point<T,Vec2<T>,T> for Point2<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec2<T> {
         unsafe { cast::transmute(self) }
@@ -56,7 +56,13 @@ impl<T:Clone + Float> Point<T,Vec2<T>> for Point2<T> {
 
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
-        Point::from_vec(self.as_vec().add_v(offset))
+        Point2::from_vec(self.as_vec().add_v(offset))
+    }
+
+    #[inline]
+    pub fn rotate(&self, radians: &T) -> Point2<T> {
+        Point2::new((*radians) * (*self).x.cos(),
+                    (*radians) * (*self).y.sin())
     }
 
     #[inline]
@@ -108,14 +114,14 @@ impl<T> Point3<T> {
     pub fn new(x: T, y: T, z: T) -> Point3<T> {
         Point3 { x: x, y: y, z: z }
     }
-}
 
-impl<T:Clone + Float> Point<T,Vec3<T>> for Point3<T> {
     #[inline]
     pub fn from_vec(vec: Vec3<T>) -> Point3<T> {
         unsafe { cast::transmute(vec) }
     }
+}
 
+impl<T:Clone + Float> Point<T,Vec3<T>,Quat<T>> for Point3<T> {
     #[inline]
     pub fn as_vec<'a>(&'a self) -> &'a Vec3<T> {
         unsafe { cast::transmute(self) }
@@ -128,7 +134,12 @@ impl<T:Clone + Float> Point<T,Vec3<T>> for Point3<T> {
 
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
-        Point::from_vec(self.as_vec().add_v(offset))
+        Point3::from_vec(self.as_vec().add_v(offset))
+    }
+
+    #[inline]
+    pub fn rotate(&self, rotation: &Quat<T>) -> Point3<T> {
+        Point3::from_vec(rotation.mul_v(self.as_vec()))
     }
 
     #[inline]
