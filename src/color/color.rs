@@ -20,14 +20,12 @@ pub use self::hsv::{HSV, ToHSV, HSVA, ToHSVA};
 pub use self::rgb::{RGB, ToRGB, RGBA, ToRGBA};
 pub use self::srgb::{SRGB, SRGBA};
 pub use self::ycbcr::YCbCr;
-pub use self::yuv::YUV;
 
 pub mod channel;
 pub mod hsv;
 pub mod rgb;
 pub mod srgb;
 pub mod ycbcr;
-pub mod yuv;
 
 pub trait Color<T> {
     pub fn clamp(&self, lo: T, hi: T) -> Self;
