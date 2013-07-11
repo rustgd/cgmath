@@ -1,5 +1,5 @@
 // Copyright 2013 The Lmath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
+// refer to the AUTHORS file at the top-level directionectory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 use core::Vec3;
 use geom::Point3;
 
-/// A three-dimensional ray
-///
-/// # Fields
-///
-/// - `pos`: the endpoint of the ray
-/// - `dir`: the direction vector
 #[deriving(Clone, Eq)]
 pub struct Ray3<T> {
-    pos: Point3<T>,
-    dir: Vec3<T>,
+    origin: Point3<T>,
+    direction: Vec3<T>,
+}
+
+impl<T> Ray3<T> {
+    #[inline]
+    pub fn new(origin: Point3<T>, direction: Vec3<T>) -> Ray3<T> {
+        Ray3 { origin: origin, direction: direction }
+    }
 }
 
 impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Ray3<T> {
@@ -41,7 +42,7 @@ impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Ray3<T> {
 
     #[inline]
     pub fn approx_eq_eps(&self, other: &Ray3<T>, epsilon: &T) -> bool {
-        self.pos.approx_eq_eps(&other.pos, epsilon) &&
-        self.dir.approx_eq_eps(&other.dir, epsilon)
+        self.origin.approx_eq_eps(&other.origin, epsilon) &&
+        self.direction.approx_eq_eps(&other.direction, epsilon)
     }
 }

@@ -115,11 +115,13 @@ impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
         ((*other) - (*self)).length2()
     }
 
+    /// Returns the scalar distance to the other point
     #[inline]
     pub fn distance(&self, other: &Point2<T>) -> T {
         other.distance2(self).sqrt()
     }
 
+    /// Returns a normalized direction vector pointing to the other point
     #[inline]
     pub fn direction(&self, other: &Point2<T>) -> Vec2<T> {
         ((*other) - (*self)).normalize()
@@ -252,11 +254,13 @@ impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
         ((*other) - (*self)).length2()
     }
 
+    /// Returns the scalar distance to the other point
     #[inline]
     pub fn distance(&self, other: &Point3<T>) -> T {
         other.distance2(self).sqrt()
     }
 
+    /// Returns a normalized direction vector pointing to the other point
     #[inline]
     pub fn direction(&self, other: &Point3<T>) -> Vec3<T> {
         ((*other) - (*self)).normalize()

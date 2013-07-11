@@ -23,15 +23,15 @@ mod num_macros;
 ///
 /// # Fields
 ///
-/// - `n`: the normal of the plane where:
-///   - `n.x`: corresponds to `A` in the plane equation
-///   - `n.y`: corresponds to `B` in the plane equation
-///   - `n.z`: corresponds to `C` in the plane equation
-/// - `d`: the distance value, corresponding to `D` in the plane equation
+/// - `normal`: the normal of the plane where:
+///   - `normal.x`: corresponds to `A` in the plane equation
+///   - `normal.y`: corresponds to `B` in the plane equation
+///   - `normal.z`: corresponds to `C` in the plane equation
+/// - `distance`: the distance value, corresponding to `D` in the plane equation
 #[deriving(Clone, Eq)]
 pub struct Plane3<T> {
-    norm: Vec3<T>,
-    dist: T,
+    normal: Vec3<T>,
+    distance: T,
 }
 
 impl<T:Clone + Float> Plane3<T> {
@@ -43,14 +43,14 @@ impl<T:Clone + Float> Plane3<T> {
     /// - `d`: the plane's distance value
     pub fn from_abcd(a: T, b: T, c: T, d: T) -> Plane3<T> {
         Plane3 {
-            norm: Vec3::new(a, b, c),
-            dist: d,
+            normal: Vec3::new(a, b, c),
+            distance: d,
         }
     }
 
-    /// Construct a plane from a normal vector `n` and a distance `d`
-    pub fn from_nd(norm: Vec3<T>, dist: T) -> Plane3<T> {
-        Plane3 { norm: norm, dist: dist }
+    /// Construct a plane from a normal vector and a scalar distance
+    pub fn from_nd(normal: Vec3<T>, distance: T) -> Plane3<T> {
+        Plane3 { normal: normal, distance: distance }
     }
 
     /// Construct a plane from the components of a four-dimensional vector
@@ -60,7 +60,7 @@ impl<T:Clone + Float> Plane3<T> {
 
     /// Compute the distance from the plane to the point
     pub fn distance(&self, pos: &Point3<T>) -> T {
-        self.norm.dot(pos.as_vec()) + self.dist
+        self.normal.dot(pos.as_vec()) + self.distance
     }
 
     /// Computes the point at which `ray` intersects the plane
@@ -88,16 +88,16 @@ impl<T:Clone + Float> Plane3<T> {
         let v0 = (b - a);
         let v1 = (c - a);
         // find the vector that is perpendicular to v1 and v2
-        let mut norm = v0.cross(&v1);
+        let mut normal = v0.cross(&v1);
 
-        if norm.approx_eq(&Vec3::zero()) {
+        if normal.approx_eq(&Vec3::zero()) {
             None
         } else {
             // compute the normal and the distance to the plane
-            norm.normalize_self();
-            let dist = -a.as_vec().dot(&norm);
+            normal.normalize_self();
+            let distance = -a.as_vec().dot(&normal);
 
-            Some(Plane3::from_nd(norm, dist))
+            Some(Plane3::from_nd(normal, distance))
         }
     }
 
@@ -108,17 +108,17 @@ impl<T:Clone + Float> Plane3<T> {
     /// - `Some(r)`: The ray `r` where the planes intersect.
     /// - `None`: No valid intersection was found. The planes are probably parallel.
     pub fn intersection_2pl(&self, other: &Plane3<T>) -> Option<Ray3<T>> {
-        let ray_dir = self.norm.cross(&other.norm);
+        let dir = self.normal.cross(&other.normal);
 
-        if ray_dir.approx_eq(&Vec3::zero::<T>()) {
+        if dir.approx_eq(&Vec3::zero::<T>()) {
             None  // the planes are parallel
         } else {
             // The end-point of the ray is at the three-plane intersection between
             // `self`, `other`, and a tempory plane positioned at the origin
-            do Plane3::from_nd(ray_dir.clone(), zero!(T)).intersection_3pl(self, other).map |ray_pos| {
+            do Plane3::from_nd(dir.clone(), zero!(T)).intersection_3pl(self, other).map |origin| {
                 Ray3 {
-                    pos: ray_pos.clone(),
-                    dir: ray_dir.clone(),
+                    origin: origin.clone(),
+                    direction: dir.clone(),
                 }
             }
         }
@@ -132,13 +132,13 @@ impl<T:Clone + Float> Plane3<T> {
     /// - `None`:    No valid intersection was found. The normals of the three
     ///              planes are probably coplanar.
     pub fn intersection_3pl(&self, other_a: &Plane3<T>, other_b: &Plane3<T>) -> Option<Point3<T>> {
-        let mx = Mat3::new(self.norm.x.clone(), other_a.norm.x.clone(), other_b.norm.x.clone(),
-                           self.norm.y.clone(), other_a.norm.y.clone(), other_b.norm.y.clone(),
-                           self.norm.z.clone(), other_a.norm.z.clone(), other_b.norm.z.clone());
+        let mx = Mat3::new(self.normal.x.clone(), other_a.normal.x.clone(), other_b.normal.x.clone(),
+                           self.normal.y.clone(), other_a.normal.y.clone(), other_b.normal.y.clone(),
+                           self.normal.z.clone(), other_a.normal.z.clone(), other_b.normal.z.clone());
         do mx.inverse().map |m| {
-            Point3::origin() + m.mul_v(&Vec3::new(self.dist.clone(),
-                                                  other_a.dist.clone(),
-                                                  other_b.dist.clone()))
+            Point3::origin() + m.mul_v(&Vec3::new(self.distance.clone(),
+                                                  other_a.distance.clone(),
+                                                  other_b.distance.clone()))
         }
     }
 }
@@ -156,14 +156,18 @@ impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Plane3<T> {
 
     #[inline]
     pub fn approx_eq_eps(&self, other: &Plane3<T>, epsilon: &T) -> bool {
-        self.norm.approx_eq_eps(&other.norm, epsilon) &&
-        self.dist.approx_eq_eps(&other.dist, epsilon)
+        self.normal.approx_eq_eps(&other.normal, epsilon) &&
+        self.distance.approx_eq_eps(&other.distance, epsilon)
     }
 }
 
 impl<T> ToStr for Plane3<T> {
     pub fn to_str(&self) -> ~str {
-        fmt!("%?x + %?y + %?z + %? = 0", self.norm.x, self.norm.y, self.norm.z, self.dist)
+        fmt!("%?x + %?y + %?z + %? = 0",
+             self.normal.x,
+             self.normal.y,
+             self.normal.z,
+             self.distance)
     }
 }
 
