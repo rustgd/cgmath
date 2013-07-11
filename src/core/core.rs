@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Core datatypes and conversion traits for 3D mathematics
+//! Core datatypes and conversion traits for 3D mathematics
 
 pub use self::dim::Dimensional;
 pub use self::swap::Swap;

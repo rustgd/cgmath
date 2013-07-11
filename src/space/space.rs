@@ -13,6 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO
+//! Various data structures for space partitioning and visibility determination
 
-// http://gameprogrammingpatterns.com/spatial-partition.html
+pub use self::bsp::BSP;
+pub use self::octree::Octree;
+pub use self::quadtree::Quadtree;
+
+pub mod bsp;
+pub mod octree;
+pub mod quadtree;

@@ -13,7 +13,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO
-
-// http://gameprogrammingpatterns.com/spatial-partition.html
-// http://github.com/mozilla/servo/blob/master/src/components/main/compositing/quadtree.rs
+pub struct BSP;

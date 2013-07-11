@@ -13,12 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::frustum::{Frustum, FrustumPoints};
-pub use self::plane::Plane3;
-pub use self::point::{Point, Point2, Point3};
-pub use self::ray::Ray3;
+// http://gameprogrammingpatterns.com/spatial-partition.html
+// http://github.com/mozilla/servo/blob/master/src/components/main/compositing/quadtree.rs
 
-pub mod frustum;
-pub mod plane;
-pub mod point;
-pub mod ray;
+pub struct Quadtree;

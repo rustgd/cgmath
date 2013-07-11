@@ -41,3 +41,7 @@ pub mod noise;
 #[cfg(transform)]
 #[path = "transform/transform.rs"]
 pub mod transform;
+
+#[cfg(space)]
+#[path = "space/space.rs"]
+pub mod space;
