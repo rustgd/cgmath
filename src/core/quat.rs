@@ -180,7 +180,7 @@ impl<T:Clone + Real> Quat<T> {
     /// calculated.
     #[inline]
     pub fn magnitude2(&self) -> T {
-        self.s * self.s + self.v.length2()
+        self.s * self.s + self.v.magnitude2()
     }
 
     /// The magnitude of the quaternion
@@ -332,7 +332,7 @@ mod tests {
 
         // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
         assert_approx_eq!(q.mul_v(&v), Vec3::new(1f/2f.sqrt(), 1f/2f.sqrt(), 0f));
-        assert_eq!(q.mul_v(&v).length(), v.length());
+        assert_eq!(q.mul_v(&v).magnitude(), v.magnitude());
         assert_approx_eq!(q.to_mat3(), Mat3::new( 1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
                                                  -1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
                                                             0f,           0f, 1f));

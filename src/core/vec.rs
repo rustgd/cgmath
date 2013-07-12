@@ -276,23 +276,13 @@ impl<T:Not<T>> Not<Vec2<T>> for Vec2<T> {
 
 impl<T:Real> Vec2<T> {
     #[inline]
-    pub fn length2(&self) -> T {
+    pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
     #[inline]
-    pub fn length(&self) -> T {
-        self.length2().sqrt()
-    }
-
-    #[inline]
-    pub fn distance2(&self, other: &Vec2<T>) -> T {
-        other.sub_v(self).length2()
-    }
-
-    #[inline]
-    pub fn distance(&self, other: &Vec2<T>) -> T {
-        other.distance2(self).sqrt()
+    pub fn magnitude(&self) -> T {
+        self.magnitude2().sqrt()
     }
 
     #[inline]
@@ -302,12 +292,12 @@ impl<T:Real> Vec2<T> {
 
     #[inline]
     pub fn normalize(&self) -> Vec2<T> {
-        self.mul_t(one!(T)/self.length())
+        self.mul_t(one!(T)/self.magnitude())
     }
 
     #[inline]
-    pub fn normalize_to(&self, length: T) -> Vec2<T> {
-        self.mul_t(length / self.length())
+    pub fn normalize_to(&self, magnitude: T) -> Vec2<T> {
+        self.mul_t(magnitude / self.magnitude())
     }
 
     #[inline]
@@ -317,13 +307,13 @@ impl<T:Real> Vec2<T> {
 
     #[inline]
     pub fn normalize_self(&mut self) {
-        let rlen = self.length().recip();
+        let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
     #[inline]
-    pub fn normalize_self_to(&mut self, length: T) {
-        let n = length / self.length();
+    pub fn normalize_self_to(&mut self, magnitude: T) {
+        let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
@@ -431,16 +421,16 @@ impl Vec2<bool> {
 mod vec2_tests {
     use core::vec::*;
 
+    static A: Vec2<float> = Vec2 { x: 1.0, y: 2.0 };
+    static B: Vec2<float> = Vec2 { x: 3.0, y: 4.0 };
+    static F1: float = 1.5;
+    static F2: float = 0.5;
+
     #[test]
     fn test_vec2() {
-        let a = Vec2 { x: 1.0, y: 2.0 };
-        let b = Vec2 { x: 3.0, y: 4.0 };
-        let f1 = 1.5;
-        let f2 = 0.5;
+        let mut mut_a = A;
 
-        let mut mut_a = a;
-
-        assert_eq!(Vec2::new::<float>(1.0, 2.0), a);
+        assert_eq!(Vec2::new::<float>(1.0, 2.0), A);
         assert_eq!(Vec2::from_value(1.0), Vec2::new::<float>(1.0, 1.0));
 
         assert_eq!(Vec2::zero(), Vec2::new::<float>(0.0, 0.0));
@@ -451,55 +441,55 @@ mod vec2_tests {
         *mut_a.index_mut(0) = 42.0;
         *mut_a.index_mut(1) = 43.0;
         assert_eq!(mut_a, Vec2::new::<float>(42.0, 43.0));
-        mut_a = a;
+        mut_a = A;
 
         mut_a.swap(0, 1);
-        assert_eq!(*mut_a.index(0), *a.index(1));
-        assert_eq!(*mut_a.index(1), *a.index(0));
-        mut_a = a;
+        assert_eq!(*mut_a.index(0), *A.index(1));
+        assert_eq!(*mut_a.index(1), *A.index(0));
+        mut_a = A;
 
-        assert_eq!(a.x, 1.0);
-        assert_eq!(a.y, 2.0);
-        assert_eq!(*a.index(0), 1.0);
-        assert_eq!(*a.index(1), 2.0);
+        assert_eq!(A.x, 1.0);
+        assert_eq!(A.y, 2.0);
+        assert_eq!(*A.index(0), 1.0);
+        assert_eq!(*A.index(1), 2.0);
 
-        assert_eq!(-a, Vec2::new::<float>(-1.0, -2.0));
-        assert_eq!(a.neg(), Vec2::new::<float>(-1.0, -2.0));
+        assert_eq!(-A, Vec2::new::<float>(-1.0, -2.0));
+        assert_eq!(A.neg(), Vec2::new::<float>(-1.0, -2.0));
 
-        assert_eq!(a.mul_t(f1), Vec2::new::<float>( 1.5, 3.0));
-        assert_eq!(a.div_t(f2), Vec2::new::<float>( 2.0, 4.0));
+        assert_eq!(A.mul_t(F1), Vec2::new::<float>( 1.5, 3.0));
+        assert_eq!(A.div_t(F2), Vec2::new::<float>( 2.0, 4.0));
 
-        assert_eq!(a.add_v(&b), Vec2::new::<float>(    4.0,     6.0));
-        assert_eq!(a.sub_v(&b), Vec2::new::<float>(   -2.0,    -2.0));
-        assert_eq!(a.mul_v(&b), Vec2::new::<float>(    3.0,     8.0));
-        assert_eq!(a.div_v(&b), Vec2::new::<float>(1.0/3.0, 2.0/4.0));
+        assert_eq!(A.add_v(&B), Vec2::new::<float>(    4.0,     6.0));
+        assert_eq!(A.sub_v(&B), Vec2::new::<float>(   -2.0,    -2.0));
+        assert_eq!(A.mul_v(&B), Vec2::new::<float>(    3.0,     8.0));
+        assert_eq!(A.div_v(&B), Vec2::new::<float>(1.0/3.0, 2.0/4.0));
 
         mut_a.neg_self();
-        assert_eq!(mut_a, -a);
-        mut_a = a;
+        assert_eq!(mut_a, -A);
+        mut_a = A;
 
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
-        mut_a = a;
+        mut_a.mul_self_t(F1);
+        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a = A;
 
-        mut_a.div_self_t(f2);
-        assert_eq!(mut_a, a.div_t(f2));
-        mut_a = a;
+        mut_a.div_self_t(F2);
+        assert_eq!(mut_a, A.div_t(F2));
+        mut_a = A;
 
-        mut_a.add_self_v(&b);
-        assert_eq!(mut_a, a.add_v(&b));
-        mut_a = a;
+        mut_a.add_self_v(&B);
+        assert_eq!(mut_a, A.add_v(&B));
+        mut_a = A;
 
-        mut_a.sub_self_v(&b);
-        assert_eq!(mut_a, a.sub_v(&b));
-        mut_a = a;
+        mut_a.sub_self_v(&B);
+        assert_eq!(mut_a, A.sub_v(&B));
+        mut_a = A;
 
-        mut_a.mul_self_v(&b);
-        assert_eq!(mut_a, a.mul_v(&b));
-        mut_a = a;
+        mut_a.mul_self_v(&B);
+        assert_eq!(mut_a, A.mul_v(&B));
+        mut_a = A;
 
-        mut_a.div_self_v(&b);
-        assert_eq!(mut_a, a.div_v(&b));
+        mut_a.div_self_v(&B);
+        assert_eq!(mut_a, A.div_v(&B));
     }
 
     #[test]
@@ -508,20 +498,16 @@ mod vec2_tests {
         assert!(Vec2::new::<float>(0.0000001, 0.0000001).approx_eq(&Vec2::new::<float>(0.0, 0.0)));
     }
 
+    static E_A: Vec2<float> = Vec2 { x: 5.0, y: 12.0 }; // (5, 12, 13) Pythagorean triple
+    static E_B: Vec2<float> = Vec2 { x: 3.0, y: 4.0 }; // (3, 4, 5) Pythagorean triple
+
     #[test]
     fn test_vec2_euclidean() {
-        let a = Vec2::new::<float>(5.0, 12.0); // (5, 12, 13) Pythagorean triple
-        let b0 = Vec2::new::<float>(3.0, 4.0); // (3, 4, 5) Pythagorean triple
-        let b = a.add_v(&b0);
+        assert_eq!(E_A.magnitude(), 13.0);
+        assert_eq!(E_A.magnitude2(), 13.0 * 13.0);
 
-        assert_eq!(a.length(), 13.0);
-        assert_eq!(a.length2(), 13.0 * 13.0);
-
-        assert_eq!(b0.length(), 5.0);
-        assert_eq!(b0.length2(), 5.0 * 5.0);
-
-        assert_eq!(a.distance(&b), 5.0);
-        assert_eq!(a.distance2(&b), 5.0 * 5.0);
+        assert_eq!(E_B.magnitude(), 5.0);
+        assert_eq!(E_B.magnitude2(), 5.0 * 5.0);
 
         assert!(Vec2::new::<float>(1.0, 0.0).angle(&Vec2::new::<float>(0.0, 1.0)).approx_eq(&Real::frac_pi_2()));
         assert!(Vec2::new::<float>(10.0, 0.0).angle(&Vec2::new::<float>(0.0, 5.0)).approx_eq(&Real::frac_pi_2()));
@@ -853,38 +839,28 @@ impl<T:Not<T>> Not<Vec3<T>> for Vec3<T> {
 
 impl<T:Real> Vec3<T> {
     #[inline]
-    pub fn length2(&self) -> T {
+    pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
     #[inline]
-    pub fn length(&self) -> T {
-        self.length2().sqrt()
-    }
-
-    #[inline]
-    pub fn distance2(&self, other: &Vec3<T>) -> T {
-        other.sub_v(self).length2()
-    }
-
-    #[inline]
-    pub fn distance(&self, other: &Vec3<T>) -> T {
-        other.distance2(self).sqrt()
+    pub fn magnitude(&self) -> T {
+        self.magnitude2().sqrt()
     }
 
     #[inline]
     pub fn angle(&self, other: &Vec3<T>) -> T {
-        self.cross(other).length().atan2(&self.dot(other))
+        self.cross(other).magnitude().atan2(&self.dot(other))
     }
 
     #[inline]
     pub fn normalize(&self) -> Vec3<T> {
-        self.mul_t(one!(T)/self.length())
+        self.mul_t(one!(T)/self.magnitude())
     }
 
     #[inline]
-    pub fn normalize_to(&self, length: T) -> Vec3<T> {
-        self.mul_t(length / self.length())
+    pub fn normalize_to(&self, magnitude: T) -> Vec3<T> {
+        self.mul_t(magnitude / self.magnitude())
     }
 
     #[inline]
@@ -894,13 +870,13 @@ impl<T:Real> Vec3<T> {
 
     #[inline]
     pub fn normalize_self(&mut self) {
-        let rlen = self.length().recip();
+        let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
     #[inline]
-    pub fn normalize_self_to(&mut self, length: T) {
-        let n = length / self.length();
+    pub fn normalize_self_to(&mut self, magnitude: T) {
+        let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
@@ -1021,16 +997,16 @@ impl Vec3<bool> {
 mod vec3_tests{
     use core::vec::*;
 
+    static A: Vec3<float> = Vec3 { x: 1.0, y: 2.0, z: 3.0 };
+    static B: Vec3<float> = Vec3 { x: 4.0, y: 5.0, z: 6.0 };
+    static F1: float = 1.5;
+    static F2: float = 0.5;
+
     #[test]
     fn test_vec3() {
-        let a = Vec3 { x: 1.0, y: 2.0, z: 3.0 };
-        let b = Vec3 { x: 4.0, y: 5.0, z: 6.0 };
-        let f1 = 1.5;
-        let f2 = 0.5;
+        let mut mut_a = A;
 
-        let mut mut_a = a;
-
-        assert_eq!(Vec3::new::<float>(1.0, 2.0, 3.0), a);
+        assert_eq!(Vec3::new::<float>(1.0, 2.0, 3.0), A);
         assert_eq!(Vec3::from_value(1.0), Vec3::new::<float>(1.0, 1.0, 1.0));
 
         assert_eq!(Vec3::zero(), Vec3::new::<float>(0.0, 0.0, 0.0));
@@ -1043,68 +1019,68 @@ mod vec3_tests{
         *mut_a.index_mut(1) = 43.0;
         *mut_a.index_mut(2) = 44.0;
         assert_eq!(mut_a, Vec3::new::<float>(42.0, 43.0, 44.0));
-        mut_a = a;
+        mut_a = A;
 
         mut_a.swap(0, 2);
-        assert_eq!(*mut_a.index(0), *a.index(2));
-        assert_eq!(*mut_a.index(2), *a.index(0));
-        mut_a = a;
+        assert_eq!(*mut_a.index(0), *A.index(2));
+        assert_eq!(*mut_a.index(2), *A.index(0));
+        mut_a = A;
 
         mut_a.swap(1, 2);
-        assert_eq!(*mut_a.index(1), *a.index(2));
-        assert_eq!(*mut_a.index(2), *a.index(1));
-        mut_a = a;
+        assert_eq!(*mut_a.index(1), *A.index(2));
+        assert_eq!(*mut_a.index(2), *A.index(1));
+        mut_a = A;
 
-        assert_eq!(a.x, 1.0);
-        assert_eq!(a.y, 2.0);
-        assert_eq!(a.z, 3.0);
-        assert_eq!(*a.index(0), 1.0);
-        assert_eq!(*a.index(1), 2.0);
-        assert_eq!(*a.index(2), 3.0);
+        assert_eq!(A.x, 1.0);
+        assert_eq!(A.y, 2.0);
+        assert_eq!(A.z, 3.0);
+        assert_eq!(*A.index(0), 1.0);
+        assert_eq!(*A.index(1), 2.0);
+        assert_eq!(*A.index(2), 3.0);
 
-        assert_eq!(a.cross(&b), Vec3::new::<float>(-3.0, 6.0, -3.0));
+        assert_eq!(A.cross(&B), Vec3::new::<float>(-3.0, 6.0, -3.0));
 
-        mut_a.cross_self(&b);
-        assert_eq!(mut_a, a.cross(&b));
-        mut_a = a;
+        mut_a.cross_self(&B);
+        assert_eq!(mut_a, A.cross(&B));
+        mut_a = A;
 
-        assert_eq!(-a, Vec3::new::<float>(-1.0, -2.0, -3.0));
-        assert_eq!(a.neg(), Vec3::new::<float>(-1.0, -2.0, -3.0));
+        assert_eq!(-A, Vec3::new::<float>(-1.0, -2.0, -3.0));
+        assert_eq!(A.neg(), Vec3::new::<float>(-1.0, -2.0, -3.0));
 
-        assert_eq!(a.mul_t(f1), Vec3::new::<float>( 1.5, 3.0, 4.5));
-        assert_eq!(a.div_t(f2), Vec3::new::<float>( 2.0, 4.0, 6.0));
+        assert_eq!(A.mul_t(F1), Vec3::new::<float>( 1.5, 3.0, 4.5));
+        assert_eq!(A.div_t(F2), Vec3::new::<float>( 2.0, 4.0, 6.0));
 
-        assert_eq!(a.add_v(&b), Vec3::new::<float>(    5.0,     7.0,     9.0));
-        assert_eq!(a.sub_v(&b), Vec3::new::<float>(   -3.0,    -3.0,    -3.0));
-        assert_eq!(a.mul_v(&b), Vec3::new::<float>(    4.0,    10.0,    18.0));
-        assert_eq!(a.div_v(&b), Vec3::new::<float>(1.0/4.0, 2.0/5.0, 3.0/6.0));
+        assert_eq!(A.add_v(&B), Vec3::new::<float>(    5.0,     7.0,     9.0));
+        assert_eq!(A.sub_v(&B), Vec3::new::<float>(   -3.0,    -3.0,    -3.0));
+        assert_eq!(A.mul_v(&B), Vec3::new::<float>(    4.0,    10.0,    18.0));
+        assert_eq!(A.div_v(&B), Vec3::new::<float>(1.0/4.0, 2.0/5.0, 3.0/6.0));
 
         mut_a.neg_self();
-        assert_eq!(mut_a, -a);
-        mut_a = a;
+        assert_eq!(mut_a, -A);
+        mut_a = A;
 
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
-        mut_a = a;
+        mut_a.mul_self_t(F1);
+        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a = A;
 
-        mut_a.div_self_t(f2);
-        assert_eq!(mut_a, a.div_t(f2));
-        mut_a = a;
+        mut_a.div_self_t(F2);
+        assert_eq!(mut_a, A.div_t(F2));
+        mut_a = A;
 
-        mut_a.add_self_v(&b);
-        assert_eq!(mut_a, a.add_v(&b));
-        mut_a = a;
+        mut_a.add_self_v(&B);
+        assert_eq!(mut_a, A.add_v(&B));
+        mut_a = A;
 
-        mut_a.sub_self_v(&b);
-        assert_eq!(mut_a, a.sub_v(&b));
-        mut_a = a;
+        mut_a.sub_self_v(&B);
+        assert_eq!(mut_a, A.sub_v(&B));
+        mut_a = A;
 
-        mut_a.mul_self_v(&b);
-        assert_eq!(mut_a, a.mul_v(&b));
-        mut_a = a;
+        mut_a.mul_self_v(&B);
+        assert_eq!(mut_a, A.mul_v(&B));
+        mut_a = A;
 
-        mut_a.div_self_v(&b);
-        assert_eq!(mut_a, a.div_v(&b));
+        mut_a.div_self_v(&B);
+        assert_eq!(mut_a, A.div_v(&B));
     }
 
     #[test]
@@ -1113,20 +1089,16 @@ mod vec3_tests{
         assert!(Vec3::new::<float>(0.0000001, 0.0000001, 0.0000001).approx_eq(&Vec3::new::<float>(0.0, 0.0, 0.0)));
     }
 
+    static E_A: Vec3<float> = Vec3 { x: 2.0, y: 3.0, z: 6.0 }; // (2, 3, 6, 7) Pythagorean quadruple
+    static E_B: Vec3<float> = Vec3 { x: 1.0, y: 4.0, z: 8.0 }; // (1, 4, 8, 9) Pythagorean quadruple
+
     #[test]
     fn test_vec3_euclidean() {
-        let a = Vec3::new::<float>(2.0, 3.0, 6.0); // (2, 3, 6, 7) Pythagorean quadruple
-        let b0 = Vec3::new::<float>(1.0, 4.0, 8.0); // (1, 4, 8, 9) Pythagorean quadruple
-        let b = a.add_v(&b0);
+        assert_eq!(E_A.magnitude(), 7.0);
+        assert_eq!(E_A.magnitude2(), 7.0 * 7.0);
 
-        assert_eq!(a.length(), 7.0);
-        assert_eq!(a.length2(), 7.0 * 7.0);
-
-        assert_eq!(b0.length(), 9.0);
-        assert_eq!(b0.length2(), 9.0 * 9.0);
-
-        assert_eq!(a.distance(&b), 9.0);
-        assert_eq!(a.distance2(&b), 9.0 * 9.0);
+        assert_eq!(E_B.magnitude(), 9.0);
+        assert_eq!(E_B.magnitude2(), 9.0 * 9.0);
 
         assert!(Vec3::new::<float>(1.0, 0.0, 1.0).angle(&Vec3::new::<float>(1.0, 1.0, 0.0)).approx_eq(&Real::frac_pi_3()));
         assert!(Vec3::new::<float>(10.0, 0.0, 10.0).angle(&Vec3::new::<float>(5.0, 5.0, 0.0)).approx_eq(&Real::frac_pi_3()));
@@ -1447,38 +1419,28 @@ impl<T:Not<T>> Not<Vec4<T>> for Vec4<T> {
 
 impl<T:Real> Vec4<T> {
     #[inline]
-    pub fn length2(&self) -> T {
+    pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
     #[inline]
-    pub fn length(&self) -> T {
-        self.length2().sqrt()
-    }
-
-    #[inline]
-    pub fn distance2(&self, other: &Vec4<T>) -> T {
-        other.sub_v(self).length2()
-    }
-
-    #[inline]
-    pub fn distance(&self, other: &Vec4<T>) -> T {
-        other.distance2(self).sqrt()
+    pub fn magnitude(&self) -> T {
+        self.magnitude2().sqrt()
     }
 
     #[inline]
     pub fn angle(&self, other: &Vec4<T>) -> T {
-        (self.dot(other) / (self.length() * other.length())).acos()
+        (self.dot(other) / (self.magnitude() * other.magnitude())).acos()
     }
 
     #[inline]
     pub fn normalize(&self) -> Vec4<T> {
-        self.mul_t(one!(T)/self.length())
+        self.mul_t(one!(T)/self.magnitude())
     }
 
     #[inline]
-    pub fn normalize_to(&self, length: T) -> Vec4<T> {
-        self.mul_t(length / self.length())
+    pub fn normalize_to(&self, magnitude: T) -> Vec4<T> {
+        self.mul_t(magnitude / self.magnitude())
     }
 
     #[inline]
@@ -1488,13 +1450,13 @@ impl<T:Real> Vec4<T> {
 
     #[inline]
     pub fn normalize_self(&mut self) {
-        let rlen = self.length().recip();
+        let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
     #[inline]
-    pub fn normalize_self_to(&mut self, length: T) {
-        let n = length / self.length();
+    pub fn normalize_self_to(&mut self, magnitude: T) {
+        let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
@@ -1629,16 +1591,16 @@ impl Vec4<bool> {
 mod vec4_tests {
     use core::vec::*;
 
+    static A: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
+    static B: Vec4<float> = Vec4 { x: 5.0, y: 6.0, z: 7.0, w: 8.0 };
+    static F1: float = 1.5;
+    static F2: float = 0.5;
+
     #[test]
     fn test_vec4() {
-        let a = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
-        let b = Vec4 { x: 5.0, y: 6.0, z: 7.0, w: 8.0 };
-        let f1 = 1.5;
-        let f2 = 0.5;
+        let mut mut_a = A;
 
-        let mut mut_a = a;
-
-        assert_eq!(Vec4::new::<float>(1.0, 2.0, 3.0, 4.0), a);
+        assert_eq!(Vec4::new::<float>(1.0, 2.0, 3.0, 4.0), A);
         assert_eq!(Vec4::from_value(1.0), Vec4::new::<float>(1.0, 1.0, 1.0, 1.0));
 
         *mut_a.index_mut(0) = 42.0;
@@ -1646,17 +1608,17 @@ mod vec4_tests {
         *mut_a.index_mut(2) = 44.0;
         *mut_a.index_mut(3) = 45.0;
         assert_eq!(mut_a, Vec4::new::<float>(42.0, 43.0, 44.0, 45.0));
-        mut_a = a;
+        mut_a = A;
 
         mut_a.swap(0, 3);
-        assert_eq!(*mut_a.index(0), *a.index(3));
-        assert_eq!(*mut_a.index(3), *a.index(0));
-        mut_a = a;
+        assert_eq!(*mut_a.index(0), *A.index(3));
+        assert_eq!(*mut_a.index(3), *A.index(0));
+        mut_a = A;
 
         mut_a.swap(1, 2);
-        assert_eq!(*mut_a.index(1), *a.index(2));
-        assert_eq!(*mut_a.index(2), *a.index(1));
-        mut_a = a;
+        assert_eq!(*mut_a.index(1), *A.index(2));
+        assert_eq!(*mut_a.index(2), *A.index(1));
+        mut_a = A;
 
         assert_eq!(Vec4::zero(), Vec4::new::<float>(0.0, 0.0, 0.0, 0.0));
         assert_eq!(Vec4::unit_x(), Vec4::new::<float>(1.0, 0.0, 0.0, 0.0));
@@ -1665,54 +1627,54 @@ mod vec4_tests {
         assert_eq!(Vec4::unit_w(), Vec4::new::<float>(0.0, 0.0, 0.0, 1.0));
         assert_eq!(Vec4::identity(), Vec4::new::<float>(1.0, 1.0, 1.0, 1.0));
 
-        assert_eq!(a.x, 1.0);
-        assert_eq!(a.y, 2.0);
-        assert_eq!(a.z, 3.0);
-        assert_eq!(a.w, 4.0);
-        assert_eq!(*a.index(0), 1.0);
-        assert_eq!(*a.index(1), 2.0);
-        assert_eq!(*a.index(2), 3.0);
-        assert_eq!(*a.index(3), 4.0);
+        assert_eq!(A.x, 1.0);
+        assert_eq!(A.y, 2.0);
+        assert_eq!(A.z, 3.0);
+        assert_eq!(A.w, 4.0);
+        assert_eq!(*A.index(0), 1.0);
+        assert_eq!(*A.index(1), 2.0);
+        assert_eq!(*A.index(2), 3.0);
+        assert_eq!(*A.index(3), 4.0);
 
-        assert_eq!(-a, Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
-        assert_eq!(a.neg(), Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
+        assert_eq!(-A, Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
+        assert_eq!(A.neg(), Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
 
-        assert_eq!(a.mul_t(f1), Vec4::new::<float>( 1.5, 3.0, 4.5, 6.0));
-        assert_eq!(a.div_t(f2), Vec4::new::<float>( 2.0, 4.0, 6.0, 8.0));
+        assert_eq!(A.mul_t(F1), Vec4::new::<float>( 1.5, 3.0, 4.5, 6.0));
+        assert_eq!(A.div_t(F2), Vec4::new::<float>( 2.0, 4.0, 6.0, 8.0));
 
-        assert_eq!(a.add_v(&b), Vec4::new::<float>(    6.0,     8.0,    10.0,    12.0));
-        assert_eq!(a.sub_v(&b), Vec4::new::<float>(   -4.0,    -4.0,    -4.0,    -4.0));
-        assert_eq!(a.mul_v(&b), Vec4::new::<float>(    5.0,    12.0,    21.0,    32.0));
-        assert_eq!(a.div_v(&b), Vec4::new::<float>(1.0/5.0, 2.0/6.0, 3.0/7.0, 4.0/8.0));
+        assert_eq!(A.add_v(&B), Vec4::new::<float>(    6.0,     8.0,    10.0,    12.0));
+        assert_eq!(A.sub_v(&B), Vec4::new::<float>(   -4.0,    -4.0,    -4.0,    -4.0));
+        assert_eq!(A.mul_v(&B), Vec4::new::<float>(    5.0,    12.0,    21.0,    32.0));
+        assert_eq!(A.div_v(&B), Vec4::new::<float>(1.0/5.0, 2.0/6.0, 3.0/7.0, 4.0/8.0));
 
-        assert_eq!(a.dot(&b), 70.0);
+        assert_eq!(A.dot(&B), 70.0);
 
         mut_a.neg_self();
-        assert_eq!(mut_a, -a);
-        mut_a = a;
+        assert_eq!(mut_a, -A);
+        mut_a = A;
 
-        mut_a.mul_self_t(f1);
-        assert_eq!(mut_a, a.mul_t(f1));
-        mut_a = a;
+        mut_a.mul_self_t(F1);
+        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a = A;
 
-        mut_a.div_self_t(f2);
-        assert_eq!(mut_a, a.div_t(f2));
-        mut_a = a;
+        mut_a.div_self_t(F2);
+        assert_eq!(mut_a, A.div_t(F2));
+        mut_a = A;
 
-        mut_a.add_self_v(&b);
-        assert_eq!(mut_a, a.add_v(&b));
-        mut_a = a;
+        mut_a.add_self_v(&B);
+        assert_eq!(mut_a, A.add_v(&B));
+        mut_a = A;
 
-        mut_a.sub_self_v(&b);
-        assert_eq!(mut_a, a.sub_v(&b));
-        mut_a = a;
+        mut_a.sub_self_v(&B);
+        assert_eq!(mut_a, A.sub_v(&B));
+        mut_a = A;
 
-        mut_a.mul_self_v(&b);
-        assert_eq!(mut_a, a.mul_v(&b));
-        mut_a = a;
+        mut_a.mul_self_v(&B);
+        assert_eq!(mut_a, A.mul_v(&B));
+        mut_a = A;
 
-        mut_a.div_self_v(&b);
-        assert_eq!(mut_a, a.div_v(&b));
+        mut_a.div_self_v(&B);
+        assert_eq!(mut_a, A.div_v(&B));
     }
 
     #[test]
@@ -1721,20 +1683,16 @@ mod vec4_tests {
         assert!(Vec4::new::<float>(0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&Vec4::new::<float>(0.0, 0.0, 0.0, 0.0)));
     }
 
+    static E_A: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 4.0, w: 10.0 }; // (1, 2, 4, 10, 11) Pythagorean quintuple
+    static E_B: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 8.0, w: 10.0 }; // (1, 2, 8, 10, 13) Pythagorean quintuple
+
     #[test]
     fn test_vec4_euclidean() {
-        let a = Vec4::new::<float>(1.0, 2.0, 4.0, 10.0); // (1, 2, 4, 10, 11) Pythagorean quintuple
-        let b0 = Vec4::new::<float>(1.0, 2.0, 8.0, 10.0); // (1, 2, 8, 10, 13) Pythagorean quintuple
-        let b = a.add_v(&b0);
+        assert_eq!(E_A.magnitude(), 11.0);
+        assert_eq!(E_A.magnitude2(), 11.0 * 11.0);
 
-        assert_eq!(a.length(), 11.0);
-        assert_eq!(a.length2(), 11.0 * 11.0);
-
-        assert_eq!(b0.length(), 13.0);
-        assert_eq!(b0.length2(), 13.0 * 13.0);
-
-        assert_eq!(a.distance(&b), 13.0);
-        assert_eq!(a.distance2(&b), 13.0 * 13.0);
+        assert_eq!(E_B.magnitude(), 13.0);
+        assert_eq!(E_B.magnitude2(), 13.0 * 13.0);
 
         assert!(Vec4::new::<float>(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new::<float>(0.0, 1.0, 0.0, 1.0)).approx_eq(&Real::frac_pi_2()));
         assert!(Vec4::new::<float>(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new::<float>(0.0, 5.0, 0.0, 5.0)).approx_eq(&Real::frac_pi_2()));

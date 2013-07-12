@@ -120,7 +120,7 @@ impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
 
     #[inline]
     pub fn distance2(&self, other: &Point2<T>) -> T {
-        ((*other) - (*self)).length2()
+        ((*other) - (*self)).magnitude2()
     }
 
     /// Returns the scalar distance to the other point
@@ -254,7 +254,7 @@ impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
 
     #[inline]
     pub fn distance2(&self, other: &Point3<T>) -> T {
-        ((*other) - (*self)).length2()
+        ((*other) - (*self)).magnitude2()
     }
 
     /// Returns the scalar distance to the other point
