@@ -15,5 +15,8 @@
 
 //! Procedural noise generation utility types
 
+pub use self::perlin::Perlin;
+pub use self::simplex::Simplex;
+
 pub mod perlin;
 pub mod simplex;

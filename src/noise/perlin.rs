@@ -13,4 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO
+use geom::{Point2, Point3};
+
+pub struct Perlin<T>;
+
+impl<T> Perlin<T> {
+    pub fn new() -> Perlin<T> {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise1(&self, _x: T) -> T {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise2(&self, _pos: Point2<T>) -> T {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise3(&self, _pos: Point3<T>) -> T {
+        fail!("Not yet implemented!")
+    }
+}

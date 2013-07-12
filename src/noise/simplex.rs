@@ -13,4 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO
+use core::Vec4;
+use geom::{Point2, Point3};
+
+pub struct Simplex<T>;
+
+impl<T> Simplex<T> {
+    pub fn new() -> Simplex<T> {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise2(&self, _pos: Point2<T>) -> T {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise3(&self, _pos: Point3<T>) -> T {
+        fail!("Not yet implemented!")
+    }
+
+    pub fn noise4(&self, _vec: Vec4<T>) -> T {
+        fail!("Not yet implemented!")
+    }
+}
