@@ -26,7 +26,6 @@
 // Macros
 
 mod macros;
-
 #[path = "core/macros.rs"]
 mod core_macros;
 

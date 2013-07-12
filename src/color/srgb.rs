@@ -14,6 +14,8 @@
 // limitations under the License.
 
 use core::{Dimensional, Swap};
+use core::{Vec3, ToVec3, AsVec3};
+use core::{Vec4, ToVec4, AsVec4};
 
 #[deriving(Clone, Eq)]
 pub struct SRGB<T> { r: T, g: T, b: T }
@@ -26,6 +28,8 @@ impl<T> SRGB<T> {
 }
 
 impl_dimensional!(SRGB, T, 3)
+impl_to_vec!(SRGB, 3)
+impl_as_vec!(SRGB, 3)
 impl_swap!(SRGB)
 impl_approx!(SRGB { r, g, b })
 
@@ -33,6 +37,8 @@ impl_approx!(SRGB { r, g, b })
 pub struct SRGBA<T> { r: T, g: T, b: T, a: T }
 
 impl_dimensional!(SRGBA, T, 4)
+impl_to_vec!(SRGBA, 4)
+impl_as_vec!(SRGBA, 4)
 impl_swap!(SRGBA)
 impl_approx!(SRGBA { r, g, b, a })
 

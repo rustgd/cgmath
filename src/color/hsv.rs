@@ -17,6 +17,8 @@ use std::num;
 use std::cast;
 
 use core::{Dimensional, Swap};
+use core::{Vec3, ToVec3, AsVec3};
+use core::{Vec4, ToVec4, AsVec4};
 use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};
 use color::{RGB, ToRGB, RGBA, ToRGBA};
@@ -25,6 +27,8 @@ use color::{RGB, ToRGB, RGBA, ToRGBA};
 pub struct HSV<T> { h: T, s: T, v: T }
 
 impl_dimensional!(HSV, T, 3)
+impl_to_vec!(HSV, 3)
+impl_as_vec!(HSV, 3)
 impl_swap!(HSV)
 impl_approx!(HSV { h, s, v })
 
@@ -126,6 +130,8 @@ impl<T:Clone + FloatChannel> ToRGB for HSV<T> {
 pub struct HSVA<T> { h: T, s: T, v: T, a: T }
 
 impl_dimensional!(HSVA, T, 4)
+impl_to_vec!(HSVA, 4)
+impl_as_vec!(HSVA, 4)
 impl_swap!(HSVA)
 impl_approx!(HSVA { h, s, v, a })
 

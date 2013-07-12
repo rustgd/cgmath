@@ -49,6 +49,8 @@ pub trait Point<T, Vec, Ray>: Eq
 pub struct Point2<T> { x: T, y: T }
 
 impl_dimensional!(Point2, T, 2)
+impl_to_vec!(Point2, 2)
+impl_as_vec!(Point2, 2)
 impl_swap!(Point2)
 impl_approx!(Point2 { x, y })
 
@@ -83,25 +85,6 @@ impl<T:Num> Point2<T> {
     #[inline]
     pub fn origin() -> Point2<T> {
         Point2::new(zero!(T), zero!(T))
-    }
-}
-
-impl<T:Clone + Num> ToVec2<T> for Point2<T> {
-    #[inline]
-    pub fn to_vec2(&self) -> Vec2<T> {
-        self.as_vec2().clone()
-    }
-}
-
-impl<T:Num> AsVec2<T> for Point2<T> {
-    #[inline]
-    pub fn as_vec2<'a>(&'a self) -> &'a Vec2<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_vec2<'a>(&'a mut self) -> &'a mut Vec2<T> {
-        unsafe { cast::transmute(self) }
     }
 }
 
@@ -206,6 +189,8 @@ mod test_point2 {
 pub struct Point3<T> { x: T, y: T, z: T }
 
 impl_dimensional!(Point3, T, 3)
+impl_to_vec!(Point3, 3)
+impl_as_vec!(Point3, 3)
 impl_swap!(Point3)
 impl_approx!(Point3 { x, y, z })
 
@@ -240,27 +225,6 @@ impl<T:Num> Point3<T> {
     #[inline]
     pub fn origin() -> Point3<T> {
         Point3::new(zero!(T), zero!(T), zero!(T))
-    }
-}
-
-impl<T:Clone + Num> ToVec3<T> for Point3<T> {
-    /// Converts the point to a three-dimensional homogeneous vector:
-    /// `[x, y] -> [x, y, 1]`
-    #[inline]
-    pub fn to_vec3(&self) -> Vec3<T> {
-        self.as_vec3().clone()
-    }
-}
-
-impl<T:Num> AsVec3<T> for Point3<T> {
-    #[inline]
-    pub fn as_vec3<'a>(&'a self) -> &'a Vec3<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_vec3<'a>(&'a mut self) -> &'a mut Vec3<T> {
-        unsafe { cast::transmute(self) }
     }
 }
 

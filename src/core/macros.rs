@@ -43,6 +43,47 @@ macro_rules! impl_dimensional(
     )
 )
 
+macro_rules! impl_to_vec(
+    ($Self:ident, 2) => (impl_to_vec_helper!(ToVec2, $Self, Vec2, to_vec2, as_vec2));
+    ($Self:ident, 3) => (impl_to_vec_helper!(ToVec3, $Self, Vec3, to_vec3, as_vec3));
+    ($Self:ident, 4) => (impl_to_vec_helper!(ToVec4, $Self, Vec4, to_vec4, as_vec4));
+)
+
+macro_rules! impl_to_vec_helper(
+    ($ToVec:ident, $Self:ident, $Vec:ident, $to_vec:ident, $as_vec:ident) => (
+        impl<T:Clone> $ToVec<T> for $Self<T> {
+            #[inline]
+            pub fn $to_vec(&self) -> $Vec<T> {
+                self.$as_vec().clone()
+            }
+        }
+    )
+)
+
+macro_rules! impl_as_vec(
+    ($Self:ident, 2) => (impl_as_vec_helper!(AsVec2, $Self, Vec2, as_vec2, as_mut_vec2));
+    ($Self:ident, 3) => (impl_as_vec_helper!(AsVec3, $Self, Vec3, as_vec3, as_mut_vec3));
+    ($Self:ident, 4) => (impl_as_vec_helper!(AsVec4, $Self, Vec4, as_vec4, as_mut_vec4));
+)
+
+macro_rules! impl_as_vec_helper(
+    ($AsVec:ident, $Self:ident, $Vec:ident, $as_vec:ident, $as_mut_vec:ident) => (
+        impl<T> $AsVec<T> for $Self<T> {
+            #[inline]
+            pub fn $as_vec<'a>(&'a self) -> &'a $Vec<T> {
+                use std::cast::transmute;
+                unsafe { transmute(self) }
+            }
+
+            #[inline]
+            pub fn $as_mut_vec<'a>(&'a mut self) -> &'a mut $Vec<T> {
+                use std::cast::transmute;
+                unsafe { transmute(self) }
+            }
+        }
+    )
+)
+
 macro_rules! impl_swap(
     ($Self:ident) => (
         impl<T:Clone> Swap for $Self<T> {
