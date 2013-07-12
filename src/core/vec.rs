@@ -267,13 +267,6 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     }
 }
 
-impl<T:Not<T>> Not<Vec2<T>> for Vec2<T> {
-    pub fn not(&self) -> Vec2<T> {
-        Vec2::new(!*self.index(0),
-                  !*self.index(1))
-    }
-}
-
 impl<T:Real> Vec2<T> {
     #[inline]
     pub fn magnitude2(&self) -> T {
@@ -409,9 +402,10 @@ impl Vec2<bool> {
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1)
     }
+}
 
-    #[inline]
-    pub fn not(&self) -> Vec2<bool> {
+impl<T:Not<T>> Not<Vec2<T>> for Vec2<T> {
+    pub fn not(&self) -> Vec2<T> {
         Vec2::new(!*self.index(0),
                   !*self.index(1))
     }
@@ -534,15 +528,15 @@ mod vec2_tests {
 
         assert_eq!(tf.any(), true);
         assert_eq!(tf.all(), false);
-        assert_eq!(tf.not(), Vec2::new(false, true));
+        assert_eq!(!tf, Vec2::new(false, true));
 
         assert_eq!(ff.any(), false);
         assert_eq!(ff.all(), false);
-        assert_eq!(ff.not(), Vec2::new(true, true));
+        assert_eq!(!ff, Vec2::new(true, true));
 
         assert_eq!(tt.any(), true);
         assert_eq!(tt.all(), true);
-        assert_eq!(tt.not(), Vec2::new(false, false));
+        assert_eq!(!tt, Vec2::new(false, false));
     }
 }
 
@@ -829,14 +823,6 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     }
 }
 
-impl<T:Not<T>> Not<Vec3<T>> for Vec3<T> {
-    pub fn not(&self) -> Vec3<T> {
-        Vec3::new(!*self.index(0),
-                  !*self.index(1),
-                  !*self.index(2))
-    }
-}
-
 impl<T:Real> Vec3<T> {
     #[inline]
     pub fn magnitude2(&self) -> T {
@@ -984,9 +970,10 @@ impl Vec3<bool> {
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2)
     }
+}
 
-    #[inline]
-    pub fn not(&self) -> Vec3<bool> {
+impl<T:Not<T>> Not<Vec3<T>> for Vec3<T> {
+    pub fn not(&self) -> Vec3<T> {
         Vec3::new(!*self.index(0),
                   !*self.index(1),
                   !*self.index(2))
@@ -1125,15 +1112,15 @@ mod vec3_tests{
 
         assert_eq!(tft.any(), true);
         assert_eq!(tft.all(), false);
-        assert_eq!(tft.not(), Vec3::new(false, true, false));
+        assert_eq!(!tft, Vec3::new(false, true, false));
 
         assert_eq!(fff.any(), false);
         assert_eq!(fff.all(), false);
-        assert_eq!(fff.not(), Vec3::new(true, true, true));
+        assert_eq!(!fff, Vec3::new(true, true, true));
 
         assert_eq!(ttt.any(), true);
         assert_eq!(ttt.all(), true);
-        assert_eq!(ttt.not(), Vec3::new(false, false, false));
+        assert_eq!(!ttt, Vec3::new(false, false, false));
     }
 }
 
@@ -1408,15 +1395,6 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     }
 }
 
-impl<T:Not<T>> Not<Vec4<T>> for Vec4<T> {
-    pub fn not(&self) -> Vec4<T> {
-        Vec4::new(!*self.index(0),
-                  !*self.index(1),
-                  !*self.index(2),
-                  !*self.index(3))
-    }
-}
-
 impl<T:Real> Vec4<T> {
     #[inline]
     pub fn magnitude2(&self) -> T {
@@ -1576,16 +1554,16 @@ impl Vec4<bool> {
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
     }
+}
 
-    #[inline]
-    pub fn not(&self) -> Vec4<bool> {
+impl<T:Not<T>> Not<Vec4<T>> for Vec4<T> {
+    pub fn not(&self) -> Vec4<T> {
         Vec4::new(!*self.index(0),
                   !*self.index(1),
                   !*self.index(2),
                   !*self.index(3))
     }
 }
-
 
 #[cfg(test)]
 mod vec4_tests {
@@ -1719,14 +1697,14 @@ mod vec4_tests {
 
         assert_eq!(tftf.any(), true);
         assert_eq!(tftf.all(), false);
-        assert_eq!(tftf.not(), Vec4::new(false, true, false, true));
+        assert_eq!(!tftf, Vec4::new(false, true, false, true));
 
         assert_eq!(ffff.any(), false);
         assert_eq!(ffff.all(), false);
-        assert_eq!(ffff.not(), Vec4::new(true, true, true, true));
+        assert_eq!(!ffff, Vec4::new(true, true, true, true));
 
         assert_eq!(tttt.any(), true);
         assert_eq!(tttt.all(), true);
-        assert_eq!(tttt.not(), Vec4::new(false, false, false, false));
+        assert_eq!(!tttt, Vec4::new(false, false, false, false));
     }
 }
