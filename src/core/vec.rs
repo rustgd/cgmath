@@ -13,12 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[cfg(geom)]
-use std::cast;
-
 use core::{Dimensional, Swap};
-#[cfg(geom)]
-use geom::{Point2, Point3};
 
 #[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
@@ -63,24 +58,6 @@ impl<T> Vec2<T> {
     #[inline]
     pub fn new(x: T, y: T) -> Vec2<T> {
         Vec2 { x: x, y: y }
-    }
-}
-
-#[cfg(geom)]
-impl<T> Vec2<T> {
-    #[inline]
-    pub fn from_point(point: Point2<T>) -> Vec2<T> {
-        unsafe { cast::transmute(point) }
-    }
-
-    #[inline]
-    pub fn as_point<'a>(&'a self) -> &'a Point2<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_point<'a>(&'a mut self) -> &'a mut Point2<T> {
-        unsafe { cast::transmute(self) }
     }
 }
 
@@ -585,24 +562,6 @@ impl<T> Vec3<T> {
     #[inline]
     pub fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
-    }
-}
-
-#[cfg(geom)]
-impl<T> Vec3<T> {
-    #[inline]
-    pub fn from_point(point: Point3<T>) -> Vec3<T> {
-        unsafe { cast::transmute(point) }
-    }
-
-    #[inline]
-    pub fn as_point<'a>(&'a self) -> &'a Point3<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_point<'a>(&'a mut self) -> &'a mut Point3<T> {
-        unsafe { cast::transmute(self) }
     }
 }
 

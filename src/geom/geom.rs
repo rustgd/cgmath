@@ -16,7 +16,9 @@
 pub use self::aabb::{AABB2, AABB3};
 pub use self::frustum::{Frustum, FrustumPoints};
 pub use self::plane::Plane3;
-pub use self::point::{Point, Point2, Point3};
+pub use self::point::Point;
+pub use self::point::{Point2, AsPoint2};
+pub use self::point::{Point3, AsPoint3};
 pub use self::ray::{Ray2, Ray3};
 pub use self::sphere::Sphere;
 

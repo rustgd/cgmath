@@ -52,6 +52,23 @@ impl_dimensional!(Point2, T, 2)
 impl_swap!(Point2)
 impl_approx!(Point2 { x, y })
 
+pub trait AsPoint2<T> {
+    pub fn as_point2<'a>(&'a self) -> &'a Point2<T>;
+    pub fn as_mut_point2<'a>(&'a mut self) -> &'a mut Point2<T>;
+}
+
+impl<T:Clone + Num> AsPoint2<T> for Vec2<T> {
+    #[inline]
+    pub fn as_point2<'a>(&'a self) -> &'a Point2<T> {
+        unsafe { cast::transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_point2<'a>(&'a mut self) -> &'a mut Point2<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
+
 impl<T:Num> Point2<T> {
     #[inline]
     pub fn new(x: T, y: T) -> Point2<T> {
@@ -191,6 +208,23 @@ pub struct Point3<T> { x: T, y: T, z: T }
 impl_dimensional!(Point3, T, 3)
 impl_swap!(Point3)
 impl_approx!(Point3 { x, y, z })
+
+pub trait AsPoint3<T> {
+    pub fn as_point3<'a>(&'a self) -> &'a Point3<T>;
+    pub fn as_mut_point3<'a>(&'a mut self) -> &'a mut Point3<T>;
+}
+
+impl<T:Clone + Num> AsPoint3<T> for Vec3<T> {
+    #[inline]
+    pub fn as_point3<'a>(&'a self) -> &'a Point3<T> {
+        unsafe { cast::transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_point3<'a>(&'a mut self) -> &'a mut Point3<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
 
 impl<T:Num> Point3<T> {
     #[inline]
