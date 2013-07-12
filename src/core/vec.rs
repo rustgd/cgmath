@@ -46,6 +46,15 @@ pub type Vec2u32 = Vec2<u32>;
 pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
 
+pub trait ToVec2<T> {
+    pub fn to_vec2(&self) -> Vec2<T>;
+}
+
+pub trait AsVec2<T> {
+    pub fn as_vec2<'a>(&'a self) -> &'a Vec2<T>;
+    pub fn as_mut_vec2<'a>(&'a mut self) -> &'a mut Vec2<T>;
+}
+
 impl_approx!(Vec2 { x, y })
 
 impl<T> Vec2<T> {
@@ -78,6 +87,16 @@ impl<T:Clone> Vec2<T> {
     pub fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value.clone(),
                   value.clone())
+    }
+}
+
+impl<T:Clone + Num> ToVec3<T> for Vec2<T> {
+    /// Converts the vector to a three-dimensional homogeneous vector:
+    /// `[x, y] -> [x, y, 0]`
+    pub fn to_vec3(&self) -> Vec3<T> {
+        Vec3::new((*self).index(0).clone(),
+                  (*self).index(1).clone(),
+                  zero!(T))
     }
 }
 
@@ -567,6 +586,15 @@ pub type Vec3u32 = Vec3<u32>;
 pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
 
+pub trait ToVec3<T> {
+    pub fn to_vec3(&self) -> Vec3<T>;
+}
+
+pub trait AsVec3<T> {
+    pub fn as_vec3<'a>(&'a self) -> &'a Vec3<T>;
+    pub fn as_mut_vec3<'a>(&'a mut self) -> &'a mut Vec3<T>;
+}
+
 impl_approx!(Vec3 { x, y, z })
 
 impl<T> Vec3<T> {
@@ -600,6 +628,17 @@ impl<T:Clone> Vec3<T> {
         Vec3::new(value.clone(),
                   value.clone(),
                   value.clone())
+    }
+}
+
+impl<T:Clone + Num> ToVec4<T> for Vec3<T> {
+    /// Converts the vector to a four-dimensional homogeneous vector:
+    /// `[x, y, z] -> [x, y, z, 0]`
+    pub fn to_vec4(&self) -> Vec4<T> {
+        Vec4::new((*self).index(0).clone(),
+                  (*self).index(1).clone(),
+                  (*self).index(2).clone(),
+                  zero!(T))
     }
 }
 
@@ -1151,6 +1190,15 @@ pub type Vec4u16 = Vec4<u16>;
 pub type Vec4u32 = Vec4<u32>;
 pub type Vec4u64 = Vec4<u64>;
 pub type Vec4b   = Vec4<bool>;
+
+pub trait ToVec4<T> {
+    pub fn to_vec4(&self) -> Vec4<T>;
+}
+
+pub trait AsVec4<T> {
+    pub fn as_vec4<'a>(&'a self) -> &'a Vec4<T>;
+    pub fn as_mut_vec4<'a>(&'a mut self) -> &'a mut Vec4<T>;
+}
 
 impl_approx!(Vec4 { x, y, z, w })
 

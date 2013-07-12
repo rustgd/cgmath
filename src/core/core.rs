@@ -20,7 +20,9 @@ pub use self::swap::Swap;
 
 pub use self::mat::{Mat2, ToMat2, Mat3, ToMat3, Mat4, ToMat4};
 pub use self::quat::{Quat, ToQuat};
-pub use self::vec::{Vec2, Vec3, Vec4};
+pub use self::vec::{Vec2, ToVec2, AsVec2};
+pub use self::vec::{Vec3, ToVec3, AsVec3};
+pub use self::vec::{Vec4, ToVec4, AsVec4};
 
 pub mod dim;
 pub mod swap;

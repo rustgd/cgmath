@@ -22,7 +22,10 @@
 
 use std::cast;
 
-use core::{Mat2, Mat3, Quat, Vec2, Vec3, Vec4};
+use core::{Mat2, Mat3, Quat};
+use core::{Vec2, ToVec2, AsVec2};
+use core::{Vec3, ToVec3, AsVec3};
+use core::{Vec4, ToVec4};
 
 /// A geometric point
 pub trait Point<T, Vec>: Eq
@@ -31,9 +34,6 @@ pub trait Point<T, Vec>: Eq
                        + Mul<Vec, Self>
                        + ApproxEq<T>
                        + ToStr {
-    pub fn as_vec<'a>(&'a self) -> &'a Vec;
-    pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec;
-
     pub fn translate(&self, offset: &Vec) -> Self;
     pub fn scale(&self, factor: &Vec) -> Self;
     pub fn distance2(&self, other: &Self) -> T;
@@ -54,7 +54,7 @@ impl<T:Num> Point2<T> {
     }
 
     #[inline]
-    pub fn from_vec(vec: Vec2<T>) -> Point2<T> {
+    pub fn from_vec2(vec: Vec2<T>) -> Point2<T> {
         unsafe { cast::transmute(vec) }
     }
 
@@ -64,7 +64,26 @@ impl<T:Num> Point2<T> {
     }
 }
 
-impl<T:Clone + Num> Point2<T> {
+impl<T:Clone + Num> ToVec2<T> for Point2<T> {
+    #[inline]
+    pub fn to_vec2(&self) -> Vec2<T> {
+        self.as_vec2().clone()
+    }
+}
+
+impl<T:Num> AsVec2<T> for Point2<T> {
+    #[inline]
+    pub fn as_vec2<'a>(&'a self) -> &'a Vec2<T> {
+        unsafe { cast::transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_vec2<'a>(&'a mut self) -> &'a mut Vec2<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
+
+impl<T:Clone + Num> ToVec3<T> for Point2<T> {
     /// Converts the point to a three-dimensional homogeneous vector:
     /// `[x, y] -> [x, y, 1]`
     #[inline]
@@ -84,21 +103,11 @@ impl<T:Clone + Float> Point2<T> {
 
     #[inline]
     pub fn rotate_m(&self, mat: &Mat2<T>) -> Point2<T> {
-        Point2::from_vec(mat.mul_v(self.as_vec()))
+        Point2::from_vec2(mat.mul_v(self.as_vec2()))
     }
 }
 
 impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
-    #[inline]
-    pub fn as_vec<'a>(&'a self) -> &'a Vec2<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec2<T> {
-        unsafe { cast::transmute(self) }
-    }
-
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
         (*self) + (*offset)
@@ -177,7 +186,7 @@ impl<T:Num> Point3<T> {
     }
 
     #[inline]
-    pub fn from_vec(vec: Vec3<T>) -> Point3<T> {
+    pub fn from_vec3(vec: Vec3<T>) -> Point3<T> {
         unsafe { cast::transmute(vec) }
     }
 
@@ -187,7 +196,28 @@ impl<T:Num> Point3<T> {
     }
 }
 
-impl<T:Clone + Num> Point3<T> {
+impl<T:Clone + Num> ToVec3<T> for Point3<T> {
+    /// Converts the point to a three-dimensional homogeneous vector:
+    /// `[x, y] -> [x, y, 1]`
+    #[inline]
+    pub fn to_vec3(&self) -> Vec3<T> {
+        self.as_vec3().clone()
+    }
+}
+
+impl<T:Num> AsVec3<T> for Point3<T> {
+    #[inline]
+    pub fn as_vec3<'a>(&'a self) -> &'a Vec3<T> {
+        unsafe { cast::transmute(self) }
+    }
+
+    #[inline]
+    pub fn as_mut_vec3<'a>(&'a mut self) -> &'a mut Vec3<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
+
+impl<T:Clone + Num> ToVec4<T> for Point3<T> {
     /// Converts the point to a four-dimensional homogeneous vector:
     /// `[x, y, z] -> [x, y, z, 1]`
     #[inline]
@@ -202,26 +232,16 @@ impl<T:Clone + Num> Point3<T> {
 impl<T:Clone + Float> Point3<T> {
     #[inline]
     pub fn rotate_q(&self, quat: &Quat<T>) -> Point3<T> {
-        Point3::from_vec(quat.mul_v(self.as_vec()))
+        Point3::from_vec3(quat.mul_v(self.as_vec3()))
     }
 
     #[inline]
     pub fn rotate_m(&self, mat: &Mat3<T>) -> Point3<T> {
-        Point3::from_vec(mat.mul_v(self.as_vec()))
+        Point3::from_vec3(mat.mul_v(self.as_vec3()))
     }
 }
 
 impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
-    #[inline]
-    pub fn as_vec<'a>(&'a self) -> &'a Vec3<T> {
-        unsafe { cast::transmute(self) }
-    }
-
-    #[inline]
-    pub fn as_mut_vec<'a>(&'a mut self) -> &'a mut Vec3<T> {
-        unsafe { cast::transmute(self) }
-    }
-
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
         (*self) + (*offset)

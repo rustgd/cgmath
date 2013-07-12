@@ -15,7 +15,7 @@
 
 //! Axis-aligned bounding boxes
 
-use core::{Vec2, Vec3};
+use core::{Vec2, AsVec2, Vec3, AsVec3};
 use geom::{Point2, Point3};
 
 pub struct AABB2<T> {
@@ -36,9 +36,7 @@ impl<T:Clone + Float> AABB2<T> {
     #[inline]
     pub fn from_bounds(mn: Point2<T>, mx: Point2<T>) -> AABB2<T> {
         AABB2 {
-            center: Point2::from_vec(mn.as_vec()
-                                    .add_v(mx.as_vec())
-                                    .div_t(two!(T))),
+            center: Point2::from_vec2(mn.as_vec2().add_v(mx.as_vec2()).div_t(two!(T))),
             size: mx - mn,
         }
     }
@@ -62,9 +60,7 @@ impl<T:Clone + Float> AABB3<T> {
     #[inline]
     pub fn from_bounds(mn: Point3<T>, mx: Point3<T>) -> AABB3<T> {
         AABB3 {
-            center: Point3::from_vec(mn.as_vec()
-                                    .add_v(mx.as_vec())
-                                    .div_t(two!(T))),
+            center: Point3::from_vec3(mn.as_vec3().add_v(mx.as_vec3()).div_t(two!(T))),
             size: mx - mn,
         }
     }

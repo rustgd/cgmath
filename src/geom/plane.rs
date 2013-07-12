@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Vec3, Vec4, Mat3};
+use core::{Vec3, AsVec3, Vec4, Mat3};
 use geom::{Point, Point3, Ray3};
 
 /// A plane formed from the equation: `Ax + Bx + Cx + D = 0`
@@ -59,7 +59,7 @@ impl<T:Clone + Float> Plane3<T> {
 
     /// Compute the distance from the plane to the point
     pub fn distance(&self, pos: &Point3<T>) -> T {
-        self.normal.dot(pos.as_vec()) + self.distance
+        self.normal.dot(pos.as_vec3()) + self.distance
     }
 
     /// Computes the point at which `ray` intersects the plane
@@ -94,7 +94,7 @@ impl<T:Clone + Float> Plane3<T> {
         } else {
             // compute the normal and the distance to the plane
             normal.normalize_self();
-            let distance = -a.as_vec().dot(&normal);
+            let distance = -a.as_vec3().dot(&normal);
 
             Some(Plane3::from_nd(normal, distance))
         }
