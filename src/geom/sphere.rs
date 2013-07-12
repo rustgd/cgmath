@@ -22,6 +22,8 @@ pub struct Sphere<T> {
     radius: T,
 }
 
+impl_approx!(Sphere { center, radius })
+
 impl<T> Sphere<T> {
     #[inline]
     pub fn new(center: Point3<T>, radius: T) -> Sphere<T> {

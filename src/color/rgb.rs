@@ -20,11 +20,10 @@ use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};
 use color::{HSV, ToHSV, HSVA, ToHSVA};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 #[deriving(Clone, Eq)]
 pub struct RGB<T> { r: T, g: T, b: T }
+
+impl_approx!(RGB { r, g, b })
 
 impl<T:Channel> RGB<T> {
     #[inline]
@@ -119,6 +118,8 @@ impl<T:Clone + Channel> ToHSV for RGB<T> {
 
 #[deriving(Clone, Eq)]
 pub struct RGBA<T> { r: T, g: T, b: T, a: T }
+
+impl_approx!(RGBA { r, g, b, a })
 
 impl<T:Channel> RGBA<T> {
     #[inline]

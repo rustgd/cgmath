@@ -17,9 +17,6 @@ use core::Dimensional;
 use core::{Mat3, ToMat3};
 use core::Vec3;
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 // GLSL-style type aliases
 
 pub type quat  = Quat<f32>;

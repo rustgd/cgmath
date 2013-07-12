@@ -23,8 +23,12 @@ impl<T> SRGB<T> {
     }
 }
 
+impl_approx!(SRGB { r, g, b })
+
 #[deriving(Clone, Eq)]
 pub struct SRGBA<T> { r: T, g: T, b: T, a: T }
+
+impl_approx!(SRGBA { r, g, b, a })
 
 impl<T> SRGBA<T> {
     #[inline]

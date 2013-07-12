@@ -23,6 +23,8 @@
 #[license = "ASL2"];
 #[crate_type = "lib"];
 
+mod macros;
+
 #[path = "core/core.rs"]
 pub mod core;
 

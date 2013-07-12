@@ -16,9 +16,6 @@
 use core::Mat4;
 use geom::{Plane3, Point3};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 #[deriving(Clone, Eq)]
 pub struct Frustum<T> {
     left:   Plane3<T>,
@@ -28,6 +25,12 @@ pub struct Frustum<T> {
     near:   Plane3<T>,
     far:    Plane3<T>,
 }
+
+impl_approx!(Frustum {
+    left, right,
+    top, bottom,
+    near, far
+})
 
 #[deriving(Clone, Eq)]
 pub struct FrustumPoints<T> {
@@ -40,6 +43,17 @@ pub struct FrustumPoints<T> {
     far_bottom_left:   Point3<T>,
     far_bottom_right:  Point3<T>,
 }
+
+impl_approx!(FrustumPoints {
+    near_top_left,
+    near_top_right,
+    near_bottom_left,
+    near_bottom_right,
+    far_top_left,
+    far_top_right,
+    far_bottom_left,
+    far_bottom_right
+})
 
 impl<T:Clone + Float> Frustum<T> {
     /// Constructs a frustum
@@ -94,27 +108,5 @@ impl<T:Clone + Float> Frustum<T> {
             far_bottom_left:   self.far.intersection_3pl(&self.bottom, &self.left).unwrap(),
             far_bottom_right:  self.far.intersection_3pl(&self.bottom, &self.right).unwrap(),
         }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Frustum<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Frustum<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Frustum<T>, epsilon: &T) -> bool {
-        self.left.approx_eq_eps(&other.left, epsilon) &&
-        self.right.approx_eq_eps(&other.right, epsilon) &&
-        self.bottom.approx_eq_eps(&other.bottom, epsilon) &&
-        self.top.approx_eq_eps(&other.top, epsilon) &&
-        self.near.approx_eq_eps(&other.near, epsilon) &&
-        self.far.approx_eq_eps(&other.far, epsilon)
     }
 }

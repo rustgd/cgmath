@@ -18,13 +18,12 @@
 use core::{Vec2, Vec3};
 use geom::{Point2, Point3};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 pub struct AABB2<T> {
     center: Point2<T>,
     size: Vec2<T>,
 }
+
+impl_approx!(AABB2 { center, size })
 
 impl<T> AABB2<T> {
     #[inline]
@@ -49,6 +48,8 @@ pub struct AABB3<T> {
     center: Point3<T>,
     size: Vec3<T>,
 }
+
+impl_approx!(AABB3 { center, size })
 
 impl<T> AABB3<T> {
     #[inline]

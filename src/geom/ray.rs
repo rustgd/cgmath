@@ -22,27 +22,11 @@ pub struct Ray3<T> {
     direction: Vec3<T>,
 }
 
+impl_approx!(Ray3 { origin, direction })
+
 impl<T> Ray3<T> {
     #[inline]
     pub fn new(origin: Point3<T>, direction: Vec3<T>) -> Ray3<T> {
         Ray3 { origin: origin, direction: direction }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Ray3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Ray3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Ray3<T>, epsilon: &T) -> bool {
-        self.origin.approx_eq_eps(&other.origin, epsilon) &&
-        self.direction.approx_eq_eps(&other.direction, epsilon)
     }
 }

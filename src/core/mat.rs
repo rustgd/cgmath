@@ -17,9 +17,6 @@ use core::{Dimensional, Swap};
 use core::{Quat, ToQuat};
 use core::{Vec2, Vec3, Vec4};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 macro_rules! impl_mat(
     ($Mat:ident, $Vec:ident) => (
         impl<T> $Mat<T> {
@@ -126,6 +123,7 @@ pub type Mat2f64 = Mat2<f64>;
 
 impl_mat!(Mat2, Vec2)
 impl_mat_swap!(Mat2, Vec2)
+impl_approx!(Mat3 { x, y, z })
 
 pub trait ToMat2<T> {
     pub fn to_mat2(&self) -> Mat2<T>;
@@ -327,24 +325,6 @@ impl<T:Clone + Real + ApproxEq<T>> Mat2<T> {
     #[inline]
     pub fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&zero!(T))
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Mat2<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Mat2<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Mat2<T>, epsilon: &T) -> bool {
-        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
-        self.col(1).approx_eq_eps(other.col(1), epsilon)
     }
 }
 
@@ -554,6 +534,7 @@ pub type Mat3f64 = Mat3<f64>;
 
 impl_mat!(Mat3, Vec3)
 impl_mat_swap!(Mat3, Vec3)
+impl_approx!(Mat2 { x, y })
 
 pub trait ToMat3<T> {
     pub fn to_mat3(&self) -> Mat3<T>;
@@ -909,25 +890,6 @@ impl<T:Clone + Real + ApproxEq<T>> Mat3<T> {
     }
 }
 
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Mat3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Mat3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Mat3<T>, epsilon: &T) -> bool {
-        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
-        self.col(1).approx_eq_eps(other.col(1), epsilon) &&
-        self.col(2).approx_eq_eps(other.col(2), epsilon)
-    }
-}
-
 #[cfg(test)]
 mod mat3_tests{
     use core::mat::*;
@@ -1159,6 +1121,7 @@ pub type Mat4f64 = Mat4<f64>;
 
 impl_mat!(Mat4, Vec4)
 impl_mat_swap!(Mat4, Vec4)
+impl_approx!(Mat4 { x, y, z, w })
 
 pub trait ToMat4<T> {
     pub fn to_mat4(&self) -> Mat4<T>;
@@ -1451,26 +1414,6 @@ impl<T:Clone + Real + ApproxEq<T>> Mat4<T> {
     #[inline]
     pub fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&zero!(T))
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Mat4<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Mat4<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Mat4<T>, epsilon: &T) -> bool {
-        self.col(0).approx_eq_eps(other.col(0), epsilon) &&
-        self.col(1).approx_eq_eps(other.col(1), epsilon) &&
-        self.col(2).approx_eq_eps(other.col(2), epsilon) &&
-        self.col(3).approx_eq_eps(other.col(3), epsilon)
     }
 }
 

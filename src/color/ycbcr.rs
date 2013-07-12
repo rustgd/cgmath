@@ -18,6 +18,8 @@
 #[deriving(Clone, Eq)]
 pub struct YCbCr<T> { y: T, cb: T, cr: T }
 
+impl_approx!(YCbCr { y, cb, cr })
+
 impl<T> YCbCr<T> {
     #[inline]
     pub fn new(y: T, cb: T, cr: T) -> YCbCr<T> {

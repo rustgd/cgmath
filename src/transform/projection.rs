@@ -16,9 +16,6 @@
 use core::Mat4;
 use geom::{Plane3, Frustum};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 ///
 /// Create a perspective projection matrix
 ///

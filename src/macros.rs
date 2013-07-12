@@ -32,3 +32,24 @@ macro_rules! one(
 macro_rules! two(
     ($T:ty) => (one!(T) + one!(T));
 )
+
+macro_rules! impl_approx(
+    ($T:ident { $($field:ident),+ }) => (
+        impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for $T<T> {
+            #[inline]
+            pub fn approx_epsilon() -> T {
+                ApproxEq::approx_epsilon::<T,T>()
+            }
+
+            #[inline]
+            pub fn approx_eq(&self, other: &$T<T>) -> bool {
+                self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+            }
+
+            #[inline]
+            pub fn approx_eq_eps(&self, other: &$T<T>, epsilon: &T) -> bool {
+                $( self.$field.approx_eq_eps(&other.$field, epsilon) )&&+
+            }
+        }
+    )
+)

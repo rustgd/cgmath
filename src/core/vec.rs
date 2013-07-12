@@ -20,9 +20,6 @@ use core::Dimensional;
 #[cfg(geom)]
 use geom::{Point2, Point3};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 #[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
@@ -48,6 +45,8 @@ pub type Vec2u16 = Vec2<u16>;
 pub type Vec2u32 = Vec2<u32>;
 pub type Vec2u64 = Vec2<u64>;
 pub type Vec2b   = Vec2<bool>;
+
+impl_approx!(Vec2 { x, y })
 
 impl<T> Vec2<T> {
     #[inline]
@@ -585,6 +584,8 @@ pub type Vec3u16 = Vec3<u16>;
 pub type Vec3u32 = Vec3<u32>;
 pub type Vec3u64 = Vec3<u64>;
 pub type Vec3b   = Vec3<bool>;
+
+impl_approx!(Vec3 { x, y, z })
 
 impl<T> Vec3<T> {
     #[inline]
@@ -1187,6 +1188,8 @@ pub type Vec4u16 = Vec4<u16>;
 pub type Vec4u32 = Vec4<u32>;
 pub type Vec4u64 = Vec4<u64>;
 pub type Vec4b   = Vec4<bool>;
+
+impl_approx!(Vec4 { x, y, z, w })
 
 impl<T> Vec4<T> {
     #[inline]

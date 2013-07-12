@@ -24,9 +24,6 @@ use std::cast;
 
 use core::{Mat2, Mat3, Quat, Vec2, Vec3, Vec4};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 /// A geometric point
 pub trait Point<T, Vec>: Eq
                        + Add<Vec, Self>
@@ -47,6 +44,8 @@ pub trait Point<T, Vec>: Eq
 /// A two-dimensional point
 #[deriving(Clone, Eq)]
 pub struct Point2<T> { x: T, y: T }
+
+impl_approx!(Point2 { x, y })
 
 impl<T:Num> Point2<T> {
     #[inline]
@@ -149,24 +148,6 @@ impl<T:Num> Mul<Vec2<T>, Point2<T>> for Point2<T> {
     }
 }
 
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Point2<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Point2<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Point2<T>, epsilon: &T) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon)
-    }
-}
-
 impl<T> ToStr for Point2<T> {
     pub fn to_str(&self) -> ~str {
         fmt!("[%?, %?]", self.x, self.y)
@@ -186,6 +167,8 @@ mod test_point2 {
 /// A three-dimensional point
 #[deriving(Clone, Eq)]
 pub struct Point3<T> { x: T, y: T, z: T }
+
+impl_approx!(Point3 { x, y, z })
 
 impl<T:Num> Point3<T> {
     #[inline]
@@ -288,25 +271,6 @@ impl<T:Num> Mul<Vec3<T>, Point3<T>> for Point3<T> {
         Point3::new((*self).x * (*scale).x,
                     (*self).y * (*scale).y,
                     (*self).z * (*scale).z)
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Point3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Point3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Point3<T>, epsilon: &T) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon) &&
-        self.z.approx_eq_eps(&other.z, epsilon)
     }
 }
 

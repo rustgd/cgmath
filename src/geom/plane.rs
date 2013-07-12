@@ -16,9 +16,6 @@
 use core::{Vec3, Vec4, Mat3};
 use geom::{Point, Point3, Ray3};
 
-#[path = "../num_macros.rs"]
-mod num_macros;
-
 /// A plane formed from the equation: `Ax + Bx + Cx + D = 0`
 ///
 /// # Fields
@@ -33,6 +30,8 @@ pub struct Plane3<T> {
     normal: Vec3<T>,
     distance: T,
 }
+
+impl_approx!(Plane3 { normal, distance })
 
 impl<T:Clone + Float> Plane3<T> {
     /// # Arguments
@@ -140,24 +139,6 @@ impl<T:Clone + Float> Plane3<T> {
                                                   other_a.distance.clone(),
                                                   other_b.distance.clone()))
         }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Plane3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Plane3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Plane3<T>, epsilon: &T) -> bool {
-        self.normal.approx_eq_eps(&other.normal, epsilon) &&
-        self.distance.approx_eq_eps(&other.distance, epsilon)
     }
 }
 

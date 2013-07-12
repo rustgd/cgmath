@@ -30,6 +30,10 @@ pub mod ycbcr;
 pub trait Color<T> {
     pub fn clamp(&self, lo: T, hi: T) -> Self;
     pub fn inverse(&self) -> Self;
+    // pub fn mix(&self, other: &Self, value: T) -> Self;
+    // pub fn saturation(&self, value: T) -> Self;
+    // pub fn exposure(&self, value: T) -> Self;
+    // pub fn brightness(&self, value: T) -> Self;
 }
 
 pub trait FloatColor<T>: Color<T> {
