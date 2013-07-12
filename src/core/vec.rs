@@ -408,24 +408,6 @@ impl Vec2<bool> {
     }
 }
 
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec2<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Vec2<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Vec2<T>, epsilon: &T) -> bool {
-        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
-        self.index(1).approx_eq_eps(other.index(1), epsilon)
-    }
-}
-
 #[cfg(test)]
 mod vec2_tests {
     use core::vec::*;
@@ -993,25 +975,6 @@ impl Vec3<bool> {
         Vec3::new(!*self.index(0),
                   !*self.index(1),
                   !*self.index(2))
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Vec3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Vec3<T>, epsilon: &T) -> bool {
-        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
-        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
-        self.index(2).approx_eq_eps(other.index(2), epsilon)
     }
 }
 
@@ -1613,25 +1576,6 @@ impl Vec4<bool> {
     }
 }
 
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Vec4<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Vec4<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Vec4<T>, epsilon: &T) -> bool {
-        self.index(0).approx_eq_eps(other.index(0), epsilon) &&
-        self.index(1).approx_eq_eps(other.index(1), epsilon) &&
-        self.index(2).approx_eq_eps(other.index(2), epsilon) &&
-        self.index(3).approx_eq_eps(other.index(3), epsilon)
-    }
-}
 
 #[cfg(test)]
 mod vec4_tests {
