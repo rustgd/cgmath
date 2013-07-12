@@ -15,18 +15,23 @@
 
 //! Core datatypes and conversion traits for 3D mathematics
 
-pub use self::dim::Dimensional;
-pub use self::swap::Swap;
-
 pub use self::mat::{Mat2, ToMat2, Mat3, ToMat3, Mat4, ToMat4};
 pub use self::quat::{Quat, ToQuat};
 pub use self::vec::{Vec2, ToVec2, AsVec2};
 pub use self::vec::{Vec3, ToVec3, AsVec3};
 pub use self::vec::{Vec4, ToVec4, AsVec4};
 
-pub mod dim;
-pub mod swap;
-
 pub mod mat;
 pub mod quat;
 pub mod vec;
+
+pub trait Dimensional<T,Slice> {
+    pub fn index<'a>(&'a self, i: uint) -> &'a T;
+    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
+    pub fn as_slice<'a>(&'a self) -> &'a Slice;
+    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
+}
+
+pub trait Swap {
+    pub fn swap(&mut self, a: uint, b: uint);
+}

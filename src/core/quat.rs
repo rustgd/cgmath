@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::Dimensional;
+use core::{Dimensional, Swap};
 use core::{Mat3, ToMat3};
 use core::Vec3;
 
@@ -31,6 +31,10 @@ pub type Quatf64 = Quat<f64>;
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
+
+impl_dimensional!(Quat, T, 4)
+impl_swap!(Quat)
+impl_approx!(Quat { s, v })
 
 pub trait ToQuat<T> {
     pub fn to_quat(&self) -> Quat<T>;
@@ -297,24 +301,6 @@ impl<T:Clone + Float> Quat<T> {
             self.mul_t(theta.cos())
                 .add_q(&q.mul_t(theta.sin()))
         }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for Quat<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &Quat<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &Quat<T>, epsilon: &T) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon) &&
-        self.v.approx_eq_eps(&other.v, epsilon)
     }
 }
 

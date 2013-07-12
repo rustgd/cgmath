@@ -123,6 +123,7 @@ pub type Mat2f64 = Mat2<f64>;
 
 impl_mat!(Mat2, Vec2)
 impl_mat_swap!(Mat2, Vec2)
+impl_dimensional!(Mat2, Vec2<T>, 2)
 impl_approx!(Mat3 { x, y, z })
 
 pub trait ToMat2<T> {
@@ -534,6 +535,7 @@ pub type Mat3f64 = Mat3<f64>;
 
 impl_mat!(Mat3, Vec3)
 impl_mat_swap!(Mat3, Vec3)
+impl_dimensional!(Mat3, Vec3<T>, 3)
 impl_approx!(Mat2 { x, y })
 
 pub trait ToMat3<T> {
@@ -1121,6 +1123,7 @@ pub type Mat4f64 = Mat4<f64>;
 
 impl_mat!(Mat4, Vec4)
 impl_mat_swap!(Mat4, Vec4)
+impl_dimensional!(Mat4, Vec4<T>, 4)
 impl_approx!(Mat4 { x, y, z, w })
 
 pub trait ToMat4<T> {

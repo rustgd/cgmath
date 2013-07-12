@@ -15,9 +15,13 @@
 
 // http://en.wikipedia.org/wiki/YCbCr
 
+use core::{Dimensional, Swap};
+
 #[deriving(Clone, Eq)]
 pub struct YCbCr<T> { y: T, cb: T, cr: T }
 
+impl_dimensional!(YCbCr, T, 3)
+impl_swap!(YCbCr)
 impl_approx!(YCbCr { y, cb, cr })
 
 impl<T> YCbCr<T> {

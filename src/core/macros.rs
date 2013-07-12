@@ -13,15 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Mat2, Mat3, Mat4};
-use core::{Vec2, Vec3, Vec4, Quat};
-
-pub trait Dimensional<T,Slice> {
-    pub fn index<'a>(&'a self, i: uint) -> &'a T;
-    pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
-    pub fn as_slice<'a>(&'a self) -> &'a Slice;
-    pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
-}
+#[macro_escape];
 
 macro_rules! impl_dimensional(
     ($Self:ident, $T:ty, $n:expr) => (
@@ -51,38 +43,15 @@ macro_rules! impl_dimensional(
     )
 )
 
-impl_dimensional!(Vec2, T, 2)
-impl_dimensional!(Vec3, T, 3)
-impl_dimensional!(Vec4, T, 4)
-impl_dimensional!(Quat, T, 4)
-impl_dimensional!(Mat2, Vec2<T>, 2)
-impl_dimensional!(Mat3, Vec3<T>, 3)
-impl_dimensional!(Mat4, Vec4<T>, 4)
-
-// This enclosing module is required because attributes don't play nice
-// with macros yet
-#[cfg(geom)]
-pub mod geom_impls {
-    use super::Dimensional;
-    use geom::{Point2, Point3};
-
-    impl_dimensional!(Point2, T, 2)
-    impl_dimensional!(Point3, T, 3)
-}
-
-// This enclosing module is required because attributes don't play nice
-// with macros yet
-#[cfg(color)]
-pub mod color_impls {
-    use super::Dimensional;
-    use color::{HSV, HSVA, YCbCr};
-    use color::{RGB, RGBA, SRGB, SRGBA};
-
-    impl_dimensional!(HSV, T, 3)
-    impl_dimensional!(HSVA, T, 4)
-    impl_dimensional!(RGB, T, 3)
-    impl_dimensional!(RGBA, T, 4)
-    impl_dimensional!(SRGB, T, 3)
-    impl_dimensional!(SRGBA, T, 4)
-    impl_dimensional!(YCbCr, T, 3)
-}
+macro_rules! impl_swap(
+    ($Self:ident) => (
+        impl<T:Clone> Swap for $Self<T> {
+            #[inline]
+            pub fn swap(&mut self, a: uint, b: uint) {
+                let tmp = self.index(a).clone();
+                *self.index_mut(a) = self.index(b).clone();
+                *self.index_mut(b) = tmp;
+            }
+        }
+    )
+)

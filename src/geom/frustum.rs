@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::Dimensional;
 use core::Mat4;
 use geom::{Plane3, Point3};
 
@@ -26,6 +27,7 @@ pub struct Frustum<T> {
     far:    Plane3<T>,
 }
 
+impl_dimensional!(Frustum, Plane3<T>, 6)
 impl_approx!(Frustum {
     left, right,
     top, bottom,
@@ -44,6 +46,7 @@ pub struct FrustumPoints<T> {
     far_bottom_right:  Point3<T>,
 }
 
+impl_dimensional!(FrustumPoints, Point3<T>, 8)
 impl_approx!(FrustumPoints {
     near_top_left,
     near_top_right,
@@ -79,17 +82,6 @@ impl<T:Clone + Float> Frustum<T> {
             top:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(1)).normalize()),
             near:   Plane3::from_vec4(mat.row(3).add_v(&mat.row(2)).normalize()),
             far:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(2)).normalize()),
-        }
-    }
-
-    pub fn base() -> Frustum<T> {
-        Frustum {
-            left:   Plane3::from_abcd( one!(T),  zero!(T),  zero!(T), one!(T)),
-            right:  Plane3::from_abcd(-one!(T),  zero!(T),  zero!(T), one!(T)),
-            bottom: Plane3::from_abcd( zero!(T),  one!(T),  zero!(T), one!(T)),
-            top:    Plane3::from_abcd( zero!(T), -one!(T),  zero!(T), one!(T)),
-            near:   Plane3::from_abcd( zero!(T),  zero!(T), -one!(T), one!(T)),
-            far:    Plane3::from_abcd( zero!(T),  zero!(T),  one!(T), one!(T)),
         }
     }
 }

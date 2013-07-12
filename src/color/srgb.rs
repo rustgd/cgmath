@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::{Dimensional, Swap};
+
 #[deriving(Clone, Eq)]
 pub struct SRGB<T> { r: T, g: T, b: T }
 
@@ -23,11 +25,15 @@ impl<T> SRGB<T> {
     }
 }
 
+impl_dimensional!(SRGB, T, 3)
+impl_swap!(SRGB)
 impl_approx!(SRGB { r, g, b })
 
 #[deriving(Clone, Eq)]
 pub struct SRGBA<T> { r: T, g: T, b: T, a: T }
 
+impl_dimensional!(SRGBA, T, 4)
+impl_swap!(SRGBA)
 impl_approx!(SRGBA { r, g, b, a })
 
 impl<T> SRGBA<T> {

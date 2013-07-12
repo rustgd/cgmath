@@ -22,6 +22,7 @@
 
 use std::cast;
 
+use core::{Dimensional, Swap};
 use core::{Mat2, Mat3, Quat};
 use core::{Vec2, ToVec2, AsVec2};
 use core::{Vec3, ToVec3, AsVec3};
@@ -47,6 +48,8 @@ pub trait Point<T, Vec, Ray>: Eq
 #[deriving(Clone, Eq)]
 pub struct Point2<T> { x: T, y: T }
 
+impl_dimensional!(Point2, T, 2)
+impl_swap!(Point2)
 impl_approx!(Point2 { x, y })
 
 impl<T:Num> Point2<T> {
@@ -185,6 +188,8 @@ mod test_point2 {
 #[deriving(Clone, Eq)]
 pub struct Point3<T> { x: T, y: T, z: T }
 
+impl_dimensional!(Point3, T, 3)
+impl_swap!(Point3)
 impl_approx!(Point3 { x, y, z })
 
 impl<T:Num> Point3<T> {
