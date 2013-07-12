@@ -26,19 +26,21 @@ use core::{Mat2, Mat3, Quat};
 use core::{Vec2, ToVec2, AsVec2};
 use core::{Vec3, ToVec3, AsVec3};
 use core::{Vec4, ToVec4};
+use geom::{Ray2, Ray3};
 
 /// A geometric point
-pub trait Point<T, Vec>: Eq
-                       + Add<Vec, Self>
-                       + Sub<Self, Vec>
-                       + Mul<Vec, Self>
-                       + ApproxEq<T>
-                       + ToStr {
+pub trait Point<T, Vec, Ray>: Eq
+                            + Add<Vec, Self>
+                            + Sub<Self, Vec>
+                            + Mul<Vec, Self>
+                            + ApproxEq<T>
+                            + ToStr {
     pub fn translate(&self, offset: &Vec) -> Self;
     pub fn scale(&self, factor: &Vec) -> Self;
     pub fn distance2(&self, other: &Self) -> T;
     pub fn distance(&self, other: &Self) -> T;
     pub fn direction(&self, other: &Self) -> Vec;
+    pub fn ray_to(&self, other: &Self) -> Ray;
 }
 
 /// A two-dimensional point
@@ -107,7 +109,7 @@ impl<T:Clone + Float> Point2<T> {
     }
 }
 
-impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
+impl<T:Clone + Float> Point<T, Vec2<T>, Ray2<T>> for Point2<T> {
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
         (*self) + (*offset)
@@ -133,6 +135,12 @@ impl<T:Clone + Float> Point<T, Vec2<T>> for Point2<T> {
     #[inline]
     pub fn direction(&self, other: &Point2<T>) -> Vec2<T> {
         ((*other) - (*self)).normalize()
+    }
+
+    /// Projects a normalized ray towards the other point
+    #[inline]
+    pub fn ray_to(&self, other: &Point2<T>) -> Ray2<T> {
+        Ray2::new(self.clone(), self.direction(other))
     }
 }
 
@@ -241,7 +249,7 @@ impl<T:Clone + Float> Point3<T> {
     }
 }
 
-impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
+impl<T:Clone + Float> Point<T, Vec3<T>, Ray3<T>> for Point3<T> {
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
         (*self) + (*offset)
@@ -267,6 +275,12 @@ impl<T:Clone + Float> Point<T, Vec3<T>> for Point3<T> {
     #[inline]
     pub fn direction(&self, other: &Point3<T>) -> Vec3<T> {
         ((*other) - (*self)).normalize()
+    }
+
+    /// Projects a normalized ray towards the other point
+    #[inline]
+    pub fn ray_to(&self, other: &Point3<T>) -> Ray3<T> {
+        Ray3::new(self.clone(), self.direction(other))
     }
 }
 

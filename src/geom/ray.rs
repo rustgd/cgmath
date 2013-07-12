@@ -13,8 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::Vec3;
-use geom::Point3;
+use core::{Vec2, Vec3};
+use geom::{Point2, Point3};
+
+#[deriving(Clone, Eq)]
+pub struct Ray2<T> {
+    origin: Point2<T>,
+    direction: Vec2<T>,
+}
+
+impl_approx!(Ray2 { origin, direction })
+
+impl<T> Ray2<T> {
+    #[inline]
+    pub fn new(origin: Point2<T>, direction: Vec2<T>) -> Ray2<T> {
+        Ray2 { origin: origin, direction: direction }
+    }
+}
+
 
 #[deriving(Clone, Eq)]
 pub struct Ray3<T> {
