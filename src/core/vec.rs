@@ -55,6 +55,7 @@ impl_swap!(Vec2)
 impl_approx!(Vec2 { x, y })
 
 impl<T> Vec2<T> {
+    /// Construct a new vector from the supplied components.
     #[inline]
     pub fn new(x: T, y: T) -> Vec2<T> {
         Vec2 { x: x, y: y }
@@ -62,6 +63,7 @@ impl<T> Vec2<T> {
 }
 
 impl<T:Clone> Vec2<T> {
+    /// Construct a new vector with each component set to `value`.
     #[inline]
     pub fn from_value(value: T) -> Vec2<T> {
         Vec2::new(value.clone(),
@@ -79,6 +81,7 @@ impl<T:Clone + Num> ToVec3<T> for Vec2<T> {
     }
 }
 
+/// Constants for two-dimensional vectors.
 impl<T:Num> Vec2<T> {
     #[inline]
     pub fn identity() -> Vec2<T> {
@@ -99,37 +102,48 @@ impl<T:Num> Vec2<T> {
     pub fn unit_y() -> Vec2<T> {
         Vec2::new(zero!(T), one!(T))
     }
+}
 
+/// Numeric operations specific to two-dimensional vectors.
+impl<T:Num> Vec2<T> {
+    /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(&self, other: &Vec2<T>) -> T {
         (*self.index(0) * *other.index(1)) -
         (*self.index(1) * *other.index(0))
     }
+}
 
+impl<T:Num> Vec2<T> {
+    /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) + value,
                   *self.index(1) + value)
     }
 
+    /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) - value,
                   *self.index(1) - value)
     }
 
+    /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) * value,
                   *self.index(1) * value)
     }
 
+    /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) / value,
                   *self.index(1) / value)
     }
 
+    /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_t(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) % value,
@@ -232,13 +246,16 @@ impl<T:Num> Vec2<T> {
         *self.index_mut(1) = *self.index(1) % *other.index(1);
     }
 
-    #[inline] pub fn dot(&self, other: &Vec2<T>) -> T {
+    /// Returns the dot product of the vector and `other`.
+    #[inline]
+    pub fn dot(&self, other: &Vec2<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1)
     }
 }
 
 impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
+    /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec2<T> {
         Vec2::new(-*self.index(0),
@@ -247,48 +264,61 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
 }
 
 impl<T:Real> Vec2<T> {
+    /// Returns the squared magnitude of the vector. This does not perform a
+    /// square root operation like in the `magnitude` method and can therefore
+    /// be more efficient for comparing the magnitudes of two vectors.
     #[inline]
     pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
+    /// Returns the magnitude (length) of the vector.
     #[inline]
     pub fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
 
+    /// Returns the angle between the vector and `other`.
     #[inline]
     pub fn angle(&self, other: &Vec2<T>) -> T {
         self.perp_dot(other).atan2(&self.dot(other))
     }
 
+    /// Returns the result of normalizing the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize(&self) -> Vec2<T> {
-        self.mul_t(one!(T)/self.magnitude())
+        self.normalize_to(one!(T))
     }
 
+    /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec2<T> {
         self.mul_t(magnitude / self.magnitude())
     }
 
+    /// Returns the result of linarly interpolating the magnitude of the vector
+    /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
+    /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
+    /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
+    /// Linearly interpolates the magnitude of the vector to the magnitude of
+    /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
@@ -372,11 +402,15 @@ impl<T:Eq> Vec2<T> {
 }
 
 impl Vec2<bool> {
+    /// Returns `true` if any of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1)
     }
 
+    /// Returns `true` if _all_ of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1)
@@ -559,6 +593,7 @@ impl_swap!(Vec3)
 impl_approx!(Vec3 { x, y, z })
 
 impl<T> Vec3<T> {
+    /// Construct a new vector from the supplied components.
     #[inline]
     pub fn new(x: T, y: T, z: T) -> Vec3<T> {
         Vec3 { x: x, y: y, z: z }
@@ -566,6 +601,7 @@ impl<T> Vec3<T> {
 }
 
 impl<T:Clone> Vec3<T> {
+    /// Construct a new vector with each component set to `value`.
     #[inline]
     pub fn from_value(value: T) -> Vec3<T> {
         Vec3::new(value.clone(),
@@ -585,6 +621,7 @@ impl<T:Clone + Num> ToVec4<T> for Vec3<T> {
     }
 }
 
+/// Constants for three-dimensional vectors.
 impl<T:Num> Vec3<T> {
     #[inline]
     pub fn identity() -> Vec3<T> {
@@ -610,7 +647,11 @@ impl<T:Num> Vec3<T> {
     pub fn unit_z() -> Vec3<T> {
         Vec3::new(zero!(T), zero!(T), one!(T))
     }
+}
 
+/// Numeric operations specific to three-dimensional vectors.
+impl<T:Num> Vec3<T> {
+    /// Returns the cross product of the vector and `other`.
     #[inline]
     pub fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
@@ -618,11 +659,16 @@ impl<T:Num> Vec3<T> {
                   (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
     }
 
+    /// Calculates the cross product of the vector and `other`, then stores the
+    /// result in `self`.
     #[inline]
     pub fn cross_self(&mut self, other: &Vec3<T>) {
         *self = self.cross(other)
     }
+}
 
+impl<T:Num> Vec3<T> {
+    /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) + value,
@@ -630,6 +676,7 @@ impl<T:Num> Vec3<T> {
                   *self.index(2) + value)
     }
 
+    /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) - value,
@@ -637,6 +684,7 @@ impl<T:Num> Vec3<T> {
                   *self.index(2) - value)
     }
 
+    /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) * value,
@@ -644,6 +692,7 @@ impl<T:Num> Vec3<T> {
                   *self.index(2) * value)
     }
 
+    /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) / value,
@@ -651,6 +700,7 @@ impl<T:Num> Vec3<T> {
                   *self.index(2) / value)
     }
 
+    /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_t(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) % value,
@@ -770,7 +820,9 @@ impl<T:Num> Vec3<T> {
         *self.index_mut(2) = *self.index(2) % *other.index(2);
     }
 
-    #[inline] pub fn dot(&self, other: &Vec3<T>) -> T {
+    /// Returns the dot product of the vector and `other`.
+    #[inline]
+    pub fn dot(&self, other: &Vec3<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1) +
         *self.index(2) * *other.index(2)
@@ -778,6 +830,7 @@ impl<T:Num> Vec3<T> {
 }
 
 impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
+    /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec3<T> {
         Vec3::new(-*self.index(0),
@@ -787,48 +840,61 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
 }
 
 impl<T:Real> Vec3<T> {
+    /// Returns the squared magnitude of the vector. This does not perform a
+    /// square root operation like in the `magnitude` method and can therefore
+    /// be more efficient for comparing the magnitudes of two vectors.
     #[inline]
     pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
+    /// Returns the magnitude (length) of the vector.
     #[inline]
     pub fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
 
+    /// Returns the angle between the vector and `other`.
     #[inline]
     pub fn angle(&self, other: &Vec3<T>) -> T {
         self.cross(other).magnitude().atan2(&self.dot(other))
     }
 
+    /// Returns the result of normalizing the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize(&self) -> Vec3<T> {
-        self.mul_t(one!(T)/self.magnitude())
+        self.normalize_to(one!(T))
     }
 
+    /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec3<T> {
         self.mul_t(magnitude / self.magnitude())
     }
 
+    /// Returns the result of linarly interpolating the magnitude of the vector
+    /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
+    /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
+    /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
+    /// Linearly interpolates the magnitude of the vector to the magnitude of
+    /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
@@ -924,11 +990,15 @@ impl<T:Eq> Vec3<T> {
 }
 
 impl Vec3<bool> {
+    /// Returns `true` if any of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2)
     }
 
+    /// Returns `true` if _all_ of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2)
@@ -1127,6 +1197,7 @@ impl_swap!(Vec4)
 impl_approx!(Vec4 { x, y, z, w })
 
 impl<T> Vec4<T> {
+    /// Construct a new vector from the supplied components.
     #[inline]
     pub fn new(x: T, y: T, z: T, w: T) -> Vec4<T> {
         Vec4 { x: x, y: y, z: z, w: w }
@@ -1134,6 +1205,7 @@ impl<T> Vec4<T> {
 }
 
 impl<T:Clone> Vec4<T> {
+    /// Construct a new vector with each component set to `value`.
     #[inline]
     pub fn from_value(value: T) -> Vec4<T> {
         Vec4::new(value.clone(),
@@ -1143,6 +1215,7 @@ impl<T:Clone> Vec4<T> {
     }
 }
 
+/// Constants for four-dimensional vectors.
 impl<T:Num> Vec4<T> {
     #[inline]
     pub fn identity() -> Vec4<T> {
@@ -1173,7 +1246,10 @@ impl<T:Num> Vec4<T> {
     pub fn unit_w() -> Vec4<T> {
         Vec4::new(zero!(T), zero!(T), zero!(T), one!(T))
     }
+}
 
+impl<T:Num> Vec4<T> {
+    /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) + value,
@@ -1182,6 +1258,7 @@ impl<T:Num> Vec4<T> {
                   *self.index(3) + value)
     }
 
+    /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) - value,
@@ -1190,6 +1267,7 @@ impl<T:Num> Vec4<T> {
                   *self.index(3) - value)
     }
 
+    /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) * value,
@@ -1198,6 +1276,7 @@ impl<T:Num> Vec4<T> {
                   *self.index(3) * value)
     }
 
+    /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) / value,
@@ -1206,6 +1285,7 @@ impl<T:Num> Vec4<T> {
                   *self.index(3) / value)
     }
 
+    /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_t(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) % value,
@@ -1342,7 +1422,9 @@ impl<T:Num> Vec4<T> {
         *self.index_mut(3) = *self.index(3) % *other.index(3);
     }
 
-    #[inline] pub fn dot(&self, other: &Vec4<T>) -> T {
+    /// Returns the dot product of the vector and `other`.
+    #[inline]
+    pub fn dot(&self, other: &Vec4<T>) -> T {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1) +
         *self.index(2) * *other.index(2) +
@@ -1351,6 +1433,7 @@ impl<T:Num> Vec4<T> {
 }
 
 impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
+    /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec4<T> {
         Vec4::new(-*self.index(0),
@@ -1361,48 +1444,61 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
 }
 
 impl<T:Real> Vec4<T> {
+    /// Returns the squared magnitude of the vector. This does not perform a
+    /// square root operation like in the `magnitude` method and can therefore
+    /// be more efficient for comparing the magnitudes of two vectors.
     #[inline]
     pub fn magnitude2(&self) -> T {
         self.dot(self)
     }
 
+    /// Returns the magnitude (length) of the vector.
     #[inline]
     pub fn magnitude(&self) -> T {
         self.magnitude2().sqrt()
     }
 
+    /// Returns the angle between the vector and `other`.
     #[inline]
     pub fn angle(&self, other: &Vec4<T>) -> T {
         (self.dot(other) / (self.magnitude() * other.magnitude())).acos()
     }
 
+    /// Returns the result of normalizing the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize(&self) -> Vec4<T> {
-        self.mul_t(one!(T)/self.magnitude())
+        self.normalize_to(one!(T))
     }
 
+    /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec4<T> {
         self.mul_t(magnitude / self.magnitude())
     }
 
+    /// Returns the result of linarly interpolating the magnitude of the vector
+    /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
         self.add_v(&other.sub_v(self).mul_t(amount))
     }
 
+    /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
         self.mul_self_t(rlen);
     }
 
+    /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
         self.mul_self_t(n);
     }
 
+    /// Linearly interpolates the magnitude of the vector to the magnitude of
+    /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
         let v = other.sub_v(self).mul_t(amount);
         self.add_self_v(&v);
@@ -1510,11 +1606,15 @@ impl<T:Eq> Vec4<T> {
 }
 
 impl Vec4<bool> {
+    /// Returns `true` if any of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
         *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
     }
 
+    /// Returns `true` if _all_ of the components of the vector are equal to
+    /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
         *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
