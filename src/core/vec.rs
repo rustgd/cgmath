@@ -15,8 +15,10 @@
 
 use core::{Dimensional, Swap};
 
+pub trait Vec<T,Slice>: Dimensional<T,Slice> + Swap {}
+
 /// Vectors with numeric components
-pub trait NumVec<T>: Neg<T> {
+pub trait NumVec<T,Slice>: Neg<T> {
     pub fn add_t(&self, value: T) -> Self;
     pub fn sub_t(&self, value: T) -> Self;
     pub fn mul_t(&self, value: T) -> Self;
@@ -42,7 +44,7 @@ pub trait NumVec<T>: Neg<T> {
 }
 
 /// Vectors with real components
-pub trait RealVec<T>: NumVec<T> + ApproxEq<T> {
+pub trait RealVec<T,Slice>: NumVec<T,Slice> + ApproxEq<T> {
     pub fn magnitude2(&self) -> T;
     pub fn magnitude(&self) -> T;
     pub fn angle(&self, other: &Self) -> T;
@@ -55,7 +57,7 @@ pub trait RealVec<T>: NumVec<T> + ApproxEq<T> {
 }
 
 /// Vectors with orderable components
-pub trait OrdVec<T,BV> {
+pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
     pub fn lt_t(&self, value: T) -> BV;
     pub fn le_t(&self, value: T) -> BV;
     pub fn ge_t(&self, value: T) -> BV;
@@ -67,7 +69,7 @@ pub trait OrdVec<T,BV> {
 }
 
 /// Vectors with components that can be tested for equality
-pub trait EqVec<T,BV>: Eq {
+pub trait EqVec<T,Slice,BV>: Eq {
     pub fn eq_t(&self, value: T) -> BV;
     pub fn ne_t(&self, value: T) -> BV;
     pub fn eq_v(&self, other: &Self) -> BV;
@@ -75,7 +77,7 @@ pub trait EqVec<T,BV>: Eq {
 }
 
 /// Vectors with boolean components
-pub trait BoolVec: Not<Self> {
+pub trait BoolVec<Slice>: Vec<bool,Slice> + Not<Self> {
     pub fn any(&self) -> bool;
     pub fn all(&self) -> bool;
 }
@@ -179,7 +181,9 @@ impl<T:Num> Vec2<T> {
     }
 }
 
-impl<T:Num> NumVec<T> for Vec2<T> {
+impl<T> Vec<T,[T,..2]> for Vec2<T> {}
+
+impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec2<T> {
@@ -328,7 +332,7 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     }
 }
 
-impl<T:Real> RealVec<T> for Vec2<T> {
+impl<T:Real> RealVec<T,[T,..2]> for Vec2<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -390,7 +394,7 @@ impl<T:Real> RealVec<T> for Vec2<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,Vec2<bool>> for Vec2<T> {
+impl<T:Ord> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) < value,
@@ -440,7 +444,7 @@ impl<T:Ord> OrdVec<T,Vec2<bool>> for Vec2<T> {
     }
 }
 
-impl<T:Eq> EqVec<T,Vec2<bool>> for Vec2<T> {
+impl<T:Eq> EqVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) == value,
@@ -466,7 +470,7 @@ impl<T:Eq> EqVec<T,Vec2<bool>> for Vec2<T> {
     }
 }
 
-impl BoolVec for Vec2<bool> {
+impl BoolVec<[bool,..2]> for Vec2<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
@@ -732,7 +736,9 @@ impl<T:Num> Vec3<T> {
     }
 }
 
-impl<T:Num> NumVec<T> for Vec3<T> {
+impl<T> Vec<T,[T,..3]> for Vec3<T> {}
+
+impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec3<T> {
@@ -904,7 +910,7 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     }
 }
 
-impl<T:Real> RealVec<T> for Vec3<T> {
+impl<T:Real> RealVec<T,[T,..3]> for Vec3<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -966,7 +972,7 @@ impl<T:Real> RealVec<T> for Vec3<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,Vec3<bool>> for Vec3<T> {
+impl<T:Ord> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) < value,
@@ -1024,7 +1030,7 @@ impl<T:Ord> OrdVec<T,Vec3<bool>> for Vec3<T> {
     }
 }
 
-impl<T:Eq> EqVec<T,Vec3<bool>> for Vec3<T> {
+impl<T:Eq> EqVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) == value,
@@ -1054,7 +1060,7 @@ impl<T:Eq> EqVec<T,Vec3<bool>> for Vec3<T> {
     }
 }
 
-impl BoolVec for Vec3<bool> {
+impl BoolVec<[bool,..3]> for Vec3<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
@@ -1313,7 +1319,9 @@ impl<T:Num> Vec4<T> {
     }
 }
 
-impl<T:Num> NumVec<T> for Vec4<T> {
+impl<T> Vec<T,[T,..4]> for Vec4<T> {}
+
+impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec4<T> {
@@ -1508,7 +1516,7 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     }
 }
 
-impl<T:Real> RealVec<T> for Vec4<T> {
+impl<T:Real> RealVec<T,[T,..4]> for Vec4<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -1570,7 +1578,7 @@ impl<T:Real> RealVec<T> for Vec4<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,Vec4<bool>> for Vec4<T> {
+impl<T:Ord> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) < value,
@@ -1636,7 +1644,7 @@ impl<T:Ord> OrdVec<T,Vec4<bool>> for Vec4<T> {
     }
 }
 
-impl<T:Eq> EqVec<T,Vec4<bool>> for Vec4<T> {
+impl<T:Eq> EqVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) == value,
@@ -1670,7 +1678,7 @@ impl<T:Eq> EqVec<T,Vec4<bool>> for Vec4<T> {
     }
 }
 
-impl BoolVec for Vec4<bool> {
+impl BoolVec<[bool,..4]> for Vec4<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
