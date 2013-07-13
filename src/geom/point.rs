@@ -91,8 +91,8 @@ impl<T:Clone + Num> ToVec3<T> for Point2<T> {
     /// `[x, y] -> [x, y, 1]`
     #[inline]
     pub fn to_vec3(&self) -> Vec3<T> {
-        Vec3::new((*self).x.clone(),
-                  (*self).y.clone(),
+        Vec3::new(self.x.clone(),
+                  self.y.clone(),
                   one!(T))
     }
 }
@@ -100,8 +100,8 @@ impl<T:Clone + Num> ToVec3<T> for Point2<T> {
 impl<T:Clone + Float> Point2<T> {
     #[inline]
     pub fn rotate_t(&self, radians: &T) -> Point2<T> {
-        Point2::new((*self).x.cos() * (*radians),
-                    (*self).y.sin() * (*radians))
+        Point2::new(self.x.cos() * (*radians),
+                    self.y.sin() * (*radians))
     }
 
     #[inline]
@@ -147,22 +147,22 @@ impl<T:Clone + Float> Point<T, Vec2<T>, Ray2<T>> for Point2<T> {
 
 impl<T:Num> Add<Vec2<T>, Point2<T>> for Point2<T> {
     fn add(&self, other: &Vec2<T>) -> Point2<T> {
-        Point2::new((*self).x + (*other).x,
-                    (*self).y + (*other).y)
+        Point2::new(self.x + other.x,
+                    self.y + other.y)
     }
 }
 
 impl<T:Num> Sub<Point2<T>, Vec2<T>> for Point2<T> {
     fn sub(&self, other: &Point2<T>) -> Vec2<T> {
-        Vec2::new((*self).x - (*other).x,
-                  (*self).y - (*other).y)
+        Vec2::new(self.x - other.x,
+                  self.y - other.y)
     }
 }
 
 impl<T:Num> Mul<Vec2<T>, Point2<T>> for Point2<T> {
     fn mul(&self, scale: &Vec2<T>) -> Point2<T> {
-        Point2::new((*self).x * (*scale).x,
-                    (*self).y * (*scale).y)
+        Point2::new(self.x * scale.x,
+                    self.y * scale.y)
     }
 }
 
@@ -231,9 +231,9 @@ impl<T:Clone + Num> ToVec4<T> for Point3<T> {
     /// `[x, y, z] -> [x, y, z, 1]`
     #[inline]
     pub fn to_vec4(&self) -> Vec4<T> {
-        Vec4::new((*self).x.clone(),
-                  (*self).y.clone(),
-                  (*self).z.clone(),
+        Vec4::new(self.x.clone(),
+                  self.y.clone(),
+                  self.z.clone(),
                   one!(T))
     }
 }
@@ -287,25 +287,25 @@ impl<T:Clone + Float> Point<T, Vec3<T>, Ray3<T>> for Point3<T> {
 
 impl<T:Num> Add<Vec3<T>, Point3<T>> for Point3<T> {
     fn add(&self, other: &Vec3<T>) -> Point3<T> {
-        Point3::new((*self).x + (*other).x,
-                    (*self).y + (*other).y,
-                    (*self).z + (*other).z)
+        Point3::new(self.x + other.x,
+                    self.y + other.y,
+                    self.z + other.z)
     }
 }
 
 impl<T:Num> Sub<Point3<T>, Vec3<T>> for Point3<T> {
     fn sub(&self, other: &Point3<T>) -> Vec3<T> {
-        Vec3::new((*self).x - (*other).x,
-                  (*self).y - (*other).y,
-                  (*self).z - (*other).z)
+        Vec3::new(self.x - other.x,
+                  self.y - other.y,
+                  self.z - other.z)
     }
 }
 
 impl<T:Num> Mul<Vec3<T>, Point3<T>> for Point3<T> {
     fn mul(&self, scale: &Vec3<T>) -> Point3<T> {
-        Point3::new((*self).x * (*scale).x,
-                    (*self).y * (*scale).y,
-                    (*self).z * (*scale).z)
+        Point3::new(self.x * scale.x,
+                    self.y * scale.y,
+                    self.z * scale.z)
     }
 }
 

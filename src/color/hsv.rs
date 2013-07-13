@@ -41,17 +41,17 @@ impl<T:FloatChannel> Color<T> for HSV<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> HSV<T> {
-        HSV::new((*self).h.clamp(&lo, &hi), // Should the hue component be clamped?
-                 (*self).s.clamp(&lo, &hi),
-                 (*self).v.clamp(&lo, &hi))
+        HSV::new(self.h.clamp(&lo, &hi), // Should the hue component be clamped?
+                 self.s.clamp(&lo, &hi),
+                 self.v.clamp(&lo, &hi))
     }
 
     /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> HSV<T> {
-        HSV::new((*self).h.invert_degrees(),
-                 (*self).s.invert_channel(),
-                 (*self).v.invert_channel())
+        HSV::new(self.h.invert_degrees(),
+                 self.s.invert_channel(),
+                 self.v.invert_channel())
     }
 }
 
@@ -60,9 +60,9 @@ impl<T:FloatChannel> FloatColor<T> for HSV<T> {
     /// `h` component, and `s` and `v` are clamped to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> HSV<T> {
-        HSV::new((*self).h.normalize_degrees(),
-                 (*self).s.normalize_channel(),
-                 (*self).v.normalize_channel())
+        HSV::new(self.h.normalize_degrees(),
+                 self.s.normalize_channel(),
+                 self.v.normalize_channel())
     }
 }
 
@@ -87,9 +87,9 @@ impl ToHSV for u64 {
 impl<T:Clone + FloatChannel> ToHSV for HSV<T> {
     #[inline]
     pub fn to_hsv<U:FloatChannel>(&self) -> HSV<U> {
-        HSV::new((*self).h.to_channel(),
-                 (*self).s.to_channel(),
-                 (*self).v.to_channel())
+        HSV::new(self.h.to_channel(),
+                 self.s.to_channel(),
+                 self.v.to_channel())
     }
 }
 
@@ -98,8 +98,8 @@ impl<T:Clone + FloatChannel> ToRGB for HSV<T> {
         // Algorithm taken from the Wikipedia article on HSL and HSV:
         // http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSV
 
-        let chr = (*self).v * (*self).s;
-        let h = (*self).h / num::cast(60);
+        let chr = self.v * self.s;
+        let h = self.h / num::cast(60);
 
         // the 2nd largest component
         let x = chr * (one!(T) - ((h % two!(T)) - one!(T)).abs());
@@ -115,7 +115,7 @@ impl<T:Clone + FloatChannel> ToRGB for HSV<T> {
         );
 
         // match the value by adding the same amount to each component
-        let mn = (*self).v - chr;
+        let mn = self.v - chr;
 
         rgb.r = rgb.r + mn;
         rgb.g = rgb.g + mn;
@@ -160,19 +160,19 @@ impl<T:FloatChannel> Color<T> for HSVA<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> HSVA<T> {
-        HSVA::new((*self).h.clamp(&lo, &hi),    // Should the hue component be clamped?
-                  (*self).s.clamp(&lo, &hi),
-                  (*self).v.clamp(&lo, &hi),
-                  (*self).a.clamp(&lo, &hi))
+        HSVA::new(self.h.clamp(&lo, &hi),    // Should the hue component be clamped?
+                  self.s.clamp(&lo, &hi),
+                  self.v.clamp(&lo, &hi),
+                  self.a.clamp(&lo, &hi))
     }
 
     /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> HSVA<T> {
-        HSVA::new((*self).h.invert_degrees(),
-                  (*self).s.invert_channel(),
-                  (*self).v.invert_channel(),
-                  (*self).a.invert_channel())
+        HSVA::new(self.h.invert_degrees(),
+                  self.s.invert_channel(),
+                  self.v.invert_channel(),
+                  self.a.invert_channel())
     }
 }
 
@@ -181,10 +181,10 @@ impl<T:FloatChannel> FloatColor<T> for HSVA<T> {
     /// `h` component, and `s`, `v` and `a` are clamped to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> HSVA<T> {
-        HSVA::new((*self).h.normalize_degrees(),
-                  (*self).s.normalize_channel(),
-                  (*self).v.normalize_channel(),
-                  (*self).a.normalize_channel())
+        HSVA::new(self.h.normalize_degrees(),
+                  self.s.normalize_channel(),
+                  self.v.normalize_channel(),
+                  self.a.normalize_channel())
     }
 }
 
@@ -220,17 +220,17 @@ impl<C: ToHSV, T:Clone + FloatChannel> ToHSVA for (C, T) {
 impl<T:Clone + FloatChannel> ToHSVA for HSVA<T> {
     #[inline]
     pub fn to_hsva<U:FloatChannel>(&self) -> HSVA<U> {
-        HSVA::new((*self).h.to_channel(),
-                  (*self).s.to_channel(),
-                  (*self).v.to_channel(),
-                  (*self).a.to_channel())
+        HSVA::new(self.h.to_channel(),
+                  self.s.to_channel(),
+                  self.v.to_channel(),
+                  self.a.to_channel())
     }
 }
 
 impl<T:Clone + FloatChannel> ToRGBA for HSVA<T> {
     #[inline]
     pub fn to_rgba<U:Channel>(&self) -> RGBA<U> {
-        RGBA::from_rgb_a(self.hsv().to_rgb(), (*self).a.to_channel())
+        RGBA::from_rgb_a(self.hsv().to_rgb(), self.a.to_channel())
     }
 }
 

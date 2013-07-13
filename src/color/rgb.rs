@@ -42,17 +42,17 @@ impl<T:Channel> Color<T> for RGB<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> RGB<T> {
-        RGB::new((*self).r.clamp(&lo, &hi),
-                 (*self).g.clamp(&lo, &hi),
-                 (*self).b.clamp(&lo, &hi))
+        RGB::new(self.r.clamp(&lo, &hi),
+                 self.g.clamp(&lo, &hi),
+                 self.b.clamp(&lo, &hi))
     }
 
     /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> RGB<T> {
-        RGB::new((*self).r.invert_channel(),
-                 (*self).g.invert_channel(),
-                 (*self).b.invert_channel())
+        RGB::new(self.r.invert_channel(),
+                 self.g.invert_channel(),
+                 self.b.invert_channel())
     }
 }
 
@@ -60,9 +60,9 @@ impl<T:FloatChannel> FloatColor<T> for RGB<T> {
     /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGB<T> {
-        RGB::new((*self).r.normalize_channel(),
-                 (*self).g.normalize_channel(),
-                 (*self).b.normalize_channel())
+        RGB::new(self.r.normalize_channel(),
+                 self.g.normalize_channel(),
+                 self.b.normalize_channel())
     }
 }
 
@@ -87,9 +87,9 @@ impl ToRGB for u64 {
 impl<T:Clone + Channel> ToRGB for RGB<T> {
     #[inline]
     pub fn to_rgb<U:Channel>(&self) -> RGB<U> {
-        RGB::new((*self).r.to_channel(),
-                 (*self).g.to_channel(),
-                 (*self).b.to_channel())
+        RGB::new(self.r.to_channel(),
+                 self.g.to_channel(),
+                 self.b.to_channel())
     }
 }
 
@@ -157,19 +157,19 @@ impl<T:Channel> Color<T> for RGBA<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
     pub fn clamp(&self, lo: T, hi: T) -> RGBA<T> {
-        RGBA::new((*self).r.clamp(&lo, &hi),
-                  (*self).g.clamp(&lo, &hi),
-                  (*self).b.clamp(&lo, &hi),
-                  (*self).a.clamp(&lo, &hi))
+        RGBA::new(self.r.clamp(&lo, &hi),
+                  self.g.clamp(&lo, &hi),
+                  self.b.clamp(&lo, &hi),
+                  self.a.clamp(&lo, &hi))
     }
 
     /// Inverts the color.
     #[inline]
     pub fn inverse(&self) -> RGBA<T> {
-        RGBA::new((*self).r.invert_channel(),
-                  (*self).g.invert_channel(),
-                  (*self).b.invert_channel(),
-                  (*self).a.invert_channel())
+        RGBA::new(self.r.invert_channel(),
+                  self.g.invert_channel(),
+                  self.b.invert_channel(),
+                  self.a.invert_channel())
     }
 }
 
@@ -177,10 +177,10 @@ impl<T:FloatChannel> FloatColor<T> for RGBA<T> {
     /// Normalizes the components of the color by clamping them to the range `(0,1)`.
     #[inline]
     pub fn normalize(&self) -> RGBA<T> {
-        RGBA::new((*self).r.normalize_channel(),
-                  (*self).g.normalize_channel(),
-                  (*self).b.normalize_channel(),
-                  (*self).a.normalize_channel())
+        RGBA::new(self.r.normalize_channel(),
+                  self.g.normalize_channel(),
+                  self.b.normalize_channel(),
+                  self.a.normalize_channel())
     }
 }
 
@@ -216,17 +216,17 @@ impl<C: ToRGB, T:Clone + Channel> ToRGBA for (C, T) {
 impl<T:Clone + Channel> ToRGBA for RGBA<T> {
     #[inline]
     pub fn to_rgba<U:Channel>(&self) -> RGBA<U> {
-        RGBA::new((*self).r.to_channel(),
-                  (*self).g.to_channel(),
-                  (*self).b.to_channel(),
-                  (*self).a.to_channel())
+        RGBA::new(self.r.to_channel(),
+                  self.g.to_channel(),
+                  self.b.to_channel(),
+                  self.a.to_channel())
     }
 }
 
 impl<T:Clone + Channel> ToHSVA for RGBA<T> {
     #[inline]
     pub fn to_hsva<U:FloatChannel>(&self) -> HSVA<U> {
-        HSVA::from_hsv_a(self.rgb().to_hsv(), (*self).a.to_channel())
+        HSVA::from_hsv_a(self.rgb().to_hsv(), self.a.to_channel())
     }
 }
 
