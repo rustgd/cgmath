@@ -18,6 +18,7 @@
 use core::{Vec2, AsVec2, Vec3, AsVec3};
 use geom::{Point2, Point3};
 
+#[deriving(Clone, Eq)]
 pub struct AABB2<T> {
     center: Point2<T>,
     size: Vec2<T>,
@@ -33,15 +34,17 @@ impl<T> AABB2<T> {
 }
 
 impl<T:Clone + Float> AABB2<T> {
-    #[inline]
     pub fn from_bounds(mn: Point2<T>, mx: Point2<T>) -> AABB2<T> {
         AABB2 {
-            center: Point2::from_vec2(mn.as_vec2().add_v(mx.as_vec2()).div_t(two!(T))),
+            center: Point2::from_vec2(
+                mn.as_vec2().add_v(mx.as_vec2()).div_t(two!(T))
+            ),
             size: mx - mn,
         }
     }
 }
 
+#[deriving(Clone, Eq)]
 pub struct AABB3<T> {
     center: Point3<T>,
     size: Vec3<T>,
@@ -57,10 +60,11 @@ impl<T> AABB3<T> {
 }
 
 impl<T:Clone + Float> AABB3<T> {
-    #[inline]
     pub fn from_bounds(mn: Point3<T>, mx: Point3<T>) -> AABB3<T> {
         AABB3 {
-            center: Point3::from_vec3(mn.as_vec3().add_v(mx.as_vec3()).div_t(two!(T))),
+            center: Point3::from_vec3(
+                mn.as_vec3().add_v(mx.as_vec3()).div_t(two!(T))
+            ),
             size: mx - mn,
         }
     }

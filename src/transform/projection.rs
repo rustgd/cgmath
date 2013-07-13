@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use bounds::Frustum;
 use core::Mat4;
-use geom::{Plane3, Frustum};
+use geom::Plane3;
 
 ///
 /// Create a perspective projection matrix

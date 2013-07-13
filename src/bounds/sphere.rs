@@ -13,12 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::plane::Plane3;
-pub use self::point::Point;
-pub use self::point::{Point2, AsPoint2};
-pub use self::point::{Point3, AsPoint3};
-pub use self::ray::{Ray2, Ray3};
+//! Bounding sphere
 
-pub mod plane;
-pub mod point;
-pub mod ray;
+use geom::Point3;
+
+#[deriving(Clone, Eq)]
+pub struct Sphere<T> {
+    center: Point3<T>,
+    radius: T,
+}
+
+impl_approx!(Sphere { center, radius })
+
+impl<T> Sphere<T> {
+    #[inline]
+    pub fn new(center: Point3<T>, radius: T) -> Sphere<T> {
+        Sphere { center: center, radius: radius }
+    }
+}

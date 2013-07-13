@@ -32,6 +32,10 @@ mod core_macros;
 #[path = "core/core.rs"]
 pub mod core;
 
+#[cfg(bounds)]
+#[path = "bounds/bounds.rs"]
+pub mod bounds;
+
 #[cfg(color)]
 #[path = "color/color.rs"]
 pub mod color;
