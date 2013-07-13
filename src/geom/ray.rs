@@ -31,7 +31,6 @@ impl<T> Ray2<T> {
     }
 }
 
-
 #[deriving(Clone, Eq)]
 pub struct Ray3<T> {
     origin: Point3<T>,
