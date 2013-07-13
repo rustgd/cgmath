@@ -43,8 +43,8 @@ pub trait NumVec<T,Slice>: Neg<T> {
     pub fn dot(&self, other: &Self) -> T;
 }
 
-/// Vectors with real components
-pub trait RealVec<T,Slice>: NumVec<T,Slice> + ApproxEq<T> {
+/// Vectors with floating point components
+pub trait FloatVec<T,Slice>: NumVec<T,Slice> + ApproxEq<T> {
     pub fn magnitude2(&self) -> T;
     pub fn magnitude(&self) -> T;
     pub fn angle(&self, other: &Self) -> T;
@@ -332,7 +332,7 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     }
 }
 
-impl<T:Real> RealVec<T,[T,..2]> for Vec2<T> {
+impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -910,7 +910,7 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     }
 }
 
-impl<T:Real> RealVec<T,[T,..3]> for Vec3<T> {
+impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -1516,7 +1516,7 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     }
 }
 
-impl<T:Real> RealVec<T,[T,..4]> for Vec4<T> {
+impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.

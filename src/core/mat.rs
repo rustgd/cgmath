@@ -272,7 +272,7 @@ impl<T:Clone + Num> Neg<Mat2<T>> for Mat2<T> {
     }
 }
 
-impl<T:Clone + Real> Mat2<T> {
+impl<T:Clone + Float> Mat2<T> {
     #[inline]
     pub fn from_angle(radians: T) -> Mat2<T> {
         let cos_theta = radians.cos();
@@ -754,7 +754,7 @@ impl<T:Clone + Num> Neg<Mat3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Clone + Real> Mat3<T> {
+impl<T:Clone + Float> Mat3<T> {
     /// Construct a matrix from an angular rotation around the `x` axis
     pub fn from_angle_x(radians: T) -> Mat3<T> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
@@ -838,7 +838,7 @@ impl<T:Clone + Real> Mat3<T> {
     }
 }
 
-impl<T:Clone + Real> ToQuat<T> for Mat3<T> {
+impl<T:Clone + Float> ToQuat<T> for Mat3<T> {
     /// Convert the matrix to a quaternion
     pub fn to_quat(&self) -> Quat<T> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's

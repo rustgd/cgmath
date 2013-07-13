@@ -67,7 +67,7 @@ impl<T> Quat<T> {
     }
 }
 
-impl<T:Clone + Real> Quat<T> {
+impl<T:Clone + Float> Quat<T> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quat<T> {
