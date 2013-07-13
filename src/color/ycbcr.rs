@@ -15,8 +15,7 @@
 
 // http://en.wikipedia.org/wiki/YCbCr
 
-use core::{Dimensional, Swap};
-use core::{Vec3, ToVec3, AsVec3};
+use core::*;
 
 #[deriving(Clone, Eq)]
 pub struct YCbCr<T> { y: T, cb: T, cr: T }

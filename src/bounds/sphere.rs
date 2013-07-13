@@ -15,7 +15,7 @@
 
 //! Bounding sphere
 
-use geom::Point3;
+use geom::*;
 
 #[deriving(Clone, Eq)]
 pub struct Sphere<T> {

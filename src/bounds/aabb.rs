@@ -15,8 +15,8 @@
 
 //! Axis-aligned bounding boxes
 
-use core::{Vec2, AsVec2, Vec3, AsVec3};
-use geom::{Point2, Point3};
+use core::*;
+use geom::*;
 
 #[deriving(Clone, Eq)]
 pub struct AABB2<T> {

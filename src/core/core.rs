@@ -19,6 +19,8 @@ pub use self::mat::{Mat2, ToMat2};
 pub use self::mat::{Mat3, ToMat3};
 pub use self::mat::{Mat4, ToMat4};
 pub use self::quat::{Quat, ToQuat};
+pub use self::vec::{NumVec, RealVec};
+pub use self::vec::{OrdVec, EqVec, BoolVec};
 pub use self::vec::{Vec2, ToVec2, AsVec2};
 pub use self::vec::{Vec3, ToVec3, AsVec3};
 pub use self::vec::{Vec4, ToVec4, AsVec4};

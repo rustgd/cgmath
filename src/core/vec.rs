@@ -15,6 +15,71 @@
 
 use core::{Dimensional, Swap};
 
+/// Vectors with numeric components
+pub trait NumVec<T>: Neg<T> {
+    pub fn add_t(&self, value: T) -> Self;
+    pub fn sub_t(&self, value: T) -> Self;
+    pub fn mul_t(&self, value: T) -> Self;
+    pub fn div_t(&self, value: T) -> Self;
+    pub fn rem_t(&self, value: T) -> Self;
+    pub fn add_v(&self, other: &Self) -> Self;
+    pub fn sub_v(&self, other: &Self) -> Self;
+    pub fn mul_v(&self, other: &Self) -> Self;
+    pub fn div_v(&self, other: &Self) -> Self;
+    pub fn rem_v(&self, other: &Self) -> Self;
+    pub fn neg_self(&mut self);
+    pub fn add_self_t(&mut self, value: T);
+    pub fn sub_self_t(&mut self, value: T);
+    pub fn mul_self_t(&mut self, value: T);
+    pub fn div_self_t(&mut self, value: T);
+    pub fn rem_self_t(&mut self, value: T);
+    pub fn add_self_v(&mut self, other: &Self);
+    pub fn sub_self_v(&mut self, other: &Self);
+    pub fn mul_self_v(&mut self, other: &Self);
+    pub fn div_self_v(&mut self, other: &Self);
+    pub fn rem_self_v(&mut self, other: &Self);
+    pub fn dot(&self, other: &Self) -> T;
+}
+
+/// Vectors with real components
+pub trait RealVec<T>: NumVec<T> + ApproxEq<T> {
+    pub fn magnitude2(&self) -> T;
+    pub fn magnitude(&self) -> T;
+    pub fn angle(&self, other: &Self) -> T;
+    pub fn normalize(&self) -> Self;
+    pub fn normalize_to(&self, magnitude: T) -> Self;
+    pub fn lerp(&self, other: &Self, amount: T) -> Self;
+    pub fn normalize_self(&mut self);
+    pub fn normalize_self_to(&mut self, magnitude: T);
+    pub fn lerp_self(&mut self, other: &Self, amount: T);
+}
+
+/// Vectors with orderable components
+pub trait OrdVec<T,BV> {
+    pub fn lt_t(&self, value: T) -> BV;
+    pub fn le_t(&self, value: T) -> BV;
+    pub fn ge_t(&self, value: T) -> BV;
+    pub fn gt_t(&self, value: T) -> BV;
+    pub fn lt_v(&self, other: &Self) -> BV;
+    pub fn le_v(&self, other: &Self) -> BV;
+    pub fn ge_v(&self, other: &Self) -> BV;
+    pub fn gt_v(&self, other: &Self) -> BV;
+}
+
+/// Vectors with components that can be tested for equality
+pub trait EqVec<T,BV>: Eq {
+    pub fn eq_t(&self, value: T) -> BV;
+    pub fn ne_t(&self, value: T) -> BV;
+    pub fn eq_v(&self, other: &Self) -> BV;
+    pub fn ne_v(&self, other: &Self) -> BV;
+}
+
+/// Vectors with boolean components
+pub trait BoolVec: Not<Self> {
+    pub fn any(&self) -> bool;
+    pub fn all(&self) -> bool;
+}
+
 #[deriving(Clone, Eq)]
 pub struct Vec2<T> { x: T, y: T }
 
@@ -114,7 +179,7 @@ impl<T:Num> Vec2<T> {
     }
 }
 
-impl<T:Num> Vec2<T> {
+impl<T:Num> NumVec<T> for Vec2<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec2<T> {
@@ -263,7 +328,7 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     }
 }
 
-impl<T:Real> Vec2<T> {
+impl<T:Real> RealVec<T> for Vec2<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -325,7 +390,7 @@ impl<T:Real> Vec2<T> {
     }
 }
 
-impl<T:Ord> Vec2<T> {
+impl<T:Ord> OrdVec<T,Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) < value,
@@ -375,7 +440,7 @@ impl<T:Ord> Vec2<T> {
     }
 }
 
-impl<T:Eq> Vec2<T> {
+impl<T:Eq> EqVec<T,Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) == value,
@@ -401,7 +466,7 @@ impl<T:Eq> Vec2<T> {
     }
 }
 
-impl Vec2<bool> {
+impl BoolVec for Vec2<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
@@ -667,7 +732,7 @@ impl<T:Num> Vec3<T> {
     }
 }
 
-impl<T:Num> Vec3<T> {
+impl<T:Num> NumVec<T> for Vec3<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec3<T> {
@@ -839,7 +904,7 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     }
 }
 
-impl<T:Real> Vec3<T> {
+impl<T:Real> RealVec<T> for Vec3<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -901,7 +966,7 @@ impl<T:Real> Vec3<T> {
     }
 }
 
-impl<T:Ord> Vec3<T> {
+impl<T:Ord> OrdVec<T,Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) < value,
@@ -959,7 +1024,7 @@ impl<T:Ord> Vec3<T> {
     }
 }
 
-impl<T:Eq> Vec3<T> {
+impl<T:Eq> EqVec<T,Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) == value,
@@ -989,7 +1054,7 @@ impl<T:Eq> Vec3<T> {
     }
 }
 
-impl Vec3<bool> {
+impl BoolVec for Vec3<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
@@ -1248,7 +1313,7 @@ impl<T:Num> Vec4<T> {
     }
 }
 
-impl<T:Num> Vec4<T> {
+impl<T:Num> NumVec<T> for Vec4<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_t(&self, value: T) -> Vec4<T> {
@@ -1443,7 +1508,7 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     }
 }
 
-impl<T:Real> Vec4<T> {
+impl<T:Real> RealVec<T> for Vec4<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -1505,7 +1570,7 @@ impl<T:Real> Vec4<T> {
     }
 }
 
-impl<T:Ord> Vec4<T> {
+impl<T:Ord> OrdVec<T,Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) < value,
@@ -1571,7 +1636,7 @@ impl<T:Ord> Vec4<T> {
     }
 }
 
-impl<T:Eq> Vec4<T> {
+impl<T:Eq> EqVec<T,Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn eq_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) == value,
@@ -1605,7 +1670,7 @@ impl<T:Eq> Vec4<T> {
     }
 }
 
-impl Vec4<bool> {
+impl BoolVec for Vec4<bool> {
     /// Returns `true` if any of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]

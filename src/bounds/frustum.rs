@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::Dimensional;
-use core::Mat4;
-use geom::{Plane3, Point3};
+use core::*;
+use geom::*;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<T> {

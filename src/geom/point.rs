@@ -22,12 +22,10 @@
 
 use std::cast;
 
-use core::{Dimensional, Swap};
-use core::{Mat2, Mat3, Quat};
-use core::{Vec2, ToVec2, AsVec2};
-use core::{Vec3, ToVec3, AsVec3};
-use core::{Vec4, ToVec4};
-use geom::{Ray2, Ray3};
+use core::*;
+
+use geom::Ray2;
+use geom::Ray3;
 
 /// A geometric point
 pub trait Point<T, Vec, Ray>: Eq

@@ -13,9 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Dimensional, Swap};
-use core::{Vec3, ToVec3, AsVec3};
-use core::{Vec4, ToVec4, AsVec4};
+use core::*;
 
 #[deriving(Clone, Eq)]
 pub struct SRGB<T> { r: T, g: T, b: T }

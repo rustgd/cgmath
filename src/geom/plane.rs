@@ -13,8 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Vec3, AsVec3, Vec4, Mat3};
-use geom::{Point, Point3, Ray3};
+use core::*;
+
+use geom::Point;
+use geom::Point3;
+use geom::Ray3;
 
 /// A plane formed from the equation: `Ax + Bx + Cx + D = 0`
 ///

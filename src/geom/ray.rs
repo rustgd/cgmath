@@ -13,8 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Vec2, Vec3};
-use geom::{Point2, Point3};
+use core::*;
+
+use geom::Point2;
+use geom::Point3;
 
 #[deriving(Clone, Eq)]
 pub struct Ray2<T> {

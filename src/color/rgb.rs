@@ -16,9 +16,8 @@
 use std::num;
 use std::cast;
 
-use core::{Dimensional, Swap};
-use core::{Vec3, ToVec3, AsVec3};
-use core::{Vec4, ToVec4, AsVec4};
+use core::*;
+
 use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};
 use color::{HSV, ToHSV, HSVA, ToHSVA};
