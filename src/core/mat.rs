@@ -17,93 +17,43 @@ use core::{Dimensional, Swap};
 use core::{Quat, ToQuat};
 use core::{Vec2, Vec3, Vec4};
 
-macro_rules! impl_mat(
-    ($Mat:ident, $Vec:ident) => (
-        impl<T> $Mat<T> {
-            #[inline]
-            pub fn col<'a>(&'a self, i: uint) -> &'a $Vec<T> {
-                self.index(i)
-            }
-
-            #[inline]
-            pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut $Vec<T> {
-                self.index_mut(i)
-            }
-
-            #[inline]
-            pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
-                self.index(col).index(row)
-            }
-
-            #[inline]
-            pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
-                self.index_mut(col).index_mut(row)
-            }
-        }
-    )
-)
-
-macro_rules! impl_mat_swap(
-    ($Mat:ident, $Vec:ident) => (
-        impl<T:Clone> $Mat<T> {
-            #[inline]
-            pub fn swap_cols(&mut self, a: uint, b: uint) {
-                let tmp = self.col(a).clone();
-                *self.col_mut(a) = self.col(b).clone();
-                *self.col_mut(b) = tmp;
-            }
-
-            #[inline]
-            pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint), (col_b, row_b): (uint, uint)) {
-                let tmp = self.elem(col_a, row_a).clone();
-                *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
-                *self.elem_mut(col_b, row_b) = tmp;
-            }
-        }
-    )
-)
-
-impl<T:Clone> Mat2<T> {
-    #[inline] pub fn transpose(&self) -> Mat2<T> {
-        Mat2::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(),
-                  self.elem(0, 1).clone(), self.elem(1, 1).clone())
-    }
-
-    #[inline] pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
-    }
+pub trait Mat<T,Vec,Slice>: Dimensional<Vec,Slice> + Swap {
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec;
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec;
+    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T;
+    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T;
+    pub fn swap_cols(&mut self, a: uint, b: uint);
+    pub fn row(&self, i: uint) -> Vec;
+    pub fn swap_rows(&mut self, a: uint, b: uint);
+    pub fn swap_elem(&mut self, a: (uint, uint), b: (uint, uint));
+    pub fn transpose(&self) -> Self;
+    pub fn transpose_self(&mut self);
 }
 
-impl<T:Clone> Mat3<T> {
-    #[inline] pub fn transpose(&self) -> Mat3<T> {
-        Mat3::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(), self.elem(2, 0).clone(),
-                  self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(),
-                  self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone())
-    }
-
-    #[inline] pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
-        self.swap_elem((0, 2), (2, 0));
-        self.swap_elem((1, 2), (2, 1));
-    }
+pub trait NumMat<T,Vec,Slice>: Mat<T,Vec,Slice> + Neg<Self> {
+    pub fn mul_t(&self, value: T) -> Self;
+    pub fn mul_v(&self, vec: &Vec) -> Vec;
+    pub fn add_m(&self, other: &Self) -> Self;
+    pub fn sub_m(&self, other: &Self) -> Self;
+    pub fn mul_m(&self, other: &Self) -> Self;
+    pub fn mul_self_t(&mut self, value: T);
+    pub fn add_self_m(&mut self, other: &Self);
+    pub fn sub_self_m(&mut self, other: &Self);
+    pub fn dot(&self, other: &Self) -> T;
+    pub fn determinant(&self) -> T;
+    pub fn trace(&self) -> T;
+    pub fn to_identity(&mut self);
+    pub fn to_zero(&mut self);
 }
 
-impl<T:Clone> Mat4<T> {
-    #[inline] pub fn transpose(&self) -> Mat4<T> {
-        Mat4::new(self.elem(0, 0).clone(), self.elem(1, 0).clone(), self.elem(2, 0).clone(), self.elem(3, 0).clone(),
-                  self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
-                  self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
-                  self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone())
-    }
-
-    #[inline] pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
-        self.swap_elem((0, 2), (2, 0));
-        self.swap_elem((0, 3), (3, 0));
-        self.swap_elem((1, 2), (2, 1));
-        self.swap_elem((1, 3), (3, 1));
-        self.swap_elem((2, 3), (3, 2));
-    }
+pub trait FloatMat<T,Vec,Slice>: NumMat<T,Vec,Slice> {
+    pub fn inverse(&self) -> Option<Self>;
+    pub fn invert_self(&mut self);
+    pub fn is_identity(&self) -> bool;
+    pub fn is_diagonal(&self) -> bool;
+    pub fn is_rotated(&self) -> bool;
+    pub fn is_symmetric(&self) -> bool;
+    pub fn is_invertible(&self) -> bool;
 }
 
 #[deriving(Clone, Eq)]
@@ -121,8 +71,6 @@ pub type Mat2f   = Mat2<float>;
 pub type Mat2f32 = Mat2<f32>;
 pub type Mat2f64 = Mat2<f64>;
 
-impl_mat!(Mat2, Vec2)
-impl_mat_swap!(Mat2, Vec2)
 impl_dimensional!(Mat2, Vec2<T>, 2)
 impl_approx!(Mat3 { x, y, z })
 
@@ -145,7 +93,34 @@ impl<T> Mat2<T> {
     }
 }
 
-impl<T:Clone> Mat2<T> {
+impl<T:Clone> Mat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
+        self.index(i)
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
+        self.index_mut(i)
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
+        self.index(col).index(row)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
+        self.index_mut(col).index_mut(row)
+    }
+
+    #[inline]
+    pub fn swap_cols(&mut self, a: uint, b: uint) {
+        let tmp = self.col(a).clone();
+        *self.col_mut(a) = self.col(b).clone();
+        *self.col_mut(b) = tmp;
+    }
+
     #[inline]
     pub fn row(&self, i: uint) -> Vec2<T> {
         Vec2::new(self.col(0).index(i).clone(),
@@ -156,6 +131,28 @@ impl<T:Clone> Mat2<T> {
     pub fn swap_rows(&mut self, a: uint, b: uint) {
         self.col_mut(0).swap(a, b);
         self.col_mut(1).swap(a, b);
+    }
+
+    #[inline]
+    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+                                (col_b, row_b): (uint, uint)) {
+        let tmp = self.elem(col_a, row_a).clone();
+        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
+        *self.elem_mut(col_b, row_b) = tmp;
+    }
+
+    #[inline]
+    pub fn transpose(&self) -> Mat2<T> {
+        Mat2::new(self.elem(0, 0).clone(),
+                  self.elem(1, 0).clone(),
+
+                  self.elem(0, 1).clone(),
+                  self.elem(1, 1).clone())
+    }
+
+    #[inline]
+    pub fn transpose_self(&mut self) {
+        self.swap_elem((0, 1), (1, 0));
     }
 }
 
@@ -190,7 +187,9 @@ impl<T:Clone + Num> Mat2<T> {
 
     #[inline]
     pub fn zero() -> Mat2<T> { Mat2::from_value(zero!(T)) }
+}
 
+impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat2<T> {
         Mat2::from_cols(self.col(0).mul_t(value.clone()),
@@ -284,7 +283,7 @@ impl<T:Clone + Real> Mat2<T> {
     }
 }
 
-impl<T:Clone + Real + ApproxEq<T>> Mat2<T> {
+impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
     #[inline]
     pub fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
@@ -533,8 +532,6 @@ pub type Mat3f   = Mat3<float>;
 pub type Mat3f32 = Mat3<f32>;
 pub type Mat3f64 = Mat3<f64>;
 
-impl_mat!(Mat3, Vec3)
-impl_mat_swap!(Mat3, Vec3)
 impl_dimensional!(Mat3, Vec3<T>, 3)
 impl_approx!(Mat2 { x, y })
 
@@ -560,7 +557,34 @@ impl<T> Mat3<T> {
     }
 }
 
-impl<T:Clone> Mat3<T> {
+impl<T:Clone> Mat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
+        self.index(i)
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
+        self.index_mut(i)
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
+        self.index(col).index(row)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
+        self.index_mut(col).index_mut(row)
+    }
+
+    #[inline]
+    pub fn swap_cols(&mut self, a: uint, b: uint) {
+        let tmp = self.col(a).clone();
+        *self.col_mut(a) = self.col(b).clone();
+        *self.col_mut(b) = tmp;
+    }
+
     #[inline]
     pub fn row(&self, i: uint) -> Vec3<T> {
         Vec3::new(self.col(0).index(i).clone(),
@@ -573,6 +597,36 @@ impl<T:Clone> Mat3<T> {
         self.col_mut(0).swap(a, b);
         self.col_mut(1).swap(a, b);
         self.col_mut(2).swap(a, b);
+    }
+
+    #[inline]
+    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+                                (col_b, row_b): (uint, uint)) {
+        let tmp = self.elem(col_a, row_a).clone();
+        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
+        *self.elem_mut(col_b, row_b) = tmp;
+    }
+
+    #[inline]
+    pub fn transpose(&self) -> Mat3<T> {
+        Mat3::new(self.elem(0, 0).clone(),
+                  self.elem(1, 0).clone(),
+                  self.elem(2, 0).clone(),
+
+                  self.elem(0, 1).clone(),
+                  self.elem(1, 1).clone(),
+                  self.elem(2, 1).clone(),
+
+                  self.elem(0, 2).clone(),
+                  self.elem(1, 2).clone(),
+                  self.elem(2, 2).clone())
+    }
+
+    #[inline]
+    pub fn transpose_self(&mut self) {
+        self.swap_elem((0, 1), (1, 0));
+        self.swap_elem((0, 2), (2, 0));
+        self.swap_elem((1, 2), (2, 1));
     }
 }
 
@@ -599,7 +653,9 @@ impl<T:Clone + Num> Mat3<T> {
 
     #[inline]
     pub fn zero() -> Mat3<T> { Mat3::from_value(zero!(T)) }
+}
 
+impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat3<T> {
         Mat3::from_cols(self.col(0).mul_t(value.clone()),
@@ -834,7 +890,7 @@ impl<T:Clone + Real> ToQuat<T> for Mat3<T> {
     }
 }
 
-impl<T:Clone + Real + ApproxEq<T>> Mat3<T> {
+impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
     #[inline]
     pub fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
@@ -1121,8 +1177,6 @@ pub type Mat4f   = Mat4<float>;
 pub type Mat4f32 = Mat4<f32>;
 pub type Mat4f64 = Mat4<f64>;
 
-impl_mat!(Mat4, Vec4)
-impl_mat_swap!(Mat4, Vec4)
 impl_dimensional!(Mat4, Vec4<T>, 4)
 impl_approx!(Mat4 { x, y, z, w })
 
@@ -1151,7 +1205,34 @@ impl<T> Mat4<T> {
     }
 }
 
-impl<T:Clone> Mat4<T> {
+impl<T:Clone> Mat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
+    #[inline]
+    pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
+        self.index(i)
+    }
+
+    #[inline]
+    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
+        self.index_mut(i)
+    }
+
+    #[inline]
+    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
+        self.index(col).index(row)
+    }
+
+    #[inline]
+    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
+        self.index_mut(col).index_mut(row)
+    }
+
+    #[inline]
+    pub fn swap_cols(&mut self, a: uint, b: uint) {
+        let tmp = self.col(a).clone();
+        *self.col_mut(a) = self.col(b).clone();
+        *self.col_mut(b) = tmp;
+    }
+
     #[inline]
     pub fn row(&self, i: uint) -> Vec4<T> {
         Vec4::new(self.col(0).index(i).clone(),
@@ -1166,6 +1247,47 @@ impl<T:Clone> Mat4<T> {
         self.col_mut(1).swap(a, b);
         self.col_mut(2).swap(a, b);
         self.col_mut(3).swap(a, b);
+    }
+
+    #[inline]
+    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+                                (col_b, row_b): (uint, uint)) {
+        let tmp = self.elem(col_a, row_a).clone();
+        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
+        *self.elem_mut(col_b, row_b) = tmp;
+    }
+
+    #[inline]
+    pub fn transpose(&self) -> Mat4<T> {
+        Mat4::new(self.elem(0, 0).clone(),
+                  self.elem(1, 0).clone(),
+                  self.elem(2, 0).clone(),
+                  self.elem(3, 0).clone(),
+
+                  self.elem(0, 1).clone(),
+                  self.elem(1, 1).clone(),
+                  self.elem(2, 1).clone(),
+                  self.elem(3, 1).clone(),
+
+                  self.elem(0, 2).clone(),
+                  self.elem(1, 2).clone(),
+                  self.elem(2, 2).clone(),
+                  self.elem(3, 2).clone(),
+
+                  self.elem(0, 3).clone(),
+                  self.elem(1, 3).clone(),
+                  self.elem(2, 3).clone(),
+                  self.elem(3, 3).clone())
+    }
+
+    #[inline]
+    pub fn transpose_self(&mut self) {
+        self.swap_elem((0, 1), (1, 0));
+        self.swap_elem((0, 2), (2, 0));
+        self.swap_elem((0, 3), (3, 0));
+        self.swap_elem((1, 2), (2, 1));
+        self.swap_elem((1, 3), (3, 1));
+        self.swap_elem((2, 3), (3, 2));
     }
 }
 
@@ -1183,7 +1305,9 @@ impl<T:Clone + Num> Mat4<T> {
 
     #[inline]
     pub fn zero() -> Mat4<T> { Mat4::from_value(zero!(T)) }
+}
 
+impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     #[inline]
     pub fn mul_t(&self, value: T) -> Mat4<T> {
         Mat4::from_cols(self.col(0).mul_t(value.clone()),
@@ -1312,7 +1436,7 @@ impl<T:Clone + Num> Neg<Mat4<T>> for Mat4<T> {
     }
 }
 
-impl<T:Clone + Real + ApproxEq<T>> Mat4<T> {
+impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     #[inline]
     pub fn inverse(&self) -> Option<Mat4<T>> {
         use std::uint;

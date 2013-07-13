@@ -15,6 +15,7 @@
 
 //! Core datatypes and conversion traits for 3D mathematics
 
+pub use self::mat::{Mat, NumMat, FloatMat};
 pub use self::mat::{Mat2, ToMat2};
 pub use self::mat::{Mat3, ToMat3};
 pub use self::mat::{Mat4, ToMat4};
