@@ -78,6 +78,12 @@ pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
     pub fn ge_v(&self, other: &Self) -> BV;
     pub fn gt_v(&self, other: &Self) -> BV;
 
+    pub fn min_t(&self, other: T) -> Self;
+    pub fn max_t(&self, other: T) -> Self;
+
+    pub fn min_v(&self, other: &Self) -> Self;
+    pub fn max_v(&self, other: &Self) -> Self;
+
     pub fn comp_min(&self) -> T;
     pub fn comp_max(&self) -> T;
 }
@@ -471,6 +477,30 @@ impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1))
+    }
+
+    #[inline]
+    pub fn min_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(self.index(0).min(&value),
+                  self.index(1).min(&value))
+    }
+
+    #[inline]
+    pub fn max_t(&self, value: T) -> Vec2<T> {
+        Vec2::new(self.index(0).max(&value),
+                  self.index(1).max(&value))
+    }
+
+    #[inline]
+    pub fn min_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self.index(0).min(other.index(0)),
+                  self.index(1).min(other.index(1)))
+    }
+
+    #[inline]
+    pub fn max_v(&self, other: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self.index(0).max(other.index(0)),
+                  self.index(1).max(other.index(1)))
     }
 
     /// Returns the smallest component of the vector.
@@ -1105,6 +1135,34 @@ impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
         Vec3::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1),
                   *self.index(2) > *other.index(2))
+    }
+
+    #[inline]
+    pub fn min_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(self.index(0).min(&value),
+                  self.index(1).min(&value),
+                  self.index(2).min(&value))
+    }
+
+    #[inline]
+    pub fn max_t(&self, value: T) -> Vec3<T> {
+        Vec3::new(self.index(0).max(&value),
+                  self.index(1).max(&value),
+                  self.index(2).max(&value))
+    }
+
+    #[inline]
+    pub fn min_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(self.index(0).min(other.index(0)),
+                  self.index(1).min(other.index(1)),
+                  self.index(2).min(other.index(2)))
+    }
+
+    #[inline]
+    pub fn max_v(&self, other: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(self.index(0).max(other.index(0)),
+                  self.index(1).max(other.index(1)),
+                  self.index(2).max(other.index(2)))
     }
 
     /// Returns the smallest component of the vector.
@@ -1769,6 +1827,38 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
                   *self.index(1) > *other.index(1),
                   *self.index(2) > *other.index(2),
                   *self.index(3) > *other.index(3))
+    }
+
+    #[inline]
+    pub fn min_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(self.index(0).min(&value),
+                  self.index(1).min(&value),
+                  self.index(2).min(&value),
+                  self.index(3).min(&value))
+    }
+
+    #[inline]
+    pub fn max_t(&self, value: T) -> Vec4<T> {
+        Vec4::new(self.index(0).max(&value),
+                  self.index(1).max(&value),
+                  self.index(2).max(&value),
+                  self.index(3).max(&value))
+    }
+
+    #[inline]
+    pub fn min_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self.index(0).min(other.index(0)),
+                  self.index(1).min(other.index(1)),
+                  self.index(2).min(other.index(2)),
+                  self.index(3).min(other.index(3)))
+    }
+
+    #[inline]
+    pub fn max_v(&self, other: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self.index(0).max(other.index(0)),
+                  self.index(1).max(other.index(1)),
+                  self.index(2).max(other.index(2)),
+                  self.index(3).max(other.index(3)))
     }
 
     /// Returns the smallest component of the vector.

@@ -50,10 +50,3 @@ pub trait Dimensioned<T,Slice> {
 pub trait SwapComponents {
     pub fn swap(&mut self, a: uint, b: uint);
 }
-
-pub trait ComponentWise<T> {
-    pub fn component_add(&self) -> T;
-    pub fn component_mul(&self) -> T;
-    pub fn component_min(&self) -> T;
-    pub fn component_max(&self) -> T;
-}
