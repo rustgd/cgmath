@@ -27,23 +27,30 @@ pub trait NumVec<T,Slice>: Neg<T> {
     pub fn mul_t(&self, value: T) -> Self;
     pub fn div_t(&self, value: T) -> Self;
     pub fn rem_t(&self, value: T) -> Self;
+
     pub fn add_v(&self, other: &Self) -> Self;
     pub fn sub_v(&self, other: &Self) -> Self;
     pub fn mul_v(&self, other: &Self) -> Self;
     pub fn div_v(&self, other: &Self) -> Self;
     pub fn rem_v(&self, other: &Self) -> Self;
+
     pub fn neg_self(&mut self);
     pub fn add_self_t(&mut self, value: T);
     pub fn sub_self_t(&mut self, value: T);
     pub fn mul_self_t(&mut self, value: T);
     pub fn div_self_t(&mut self, value: T);
     pub fn rem_self_t(&mut self, value: T);
+
     pub fn add_self_v(&mut self, other: &Self);
     pub fn sub_self_v(&mut self, other: &Self);
     pub fn mul_self_v(&mut self, other: &Self);
     pub fn div_self_v(&mut self, other: &Self);
     pub fn rem_self_v(&mut self, other: &Self);
+
     pub fn dot(&self, other: &Self) -> T;
+
+    pub fn comp_add(&self) -> T;
+    pub fn comp_mul(&self) -> T;
 }
 
 /// Vectors with floating point components
@@ -65,10 +72,14 @@ pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
     pub fn le_t(&self, value: T) -> BV;
     pub fn ge_t(&self, value: T) -> BV;
     pub fn gt_t(&self, value: T) -> BV;
+
     pub fn lt_v(&self, other: &Self) -> BV;
     pub fn le_v(&self, other: &Self) -> BV;
     pub fn ge_v(&self, other: &Self) -> BV;
     pub fn gt_v(&self, other: &Self) -> BV;
+
+    pub fn comp_min(&self) -> T;
+    pub fn comp_max(&self) -> T;
 }
 
 /// Vectors with components that can be tested for equality
@@ -328,6 +339,18 @@ impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
         *self.index(0) * *other.index(0) +
         *self.index(1) * *other.index(1)
     }
+
+    /// Returns the sum of the vector's components.
+    #[inline]
+    pub fn comp_add(&self) -> T {
+        *self.index(0) + *self.index(1)
+    }
+
+    /// Returns the product of the vector's components.
+    #[inline]
+    pub fn comp_mul(&self) -> T {
+        *self.index(0) * *self.index(1)
+    }
 }
 
 impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
@@ -401,7 +424,7 @@ impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
+impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) < value,
@@ -448,6 +471,18 @@ impl<T:Ord> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
         Vec2::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1))
+    }
+
+    /// Returns the smallest component of the vector.
+    #[inline]
+    pub fn comp_min(&self) -> T {
+        self.index(0).min(self.index(1))
+    }
+
+    /// Returns the largest component of the vector.
+    #[inline]
+    pub fn comp_max(&self) -> T {
+        self.index(0).max(self.index(1))
     }
 }
 
@@ -562,6 +597,18 @@ mod vec2_tests {
     }
 
     #[test]
+    fn test_comp_add() {
+        assert_eq!(A.comp_add(), 3.0);
+        assert_eq!(B.comp_add(), 7.0);
+    }
+
+    #[test]
+    fn test_comp_mul() {
+        assert_eq!(A.comp_mul(), 2.0);
+        assert_eq!(B.comp_mul(), 12.0);
+    }
+
+    #[test]
     fn test_approx_eq() {
         assert!(!Vec2::new::<float>(0.000001, 0.000001).approx_eq(&Vec2::new::<float>(0.0, 0.0)));
         assert!(Vec2::new::<float>(0.0000001, 0.0000001).approx_eq(&Vec2::new::<float>(0.0, 0.0)));
@@ -602,6 +649,18 @@ mod vec2_tests {
         let mut mut_c = c;
         mut_c.lerp_self(&d, 0.75);
         assert_eq!(mut_c, c.lerp(&d, 0.75));
+    }
+
+    #[test]
+    fn test_comp_min() {
+        assert_eq!(A.comp_min(), 1.0);
+        assert_eq!(B.comp_min(), 3.0);
+    }
+
+    #[test]
+    fn test_comp_max() {
+        assert_eq!(A.comp_max(), 2.0);
+        assert_eq!(B.comp_max(), 4.0);
     }
 
     #[test]
@@ -905,6 +964,18 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
         *self.index(1) * *other.index(1) +
         *self.index(2) * *other.index(2)
     }
+
+    /// Returns the sum of the vector's components.
+    #[inline]
+    pub fn comp_add(&self) -> T {
+        *self.index(0) + *self.index(1) + *self.index(2)
+    }
+
+    /// Returns the product of the vector's components.
+    #[inline]
+    pub fn comp_mul(&self) -> T {
+        *self.index(0) * *self.index(1) * *self.index(2)
+    }
 }
 
 impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
@@ -979,7 +1050,7 @@ impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
+impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) < value,
@@ -1034,6 +1105,18 @@ impl<T:Ord> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
         Vec3::new(*self.index(0) > *other.index(0),
                   *self.index(1) > *other.index(1),
                   *self.index(2) > *other.index(2))
+    }
+
+    /// Returns the smallest component of the vector.
+    #[inline]
+    pub fn comp_min(&self) -> T {
+        self.index(0).min(self.index(1)).min(self.index(2))
+    }
+
+    /// Returns the largest component of the vector.
+    #[inline]
+    pub fn comp_max(&self) -> T {
+        self.index(0).max(self.index(1)).max(self.index(2))
     }
 }
 
@@ -1168,6 +1251,18 @@ mod vec3_tests{
     }
 
     #[test]
+    fn test_comp_add() {
+        assert_eq!(A.comp_add(), 6.0);
+        assert_eq!(B.comp_add(), 15.0);
+    }
+
+    #[test]
+    fn test_comp_mul() {
+        assert_eq!(A.comp_mul(), 6.0);
+        assert_eq!(B.comp_mul(), 120.0);
+    }
+
+    #[test]
     fn test_approx_eq() {
         assert!(!Vec3::new::<float>(0.000001, 0.000001, 0.000001).approx_eq(&Vec3::new::<float>(0.0, 0.0, 0.0)));
         assert!(Vec3::new::<float>(0.0000001, 0.0000001, 0.0000001).approx_eq(&Vec3::new::<float>(0.0, 0.0, 0.0)));
@@ -1209,6 +1304,18 @@ mod vec3_tests{
         let mut mut_c = c;
         mut_c.lerp_self(&d, 0.75);
         assert_eq!(mut_c, c.lerp(&d, 0.75));
+    }
+
+    #[test]
+    fn test_comp_min() {
+        assert_eq!(A.comp_min(), 1.0);
+        assert_eq!(B.comp_min(), 4.0);
+    }
+
+    #[test]
+    fn test_comp_max() {
+        assert_eq!(A.comp_max(), 3.0);
+        assert_eq!(B.comp_max(), 6.0);
     }
 
     #[test]
@@ -1512,6 +1619,18 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
         *self.index(2) * *other.index(2) +
         *self.index(3) * *other.index(3)
     }
+
+    /// Returns the sum of the vector's components.
+    #[inline]
+    pub fn comp_add(&self) -> T {
+        *self.index(0) + *self.index(1) + *self.index(2) + *self.index(3)
+    }
+
+    /// Returns the product of the vector's components.
+    #[inline]
+    pub fn comp_mul(&self) -> T {
+        *self.index(0) * *self.index(1) * *self.index(2) * *self.index(3)
+    }
 }
 
 impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
@@ -1587,7 +1706,7 @@ impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
     }
 }
 
-impl<T:Ord> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
+impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn lt_t(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) < value,
@@ -1650,6 +1769,18 @@ impl<T:Ord> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
                   *self.index(1) > *other.index(1),
                   *self.index(2) > *other.index(2),
                   *self.index(3) > *other.index(3))
+    }
+
+    /// Returns the smallest component of the vector.
+    #[inline]
+    pub fn comp_min(&self) -> T {
+        self.index(0).min(self.index(1)).min(self.index(2)).min(self.index(3))
+    }
+
+    /// Returns the largest component of the vector.
+    #[inline]
+    pub fn comp_max(&self) -> T {
+        self.index(0).max(self.index(1)).max(self.index(2)).max(self.index(3))
     }
 }
 
@@ -1781,6 +1912,18 @@ mod vec4_tests {
     }
 
     #[test]
+    fn test_comp_add() {
+        assert_eq!(A.comp_add(), 10.0);
+        assert_eq!(B.comp_add(), 26.0);
+    }
+
+    #[test]
+    fn test_comp_mul() {
+        assert_eq!(A.comp_mul(), 24.0);
+        assert_eq!(B.comp_mul(), 1680.0);
+    }
+
+    #[test]
     fn test_approx_eq() {
         assert!(!Vec4::new::<float>(0.000001, 0.000001, 0.000001, 0.000001).approx_eq(&Vec4::new::<float>(0.0, 0.0, 0.0, 0.0)));
         assert!(Vec4::new::<float>(0.0000001, 0.0000001, 0.0000001, 0.0000001).approx_eq(&Vec4::new::<float>(0.0, 0.0, 0.0, 0.0)));
@@ -1821,6 +1964,18 @@ mod vec4_tests {
         let mut mut_c = c;
         mut_c.lerp_self(&d, 0.75);
         assert_eq!(mut_c, c.lerp(&d, 0.75));
+    }
+
+    #[test]
+    fn test_comp_min() {
+        assert_eq!(A.comp_min(), 1.0);
+        assert_eq!(B.comp_min(), 5.0);
+    }
+
+    #[test]
+    fn test_comp_max() {
+        assert_eq!(A.comp_max(), 4.0);
+        assert_eq!(B.comp_max(), 8.0);
     }
 
     #[test]
