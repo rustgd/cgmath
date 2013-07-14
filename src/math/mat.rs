@@ -15,11 +15,12 @@
 
 //! Matrix types
 
-use math::{Dimensional, Swap};
+use math::{Dimensioned, SwapComponents};
 use math::{Quat, ToQuat};
 use math::{Vec2, Vec3, Vec4};
 
-pub trait Mat<T,Vec,Slice>: Dimensional<Vec,Slice> + Swap {
+pub trait Mat<T,Vec,Slice>: Dimensioned<Vec,Slice>
+                          + SwapComponents {
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec;
     pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec;
     pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T;
@@ -73,7 +74,7 @@ pub type Mat2f   = Mat2<float>;
 pub type Mat2f32 = Mat2<f32>;
 pub type Mat2f64 = Mat2<f64>;
 
-impl_dimensional!(Mat2, Vec2<T>, 2)
+impl_dimensioned!(Mat2, Vec2<T>, 2)
 impl_approx!(Mat3 { x, y, z })
 
 pub trait ToMat2<T> {
@@ -534,7 +535,7 @@ pub type Mat3f   = Mat3<float>;
 pub type Mat3f32 = Mat3<f32>;
 pub type Mat3f64 = Mat3<f64>;
 
-impl_dimensional!(Mat3, Vec3<T>, 3)
+impl_dimensioned!(Mat3, Vec3<T>, 3)
 impl_approx!(Mat2 { x, y })
 
 pub trait ToMat3<T> {
@@ -1179,7 +1180,7 @@ pub type Mat4f   = Mat4<float>;
 pub type Mat4f32 = Mat4<f32>;
 pub type Mat4f64 = Mat4<f64>;
 
-impl_dimensional!(Mat4, Vec4<T>, 4)
+impl_dimensioned!(Mat4, Vec4<T>, 4)
 impl_approx!(Mat4 { x, y, z, w })
 
 pub trait ToMat4<T> {
@@ -1460,7 +1461,7 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
                     }
                 }
 
-                // Swap columns i1 and j in A and I to
+                // SwapComponents columns i1 and j in A and I to
                 // put pivot on diagonal
                 A.swap_cols(i1, j);
                 I.swap_cols(i1, j);

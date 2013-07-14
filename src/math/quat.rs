@@ -15,7 +15,7 @@
 
 //! Quaternion type
 
-use math::{Dimensional, Swap};
+use math::{Dimensioned, SwapComponents};
 use math::{Mat3, ToMat3};
 use math::Vec3;
 
@@ -34,8 +34,8 @@ pub type Quatf64 = Quat<f64>;
 #[deriving(Clone, Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-impl_dimensional!(Quat, T, 4)
-impl_swap!(Quat)
+impl_dimensioned!(Quat, T, 4)
+impl_swap_components!(Quat)
 impl_approx!(Quat { s, v })
 
 pub trait ToQuat<T> {

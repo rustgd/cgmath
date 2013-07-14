@@ -20,10 +20,10 @@ use math::*;
 #[deriving(Clone, Eq)]
 pub struct YCbCr<T> { y: T, cb: T, cr: T }
 
-impl_dimensional!(YCbCr, T, 3)
+impl_dimensioned!(YCbCr, T, 3)
 impl_to_vec!(YCbCr, 3)
 impl_as_vec!(YCbCr, 3)
-impl_swap!(YCbCr)
+impl_swap_components!(YCbCr)
 impl_approx!(YCbCr { y, cb, cr })
 
 impl<T> YCbCr<T> {

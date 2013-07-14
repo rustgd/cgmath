@@ -15,9 +15,10 @@
 
 //! Abstract vector types
 
-use math::{Dimensional, Swap};
+use math::{Dimensioned, SwapComponents};
 
-pub trait Vec<T,Slice>: Dimensional<T,Slice> + Swap {}
+pub trait Vec<T,Slice>: Dimensioned<T,Slice>
+                      + SwapComponents {}
 
 /// Vectors with numeric components
 pub trait NumVec<T,Slice>: Neg<T> {
@@ -119,8 +120,8 @@ pub trait AsVec2<T> {
     pub fn as_mut_vec2<'a>(&'a mut self) -> &'a mut Vec2<T>;
 }
 
-impl_dimensional!(Vec2, T, 2)
-impl_swap!(Vec2)
+impl_dimensioned!(Vec2, T, 2)
+impl_swap_components!(Vec2)
 impl_approx!(Vec2 { x, y })
 
 impl<T> Vec2<T> {
@@ -659,8 +660,8 @@ pub trait AsVec3<T> {
     pub fn as_mut_vec3<'a>(&'a mut self) -> &'a mut Vec3<T>;
 }
 
-impl_dimensional!(Vec3, T, 3)
-impl_swap!(Vec3)
+impl_dimensioned!(Vec3, T, 3)
+impl_swap_components!(Vec3)
 impl_approx!(Vec3 { x, y, z })
 
 impl<T> Vec3<T> {
@@ -1265,8 +1266,8 @@ pub trait AsVec4<T> {
     pub fn as_mut_vec4<'a>(&'a mut self) -> &'a mut Vec4<T>;
 }
 
-impl_dimensional!(Vec4, T, 4)
-impl_swap!(Vec4)
+impl_dimensioned!(Vec4, T, 4)
+impl_swap_components!(Vec4)
 impl_approx!(Vec4 { x, y, z, w })
 
 impl<T> Vec4<T> {

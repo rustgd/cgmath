@@ -40,14 +40,14 @@ pub mod plane;
 pub mod point;
 pub mod ray;
 
-pub trait Dimensional<T,Slice> {
+pub trait Dimensioned<T,Slice> {
     pub fn index<'a>(&'a self, i: uint) -> &'a T;
     pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut T;
     pub fn as_slice<'a>(&'a self) -> &'a Slice;
     pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
 }
 
-pub trait Swap {
+pub trait SwapComponents {
     pub fn swap(&mut self, a: uint, b: uint);
 }
 

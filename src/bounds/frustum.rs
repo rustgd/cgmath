@@ -27,7 +27,7 @@ pub struct Frustum<T> {
     far:    Plane3<T>,
 }
 
-impl_dimensional!(Frustum, Plane3<T>, 6)
+impl_dimensioned!(Frustum, Plane3<T>, 6)
 impl_approx!(Frustum {
     left, right,
     top, bottom,
@@ -46,7 +46,7 @@ pub struct FrustumPoints<T> {
     far_bottom_right:  Point3<T>,
 }
 
-impl_dimensional!(FrustumPoints, Point3<T>, 8)
+impl_dimensioned!(FrustumPoints, Point3<T>, 8)
 impl_approx!(FrustumPoints {
     near_top_left,
     near_top_right,

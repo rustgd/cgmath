@@ -15,9 +15,9 @@
 
 #[macro_escape];
 
-macro_rules! impl_dimensional(
+macro_rules! impl_dimensioned(
     ($Self:ident, $T:ty, $n:expr) => (
-        impl<T> Dimensional<$T,[$T,..$n]> for $Self<T> {
+        impl<T> Dimensioned<$T,[$T,..$n]> for $Self<T> {
             #[inline]
             pub fn index<'a>(&'a self, i: uint) -> &'a $T {
                 &'a self.as_slice()[i]
@@ -84,9 +84,9 @@ macro_rules! impl_as_vec_helper(
     )
 )
 
-macro_rules! impl_swap(
+macro_rules! impl_swap_components(
     ($Self:ident) => (
-        impl<T:Clone> Swap for $Self<T> {
+        impl<T:Clone> SwapComponents for $Self<T> {
             #[inline]
             pub fn swap(&mut self, a: uint, b: uint) {
                 let tmp = self.index(a).clone();

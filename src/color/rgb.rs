@@ -25,10 +25,10 @@ use color::{HSV, ToHSV, HSVA, ToHSVA};
 #[deriving(Clone, Eq)]
 pub struct RGB<T> { r: T, g: T, b: T }
 
-impl_dimensional!(RGB, T, 3)
+impl_dimensioned!(RGB, T, 3)
 impl_to_vec!(RGB, 3)
 impl_as_vec!(RGB, 3)
-impl_swap!(RGB)
+impl_swap_components!(RGB)
 impl_approx!(RGB { r, g, b })
 
 impl<T:Channel> RGB<T> {
@@ -125,10 +125,10 @@ impl<T:Clone + Channel> ToHSV for RGB<T> {
 #[deriving(Clone, Eq)]
 pub struct RGBA<T> { r: T, g: T, b: T, a: T }
 
-impl_dimensional!(RGBA, T, 4)
+impl_dimensioned!(RGBA, T, 4)
 impl_to_vec!(RGBA, 4)
 impl_as_vec!(RGBA, 4)
-impl_swap!(RGBA)
+impl_swap_components!(RGBA)
 impl_approx!(RGBA { r, g, b, a })
 
 impl<T:Channel> RGBA<T> {

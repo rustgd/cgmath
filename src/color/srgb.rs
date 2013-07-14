@@ -25,19 +25,19 @@ impl<T> SRGB<T> {
     }
 }
 
-impl_dimensional!(SRGB, T, 3)
+impl_dimensioned!(SRGB, T, 3)
 impl_to_vec!(SRGB, 3)
 impl_as_vec!(SRGB, 3)
-impl_swap!(SRGB)
+impl_swap_components!(SRGB)
 impl_approx!(SRGB { r, g, b })
 
 #[deriving(Clone, Eq)]
 pub struct SRGBA<T> { r: T, g: T, b: T, a: T }
 
-impl_dimensional!(SRGBA, T, 4)
+impl_dimensioned!(SRGBA, T, 4)
 impl_to_vec!(SRGBA, 4)
 impl_as_vec!(SRGBA, 4)
-impl_swap!(SRGBA)
+impl_swap_components!(SRGBA)
 impl_approx!(SRGBA { r, g, b, a })
 
 impl<T> SRGBA<T> {

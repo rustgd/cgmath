@@ -25,10 +25,10 @@ use color::{RGB, ToRGB, RGBA, ToRGBA};
 #[deriving(Clone, Eq)]
 pub struct HSV<T> { h: T, s: T, v: T }
 
-impl_dimensional!(HSV, T, 3)
+impl_dimensioned!(HSV, T, 3)
 impl_to_vec!(HSV, 3)
 impl_as_vec!(HSV, 3)
-impl_swap!(HSV)
+impl_swap_components!(HSV)
 impl_approx!(HSV { h, s, v })
 
 impl<T:FloatChannel> HSV<T> {
@@ -128,10 +128,10 @@ impl<T:Clone + FloatChannel> ToRGB for HSV<T> {
 #[deriving(Clone, Eq)]
 pub struct HSVA<T> { h: T, s: T, v: T, a: T }
 
-impl_dimensional!(HSVA, T, 4)
+impl_dimensioned!(HSVA, T, 4)
 impl_to_vec!(HSVA, 4)
 impl_as_vec!(HSVA, 4)
-impl_swap!(HSVA)
+impl_swap_components!(HSVA)
 impl_approx!(HSVA { h, s, v, a })
 
 impl<T:FloatChannel> HSVA<T> {
