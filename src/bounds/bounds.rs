@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Bounding volumes
+
 pub use self::aabb::{AABB2, AABB3};
 pub use self::frustum::{Frustum, FrustumPoints};
 pub use self::sphere::Sphere;

@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::*;
+//! Three-dimensional plane type
 
-use geom::Point;
-use geom::Point3;
-use geom::Ray3;
+use math::{Vec3, Vec4, Mat3};
+use math::{Point, Point3};
+use math::Ray3;
 
 /// A plane formed from the equation: `Ax + Bx + Cx + D = 0`
 ///
@@ -157,8 +157,8 @@ impl<T> ToStr for Plane3<T> {
 
 #[cfg(test)]
 mod tests {
-    use geom::plane::*;
-    use geom::point::*;
+    use math::plane::*;
+    use math::point::*;
 
     #[test]
     fn test_from_3p() {

@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::*;
-use geom::*;
+//! View frustum for visibility determination
+
+use math::*;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<T> {

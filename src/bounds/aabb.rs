@@ -15,8 +15,7 @@
 
 //! Axis-aligned bounding boxes
 
-use core::*;
-use geom::*;
+use math::*;
 
 #[deriving(Clone, Eq)]
 pub struct AABB2<T> {

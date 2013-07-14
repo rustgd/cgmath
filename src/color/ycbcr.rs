@@ -15,7 +15,7 @@
 
 // http://en.wikipedia.org/wiki/YCbCr
 
-use core::*;
+use math::*;
 
 #[deriving(Clone, Eq)]
 pub struct YCbCr<T> { y: T, cb: T, cr: T }

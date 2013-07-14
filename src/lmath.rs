@@ -26,11 +26,11 @@
 // Macros
 
 mod macros;
-#[path = "core/macros.rs"]
-mod core_macros;
+#[path = "math/macros.rs"]
+mod math_macros;
 
-#[path = "core/core.rs"]
-pub mod core;
+#[path = "math/math.rs"]
+pub mod math;
 
 #[cfg(bounds)]
 #[path = "bounds/bounds.rs"]
@@ -39,10 +39,6 @@ pub mod bounds;
 #[cfg(color)]
 #[path = "color/color.rs"]
 pub mod color;
-
-#[cfg(geom)]
-#[path = "geom/geom.rs"]
-pub mod geom;
 
 #[cfg(noise)]
 #[path = "noise/noise.rs"]

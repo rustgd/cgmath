@@ -13,4 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Bounding boxes
+//! Oriented bounding boxes
+
+use math::*;
+
+#[deriving(Clone, Eq)]
+pub struct Box2<T> {
+    center: Point2<T>,
+    axis: Vec2<T>,
+    extents: Vec2<T>,
+}
+
+#[deriving(Clone, Eq)]
+pub struct Box3<T> {
+    center: Point3<T>,
+    axis: Vec3<T>,
+    extents: Vec3<T>,
+}

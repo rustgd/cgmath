@@ -16,7 +16,7 @@
 use std::num;
 use std::cast;
 
-use core::*;
+use math::*;
 
 use color::{Color, FloatColor};
 use color::{Channel, FloatChannel};

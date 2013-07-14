@@ -13,9 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Dimensional, Swap};
-use core::{Quat, ToQuat};
-use core::{Vec2, Vec3, Vec4};
+//! Matrix types
+
+use math::{Dimensional, Swap};
+use math::{Quat, ToQuat};
+use math::{Vec2, Vec3, Vec4};
 
 pub trait Mat<T,Vec,Slice>: Dimensional<Vec,Slice> + Swap {
     pub fn col<'a>(&'a self, i: uint) -> &'a Vec;
@@ -330,8 +332,8 @@ impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
 
 #[cfg(test)]
 mod mat2_tests{
-    use core::mat::*;
-    use core::vec::*;
+    use math::mat::*;
+    use math::vec::*;
 
     static A: Mat2<float> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
                                    y: Vec2 { x: 2.0, y: 4.0 } };
@@ -950,8 +952,8 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
 
 #[cfg(test)]
 mod mat3_tests{
-    use core::mat::*;
-    use core::vec::*;
+    use math::mat::*;
+    use math::vec::*;
 
     static A: Mat3<float> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
                                    y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
@@ -1546,8 +1548,8 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
 
 #[cfg(test)]
 mod mat4_tests {
-    use core::mat::*;
-    use core::vec::*;
+    use math::mat::*;
+    use math::vec::*;
 
     static A: Mat4<float> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                    y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },

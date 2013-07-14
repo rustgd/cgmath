@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Dimensional, Swap};
+//! Abstract vector types
+
+use math::{Dimensional, Swap};
 
 pub trait Vec<T,Slice>: Dimensional<T,Slice> + Swap {}
 
@@ -495,7 +497,7 @@ impl<T:Not<T>> Not<Vec2<T>> for Vec2<T> {
 
 #[cfg(test)]
 mod vec2_tests {
-    use core::vec::*;
+    use math::vec::*;
 
     static A: Vec2<float> = Vec2 { x: 1.0, y: 2.0 };
     static B: Vec2<float> = Vec2 { x: 3.0, y: 4.0 };
@@ -1086,7 +1088,7 @@ impl<T:Not<T>> Not<Vec3<T>> for Vec3<T> {
 
 #[cfg(test)]
 mod vec3_tests{
-    use core::vec::*;
+    use math::vec::*;
 
     static A: Vec3<float> = Vec3 { x: 1.0, y: 2.0, z: 3.0 };
     static B: Vec3<float> = Vec3 { x: 4.0, y: 5.0, z: 6.0 };
@@ -1705,7 +1707,7 @@ impl<T:Not<T>> Not<Vec4<T>> for Vec4<T> {
 
 #[cfg(test)]
 mod vec4_tests {
-    use core::vec::*;
+    use math::vec::*;
 
     static A: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
     static B: Vec4<float> = Vec4 { x: 5.0, y: 6.0, z: 7.0, w: 8.0 };

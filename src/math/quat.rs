@@ -13,9 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core::{Dimensional, Swap};
-use core::{Mat3, ToMat3};
-use core::Vec3;
+//! Quaternion type
+
+use math::{Dimensional, Swap};
+use math::{Mat3, ToMat3};
+use math::Vec3;
 
 // GLSL-style type aliases
 
@@ -306,9 +308,9 @@ impl<T:Clone + Float> Quat<T> {
 
 #[cfg(test)]
 mod tests {
-    use core::mat::*;
-    use core::quat::*;
-    use core::vec::*;
+    use math::mat::*;
+    use math::quat::*;
+    use math::vec::*;
 
     #[test]
     fn test_from_angle_axis() {

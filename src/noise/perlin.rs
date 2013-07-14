@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use geom::{Point2, Point3};
+use math::{Point2, Point3};
 
 pub struct Perlin<T>;
 

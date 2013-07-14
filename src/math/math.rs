@@ -26,9 +26,19 @@ pub use self::vec::{Vec2, ToVec2, AsVec2};
 pub use self::vec::{Vec3, ToVec3, AsVec3};
 pub use self::vec::{Vec4, ToVec4, AsVec4};
 
+pub use self::plane::Plane3;
+pub use self::point::Point;
+pub use self::point::{Point2, AsPoint2};
+pub use self::point::{Point3, AsPoint3};
+pub use self::ray::{Ray2, Ray3};
+
 pub mod mat;
 pub mod quat;
 pub mod vec;
+
+pub mod plane;
+pub mod point;
+pub mod ray;
 
 pub trait Dimensional<T,Slice> {
     pub fn index<'a>(&'a self, i: uint) -> &'a T;

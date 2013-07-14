@@ -22,10 +22,12 @@
 
 use std::cast;
 
-use core::*;
-
-use geom::Ray2;
-use geom::Ray3;
+use math::{Dimensional, Swap};
+use math::{Mat2, Mat3, Quat};
+use math::{Ray2, Ray3};
+use math::{Vec2, ToVec2, AsVec2};
+use math::{Vec3, ToVec3, AsVec3};
+use math::{Vec4, ToVec4};
 
 /// A geometric point
 pub trait Point<T, Vec, Ray>: Eq
@@ -174,7 +176,7 @@ impl<T> ToStr for Point2<T> {
 
 #[cfg(test)]
 mod test_point2 {
-    use geom::point::*;
+    use math::point::*;
 
     #[test]
     fn test_to_str() {
@@ -317,7 +319,7 @@ impl<T> ToStr for Point3<T> {
 
 #[cfg(test)]
 mod test_point3 {
-    use geom::point::*;
+    use math::point::*;
 
     #[test]
     fn test_to_str() {

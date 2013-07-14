@@ -13,4 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Bounding cylinder
+//! Oriented bounding cylinder
+
+use math::*;
+
+#[deriving(Clone, Eq)]
+pub struct Cylinder3<T> {
+    center: Point3<T>,
+    axis: Vec3<T>,
+    radius: T,
+}

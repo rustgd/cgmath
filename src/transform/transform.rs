@@ -15,7 +15,7 @@
 
 pub use self::projection::{Projection, Perspective, PerspectiveFOV, Ortho};
 
-use core::{Vec3, Quat};
+use math::{Vec3, Quat};
 
 pub mod projection;
 
