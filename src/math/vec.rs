@@ -153,21 +153,25 @@ impl<T:Clone + Num> ToVec3<T> for Vec2<T> {
 
 /// Constants for two-dimensional vectors.
 impl<T:Num> Vec2<T> {
+    /// Returns a two-dimensional vector with each component set to `1`.
     #[inline]
     pub fn identity() -> Vec2<T> {
         Vec2::new(one!(T), one!(T))
     }
 
+    /// Returns a two-dimensional vector with each component set to `0`.
     #[inline]
     pub fn zero() -> Vec2<T> {
         Vec2::new(zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed two-dimensional vector with the `x` component set to `1`.
     #[inline]
     pub fn unit_x() -> Vec2<T> {
         Vec2::new(one!(T), zero!(T))
     }
 
+    /// Returns a zeroed two-dimensional vector with the `y` component set to `1`.
     #[inline]
     pub fn unit_y() -> Vec2<T> {
         Vec2::new(zero!(T), one!(T))
@@ -695,26 +699,31 @@ impl<T:Clone + Num> ToVec4<T> for Vec3<T> {
 
 /// Constants for three-dimensional vectors.
 impl<T:Num> Vec3<T> {
+    /// Returns a three-dimensional vector with each component set to `1`.
     #[inline]
     pub fn identity() -> Vec3<T> {
         Vec3::new(one!(T), one!(T), one!(T))
     }
 
+    /// Returns a three-dimensional vector with each component set to `0`.
     #[inline]
     pub fn zero() -> Vec3<T> {
         Vec3::new(zero!(T), zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed three-dimensional vector with the `x` component set to `1`.
     #[inline]
     pub fn unit_x() -> Vec3<T> {
         Vec3::new(one!(T), zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed three-dimensional vector with the `y` component set to `1`.
     #[inline]
     pub fn unit_y() -> Vec3<T> {
         Vec3::new(zero!(T), one!(T), zero!(T))
     }
 
+    /// Returns a zeroed three-dimensional vector with the `z` component set to `1`.
     #[inline]
     pub fn unit_z() -> Vec3<T> {
         Vec3::new(zero!(T), zero!(T), one!(T))
@@ -1291,31 +1300,37 @@ impl<T:Clone> Vec4<T> {
 
 /// Constants for four-dimensional vectors.
 impl<T:Num> Vec4<T> {
+    /// Returns a four-dimensional vector with each component set to `1`.
     #[inline]
     pub fn identity() -> Vec4<T> {
         Vec4::new(one!(T), one!(T), one!(T), one!(T))
     }
 
+    /// Returns a four-dimensional vector with each component set to `0`.
     #[inline]
     pub fn zero() -> Vec4<T> {
         Vec4::new(zero!(T), zero!(T), zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed four-dimensional vector with the `x` component set to `1`.
     #[inline]
     pub fn unit_x() -> Vec4<T> {
         Vec4::new(one!(T), zero!(T), zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed four-dimensional vector with the `y` component set to `1`.
     #[inline]
     pub fn unit_y() -> Vec4<T> {
         Vec4::new(zero!(T), one!(T), zero!(T), zero!(T))
     }
 
+    /// Returns a zeroed four-dimensional vector with the `z` component set to `1`.
     #[inline]
     pub fn unit_z() -> Vec4<T> {
         Vec4::new(zero!(T), zero!(T), one!(T), zero!(T))
     }
 
+    /// Returns a zeroed four-dimensional vector with the `w` component set to `1`.
     #[inline]
     pub fn unit_w() -> Vec4<T> {
         Vec4::new(zero!(T), zero!(T), zero!(T), one!(T))

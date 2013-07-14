@@ -27,6 +27,7 @@ pub struct Ray2<T> {
 impl_approx!(Ray2 { origin, direction })
 
 impl<T> Ray2<T> {
+    /// Creates a new ray from a position coordinate and a direction vector
     #[inline]
     pub fn new(origin: Point2<T>, direction: Vec2<T>) -> Ray2<T> {
         Ray2 { origin: origin, direction: direction }
@@ -42,6 +43,7 @@ pub struct Ray3<T> {
 impl_approx!(Ray3 { origin, direction })
 
 impl<T> Ray3<T> {
+    /// Creates a new ray from a position coordinate and a direction vector
     #[inline]
     pub fn new(origin: Point3<T>, direction: Vec3<T>) -> Ray3<T> {
         Ray3 { origin: origin, direction: direction }

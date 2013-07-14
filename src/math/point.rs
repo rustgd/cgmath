@@ -29,7 +29,7 @@ use math::{Vec2, ToVec2, AsVec2};
 use math::{Vec3, ToVec3, AsVec3};
 use math::{Vec4, ToVec4};
 
-/// A geometric point
+/// A coordinate vector
 pub trait Point<T, Vec, Ray>: Eq
                             + Add<Vec, Self>
                             + Sub<Self, Vec>
@@ -44,7 +44,7 @@ pub trait Point<T, Vec, Ray>: Eq
     pub fn ray_to(&self, other: &Self) -> Ray;
 }
 
-/// A two-dimensional point
+/// A two-dimensional coordinate vector
 #[deriving(Clone, Eq)]
 pub struct Point2<T> { x: T, y: T }
 
@@ -72,16 +72,19 @@ impl<T:Clone + Num> AsPoint2<T> for Vec2<T> {
 }
 
 impl<T:Num> Point2<T> {
+    /// Creates a new point from three coordinates.
     #[inline]
     pub fn new(x: T, y: T) -> Point2<T> {
         Point2 { x: x, y: y }
     }
 
+    /// Converts a vector to a point.
     #[inline]
     pub fn from_vec2(vec: Vec2<T>) -> Point2<T> {
         unsafe { cast::transmute(vec) }
     }
 
+    /// The coordinate [0, 0].
     #[inline]
     pub fn origin() -> Point2<T> {
         Point2::new(zero!(T), zero!(T))
@@ -100,12 +103,14 @@ impl<T:Clone + Num> ToVec3<T> for Point2<T> {
 }
 
 impl<T:Clone + Float> Point2<T> {
+    /// Rotates a point around the `z` axis using a scalar angle.
     #[inline]
-    pub fn rotate_t(&self, radians: &T) -> Point2<T> {
+    pub fn rotate_z(&self, radians: &T) -> Point2<T> {
         Point2::new(self.x.cos() * (*radians),
                     self.y.sin() * (*radians))
     }
 
+    /// Applies a rotation to the point using a rotation matrix.
     #[inline]
     pub fn rotate_m(&self, mat: &Mat2<T>) -> Point2<T> {
         Point2::from_vec2(mat.mul_v(self.as_vec2()))
@@ -113,34 +118,41 @@ impl<T:Clone + Float> Point2<T> {
 }
 
 impl<T:Clone + Float> Point<T, Vec2<T>, Ray2<T>> for Point2<T> {
+    /// Applies a displacement vector to the point.
     #[inline]
     pub fn translate(&self, offset: &Vec2<T>) -> Point2<T> {
         (*self) + (*offset)
     }
 
+    /// Scales the distance from the point to the origin using the components
+    /// of a vector.
     #[inline]
     pub fn scale(&self, factor: &Vec2<T>) -> Point2<T> {
         (*self) * (*factor)
     }
 
+    /// Returns the squared distance from the point to `other`. This does not
+    /// perform a square root operation like in the `distance` method and can
+    /// therefore be more efficient for distance comparisons where the actual
+    /// distance is not needed.
     #[inline]
     pub fn distance2(&self, other: &Point2<T>) -> T {
         ((*other) - (*self)).magnitude2()
     }
 
-    /// Returns the scalar distance to the other point
+    /// Returns the scalar distance to the other point.
     #[inline]
     pub fn distance(&self, other: &Point2<T>) -> T {
         other.distance2(self).sqrt()
     }
 
-    /// Returns a normalized direction vector pointing to the other point
+    /// Returns a normalized direction vector pointing to the other point.
     #[inline]
     pub fn direction(&self, other: &Point2<T>) -> Vec2<T> {
         ((*other) - (*self)).normalize()
     }
 
-    /// Projects a normalized ray towards the other point
+    /// Projects a normalized ray towards the other point.
     #[inline]
     pub fn ray_to(&self, other: &Point2<T>) -> Ray2<T> {
         Ray2::new(self.clone(), self.direction(other))
@@ -148,13 +160,15 @@ impl<T:Clone + Float> Point<T, Vec2<T>, Ray2<T>> for Point2<T> {
 }
 
 impl<T:Num> Add<Vec2<T>, Point2<T>> for Point2<T> {
-    fn add(&self, other: &Vec2<T>) -> Point2<T> {
-        Point2::new(self.x + other.x,
-                    self.y + other.y)
+    /// Applies a displacement vector to the point.
+    fn add(&self, offset: &Vec2<T>) -> Point2<T> {
+        Point2::new(self.x + offset.x,
+                    self.y + offset.y)
     }
 }
 
 impl<T:Num> Sub<Point2<T>, Vec2<T>> for Point2<T> {
+    /// Calculates the displacement vector from the point to `other`.
     fn sub(&self, other: &Point2<T>) -> Vec2<T> {
         Vec2::new(self.x - other.x,
                   self.y - other.y)
@@ -162,9 +176,11 @@ impl<T:Num> Sub<Point2<T>, Vec2<T>> for Point2<T> {
 }
 
 impl<T:Num> Mul<Vec2<T>, Point2<T>> for Point2<T> {
-    fn mul(&self, scale: &Vec2<T>) -> Point2<T> {
-        Point2::new(self.x * scale.x,
-                    self.y * scale.y)
+    /// Scales the distance from the point to the origin using the components
+    /// of a vector.
+    fn mul(&self, factor: &Vec2<T>) -> Point2<T> {
+        Point2::new(self.x * factor.x,
+                    self.y * factor.y)
     }
 }
 
@@ -184,7 +200,7 @@ mod test_point2 {
     }
 }
 
-/// A three-dimensional point
+/// A three-dimensional coordinate vector
 #[deriving(Clone, Eq)]
 pub struct Point3<T> { x: T, y: T, z: T }
 
@@ -212,16 +228,19 @@ impl<T:Clone + Num> AsPoint3<T> for Vec3<T> {
 }
 
 impl<T:Num> Point3<T> {
+    /// Creates a new point from three coordinates.
     #[inline]
     pub fn new(x: T, y: T, z: T) -> Point3<T> {
         Point3 { x: x, y: y, z: z }
     }
 
+    /// Converts a vector to a point.
     #[inline]
     pub fn from_vec3(vec: Vec3<T>) -> Point3<T> {
         unsafe { cast::transmute(vec) }
     }
 
+    /// The coordinate [0, 0, 0].
     #[inline]
     pub fn origin() -> Point3<T> {
         Point3::new(zero!(T), zero!(T), zero!(T))
@@ -241,11 +260,13 @@ impl<T:Clone + Num> ToVec4<T> for Point3<T> {
 }
 
 impl<T:Clone + Float> Point3<T> {
+    /// Applies a rotation to the point using a quaternion.
     #[inline]
     pub fn rotate_q(&self, quat: &Quat<T>) -> Point3<T> {
         Point3::from_vec3(quat.mul_v(self.as_vec3()))
     }
 
+    /// Applies a rotation to the point using a rotation matrix.
     #[inline]
     pub fn rotate_m(&self, mat: &Mat3<T>) -> Point3<T> {
         Point3::from_vec3(mat.mul_v(self.as_vec3()))
@@ -253,34 +274,41 @@ impl<T:Clone + Float> Point3<T> {
 }
 
 impl<T:Clone + Float> Point<T, Vec3<T>, Ray3<T>> for Point3<T> {
+    /// Applies a displacement vector to the point.
     #[inline]
     pub fn translate(&self, offset: &Vec3<T>) -> Point3<T> {
         (*self) + (*offset)
     }
 
+    /// Scales the distance from the point to the origin using the components
+    /// of a vector.
     #[inline]
     pub fn scale(&self, factor: &Vec3<T>) -> Point3<T> {
         (*self) * (*factor)
     }
 
+    /// Returns the squared distance from the point to `other`. This does not
+    /// perform a square root operation like in the `distance` method and can
+    /// therefore be more efficient for distance comparisons where the actual
+    /// distance is not needed.
     #[inline]
     pub fn distance2(&self, other: &Point3<T>) -> T {
         ((*other) - (*self)).magnitude2()
     }
 
-    /// Returns the scalar distance to the other point
+    /// Returns the scalar distance to the other point.
     #[inline]
     pub fn distance(&self, other: &Point3<T>) -> T {
         other.distance2(self).sqrt()
     }
 
-    /// Returns a normalized direction vector pointing to the other point
+    /// Returns a normalized direction vector pointing to the other point.
     #[inline]
     pub fn direction(&self, other: &Point3<T>) -> Vec3<T> {
         ((*other) - (*self)).normalize()
     }
 
-    /// Projects a normalized ray towards the other point
+    /// Projects a normalized ray towards the other point.
     #[inline]
     pub fn ray_to(&self, other: &Point3<T>) -> Ray3<T> {
         Ray3::new(self.clone(), self.direction(other))
@@ -288,14 +316,16 @@ impl<T:Clone + Float> Point<T, Vec3<T>, Ray3<T>> for Point3<T> {
 }
 
 impl<T:Num> Add<Vec3<T>, Point3<T>> for Point3<T> {
-    fn add(&self, other: &Vec3<T>) -> Point3<T> {
-        Point3::new(self.x + other.x,
-                    self.y + other.y,
-                    self.z + other.z)
+    /// Applies a displacement vector to the point
+    fn add(&self, offset: &Vec3<T>) -> Point3<T> {
+        Point3::new(self.x + offset.x,
+                    self.y + offset.y,
+                    self.z + offset.z)
     }
 }
 
 impl<T:Num> Sub<Point3<T>, Vec3<T>> for Point3<T> {
+    /// Calculates the displacement required to move the point to `other`.
     fn sub(&self, other: &Point3<T>) -> Vec3<T> {
         Vec3::new(self.x - other.x,
                   self.y - other.y,
@@ -304,10 +334,12 @@ impl<T:Num> Sub<Point3<T>, Vec3<T>> for Point3<T> {
 }
 
 impl<T:Num> Mul<Vec3<T>, Point3<T>> for Point3<T> {
-    fn mul(&self, scale: &Vec3<T>) -> Point3<T> {
-        Point3::new(self.x * scale.x,
-                    self.y * scale.y,
-                    self.z * scale.z)
+    /// Scales the distance from the point to the origin using the components
+    /// of a vector.
+    fn mul(&self, factor: &Vec3<T>) -> Point3<T> {
+        Point3::new(self.x * factor.x,
+                    self.y * factor.y,
+                    self.z * factor.z)
     }
 }
 
