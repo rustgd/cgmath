@@ -178,18 +178,26 @@ impl<T:Clone + Num> ToMat4<T> for Mat2<T> {
     }
 }
 
+impl<T:Num> Mat2<T> {
+    #[inline]
+    pub fn identity() -> Mat2<T> {
+        Mat2::from_cols(Vec2::unit_x(),
+                        Vec2::unit_y())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat2<T> {
+        Mat2::from_cols(Vec2::zero(),
+                        Vec2::zero())
+    }
+}
+
 impl<T:Clone + Num> Mat2<T> {
     #[inline]
     pub fn from_value(value: T) -> Mat2<T> {
         Mat2::new(value.clone(), zero!(T),
                   zero!(T), value.clone())
     }
-
-    #[inline]
-    pub fn identity() -> Mat2<T> { Mat2::from_value(one!(T)) }
-
-    #[inline]
-    pub fn zero() -> Mat2<T> { Mat2::from_value(zero!(T)) }
 }
 
 impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
@@ -558,6 +566,13 @@ impl<T> Mat3<T> {
                      c2: Vec3<T>) -> Mat3<T> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
+
+    #[inline]
+    pub fn from_axes(x: Vec3<T>,
+                     y: Vec3<T>,
+                     z: Vec3<T>) -> Mat3<T> {
+        Mat3 { x: x, y: y, z: z }
+    }
 }
 
 impl<T:Clone> Mat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
@@ -643,6 +658,22 @@ impl<T:Clone + Num> ToMat4<T> for Mat3<T> {
     }
 }
 
+impl<T:Num> Mat3<T> {
+    #[inline]
+    pub fn identity() -> Mat3<T> {
+        Mat3::from_cols(Vec3::unit_x(),
+                        Vec3::unit_y(),
+                        Vec3::unit_z())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat3<T> {
+        Mat3::from_cols(Vec3::zero(),
+                        Vec3::zero(),
+                        Vec3::zero())
+    }
+}
+
 impl<T:Clone + Num> Mat3<T> {
     #[inline]
     pub fn from_value(value: T) -> Mat3<T> {
@@ -650,12 +681,6 @@ impl<T:Clone + Num> Mat3<T> {
                   zero!(T), value.clone(), zero!(T),
                   zero!(T), zero!(T), value.clone())
     }
-
-    #[inline]
-    pub fn identity() -> Mat3<T> { Mat3::from_value(one!(T)) }
-
-    #[inline]
-    pub fn zero() -> Mat3<T> { Mat3::from_value(zero!(T)) }
 }
 
 impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
@@ -757,12 +782,7 @@ impl<T:Clone + Num> Neg<Mat3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Clone + Float> Mat3<T> {
-    #[inline]
-    pub fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Mat3<T> {
-        Mat3::from_cols(x, y, z)
-    }
-
+impl<T:Float> Mat3<T> {
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Mat3<T> {
         let dir_ = dir.normalize();
         let side = dir_.cross(&up.normalize());
@@ -1225,6 +1245,24 @@ impl<T:Clone> Mat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     }
 }
 
+impl<T:Num> Mat4<T> {
+    #[inline]
+    pub fn identity() -> Mat4<T> {
+        Mat4::from_cols(Vec4::unit_x(),
+                        Vec4::unit_y(),
+                        Vec4::unit_z(),
+                        Vec4::unit_w())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat4<T> {
+        Mat4::from_cols(Vec4::zero(),
+                        Vec4::zero(),
+                        Vec4::zero(),
+                        Vec4::zero())
+    }
+}
+
 impl<T:Clone + Num> Mat4<T> {
     #[inline]
     pub fn from_value(value: T) -> Mat4<T> {
@@ -1233,12 +1271,6 @@ impl<T:Clone + Num> Mat4<T> {
                   zero!(T), zero!(T), value.clone(), zero!(T),
                   zero!(T), zero!(T), zero!(T), value.clone())
     }
-
-    #[inline]
-    pub fn identity() -> Mat4<T> { Mat4::from_value(one!(T)) }
-
-    #[inline]
-    pub fn zero() -> Mat4<T> { Mat4::from_value(zero!(T)) }
 }
 
 impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
