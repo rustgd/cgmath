@@ -82,42 +82,6 @@ impl<T:Clone + Float> Quat<T> {
         Quat::new(zero!(T), zero!(T), zero!(T), zero!(T))
     }
 
-    #[inline]
-    pub fn from_angle_x(radians: T) -> Quat<T> {
-        Quat::new((radians / two!(T)).cos(), radians.sin(), zero!(T), zero!(T))
-    }
-
-    #[inline]
-    pub fn from_angle_y(radians: T) -> Quat<T> {
-        Quat::new((radians / two!(T)).cos(), zero!(T), radians.sin(), zero!(T))
-    }
-
-    #[inline]
-    pub fn from_angle_z(radians: T) -> Quat<T> {
-        Quat::new((radians / two!(T)).cos(), zero!(T), zero!(T), radians.sin())
-    }
-
-    pub fn from_angle_xyz(radians_x: T, radians_y: T, radians_z: T) -> Quat<T> {
-        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let xdiv2 = radians_x / two!(T);
-        let ydiv2 = radians_y / two!(T);
-        let zdiv2 = radians_z / two!(T);
-        Quat::new(zdiv2.cos() * xdiv2.cos() * ydiv2.cos() + zdiv2.sin() * xdiv2.sin() * ydiv2.sin(),
-                  zdiv2.sin() * xdiv2.cos() * ydiv2.cos() - zdiv2.cos() * xdiv2.sin() * ydiv2.sin(),
-                  zdiv2.cos() * xdiv2.sin() * ydiv2.cos() + zdiv2.sin() * xdiv2.cos() * ydiv2.sin(),
-                  zdiv2.cos() * xdiv2.cos() * ydiv2.sin() - zdiv2.sin() * xdiv2.sin() * ydiv2.cos())
-    }
-
-    #[inline]
-    pub fn from_angle_axis(radians: T, axis: &Vec3<T>) -> Quat<T> {
-        let half = radians / two!(T);
-        Quat::from_sv(half.cos(), axis.mul_t(half.sin()))
-    }
-
-    pub fn get_angle_axis(&self) -> (T, Vec3<T>) {
-        fail!(~"Not yet implemented.")
-    }
-
     /// The result of multiplying the quaternion a scalar
     #[inline]
     pub fn mul_t(&self, value: T) -> Quat<T> {
@@ -303,34 +267,5 @@ impl<T:Clone + Float> Quat<T> {
             self.mul_t(theta.cos())
                 .add_q(&q.mul_t(theta.sin()))
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use math::mat::*;
-    use math::quat::*;
-    use math::vec::*;
-
-    #[test]
-    fn test_from_angle_axis() {
-        let v = Vec3::new(1f, 0f, 0f);
-
-        let q = Quat::from_angle_axis((-45f).to_radians(), &Vec3::new(0f, 0f, -1f));
-
-        // http://www.wolframalpha.com/input/?i={1,0}+rotate+-45+degrees
-        assert_approx_eq!(q.mul_v(&v), Vec3::new(1f/2f.sqrt(), 1f/2f.sqrt(), 0f));
-        assert_eq!(q.mul_v(&v).magnitude(), v.magnitude());
-        assert_approx_eq!(q.to_mat3(), Mat3::new( 1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
-                                                 -1f/2f.sqrt(), 1f/2f.sqrt(), 0f,
-                                                            0f,           0f, 1f));
-    }
-
-    #[test]
-    fn test_approx_eq() {
-        assert!(!Quat::new::<float>(0.000001, 0.000001, 0.000001, 0.000001)
-                .approx_eq(&Quat::new::<float>(0.0, 0.0, 0.0, 0.0)));
-        assert!(Quat::new::<float>(0.0000001, 0.0000001, 0.0000001, 0.0000001)
-                .approx_eq(&Quat::new::<float>(0.0, 0.0, 0.0, 0.0)));
     }
 }
