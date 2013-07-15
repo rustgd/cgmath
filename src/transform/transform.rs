@@ -14,10 +14,15 @@
 // limitations under the License.
 
 pub use self::projection::{Projection, Perspective, PerspectiveFOV, Ortho};
+pub use self::rotation::Rotation;
+pub use self::rotation::{Euler, ToEuler};
+pub use self::rotation::{AxisAngle, ToAxisAngle};
+pub use self::rotation::{AngleX, AngleY, AngleZ};
 
 use math::{Vec3, Quat};
 
 pub mod projection;
+pub mod rotation;
 
 pub trait Transform<T> {}
 

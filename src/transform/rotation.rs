@@ -28,12 +28,7 @@
 
 use std::cast;
 
-use math::{Dimensioned, SwapComponents};
-use math::{Mat, NumMat, FloatMat};
-use math::{Mat3, ToMat3};
-use math::{Mat4, ToMat4};
-use math::{Quat, ToQuat};
-use math::{Vec3, ToVec3, AsVec3};
+use math::*;
 
 use math::{Point3, Ray3};
 
@@ -327,10 +322,8 @@ impl<T:Float> ToMat4<T> for AxisAngle<T> {
 
 #[cfg(test)]
 mod axis_angle_tests {
-    use math::mat::*;
-    use math::quat::*;
-    use math::rotation::*;
-    use math::vec::*;
+    use math::*;
+    use transform::*;
 
     #[test]
     fn test_to_quat() {

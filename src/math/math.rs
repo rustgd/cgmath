@@ -31,10 +31,6 @@ pub use self::point::Point;
 pub use self::point::{Point2, AsPoint2};
 pub use self::point::{Point3, AsPoint3};
 pub use self::ray::{Ray2, Ray3};
-pub use self::rotation::Rotation;
-pub use self::rotation::{Euler, ToEuler};
-pub use self::rotation::{AxisAngle, ToAxisAngle};
-pub use self::rotation::{AngleX, AngleY, AngleZ};
 
 pub mod mat;
 pub mod quat;
@@ -43,7 +39,6 @@ pub mod vec;
 pub mod plane;
 pub mod point;
 pub mod ray;
-pub mod rotation;
 
 pub trait Dimensioned<T,Slice> {
     pub fn index<'a>(&'a self, i: uint) -> &'a T;
