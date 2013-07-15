@@ -17,6 +17,7 @@
 
 use math::{Dimensioned, SwapComponents};
 
+/// Generic vector trait
 pub trait Vec<T,Slice>: Dimensioned<T,Slice>
                       + SwapComponents {}
 
@@ -243,48 +244,56 @@ impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
                   *self.index(1) % value)
     }
 
+    /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) + *other.index(0),
                   *self.index(1) + *other.index(1))
     }
 
+    /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) - *other.index(0),
                   *self.index(1) - *other.index(1))
     }
 
+    /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) * *other.index(0),
                   *self.index(1) * *other.index(1))
     }
 
+    /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) / *other.index(0),
                   *self.index(1) / *other.index(1))
     }
 
+    /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(*self.index(0) % *other.index(0),
                   *self.index(1) % *other.index(1))
     }
 
+    /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
         *self.index_mut(1) = -*self.index(1);
     }
 
+    /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
         *self.index_mut(1) = *self.index(1) + value;
     }
 
+    /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
@@ -875,6 +884,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) % value)
     }
 
+    /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) + *other.index(0),
@@ -882,6 +892,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) + *other.index(2))
     }
 
+    /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) - *other.index(0),
@@ -889,6 +900,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) - *other.index(2))
     }
 
+    /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) * *other.index(0),
@@ -896,6 +908,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) * *other.index(2))
     }
 
+    /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) / *other.index(0),
@@ -903,6 +916,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) / *other.index(2))
     }
 
+    /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(*self.index(0) % *other.index(0),
@@ -910,6 +924,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
                   *self.index(2) % *other.index(2))
     }
 
+    /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
@@ -917,6 +932,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
         *self.index_mut(2) = -*self.index(2);
     }
 
+    /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
@@ -924,6 +940,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
         *self.index_mut(2) = *self.index(2) + value;
     }
 
+    /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
@@ -1541,6 +1558,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) % value)
     }
 
+    /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) + *other.index(0),
@@ -1549,6 +1567,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) + *other.index(3))
     }
 
+    /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) - *other.index(0),
@@ -1557,6 +1576,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) - *other.index(3))
     }
 
+    /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) * *other.index(0),
@@ -1565,6 +1585,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) * *other.index(3))
     }
 
+    /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) / *other.index(0),
@@ -1573,6 +1594,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) / *other.index(3))
     }
 
+    /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(*self.index(0) % *other.index(0),
@@ -1581,6 +1603,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
                   *self.index(3) % *other.index(3))
     }
 
+    /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
         *self.index_mut(0) = -*self.index(0);
@@ -1589,6 +1612,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
         *self.index_mut(3) = -*self.index(3);
     }
 
+    /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
@@ -1597,6 +1621,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
         *self.index_mut(3) = *self.index(3) + value;
     }
 
+    /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_t(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
