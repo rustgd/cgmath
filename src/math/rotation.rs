@@ -68,8 +68,6 @@ pub struct RotationMat<T> {
     priv mat: Mat3<T>
 }
 
-impl_dimensioned!(RotationMat, Vec3<T>, 3)
-
 impl<T> RotationMat<T> {
     #[inline]
     pub fn as_mat3<'a>(&'a self) -> & 'a Mat3<T> {
@@ -103,39 +101,6 @@ impl<T:Clone + Float> ToMat4<T> for RotationMat<T> {
     #[inline] pub fn to_mat4(&self) -> Mat4<T> { self.mat.to_mat4() }
 }
 
-impl<T:Clone> Mat<T,Vec3<T>,[Vec3<T>,..3]> for RotationMat<T> {
-    #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> { self.mat.col(i) }
-
-    #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> { self.mat.col_mut(i) }
-
-    #[inline]
-    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T { self.mat.elem(col, row) }
-
-    #[inline]
-    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T { self.mat.elem_mut(col, row) }
-
-    #[inline]
-    pub fn swap_cols(&mut self, a: uint, b: uint) { self.mat.swap_cols(a, b) }
-
-    #[inline]
-    pub fn row(&self, i: uint) -> Vec3<T> { self.mat.row(i) }
-
-    #[inline]
-    pub fn swap_rows(&mut self, a: uint, b: uint) { self.mat.swap_rows(a, b) }
-
-    #[inline]
-    pub fn swap_elem(&mut self, a: (uint, uint), b: (uint, uint)) { self.mat.swap_elem(a, b) }
-
-    #[inline]
-    pub fn transpose(&self) -> RotationMat<T> { RotationMat { mat: self.mat.transpose() } }
-
-    #[inline]
-    pub fn transpose_self(&mut self) { self.mat.transpose_self() }
-
-}
-
 impl<T:Num> RotationMat<T> {
     #[inline]
     pub fn identity() -> RotationMat<T> {
@@ -146,62 +111,6 @@ impl<T:Num> RotationMat<T> {
     pub fn zero() -> RotationMat<T> {
         RotationMat { mat: Mat3::zero() }
     }
-}
-
-impl<T:Clone + Num> RotationMat<T> {
-    #[inline]
-    pub fn from_value(value: T) -> RotationMat<T> {
-        RotationMat { mat: Mat3::from_value(value) }
-    }
-}
-
-impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for RotationMat<T> {
-    #[inline]
-    pub fn mul_t(&self, value: T) -> RotationMat<T> {
-        RotationMat { mat: self.mat.mul_t(value) }
-    }
-
-    #[inline]
-    pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> { self.mat.mul_v(vec) }
-
-    #[inline]
-    pub fn add_m(&self, other: &RotationMat<T>) -> RotationMat<T> {
-        RotationMat { mat: self.mat.add_m(&other.mat) }
-    }
-
-    #[inline]
-    pub fn sub_m(&self, other: &RotationMat<T>) -> RotationMat<T> {
-        RotationMat { mat: self.mat.sub_m(&other.mat) }
-    }
-
-    #[inline]
-    pub fn mul_m(&self, other: &RotationMat<T>) -> RotationMat<T> {
-        RotationMat { mat: self.mat.mul_m(&other.mat) }
-    }
-
-    #[inline]
-    pub fn mul_self_t(&mut self, value: T) { self.mat.mul_self_t(value) }
-
-    #[inline]
-    pub fn add_self_m(&mut self, other: &RotationMat<T>) { self.mat.add_self_m(&other.mat) }
-
-    #[inline]
-    pub fn sub_self_m(&mut self, other: &RotationMat<T>) { self.mat.sub_self_m(&other.mat) }
-
-    #[inline]
-    pub fn dot(&self, other: &RotationMat<T>) -> T { self.mat.dot(&other.mat) }
-
-    #[inline]
-    pub fn determinant(&self) -> T { self.mat.determinant() }
-
-    #[inline]
-    pub fn trace(&self) -> T { self.mat.trace() }
-
-    #[inline]
-    pub fn to_identity(&mut self) { self.mat.to_identity() }
-
-    #[inline]
-    pub fn to_zero(&mut self) { self.mat.to_zero() }
 }
 
 impl<T:Clone + Num> Neg<RotationMat<T>> for RotationMat<T> {
@@ -215,31 +124,6 @@ impl<T:Float> RotationMat<T> {
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> RotationMat<T> {
         RotationMat { mat: Mat3::look_at(dir, up) }
     }
-}
-
-impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for RotationMat<T> {
-    #[inline]
-    pub fn inverse(&self) -> Option<RotationMat<T>> {
-        unsafe { cast::transmute(self.mat.inverse()) }
-    }
-
-    #[inline]
-    pub fn invert_self(&mut self) { self.mat.invert_self() }
-
-    #[inline]
-    pub fn is_identity(&self) -> bool { self.mat.is_identity() }
-
-    #[inline]
-    pub fn is_diagonal(&self) -> bool { self.mat.is_diagonal() }
-
-    #[inline]
-    pub fn is_rotated(&self) -> bool { self.mat.is_rotated() }
-
-    #[inline]
-    pub fn is_symmetric(&self) -> bool { self.mat.is_symmetric() }
-
-    #[inline]
-    pub fn is_invertible(&self) -> bool { self.mat.is_invertible() }
 }
 
 impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat<T> {
