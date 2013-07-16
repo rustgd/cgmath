@@ -13,8 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Various three-dimensional rotation types that are useful for constructing
-//! matricies and quaternions.
+//! Various three-dimensional rotation types and impls.
+//!
+//! Some of these are more useful for constructing matricies and quaternions.
+//! than for general use. For example due to issues with gimble lock, it is
+//! not reccomended that Euler rotations be used for translations, but
+//! they _are_ useful for intuitively specifying rotations.
 //!
 //! # Examples
 //!
@@ -32,8 +36,18 @@ use math::*;
 
 use math::{Point3, Ray3};
 
-/// A generic rotation
-pub trait Rotation<T>: Eq
+/// A two-dimensional rotation
+pub trait Rotation2<T>: Eq
+                      + ApproxEq<T>
+                      + ToMat2<T> {
+    pub fn rotate_point2(&self, point: Point2<T>) -> Point2<T>;
+    pub fn rotate_vec2(&self, vec: Vec2<T>) -> Point2<T>;
+    pub fn rotate_ray2(&self, vec: Ray2<T>) -> Ray2<T>;
+    pub fn to_rotation_mat2(&self) -> RotationMat2<T>;
+}
+
+/// A three-dimensional rotation
+pub trait Rotation3<T>: Eq
                      + ApproxEq<T>
                      + ToMat3<T>
                      + ToMat4<T>
@@ -41,99 +55,193 @@ pub trait Rotation<T>: Eq
     pub fn rotate_point3(&self, point: Point3<T>) -> Point3<T>;
     pub fn rotate_vec3(&self, vec: Vec3<T>) -> Point3<T>;
     pub fn rotate_ray3(&self, vec: Ray3<T>) -> Ray3<T>;
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T>;
 }
 
-impl<T:Float> Rotation<T> for Quat<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
-        fail!("Not yet implemented.")
-    }
-
-    pub fn rotate_vec3(&self, _vec: Vec3<T>) -> Point3<T> {
-        fail!("Not yet implemented.")
-    }
-
-    pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
-        fail!("Not yet implemented.")
-    }
-}
-
-/// A rotation matrix
+/// A two-dimensional rotation matrix.
+///
+/// The matrix is guaranteed to be orthogonal, so some operations can be
+/// implemented more efficiently than the implementations for `math::Mat2`. To
+/// enforce orthogonality at the type level the operations have been restricted
+/// to a subeset of those implemented on `Mat3`.
 #[deriving(Eq, Clone)]
-pub struct RotationMat<T> {
-    priv mat: Mat3<T>
+pub struct RotationMat2<T> {
+    priv mat: Mat2<T>
 }
 
-impl<T> RotationMat<T> {
+impl<T> RotationMat2<T> {
     #[inline]
-    pub fn as_mat3<'a>(&'a self) -> & 'a Mat3<T> {
+    pub fn as_mat2<'a>(&'a self) -> & 'a Mat2<T> {
         unsafe { cast::transmute(self) }
     }
 }
 
-impl<T:Float> Rotation<T> for RotationMat<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+impl<T:Float> Rotation2<T> for RotationMat2<T> {
+    pub fn rotate_point2(&self, _point: Point2<T>) -> Point2<T> {
         fail!("Not yet implemented.")
     }
 
-    pub fn rotate_vec3(&self, _vec: Vec3<T>) -> Point3<T> {
+    pub fn rotate_vec2(&self, _vec: Vec2<T>) -> Point2<T> {
         fail!("Not yet implemented.")
     }
 
-    pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
+    pub fn rotate_ray2(&self, _vec: Ray2<T>) -> Ray2<T> {
         fail!("Not yet implemented.")
     }
-}
 
-impl<T:Clone + Float> ToQuat<T> for RotationMat<T> {
-    #[inline] pub fn to_quat(&self) -> Quat<T> { self.mat.to_quat() }
-}
-
-impl<T:Clone + Float> ToMat3<T> for RotationMat<T> {
-    #[inline] pub fn to_mat3(&self) -> Mat3<T> { self.mat.clone() }
-}
-
-impl<T:Clone + Float> ToMat4<T> for RotationMat<T> {
-    #[inline] pub fn to_mat4(&self) -> Mat4<T> { self.mat.to_mat4() }
-}
-
-impl<T:Num> RotationMat<T> {
     #[inline]
-    pub fn identity() -> RotationMat<T> {
-        RotationMat { mat: Mat3::identity() }
+    pub fn to_rotation_mat2(&self) -> RotationMat2<T> {
+        RotationMat2 { mat: self.to_mat2() }
+    }
+}
+
+impl<T:Clone + Float> ToMat2<T> for RotationMat2<T> {
+    #[inline] pub fn to_mat2(&self) -> Mat2<T> { self.mat.clone() }
+}
+
+impl<T:Num> RotationMat2<T> {
+    #[inline]
+    pub fn identity() -> RotationMat2<T> {
+        RotationMat2 { mat: Mat2::identity() }
     }
 
     #[inline]
-    pub fn zero() -> RotationMat<T> {
-        RotationMat { mat: Mat3::zero() }
+    pub fn zero() -> RotationMat2<T> {
+        RotationMat2 { mat: Mat2::zero() }
     }
 }
 
-impl<T:Clone + Num> Neg<RotationMat<T>> for RotationMat<T> {
+impl<T:Clone + Num> Neg<RotationMat2<T>> for RotationMat2<T> {
     #[inline]
-    pub fn neg(&self) -> RotationMat<T> {
-        RotationMat { mat: -self.mat }
+    pub fn neg(&self) -> RotationMat2<T> {
+        RotationMat2 { mat: -self.mat }
     }
 }
 
-impl<T:Float> RotationMat<T> {
-    pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> RotationMat<T> {
-        RotationMat { mat: Mat3::look_at(dir, up) }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat<T> {
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat2<T> {
     #[inline]
     pub fn approx_epsilon() -> T {
         ApproxEq::approx_epsilon::<T,T>()
     }
 
     #[inline]
-    pub fn approx_eq(&self, other: &RotationMat<T>) -> bool {
+    pub fn approx_eq(&self, other: &RotationMat2<T>) -> bool {
         self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
     }
 
     #[inline]
-    pub fn approx_eq_eps(&self, other: &RotationMat<T>, epsilon: &T) -> bool {
+    pub fn approx_eq_eps(&self, other: &RotationMat2<T>, epsilon: &T) -> bool {
+        self.mat.approx_eq_eps(&other.mat, epsilon)
+    }
+}
+
+
+impl<T:Float> Rotation3<T> for Quat<T> {
+    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_vec3(&self, _vec: Vec3<T>) -> Point3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
+    }
+}
+
+/// A three-dimensional rotation matrix.
+///
+/// The matrix is guaranteed to be orthogonal, so some operations, specifically
+/// inversion, can be implemented more efficiently than the implementations for
+/// `math::Mat3`. To enforce orthogonality at the type level the operations have
+/// been restricted to a subeset of those implemented on `Mat3`.
+#[deriving(Eq, Clone)]
+pub struct RotationMat3<T> {
+    priv mat: Mat3<T>
+}
+
+impl<T> RotationMat3<T> {
+    #[inline]
+    pub fn as_mat3<'a>(&'a self) -> & 'a Mat3<T> {
+        unsafe { cast::transmute(self) }
+    }
+}
+
+impl<T:Float> Rotation3<T> for RotationMat3<T> {
+    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_vec3(&self, _vec: Vec3<T>) -> Point3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
+        fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
+    }
+}
+
+impl<T:Clone + Float> ToQuat<T> for RotationMat3<T> {
+    #[inline] pub fn to_quat(&self) -> Quat<T> { self.mat.to_quat() }
+}
+
+impl<T:Clone + Float> ToMat3<T> for RotationMat3<T> {
+    #[inline] pub fn to_mat3(&self) -> Mat3<T> { self.mat.clone() }
+}
+
+impl<T:Clone + Float> ToMat4<T> for RotationMat3<T> {
+    #[inline] pub fn to_mat4(&self) -> Mat4<T> { self.mat.to_mat4() }
+}
+
+impl<T:Num> RotationMat3<T> {
+    #[inline]
+    pub fn identity() -> RotationMat3<T> {
+        RotationMat3 { mat: Mat3::identity() }
+    }
+
+    #[inline]
+    pub fn zero() -> RotationMat3<T> {
+        RotationMat3 { mat: Mat3::zero() }
+    }
+}
+
+impl<T:Clone + Num> Neg<RotationMat3<T>> for RotationMat3<T> {
+    #[inline]
+    pub fn neg(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: -self.mat }
+    }
+}
+
+impl<T:Float> RotationMat3<T> {
+    pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> RotationMat3<T> {
+        RotationMat3 { mat: Mat3::look_at(dir, up) }
+    }
+}
+
+impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat3<T> {
+    #[inline]
+    pub fn approx_epsilon() -> T {
+        ApproxEq::approx_epsilon::<T,T>()
+    }
+
+    #[inline]
+    pub fn approx_eq(&self, other: &RotationMat3<T>) -> bool {
+        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
+    }
+
+    #[inline]
+    pub fn approx_eq_eps(&self, other: &RotationMat3<T>, epsilon: &T) -> bool {
         self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
@@ -165,7 +273,7 @@ impl<T:Float> Euler<T> {
     }
 }
 
-impl<T:Float> Rotation<T> for Euler<T> {
+impl<T:Float> Rotation3<T> for Euler<T> {
     pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
@@ -176,6 +284,11 @@ impl<T:Float> Rotation<T> for Euler<T> {
 
     pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
         fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
     }
 }
 
@@ -254,7 +367,7 @@ impl<T:Float> AxisAngle<T> {
     }
 }
 
-impl<T:Float> Rotation<T> for AxisAngle<T> {
+impl<T:Float> Rotation3<T> for AxisAngle<T> {
     pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
@@ -265,6 +378,11 @@ impl<T:Float> Rotation<T> for AxisAngle<T> {
 
     pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
         fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
     }
 }
 
@@ -346,7 +464,7 @@ pub struct AngleX<T>(T);
 
 impl_approx!(AngleX)
 
-impl<T:Float> Rotation<T> for AngleX<T> {
+impl<T:Float> Rotation3<T> for AngleX<T> {
     pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
@@ -357,6 +475,11 @@ impl<T:Float> Rotation<T> for AngleX<T> {
 
     pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
         fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
     }
 }
 
@@ -402,7 +525,7 @@ pub struct AngleY<T>(T);
 
 impl_approx!(AngleY)
 
-impl<T:Float> Rotation<T> for AngleY<T> {
+impl<T:Float> Rotation3<T> for AngleY<T> {
     pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
@@ -413,6 +536,11 @@ impl<T:Float> Rotation<T> for AngleY<T> {
 
     pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
         fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
     }
 }
 
@@ -458,7 +586,26 @@ pub struct AngleZ<T>(T);
 
 impl_approx!(AngleZ)
 
-impl<T:Float> Rotation<T> for AngleZ<T> {
+impl<T:Float> Rotation2<T> for AngleZ<T> {
+    pub fn rotate_point2(&self, _point: Point2<T>) -> Point2<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_vec2(&self, _vec: Vec2<T>) -> Point2<T> {
+        fail!("Not yet implemented.")
+    }
+
+    pub fn rotate_ray2(&self, _vec: Ray2<T>) -> Ray2<T> {
+        fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat2(&self) -> RotationMat2<T> {
+        RotationMat2 { mat: self.to_mat2() }
+    }
+}
+
+impl<T:Float> Rotation3<T> for AngleZ<T> {
     pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
@@ -469,6 +616,11 @@ impl<T:Float> Rotation<T> for AngleZ<T> {
 
     pub fn rotate_ray3(&self, _vec: Ray3<T>) -> Ray3<T> {
         fail!("Not yet implemented.")
+    }
+
+    #[inline]
+    pub fn to_rotation_mat3(&self) -> RotationMat3<T> {
+        RotationMat3 { mat: self.to_mat3() }
     }
 }
 
