@@ -389,7 +389,7 @@ impl<T:Float> Rotation3<T> for AxisAngle<T> {
 impl<T:Float> ToQuat<T> for AxisAngle<T> {
     pub fn to_quat(&self) -> Quat<T> {
         let half = self.angle / two!(T);
-        Quat::from_sv(half.cos(), self.axis.mul_t(half.sin()))
+        Quat::from_sv(half.cos(), self.axis.mul_s(half.sin()))
     }
 }
 

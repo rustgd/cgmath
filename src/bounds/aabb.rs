@@ -36,7 +36,7 @@ impl<T:Clone + Float> AABB2<T> {
     pub fn from_bounds(mn: Point2<T>, mx: Point2<T>) -> AABB2<T> {
         AABB2 {
             center: Point2::from_vec2(
-                mn.as_vec2().add_v(mx.as_vec2()).div_t(two!(T))
+                mn.as_vec2().add_v(mx.as_vec2()).div_s(two!(T))
             ),
             size: mx - mn,
         }
@@ -62,7 +62,7 @@ impl<T:Clone + Float> AABB3<T> {
     pub fn from_bounds(mn: Point3<T>, mx: Point3<T>) -> AABB3<T> {
         AABB3 {
             center: Point3::from_vec3(
-                mn.as_vec3().add_v(mx.as_vec3()).div_t(two!(T))
+                mn.as_vec3().add_v(mx.as_vec3()).div_s(two!(T))
             ),
             size: mx - mn,
         }

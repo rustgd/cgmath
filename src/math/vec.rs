@@ -23,11 +23,11 @@ pub trait Vec<T,Slice>: Dimensioned<T,Slice>
 
 /// Vectors with numeric components
 pub trait NumVec<T,Slice>: Neg<T> {
-    pub fn add_t(&self, value: T) -> Self;
-    pub fn sub_t(&self, value: T) -> Self;
-    pub fn mul_t(&self, value: T) -> Self;
-    pub fn div_t(&self, value: T) -> Self;
-    pub fn rem_t(&self, value: T) -> Self;
+    pub fn add_s(&self, value: T) -> Self;
+    pub fn sub_s(&self, value: T) -> Self;
+    pub fn mul_s(&self, value: T) -> Self;
+    pub fn div_s(&self, value: T) -> Self;
+    pub fn rem_s(&self, value: T) -> Self;
 
     pub fn add_v(&self, other: &Self) -> Self;
     pub fn sub_v(&self, other: &Self) -> Self;
@@ -36,11 +36,11 @@ pub trait NumVec<T,Slice>: Neg<T> {
     pub fn rem_v(&self, other: &Self) -> Self;
 
     pub fn neg_self(&mut self);
-    pub fn add_self_t(&mut self, value: T);
-    pub fn sub_self_t(&mut self, value: T);
-    pub fn mul_self_t(&mut self, value: T);
-    pub fn div_self_t(&mut self, value: T);
-    pub fn rem_self_t(&mut self, value: T);
+    pub fn add_self_s(&mut self, value: T);
+    pub fn sub_self_s(&mut self, value: T);
+    pub fn mul_self_s(&mut self, value: T);
+    pub fn div_self_s(&mut self, value: T);
+    pub fn rem_self_s(&mut self, value: T);
 
     pub fn add_self_v(&mut self, other: &Self);
     pub fn sub_self_v(&mut self, other: &Self);
@@ -69,18 +69,18 @@ pub trait FloatVec<T,Slice>: NumVec<T,Slice> + ApproxEq<T> {
 
 /// Vectors with orderable components
 pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
-    pub fn lt_t(&self, value: T) -> BV;
-    pub fn le_t(&self, value: T) -> BV;
-    pub fn ge_t(&self, value: T) -> BV;
-    pub fn gt_t(&self, value: T) -> BV;
+    pub fn lt_s(&self, value: T) -> BV;
+    pub fn le_s(&self, value: T) -> BV;
+    pub fn ge_s(&self, value: T) -> BV;
+    pub fn gt_s(&self, value: T) -> BV;
 
     pub fn lt_v(&self, other: &Self) -> BV;
     pub fn le_v(&self, other: &Self) -> BV;
     pub fn ge_v(&self, other: &Self) -> BV;
     pub fn gt_v(&self, other: &Self) -> BV;
 
-    pub fn min_t(&self, other: T) -> Self;
-    pub fn max_t(&self, other: T) -> Self;
+    pub fn min_s(&self, other: T) -> Self;
+    pub fn max_s(&self, other: T) -> Self;
 
     pub fn min_v(&self, other: &Self) -> Self;
     pub fn max_v(&self, other: &Self) -> Self;
@@ -91,8 +91,8 @@ pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
 
 /// Vectors with components that can be tested for equality
 pub trait EqVec<T,Slice,BV>: Eq {
-    pub fn eq_t(&self, value: T) -> BV;
-    pub fn ne_t(&self, value: T) -> BV;
+    pub fn eq_s(&self, value: T) -> BV;
+    pub fn ne_s(&self, value: T) -> BV;
     pub fn eq_v(&self, other: &Self) -> BV;
     pub fn ne_v(&self, other: &Self) -> BV;
 }
@@ -211,35 +211,35 @@ impl<T> Vec<T,[T,..2]> for Vec2<T> {}
 impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
-    pub fn add_t(&self, value: T) -> Vec2<T> {
+    pub fn add_s(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) + value,
                   *self.index(1) + value)
     }
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
-    pub fn sub_t(&self, value: T) -> Vec2<T> {
+    pub fn sub_s(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) - value,
                   *self.index(1) - value)
     }
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
-    pub fn mul_t(&self, value: T) -> Vec2<T> {
+    pub fn mul_s(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) * value,
                   *self.index(1) * value)
     }
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
-    pub fn div_t(&self, value: T) -> Vec2<T> {
+    pub fn div_s(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) / value,
                   *self.index(1) / value)
     }
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
-    pub fn rem_t(&self, value: T) -> Vec2<T> {
+    pub fn rem_s(&self, value: T) -> Vec2<T> {
         Vec2::new(*self.index(0) % value,
                   *self.index(1) % value)
     }
@@ -288,32 +288,32 @@ impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
 
     /// Adds `value` to each component of the vector.
     #[inline]
-    pub fn add_self_t(&mut self, value: T) {
+    pub fn add_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
         *self.index_mut(1) = *self.index(1) + value;
     }
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
-    pub fn sub_self_t(&mut self, value: T) {
+    pub fn sub_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
         *self.index_mut(1) = *self.index(1) - value;
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
+    pub fn mul_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) * value;
         *self.index_mut(1) = *self.index(1) * value;
     }
 
     #[inline]
-    pub fn div_self_t(&mut self, value: T) {
+    pub fn div_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) / value;
         *self.index_mut(1) = *self.index(1) / value;
     }
 
     #[inline]
-    pub fn rem_self_t(&mut self, value: T) {
+    pub fn rem_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) % value;
         *self.index_mut(1) = *self.index(1) % value;
     }
@@ -407,59 +407,59 @@ impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
     /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec2<T> {
-        self.mul_t(magnitude / self.magnitude())
+        self.mul_s(magnitude / self.magnitude())
     }
 
     /// Returns the result of linarly interpolating the magnitude of the vector
     /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec2<T>, amount: T) -> Vec2<T> {
-        self.add_v(&other.sub_v(self).mul_t(amount))
+        self.add_v(&other.sub_v(self).mul_s(amount))
     }
 
     /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
-        self.mul_self_t(rlen);
+        self.mul_self_s(rlen);
     }
 
     /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
-        self.mul_self_t(n);
+        self.mul_self_s(n);
     }
 
     /// Linearly interpolates the magnitude of the vector to the magnitude of
     /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec2<T>, amount: T) {
-        let v = other.sub_v(self).mul_t(amount);
+        let v = other.sub_v(self).mul_s(amount);
         self.add_self_v(&v);
     }
 }
 
 impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
-    pub fn lt_t(&self, value: T) -> Vec2<bool> {
+    pub fn lt_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) < value,
                   *self.index(1) < value)
     }
 
     #[inline]
-    pub fn le_t(&self, value: T) -> Vec2<bool> {
+    pub fn le_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) <= value,
                   *self.index(1) <= value)
     }
 
     #[inline]
-    pub fn ge_t(&self, value: T) -> Vec2<bool> {
+    pub fn ge_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) >= value,
                   *self.index(1) >= value)
     }
 
     #[inline]
-    pub fn gt_t(&self, value: T) -> Vec2<bool> {
+    pub fn gt_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) > value,
                   *self.index(1) > value)
     }
@@ -489,13 +489,13 @@ impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     }
 
     #[inline]
-    pub fn min_t(&self, value: T) -> Vec2<T> {
+    pub fn min_s(&self, value: T) -> Vec2<T> {
         Vec2::new(self.index(0).min(&value),
                   self.index(1).min(&value))
     }
 
     #[inline]
-    pub fn max_t(&self, value: T) -> Vec2<T> {
+    pub fn max_s(&self, value: T) -> Vec2<T> {
         Vec2::new(self.index(0).max(&value),
                   self.index(1).max(&value))
     }
@@ -527,13 +527,13 @@ impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
 
 impl<T:Eq> EqVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
-    pub fn eq_t(&self, value: T) -> Vec2<bool> {
+    pub fn eq_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) == value,
                   *self.index(1) == value)
     }
 
     #[inline]
-    pub fn ne_t(&self, value: T) -> Vec2<bool> {
+    pub fn ne_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.index(0) != value,
                   *self.index(1) != value)
     }
@@ -599,8 +599,8 @@ mod vec2_tests {
         assert_eq!(-A, Vec2::new::<float>(-1.0, -2.0));
         assert_eq!(A.neg(), Vec2::new::<float>(-1.0, -2.0));
 
-        assert_eq!(A.mul_t(F1), Vec2::new::<float>(1.5, 3.0));
-        assert_eq!(A.div_t(F2), Vec2::new::<float>(2.0, 4.0));
+        assert_eq!(A.mul_s(F1), Vec2::new::<float>(1.5, 3.0));
+        assert_eq!(A.div_s(F2), Vec2::new::<float>(2.0, 4.0));
 
         assert_eq!(A.add_v(&B), Vec2::new::<float>(4.0, 6.0));
         assert_eq!(A.sub_v(&B), Vec2::new::<float>(-2.0, -2.0));
@@ -611,12 +611,12 @@ mod vec2_tests {
         assert_eq!(mut_a, -A);
         mut_a = A;
 
-        mut_a.mul_self_t(F1);
-        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a.mul_self_s(F1);
+        assert_eq!(mut_a, A.mul_s(F1));
         mut_a = A;
 
-        mut_a.div_self_t(F2);
-        assert_eq!(mut_a, A.div_t(F2));
+        mut_a.div_self_s(F2);
+        assert_eq!(mut_a, A.div_s(F2));
         mut_a = A;
 
         mut_a.add_self_v(&B);
@@ -846,7 +846,7 @@ impl<T> Vec<T,[T,..3]> for Vec3<T> {}
 impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
-    pub fn add_t(&self, value: T) -> Vec3<T> {
+    pub fn add_s(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) + value,
                   *self.index(1) + value,
                   *self.index(2) + value)
@@ -854,7 +854,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
-    pub fn sub_t(&self, value: T) -> Vec3<T> {
+    pub fn sub_s(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) - value,
                   *self.index(1) - value,
                   *self.index(2) - value)
@@ -862,7 +862,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
-    pub fn mul_t(&self, value: T) -> Vec3<T> {
+    pub fn mul_s(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) * value,
                   *self.index(1) * value,
                   *self.index(2) * value)
@@ -870,7 +870,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
-    pub fn div_t(&self, value: T) -> Vec3<T> {
+    pub fn div_s(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) / value,
                   *self.index(1) / value,
                   *self.index(2) / value)
@@ -878,7 +878,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
-    pub fn rem_t(&self, value: T) -> Vec3<T> {
+    pub fn rem_s(&self, value: T) -> Vec3<T> {
         Vec3::new(*self.index(0) % value,
                   *self.index(1) % value,
                   *self.index(2) % value)
@@ -934,7 +934,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Adds `value` to each component of the vector.
     #[inline]
-    pub fn add_self_t(&mut self, value: T) {
+    pub fn add_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
         *self.index_mut(1) = *self.index(1) + value;
         *self.index_mut(2) = *self.index(2) + value;
@@ -942,28 +942,28 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
-    pub fn sub_self_t(&mut self, value: T) {
+    pub fn sub_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
         *self.index_mut(1) = *self.index(1) - value;
         *self.index_mut(2) = *self.index(2) - value;
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
+    pub fn mul_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) * value;
         *self.index_mut(1) = *self.index(1) * value;
         *self.index_mut(2) = *self.index(2) * value;
     }
 
     #[inline]
-    pub fn div_self_t(&mut self, value: T) {
+    pub fn div_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) / value;
         *self.index_mut(1) = *self.index(1) / value;
         *self.index_mut(2) = *self.index(2) / value;
     }
 
     #[inline]
-    pub fn rem_self_t(&mut self, value: T) {
+    pub fn rem_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) % value;
         *self.index_mut(1) = *self.index(1) % value;
         *self.index_mut(2) = *self.index(2) % value;
@@ -1065,62 +1065,62 @@ impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
     /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec3<T> {
-        self.mul_t(magnitude / self.magnitude())
+        self.mul_s(magnitude / self.magnitude())
     }
 
     /// Returns the result of linarly interpolating the magnitude of the vector
     /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec3<T>, amount: T) -> Vec3<T> {
-        self.add_v(&other.sub_v(self).mul_t(amount))
+        self.add_v(&other.sub_v(self).mul_s(amount))
     }
 
     /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
-        self.mul_self_t(rlen);
+        self.mul_self_s(rlen);
     }
 
     /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
-        self.mul_self_t(n);
+        self.mul_self_s(n);
     }
 
     /// Linearly interpolates the magnitude of the vector to the magnitude of
     /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec3<T>, amount: T) {
-        let v = other.sub_v(self).mul_t(amount);
+        let v = other.sub_v(self).mul_s(amount);
         self.add_self_v(&v);
     }
 }
 
 impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
-    pub fn lt_t(&self, value: T) -> Vec3<bool> {
+    pub fn lt_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) < value,
                   *self.index(1) < value,
                   *self.index(2) < value)
     }
 
     #[inline]
-    pub fn le_t(&self, value: T) -> Vec3<bool> {
+    pub fn le_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) <= value,
                   *self.index(1) <= value,
                   *self.index(2) <= value)
     }
 
     #[inline]
-    pub fn ge_t(&self, value: T) -> Vec3<bool> {
+    pub fn ge_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) >= value,
                   *self.index(1) >= value,
                   *self.index(2) >= value)
     }
 
     #[inline]
-    pub fn gt_t(&self, value: T) -> Vec3<bool> {
+    pub fn gt_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) > value,
                   *self.index(1) > value,
                   *self.index(2) > value)
@@ -1155,14 +1155,14 @@ impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     }
 
     #[inline]
-    pub fn min_t(&self, value: T) -> Vec3<T> {
+    pub fn min_s(&self, value: T) -> Vec3<T> {
         Vec3::new(self.index(0).min(&value),
                   self.index(1).min(&value),
                   self.index(2).min(&value))
     }
 
     #[inline]
-    pub fn max_t(&self, value: T) -> Vec3<T> {
+    pub fn max_s(&self, value: T) -> Vec3<T> {
         Vec3::new(self.index(0).max(&value),
                   self.index(1).max(&value),
                   self.index(2).max(&value))
@@ -1197,14 +1197,14 @@ impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
 
 impl<T:Eq> EqVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
-    pub fn eq_t(&self, value: T) -> Vec3<bool> {
+    pub fn eq_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) == value,
                   *self.index(1) == value,
                   *self.index(2) == value)
     }
 
     #[inline]
-    pub fn ne_t(&self, value: T) -> Vec3<bool> {
+    pub fn ne_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.index(0) != value,
                   *self.index(1) != value,
                   *self.index(2) != value)
@@ -1289,8 +1289,8 @@ mod vec3_tests{
         assert_eq!(-A, Vec3::new::<float>(-1.0, -2.0, -3.0));
         assert_eq!(A.neg(), Vec3::new::<float>(-1.0, -2.0, -3.0));
 
-        assert_eq!(A.mul_t(F1), Vec3::new::<float>(1.5, 3.0, 4.5));
-        assert_eq!(A.div_t(F2), Vec3::new::<float>(2.0, 4.0, 6.0));
+        assert_eq!(A.mul_s(F1), Vec3::new::<float>(1.5, 3.0, 4.5));
+        assert_eq!(A.div_s(F2), Vec3::new::<float>(2.0, 4.0, 6.0));
 
         assert_eq!(A.add_v(&B), Vec3::new::<float>(5.0, 7.0, 9.0));
         assert_eq!(A.sub_v(&B), Vec3::new::<float>(-3.0, -3.0, -3.0));
@@ -1301,12 +1301,12 @@ mod vec3_tests{
         assert_eq!(mut_a, -A);
         mut_a = A;
 
-        mut_a.mul_self_t(F1);
-        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a.mul_self_s(F1);
+        assert_eq!(mut_a, A.mul_s(F1));
         mut_a = A;
 
-        mut_a.div_self_t(F2);
-        assert_eq!(mut_a, A.div_t(F2));
+        mut_a.div_self_s(F2);
+        assert_eq!(mut_a, A.div_s(F2));
         mut_a = A;
 
         mut_a.add_self_v(&B);
@@ -1515,7 +1515,7 @@ impl<T> Vec<T,[T,..4]> for Vec4<T> {}
 impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
-    pub fn add_t(&self, value: T) -> Vec4<T> {
+    pub fn add_s(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) + value,
                   *self.index(1) + value,
                   *self.index(2) + value,
@@ -1524,7 +1524,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
-    pub fn sub_t(&self, value: T) -> Vec4<T> {
+    pub fn sub_s(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) - value,
                   *self.index(1) - value,
                   *self.index(2) - value,
@@ -1533,7 +1533,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
-    pub fn mul_t(&self, value: T) -> Vec4<T> {
+    pub fn mul_s(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) * value,
                   *self.index(1) * value,
                   *self.index(2) * value,
@@ -1542,7 +1542,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
-    pub fn div_t(&self, value: T) -> Vec4<T> {
+    pub fn div_s(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) / value,
                   *self.index(1) / value,
                   *self.index(2) / value,
@@ -1551,7 +1551,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
-    pub fn rem_t(&self, value: T) -> Vec4<T> {
+    pub fn rem_s(&self, value: T) -> Vec4<T> {
         Vec4::new(*self.index(0) % value,
                   *self.index(1) % value,
                   *self.index(2) % value,
@@ -1614,7 +1614,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Adds `value` to each component of the vector.
     #[inline]
-    pub fn add_self_t(&mut self, value: T) {
+    pub fn add_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) + value;
         *self.index_mut(1) = *self.index(1) + value;
         *self.index_mut(2) = *self.index(2) + value;
@@ -1623,7 +1623,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
-    pub fn sub_self_t(&mut self, value: T) {
+    pub fn sub_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) - value;
         *self.index_mut(1) = *self.index(1) - value;
         *self.index_mut(2) = *self.index(2) - value;
@@ -1631,7 +1631,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
+    pub fn mul_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) * value;
         *self.index_mut(1) = *self.index(1) * value;
         *self.index_mut(2) = *self.index(2) * value;
@@ -1639,7 +1639,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     }
 
     #[inline]
-    pub fn div_self_t(&mut self, value: T) {
+    pub fn div_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) / value;
         *self.index_mut(1) = *self.index(1) / value;
         *self.index_mut(2) = *self.index(2) / value;
@@ -1647,7 +1647,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     }
 
     #[inline]
-    pub fn rem_self_t(&mut self, value: T) {
+    pub fn rem_self_s(&mut self, value: T) {
         *self.index_mut(0) = *self.index(0) % value;
         *self.index_mut(1) = *self.index(1) % value;
         *self.index_mut(2) = *self.index(2) % value;
@@ -1757,41 +1757,41 @@ impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
     /// Returns the result of normalizing the vector to `magnitude`.
     #[inline]
     pub fn normalize_to(&self, magnitude: T) -> Vec4<T> {
-        self.mul_t(magnitude / self.magnitude())
+        self.mul_s(magnitude / self.magnitude())
     }
 
     /// Returns the result of linarly interpolating the magnitude of the vector
     /// to the magnitude of `other` by the specified amount.
     #[inline]
     pub fn lerp(&self, other: &Vec4<T>, amount: T) -> Vec4<T> {
-        self.add_v(&other.sub_v(self).mul_t(amount))
+        self.add_v(&other.sub_v(self).mul_s(amount))
     }
 
     /// Normalises the vector to a magnitude of `1`.
     #[inline]
     pub fn normalize_self(&mut self) {
         let rlen = self.magnitude().recip();
-        self.mul_self_t(rlen);
+        self.mul_self_s(rlen);
     }
 
     /// Normalizes the vector to `magnitude`.
     #[inline]
     pub fn normalize_self_to(&mut self, magnitude: T) {
         let n = magnitude / self.magnitude();
-        self.mul_self_t(n);
+        self.mul_self_s(n);
     }
 
     /// Linearly interpolates the magnitude of the vector to the magnitude of
     /// `other` by the specified amount.
     pub fn lerp_self(&mut self, other: &Vec4<T>, amount: T) {
-        let v = other.sub_v(self).mul_t(amount);
+        let v = other.sub_v(self).mul_s(amount);
         self.add_self_v(&v);
     }
 }
 
 impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
-    pub fn lt_t(&self, value: T) -> Vec4<bool> {
+    pub fn lt_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) < value,
                   *self.index(1) < value,
                   *self.index(2) < value,
@@ -1799,7 +1799,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn le_t(&self, value: T) -> Vec4<bool> {
+    pub fn le_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) <= value,
                   *self.index(1) <= value,
                   *self.index(2) <= value,
@@ -1807,7 +1807,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn ge_t(&self, value: T) -> Vec4<bool> {
+    pub fn ge_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) >= value,
                   *self.index(1) >= value,
                   *self.index(2) >= value,
@@ -1815,7 +1815,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn gt_t(&self, value: T) -> Vec4<bool> {
+    pub fn gt_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) > value,
                   *self.index(1) > value,
                   *self.index(2) > value,
@@ -1855,7 +1855,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn min_t(&self, value: T) -> Vec4<T> {
+    pub fn min_s(&self, value: T) -> Vec4<T> {
         Vec4::new(self.index(0).min(&value),
                   self.index(1).min(&value),
                   self.index(2).min(&value),
@@ -1863,7 +1863,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn max_t(&self, value: T) -> Vec4<T> {
+    pub fn max_s(&self, value: T) -> Vec4<T> {
         Vec4::new(self.index(0).max(&value),
                   self.index(1).max(&value),
                   self.index(2).max(&value),
@@ -1901,7 +1901,7 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
 
 impl<T:Eq> EqVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
-    pub fn eq_t(&self, value: T) -> Vec4<bool> {
+    pub fn eq_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) == value,
                   *self.index(1) == value,
                   *self.index(2) == value,
@@ -1909,7 +1909,7 @@ impl<T:Eq> EqVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
-    pub fn ne_t(&self, value: T) -> Vec4<bool> {
+    pub fn ne_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.index(0) != value,
                   *self.index(1) != value,
                   *self.index(2) != value,
@@ -1988,8 +1988,8 @@ mod vec4_tests {
         assert_eq!(-A, Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
         assert_eq!(A.neg(), Vec4::new::<float>(-1.0, -2.0, -3.0, -4.0));
 
-        assert_eq!(A.mul_t(F1), Vec4::new::<float>(1.5, 3.0, 4.5, 6.0));
-        assert_eq!(A.div_t(F2), Vec4::new::<float>(2.0, 4.0, 6.0, 8.0));
+        assert_eq!(A.mul_s(F1), Vec4::new::<float>(1.5, 3.0, 4.5, 6.0));
+        assert_eq!(A.div_s(F2), Vec4::new::<float>(2.0, 4.0, 6.0, 8.0));
 
         assert_eq!(A.add_v(&B), Vec4::new::<float>(6.0, 8.0, 10.0, 12.0));
         assert_eq!(A.sub_v(&B), Vec4::new::<float>(-4.0, -4.0, -4.0, -4.0));
@@ -2002,12 +2002,12 @@ mod vec4_tests {
         assert_eq!(mut_a, -A);
         mut_a = A;
 
-        mut_a.mul_self_t(F1);
-        assert_eq!(mut_a, A.mul_t(F1));
+        mut_a.mul_self_s(F1);
+        assert_eq!(mut_a, A.mul_s(F1));
         mut_a = A;
 
-        mut_a.div_self_t(F2);
-        assert_eq!(mut_a, A.div_t(F2));
+        mut_a.div_self_s(F2);
+        assert_eq!(mut_a, A.div_s(F2));
         mut_a = A;
 
         mut_a.add_self_v(&B);

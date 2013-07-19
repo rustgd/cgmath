@@ -84,21 +84,21 @@ impl<T:Clone + Float> Quat<T> {
 
     /// The result of multiplying the quaternion a scalar
     #[inline]
-    pub fn mul_t(&self, value: T) -> Quat<T> {
-        Quat::from_sv(self.s * value, self.v.mul_t(value))
+    pub fn mul_s(&self, value: T) -> Quat<T> {
+        Quat::from_sv(self.s * value, self.v.mul_s(value))
     }
 
     /// The result of dividing the quaternion a scalar
     #[inline]
-    pub fn div_t(&self, value: T) -> Quat<T> {
-        Quat::from_sv(self.s / value, self.v.div_t(value))
+    pub fn div_s(&self, value: T) -> Quat<T> {
+        Quat::from_sv(self.s / value, self.v.div_s(value))
     }
 
     /// The result of multiplying the quaternion by a vector
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T>  {
-        let tmp = self.v.cross(vec).add_v(&vec.mul_t(self.s.clone()));
-        self.v.cross(&tmp).mul_t(two!(T)).add_v(vec)
+        let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
+        self.v.cross(&tmp).mul_s(two!(T)).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -142,7 +142,7 @@ impl<T:Clone + Float> Quat<T> {
     /// The multiplicative inverse of the quaternion
     #[inline]
     pub fn inverse(&self) -> Quat<T> {
-        self.conjugate().div_t(self.magnitude2())
+        self.conjugate().div_s(self.magnitude2())
     }
 
     /// The squared magnitude of the quaternion. This is useful for
@@ -168,7 +168,7 @@ impl<T:Clone + Float> Quat<T> {
     /// The normalized quaternion
     #[inline]
     pub fn normalize(&self) -> Quat<T> {
-        self.mul_t(one!(T) / self.magnitude())
+        self.mul_s(one!(T) / self.magnitude())
     }
 
     /// Normalised linear interpolation
@@ -177,7 +177,7 @@ impl<T:Clone + Float> Quat<T> {
     ///
     /// The intoperlated quaternion
     pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
-        self.mul_t(one!(T) - amount).add_q(&other.mul_t(amount)).normalize()
+        self.mul_s(one!(T) - amount).add_q(&other.mul_s(amount)).normalize()
     }
 }
 
@@ -261,11 +261,11 @@ impl<T:Clone + Float> Quat<T> {
             let theta_0 = robust_dot.acos();    // the angle between the quaternions
             let theta = theta_0 * amount;       // the fraction of theta specified by `amount`
 
-            let q = other.sub_q(&self.mul_t(robust_dot))
+            let q = other.sub_q(&self.mul_s(robust_dot))
                          .normalize();
 
-            self.mul_t(theta.cos())
-                .add_q(&q.mul_t(theta.sin()))
+            self.mul_s(theta.cos())
+                .add_q(&q.mul_s(theta.sin()))
         }
     }
 }

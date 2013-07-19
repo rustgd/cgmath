@@ -34,12 +34,12 @@ pub trait Mat<T,Vec,Slice>: Dimensioned<Vec,Slice>
 }
 
 pub trait NumMat<T,Vec,Slice>: Mat<T,Vec,Slice> + Neg<Self> {
-    pub fn mul_t(&self, value: T) -> Self;
+    pub fn mul_s(&self, value: T) -> Self;
     pub fn mul_v(&self, vec: &Vec) -> Vec;
     pub fn add_m(&self, other: &Self) -> Self;
     pub fn sub_m(&self, other: &Self) -> Self;
     pub fn mul_m(&self, other: &Self) -> Self;
-    pub fn mul_self_t(&mut self, value: T);
+    pub fn mul_self_s(&mut self, value: T);
     pub fn add_self_m(&mut self, other: &Self);
     pub fn sub_self_m(&mut self, other: &Self);
     pub fn dot(&self, other: &Self) -> T;
@@ -202,9 +202,9 @@ impl<T:Clone + Num> Mat2<T> {
 
 impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     #[inline]
-    pub fn mul_t(&self, value: T) -> Mat2<T> {
-        Mat2::from_cols(self.col(0).mul_t(value.clone()),
-                        self.col(1).mul_t(value.clone()))
+    pub fn mul_s(&self, value: T) -> Mat2<T> {
+        Mat2::from_cols(self.col(0).mul_s(value.clone()),
+                        self.col(1).mul_s(value.clone()))
     }
 
     #[inline]
@@ -235,9 +235,9 @@ impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(value.clone());
-        self.col_mut(1).mul_self_t(value.clone());
+    pub fn mul_self_s(&mut self, value: T) {
+        self.col_mut(0).mul_self_s(value.clone());
+        self.col_mut(1).mul_self_s(value.clone());
     }
 
     #[inline]
@@ -408,13 +408,13 @@ mod mat2_tests{
     }
 
     #[test]
-    fn test_mul_t() {
-        assert_eq!(A.mul_t(F),
+    fn test_mul_s() {
+        assert_eq!(A.mul_s(F),
                    Mat2::new::<float>(0.5, 1.5,
                                       1.0, 2.0));
         let mut mut_a = A;
-        mut_a.mul_self_t(F);
-        assert_eq!(mut_a, A.mul_t(F));
+        mut_a.mul_self_s(F);
+        assert_eq!(mut_a, A.mul_s(F));
     }
 
     #[test]
@@ -685,10 +685,10 @@ impl<T:Clone + Num> Mat3<T> {
 
 impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     #[inline]
-    pub fn mul_t(&self, value: T) -> Mat3<T> {
-        Mat3::from_cols(self.col(0).mul_t(value.clone()),
-                        self.col(1).mul_t(value.clone()),
-                        self.col(2).mul_t(value.clone()))
+    pub fn mul_s(&self, value: T) -> Mat3<T> {
+        Mat3::from_cols(self.col(0).mul_s(value.clone()),
+                        self.col(1).mul_s(value.clone()),
+                        self.col(2).mul_s(value.clone()))
     }
 
     #[inline]
@@ -728,10 +728,10 @@ impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(value.clone());
-        self.col_mut(1).mul_self_t(value.clone());
-        self.col_mut(2).mul_self_t(value.clone());
+    pub fn mul_self_s(&mut self, value: T) {
+        self.col_mut(0).mul_self_s(value.clone());
+        self.col_mut(1).mul_self_s(value.clone());
+        self.col_mut(2).mul_self_s(value.clone());
     }
 
     #[inline]
@@ -851,9 +851,9 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
         if d.approx_eq(&zero!(T)) {
             None
         } else {
-            Some(Mat3::from_cols(self.col(1).cross(self.col(2)).div_t(d.clone()),
-                                 self.col(2).cross(self.col(0)).div_t(d.clone()),
-                                 self.col(0).cross(self.col(1)).div_t(d.clone())).transpose())
+            Some(Mat3::from_cols(self.col(1).cross(self.col(2)).div_s(d.clone()),
+                                 self.col(2).cross(self.col(0)).div_s(d.clone()),
+                                 self.col(0).cross(self.col(1)).div_s(d.clone())).transpose())
         }
     }
 
@@ -992,14 +992,14 @@ mod mat3_tests{
     }
 
     #[test]
-    fn test_mul_t() {
-        assert_eq!(A.mul_t(F),
+    fn test_mul_s() {
+        assert_eq!(A.mul_s(F),
                    Mat3::new::<float>(0.5, 2.0, 3.5,
                                       1.0, 2.5, 4.0,
                                       1.5, 3.0, 4.5));
         let mut mut_a = A;
-        mut_a.mul_self_t(F);
-        assert_eq!(mut_a, A.mul_t(F));
+        mut_a.mul_self_s(F);
+        assert_eq!(mut_a, A.mul_s(F));
     }
 
     #[test]
@@ -1275,11 +1275,11 @@ impl<T:Clone + Num> Mat4<T> {
 
 impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     #[inline]
-    pub fn mul_t(&self, value: T) -> Mat4<T> {
-        Mat4::from_cols(self.col(0).mul_t(value.clone()),
-                        self.col(1).mul_t(value.clone()),
-                        self.col(2).mul_t(value.clone()),
-                        self.col(3).mul_t(value.clone()))
+    pub fn mul_s(&self, value: T) -> Mat4<T> {
+        Mat4::from_cols(self.col(0).mul_s(value.clone()),
+                        self.col(1).mul_s(value.clone()),
+                        self.col(2).mul_s(value.clone()),
+                        self.col(3).mul_s(value.clone()))
     }
 
     #[inline]
@@ -1330,11 +1330,11 @@ impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     }
 
     #[inline]
-    pub fn mul_self_t(&mut self, value: T) {
-        self.col_mut(0).mul_self_t(value.clone());
-        self.col_mut(1).mul_self_t(value.clone());
-        self.col_mut(2).mul_self_t(value.clone());
-        self.col_mut(3).mul_self_t(value.clone());
+    pub fn mul_self_s(&mut self, value: T) {
+        self.col_mut(0).mul_self_s(value.clone());
+        self.col_mut(1).mul_self_s(value.clone());
+        self.col_mut(2).mul_self_s(value.clone());
+        self.col_mut(3).mul_self_s(value.clone());
     }
 
     #[inline]
@@ -1431,15 +1431,15 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
 
                 // Scale col j to have a unit diagonal
                 let ajj = A.elem(j, j).clone();
-                I.col_mut(j).div_self_t(ajj.clone());
-                A.col_mut(j).div_self_t(ajj.clone());
+                I.col_mut(j).div_self_s(ajj.clone());
+                A.col_mut(j).div_self_s(ajj.clone());
 
                 // Eliminate off-diagonal elems in col j of A,
                 // doing identical ops to I
                 for uint::range(0, 4) |i| {
                     if i != j {
-                        let ij_mul_aij = I.col(j).mul_t(A.elem(i, j).clone());
-                        let aj_mul_aij = A.col(j).mul_t(A.elem(i, j).clone());
+                        let ij_mul_aij = I.col(j).mul_s(A.elem(i, j).clone());
+                        let aj_mul_aij = A.col(j).mul_s(A.elem(i, j).clone());
                         I.col_mut(i).sub_self_v(&ij_mul_aij);
                         A.col_mut(i).sub_self_v(&aj_mul_aij);
                     }
@@ -1605,15 +1605,15 @@ mod mat4_tests {
     }
 
     #[test]
-    fn test_mul_t() {
-        assert_eq!(A.mul_t(F),
+    fn test_mul_s() {
+        assert_eq!(A.mul_s(F),
                    Mat4::new::<float>(0.5, 2.5, 4.5, 6.5,
                                       1.0, 3.0, 5.0, 7.0,
                                       1.5, 3.5, 5.5, 7.5,
                                       2.0, 4.0, 6.0, 8.0));
         let mut mut_a = A;
-        mut_a.mul_self_t(F);
-        assert_eq!(mut_a, A.mul_t(F));
+        mut_a.mul_self_s(F);
+        assert_eq!(mut_a, A.mul_s(F));
     }
 
     #[test]
@@ -1680,7 +1680,7 @@ mod mat4_tests {
                           Mat4::new::<float>( 5.0, -4.0,  1.0,  0.0,
                                              -4.0,  8.0, -4.0,  0.0,
                                               4.0, -8.0,  4.0,  8.0,
-                                             -3.0,  4.0,  1.0, -8.0).mul_t(0.125));
+                                             -3.0,  4.0,  1.0, -8.0).mul_s(0.125));
         let mut mut_c = C;
         mut_c.invert_self();
         assert_eq!(mut_c, C.inverse().unwrap());
