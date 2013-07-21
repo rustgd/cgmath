@@ -81,9 +81,11 @@ pub trait OrdVec<T,Slice,BV>: Vec<T,Slice> {
 
     pub fn min_s(&self, other: T) -> Self;
     pub fn max_s(&self, other: T) -> Self;
+    pub fn clamp_s(&self, mn: T, mx: T) -> Self;
 
     pub fn min_v(&self, other: &Self) -> Self;
     pub fn max_v(&self, other: &Self) -> Self;
+    pub fn clamp_v(&self, mn: &Self, mx: &Self) -> Self;
 
     pub fn comp_min(&self) -> T;
     pub fn comp_max(&self) -> T;
@@ -502,6 +504,12 @@ impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     }
 
     #[inline]
+    pub fn clamp_s(&self, mn: T, mx: T) -> Vec2<T> {
+        Vec2::new(self.index(0).clamp(&mn, &mx),
+                  self.index(1).clamp(&mn, &mx))
+    }
+
+    #[inline]
     pub fn min_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self.index(0).min(other.index(0)),
                   self.index(1).min(other.index(1)))
@@ -511,6 +519,12 @@ impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     pub fn max_v(&self, other: &Vec2<T>) -> Vec2<T> {
         Vec2::new(self.index(0).max(other.index(0)),
                   self.index(1).max(other.index(1)))
+    }
+
+    #[inline]
+    pub fn clamp_v(&self, mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
+        Vec2::new(self.index(0).clamp(mn.index(0), mx.index(0)),
+                  self.index(1).clamp(mn.index(1), mx.index(1)))
     }
 
     /// Returns the smallest component of the vector.
@@ -1171,6 +1185,13 @@ impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     }
 
     #[inline]
+    pub fn clamp_s(&self, mn: T, mx: T) -> Vec3<T> {
+        Vec3::new(self.index(0).clamp(&mn, &mx),
+                  self.index(1).clamp(&mn, &mx),
+                  self.index(2).clamp(&mn, &mx))
+    }
+
+    #[inline]
     pub fn min_v(&self, other: &Vec3<T>) -> Vec3<T> {
         Vec3::new(self.index(0).min(other.index(0)),
                   self.index(1).min(other.index(1)),
@@ -1182,6 +1203,13 @@ impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
         Vec3::new(self.index(0).max(other.index(0)),
                   self.index(1).max(other.index(1)),
                   self.index(2).max(other.index(2)))
+    }
+
+    #[inline]
+    pub fn clamp_v(&self, mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
+        Vec3::new(self.index(0).clamp(mn.index(0), mx.index(0)),
+                  self.index(1).clamp(mn.index(1), mx.index(1)),
+                  self.index(2).clamp(mn.index(2), mx.index(2)))
     }
 
     /// Returns the smallest component of the vector.
@@ -1874,6 +1902,14 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     }
 
     #[inline]
+    pub fn clamp_s(&self, mn: T, mx: T) -> Vec4<T> {
+        Vec4::new(self.index(0).clamp(&mn, &mx),
+                  self.index(1).clamp(&mn, &mx),
+                  self.index(2).clamp(&mn, &mx),
+                  self.index(3).clamp(&mn, &mx))
+    }
+
+    #[inline]
     pub fn min_v(&self, other: &Vec4<T>) -> Vec4<T> {
         Vec4::new(self.index(0).min(other.index(0)),
                   self.index(1).min(other.index(1)),
@@ -1887,6 +1923,14 @@ impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
                   self.index(1).max(other.index(1)),
                   self.index(2).max(other.index(2)),
                   self.index(3).max(other.index(3)))
+    }
+
+    #[inline]
+    pub fn clamp_v(&self, mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
+        Vec4::new(self.index(0).clamp(mn.index(0), mx.index(0)),
+                  self.index(1).clamp(mn.index(1), mx.index(1)),
+                  self.index(2).clamp(mn.index(2), mx.index(2)),
+                  self.index(3).clamp(mn.index(3), mx.index(3)))
     }
 
     /// Returns the smallest component of the vector.

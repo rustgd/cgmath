@@ -41,10 +41,18 @@ impl<T:Channel> RGB<T> {
 impl<T:Channel> Color<T> for RGB<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
-    pub fn clamp(&self, lo: T, hi: T) -> RGB<T> {
+    pub fn clamp_s(&self, lo: T, hi: T) -> RGB<T> {
         RGB::new(self.r.clamp(&lo, &hi),
                  self.g.clamp(&lo, &hi),
                  self.b.clamp(&lo, &hi))
+    }
+
+    /// Clamps the components of the color component-wise between `lo` and `hi`.
+    #[inline]
+    pub fn clamp_c(&self, lo: &RGB<T>, hi: &RGB<T>) -> RGB<T> {
+        RGB::new(self.r.clamp(&lo.r, &hi.r),
+                 self.g.clamp(&lo.g, &hi.g),
+                 self.b.clamp(&lo.b, &hi.b))
     }
 
     /// Inverts the color.
@@ -156,11 +164,20 @@ impl<T:Channel> RGBA<T> {
 impl<T:Channel> Color<T> for RGBA<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
-    pub fn clamp(&self, lo: T, hi: T) -> RGBA<T> {
+    pub fn clamp_s(&self, lo: T, hi: T) -> RGBA<T> {
         RGBA::new(self.r.clamp(&lo, &hi),
                   self.g.clamp(&lo, &hi),
                   self.b.clamp(&lo, &hi),
                   self.a.clamp(&lo, &hi))
+    }
+
+    /// Clamps the components of the color component-wise between `lo` and `hi`.
+    #[inline]
+    pub fn clamp_c(&self, lo: &RGBA<T>, hi: &RGBA<T>) -> RGBA<T> {
+        RGBA::new(self.r.clamp(&lo.r, &hi.r),
+                  self.g.clamp(&lo.g, &hi.g),
+                  self.b.clamp(&lo.b, &hi.b),
+                  self.a.clamp(&lo.a, &hi.a))
     }
 
     /// Inverts the color.

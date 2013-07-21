@@ -40,10 +40,18 @@ impl<T:FloatChannel> HSV<T> {
 impl<T:FloatChannel> Color<T> for HSV<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
-    pub fn clamp(&self, lo: T, hi: T) -> HSV<T> {
+    pub fn clamp_s(&self, lo: T, hi: T) -> HSV<T> {
         HSV::new(self.h.clamp(&lo, &hi), // Should the hue component be clamped?
                  self.s.clamp(&lo, &hi),
                  self.v.clamp(&lo, &hi))
+    }
+
+    /// Clamps the components of the color component-wise between `lo` and `hi`.
+    #[inline]
+    pub fn clamp_c(&self, lo: &HSV<T>, hi: &HSV<T>) -> HSV<T> {
+        HSV::new(self.h.clamp(&lo.h, &hi.h),
+                 self.s.clamp(&lo.s, &hi.s),
+                 self.v.clamp(&lo.v, &hi.v))
     }
 
     /// Inverts the color.
@@ -159,11 +167,20 @@ impl<T:FloatChannel> HSVA<T> {
 impl<T:FloatChannel> Color<T> for HSVA<T> {
     /// Clamps the components of the color to the range `(lo,hi)`.
     #[inline]
-    pub fn clamp(&self, lo: T, hi: T) -> HSVA<T> {
+    pub fn clamp_s(&self, lo: T, hi: T) -> HSVA<T> {
         HSVA::new(self.h.clamp(&lo, &hi),    // Should the hue component be clamped?
                   self.s.clamp(&lo, &hi),
                   self.v.clamp(&lo, &hi),
                   self.a.clamp(&lo, &hi))
+    }
+
+    /// Clamps the components of the color component-wise between `lo` and `hi`.
+    #[inline]
+    pub fn clamp_c(&self, lo: &HSVA<T>, hi: &HSVA<T>) -> HSVA<T> {
+        HSVA::new(self.h.clamp(&lo.h, &hi.h),
+                  self.s.clamp(&lo.s, &hi.s),
+                  self.v.clamp(&lo.v, &hi.v),
+                  self.a.clamp(&lo.a, &hi.a))
     }
 
     /// Inverts the color.
