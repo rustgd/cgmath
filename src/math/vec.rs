@@ -136,6 +136,7 @@ pub trait ToVec2<T> {
 pub trait AsVec2<T> {
     pub fn as_vec2<'a>(&'a self) -> &'a Vec2<T>;
     pub fn as_mut_vec2<'a>(&'a mut self) -> &'a mut Vec2<T>;
+    pub fn map_as_vec2<'a>(&'a self, f: &fn(&'a Vec2<T>) -> Vec2<T>) -> Self;
 }
 
 impl_dimensioned!(Vec2, T, 2)
@@ -755,6 +756,7 @@ pub trait ToVec3<T> {
 pub trait AsVec3<T> {
     pub fn as_vec3<'a>(&'a self) -> &'a Vec3<T>;
     pub fn as_mut_vec3<'a>(&'a mut self) -> &'a mut Vec3<T>;
+    pub fn map_as_vec3<'a>(&'a self, f: &fn(&'a Vec3<T>) -> Vec3<T>) -> Self;
 }
 
 impl_dimensioned!(Vec3, T, 3)
@@ -1446,6 +1448,7 @@ pub trait ToVec4<T> {
 pub trait AsVec4<T> {
     pub fn as_vec4<'a>(&'a self) -> &'a Vec4<T>;
     pub fn as_mut_vec4<'a>(&'a mut self) -> &'a mut Vec4<T>;
+    pub fn map_as_vec4<'a>(&'a self, f: &fn(&'a Vec4<T>) -> Vec4<T>) -> Self;
 }
 
 impl_dimensioned!(Vec4, T, 4)
