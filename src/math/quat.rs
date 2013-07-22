@@ -70,6 +70,16 @@ impl<T> Quat<T> {
 }
 
 impl<T:Clone + Float> Quat<T> {
+    #[inline]
+    pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
+        Mat3::look_at(dir, up).to_quat()
+    }
+
+    #[inline]
+    pub fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
+        Mat3::from_axes(x, y, z).to_quat()
+    }
+
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quat<T> {
@@ -179,52 +189,6 @@ impl<T:Clone + Float> Quat<T> {
     pub fn nlerp(&self, other: &Quat<T>, amount: T) -> Quat<T> {
         self.mul_s(one!(T) - amount).add_q(&other.mul_s(amount)).normalize()
     }
-}
-
-impl<T:Clone + Num> ToMat3<T> for Quat<T> {
-    /// Convert the quaternion to a 3 x 3 rotation matrix
-    pub fn to_mat3(&self) -> Mat3<T> {
-        let x2 = self.v.x + self.v.x;
-        let y2 = self.v.y + self.v.y;
-        let z2 = self.v.z + self.v.z;
-
-        let xx2 = x2 * self.v.x;
-        let xy2 = x2 * self.v.y;
-        let xz2 = x2 * self.v.z;
-
-        let yy2 = y2 * self.v.y;
-        let yz2 = y2 * self.v.z;
-        let zz2 = z2 * self.v.z;
-
-        let sy2 = y2 * self.s;
-        let sz2 = z2 * self.s;
-        let sx2 = x2 * self.s;
-
-        let _1: T = one!(T);
-
-        Mat3::new(_1 - yy2 - zz2, xy2 + sz2, xz2 - sy2,
-                  xy2 - sz2, _1 - xx2 - zz2, yz2 + sx2,
-                  xz2 + sy2, yz2 - sx2, _1 - xx2 - yy2)
-    }
-}
-
-impl<T:Clone + Float> Neg<Quat<T>> for Quat<T> {
-    #[inline]
-    pub fn neg(&self) -> Quat<T> {
-        Quat::from_sv(-self.s, -self.v)
-    }
-}
-
-impl<T:Clone + Float> Quat<T> {
-    #[inline]
-    pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Quat<T> {
-        Mat3::look_at(dir, up).to_quat()
-    }
-
-    #[inline]
-    pub fn from_axes(x: Vec3<T>, y: Vec3<T>, z: Vec3<T>) -> Quat<T> {
-        Mat3::from_axes(x, y, z).to_quat()
-    }
 
     /// Spherical Linear Intoperlation
     ///
@@ -267,5 +231,39 @@ impl<T:Clone + Float> Quat<T> {
             self.mul_s(theta.cos())
                 .add_q(&q.mul_s(theta.sin()))
         }
+    }
+}
+
+impl<T:Clone + Num> ToMat3<T> for Quat<T> {
+    /// Convert the quaternion to a 3 x 3 rotation matrix
+    pub fn to_mat3(&self) -> Mat3<T> {
+        let x2 = self.v.x + self.v.x;
+        let y2 = self.v.y + self.v.y;
+        let z2 = self.v.z + self.v.z;
+
+        let xx2 = x2 * self.v.x;
+        let xy2 = x2 * self.v.y;
+        let xz2 = x2 * self.v.z;
+
+        let yy2 = y2 * self.v.y;
+        let yz2 = y2 * self.v.z;
+        let zz2 = z2 * self.v.z;
+
+        let sy2 = y2 * self.s;
+        let sz2 = z2 * self.s;
+        let sx2 = x2 * self.s;
+
+        let _1: T = one!(T);
+
+        Mat3::new(_1 - yy2 - zz2, xy2 + sz2, xz2 - sy2,
+                  xy2 - sz2, _1 - xx2 - zz2, yz2 + sx2,
+                  xz2 + sy2, yz2 - sx2, _1 - xx2 - yy2)
+    }
+}
+
+impl<T:Clone + Float> Neg<Quat<T>> for Quat<T> {
+    #[inline]
+    pub fn neg(&self) -> Quat<T> {
+        Quat::from_sv(-self.s, -self.v)
     }
 }
