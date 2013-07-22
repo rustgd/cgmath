@@ -21,14 +21,14 @@ use math::{Vec2, Vec3, Vec4};
 
 pub trait Mat<T,Vec,Slice>: Dimensioned<Vec,Slice>
                           + SwapComponents {
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec;
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec;
-    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T;
-    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T;
-    pub fn swap_cols(&mut self, a: uint, b: uint);
-    pub fn row(&self, i: uint) -> Vec;
-    pub fn swap_rows(&mut self, a: uint, b: uint);
-    pub fn swap_elem(&mut self, a: (uint, uint), b: (uint, uint));
+    pub fn c<'a>(&'a self, c: uint) -> &'a Vec;
+    pub fn r(&self, r: uint) -> Vec;
+    pub fn cr<'a>(&'a self, c: uint, r: uint) -> &'a T;
+    pub fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vec;
+    pub fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut T;
+    pub fn swap_c(&mut self, a: uint, b: uint);
+    pub fn swap_r(&mut self, a: uint, b: uint);
+    pub fn swap_cr(&mut self, a: (uint, uint), b: (uint, uint));
     pub fn transpose(&self) -> Self;
     pub fn transpose_self(&mut self);
 }
@@ -98,72 +98,69 @@ impl<T> Mat2<T> {
 
 impl<T:Clone> Mat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec2<T> {
-        self.index(i)
+    pub fn c<'a>(&'a self, c: uint) -> &'a Vec2<T> {
+        self.i(c)
     }
 
     #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec2<T> {
-        self.index_mut(i)
+    pub fn r(&self, r: uint) -> Vec2<T> {
+        Vec2::new(self.i(0).i(r).clone(),
+                  self.i(1).i(r).clone())
     }
 
     #[inline]
-    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
-        self.index(col).index(row)
+    pub fn cr<'a>(&'a self, c: uint, r: uint) -> &'a T {
+        self.i(c).i(r)
     }
 
     #[inline]
-    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
-        self.index_mut(col).index_mut(row)
+    pub fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vec2<T> {
+        self.mut_i(c)
     }
 
     #[inline]
-    pub fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self.col(a).clone();
-        *self.col_mut(a) = self.col(b).clone();
-        *self.col_mut(b) = tmp;
+    pub fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut T {
+        self.mut_i(c).mut_i(r)
     }
 
     #[inline]
-    pub fn row(&self, i: uint) -> Vec2<T> {
-        Vec2::new(self.col(0).index(i).clone(),
-                  self.col(1).index(i).clone())
+    pub fn swap_c(&mut self, a: uint, b: uint) {
+        let tmp = self.c(a).clone();
+        *self.mut_c(a) = self.c(b).clone();
+        *self.mut_c(b) = tmp;
     }
 
     #[inline]
-    pub fn swap_rows(&mut self, a: uint, b: uint) {
-        self.col_mut(0).swap(a, b);
-        self.col_mut(1).swap(a, b);
+    pub fn swap_r(&mut self, a: uint, b: uint) {
+        self.mut_c(0).swap(a, b);
+        self.mut_c(1).swap(a, b);
     }
 
     #[inline]
-    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+    pub fn swap_cr(&mut self, (col_a, row_a): (uint, uint),
                                 (col_b, row_b): (uint, uint)) {
-        let tmp = self.elem(col_a, row_a).clone();
-        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
-        *self.elem_mut(col_b, row_b) = tmp;
+        let tmp = self.cr(col_a, row_a).clone();
+        *self.mut_cr(col_a, row_a) = self.cr(col_b, row_b).clone();
+        *self.mut_cr(col_b, row_b) = tmp;
     }
 
     #[inline]
     pub fn transpose(&self) -> Mat2<T> {
-        Mat2::new(self.elem(0, 0).clone(),
-                  self.elem(1, 0).clone(),
-
-                  self.elem(0, 1).clone(),
-                  self.elem(1, 1).clone())
+        Mat2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
+                  self.cr(0, 1).clone(), self.cr(1, 1).clone())
     }
 
     #[inline]
     pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
+        self.swap_cr((0, 1), (1, 0));
     }
 }
 
 impl<T:Clone + Num> ToMat3<T> for Mat2<T> {
     #[inline]
     pub fn to_mat3(&self) -> Mat3<T> {
-        Mat3::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), zero!(T),
-                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), zero!(T),
+        Mat3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero!(T),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero!(T),
                   zero!(T), zero!(T), one!(T))
     }
 }
@@ -171,8 +168,8 @@ impl<T:Clone + Num> ToMat3<T> for Mat2<T> {
 impl<T:Clone + Num> ToMat4<T> for Mat2<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), zero!(T), zero!(T),
-                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), zero!(T), zero!(T),
+        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero!(T), zero!(T),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero!(T), zero!(T),
                   zero!(T), zero!(T), one!(T), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
@@ -203,53 +200,50 @@ impl<T:Clone + Num> Mat2<T> {
 impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     #[inline]
     pub fn mul_s(&self, value: T) -> Mat2<T> {
-        Mat2::from_cols(self.col(0).mul_s(value.clone()),
-                        self.col(1).mul_s(value.clone()))
+        Mat2::from_cols(self.c(0).mul_s(value.clone()),
+                        self.c(1).mul_s(value.clone()))
     }
 
     #[inline]
     pub fn mul_v(&self, vec: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self.row(0).dot(vec),
-                  self.row(1).dot(vec))
+        Vec2::new(self.r(0).dot(vec),
+                  self.r(1).dot(vec))
     }
 
     #[inline]
     pub fn add_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_cols(self.col(0).add_v(other.col(0)),
-                        self.col(1).add_v(other.col(1)))
+        Mat2::from_cols(self.c(0).add_v(other.c(0)),
+                        self.c(1).add_v(other.c(1)))
     }
 
     #[inline]
     pub fn sub_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Mat2::from_cols(self.col(0).sub_v(other.col(0)),
-                        self.col(1).sub_v(other.col(1)))
+        Mat2::from_cols(self.c(0).sub_v(other.c(0)),
+                        self.c(1).sub_v(other.c(1)))
     }
 
     #[inline]
     pub fn mul_m(&self, other: &Mat2<T>) -> Mat2<T> {
-        Mat2::new(self.row(0).dot(other.col(0)),
-                  self.row(1).dot(other.col(0)),
-
-                  self.row(0).dot(other.col(1)),
-                  self.row(1).dot(other.col(1)))
+        Mat2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        self.col_mut(0).mul_self_s(value.clone());
-        self.col_mut(1).mul_self_s(value.clone());
+        self.mut_c(0).mul_self_s(value.clone());
+        self.mut_c(1).mul_self_s(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat2<T>) {
-        self.col_mut(0).add_self_v(other.col(0));
-        self.col_mut(1).add_self_v(other.col(1));
+        self.mut_c(0).add_self_v(other.c(0));
+        self.mut_c(1).add_self_v(other.c(1));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat2<T>) {
-        self.col_mut(0).sub_self_v(other.col(0));
-        self.col_mut(1).sub_self_v(other.col(1));
+        self.mut_c(0).sub_self_v(other.c(0));
+        self.mut_c(1).sub_self_v(other.c(1));
     }
 
     pub fn dot(&self, other: &Mat2<T>) -> T {
@@ -257,11 +251,11 @@ impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     }
 
     pub fn determinant(&self) -> T {
-       *self.elem(0, 0) * *self.elem(1, 1) - *self.elem(1, 0) * *self.elem(0, 1)
+       *self.cr(0, 0) * *self.cr(1, 1) - *self.cr(1, 0) * *self.cr(0, 1)
     }
 
     pub fn trace(&self) -> T {
-        *self.elem(0, 0) + *self.elem(1, 1)
+        *self.cr(0, 0) + *self.cr(1, 1)
     }
 
     #[inline]
@@ -278,8 +272,8 @@ impl<T:Clone + Num> NumMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
 impl<T:Clone + Num> Neg<Mat2<T>> for Mat2<T> {
     #[inline]
     pub fn neg(&self) -> Mat2<T> {
-        Mat2::from_cols(-*self.col(0),
-                        -*self.col(1))
+        Mat2::from_cols(-*self.c(0),
+                        -*self.c(1))
     }
 }
 
@@ -301,8 +295,8 @@ impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
         if d.approx_eq(&zero!(T)) {
             None
         } else {
-            Some(Mat2::new(self.elem(1, 1) / d, -self.elem(0, 1) / d,
-                           -self.elem(1, 0) / d, self.elem(0, 0) / d))
+            Some(Mat2::new(self.cr(1, 1) / d, -self.cr(0, 1) / d,
+                           -self.cr(1, 0) / d, self.cr(0, 0) / d))
         }
     }
 
@@ -318,8 +312,8 @@ impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
 
     #[inline]
     pub fn is_diagonal(&self) -> bool {
-        self.elem(0, 1).approx_eq(&zero!(T)) &&
-        self.elem(1, 0).approx_eq(&zero!(T))
+        self.cr(0, 1).approx_eq(&zero!(T)) &&
+        self.cr(1, 0).approx_eq(&zero!(T))
     }
 
     #[inline]
@@ -329,8 +323,8 @@ impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
 
     #[inline]
     pub fn is_symmetric(&self) -> bool {
-        self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
-        self.elem(1, 0).approx_eq(self.elem(0, 1))
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(1, 0).approx_eq(self.cr(0, 1))
     }
 
     #[inline]
@@ -355,19 +349,19 @@ mod mat2_tests{
     static F: float = 0.5;
 
     #[test]
-    fn test_swap_cols() {
+    fn test_swap_c() {
         let mut mut_a = A;
-        mut_a.swap_cols(0, 1);
-        assert_eq!(mut_a.col(0), A.col(1));
-        assert_eq!(mut_a.col(1), A.col(0));
+        mut_a.swap_c(0, 1);
+        assert_eq!(mut_a.c(0), A.c(1));
+        assert_eq!(mut_a.c(1), A.c(0));
     }
 
     #[test]
-    fn test_swap_rows() {
+    fn test_swap_r() {
         let mut mut_a = A;
-        mut_a.swap_rows(0, 1);
-        assert_eq!(mut_a.row(0), A.row(1));
-        assert_eq!(mut_a.row(1), A.row(0));
+        mut_a.swap_r(0, 1);
+        assert_eq!(mut_a.r(0), A.r(1));
+        assert_eq!(mut_a.r(1), A.r(0));
     }
 
     #[test]
@@ -389,6 +383,7 @@ mod mat2_tests{
         mut_a.to_zero();
         assert_eq!(mut_a, Mat2::zero::<float>());
     }
+
     #[test]
     fn test_determinant() {
         assert_eq!(A.determinant(), -2.0);
@@ -577,83 +572,75 @@ impl<T> Mat3<T> {
 
 impl<T:Clone> Mat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec3<T> {
-        self.index(i)
+    pub fn c<'a>(&'a self, c: uint) -> &'a Vec3<T> {
+        self.i(c)
     }
 
     #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec3<T> {
-        self.index_mut(i)
+    pub fn r(&self, r: uint) -> Vec3<T> {
+        Vec3::new(self.i(0).i(r).clone(),
+                  self.i(1).i(r).clone(),
+                  self.i(2).i(r).clone())
     }
 
     #[inline]
-    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
-        self.index(col).index(row)
+    pub fn cr<'a>(&'a self, c: uint, r: uint) -> &'a T {
+        self.i(c).i(r)
     }
 
     #[inline]
-    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
-        self.index_mut(col).index_mut(row)
+    pub fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vec3<T> {
+        self.mut_i(c)
     }
 
     #[inline]
-    pub fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self.col(a).clone();
-        *self.col_mut(a) = self.col(b).clone();
-        *self.col_mut(b) = tmp;
+    pub fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut T {
+        self.mut_i(c).mut_i(r)
     }
 
     #[inline]
-    pub fn row(&self, i: uint) -> Vec3<T> {
-        Vec3::new(self.col(0).index(i).clone(),
-                  self.col(1).index(i).clone(),
-                  self.col(2).index(i).clone())
+    pub fn swap_c(&mut self, a: uint, b: uint) {
+        let tmp = self.c(a).clone();
+        *self.mut_c(a) = self.c(b).clone();
+        *self.mut_c(b) = tmp;
     }
 
     #[inline]
-    pub fn swap_rows(&mut self, a: uint, b: uint) {
-        self.col_mut(0).swap(a, b);
-        self.col_mut(1).swap(a, b);
-        self.col_mut(2).swap(a, b);
+    pub fn swap_r(&mut self, a: uint, b: uint) {
+        self.mut_c(0).swap(a, b);
+        self.mut_c(1).swap(a, b);
+        self.mut_c(2).swap(a, b);
     }
 
     #[inline]
-    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+    pub fn swap_cr(&mut self, (col_a, row_a): (uint, uint),
                                 (col_b, row_b): (uint, uint)) {
-        let tmp = self.elem(col_a, row_a).clone();
-        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
-        *self.elem_mut(col_b, row_b) = tmp;
+        let tmp = self.cr(col_a, row_a).clone();
+        *self.mut_cr(col_a, row_a) = self.cr(col_b, row_b).clone();
+        *self.mut_cr(col_b, row_b) = tmp;
     }
 
     #[inline]
     pub fn transpose(&self) -> Mat3<T> {
-        Mat3::new(self.elem(0, 0).clone(),
-                  self.elem(1, 0).clone(),
-                  self.elem(2, 0).clone(),
-
-                  self.elem(0, 1).clone(),
-                  self.elem(1, 1).clone(),
-                  self.elem(2, 1).clone(),
-
-                  self.elem(0, 2).clone(),
-                  self.elem(1, 2).clone(),
-                  self.elem(2, 2).clone())
+        Mat3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
+                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
     }
 
     #[inline]
     pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
-        self.swap_elem((0, 2), (2, 0));
-        self.swap_elem((1, 2), (2, 1));
+        self.swap_cr((0, 1), (1, 0));
+        self.swap_cr((0, 2), (2, 0));
+        self.swap_cr((1, 2), (2, 1));
     }
 }
 
 impl<T:Clone + Num> ToMat4<T> for Mat3<T> {
     #[inline]
     pub fn to_mat4(&self) -> Mat4<T> {
-        Mat4::new(self.elem(0, 0).clone(), self.elem(0, 1).clone(), self.elem(0, 2).clone(), zero!(T),
-                  self.elem(1, 0).clone(), self.elem(1, 1).clone(), self.elem(1, 2).clone(), zero!(T),
-                  self.elem(2, 0).clone(), self.elem(2, 1).clone(), self.elem(2, 2).clone(), zero!(T),
+        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero!(T),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero!(T),
+                  self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero!(T),
                   zero!(T), zero!(T), zero!(T), one!(T))
     }
 }
@@ -686,66 +673,58 @@ impl<T:Clone + Num> Mat3<T> {
 impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     #[inline]
     pub fn mul_s(&self, value: T) -> Mat3<T> {
-        Mat3::from_cols(self.col(0).mul_s(value.clone()),
-                        self.col(1).mul_s(value.clone()),
-                        self.col(2).mul_s(value.clone()))
+        Mat3::from_cols(self.c(0).mul_s(value.clone()),
+                        self.c(1).mul_s(value.clone()),
+                        self.c(2).mul_s(value.clone()))
     }
 
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self.row(0).dot(vec),
-                  self.row(1).dot(vec),
-                  self.row(2).dot(vec))
+        Vec3::new(self.r(0).dot(vec),
+                  self.r(1).dot(vec),
+                  self.r(2).dot(vec))
     }
 
     #[inline]
     pub fn add_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_cols(self.col(0).add_v(other.col(0)),
-                        self.col(1).add_v(other.col(1)),
-                        self.col(2).add_v(other.col(2)))
+        Mat3::from_cols(self.c(0).add_v(other.c(0)),
+                        self.c(1).add_v(other.c(1)),
+                        self.c(2).add_v(other.c(2)))
     }
 
     #[inline]
     pub fn sub_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::from_cols(self.col(0).sub_v(other.col(0)),
-                        self.col(1).sub_v(other.col(1)),
-                        self.col(2).sub_v(other.col(2)))
+        Mat3::from_cols(self.c(0).sub_v(other.c(0)),
+                        self.c(1).sub_v(other.c(1)),
+                        self.c(2).sub_v(other.c(2)))
     }
 
     #[inline]
     pub fn mul_m(&self, other: &Mat3<T>) -> Mat3<T> {
-        Mat3::new(self.row(0).dot(other.col(0)),
-                  self.row(1).dot(other.col(0)),
-                  self.row(2).dot(other.col(0)),
-
-                  self.row(0).dot(other.col(1)),
-                  self.row(1).dot(other.col(1)),
-                  self.row(2).dot(other.col(1)),
-
-                  self.row(0).dot(other.col(2)),
-                  self.row(1).dot(other.col(2)),
-                  self.row(2).dot(other.col(2)))
+        Mat3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
+                  self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        self.col_mut(0).mul_self_s(value.clone());
-        self.col_mut(1).mul_self_s(value.clone());
-        self.col_mut(2).mul_self_s(value.clone());
+        self.mut_c(0).mul_self_s(value.clone());
+        self.mut_c(1).mul_self_s(value.clone());
+        self.mut_c(2).mul_self_s(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).add_self_v(other.col(0));
-        self.col_mut(1).add_self_v(other.col(1));
-        self.col_mut(2).add_self_v(other.col(2));
+        self.mut_c(0).add_self_v(other.c(0));
+        self.mut_c(1).add_self_v(other.c(1));
+        self.mut_c(2).add_self_v(other.c(2));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat3<T>) {
-        self.col_mut(0).sub_self_v(other.col(0));
-        self.col_mut(1).sub_self_v(other.col(1));
-        self.col_mut(2).sub_self_v(other.col(2));
+        self.mut_c(0).sub_self_v(other.c(0));
+        self.mut_c(1).sub_self_v(other.c(1));
+        self.mut_c(2).sub_self_v(other.c(2));
     }
 
     pub fn dot(&self, other: &Mat3<T>) -> T {
@@ -753,13 +732,13 @@ impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     }
 
     pub fn determinant(&self) -> T {
-        *self.elem(0, 0) * (*self.elem(1, 1) * *self.elem(2, 2) - *self.elem(2, 1) * *self.elem(1, 2))
-      - *self.elem(1, 0) * (*self.elem(0, 1) * *self.elem(2, 2) - *self.elem(2, 1) * *self.elem(0, 2))
-      + *self.elem(2, 0) * (*self.elem(0, 1) * *self.elem(1, 2) - *self.elem(1, 1) * *self.elem(0, 2))
+        *self.cr(0, 0) * (*self.cr(1, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(1, 2))
+      - *self.cr(1, 0) * (*self.cr(0, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(0, 2))
+      + *self.cr(2, 0) * (*self.cr(0, 1) * *self.cr(1, 2) - *self.cr(1, 1) * *self.cr(0, 2))
     }
 
     pub fn trace(&self) -> T {
-        (*self.elem(0, 0)) + (*self.elem(1, 1)) + (*self.elem(2, 2))
+        (*self.cr(0, 0)) + (*self.cr(1, 1)) + (*self.cr(2, 2))
     }
 
     #[inline]
@@ -776,9 +755,9 @@ impl<T:Clone + Num> NumMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
 impl<T:Clone + Num> Neg<Mat3<T>> for Mat3<T> {
     #[inline]
     pub fn neg(&self) -> Mat3<T> {
-        Mat3::from_cols(-*self.col(0),
-                        -*self.col(1),
-                        -*self.col(2))
+        Mat3::from_cols(-*self.c(0),
+                        -*self.c(1),
+                        -*self.c(2))
     }
 }
 
@@ -810,34 +789,34 @@ impl<T:Clone + Float> ToQuat<T> for Mat3<T> {
                 s = (one!(T) + trace).sqrt();
                 w = half * s;
                 s = half / s;
-                x = (*self.elem(1, 2) - *self.elem(2, 1)) * s;
-                y = (*self.elem(2, 0) - *self.elem(0, 2)) * s;
-                z = (*self.elem(0, 1) - *self.elem(1, 0)) * s;
+                x = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
             }
-            ((*self.elem(0, 0) > *self.elem(1, 1))
-            && (*self.elem(0, 0) > *self.elem(2, 2))) {
-                s = (half + (*self.elem(0, 0) - *self.elem(1, 1) - *self.elem(2, 2))).sqrt();
+            ((*self.cr(0, 0) > *self.cr(1, 1))
+            && (*self.cr(0, 0) > *self.cr(2, 2))) {
+                s = (half + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2))).sqrt();
                 w = half * s;
                 s = half / s;
-                x = (*self.elem(0, 1) - *self.elem(1, 0)) * s;
-                y = (*self.elem(2, 0) - *self.elem(0, 2)) * s;
-                z = (*self.elem(1, 2) - *self.elem(2, 1)) * s;
+                x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+                y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                z = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
             }
-            (*self.elem(1, 1) > *self.elem(2, 2)) {
-                s = (half + (*self.elem(1, 1) - *self.elem(0, 0) - *self.elem(2, 2))).sqrt();
+            (*self.cr(1, 1) > *self.cr(2, 2)) {
+                s = (half + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2))).sqrt();
                 w = half * s;
                 s = half / s;
-                x = (*self.elem(0, 1) - *self.elem(1, 0)) * s;
-                y = (*self.elem(1, 2) - *self.elem(2, 1)) * s;
-                z = (*self.elem(2, 0) - *self.elem(0, 2)) * s;
+                x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+                y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                z = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
             }
             _ {
-                s = (half + (*self.elem(2, 2) - *self.elem(0, 0) - *self.elem(1, 1))).sqrt();
+                s = (half + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1))).sqrt();
                 w = half * s;
                 s = half / s;
-                x = (*self.elem(2, 0) - *self.elem(0, 2)) * s;
-                y = (*self.elem(1, 2) - *self.elem(2, 1)) * s;
-                z = (*self.elem(0, 1) - *self.elem(1, 0)) * s;
+                x = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
             }
         )
         Quat::new(w, x, y, z)
@@ -851,9 +830,9 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
         if d.approx_eq(&zero!(T)) {
             None
         } else {
-            Some(Mat3::from_cols(self.col(1).cross(self.col(2)).div_s(d.clone()),
-                                 self.col(2).cross(self.col(0)).div_s(d.clone()),
-                                 self.col(0).cross(self.col(1)).div_s(d.clone())).transpose())
+            Some(Mat3::from_cols(self.c(1).cross(self.c(2)).div_s(d.clone()),
+                                 self.c(2).cross(self.c(0)).div_s(d.clone()),
+                                 self.c(0).cross(self.c(1)).div_s(d.clone())).transpose())
         }
     }
 
@@ -869,14 +848,14 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
 
     #[inline]
     pub fn is_diagonal(&self) -> bool {
-        self.elem(0, 1).approx_eq(&zero!(T)) &&
-        self.elem(0, 2).approx_eq(&zero!(T)) &&
+        self.cr(0, 1).approx_eq(&zero!(T)) &&
+        self.cr(0, 2).approx_eq(&zero!(T)) &&
 
-        self.elem(1, 0).approx_eq(&zero!(T)) &&
-        self.elem(1, 2).approx_eq(&zero!(T)) &&
+        self.cr(1, 0).approx_eq(&zero!(T)) &&
+        self.cr(1, 2).approx_eq(&zero!(T)) &&
 
-        self.elem(2, 0).approx_eq(&zero!(T)) &&
-        self.elem(2, 1).approx_eq(&zero!(T))
+        self.cr(2, 0).approx_eq(&zero!(T)) &&
+        self.cr(2, 1).approx_eq(&zero!(T))
     }
 
     #[inline]
@@ -886,14 +865,14 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
 
     #[inline]
     pub fn is_symmetric(&self) -> bool {
-        self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
-        self.elem(0, 2).approx_eq(self.elem(2, 0)) &&
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(0, 2).approx_eq(self.cr(2, 0)) &&
 
-        self.elem(1, 0).approx_eq(self.elem(0, 1)) &&
-        self.elem(1, 2).approx_eq(self.elem(2, 1)) &&
+        self.cr(1, 0).approx_eq(self.cr(0, 1)) &&
+        self.cr(1, 2).approx_eq(self.cr(2, 1)) &&
 
-        self.elem(2, 0).approx_eq(self.elem(0, 2)) &&
-        self.elem(2, 1).approx_eq(self.elem(1, 2))
+        self.cr(2, 0).approx_eq(self.cr(0, 2)) &&
+        self.cr(2, 1).approx_eq(self.cr(1, 2))
     }
 
     #[inline]
@@ -924,29 +903,29 @@ mod mat3_tests{
     static F: float = 0.5;
 
     #[test]
-    fn test_swap_cols() {
+    fn test_swap_c() {
         let mut mut_a0 = A;
-        mut_a0.swap_cols(0, 2);
-        assert_eq!(mut_a0.col(0), A.col(2));
-        assert_eq!(mut_a0.col(2), A.col(0));
+        mut_a0.swap_c(0, 2);
+        assert_eq!(mut_a0.c(0), A.c(2));
+        assert_eq!(mut_a0.c(2), A.c(0));
 
         let mut mut_a1 = A;
-        mut_a1.swap_cols(1, 2);
-        assert_eq!(mut_a1.col(1), A.col(2));
-        assert_eq!(mut_a1.col(2), A.col(1));
+        mut_a1.swap_c(1, 2);
+        assert_eq!(mut_a1.c(1), A.c(2));
+        assert_eq!(mut_a1.c(2), A.c(1));
     }
 
     #[test]
-    fn test_swap_rows() {
+    fn test_swap_r() {
         let mut mut_a0 = A;
-        mut_a0.swap_rows(0, 2);
-        assert_eq!(mut_a0.row(0), A.row(2));
-        assert_eq!(mut_a0.row(2), A.row(0));
+        mut_a0.swap_r(0, 2);
+        assert_eq!(mut_a0.r(0), A.r(2));
+        assert_eq!(mut_a0.r(2), A.r(0));
 
         let mut mut_a1 = A;
-        mut_a1.swap_rows(1, 2);
-        assert_eq!(mut_a1.row(1), A.row(2));
-        assert_eq!(mut_a1.row(2), A.row(1));
+        mut_a1.swap_r(1, 2);
+        assert_eq!(mut_a1.r(1), A.r(2));
+        assert_eq!(mut_a1.r(2), A.r(1));
     }
 
     #[test]
@@ -1161,87 +1140,72 @@ impl<T> Mat4<T> {
 
 impl<T:Clone> Mat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     #[inline]
-    pub fn col<'a>(&'a self, i: uint) -> &'a Vec4<T> {
-        self.index(i)
+    pub fn c<'a>(&'a self, c: uint) -> &'a Vec4<T> {
+        self.i(c)
     }
 
     #[inline]
-    pub fn col_mut<'a>(&'a mut self, i: uint) -> &'a mut Vec4<T> {
-        self.index_mut(i)
+    pub fn r(&self, r: uint) -> Vec4<T> {
+        Vec4::new(self.i(0).i(r).clone(),
+                  self.i(1).i(r).clone(),
+                  self.i(2).i(r).clone(),
+                  self.i(3).i(r).clone())
     }
 
     #[inline]
-    pub fn elem<'a>(&'a self, col: uint, row: uint) -> &'a T {
-        self.index(col).index(row)
+    pub fn cr<'a>(&'a self, c: uint, r: uint) -> &'a T {
+        self.i(c).i(r)
     }
 
     #[inline]
-    pub fn elem_mut<'a>(&'a mut self, col: uint, row: uint) -> &'a mut T {
-        self.index_mut(col).index_mut(row)
+    pub fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vec4<T> {
+        self.mut_i(c)
     }
 
     #[inline]
-    pub fn swap_cols(&mut self, a: uint, b: uint) {
-        let tmp = self.col(a).clone();
-        *self.col_mut(a) = self.col(b).clone();
-        *self.col_mut(b) = tmp;
+    pub fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut T {
+        self.mut_i(c).mut_i(r)
     }
 
     #[inline]
-    pub fn row(&self, i: uint) -> Vec4<T> {
-        Vec4::new(self.col(0).index(i).clone(),
-                  self.col(1).index(i).clone(),
-                  self.col(2).index(i).clone(),
-                  self.col(3).index(i).clone())
+    pub fn swap_c(&mut self, a: uint, b: uint) {
+        let tmp = self.c(a).clone();
+        *self.mut_c(a) = self.c(b).clone();
+        *self.mut_c(b) = tmp;
     }
 
     #[inline]
-    pub fn swap_rows(&mut self, a: uint, b: uint) {
-        self.col_mut(0).swap(a, b);
-        self.col_mut(1).swap(a, b);
-        self.col_mut(2).swap(a, b);
-        self.col_mut(3).swap(a, b);
+    pub fn swap_r(&mut self, a: uint, b: uint) {
+        self.mut_c(0).swap(a, b);
+        self.mut_c(1).swap(a, b);
+        self.mut_c(2).swap(a, b);
+        self.mut_c(3).swap(a, b);
     }
 
     #[inline]
-    pub fn swap_elem(&mut self, (col_a, row_a): (uint, uint),
+    pub fn swap_cr(&mut self, (col_a, row_a): (uint, uint),
                                 (col_b, row_b): (uint, uint)) {
-        let tmp = self.elem(col_a, row_a).clone();
-        *self.elem_mut(col_a, row_a) = self.elem(col_b, row_b).clone();
-        *self.elem_mut(col_b, row_b) = tmp;
+        let tmp = self.cr(col_a, row_a).clone();
+        *self.mut_cr(col_a, row_a) = self.cr(col_b, row_b).clone();
+        *self.mut_cr(col_b, row_b) = tmp;
     }
 
     #[inline]
     pub fn transpose(&self) -> Mat4<T> {
-        Mat4::new(self.elem(0, 0).clone(),
-                  self.elem(1, 0).clone(),
-                  self.elem(2, 0).clone(),
-                  self.elem(3, 0).clone(),
-
-                  self.elem(0, 1).clone(),
-                  self.elem(1, 1).clone(),
-                  self.elem(2, 1).clone(),
-                  self.elem(3, 1).clone(),
-
-                  self.elem(0, 2).clone(),
-                  self.elem(1, 2).clone(),
-                  self.elem(2, 2).clone(),
-                  self.elem(3, 2).clone(),
-
-                  self.elem(0, 3).clone(),
-                  self.elem(1, 3).clone(),
-                  self.elem(2, 3).clone(),
-                  self.elem(3, 3).clone())
+        Mat4::new(self.cr(0, 0).clone(),self.cr(1, 0).clone(),self.cr(2, 0).clone(),self.cr(3, 0).clone(),
+                  self.cr(0, 1).clone(),self.cr(1, 1).clone(),self.cr(2, 1).clone(),self.cr(3, 1).clone(),
+                  self.cr(0, 2).clone(),self.cr(1, 2).clone(),self.cr(2, 2).clone(),self.cr(3, 2).clone(),
+                  self.cr(0, 3).clone(),self.cr(1, 3).clone(),self.cr(2, 3).clone(),self.cr(3, 3).clone())
     }
 
     #[inline]
     pub fn transpose_self(&mut self) {
-        self.swap_elem((0, 1), (1, 0));
-        self.swap_elem((0, 2), (2, 0));
-        self.swap_elem((0, 3), (3, 0));
-        self.swap_elem((1, 2), (2, 1));
-        self.swap_elem((1, 3), (3, 1));
-        self.swap_elem((2, 3), (3, 2));
+        self.swap_cr((0, 1), (1, 0));
+        self.swap_cr((0, 2), (2, 0));
+        self.swap_cr((0, 3), (3, 0));
+        self.swap_cr((1, 2), (2, 1));
+        self.swap_cr((1, 3), (3, 1));
+        self.swap_cr((2, 3), (3, 2));
     }
 }
 
@@ -1276,81 +1240,66 @@ impl<T:Clone + Num> Mat4<T> {
 impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     #[inline]
     pub fn mul_s(&self, value: T) -> Mat4<T> {
-        Mat4::from_cols(self.col(0).mul_s(value.clone()),
-                        self.col(1).mul_s(value.clone()),
-                        self.col(2).mul_s(value.clone()),
-                        self.col(3).mul_s(value.clone()))
+        Mat4::from_cols(self.c(0).mul_s(value.clone()),
+                        self.c(1).mul_s(value.clone()),
+                        self.c(2).mul_s(value.clone()),
+                        self.c(3).mul_s(value.clone()))
     }
 
     #[inline]
     pub fn mul_v(&self, vec: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.row(0).dot(vec),
-                  self.row(1).dot(vec),
-                  self.row(2).dot(vec),
-                  self.row(3).dot(vec))
+        Vec4::new(self.r(0).dot(vec),
+                  self.r(1).dot(vec),
+                  self.r(2).dot(vec),
+                  self.r(3).dot(vec))
     }
 
     #[inline]
     pub fn add_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(self.col(0).add_v(other.col(0)),
-                        self.col(1).add_v(other.col(1)),
-                        self.col(2).add_v(other.col(2)),
-                        self.col(3).add_v(other.col(3)))
+        Mat4::from_cols(self.c(0).add_v(other.c(0)),
+                        self.c(1).add_v(other.c(1)),
+                        self.c(2).add_v(other.c(2)),
+                        self.c(3).add_v(other.c(3)))
     }
 
     #[inline]
     pub fn sub_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::from_cols(self.col(0).sub_v(other.col(0)),
-                        self.col(1).sub_v(other.col(1)),
-                        self.col(2).sub_v(other.col(2)),
-                        self.col(3).sub_v(other.col(3)))
+        Mat4::from_cols(self.c(0).sub_v(other.c(0)),
+                        self.c(1).sub_v(other.c(1)),
+                        self.c(2).sub_v(other.c(2)),
+                        self.c(3).sub_v(other.c(3)))
     }
 
     #[inline]
     pub fn mul_m(&self, other: &Mat4<T>) -> Mat4<T> {
-        Mat4::new(self.row(0).dot(other.col(0)),
-                  self.row(1).dot(other.col(0)),
-                  self.row(2).dot(other.col(0)),
-                  self.row(3).dot(other.col(0)),
-
-                  self.row(0).dot(other.col(1)),
-                  self.row(1).dot(other.col(1)),
-                  self.row(2).dot(other.col(1)),
-                  self.row(3).dot(other.col(1)),
-
-                  self.row(0).dot(other.col(2)),
-                  self.row(1).dot(other.col(2)),
-                  self.row(2).dot(other.col(2)),
-                  self.row(3).dot(other.col(2)),
-
-                  self.row(0).dot(other.col(3)),
-                  self.row(1).dot(other.col(3)),
-                  self.row(2).dot(other.col(3)),
-                  self.row(3).dot(other.col(3)))
+        Mat4::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)), self.r(2).dot(other.c(0)), self.r(3).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)), self.r(2).dot(other.c(1)), self.r(3).dot(other.c(1)),
+                  self.r(0).dot(other.c(2)), self.r(1).dot(other.c(2)), self.r(2).dot(other.c(2)), self.r(3).dot(other.c(2)),
+                  self.r(0).dot(other.c(3)), self.r(1).dot(other.c(3)), self.r(2).dot(other.c(3)), self.r(3).dot(other.c(3)))
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        self.col_mut(0).mul_self_s(value.clone());
-        self.col_mut(1).mul_self_s(value.clone());
-        self.col_mut(2).mul_self_s(value.clone());
-        self.col_mut(3).mul_self_s(value.clone());
+        self.mut_c(0).mul_self_s(value.clone());
+        self.mut_c(1).mul_self_s(value.clone());
+        self.mut_c(2).mul_self_s(value.clone());
+        self.mut_c(3).mul_self_s(value.clone());
     }
 
     #[inline]
     pub fn add_self_m(&mut self, other: &Mat4<T>) {
-        self.col_mut(0).add_self_v(other.col(0));
-        self.col_mut(1).add_self_v(other.col(1));
-        self.col_mut(2).add_self_v(other.col(2));
-        self.col_mut(3).add_self_v(other.col(3));
+        self.mut_c(0).add_self_v(other.c(0));
+        self.mut_c(1).add_self_v(other.c(1));
+        self.mut_c(2).add_self_v(other.c(2));
+        self.mut_c(3).add_self_v(other.c(3));
     }
 
     #[inline]
     pub fn sub_self_m(&mut self, other: &Mat4<T>) {
-        self.col_mut(0).sub_self_v(other.col(0));
-        self.col_mut(1).sub_self_v(other.col(1));
-        self.col_mut(2).sub_self_v(other.col(2));
-        self.col_mut(3).sub_self_v(other.col(3));
+        self.mut_c(0).sub_self_v(other.c(0));
+        self.mut_c(1).sub_self_v(other.c(1));
+        self.mut_c(2).sub_self_v(other.c(2));
+        self.mut_c(3).sub_self_v(other.c(3));
     }
 
     pub fn dot(&self, other: &Mat4<T>) -> T {
@@ -1358,27 +1307,27 @@ impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
     }
 
     pub fn determinant(&self) -> T {
-        let m0 = Mat3::new(self.elem(1, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
-                           self.elem(1, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
-                           self.elem(1, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone());
-        let m1 = Mat3::new(self.elem(0, 1).clone(), self.elem(2, 1).clone(), self.elem(3, 1).clone(),
-                           self.elem(0, 2).clone(), self.elem(2, 2).clone(), self.elem(3, 2).clone(),
-                           self.elem(0, 3).clone(), self.elem(2, 3).clone(), self.elem(3, 3).clone());
-        let m2 = Mat3::new(self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(3, 1).clone(),
-                           self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(3, 2).clone(),
-                           self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(3, 3).clone());
-        let m3 = Mat3::new(self.elem(0, 1).clone(), self.elem(1, 1).clone(), self.elem(2, 1).clone(),
-                           self.elem(0, 2).clone(), self.elem(1, 2).clone(), self.elem(2, 2).clone(),
-                           self.elem(0, 3).clone(), self.elem(1, 3).clone(), self.elem(2, 3).clone());
+        let m0 = Mat3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m1 = Mat3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m2 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
+        let m3 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
 
-        self.elem(0, 0) * m0.determinant() -
-        self.elem(1, 0) * m1.determinant() +
-        self.elem(2, 0) * m2.determinant() -
-        self.elem(3, 0) * m3.determinant()
+        self.cr(0, 0) * m0.determinant() -
+        self.cr(1, 0) * m1.determinant() +
+        self.cr(2, 0) * m2.determinant() -
+        self.cr(3, 0) * m3.determinant()
     }
 
     pub fn trace(&self) -> T {
-        *self.elem(0, 0) + *self.elem(1, 1) + *self.elem(2, 2) + *self.elem(3, 3)
+        *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2) + *self.cr(3, 3)
     }
 
     #[inline]
@@ -1395,10 +1344,10 @@ impl<T:Clone + Num> NumMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
 impl<T:Clone + Num> Neg<Mat4<T>> for Mat4<T> {
     #[inline]
     pub fn neg(&self) -> Mat4<T> {
-        Mat4::from_cols(-*self.col(0),
-                        -*self.col(1),
-                        -*self.col(2),
-                        -*self.col(3))
+        Mat4::from_cols(-*self.c(0),
+                        -*self.c(1),
+                        -*self.c(2),
+                        -*self.c(3))
     }
 }
 
@@ -1419,29 +1368,29 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
                 // Find largest element in col j
                 let mut i1 = j;
                 for uint::range(j + 1, 4) |i| {
-                    if A.elem(j, i).abs() > A.elem(j, i1).abs() {
+                    if A.cr(j, i).abs() > A.cr(j, i1).abs() {
                         i1 = i;
                     }
                 }
 
                 // SwapComponents columns i1 and j in A and I to
                 // put pivot on diagonal
-                A.swap_cols(i1, j);
-                I.swap_cols(i1, j);
+                A.swap_c(i1, j);
+                I.swap_c(i1, j);
 
                 // Scale col j to have a unit diagonal
-                let ajj = A.elem(j, j).clone();
-                I.col_mut(j).div_self_s(ajj.clone());
-                A.col_mut(j).div_self_s(ajj.clone());
+                let ajj = A.cr(j, j).clone();
+                I.mut_c(j).div_self_s(ajj.clone());
+                A.mut_c(j).div_self_s(ajj.clone());
 
                 // Eliminate off-diagonal elems in col j of A,
                 // doing identical ops to I
                 for uint::range(0, 4) |i| {
                     if i != j {
-                        let ij_mul_aij = I.col(j).mul_s(A.elem(i, j).clone());
-                        let aj_mul_aij = A.col(j).mul_s(A.elem(i, j).clone());
-                        I.col_mut(i).sub_self_v(&ij_mul_aij);
-                        A.col_mut(i).sub_self_v(&aj_mul_aij);
+                        let ij_mul_aij = I.c(j).mul_s(A.cr(i, j).clone());
+                        let aj_mul_aij = A.c(j).mul_s(A.cr(i, j).clone());
+                        I.mut_c(i).sub_self_v(&ij_mul_aij);
+                        A.mut_c(i).sub_self_v(&aj_mul_aij);
                     }
                 }
             }
@@ -1463,21 +1412,21 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
 
     #[inline]
     pub fn is_diagonal(&self) -> bool {
-        self.elem(0, 1).approx_eq(&zero!(T)) &&
-        self.elem(0, 2).approx_eq(&zero!(T)) &&
-        self.elem(0, 3).approx_eq(&zero!(T)) &&
+        self.cr(0, 1).approx_eq(&zero!(T)) &&
+        self.cr(0, 2).approx_eq(&zero!(T)) &&
+        self.cr(0, 3).approx_eq(&zero!(T)) &&
 
-        self.elem(1, 0).approx_eq(&zero!(T)) &&
-        self.elem(1, 2).approx_eq(&zero!(T)) &&
-        self.elem(1, 3).approx_eq(&zero!(T)) &&
+        self.cr(1, 0).approx_eq(&zero!(T)) &&
+        self.cr(1, 2).approx_eq(&zero!(T)) &&
+        self.cr(1, 3).approx_eq(&zero!(T)) &&
 
-        self.elem(2, 0).approx_eq(&zero!(T)) &&
-        self.elem(2, 1).approx_eq(&zero!(T)) &&
-        self.elem(2, 3).approx_eq(&zero!(T)) &&
+        self.cr(2, 0).approx_eq(&zero!(T)) &&
+        self.cr(2, 1).approx_eq(&zero!(T)) &&
+        self.cr(2, 3).approx_eq(&zero!(T)) &&
 
-        self.elem(3, 0).approx_eq(&zero!(T)) &&
-        self.elem(3, 1).approx_eq(&zero!(T)) &&
-        self.elem(3, 2).approx_eq(&zero!(T))
+        self.cr(3, 0).approx_eq(&zero!(T)) &&
+        self.cr(3, 1).approx_eq(&zero!(T)) &&
+        self.cr(3, 2).approx_eq(&zero!(T))
     }
 
     #[inline]
@@ -1487,21 +1436,21 @@ impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat4<T> {
 
     #[inline]
     pub fn is_symmetric(&self) -> bool {
-        self.elem(0, 1).approx_eq(self.elem(1, 0)) &&
-        self.elem(0, 2).approx_eq(self.elem(2, 0)) &&
-        self.elem(0, 3).approx_eq(self.elem(3, 0)) &&
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(0, 2).approx_eq(self.cr(2, 0)) &&
+        self.cr(0, 3).approx_eq(self.cr(3, 0)) &&
 
-        self.elem(1, 0).approx_eq(self.elem(0, 1)) &&
-        self.elem(1, 2).approx_eq(self.elem(2, 1)) &&
-        self.elem(1, 3).approx_eq(self.elem(3, 1)) &&
+        self.cr(1, 0).approx_eq(self.cr(0, 1)) &&
+        self.cr(1, 2).approx_eq(self.cr(2, 1)) &&
+        self.cr(1, 3).approx_eq(self.cr(3, 1)) &&
 
-        self.elem(2, 0).approx_eq(self.elem(0, 2)) &&
-        self.elem(2, 1).approx_eq(self.elem(1, 2)) &&
-        self.elem(2, 3).approx_eq(self.elem(3, 2)) &&
+        self.cr(2, 0).approx_eq(self.cr(0, 2)) &&
+        self.cr(2, 1).approx_eq(self.cr(1, 2)) &&
+        self.cr(2, 3).approx_eq(self.cr(3, 2)) &&
 
-        self.elem(3, 0).approx_eq(self.elem(0, 3)) &&
-        self.elem(3, 1).approx_eq(self.elem(1, 3)) &&
-        self.elem(3, 2).approx_eq(self.elem(2, 3))
+        self.cr(3, 0).approx_eq(self.cr(0, 3)) &&
+        self.cr(3, 1).approx_eq(self.cr(1, 3)) &&
+        self.cr(3, 2).approx_eq(self.cr(2, 3))
     }
 
     #[inline]
@@ -1536,29 +1485,29 @@ mod mat4_tests {
     static F: float = 0.5;
 
     #[test]
-    fn test_swap_cols() {
+    fn test_swap_c() {
         let mut mut_a0 = A;
-        mut_a0.swap_cols(0, 2);
-        assert_eq!(mut_a0.col(0), A.col(2));
-        assert_eq!(mut_a0.col(2), A.col(0));
+        mut_a0.swap_c(0, 2);
+        assert_eq!(mut_a0.c(0), A.c(2));
+        assert_eq!(mut_a0.c(2), A.c(0));
 
         let mut mut_a1 = A;
-        mut_a1.swap_cols(1, 2);
-        assert_eq!(mut_a1.col(1), A.col(2));
-        assert_eq!(mut_a1.col(2), A.col(1));
+        mut_a1.swap_c(1, 2);
+        assert_eq!(mut_a1.c(1), A.c(2));
+        assert_eq!(mut_a1.c(2), A.c(1));
     }
 
     #[test]
-    fn test_swap_rows() {
+    fn test_swap_r() {
         let mut mut_a0 = A;
-        mut_a0.swap_rows(0, 2);
-        assert_eq!(mut_a0.row(0), A.row(2));
-        assert_eq!(mut_a0.row(2), A.row(0));
+        mut_a0.swap_r(0, 2);
+        assert_eq!(mut_a0.r(0), A.r(2));
+        assert_eq!(mut_a0.r(2), A.r(0));
 
         let mut mut_a1 = A;
-        mut_a1.swap_rows(1, 2);
-        assert_eq!(mut_a1.row(1), A.row(2));
-        assert_eq!(mut_a1.row(2), A.row(1));
+        mut_a1.swap_r(1, 2);
+        assert_eq!(mut_a1.r(1), A.r(2));
+        assert_eq!(mut_a1.r(2), A.r(1));
     }
 
     #[test]

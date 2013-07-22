@@ -76,12 +76,12 @@ impl<T:Clone + Float> Frustum<T> {
     /// Extracts frustum planes from a projection matrix
     pub fn from_matrix(mat: Mat4<T>) -> Frustum<T> {
         Frustum {
-            left:   Plane3::from_vec4(mat.row(3).add_v(&mat.row(0)).normalize()),
-            right:  Plane3::from_vec4(mat.row(3).sub_v(&mat.row(0)).normalize()),
-            bottom: Plane3::from_vec4(mat.row(3).add_v(&mat.row(1)).normalize()),
-            top:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(1)).normalize()),
-            near:   Plane3::from_vec4(mat.row(3).add_v(&mat.row(2)).normalize()),
-            far:    Plane3::from_vec4(mat.row(3).sub_v(&mat.row(2)).normalize()),
+            left:   Plane3::from_vec4(mat.r(3).add_v(&mat.r(0)).normalize()),
+            right:  Plane3::from_vec4(mat.r(3).sub_v(&mat.r(0)).normalize()),
+            bottom: Plane3::from_vec4(mat.r(3).add_v(&mat.r(1)).normalize()),
+            top:    Plane3::from_vec4(mat.r(3).sub_v(&mat.r(1)).normalize()),
+            near:   Plane3::from_vec4(mat.r(3).add_v(&mat.r(2)).normalize()),
+            far:    Plane3::from_vec4(mat.r(3).sub_v(&mat.r(2)).normalize()),
         }
     }
 }

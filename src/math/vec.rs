@@ -166,8 +166,8 @@ impl<T:Clone + Num> ToVec3<T> for Vec2<T> {
     /// Converts the vector to a three-dimensional homogeneous vector:
     /// `[x, y] -> [x, y, 0]`
     pub fn to_vec3(&self) -> Vec3<T> {
-        Vec3::new((*self).index(0).clone(),
-                  (*self).index(1).clone(),
+        Vec3::new((*self).i(0).clone(),
+                  (*self).i(1).clone(),
                   zero!(T))
     }
 }
@@ -204,8 +204,8 @@ impl<T:Num> Vec2<T> {
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(&self, other: &Vec2<T>) -> T {
-        (*self.index(0) * *other.index(1)) -
-        (*self.index(1) * *other.index(0))
+        (*self.i(0) * *other.i(1)) -
+        (*self.i(1) * *other.i(0))
     }
 }
 
@@ -215,159 +215,159 @@ impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(*self.index(0) + value,
-                  *self.index(1) + value)
+        Vec2::new(*self.i(0) + value,
+                  *self.i(1) + value)
     }
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(*self.index(0) - value,
-                  *self.index(1) - value)
+        Vec2::new(*self.i(0) - value,
+                  *self.i(1) - value)
     }
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(*self.index(0) * value,
-                  *self.index(1) * value)
+        Vec2::new(*self.i(0) * value,
+                  *self.i(1) * value)
     }
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(*self.index(0) / value,
-                  *self.index(1) / value)
+        Vec2::new(*self.i(0) / value,
+                  *self.i(1) / value)
     }
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(*self.index(0) % value,
-                  *self.index(1) % value)
+        Vec2::new(*self.i(0) % value,
+                  *self.i(1) % value)
     }
 
     /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(*self.index(0) + *other.index(0),
-                  *self.index(1) + *other.index(1))
+        Vec2::new(*self.i(0) + *other.i(0),
+                  *self.i(1) + *other.i(1))
     }
 
     /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(*self.index(0) - *other.index(0),
-                  *self.index(1) - *other.index(1))
+        Vec2::new(*self.i(0) - *other.i(0),
+                  *self.i(1) - *other.i(1))
     }
 
     /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(*self.index(0) * *other.index(0),
-                  *self.index(1) * *other.index(1))
+        Vec2::new(*self.i(0) * *other.i(0),
+                  *self.i(1) * *other.i(1))
     }
 
     /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(*self.index(0) / *other.index(0),
-                  *self.index(1) / *other.index(1))
+        Vec2::new(*self.i(0) / *other.i(0),
+                  *self.i(1) / *other.i(1))
     }
 
     /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(*self.index(0) % *other.index(0),
-                  *self.index(1) % *other.index(1))
+        Vec2::new(*self.i(0) % *other.i(0),
+                  *self.i(1) % *other.i(1))
     }
 
     /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index(0);
-        *self.index_mut(1) = -*self.index(1);
+        *self.mut_i(0) = -*self.i(0);
+        *self.mut_i(1) = -*self.i(1);
     }
 
     /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) + value;
-        *self.index_mut(1) = *self.index(1) + value;
+        *self.mut_i(0) = *self.i(0) + value;
+        *self.mut_i(1) = *self.i(1) + value;
     }
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) - value;
-        *self.index_mut(1) = *self.index(1) - value;
+        *self.mut_i(0) = *self.i(0) - value;
+        *self.mut_i(1) = *self.i(1) - value;
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) * value;
-        *self.index_mut(1) = *self.index(1) * value;
+        *self.mut_i(0) = *self.i(0) * value;
+        *self.mut_i(1) = *self.i(1) * value;
     }
 
     #[inline]
     pub fn div_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) / value;
-        *self.index_mut(1) = *self.index(1) / value;
+        *self.mut_i(0) = *self.i(0) / value;
+        *self.mut_i(1) = *self.i(1) / value;
     }
 
     #[inline]
     pub fn rem_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) % value;
-        *self.index_mut(1) = *self.index(1) % value;
+        *self.mut_i(0) = *self.i(0) % value;
+        *self.mut_i(1) = *self.i(1) % value;
     }
 
     #[inline]
     pub fn add_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) = *self.index(0) + *other.index(0);
-        *self.index_mut(1) = *self.index(1) + *other.index(1);
+        *self.mut_i(0) = *self.i(0) + *other.i(0);
+        *self.mut_i(1) = *self.i(1) + *other.i(1);
     }
 
     #[inline]
     pub fn sub_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) = *self.index(0) - *other.index(0);
-        *self.index_mut(1) = *self.index(1) - *other.index(1);
+        *self.mut_i(0) = *self.i(0) - *other.i(0);
+        *self.mut_i(1) = *self.i(1) - *other.i(1);
     }
 
     #[inline]
     pub fn mul_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) = *self.index(0) * *other.index(0);
-        *self.index_mut(1) = *self.index(1) * *other.index(1);
+        *self.mut_i(0) = *self.i(0) * *other.i(0);
+        *self.mut_i(1) = *self.i(1) * *other.i(1);
     }
 
     #[inline]
     pub fn div_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) = *self.index(0) / *other.index(0);
-        *self.index_mut(1) = *self.index(1) / *other.index(1);
+        *self.mut_i(0) = *self.i(0) / *other.i(0);
+        *self.mut_i(1) = *self.i(1) / *other.i(1);
     }
 
     #[inline]
     pub fn rem_self_v(&mut self, other: &Vec2<T>) {
-        *self.index_mut(0) = *self.index(0) % *other.index(0);
-        *self.index_mut(1) = *self.index(1) % *other.index(1);
+        *self.mut_i(0) = *self.i(0) % *other.i(0);
+        *self.mut_i(1) = *self.i(1) % *other.i(1);
     }
 
     /// Returns the dot product of the vector and `other`.
     #[inline]
     pub fn dot(&self, other: &Vec2<T>) -> T {
-        *self.index(0) * *other.index(0) +
-        *self.index(1) * *other.index(1)
+        *self.i(0) * *other.i(0) +
+        *self.i(1) * *other.i(1)
     }
 
     /// Returns the sum of the vector's components.
     #[inline]
     pub fn comp_add(&self) -> T {
-        *self.index(0) + *self.index(1)
+        *self.i(0) + *self.i(1)
     }
 
     /// Returns the product of the vector's components.
     #[inline]
     pub fn comp_mul(&self) -> T {
-        *self.index(0) * *self.index(1)
+        *self.i(0) * *self.i(1)
     }
 }
 
@@ -375,8 +375,8 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec2<T> {
-        Vec2::new(-*self.index(0),
-                  -*self.index(1))
+        Vec2::new(-*self.i(0),
+                  -*self.i(1))
     }
 }
 
@@ -445,124 +445,124 @@ impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
 impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) < value,
-                  *self.index(1) < value)
+        Vec2::new(*self.i(0) < value,
+                  *self.i(1) < value)
     }
 
     #[inline]
     pub fn le_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) <= value,
-                  *self.index(1) <= value)
+        Vec2::new(*self.i(0) <= value,
+                  *self.i(1) <= value)
     }
 
     #[inline]
     pub fn ge_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) >= value,
-                  *self.index(1) >= value)
+        Vec2::new(*self.i(0) >= value,
+                  *self.i(1) >= value)
     }
 
     #[inline]
     pub fn gt_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) > value,
-                  *self.index(1) > value)
+        Vec2::new(*self.i(0) > value,
+                  *self.i(1) > value)
     }
 
     #[inline]
     pub fn lt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) < *other.index(0),
-                  *self.index(1) < *other.index(1))
+        Vec2::new(*self.i(0) < *other.i(0),
+                  *self.i(1) < *other.i(1))
     }
 
     #[inline]
     pub fn le_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) <= *other.index(0),
-                  *self.index(1) <= *other.index(1))
+        Vec2::new(*self.i(0) <= *other.i(0),
+                  *self.i(1) <= *other.i(1))
     }
 
     #[inline]
     pub fn ge_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) >= *other.index(0),
-                  *self.index(1) >= *other.index(1))
+        Vec2::new(*self.i(0) >= *other.i(0),
+                  *self.i(1) >= *other.i(1))
     }
 
     #[inline]
     pub fn gt_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) > *other.index(0),
-                  *self.index(1) > *other.index(1))
+        Vec2::new(*self.i(0) > *other.i(0),
+                  *self.i(1) > *other.i(1))
     }
 
     #[inline]
     pub fn min_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(self.index(0).min(&value),
-                  self.index(1).min(&value))
+        Vec2::new(self.i(0).min(&value),
+                  self.i(1).min(&value))
     }
 
     #[inline]
     pub fn max_s(&self, value: T) -> Vec2<T> {
-        Vec2::new(self.index(0).max(&value),
-                  self.index(1).max(&value))
+        Vec2::new(self.i(0).max(&value),
+                  self.i(1).max(&value))
     }
 
     #[inline]
     pub fn clamp_s(&self, mn: T, mx: T) -> Vec2<T> {
-        Vec2::new(self.index(0).clamp(&mn, &mx),
-                  self.index(1).clamp(&mn, &mx))
+        Vec2::new(self.i(0).clamp(&mn, &mx),
+                  self.i(1).clamp(&mn, &mx))
     }
 
     #[inline]
     pub fn min_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self.index(0).min(other.index(0)),
-                  self.index(1).min(other.index(1)))
+        Vec2::new(self.i(0).min(other.i(0)),
+                  self.i(1).min(other.i(1)))
     }
 
     #[inline]
     pub fn max_v(&self, other: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self.index(0).max(other.index(0)),
-                  self.index(1).max(other.index(1)))
+        Vec2::new(self.i(0).max(other.i(0)),
+                  self.i(1).max(other.i(1)))
     }
 
     #[inline]
     pub fn clamp_v(&self, mn: &Vec2<T>, mx: &Vec2<T>) -> Vec2<T> {
-        Vec2::new(self.index(0).clamp(mn.index(0), mx.index(0)),
-                  self.index(1).clamp(mn.index(1), mx.index(1)))
+        Vec2::new(self.i(0).clamp(mn.i(0), mx.i(0)),
+                  self.i(1).clamp(mn.i(1), mx.i(1)))
     }
 
     /// Returns the smallest component of the vector.
     #[inline]
     pub fn comp_min(&self) -> T {
-        self.index(0).min(self.index(1))
+        self.i(0).min(self.i(1))
     }
 
     /// Returns the largest component of the vector.
     #[inline]
     pub fn comp_max(&self) -> T {
-        self.index(0).max(self.index(1))
+        self.i(0).max(self.i(1))
     }
 }
 
 impl<T:Eq> EqVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn eq_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) == value,
-                  *self.index(1) == value)
+        Vec2::new(*self.i(0) == value,
+                  *self.i(1) == value)
     }
 
     #[inline]
     pub fn ne_s(&self, value: T) -> Vec2<bool> {
-        Vec2::new(*self.index(0) != value,
-                  *self.index(1) != value)
+        Vec2::new(*self.i(0) != value,
+                  *self.i(1) != value)
     }
 
     #[inline]
     pub fn eq_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) == *other.index(0),
-                  *self.index(1) == *other.index(1))
+        Vec2::new(*self.i(0) == *other.i(0),
+                  *self.i(1) == *other.i(1))
     }
 
     #[inline]
     pub fn ne_v(&self, other: &Vec2<T>) -> Vec2<bool> {
-        Vec2::new(*self.index(0) != *other.index(0),
-                  *self.index(1) != *other.index(1))
+        Vec2::new(*self.i(0) != *other.i(0),
+                  *self.i(1) != *other.i(1))
     }
 }
 
@@ -571,21 +571,21 @@ impl BoolVec<[bool,..2]> for Vec2<bool> {
     /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
-        *self.index(0) || *self.index(1)
+        *self.i(0) || *self.i(1)
     }
 
     /// Returns `true` if _all_ of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
-        *self.index(0) && *self.index(1)
+        *self.i(0) && *self.i(1)
     }
 }
 
 impl<T:Not<T>> Not<Vec2<T>> for Vec2<T> {
     pub fn not(&self) -> Vec2<T> {
-        Vec2::new(!*self.index(0),
-                  !*self.index(1))
+        Vec2::new(!*self.i(0),
+                  !*self.i(1))
     }
 }
 
@@ -603,8 +603,8 @@ mod vec2_tests {
         let mut mut_a = A;
 
         mut_a.swap(0, 1);
-        assert_eq!(*mut_a.index(0), *A.index(1));
-        assert_eq!(*mut_a.index(1), *A.index(0));
+        assert_eq!(*mut_a.i(0), *A.i(1));
+        assert_eq!(*mut_a.i(1), *A.i(0));
     }
 
     #[test]
@@ -799,9 +799,9 @@ impl<T:Clone + Num> ToVec4<T> for Vec3<T> {
     /// Converts the vector to a four-dimensional homogeneous vector:
     /// `[x, y, z] -> [x, y, z, 0]`
     pub fn to_vec4(&self) -> Vec4<T> {
-        Vec4::new((*self).index(0).clone(),
-                  (*self).index(1).clone(),
-                  (*self).index(2).clone(),
+        Vec4::new((*self).i(0).clone(),
+                  (*self).i(1).clone(),
+                  (*self).i(2).clone(),
                   zero!(T))
     }
 }
@@ -844,9 +844,9 @@ impl<T:Num> Vec3<T> {
     /// Returns the cross product of the vector and `other`.
     #[inline]
     pub fn cross(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new((*self.index(1) * *other.index(2)) - (*self.index(2) * *other.index(1)),
-                  (*self.index(2) * *other.index(0)) - (*self.index(0) * *other.index(2)),
-                  (*self.index(0) * *other.index(1)) - (*self.index(1) * *other.index(0)))
+        Vec3::new((*self.i(1) * *other.i(2)) - (*self.i(2) * *other.i(1)),
+                  (*self.i(2) * *other.i(0)) - (*self.i(0) * *other.i(2)),
+                  (*self.i(0) * *other.i(1)) - (*self.i(1) * *other.i(0)))
     }
 
     /// Calculates the cross product of the vector and `other`, then stores the
@@ -863,181 +863,181 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) + value,
-                  *self.index(1) + value,
-                  *self.index(2) + value)
+        Vec3::new(*self.i(0) + value,
+                  *self.i(1) + value,
+                  *self.i(2) + value)
     }
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) - value,
-                  *self.index(1) - value,
-                  *self.index(2) - value)
+        Vec3::new(*self.i(0) - value,
+                  *self.i(1) - value,
+                  *self.i(2) - value)
     }
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) * value,
-                  *self.index(1) * value,
-                  *self.index(2) * value)
+        Vec3::new(*self.i(0) * value,
+                  *self.i(1) * value,
+                  *self.i(2) * value)
     }
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) / value,
-                  *self.index(1) / value,
-                  *self.index(2) / value)
+        Vec3::new(*self.i(0) / value,
+                  *self.i(1) / value,
+                  *self.i(2) / value)
     }
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(*self.index(0) % value,
-                  *self.index(1) % value,
-                  *self.index(2) % value)
+        Vec3::new(*self.i(0) % value,
+                  *self.i(1) % value,
+                  *self.i(2) % value)
     }
 
     /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(*self.index(0) + *other.index(0),
-                  *self.index(1) + *other.index(1),
-                  *self.index(2) + *other.index(2))
+        Vec3::new(*self.i(0) + *other.i(0),
+                  *self.i(1) + *other.i(1),
+                  *self.i(2) + *other.i(2))
     }
 
     /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(*self.index(0) - *other.index(0),
-                  *self.index(1) - *other.index(1),
-                  *self.index(2) - *other.index(2))
+        Vec3::new(*self.i(0) - *other.i(0),
+                  *self.i(1) - *other.i(1),
+                  *self.i(2) - *other.i(2))
     }
 
     /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(*self.index(0) * *other.index(0),
-                  *self.index(1) * *other.index(1),
-                  *self.index(2) * *other.index(2))
+        Vec3::new(*self.i(0) * *other.i(0),
+                  *self.i(1) * *other.i(1),
+                  *self.i(2) * *other.i(2))
     }
 
     /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(*self.index(0) / *other.index(0),
-                  *self.index(1) / *other.index(1),
-                  *self.index(2) / *other.index(2))
+        Vec3::new(*self.i(0) / *other.i(0),
+                  *self.i(1) / *other.i(1),
+                  *self.i(2) / *other.i(2))
     }
 
     /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(*self.index(0) % *other.index(0),
-                  *self.index(1) % *other.index(1),
-                  *self.index(2) % *other.index(2))
+        Vec3::new(*self.i(0) % *other.i(0),
+                  *self.i(1) % *other.i(1),
+                  *self.i(2) % *other.i(2))
     }
 
     /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index(0);
-        *self.index_mut(1) = -*self.index(1);
-        *self.index_mut(2) = -*self.index(2);
+        *self.mut_i(0) = -*self.i(0);
+        *self.mut_i(1) = -*self.i(1);
+        *self.mut_i(2) = -*self.i(2);
     }
 
     /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) + value;
-        *self.index_mut(1) = *self.index(1) + value;
-        *self.index_mut(2) = *self.index(2) + value;
+        *self.mut_i(0) = *self.i(0) + value;
+        *self.mut_i(1) = *self.i(1) + value;
+        *self.mut_i(2) = *self.i(2) + value;
     }
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) - value;
-        *self.index_mut(1) = *self.index(1) - value;
-        *self.index_mut(2) = *self.index(2) - value;
+        *self.mut_i(0) = *self.i(0) - value;
+        *self.mut_i(1) = *self.i(1) - value;
+        *self.mut_i(2) = *self.i(2) - value;
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) * value;
-        *self.index_mut(1) = *self.index(1) * value;
-        *self.index_mut(2) = *self.index(2) * value;
+        *self.mut_i(0) = *self.i(0) * value;
+        *self.mut_i(1) = *self.i(1) * value;
+        *self.mut_i(2) = *self.i(2) * value;
     }
 
     #[inline]
     pub fn div_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) / value;
-        *self.index_mut(1) = *self.index(1) / value;
-        *self.index_mut(2) = *self.index(2) / value;
+        *self.mut_i(0) = *self.i(0) / value;
+        *self.mut_i(1) = *self.i(1) / value;
+        *self.mut_i(2) = *self.i(2) / value;
     }
 
     #[inline]
     pub fn rem_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) % value;
-        *self.index_mut(1) = *self.index(1) % value;
-        *self.index_mut(2) = *self.index(2) % value;
+        *self.mut_i(0) = *self.i(0) % value;
+        *self.mut_i(1) = *self.i(1) % value;
+        *self.mut_i(2) = *self.i(2) % value;
     }
 
     #[inline]
     pub fn add_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) = *self.index(0) + *other.index(0);
-        *self.index_mut(1) = *self.index(1) + *other.index(1);
-        *self.index_mut(2) = *self.index(2) + *other.index(2);
+        *self.mut_i(0) = *self.i(0) + *other.i(0);
+        *self.mut_i(1) = *self.i(1) + *other.i(1);
+        *self.mut_i(2) = *self.i(2) + *other.i(2);
     }
 
     #[inline]
     pub fn sub_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) = *self.index(0) - *other.index(0);
-        *self.index_mut(1) = *self.index(1) - *other.index(1);
-        *self.index_mut(2) = *self.index(2) - *other.index(2);
+        *self.mut_i(0) = *self.i(0) - *other.i(0);
+        *self.mut_i(1) = *self.i(1) - *other.i(1);
+        *self.mut_i(2) = *self.i(2) - *other.i(2);
     }
 
     #[inline]
     pub fn mul_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) = *self.index(0) * *other.index(0);
-        *self.index_mut(1) = *self.index(1) * *other.index(1);
-        *self.index_mut(2) = *self.index(2) * *other.index(2);
+        *self.mut_i(0) = *self.i(0) * *other.i(0);
+        *self.mut_i(1) = *self.i(1) * *other.i(1);
+        *self.mut_i(2) = *self.i(2) * *other.i(2);
     }
 
     #[inline]
     pub fn div_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) = *self.index(0) / *other.index(0);
-        *self.index_mut(1) = *self.index(1) / *other.index(1);
-        *self.index_mut(2) = *self.index(2) / *other.index(2);
+        *self.mut_i(0) = *self.i(0) / *other.i(0);
+        *self.mut_i(1) = *self.i(1) / *other.i(1);
+        *self.mut_i(2) = *self.i(2) / *other.i(2);
     }
 
     #[inline]
     pub fn rem_self_v(&mut self, other: &Vec3<T>) {
-        *self.index_mut(0) = *self.index(0) % *other.index(0);
-        *self.index_mut(1) = *self.index(1) % *other.index(1);
-        *self.index_mut(2) = *self.index(2) % *other.index(2);
+        *self.mut_i(0) = *self.i(0) % *other.i(0);
+        *self.mut_i(1) = *self.i(1) % *other.i(1);
+        *self.mut_i(2) = *self.i(2) % *other.i(2);
     }
 
     /// Returns the dot product of the vector and `other`.
     #[inline]
     pub fn dot(&self, other: &Vec3<T>) -> T {
-        *self.index(0) * *other.index(0) +
-        *self.index(1) * *other.index(1) +
-        *self.index(2) * *other.index(2)
+        *self.i(0) * *other.i(0) +
+        *self.i(1) * *other.i(1) +
+        *self.i(2) * *other.i(2)
     }
 
     /// Returns the sum of the vector's components.
     #[inline]
     pub fn comp_add(&self) -> T {
-        *self.index(0) + *self.index(1) + *self.index(2)
+        *self.i(0) + *self.i(1) + *self.i(2)
     }
 
     /// Returns the product of the vector's components.
     #[inline]
     pub fn comp_mul(&self) -> T {
-        *self.index(0) * *self.index(1) * *self.index(2)
+        *self.i(0) * *self.i(1) * *self.i(2)
     }
 }
 
@@ -1045,9 +1045,9 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec3<T> {
-        Vec3::new(-*self.index(0),
-                  -*self.index(1),
-                  -*self.index(2))
+        Vec3::new(-*self.i(0),
+                  -*self.i(1),
+                  -*self.i(2))
     }
 }
 
@@ -1116,142 +1116,142 @@ impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
 impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) < value,
-                  *self.index(1) < value,
-                  *self.index(2) < value)
+        Vec3::new(*self.i(0) < value,
+                  *self.i(1) < value,
+                  *self.i(2) < value)
     }
 
     #[inline]
     pub fn le_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) <= value,
-                  *self.index(1) <= value,
-                  *self.index(2) <= value)
+        Vec3::new(*self.i(0) <= value,
+                  *self.i(1) <= value,
+                  *self.i(2) <= value)
     }
 
     #[inline]
     pub fn ge_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) >= value,
-                  *self.index(1) >= value,
-                  *self.index(2) >= value)
+        Vec3::new(*self.i(0) >= value,
+                  *self.i(1) >= value,
+                  *self.i(2) >= value)
     }
 
     #[inline]
     pub fn gt_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) > value,
-                  *self.index(1) > value,
-                  *self.index(2) > value)
+        Vec3::new(*self.i(0) > value,
+                  *self.i(1) > value,
+                  *self.i(2) > value)
     }
 
     #[inline]
     pub fn lt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) < *other.index(0),
-                  *self.index(1) < *other.index(1),
-                  *self.index(2) < *other.index(2))
+        Vec3::new(*self.i(0) < *other.i(0),
+                  *self.i(1) < *other.i(1),
+                  *self.i(2) < *other.i(2))
     }
 
     #[inline]
     pub fn le_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) <= *other.index(0),
-                  *self.index(1) <= *other.index(1),
-                  *self.index(2) <= *other.index(2))
+        Vec3::new(*self.i(0) <= *other.i(0),
+                  *self.i(1) <= *other.i(1),
+                  *self.i(2) <= *other.i(2))
     }
 
     #[inline]
     pub fn ge_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) >= *other.index(0),
-                  *self.index(1) >= *other.index(1),
-                  *self.index(2) >= *other.index(2))
+        Vec3::new(*self.i(0) >= *other.i(0),
+                  *self.i(1) >= *other.i(1),
+                  *self.i(2) >= *other.i(2))
     }
 
     #[inline]
     pub fn gt_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) > *other.index(0),
-                  *self.index(1) > *other.index(1),
-                  *self.index(2) > *other.index(2))
+        Vec3::new(*self.i(0) > *other.i(0),
+                  *self.i(1) > *other.i(1),
+                  *self.i(2) > *other.i(2))
     }
 
     #[inline]
     pub fn min_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(self.index(0).min(&value),
-                  self.index(1).min(&value),
-                  self.index(2).min(&value))
+        Vec3::new(self.i(0).min(&value),
+                  self.i(1).min(&value),
+                  self.i(2).min(&value))
     }
 
     #[inline]
     pub fn max_s(&self, value: T) -> Vec3<T> {
-        Vec3::new(self.index(0).max(&value),
-                  self.index(1).max(&value),
-                  self.index(2).max(&value))
+        Vec3::new(self.i(0).max(&value),
+                  self.i(1).max(&value),
+                  self.i(2).max(&value))
     }
 
     #[inline]
     pub fn clamp_s(&self, mn: T, mx: T) -> Vec3<T> {
-        Vec3::new(self.index(0).clamp(&mn, &mx),
-                  self.index(1).clamp(&mn, &mx),
-                  self.index(2).clamp(&mn, &mx))
+        Vec3::new(self.i(0).clamp(&mn, &mx),
+                  self.i(1).clamp(&mn, &mx),
+                  self.i(2).clamp(&mn, &mx))
     }
 
     #[inline]
     pub fn min_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self.index(0).min(other.index(0)),
-                  self.index(1).min(other.index(1)),
-                  self.index(2).min(other.index(2)))
+        Vec3::new(self.i(0).min(other.i(0)),
+                  self.i(1).min(other.i(1)),
+                  self.i(2).min(other.i(2)))
     }
 
     #[inline]
     pub fn max_v(&self, other: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self.index(0).max(other.index(0)),
-                  self.index(1).max(other.index(1)),
-                  self.index(2).max(other.index(2)))
+        Vec3::new(self.i(0).max(other.i(0)),
+                  self.i(1).max(other.i(1)),
+                  self.i(2).max(other.i(2)))
     }
 
     #[inline]
     pub fn clamp_v(&self, mn: &Vec3<T>, mx: &Vec3<T>) -> Vec3<T> {
-        Vec3::new(self.index(0).clamp(mn.index(0), mx.index(0)),
-                  self.index(1).clamp(mn.index(1), mx.index(1)),
-                  self.index(2).clamp(mn.index(2), mx.index(2)))
+        Vec3::new(self.i(0).clamp(mn.i(0), mx.i(0)),
+                  self.i(1).clamp(mn.i(1), mx.i(1)),
+                  self.i(2).clamp(mn.i(2), mx.i(2)))
     }
 
     /// Returns the smallest component of the vector.
     #[inline]
     pub fn comp_min(&self) -> T {
-        self.index(0).min(self.index(1)).min(self.index(2))
+        self.i(0).min(self.i(1)).min(self.i(2))
     }
 
     /// Returns the largest component of the vector.
     #[inline]
     pub fn comp_max(&self) -> T {
-        self.index(0).max(self.index(1)).max(self.index(2))
+        self.i(0).max(self.i(1)).max(self.i(2))
     }
 }
 
 impl<T:Eq> EqVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn eq_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) == value,
-                  *self.index(1) == value,
-                  *self.index(2) == value)
+        Vec3::new(*self.i(0) == value,
+                  *self.i(1) == value,
+                  *self.i(2) == value)
     }
 
     #[inline]
     pub fn ne_s(&self, value: T) -> Vec3<bool> {
-        Vec3::new(*self.index(0) != value,
-                  *self.index(1) != value,
-                  *self.index(2) != value)
+        Vec3::new(*self.i(0) != value,
+                  *self.i(1) != value,
+                  *self.i(2) != value)
     }
 
     #[inline]
     pub fn eq_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) == *other.index(0),
-                  *self.index(1) == *other.index(1),
-                  *self.index(2) == *other.index(2))
+        Vec3::new(*self.i(0) == *other.i(0),
+                  *self.i(1) == *other.i(1),
+                  *self.i(2) == *other.i(2))
     }
 
     #[inline]
     pub fn ne_v(&self, other: &Vec3<T>) -> Vec3<bool> {
-        Vec3::new(*self.index(0) != *other.index(0),
-                  *self.index(1) != *other.index(1),
-                  *self.index(2) != *other.index(2))
+        Vec3::new(*self.i(0) != *other.i(0),
+                  *self.i(1) != *other.i(1),
+                  *self.i(2) != *other.i(2))
     }
 }
 
@@ -1260,22 +1260,22 @@ impl BoolVec<[bool,..3]> for Vec3<bool> {
     /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
-        *self.index(0) || *self.index(1) || *self.index(2)
+        *self.i(0) || *self.i(1) || *self.i(2)
     }
 
     /// Returns `true` if _all_ of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
-        *self.index(0) && *self.index(1) && *self.index(2)
+        *self.i(0) && *self.i(1) && *self.i(2)
     }
 }
 
 impl<T:Not<T>> Not<Vec3<T>> for Vec3<T> {
     pub fn not(&self) -> Vec3<T> {
-        Vec3::new(!*self.index(0),
-                  !*self.index(1),
-                  !*self.index(2))
+        Vec3::new(!*self.i(0),
+                  !*self.i(1),
+                  !*self.i(2))
     }
 }
 
@@ -1293,13 +1293,13 @@ mod vec3_tests{
         let mut mut_a = A;
 
         mut_a.swap(0, 2);
-        assert_eq!(*mut_a.index(0), *A.index(2));
-        assert_eq!(*mut_a.index(2), *A.index(0));
+        assert_eq!(*mut_a.i(0), *A.i(2));
+        assert_eq!(*mut_a.i(2), *A.i(0));
         mut_a = A;
 
         mut_a.swap(1, 2);
-        assert_eq!(*mut_a.index(1), *A.index(2));
-        assert_eq!(*mut_a.index(2), *A.index(1));
+        assert_eq!(*mut_a.i(1), *A.i(2));
+        assert_eq!(*mut_a.i(2), *A.i(1));
     }
 
     #[test]
@@ -1547,203 +1547,203 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(*self.index(0) + value,
-                  *self.index(1) + value,
-                  *self.index(2) + value,
-                  *self.index(3) + value)
+        Vec4::new(*self.i(0) + value,
+                  *self.i(1) + value,
+                  *self.i(2) + value,
+                  *self.i(3) + value)
     }
 
     /// Returns a new vector with `value` subtracted from each component.
     #[inline]
     pub fn sub_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(*self.index(0) - value,
-                  *self.index(1) - value,
-                  *self.index(2) - value,
-                  *self.index(3) - value)
+        Vec4::new(*self.i(0) - value,
+                  *self.i(1) - value,
+                  *self.i(2) - value,
+                  *self.i(3) - value)
     }
 
     /// Returns the scalar multiplication of the vector with `value`.
     #[inline]
     pub fn mul_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(*self.index(0) * value,
-                  *self.index(1) * value,
-                  *self.index(2) * value,
-                  *self.index(3) * value)
+        Vec4::new(*self.i(0) * value,
+                  *self.i(1) * value,
+                  *self.i(2) * value,
+                  *self.i(3) * value)
     }
 
     /// Returns a new vector with each component divided by `value`.
     #[inline]
     pub fn div_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(*self.index(0) / value,
-                  *self.index(1) / value,
-                  *self.index(2) / value,
-                  *self.index(3) / value)
+        Vec4::new(*self.i(0) / value,
+                  *self.i(1) / value,
+                  *self.i(2) / value,
+                  *self.i(3) / value)
     }
 
     /// Returns the remainder of each component divided by `value`.
     #[inline]
     pub fn rem_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(*self.index(0) % value,
-                  *self.index(1) % value,
-                  *self.index(2) % value,
-                  *self.index(3) % value)
+        Vec4::new(*self.i(0) % value,
+                  *self.i(1) % value,
+                  *self.i(2) % value,
+                  *self.i(3) % value)
     }
 
     /// Returns the sum of the two vectors.
     #[inline]
     pub fn add_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(*self.index(0) + *other.index(0),
-                  *self.index(1) + *other.index(1),
-                  *self.index(2) + *other.index(2),
-                  *self.index(3) + *other.index(3))
+        Vec4::new(*self.i(0) + *other.i(0),
+                  *self.i(1) + *other.i(1),
+                  *self.i(2) + *other.i(2),
+                  *self.i(3) + *other.i(3))
     }
 
     /// Ruturns the result of subtrating `other` from the vector.
     #[inline]
     pub fn sub_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(*self.index(0) - *other.index(0),
-                  *self.index(1) - *other.index(1),
-                  *self.index(2) - *other.index(2),
-                  *self.index(3) - *other.index(3))
+        Vec4::new(*self.i(0) - *other.i(0),
+                  *self.i(1) - *other.i(1),
+                  *self.i(2) - *other.i(2),
+                  *self.i(3) - *other.i(3))
     }
 
     /// Returns the component-wise product of the vector and `other`.
     #[inline]
     pub fn mul_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(*self.index(0) * *other.index(0),
-                  *self.index(1) * *other.index(1),
-                  *self.index(2) * *other.index(2),
-                  *self.index(3) * *other.index(3))
+        Vec4::new(*self.i(0) * *other.i(0),
+                  *self.i(1) * *other.i(1),
+                  *self.i(2) * *other.i(2),
+                  *self.i(3) * *other.i(3))
     }
 
     /// Returns the component-wise quotient of the vectors.
     #[inline]
     pub fn div_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(*self.index(0) / *other.index(0),
-                  *self.index(1) / *other.index(1),
-                  *self.index(2) / *other.index(2),
-                  *self.index(3) / *other.index(3))
+        Vec4::new(*self.i(0) / *other.i(0),
+                  *self.i(1) / *other.i(1),
+                  *self.i(2) / *other.i(2),
+                  *self.i(3) / *other.i(3))
     }
 
     /// Returns the component-wise remainder of the vector divided by `other`.
     #[inline]
     pub fn rem_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(*self.index(0) % *other.index(0),
-                  *self.index(1) % *other.index(1),
-                  *self.index(2) % *other.index(2),
-                  *self.index(3) % *other.index(3))
+        Vec4::new(*self.i(0) % *other.i(0),
+                  *self.i(1) % *other.i(1),
+                  *self.i(2) % *other.i(2),
+                  *self.i(3) % *other.i(3))
     }
 
     /// Negates each component of the vector.
     #[inline]
     pub fn neg_self(&mut self) {
-        *self.index_mut(0) = -*self.index(0);
-        *self.index_mut(1) = -*self.index(1);
-        *self.index_mut(2) = -*self.index(2);
-        *self.index_mut(3) = -*self.index(3);
+        *self.mut_i(0) = -*self.i(0);
+        *self.mut_i(1) = -*self.i(1);
+        *self.mut_i(2) = -*self.i(2);
+        *self.mut_i(3) = -*self.i(3);
     }
 
     /// Adds `value` to each component of the vector.
     #[inline]
     pub fn add_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) + value;
-        *self.index_mut(1) = *self.index(1) + value;
-        *self.index_mut(2) = *self.index(2) + value;
-        *self.index_mut(3) = *self.index(3) + value;
+        *self.mut_i(0) = *self.i(0) + value;
+        *self.mut_i(1) = *self.i(1) + value;
+        *self.mut_i(2) = *self.i(2) + value;
+        *self.mut_i(3) = *self.i(3) + value;
     }
 
     /// Subtracts `value` from each component of the vector.
     #[inline]
     pub fn sub_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) - value;
-        *self.index_mut(1) = *self.index(1) - value;
-        *self.index_mut(2) = *self.index(2) - value;
-        *self.index_mut(3) = *self.index(3) - value;
+        *self.mut_i(0) = *self.i(0) - value;
+        *self.mut_i(1) = *self.i(1) - value;
+        *self.mut_i(2) = *self.i(2) - value;
+        *self.mut_i(3) = *self.i(3) - value;
     }
 
     #[inline]
     pub fn mul_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) * value;
-        *self.index_mut(1) = *self.index(1) * value;
-        *self.index_mut(2) = *self.index(2) * value;
-        *self.index_mut(3) = *self.index(3) * value;
+        *self.mut_i(0) = *self.i(0) * value;
+        *self.mut_i(1) = *self.i(1) * value;
+        *self.mut_i(2) = *self.i(2) * value;
+        *self.mut_i(3) = *self.i(3) * value;
     }
 
     #[inline]
     pub fn div_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) / value;
-        *self.index_mut(1) = *self.index(1) / value;
-        *self.index_mut(2) = *self.index(2) / value;
-        *self.index_mut(3) = *self.index(3) / value;
+        *self.mut_i(0) = *self.i(0) / value;
+        *self.mut_i(1) = *self.i(1) / value;
+        *self.mut_i(2) = *self.i(2) / value;
+        *self.mut_i(3) = *self.i(3) / value;
     }
 
     #[inline]
     pub fn rem_self_s(&mut self, value: T) {
-        *self.index_mut(0) = *self.index(0) % value;
-        *self.index_mut(1) = *self.index(1) % value;
-        *self.index_mut(2) = *self.index(2) % value;
-        *self.index_mut(3) = *self.index(3) % value;
+        *self.mut_i(0) = *self.i(0) % value;
+        *self.mut_i(1) = *self.i(1) % value;
+        *self.mut_i(2) = *self.i(2) % value;
+        *self.mut_i(3) = *self.i(3) % value;
     }
 
     #[inline]
     pub fn add_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) = *self.index(0) + *other.index(0);
-        *self.index_mut(1) = *self.index(1) + *other.index(1);
-        *self.index_mut(2) = *self.index(2) + *other.index(2);
-        *self.index_mut(3) = *self.index(3) + *other.index(3);
+        *self.mut_i(0) = *self.i(0) + *other.i(0);
+        *self.mut_i(1) = *self.i(1) + *other.i(1);
+        *self.mut_i(2) = *self.i(2) + *other.i(2);
+        *self.mut_i(3) = *self.i(3) + *other.i(3);
     }
 
     #[inline]
     pub fn sub_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) = *self.index(0) - *other.index(0);
-        *self.index_mut(1) = *self.index(1) - *other.index(1);
-        *self.index_mut(2) = *self.index(2) - *other.index(2);
-        *self.index_mut(3) = *self.index(3) - *other.index(3);
+        *self.mut_i(0) = *self.i(0) - *other.i(0);
+        *self.mut_i(1) = *self.i(1) - *other.i(1);
+        *self.mut_i(2) = *self.i(2) - *other.i(2);
+        *self.mut_i(3) = *self.i(3) - *other.i(3);
     }
 
     #[inline]
     pub fn mul_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) = *self.index(0) * *other.index(0);
-        *self.index_mut(1) = *self.index(1) * *other.index(1);
-        *self.index_mut(2) = *self.index(2) * *other.index(2);
-        *self.index_mut(3) = *self.index(3) * *other.index(3);
+        *self.mut_i(0) = *self.i(0) * *other.i(0);
+        *self.mut_i(1) = *self.i(1) * *other.i(1);
+        *self.mut_i(2) = *self.i(2) * *other.i(2);
+        *self.mut_i(3) = *self.i(3) * *other.i(3);
     }
 
     #[inline]
     pub fn div_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) = *self.index(0) / *other.index(0);
-        *self.index_mut(1) = *self.index(1) / *other.index(1);
-        *self.index_mut(2) = *self.index(2) / *other.index(2);
-        *self.index_mut(3) = *self.index(3) / *other.index(3);
+        *self.mut_i(0) = *self.i(0) / *other.i(0);
+        *self.mut_i(1) = *self.i(1) / *other.i(1);
+        *self.mut_i(2) = *self.i(2) / *other.i(2);
+        *self.mut_i(3) = *self.i(3) / *other.i(3);
     }
 
     #[inline]
     pub fn rem_self_v(&mut self, other: &Vec4<T>) {
-        *self.index_mut(0) = *self.index(0) % *other.index(0);
-        *self.index_mut(1) = *self.index(1) % *other.index(1);
-        *self.index_mut(2) = *self.index(2) % *other.index(2);
-        *self.index_mut(3) = *self.index(3) % *other.index(3);
+        *self.mut_i(0) = *self.i(0) % *other.i(0);
+        *self.mut_i(1) = *self.i(1) % *other.i(1);
+        *self.mut_i(2) = *self.i(2) % *other.i(2);
+        *self.mut_i(3) = *self.i(3) % *other.i(3);
     }
 
     /// Returns the dot product of the vector and `other`.
     #[inline]
     pub fn dot(&self, other: &Vec4<T>) -> T {
-        *self.index(0) * *other.index(0) +
-        *self.index(1) * *other.index(1) +
-        *self.index(2) * *other.index(2) +
-        *self.index(3) * *other.index(3)
+        *self.i(0) * *other.i(0) +
+        *self.i(1) * *other.i(1) +
+        *self.i(2) * *other.i(2) +
+        *self.i(3) * *other.i(3)
     }
 
     /// Returns the sum of the vector's components.
     #[inline]
     pub fn comp_add(&self) -> T {
-        *self.index(0) + *self.index(1) + *self.index(2) + *self.index(3)
+        *self.i(0) + *self.i(1) + *self.i(2) + *self.i(3)
     }
 
     /// Returns the product of the vector's components.
     #[inline]
     pub fn comp_mul(&self) -> T {
-        *self.index(0) * *self.index(1) * *self.index(2) * *self.index(3)
+        *self.i(0) * *self.i(1) * *self.i(2) * *self.i(3)
     }
 }
 
@@ -1751,10 +1751,10 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec4<T> {
-        Vec4::new(-*self.index(0),
-                  -*self.index(1),
-                  -*self.index(2),
-                  -*self.index(3))
+        Vec4::new(-*self.i(0),
+                  -*self.i(1),
+                  -*self.i(2),
+                  -*self.i(3))
     }
 }
 
@@ -1823,160 +1823,160 @@ impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
 impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) < value,
-                  *self.index(1) < value,
-                  *self.index(2) < value,
-                  *self.index(3) < value)
+        Vec4::new(*self.i(0) < value,
+                  *self.i(1) < value,
+                  *self.i(2) < value,
+                  *self.i(3) < value)
     }
 
     #[inline]
     pub fn le_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) <= value,
-                  *self.index(1) <= value,
-                  *self.index(2) <= value,
-                  *self.index(3) <= value)
+        Vec4::new(*self.i(0) <= value,
+                  *self.i(1) <= value,
+                  *self.i(2) <= value,
+                  *self.i(3) <= value)
     }
 
     #[inline]
     pub fn ge_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) >= value,
-                  *self.index(1) >= value,
-                  *self.index(2) >= value,
-                  *self.index(3) >= value)
+        Vec4::new(*self.i(0) >= value,
+                  *self.i(1) >= value,
+                  *self.i(2) >= value,
+                  *self.i(3) >= value)
     }
 
     #[inline]
     pub fn gt_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) > value,
-                  *self.index(1) > value,
-                  *self.index(2) > value,
-                  *self.index(3) > value)
+        Vec4::new(*self.i(0) > value,
+                  *self.i(1) > value,
+                  *self.i(2) > value,
+                  *self.i(3) > value)
     }
 
     #[inline]
     pub fn lt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) < *other.index(0),
-                  *self.index(1) < *other.index(1),
-                  *self.index(2) < *other.index(2),
-                  *self.index(3) < *other.index(3))
+        Vec4::new(*self.i(0) < *other.i(0),
+                  *self.i(1) < *other.i(1),
+                  *self.i(2) < *other.i(2),
+                  *self.i(3) < *other.i(3))
     }
 
     #[inline]
     pub fn le_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) <= *other.index(0),
-                  *self.index(1) <= *other.index(1),
-                  *self.index(2) <= *other.index(2),
-                  *self.index(3) <= *other.index(3))
+        Vec4::new(*self.i(0) <= *other.i(0),
+                  *self.i(1) <= *other.i(1),
+                  *self.i(2) <= *other.i(2),
+                  *self.i(3) <= *other.i(3))
     }
 
     #[inline]
     pub fn ge_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) >= *other.index(0),
-                  *self.index(1) >= *other.index(1),
-                  *self.index(2) >= *other.index(2),
-                  *self.index(3) >= *other.index(3))
+        Vec4::new(*self.i(0) >= *other.i(0),
+                  *self.i(1) >= *other.i(1),
+                  *self.i(2) >= *other.i(2),
+                  *self.i(3) >= *other.i(3))
     }
 
     #[inline]
     pub fn gt_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) > *other.index(0),
-                  *self.index(1) > *other.index(1),
-                  *self.index(2) > *other.index(2),
-                  *self.index(3) > *other.index(3))
+        Vec4::new(*self.i(0) > *other.i(0),
+                  *self.i(1) > *other.i(1),
+                  *self.i(2) > *other.i(2),
+                  *self.i(3) > *other.i(3))
     }
 
     #[inline]
     pub fn min_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(self.index(0).min(&value),
-                  self.index(1).min(&value),
-                  self.index(2).min(&value),
-                  self.index(3).min(&value))
+        Vec4::new(self.i(0).min(&value),
+                  self.i(1).min(&value),
+                  self.i(2).min(&value),
+                  self.i(3).min(&value))
     }
 
     #[inline]
     pub fn max_s(&self, value: T) -> Vec4<T> {
-        Vec4::new(self.index(0).max(&value),
-                  self.index(1).max(&value),
-                  self.index(2).max(&value),
-                  self.index(3).max(&value))
+        Vec4::new(self.i(0).max(&value),
+                  self.i(1).max(&value),
+                  self.i(2).max(&value),
+                  self.i(3).max(&value))
     }
 
     #[inline]
     pub fn clamp_s(&self, mn: T, mx: T) -> Vec4<T> {
-        Vec4::new(self.index(0).clamp(&mn, &mx),
-                  self.index(1).clamp(&mn, &mx),
-                  self.index(2).clamp(&mn, &mx),
-                  self.index(3).clamp(&mn, &mx))
+        Vec4::new(self.i(0).clamp(&mn, &mx),
+                  self.i(1).clamp(&mn, &mx),
+                  self.i(2).clamp(&mn, &mx),
+                  self.i(3).clamp(&mn, &mx))
     }
 
     #[inline]
     pub fn min_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.index(0).min(other.index(0)),
-                  self.index(1).min(other.index(1)),
-                  self.index(2).min(other.index(2)),
-                  self.index(3).min(other.index(3)))
+        Vec4::new(self.i(0).min(other.i(0)),
+                  self.i(1).min(other.i(1)),
+                  self.i(2).min(other.i(2)),
+                  self.i(3).min(other.i(3)))
     }
 
     #[inline]
     pub fn max_v(&self, other: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.index(0).max(other.index(0)),
-                  self.index(1).max(other.index(1)),
-                  self.index(2).max(other.index(2)),
-                  self.index(3).max(other.index(3)))
+        Vec4::new(self.i(0).max(other.i(0)),
+                  self.i(1).max(other.i(1)),
+                  self.i(2).max(other.i(2)),
+                  self.i(3).max(other.i(3)))
     }
 
     #[inline]
     pub fn clamp_v(&self, mn: &Vec4<T>, mx: &Vec4<T>) -> Vec4<T> {
-        Vec4::new(self.index(0).clamp(mn.index(0), mx.index(0)),
-                  self.index(1).clamp(mn.index(1), mx.index(1)),
-                  self.index(2).clamp(mn.index(2), mx.index(2)),
-                  self.index(3).clamp(mn.index(3), mx.index(3)))
+        Vec4::new(self.i(0).clamp(mn.i(0), mx.i(0)),
+                  self.i(1).clamp(mn.i(1), mx.i(1)),
+                  self.i(2).clamp(mn.i(2), mx.i(2)),
+                  self.i(3).clamp(mn.i(3), mx.i(3)))
     }
 
     /// Returns the smallest component of the vector.
     #[inline]
     pub fn comp_min(&self) -> T {
-        self.index(0).min(self.index(1)).min(self.index(2)).min(self.index(3))
+        self.i(0).min(self.i(1)).min(self.i(2)).min(self.i(3))
     }
 
     /// Returns the largest component of the vector.
     #[inline]
     pub fn comp_max(&self) -> T {
-        self.index(0).max(self.index(1)).max(self.index(2)).max(self.index(3))
+        self.i(0).max(self.i(1)).max(self.i(2)).max(self.i(3))
     }
 }
 
 impl<T:Eq> EqVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn eq_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) == value,
-                  *self.index(1) == value,
-                  *self.index(2) == value,
-                  *self.index(3) == value)
+        Vec4::new(*self.i(0) == value,
+                  *self.i(1) == value,
+                  *self.i(2) == value,
+                  *self.i(3) == value)
     }
 
     #[inline]
     pub fn ne_s(&self, value: T) -> Vec4<bool> {
-        Vec4::new(*self.index(0) != value,
-                  *self.index(1) != value,
-                  *self.index(2) != value,
-                  *self.index(3) != value)
+        Vec4::new(*self.i(0) != value,
+                  *self.i(1) != value,
+                  *self.i(2) != value,
+                  *self.i(3) != value)
     }
 
     #[inline]
     pub fn eq_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) == *other.index(0),
-                  *self.index(1) == *other.index(1),
-                  *self.index(2) == *other.index(2),
-                  *self.index(3) == *other.index(3))
+        Vec4::new(*self.i(0) == *other.i(0),
+                  *self.i(1) == *other.i(1),
+                  *self.i(2) == *other.i(2),
+                  *self.i(3) == *other.i(3))
     }
 
     #[inline]
     pub fn ne_v(&self, other: &Vec4<T>) -> Vec4<bool> {
-        Vec4::new(*self.index(0) != *other.index(0),
-                  *self.index(1) != *other.index(1),
-                  *self.index(2) != *other.index(2),
-                  *self.index(3) != *other.index(3))
+        Vec4::new(*self.i(0) != *other.i(0),
+                  *self.i(1) != *other.i(1),
+                  *self.i(2) != *other.i(2),
+                  *self.i(3) != *other.i(3))
     }
 }
 
@@ -1985,23 +1985,23 @@ impl BoolVec<[bool,..4]> for Vec4<bool> {
     /// `true`, otherwise `false`.
     #[inline]
     pub fn any(&self) -> bool {
-        *self.index(0) || *self.index(1) || *self.index(2) || *self.index(3)
+        *self.i(0) || *self.i(1) || *self.i(2) || *self.i(3)
     }
 
     /// Returns `true` if _all_ of the components of the vector are equal to
     /// `true`, otherwise `false`.
     #[inline]
     pub fn all(&self) -> bool {
-        *self.index(0) && *self.index(1) && *self.index(2) && *self.index(3)
+        *self.i(0) && *self.i(1) && *self.i(2) && *self.i(3)
     }
 }
 
 impl<T:Not<T>> Not<Vec4<T>> for Vec4<T> {
     pub fn not(&self) -> Vec4<T> {
-        Vec4::new(!*self.index(0),
-                  !*self.index(1),
-                  !*self.index(2),
-                  !*self.index(3))
+        Vec4::new(!*self.i(0),
+                  !*self.i(1),
+                  !*self.i(2),
+                  !*self.i(3))
     }
 }
 
@@ -2019,13 +2019,13 @@ mod vec4_tests {
         let mut mut_a = A;
 
         mut_a.swap(0, 3);
-        assert_eq!(*mut_a.index(0), *A.index(3));
-        assert_eq!(*mut_a.index(3), *A.index(0));
+        assert_eq!(*mut_a.i(0), *A.i(3));
+        assert_eq!(*mut_a.i(3), *A.i(0));
         mut_a = A;
 
         mut_a.swap(1, 2);
-        assert_eq!(*mut_a.index(1), *A.index(2));
-        assert_eq!(*mut_a.index(2), *A.index(1));
+        assert_eq!(*mut_a.i(1), *A.i(2));
+        assert_eq!(*mut_a.i(2), *A.i(1));
     }
 
     #[test]

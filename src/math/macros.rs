@@ -19,12 +19,12 @@ macro_rules! impl_dimensioned(
     ($Self:ident, $T:ty, $n:expr) => (
         impl<T> Dimensioned<$T,[$T,..$n]> for $Self<T> {
             #[inline]
-            pub fn index<'a>(&'a self, i: uint) -> &'a $T {
+            pub fn i<'a>(&'a self, i: uint) -> &'a $T {
                 &'a self.as_slice()[i]
             }
 
             #[inline]
-            pub fn index_mut<'a>(&'a mut self, i: uint) -> &'a mut $T {
+            pub fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut $T {
                 &'a mut self.as_mut_slice()[i]
             }
 
@@ -99,9 +99,9 @@ macro_rules! impl_swap_components(
         impl<T:Clone> SwapComponents for $Self<T> {
             #[inline]
             pub fn swap(&mut self, a: uint, b: uint) {
-                let tmp = self.index(a).clone();
-                *self.index_mut(a) = self.index(b).clone();
-                *self.index_mut(b) = tmp;
+                let tmp = self.i(a).clone();
+                *self.mut_i(a) = self.i(b).clone();
+                *self.mut_i(b) = tmp;
             }
         }
     )

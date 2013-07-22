@@ -114,19 +114,19 @@ impl<T:Clone + Float> Quat<T> {
     /// The sum of this quaternion and `other`
     #[inline]
     pub fn add_q(&self, other: &Quat<T>) -> Quat<T> {
-        Quat::new(*self.index(0) + *other.index(0),
-                  *self.index(1) + *other.index(1),
-                  *self.index(2) + *other.index(2),
-                  *self.index(3) + *other.index(3))
+        Quat::new(*self.i(0) + *other.i(0),
+                  *self.i(1) + *other.i(1),
+                  *self.i(2) + *other.i(2),
+                  *self.i(3) + *other.i(3))
     }
 
     /// The sum of this quaternion and `other`
     #[inline]
     pub fn sub_q(&self, other: &Quat<T>) -> Quat<T> {
-        Quat::new(*self.index(0) - *other.index(0),
-                  *self.index(1) - *other.index(1),
-                  *self.index(2) - *other.index(2),
-                  *self.index(3) - *other.index(3))
+        Quat::new(*self.i(0) - *other.i(0),
+                  *self.i(1) - *other.i(1),
+                  *self.i(2) - *other.i(2),
+                  *self.i(3) - *other.i(3))
     }
 
     /// The the result of multipliplying the quaternion by `other`
