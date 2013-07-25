@@ -69,6 +69,8 @@ pub struct RotationMat2<T> {
     priv mat: Mat2<T>
 }
 
+impl_approx!(RotationMat2 { mat })
+
 impl<T> RotationMat2<T> {
     #[inline]
     pub fn as_mat2<'a>(&'a self) -> & 'a Mat2<T> {
@@ -118,24 +120,6 @@ impl<T:Clone + Num> Neg<RotationMat2<T>> for RotationMat2<T> {
     }
 }
 
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat2<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &RotationMat2<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &RotationMat2<T>, epsilon: &T) -> bool {
-        self.mat.approx_eq_eps(&other.mat, epsilon)
-    }
-}
-
-
 impl<T:Clone + Float> Rotation3<T> for Quat<T> {
     pub fn rotate_point3(&self, point: Point3<T>) -> Point3<T> {
         Point3::from_vec3(self.mul_v(point.as_vec3()))
@@ -165,6 +149,8 @@ impl<T:Clone + Float> Rotation3<T> for Quat<T> {
 pub struct RotationMat3<T> {
     priv mat: Mat3<T>
 }
+
+impl_approx!(RotationMat3 { mat })
 
 impl<T> RotationMat3<T> {
     #[inline]
@@ -226,23 +212,6 @@ impl<T:Clone + Num> Neg<RotationMat3<T>> for RotationMat3<T> {
 impl<T:Float> RotationMat3<T> {
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> RotationMat3<T> {
         RotationMat3 { mat: Mat3::look_at(dir, up) }
-    }
-}
-
-impl<T:Clone + Eq + ApproxEq<T>> ApproxEq<T> for RotationMat3<T> {
-    #[inline]
-    pub fn approx_epsilon() -> T {
-        ApproxEq::approx_epsilon::<T,T>()
-    }
-
-    #[inline]
-    pub fn approx_eq(&self, other: &RotationMat3<T>) -> bool {
-        self.approx_eq_eps(other, &ApproxEq::approx_epsilon::<T,T>())
-    }
-
-    #[inline]
-    pub fn approx_eq_eps(&self, other: &RotationMat3<T>, epsilon: &T) -> bool {
-        self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
 
