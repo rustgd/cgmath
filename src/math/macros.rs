@@ -86,13 +86,13 @@ macro_rules! impl_to_vec_helper(
 )
 
 macro_rules! impl_as_vec(
-    ($Self:ident, 2) => (impl_as_vec_helper!(AsVec2, $Self, Vec2, as_vec2, as_mut_vec2, map_as_vec2));
-    ($Self:ident, 3) => (impl_as_vec_helper!(AsVec3, $Self, Vec3, as_vec3, as_mut_vec3, map_as_vec3));
-    ($Self:ident, 4) => (impl_as_vec_helper!(AsVec4, $Self, Vec4, as_vec4, as_mut_vec4, map_as_vec4));
+    ($Self:ident, 2) => (impl_as_vec_helper!(AsVec2, $Self, Vec2, as_vec2, as_mut_vec2, with_vec2));
+    ($Self:ident, 3) => (impl_as_vec_helper!(AsVec3, $Self, Vec3, as_vec3, as_mut_vec3, with_vec3));
+    ($Self:ident, 4) => (impl_as_vec_helper!(AsVec4, $Self, Vec4, as_vec4, as_mut_vec4, with_vec4));
 )
 
 macro_rules! impl_as_vec_helper(
-    ($AsVec:ident, $Self:ident, $Vec:ident, $as_vec:ident, $as_mut_vec:ident, $map_as_vec:ident) => (
+    ($AsVec:ident, $Self:ident, $Vec:ident, $as_vec:ident, $as_mut_vec:ident, $with_vec:ident) => (
         impl<T> $AsVec<T> for $Self<T> {
             /// Safely transmute to a vec.
             #[inline]
@@ -111,7 +111,7 @@ macro_rules! impl_as_vec_helper(
             /// Operate on `self` transmuted to a vec, then return the result as
             /// transmuted back to the `Self` type.
             #[inline]
-            pub fn $map_as_vec<'a>(&'a self, f: &fn(&'a $Vec<T>) -> $Vec<T>) -> $Self<T> {
+            pub fn $with_vec<'a>(&'a self, f: &fn(&'a $Vec<T>) -> $Vec<T>) -> $Self<T> {
                 use std::cast::transmute;
                 unsafe { transmute(f(self.$as_vec())) }
             }
