@@ -21,7 +21,6 @@ extern mod lmath;
 
 use std::uint::range;
 use lmath::noise::perlin::Perlin;
-use lmath::math::Point2;
 
 static WIDTH:  uint = 100;
 static HEIGHT: uint = 100;
@@ -34,10 +33,9 @@ fn main() {
 
     for range(0, HEIGHT) |y| {
         for range(0, WIDTH) |x| {
-            pixels[y][x] = perlin.noise2(
-                Point2::new(x as f32 * 0.1f32,
-                            y as f32 * 0.1f32)
-            ) * 0.5f32 + 0.5f32;
+            pixels[y][x] = perlin.noise2([
+                x as f32 * 0.1f32, y as f32 * 0.1f32
+            ]) * 0.5f32 + 0.5f32;
         };
     };
 

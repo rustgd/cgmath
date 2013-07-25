@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use math::Vec4;
-use math::{Point2, Point3};
+use math::Dimensioned;
 
 pub struct Simplex<T>;
 
@@ -23,15 +22,15 @@ impl<T> Simplex<T> {
         fail!("Not yet implemented!")
     }
 
-    pub fn noise2(&self, _pos: Point2<T>) -> T {
+    pub fn noise2<V:Dimensioned<T,[T,..2]>>(&self, _v: V) -> T {
         fail!("Not yet implemented!")
     }
 
-    pub fn noise3(&self, _pos: Point3<T>) -> T {
+    pub fn noise3<V:Dimensioned<T,[T,..3]>>(&self, _v: V) -> T {
         fail!("Not yet implemented!")
     }
 
-    pub fn noise4(&self, _vec: Vec4<T>) -> T {
+    pub fn noise4<V:Dimensioned<T,[T,..4]>>(&self, _v: V) -> T {
         fail!("Not yet implemented!")
     }
 }

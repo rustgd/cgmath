@@ -18,7 +18,7 @@
 
 use std::num::cast;
 
-use math::{Point2, Point3};
+use math::Dimensioned;
 
 pub struct Perlin<T> {
     // permutation table
@@ -31,24 +31,24 @@ impl<T:Clone + Float> Perlin<T> {
         Perlin { ptable: P }
     }
 
-    pub fn noise1(&self, t: T) -> T {
-        self.noise3(Point3::new(t, zero!(T), zero!(T)))
+    pub fn noise1<V:Dimensioned<T,[T,..1]>>(&self, v: V) -> T {
+        self.noise3([v.i(0).clone(), zero!(T), zero!(T)])
     }
 
-    pub fn noise2(&self, pos: Point2<T>) -> T {
-        self.noise3(Point3::new(pos.x.clone(), pos.y.clone(), zero!(T)))
+    pub fn noise2<V:Dimensioned<T,[T,..2]>>(&self, v: V) -> T {
+        self.noise3([v.i(0).clone(), v.i(1).clone(), zero!(T)])
     }
 
-    pub fn noise3(&self, pos: Point3<T>) -> T {
+    pub fn noise3<V:Dimensioned<T,[T,..3]>>(&self, v: V) -> T {
         // Find the unit cube that contains the point
-        let X = pos.x.floor().to_uint() & 255;
-        let Y = pos.y.floor().to_uint() & 255;
-        let Z = pos.z.floor().to_uint() & 255;
+        let X = v.i(0).floor().to_uint() & 255;
+        let Y = v.i(1).floor().to_uint() & 255;
+        let Z = v.i(2).floor().to_uint() & 255;
 
         // Find the relative X, Y, Z of point in the cube
-        let x = pos.x - pos.x.floor();
-        let y = pos.y - pos.y.floor();
-        let z = pos.z - pos.z.floor();
+        let x = *v.i(0) - v.i(0).floor();
+        let y = *v.i(1) - v.i(1).floor();
+        let z = *v.i(2) - v.i(2).floor();
 
         // Compute the fade curves for X, Y, Z
         let u = fade(x.clone());
