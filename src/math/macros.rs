@@ -40,6 +40,31 @@ macro_rules! impl_dimensioned(
                 unsafe { transmute(self) }
             }
         }
+    );
+    ($Self:ident) => (
+        impl Dimensioned<$Self,[$Self,..1]> for $Self {
+            #[inline]
+            pub fn i<'a>(&'a self, i: uint) -> &'a $Self {
+                &'a self.as_slice()[i]
+            }
+
+            #[inline]
+            pub fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut $Self {
+                &'a mut self.as_mut_slice()[i]
+            }
+
+            #[inline]
+            pub fn as_slice<'a>(&'a self) -> &'a [$Self,..1] {
+                use std::cast::transmute;
+                unsafe { transmute(self) }
+            }
+
+            #[inline]
+            pub fn as_mut_slice<'a>(&'a mut self) -> &'a mut [$Self,..1] {
+                use std::cast::transmute;
+                unsafe { transmute(self) }
+            }
+        }
     )
 )
 

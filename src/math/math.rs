@@ -50,3 +50,75 @@ pub trait Dimensioned<T,Slice> {
 pub trait SwapComponents {
     pub fn swap(&mut self, a: uint, b: uint);
 }
+
+// `Dimensioned` impls for primitive numeric types
+
+impl_dimensioned!(u8)
+impl_dimensioned!(u16)
+impl_dimensioned!(u32)
+impl_dimensioned!(u64)
+impl_dimensioned!(uint)
+impl_dimensioned!(i8)
+impl_dimensioned!(i16)
+impl_dimensioned!(i32)
+impl_dimensioned!(i64)
+impl_dimensioned!(int)
+impl_dimensioned!(f32)
+impl_dimensioned!(f64)
+impl_dimensioned!(float)
+
+// Helper type aliases for implementing `Dimendioned` and `SwapComponents`
+// for tuples.
+
+pub type Tuple1<T> = (T,);
+pub type Tuple2<T> = (T,T);
+pub type Tuple3<T> = (T,T,T);
+pub type Tuple4<T> = (T,T,T,T);
+pub type Tuple5<T> = (T,T,T,T,T);
+pub type Tuple6<T> = (T,T,T,T,T,T);
+
+// `Dimensioned` impls for tuples
+
+impl_dimensioned!(Tuple1, T, 1)
+impl_dimensioned!(Tuple2, T, 2)
+impl_dimensioned!(Tuple3, T, 3)
+impl_dimensioned!(Tuple4, T, 4)
+impl_dimensioned!(Tuple5, T, 5)
+impl_dimensioned!(Tuple6, T, 6)
+
+// `SwapComponents` impls for tuples
+
+impl_swap_components!(Tuple1)
+impl_swap_components!(Tuple2)
+impl_swap_components!(Tuple3)
+impl_swap_components!(Tuple4)
+impl_swap_components!(Tuple5)
+impl_swap_components!(Tuple6)
+
+// Helper type aliases for implementing `Dimendioned` and `SwapComponents`
+// for fixed length vectors.
+
+pub type Fixed1<T> = [T, ..1];
+pub type Fixed2<T> = [T, ..2];
+pub type Fixed3<T> = [T, ..3];
+pub type Fixed4<T> = [T, ..4];
+pub type Fixed5<T> = [T, ..5];
+pub type Fixed6<T> = [T, ..6];
+
+// `Dimensioned` impls for fixed length vectors
+
+impl_dimensioned!(Fixed1, T, 1)
+impl_dimensioned!(Fixed2, T, 2)
+impl_dimensioned!(Fixed3, T, 3)
+impl_dimensioned!(Fixed4, T, 4)
+impl_dimensioned!(Fixed5, T, 5)
+impl_dimensioned!(Fixed6, T, 6)
+
+// `SwapComponents` impls for fixed length vectors
+
+impl_swap_components!(Fixed1)
+impl_swap_components!(Fixed2)
+impl_swap_components!(Fixed3)
+impl_swap_components!(Fixed4)
+impl_swap_components!(Fixed5)
+impl_swap_components!(Fixed6)
