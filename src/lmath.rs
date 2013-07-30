@@ -36,14 +36,6 @@ pub mod math;
 #[path = "bounds/bounds.rs"]
 pub mod bounds;
 
-#[cfg(color)]
-#[path = "color/color.rs"]
-pub mod color;
-
-#[cfg(noise)]
-#[path = "noise/noise.rs"]
-pub mod noise;
-
 #[cfg(transform)]
 #[path = "transform/transform.rs"]
 pub mod transform;
