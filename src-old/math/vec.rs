@@ -22,7 +22,7 @@ pub trait Vec<T,Slice>: Dimensioned<T,Slice>
                       + SwapComponents {}
 
 /// Vectors with numeric components
-pub trait NumVec<T,Slice>: Neg<T> {
+pub trait NumVec<T,Slice>: Neg<Self> {
     pub fn add_s(&self, value: T) -> Self;
     pub fn sub_s(&self, value: T) -> Self;
     pub fn mul_s(&self, value: T) -> Self;
@@ -209,9 +209,9 @@ impl<T:Num> Vec2<T> {
     }
 }
 
-impl<T> Vec<T,[T,..2]> for Vec2<T> {}
+impl<T: Clone> Vec<T,[T,..2]> for Vec2<T> {}
 
-impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
+impl<T: Clone + Num> NumVec<T,[T,..2]> for Vec2<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec2<T> {
@@ -371,7 +371,7 @@ impl<T:Num> NumVec<T,[T,..2]> for Vec2<T> {
     }
 }
 
-impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
+impl<T: Clone + Num> Neg<Vec2<T>> for Vec2<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec2<T> {
@@ -380,7 +380,7 @@ impl<T:Num> Neg<Vec2<T>> for Vec2<T> {
     }
 }
 
-impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
+impl<T: Clone + Float> FloatVec<T,[T,..2]> for Vec2<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -442,7 +442,7 @@ impl<T:Float> FloatVec<T,[T,..2]> for Vec2<T> {
     }
 }
 
-impl<T:Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
+impl<T: Clone + Orderable> OrdVec<T,[T,..2],Vec2<bool>> for Vec2<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec2<bool> {
         Vec2::new(*self.i(0) < value,
@@ -857,9 +857,9 @@ impl<T:Num> Vec3<T> {
     }
 }
 
-impl<T> Vec<T,[T,..3]> for Vec3<T> {}
+impl<T: Clone> Vec<T,[T,..3]> for Vec3<T> {}
 
-impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
+impl<T: Clone + Num> NumVec<T,[T,..3]> for Vec3<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec3<T> {
@@ -1041,7 +1041,7 @@ impl<T:Num> NumVec<T,[T,..3]> for Vec3<T> {
     }
 }
 
-impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
+impl<T: Clone + Num> Neg<Vec3<T>> for Vec3<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec3<T> {
@@ -1051,7 +1051,7 @@ impl<T:Num> Neg<Vec3<T>> for Vec3<T> {
     }
 }
 
-impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
+impl<T: Clone + Float> FloatVec<T,[T,..3]> for Vec3<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -1113,7 +1113,7 @@ impl<T:Float> FloatVec<T,[T,..3]> for Vec3<T> {
     }
 }
 
-impl<T:Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
+impl<T: Clone + Orderable> OrdVec<T,[T,..3],Vec3<bool>> for Vec3<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec3<bool> {
         Vec3::new(*self.i(0) < value,
@@ -1541,9 +1541,9 @@ impl<T:Num> Vec4<T> {
     }
 }
 
-impl<T> Vec<T,[T,..4]> for Vec4<T> {}
+impl<T: Clone> Vec<T,[T,..4]> for Vec4<T> {}
 
-impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
+impl<T: Clone + Num> NumVec<T,[T,..4]> for Vec4<T> {
     /// Returns a new vector with `value` added to each component.
     #[inline]
     pub fn add_s(&self, value: T) -> Vec4<T> {
@@ -1747,7 +1747,7 @@ impl<T:Num> NumVec<T,[T,..4]> for Vec4<T> {
     }
 }
 
-impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
+impl<T: Clone + Num> Neg<Vec4<T>> for Vec4<T> {
     /// Returns the vector with each component negated.
     #[inline]
     pub fn neg(&self) -> Vec4<T> {
@@ -1758,7 +1758,7 @@ impl<T:Num> Neg<Vec4<T>> for Vec4<T> {
     }
 }
 
-impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
+impl<T: Clone + Float> FloatVec<T,[T,..4]> for Vec4<T> {
     /// Returns the squared magnitude of the vector. This does not perform a
     /// square root operation like in the `magnitude` method and can therefore
     /// be more efficient for comparing the magnitudes of two vectors.
@@ -1820,7 +1820,7 @@ impl<T:Float> FloatVec<T,[T,..4]> for Vec4<T> {
     }
 }
 
-impl<T:Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
+impl<T: Clone + Orderable> OrdVec<T,[T,..4],Vec4<bool>> for Vec4<T> {
     #[inline]
     pub fn lt_s(&self, value: T) -> Vec4<bool> {
         Vec4::new(*self.i(0) < value,

@@ -1,4 +1,4 @@
-// Copyright 2013 The Lmath Developers. For a full listing of the authors,
+// Copyright 2013 The OMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Oriented bounding boxes
+use traits::alg::Ring;
+use traits::alg::VectorSpace;
 
-use math::*;
-
-#[deriving(Clone, Eq)]
-pub struct Box2<T> {
-    center: Point2<T>,
-    axis: Vec2<T>,
-    extents: Vec2<T>,
-}
-
-#[deriving(Clone, Eq)]
-pub struct Box3<T> {
-    center: Point3<T>,
-    axis: Vec3<T>,
-    extents: Vec3<T>,
+/// A vector space with the inner product operation.
+pub trait InnerProductSpace<S: Ring>: VectorSpace<S> {
+    fn norm(&self) -> S;
+    fn inner(&self, other: &Self) -> S;
+    fn is_orthogonal(&self, other: &Self) -> bool;
 }

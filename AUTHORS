@@ -11,3 +11,8 @@ Erick Tryzelaar
 Luqman Aden
 Maik Klein
 Mikko Perttunen
+
+With thanks to:
+
+sebcrozet and his nalgebra library for providing the inspiration for the
+algebraic traits: https://github.com/sebcrozet/nalgebra

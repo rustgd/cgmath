@@ -1,11 +1,3 @@
-# Lmath-rs
+# cgmath-rs
 
-A mathematics library for computer graphics.
-
-
-## Examples
-
-- [luqmana/rray](https://github.com/luqmana/rray) - Raytracer written in rust.
-
-
-~B☼
+A linear algebra and mathematics library for computer graphics.

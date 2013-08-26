@@ -75,6 +75,7 @@ pub type Mat2f32 = Mat2<f32>;
 pub type Mat2f64 = Mat2<f64>;
 
 impl_dimensioned!(Mat2, Vec2<T>, 2)
+impl_swap_components!(Mat2)
 impl_approx!(Mat3 { x, y, z })
 
 pub trait ToMat2<T> {
@@ -288,7 +289,7 @@ impl<T:Clone + Float> Mat2<T> {
     }
 }
 
-impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat2<T> {
+impl<T:Clone + Float> FloatMat<T,Vec2<T>,[Vec2<T>,..2]> for Mat2<T> {
     #[inline]
     pub fn inverse(&self) -> Option<Mat2<T>> {
         let d = self.determinant();
@@ -539,6 +540,7 @@ pub type Mat3f32 = Mat3<f32>;
 pub type Mat3f64 = Mat3<f64>;
 
 impl_dimensioned!(Mat3, Vec3<T>, 3)
+impl_swap_components!(Mat3)
 impl_approx!(Mat2 { x, y })
 
 pub trait ToMat3<T> {
@@ -761,7 +763,7 @@ impl<T:Clone + Num> Neg<Mat3<T>> for Mat3<T> {
     }
 }
 
-impl<T:Float> Mat3<T> {
+impl<T: Clone + Float> Mat3<T> {
     pub fn look_at(dir: &Vec3<T>, up: &Vec3<T>) -> Mat3<T> {
         let dir_ = dir.normalize();
         let side = dir_.cross(&up.normalize());
@@ -823,7 +825,7 @@ impl<T:Clone + Float> ToQuat<T> for Mat3<T> {
     }
 }
 
-impl<T:Clone + Float> FloatMat<T,Vec4<T>,[Vec4<T>,..4]> for Mat3<T> {
+impl<T:Clone + Float> FloatMat<T,Vec3<T>,[Vec3<T>,..3]> for Mat3<T> {
     #[inline]
     pub fn inverse(&self) -> Option<Mat3<T>> {
         let d = self.determinant();
@@ -1111,6 +1113,7 @@ pub type Mat4f32 = Mat4<f32>;
 pub type Mat4f64 = Mat4<f64>;
 
 impl_dimensioned!(Mat4, Vec4<T>, 4)
+impl_swap_components!(Mat4)
 impl_approx!(Mat4 { x, y, z, w })
 
 pub trait ToMat4<T> {

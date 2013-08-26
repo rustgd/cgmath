@@ -52,7 +52,7 @@ pub trait Rotation3<T>: Eq
                      + ToMat3<T>
                      + ToMat4<T>
                      + ToQuat<T> {
-    pub fn rotate_point3(&self, point: Point3<T>) -> Point3<T>;
+    pub fn rotate_point3(&self, point: &Point3<T>) -> Point3<T>;
     pub fn rotate_vec3(&self, vec: &Vec3<T>) -> Vec3<T>;
     pub fn rotate_ray3(&self, ray: &Ray3<T>) -> Ray3<T>;
     pub fn to_rotation_mat3(&self) -> RotationMat3<T>;
@@ -80,7 +80,7 @@ impl<T> RotationMat2<T> {
 
 impl<T:Clone + Float> Rotation2<T> for RotationMat2<T> {
     pub fn rotate_point2(&self, point: Point2<T>) -> Point2<T> {
-        Point2::from_vec2(self.mat.mul_v(point.as_vec2()))
+        point.with_vec2(|vec| self.rotate_vec2(vec))
     }
 
     pub fn rotate_vec2(&self, vec: &Vec2<T>) -> Vec2<T> {
@@ -121,8 +121,8 @@ impl<T:Clone + Num> Neg<RotationMat2<T>> for RotationMat2<T> {
 }
 
 impl<T:Clone + Float> Rotation3<T> for Quat<T> {
-    pub fn rotate_point3(&self, point: Point3<T>) -> Point3<T> {
-        Point3::from_vec3(self.mul_v(point.as_vec3()))
+    pub fn rotate_point3(&self, point: &Point3<T>) -> Point3<T> {
+        point.with_vec3(|vec| self.rotate_vec3(vec))
     }
 
     pub fn rotate_vec3(&self, vec: &Vec3<T>) -> Vec3<T> {
@@ -160,8 +160,8 @@ impl<T> RotationMat3<T> {
 }
 
 impl<T:Clone + Float> Rotation3<T> for RotationMat3<T> {
-    pub fn rotate_point3(&self, point: Point3<T>) -> Point3<T> {
-        Point3::from_vec3(self.mat.mul_v(point.as_vec3()))
+    pub fn rotate_point3(&self, point: &Point3<T>) -> Point3<T> {
+        point.with_vec3(|vec| self.rotate_vec3(vec))
     }
 
     pub fn rotate_vec3(&self, vec: &Vec3<T>) -> Vec3<T> {
@@ -243,7 +243,7 @@ impl<T:Float> Euler<T> {
 }
 
 impl<T:Clone + Float> Rotation3<T> for Euler<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+    pub fn rotate_point3(&self, _point: &Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
 
@@ -337,12 +337,27 @@ impl<T:Float> AxisAngle<T> {
 }
 
 impl<T:Float> Rotation3<T> for AxisAngle<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
-        fail!("Not yet implemented.")
+    pub fn rotate_point3(&self, point: &Point3<T>) -> Point3<T> {
+        point.with_vec3(|vec| self.rotate_vec3(vec))
     }
 
-    pub fn rotate_vec3(&self, _vec: &Vec3<T>) -> Vec3<T> {
-        fail!("Not yet implemented.")
+    pub fn rotate_vec3(&self, vec: &Vec3<T>) -> Vec3<T> {
+        // Rodrigues' rotation formula
+        // http://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+        //
+        // ~~~
+        // v cos θ + (k × v) sin θ + k(k ⋅ v)(1 - cos θ)
+        // ~~~
+        //
+        // Where:
+        // - `v` = vec
+        // - `k` = self.axis
+        // - `θ` = self.angle
+
+        vec.mul_s(self.angle.cos())
+            .add_v(&self.axis.cross(vec)).mul_s(self.angle.sin())
+            .add_v(&self.axis.mul_s(self.axis.dot(vec))
+                             .mul_s(one!(T) - self.angle.cos()))
     }
 
     pub fn rotate_ray3(&self, _ray: &Ray3<T>) -> Ray3<T> {
@@ -434,7 +449,7 @@ pub struct AngleX<T>(T);
 impl_approx!(AngleX)
 
 impl<T:Clone + Float> Rotation3<T> for AngleX<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+    pub fn rotate_point3(&self, _point: &Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
 
@@ -495,7 +510,7 @@ pub struct AngleY<T>(T);
 impl_approx!(AngleY)
 
 impl<T:Clone + Float> Rotation3<T> for AngleY<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+    pub fn rotate_point3(&self, _point: &Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
 
@@ -575,7 +590,7 @@ impl<T:Float> Rotation2<T> for AngleZ<T> {
 }
 
 impl<T:Clone + Float> Rotation3<T> for AngleZ<T> {
-    pub fn rotate_point3(&self, _point: Point3<T>) -> Point3<T> {
+    pub fn rotate_point3(&self, _point: &Point3<T>) -> Point3<T> {
         fail!("Not yet implemented.")
     }
 

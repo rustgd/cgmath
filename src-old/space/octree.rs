@@ -13,14 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Bounding volumes
+// http://gameprogrammingpatterns.com/spatial-partition.html
 
-pub use self::aabb::{AABB2, AABB3};
-pub use self::frustum::{Frustum, FrustumPoints};
-pub use self::sphere::Sphere;
+use bounds::AABB3;
 
-pub mod aabb;
-pub mod box;
-pub mod cylinder;
-pub mod frustum;
-pub mod sphere;
+pub struct Octree<Elem,T> {
+    bounds: AABB3<T>,
+    octants: [Option<~Octree<Elem,T>>, ..8],
+}

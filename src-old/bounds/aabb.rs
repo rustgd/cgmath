@@ -67,4 +67,6 @@ impl<T:Clone + Float> AABB3<T> {
             size: mx - mn,
         }
     }
+
+    // pub fn intersects_aabb3(&self, other: &AABB3<T>) -> bool {}
 }

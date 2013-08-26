@@ -1,4 +1,4 @@
-// Copyright 2013 The Lmath Developers. For a full listing of the authors,
+// Copyright 2013 The OMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[pkg_crate(file = "src/lmath.rs")];
-#[pkg(id = "lmath", vers = "0.1.0")];
-#[pkg_dep(url = "git://github.com/bjz/numeric-rs")];
+use std::num::Zero;
+
+use traits::alg::ScalarMul;
+
+/// An affine space is a set of points closed under affine combinations.
+pub trait AffineSpace<S,V>: Eq
+                          + Zero
+                          + ScalarMul<S>
+                          + Add<V, Self>
+                          + Sub<Self, V> {}
