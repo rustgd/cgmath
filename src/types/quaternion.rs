@@ -20,7 +20,7 @@ use types::vector::Vec3;
 #[deriving(Clone, Eq)]
 pub struct Quat<T> { s: T, v: Vec3<T> }
 
-impl<T: Ring> Quat<T> {
+impl<T: Field> Quat<T> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
     #[inline]

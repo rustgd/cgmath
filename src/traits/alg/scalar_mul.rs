@@ -13,10 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// use traits::alg::Field;
+
 /// Enforces the multiplication of an type by a scalar.
-pub trait ScalarMul<S>: Mul<S, Self>
-                      + Div<S, Self>
-                      + Rem<S, Self> {}
+pub trait ScalarMul
+<
+    S/*: Field*/
+>
+:   Mul<S, Self>
++   Div<S, Self>
++   Rem<S, Self>
+{
+}
 
 // impls for concrete types
 

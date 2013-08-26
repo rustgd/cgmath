@@ -13,25 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use traits::alg::Ring;
+use traits::alg::Field;
+use traits::alg::Matrix;
+use traits::alg::VectorSpace;
 
-/// A ring that also requires the multiplicative inverse operation (division).
-pub trait DivisionRing: Ring
-                      + Div<Self,Self>
-                      + Rem<Self,Self> {}
-
-// impls for concrete types
-
-impl DivisionRing for u8;
-impl DivisionRing for u16;
-impl DivisionRing for u32;
-impl DivisionRing for u64;
-impl DivisionRing for uint;
-impl DivisionRing for i8;
-impl DivisionRing for i16;
-impl DivisionRing for i32;
-impl DivisionRing for i64;
-impl DivisionRing for int;
-impl DivisionRing for f32;
-impl DivisionRing for f64;
-impl DivisionRing for float;
+pub trait SquareMatrix
+<
+    S: Field,
+    V: VectorSpace<S>
+>
+:   Matrix<S, V, V, Self>
+{
+    fn transpose_self(&mut self);
+    fn trace(&self) -> S;
+    fn det(&self) -> S;
+    fn invert(&self) -> Option<Self>;
+    fn invert_self(&mut self) -> Self;
+    fn eigenvalue(&self, v: V) -> Option<V>;
+}

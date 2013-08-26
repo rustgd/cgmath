@@ -13,12 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use traits::alg::Ring;
+use traits::alg::Field;
 use traits::alg::VectorSpace;
 use traits::util::Indexable;
 
-pub trait VectorExt<S: Ring, Slice>: VectorSpace<S>
-                                   + Indexable<S, Slice> {
+pub trait VectorExt
+<
+    S: Field,
+    Slice
+>
+:   VectorSpace<S>
++   Indexable<S, Slice>
+{
     #[inline] fn add_s(&self, s: S) -> Self { self.map(|x| x.add(&s)) }
     #[inline] fn sub_s(&self, s: S) -> Self { self.map(|x| x.sub(&s)) }
     #[inline] fn mul_s(&self, s: S) -> Self { self.map(|x| x.mul(&s)) }

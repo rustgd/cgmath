@@ -15,11 +15,20 @@
 
 use std::num::Zero;
 
+use traits::alg::Field;
 use traits::alg::ScalarMul;
+use traits::alg::VectorSpace;
 
 /// An affine space is a set of points closed under affine combinations.
-pub trait AffineSpace<S,V>: Eq
-                          + Zero
-                          + ScalarMul<S>
-                          + Add<V, Self>
-                          + Sub<Self, V> {}
+pub trait AffineSpace
+<
+    S: Field,
+    V: VectorSpace<S>
+>
+:   Eq
++   Zero
++   Add<V, Self>
++   Sub<Self, V>
++   ScalarMul<S>
+{
+}

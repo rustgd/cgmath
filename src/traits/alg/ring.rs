@@ -19,10 +19,13 @@ use traits::alg::Module;
 
 /// A module that also requires the additive inverse operation (subtraction)
 /// and the additive inverse.
-pub trait Ring: Module<Self>
-              + Neg<Self>
-              + Sub<Self,Self>
-              + One {}
+pub trait Ring
+:   Module<Self>
++   Neg<Self>
++   Sub<Self,Self>
++   One
+{
+}
 
 // impls for concrete types
 

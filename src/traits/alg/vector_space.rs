@@ -13,10 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use traits::alg::Field;
 use traits::alg::Module;
 
 /// A vector space is a set that is closed under vector addition and
 /// scalar multiplication.
-pub trait VectorSpace<S>: Module<S>
-                        + Neg<Self>
-                        + Sub<Self,Self> {}
+pub trait VectorSpace
+<
+    S: Field
+>
+:   Module<S>
++   Neg<Self>
++   Sub<Self,Self>
+{
+}

@@ -12,3 +12,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+use types::vector::{Vec2, Vec3, Vec4};
+
+#[deriving(Clone, Eq)] pub struct Mat2<T> { x: Vec2<T>, y: Vec2<T> }
+#[deriving(Clone, Eq)] pub struct Mat3<T> { x: Vec3<T>, y: Vec3<T>, z: Vec3<T> }
+#[deriving(Clone, Eq)] pub struct Mat4<T> { x: Vec4<T>, y: Vec4<T>, z: Vec4<T>, w: Vec4<T> }

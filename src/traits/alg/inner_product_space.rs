@@ -13,11 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use traits::alg::Ring;
+use traits::alg::Field;
 use traits::alg::VectorSpace;
 
 /// A vector space with the inner product operation.
-pub trait InnerProductSpace<S: Ring>: VectorSpace<S> {
+pub trait InnerProductSpace
+<
+    S: Field
+>
+:   VectorSpace<S>
+{
     fn norm(&self) -> S;
     fn inner(&self, other: &Self) -> S;
     fn is_orthogonal(&self, other: &Self) -> bool;

@@ -15,13 +15,20 @@
 
 use std::num::Zero;
 
+// use traits::alg::Field;
 use traits::alg::ScalarMul;
 
 /// An algebraic structure that generalizes the notion of a vector space.
-pub trait Module<S>: Eq
-                   + Add<Self,Self>
-                   + ScalarMul<S>
-                   + Zero {}
+pub trait Module
+<
+    S/*: Field*/
+>
+:   Eq
++   Add<Self,Self>
++   ScalarMul<S>
++   Zero
+{
+}
 
 // impls for concrete types
 

@@ -15,22 +15,26 @@
 
 pub use self::affine_space::AffineSpace;
 pub use self::coordinate::Coordinate;
-pub use self::division_ring::DivisionRing;
 pub use self::euclidean_space::EuclideanSpace;
+pub use self::field::Field;
 pub use self::inner_product_space::InnerProductSpace;
+pub use self::matrix::Matrix;
 pub use self::module::Module;
 pub use self::ordered_ring::OrderedRing;
 pub use self::ring::Ring;
 pub use self::scalar_mul::ScalarMul;
+pub use self::square_matrix::SquareMatrix;
 pub use self::vector_space::VectorSpace;
 
 pub mod affine_space;
 pub mod coordinate;
-pub mod division_ring;
 pub mod euclidean_space;
+pub mod field;
 pub mod inner_product_space;
+pub mod matrix;
 pub mod module;
 pub mod ordered_ring;
 pub mod ring;
 pub mod scalar_mul;
+pub mod square_matrix;
 pub mod vector_space;

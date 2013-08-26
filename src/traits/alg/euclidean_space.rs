@@ -15,11 +15,16 @@
 
 use std::num;
 
-use traits::alg::Ring;
+use traits::alg::Field;
 use traits::alg::InnerProductSpace;
 
 /// The Euclidean space is a vector space over the Real numbers.
-pub trait EuclideanSpace<S:Real + Ring>: InnerProductSpace<S> {
+pub trait EuclideanSpace
+<
+    S:Real + Field
+>
+:   InnerProductSpace<S>
+{
     fn dot(&self, other: &Self) -> S {
         self.inner(other)
     }

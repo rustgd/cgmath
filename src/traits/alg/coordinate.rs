@@ -13,8 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use traits::util::Indexable;
-pub use traits::util::Swappable;
+use traits::alg::Field;
+use traits::util::Indexable;
+use traits::util::Swappable;
 
-pub trait Coordinate<S, Slice>: Indexable<S, Slice>
-                              + Swappable<S, Slice> {}
+pub trait Coordinate
+<
+    S: Field,
+    Slice
+>
+:   Indexable<S, Slice>
++   Swappable<S, Slice>
+{
+}
