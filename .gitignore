@@ -1,7 +1,2 @@
-*.dSYM
 .DS_Store
-lib
-sublime
-test
-!src/test
-!src/*/test
+build
