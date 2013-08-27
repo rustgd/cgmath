@@ -18,7 +18,6 @@ use std::num::{Zero, zero};
 use std::num::{sqrt, atan2};
 
 use traits::alg::*;
-use traits::ext::*;
 use traits::util::*;
 
 #[deriving(Eq, Zero, Clone)] pub struct Vec1<S> { x: S }
@@ -71,28 +70,40 @@ impl_vec_clonable!(Vec6<S>)
 
 // Operator impls
 
-macro_rules! impl_vec_ops(
-    ($vec_ops_mod:ident, $Self:ident <$S:ident>) => (
+macro_rules! impl_vec_common(
+    ($vec_ops_mod:ident, $Self:ty, [$S:ident, ..$n:expr]) => (
         pub mod $vec_ops_mod {
             use super::*;
-            use super::super::super::traits::alg::*;
+            use traits::alg::*;
+            use traits::ext::*;
+            use traits::util::*;
 
-            impl_scalar_binop!($Self<$S>, Mul, mul)
-            impl_scalar_binop!($Self<$S>, Div, div)
-            impl_scalar_binop!($Self<$S>, Rem, rem)
-            impl_coordinate_binop!($Self<$S>, $Self<$S>, $Self<$S>, Add, add)
-            impl_coordinate_binop!($Self<$S>, $Self<$S>, $Self<$S>, Sub, sub)
-            impl_coordinate_op!($Self<$S>, $Self<$S>, Neg, neg)
+            impl_indexable!($Self, $S, [$S, ..$n])
+            impl<$S: Clone + Field> Swappable<$S, [$S, ..$n]> for $Self;
+            impl<$S: Clone + Field> Coordinate<$S, [$S, ..$n]> for $Self;
+
+            impl_scalar_binop!($Self, Mul, mul)
+            impl_scalar_binop!($Self, Div, div)
+            impl_scalar_binop!($Self, Rem, rem)
+            impl_coordinate_binop!($Self, $Self, $Self, Add, add)
+            impl_coordinate_binop!($Self, $Self, $Self, Sub, sub)
+            impl_coordinate_op!($Self, $Self, Neg, neg)
+
+            impl<$S: Field> ScalarMul<$S> for $Self;
+            impl<$S: Field> Module<$S> for $Self;
+            impl<$S: Field> VectorSpace<$S> for $Self;
+
+            impl<$S: Clone + Field> VectorExt<$S, [$S, ..$n]> for $Self;
         }
     )
 )
 
-impl_vec_ops!(vec1_ops, Vec1<S>)
-impl_vec_ops!(vec2_ops, Vec2<S>)
-impl_vec_ops!(vec3_ops, Vec3<S>)
-impl_vec_ops!(vec4_ops, Vec4<S>)
-impl_vec_ops!(vec5_ops, Vec5<S>)
-impl_vec_ops!(vec6_ops, Vec6<S>)
+impl_vec_common!(vec1_ops, Vec1<S>, [S, ..1])
+impl_vec_common!(vec2_ops, Vec2<S>, [S, ..2])
+impl_vec_common!(vec3_ops, Vec3<S>, [S, ..3])
+impl_vec_common!(vec4_ops, Vec4<S>, [S, ..4])
+impl_vec_common!(vec5_ops, Vec5<S>, [S, ..5])
+impl_vec_common!(vec6_ops, Vec6<S>, [S, ..6])
 
 /// Operations specific to two-dimensional vectors.
 impl<S: Field> Vec2<S> {
@@ -111,50 +122,6 @@ impl<S: Field> Vec3<S> {
                   (self.x * other.y) - (self.y * other.x))
     }
 }
-
-// Trait impls
-
-impl_indexable!(Vec1<T>, [T, ..1])
-impl_indexable!(Vec2<T>, [T, ..2])
-impl_indexable!(Vec3<T>, [T, ..3])
-impl_indexable!(Vec4<T>, [T, ..4])
-impl_indexable!(Vec5<T>, [T, ..5])
-impl_indexable!(Vec6<T>, [T, ..6])
-
-impl<S: Clone + Field> Swappable<S, [S, ..1]> for Vec1<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..2]> for Vec2<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..3]> for Vec3<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..4]> for Vec4<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..5]> for Vec5<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..6]> for Vec6<S>;
-
-impl<S: Clone + Field> Coordinate<S, [S, ..1]> for Vec1<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..2]> for Vec2<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..3]> for Vec3<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..4]> for Vec4<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..5]> for Vec5<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..6]> for Vec6<S>;
-
-impl<S: Field> ScalarMul<S> for Vec1<S>;
-impl<S: Field> ScalarMul<S> for Vec2<S>;
-impl<S: Field> ScalarMul<S> for Vec3<S>;
-impl<S: Field> ScalarMul<S> for Vec4<S>;
-impl<S: Field> ScalarMul<S> for Vec5<S>;
-impl<S: Field> ScalarMul<S> for Vec6<S>;
-
-impl<S: Field> Module<S> for Vec1<S>;
-impl<S: Field> Module<S> for Vec2<S>;
-impl<S: Field> Module<S> for Vec3<S>;
-impl<S: Field> Module<S> for Vec4<S>;
-impl<S: Field> Module<S> for Vec5<S>;
-impl<S: Field> Module<S> for Vec6<S>;
-
-impl<S: Field> VectorSpace<S> for Vec1<S>;
-impl<S: Field> VectorSpace<S> for Vec2<S>;
-impl<S: Field> VectorSpace<S> for Vec3<S>;
-impl<S: Field> VectorSpace<S> for Vec4<S>;
-impl<S: Field> VectorSpace<S> for Vec5<S>;
-impl<S: Field> VectorSpace<S> for Vec6<S>;
 
 macro_rules! impl_vec_inner_product(
     ($Self:ident <$S:ident>) => (
@@ -195,10 +162,3 @@ impl<S:Real + Field + ApproxEq<S>> EuclideanSpace<S> for Vec3<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
-
-impl<S: Clone + Field> VectorExt<S, [S, ..1]> for Vec1<S>;
-impl<S: Clone + Field> VectorExt<S, [S, ..2]> for Vec2<S>;
-impl<S: Clone + Field> VectorExt<S, [S, ..3]> for Vec3<S>;
-impl<S: Clone + Field> VectorExt<S, [S, ..4]> for Vec4<S>;
-impl<S: Clone + Field> VectorExt<S, [S, ..5]> for Vec5<S>;
-impl<S: Clone + Field> VectorExt<S, [S, ..6]> for Vec6<S>;

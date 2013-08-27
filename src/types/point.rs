@@ -60,8 +60,8 @@ impl<S: Field> Sub<Point3<S>, Vec3<S>> for Point3<S> { #[inline(always)] fn sub(
 
 // Trait impls
 
-impl_indexable!(Point2<T>, [T, ..2])
-impl_indexable!(Point3<T>, [T, ..3])
+impl_indexable!(Point2<S>, S, [S, ..2])
+impl_indexable!(Point3<S>, S, [S, ..3])
 
 impl<S: Clone + Field> Swappable<S, [S, ..2]> for Point2<S>;
 impl<S: Clone + Field> Swappable<S, [S, ..3]> for Point3<S>;

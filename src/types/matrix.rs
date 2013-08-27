@@ -75,9 +75,9 @@ impl<S: Field> Mat4<S> {
 
 // Trait impls
 
-impl_indexable!(Mat2<T>, [Vec2<T>, ..2])
-impl_indexable!(Mat3<T>, [Vec3<T>, ..3])
-impl_indexable!(Mat4<T>, [Vec4<T>, ..4])
+impl_indexable!(Mat2<S>, S, [Vec2<S>, ..2])
+impl_indexable!(Mat3<S>, S, [Vec3<S>, ..3])
+impl_indexable!(Mat4<S>, S, [Vec4<S>, ..4])
 
 impl<S: Clone + Field> Swappable<Vec2<S>, [Vec2<S>, ..2]> for Mat2<S>;
 impl<S: Clone + Field> Swappable<Vec3<S>, [Vec3<S>, ..3]> for Mat3<S>;
