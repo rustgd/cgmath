@@ -44,7 +44,10 @@ pub trait Matrix
 
     fn r(&self, r: uint) -> RV;
 
-    fn swap_r(&mut self, a: uint, b: uint);
+    #[inline]
+    fn swap_r(&mut self, a: uint, b: uint) {
+        self.map_mut(|c| c.swap(a, b));
+    }
 
     #[inline]
     fn cr<'a>(&'a self, c: uint, r: uint) -> &'a S { self.i(c).i(r) }

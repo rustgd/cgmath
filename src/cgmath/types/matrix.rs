@@ -160,12 +160,6 @@ for Mat2<S>
                   self.i(1).i(r).clone())
     }
 
-    #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap(a, b);
-        self.mut_c(1).swap(a, b);
-    }
-
     fn transpose(&self) -> Mat2<S> {
         Mat2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
                   self.cr(0, 1).clone(), self.cr(1, 1).clone())
@@ -188,13 +182,6 @@ for Mat3<S>
         Vec3::new(self.i(0).i(r).clone(),
                   self.i(1).i(r).clone(),
                   self.i(2).i(r).clone())
-    }
-
-    #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap(a, b);
-        self.mut_c(1).swap(a, b);
-        self.mut_c(2).swap(a, b);
     }
 
     fn transpose(&self) -> Mat3<S> {
@@ -221,14 +208,6 @@ for Mat4<S>
                   self.i(1).i(r).clone(),
                   self.i(2).i(r).clone(),
                   self.i(2).i(r).clone())
-    }
-
-    #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap(a, b);
-        self.mut_c(1).swap(a, b);
-        self.mut_c(2).swap(a, b);
-        self.mut_c(3).swap(a, b);
     }
 
     fn transpose(&self) -> Mat4<S> {
