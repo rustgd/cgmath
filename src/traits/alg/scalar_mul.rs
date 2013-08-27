@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_escape];
+
 // use traits::alg::Field;
 
 /// Enforces the multiplication of an type by a scalar.
@@ -41,3 +43,12 @@ impl ScalarMul<int> for int;
 impl ScalarMul<f32> for f32;
 impl ScalarMul<f64> for f64;
 impl ScalarMul<float> for float;
+
+macro_rules! impl_scalar_binop(
+    ($Self:ty, $Op:ident, $op:ident) => (
+        impl<S: Field> $Op<S, $Self> for $Self {
+            #[inline(always)]
+            fn $op(&self, s: &S) -> $Self { self.map(|x| x.$op(s)) }
+        }
+    )
+)

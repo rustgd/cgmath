@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_escape];
+
 pub use self::affine_space::AffineSpace;
 pub use self::coordinate::Coordinate;
 pub use self::euclidean_space::EuclideanSpace;

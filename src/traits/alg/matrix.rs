@@ -13,18 +13,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use traits::alg::Coordinate;
 use traits::alg::Field;
 use traits::alg::Ring;
 use traits::alg::VectorSpace;
+use traits::util::Indexable;
 
 pub trait Matrix
 <
-    S: Field,
-    RV: VectorSpace<S>,
-    CV: VectorSpace<S>,
-    MT//: Matrix<S, CV, RV, Self>
+    S: Field + Clone,
+    RV: Clone + VectorSpace<S> + Coordinate<S, RVSlice>, RVSlice, RSlice,
+    CV: Clone + VectorSpace<S> + Coordinate<S, CVSlice>, CVSlice, CSlice,
+    MT//: Matrix<S, CV, CSlice, RV, RSlice, Self>
 >
-:   Ring
+:   Ring<S>
++   Indexable<CV, RSlice>
 {
+    #[inline]
+    fn c<'a>(&'a self, c: uint) -> &'a CV { self.i(c) }
+
+    #[inline]
+    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut CV { self.mut_i(c) }
+
+    #[inline]
+    fn swap_c(&mut self, a: uint, b: uint) {
+        let tmp = self.c(a).clone();
+        *self.mut_c(a) = self.c(b).clone();
+        *self.mut_c(b) = tmp;
+    }
+
+    fn r(&self, r: uint) -> RV;
+
+    fn swap_r(&mut self, a: uint, b: uint);
+
+    #[inline]
+    fn cr<'a>(&'a self, c: uint, r: uint) -> &'a S { self.i(c).i(r) }
+
+    #[inline]
+    fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut S {
+        self.mut_i(c).mut_i(r)
+    }
+
+    #[inline]
+    fn swap_cr(&mut self, a: (uint, uint), b: (uint, uint)) {
+        let (ca, ra) = a;
+        let (cb, rb) = b;
+        let tmp = self.cr(ca, ra).clone();
+        *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
+        *self.mut_cr(cb, rb) = tmp;
+    }
+
+    // fn swap_cr(&mut self, (ca, ra): (uint, uint), (cb, rb): (uint, uint)) {
+    //     let tmp = self.cr(ca, ra).clone();
+    //     *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
+    //     *self.mut_cr(cb, rb) = tmp;
+    // }
+
     fn transpose(&self) -> MT;
 }

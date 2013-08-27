@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_escape];
+
 use traits::alg::Field;
 use traits::util::Indexable;
 use traits::util::Swappable;
@@ -26,3 +28,25 @@ pub trait Coordinate
 +   Swappable<S, Slice>
 {
 }
+
+macro_rules! impl_coordinate_binop(
+    ($Self:ty, $Other:ty, $Result:ty, $Op:ident, $op:ident) => (
+        impl<S: Field> $Op<$Other, $Result> for $Self {
+            #[inline(always)]
+            fn $op(&self, other: &$Other) -> $Result {
+                self.bimap(other, |a, b| a.$op(b))
+            }
+        }
+    )
+)
+
+macro_rules! impl_coordinate_op(
+    ($Self:ty, $Result:ty, $Op:ident, $op:ident) => (
+        impl<S: Field> $Op<$Result> for $Self {
+            #[inline(always)]
+            fn $op(&self) -> $Result {
+                self.map(|a| a.$op())
+            }
+        }
+    )
+)

@@ -20,9 +20,10 @@ use traits::alg::VectorSpace;
 pub trait SquareMatrix
 <
     S: Field,
-    V: VectorSpace<S>
+    V: VectorSpace<S>,
+    VVSlice, VSlice
 >
-:   Matrix<S, V, V, Self>
+:   Matrix<S, V, VVSlice, VSlice, V, VVSlice, VSlice, Self>
 {
     fn transpose_self(&mut self);
     fn trace(&self) -> S;

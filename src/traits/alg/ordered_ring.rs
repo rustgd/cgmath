@@ -17,23 +17,26 @@ use traits::alg::Ring;
 
 /// A ring that can also be ordered.
 pub trait OrderedRing
-:   Ring
+<
+    S
+>
+:   Ring<S>
 +   Orderable
 {
 }
 
 // impls for concrete types
 
-impl OrderedRing for u8;
-impl OrderedRing for u16;
-impl OrderedRing for u32;
-impl OrderedRing for u64;
-impl OrderedRing for uint;
-impl OrderedRing for i8;
-impl OrderedRing for i16;
-impl OrderedRing for i32;
-impl OrderedRing for i64;
-impl OrderedRing for int;
-impl OrderedRing for f32;
-impl OrderedRing for f64;
-impl OrderedRing for float;
+impl OrderedRing<u8> for u8;
+impl OrderedRing<u16> for u16;
+impl OrderedRing<u32> for u32;
+impl OrderedRing<u64> for u64;
+impl OrderedRing<uint> for uint;
+impl OrderedRing<i8> for i8;
+impl OrderedRing<i16> for i16;
+impl OrderedRing<i32> for i32;
+impl OrderedRing<i64> for i64;
+impl OrderedRing<int> for int;
+impl OrderedRing<f32> for f32;
+impl OrderedRing<f64> for f64;
+impl OrderedRing<float> for float;

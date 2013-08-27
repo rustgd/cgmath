@@ -17,7 +17,7 @@ use traits::alg::Ring;
 
 /// A commutative ring that contains a multiplicative inverse.
 pub trait Field
-:   Ring
+:   Ring<Self>
 +   Div<Self,Self>
 +   Rem<Self,Self>
 {

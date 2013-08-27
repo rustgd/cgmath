@@ -20,7 +20,10 @@ use traits::alg::Module;
 /// A module that also requires the additive inverse operation (subtraction)
 /// and the additive inverse.
 pub trait Ring
-:   Module<Self>
+<
+    S
+>
+:   Module<S>
 +   Neg<Self>
 +   Sub<Self,Self>
 +   One
@@ -29,16 +32,16 @@ pub trait Ring
 
 // impls for concrete types
 
-impl Ring for u8;
-impl Ring for u16;
-impl Ring for u32;
-impl Ring for u64;
-impl Ring for uint;
-impl Ring for i8;
-impl Ring for i16;
-impl Ring for i32;
-impl Ring for i64;
-impl Ring for int;
-impl Ring for f32;
-impl Ring for f64;
-impl Ring for float;
+impl Ring<u8> for u8;
+impl Ring<u16> for u16;
+impl Ring<u32> for u32;
+impl Ring<u64> for u64;
+impl Ring<uint> for uint;
+impl Ring<i8> for i8;
+impl Ring<i16> for i16;
+impl Ring<i32> for i32;
+impl Ring<i64> for i64;
+impl Ring<int> for int;
+impl Ring<f32> for f32;
+impl Ring<f64> for f64;
+impl Ring<float> for float;

@@ -35,6 +35,10 @@ macro_rules! impl_vec(
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
             }
+
+            /// The additive identity of the vector.
+            #[inline]
+            pub fn zero() -> $Self<$S> { zero() }
         }
     )
 )
@@ -65,23 +69,6 @@ impl_vec_clonable!(Vec4<S>)
 impl_vec_clonable!(Vec5<S>)
 impl_vec_clonable!(Vec6<S>)
 
-macro_rules! impl_vec_ring(
-    ($Self:ident <$S:ident>) => (
-        impl<$S:Field> $Self<$S> {
-            /// The additive identity of the vector.
-            #[inline]
-            pub fn zero() -> $Self<$S> { zero() }
-        }
-    )
-)
-
-impl_vec_ring!(Vec1<S>)
-impl_vec_ring!(Vec2<S>)
-impl_vec_ring!(Vec3<S>)
-impl_vec_ring!(Vec4<S>)
-impl_vec_ring!(Vec5<S>)
-impl_vec_ring!(Vec6<S>)
-
 // Operator impls
 
 macro_rules! impl_vec_ops(
@@ -90,35 +77,12 @@ macro_rules! impl_vec_ops(
             use super::*;
             use super::super::super::traits::alg::*;
 
-            impl<$S:Field> Mul<$S, $Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn mul(&self, s: &$S) -> $Self<$S> { self.map(|x| x.mul(s)) }
-            }
-
-            impl<$S:Field> Div<$S, $Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn div(&self, s: &$S) -> $Self<$S> { self.map(|x| x.div(s)) }
-            }
-
-            impl<$S:Field> Rem<$S, $Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn rem(&self, s: &$S) -> $Self<$S> { self.map(|x| x.rem(s)) }
-            }
-
-            impl<$S:Field> Add<$Self<$S>, $Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn add(&self, other: &$Self<$S>) -> $Self<$S> { self.bimap(other, |a, b| a.add(b)) }
-            }
-
-            impl<$S:Field> Sub<$Self<$S>, $Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn sub(&self, other: &$Self<$S>) -> $Self<$S> { self.bimap(other, |a, b| a.sub(b)) }
-            }
-
-            impl<$S:Field> Neg<$Self<$S>> for $Self<$S> {
-                #[inline(always)]
-                fn neg(&self) -> $Self<$S> { self.map(|x| x.neg()) }
-            }
+            impl_scalar_binop!($Self<$S>, Mul, mul)
+            impl_scalar_binop!($Self<$S>, Div, div)
+            impl_scalar_binop!($Self<$S>, Rem, rem)
+            impl_coordinate_binop!($Self<$S>, $Self<$S>, $Self<$S>, Add, add)
+            impl_coordinate_binop!($Self<$S>, $Self<$S>, $Self<$S>, Sub, sub)
+            impl_coordinate_op!($Self<$S>, $Self<$S>, Neg, neg)
         }
     )
 )
@@ -150,12 +114,12 @@ impl<S: Field> Vec3<S> {
 
 // Trait impls
 
-impl_indexable!(Vec1<S>, [S, ..1])
-impl_indexable!(Vec2<S>, [S, ..2])
-impl_indexable!(Vec3<S>, [S, ..3])
-impl_indexable!(Vec4<S>, [S, ..4])
-impl_indexable!(Vec5<S>, [S, ..5])
-impl_indexable!(Vec6<S>, [S, ..6])
+impl_indexable!(Vec1<T>, [T, ..1])
+impl_indexable!(Vec2<T>, [T, ..2])
+impl_indexable!(Vec3<T>, [T, ..3])
+impl_indexable!(Vec4<T>, [T, ..4])
+impl_indexable!(Vec5<T>, [T, ..5])
+impl_indexable!(Vec6<T>, [T, ..6])
 
 impl<S: Clone + Field> Swappable<S, [S, ..1]> for Vec1<S>;
 impl<S: Clone + Field> Swappable<S, [S, ..2]> for Vec2<S>;
