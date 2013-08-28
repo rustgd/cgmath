@@ -30,5 +30,5 @@ pub trait SquareMatrix
     fn det(&self) -> S;
     fn invert(&self) -> Option<Self>;
     fn invert_self(&mut self) -> Self;
-    fn eigenvalue(&self, v: V) -> Option<V>;
+    fn is_invertable(&self) -> bool;
 }

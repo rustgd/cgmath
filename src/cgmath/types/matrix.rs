@@ -75,41 +75,37 @@ impl<S: Field> Mat4<S> {
 
 // Trait impls
 
-impl_indexable!(Mat2<S>, S, [Vec2<S>, ..2])
-impl_indexable!(Mat3<S>, S, [Vec3<S>, ..3])
-impl_indexable!(Mat4<S>, S, [Vec4<S>, ..4])
+indexable!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
+indexable!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
+indexable!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
 
 impl<S: Clone + Field> Swappable<Vec2<S>, [Vec2<S>, ..2]> for Mat2<S>;
 impl<S: Clone + Field> Swappable<Vec3<S>, [Vec3<S>, ..3]> for Mat3<S>;
 impl<S: Clone + Field> Swappable<Vec4<S>, [Vec4<S>, ..4]> for Mat4<S>;
 
-impl_scalar_binop!(Mat2<S>, Mul, mul)
-impl_scalar_binop!(Mat3<S>, Mul, mul)
-impl_scalar_binop!(Mat4<S>, Mul, mul)
-
-impl_scalar_binop!(Mat2<S>, Div, div)
-impl_scalar_binop!(Mat3<S>, Div, div)
-impl_scalar_binop!(Mat4<S>, Div, div)
-
-impl_scalar_binop!(Mat2<S>, Rem, rem)
-impl_scalar_binop!(Mat3<S>, Rem, rem)
-impl_scalar_binop!(Mat4<S>, Rem, rem)
+scalar_op!(impl Mat2<S> * S -> Mat2<S>)
+scalar_op!(impl Mat3<S> * S -> Mat3<S>)
+scalar_op!(impl Mat4<S> * S -> Mat4<S>)
+scalar_op!(impl Mat2<S> / S -> Mat2<S>)
+scalar_op!(impl Mat3<S> / S -> Mat3<S>)
+scalar_op!(impl Mat4<S> / S -> Mat4<S>)
+scalar_op!(impl Mat2<S> % S -> Mat2<S>)
+scalar_op!(impl Mat3<S> % S -> Mat3<S>)
+scalar_op!(impl Mat4<S> % S -> Mat4<S>)
 
 impl<S: Field> ScalarMul<S> for Mat2<S>;
 impl<S: Field> ScalarMul<S> for Mat3<S>;
 impl<S: Field> ScalarMul<S> for Mat4<S>;
 
-impl_coordinate_binop!(Mat2<S>, Mat2<S>, Mat2<S>, Add, add)
-impl_coordinate_binop!(Mat3<S>, Mat3<S>, Mat3<S>, Add, add)
-impl_coordinate_binop!(Mat4<S>, Mat4<S>, Mat4<S>, Add, add)
-
-impl_coordinate_binop!(Mat2<S>, Mat2<S>, Mat2<S>, Sub, sub)
-impl_coordinate_binop!(Mat3<S>, Mat3<S>, Mat3<S>, Sub, sub)
-impl_coordinate_binop!(Mat4<S>, Mat4<S>, Mat4<S>, Sub, sub)
-
-impl_coordinate_op!(Mat2<S>, Mat2<S>, Neg, neg)
-impl_coordinate_op!(Mat3<S>, Mat3<S>, Neg, neg)
-impl_coordinate_op!(Mat4<S>, Mat4<S>, Neg, neg)
+coordinate_op!(impl<S> Mat2<S> + Mat2<S> -> Mat2<S>)
+coordinate_op!(impl<S> Mat3<S> + Mat3<S> -> Mat3<S>)
+coordinate_op!(impl<S> Mat4<S> + Mat4<S> -> Mat4<S>)
+coordinate_op!(impl<S> Mat2<S> - Mat2<S> -> Mat2<S>)
+coordinate_op!(impl<S> Mat3<S> - Mat3<S> -> Mat3<S>)
+coordinate_op!(impl<S> Mat4<S> - Mat4<S> -> Mat4<S>)
+coordinate_op!(impl<S> -Mat2<S> -> Mat2<S>)
+coordinate_op!(impl<S> -Mat3<S> -> Mat3<S>)
+coordinate_op!(impl<S> -Mat4<S> -> Mat4<S>)
 
 impl<S: Field> Module<S> for Mat2<S>;
 impl<S: Field> Module<S> for Mat3<S>;

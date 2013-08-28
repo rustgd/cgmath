@@ -20,7 +20,7 @@
 /// Enforces the multiplication of an type by a scalar.
 pub trait ScalarMul
 <
-    S/*: Field*/
+    S//: Field
 >
 :   Mul<S, Self>
 +   Div<S, Self>
@@ -44,11 +44,16 @@ impl ScalarMul<f32> for f32;
 impl ScalarMul<f64> for f64;
 impl ScalarMul<float> for float;
 
-macro_rules! impl_scalar_binop(
-    ($Self:ty, $Op:ident, $op:ident) => (
-        impl<S: Field> $Op<S, $Self> for $Self {
+macro_rules! scalar_op(
+    (impl<$S:ident> ($Op:ident, $op:ident) for $Self:ty -> $Result:ty) => (
+        impl<$S: Field> $Op<$S, $Self> for $Self {
             #[inline(always)]
-            fn $op(&self, s: &S) -> $Self { self.map(|x| x.$op(s)) }
+            fn $op(&self, s: &$S) -> $Result { self.map(|x| x.$op(s)) }
         }
-    )
+    );
+    (impl $Self:ty + $S:ident -> $Result:ty) => (scalar_op!(impl<$S> (Add, add) for $Self -> $Result));
+    (impl $Self:ty - $S:ident -> $Result:ty) => (scalar_op!(impl<$S> (Sub, sub) for $Self -> $Result));
+    (impl $Self:ty * $S:ident -> $Result:ty) => (scalar_op!(impl<$S> (Mul, mul) for $Self -> $Result));
+    (impl $Self:ty / $S:ident -> $Result:ty) => (scalar_op!(impl<$S> (Div, div) for $Self -> $Result));
+    (impl $Self:ty % $S:ident -> $Result:ty) => (scalar_op!(impl<$S> (Rem, rem) for $Self -> $Result));
 )

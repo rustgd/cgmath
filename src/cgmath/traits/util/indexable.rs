@@ -60,8 +60,8 @@ pub trait Indexable<T, Slice> {
     }
 }
 
-macro_rules! impl_indexable(
-    ($Self:ty, $S:ident, [$T:ty, ..$n:expr]) => (
+macro_rules! indexable(
+    (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr]) => (
         impl<$S> Indexable<$T, [$T,..$n]> for $Self {
             #[inline]
             fn len(&self) -> uint { $n }

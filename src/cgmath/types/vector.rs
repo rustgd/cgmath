@@ -68,8 +68,6 @@ impl_vec_clonable!(Vec4<S>)
 impl_vec_clonable!(Vec5<S>)
 impl_vec_clonable!(Vec6<S>)
 
-// Operator impls
-
 macro_rules! impl_vec_common(
     ($vec_ops_mod:ident, $Self:ty, [$S:ident, ..$n:expr]) => (
         pub mod $vec_ops_mod {
@@ -78,16 +76,16 @@ macro_rules! impl_vec_common(
             use traits::ext::*;
             use traits::util::*;
 
-            impl_indexable!($Self, $S, [$S, ..$n])
+            indexable!(impl<$S> $Self -> [$S, ..$n])
             impl<$S: Clone + Field> Swappable<$S, [$S, ..$n]> for $Self;
             impl<$S: Clone + Field> Coordinate<$S, [$S, ..$n]> for $Self;
 
-            impl_scalar_binop!($Self, Mul, mul)
-            impl_scalar_binop!($Self, Div, div)
-            impl_scalar_binop!($Self, Rem, rem)
-            impl_coordinate_binop!($Self, $Self, $Self, Add, add)
-            impl_coordinate_binop!($Self, $Self, $Self, Sub, sub)
-            impl_coordinate_op!($Self, $Self, Neg, neg)
+            scalar_op!(impl $Self * $S -> $Self)
+            scalar_op!(impl $Self / $S -> $Self)
+            scalar_op!(impl $Self % $S -> $Self)
+            coordinate_op!(impl<$S> $Self + $Self -> $Self)
+            coordinate_op!(impl<$S> $Self - $Self -> $Self)
+            coordinate_op!(impl<$S> -$Self -> $Self)
 
             impl<$S: Field> ScalarMul<$S> for $Self;
             impl<$S: Field> Module<$S> for $Self;
