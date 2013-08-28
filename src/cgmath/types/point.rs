@@ -41,25 +41,6 @@ impl<S: Field> Point3<S> {
     }
 }
 
-// Operator impls
-
-impl<S: Field> Mul<S, Point2<S>> for Point2<S> { #[inline(always)] fn mul(&self, s: &S) -> Point2<S> { self.map(|x| x.mul(s)) }  }
-impl<S: Field> Mul<S, Point3<S>> for Point3<S> { #[inline(always)] fn mul(&self, s: &S) -> Point3<S> { self.map(|x| x.mul(s)) }  }
-
-impl<S: Field> Div<S, Point2<S>> for Point2<S> { #[inline(always)] fn div(&self, s: &S) -> Point2<S> { self.map(|x| x.div(s)) }  }
-impl<S: Field> Div<S, Point3<S>> for Point3<S> { #[inline(always)] fn div(&self, s: &S) -> Point3<S> { self.map(|x| x.div(s)) }  }
-
-impl<S: Field> Rem<S, Point2<S>> for Point2<S> { #[inline(always)] fn rem(&self, s: &S) -> Point2<S> { self.map(|x| x.rem(s)) }  }
-impl<S: Field> Rem<S, Point3<S>> for Point3<S> { #[inline(always)] fn rem(&self, s: &S) -> Point3<S> { self.map(|x| x.rem(s)) }  }
-
-impl<S: Field> Add<Vec2<S>, Point2<S>> for Point2<S> { #[inline(always)] fn add(&self, other: &Vec2<S>) -> Point2<S> { self.bimap(other, |a, b| a.add(b)) } }
-impl<S: Field> Add<Vec3<S>, Point3<S>> for Point3<S> { #[inline(always)] fn add(&self, other: &Vec3<S>) -> Point3<S> { self.bimap(other, |a, b| a.add(b)) } }
-
-impl<S: Field> Sub<Point2<S>, Vec2<S>> for Point2<S> { #[inline(always)] fn sub(&self, other: &Point2<S>) -> Vec2<S> { self.bimap(other, |a, b| a.sub(b)) } }
-impl<S: Field> Sub<Point3<S>, Vec3<S>> for Point3<S> { #[inline(always)] fn sub(&self, other: &Point3<S>) -> Vec3<S> { self.bimap(other, |a, b| a.sub(b)) } }
-
-// Trait impls
-
 impl_indexable!(Point2<S>, S, [S, ..2])
 impl_indexable!(Point3<S>, S, [S, ..3])
 
@@ -69,8 +50,23 @@ impl<S: Clone + Field> Swappable<S, [S, ..3]> for Point3<S>;
 impl<S: Clone + Field> Coordinate<S, [S, ..2]> for Point2<S>;
 impl<S: Clone + Field> Coordinate<S, [S, ..3]> for Point3<S>;
 
+impl_scalar_binop!(Point2<S>, Mul, mul)
+impl_scalar_binop!(Point3<S>, Mul, mul)
+
+impl_scalar_binop!(Point2<S>, Div, div)
+impl_scalar_binop!(Point3<S>, Div, div)
+
+impl_scalar_binop!(Point2<S>, Rem, rem)
+impl_scalar_binop!(Point3<S>, Rem, rem)
+
 impl<S: Field> ScalarMul<S> for Point2<S>;
 impl<S: Field> ScalarMul<S> for Point3<S>;
+
+impl_coordinate_binop!(Point2<S>, Vec2<S>, Point2<S>, Add, add)
+impl_coordinate_binop!(Point3<S>, Vec3<S>, Point3<S>, Add, add)
+
+impl_coordinate_binop!(Point2<S>, Point2<S>, Vec2<S>, Sub, sub)
+impl_coordinate_binop!(Point3<S>, Point3<S>, Vec3<S>, Sub, sub)
 
 impl<S: Field> AffineSpace<S, Vec2<S>> for Point2<S>;
 impl<S: Field> AffineSpace<S, Vec3<S>> for Point3<S>;
