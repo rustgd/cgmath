@@ -13,21 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use traits::alg::Coordinate;
+use traits::alg::Array;
+use traits::alg::ClonableArray;
 use traits::alg::Field;
 use traits::alg::Ring;
 use traits::alg::VectorSpace;
-use traits::util::Indexable;
 
 pub trait Matrix
 <
     S: Field + Clone,
-    RV: Clone + VectorSpace<S> + Coordinate<S, RVSlice>, RVSlice, RSlice,
-    CV: Clone + VectorSpace<S> + Coordinate<S, CVSlice>, CVSlice, CSlice,
+    RV: Clone + VectorSpace<S> + ClonableArray<S, RVSlice>, RVSlice, RSlice,
+    CV: Clone + VectorSpace<S> + ClonableArray<S, CVSlice>, CVSlice, CSlice,
     MT//: Matrix<S, CV, CSlice, RV, RSlice, Self>
 >
 :   Ring<S>
-+   Indexable<CV, RSlice>
++   ClonableArray<CV, RSlice>
 {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a CV { self.i(c) }

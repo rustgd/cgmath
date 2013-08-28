@@ -15,7 +15,7 @@
 
 use traits::alg::Field;
 use traits::alg::VectorSpace;
-use traits::util::Indexable;
+use traits::alg::Array;
 
 pub trait VectorExt
 <
@@ -23,7 +23,7 @@ pub trait VectorExt
     Slice
 >
 :   VectorSpace<S>
-+   Indexable<S, Slice>
++   Array<S, Slice>
 {
     #[inline] fn add_s(&self, s: S) -> Self { self.map(|x| x.add(&s)) }
     #[inline] fn sub_s(&self, s: S) -> Self { self.map(|x| x.sub(&s)) }

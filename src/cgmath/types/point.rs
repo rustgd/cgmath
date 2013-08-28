@@ -18,7 +18,6 @@
 //! not have a fixed position.
 
 use traits::alg::*;
-use traits::util::*;
 use types::vector::{Vec2, Vec3};
 
 #[deriving(Eq, Zero, Clone)]
@@ -41,14 +40,11 @@ impl<S: Field> Point3<S> {
     }
 }
 
-indexable!(impl<S> Point2<S> -> [S, ..2])
-indexable!(impl<S> Point3<S> -> [S, ..3])
+array!(impl<S> Point2<S> -> [S, ..2])
+array!(impl<S> Point3<S> -> [S, ..3])
 
-impl<S: Clone + Field> Swappable<S, [S, ..2]> for Point2<S>;
-impl<S: Clone + Field> Swappable<S, [S, ..3]> for Point3<S>;
-
-impl<S: Clone + Field> Coordinate<S, [S, ..2]> for Point2<S>;
-impl<S: Clone + Field> Coordinate<S, [S, ..3]> for Point3<S>;
+impl<S: Clone + Field> ClonableArray<S, [S, ..2]> for Point2<S>;
+impl<S: Clone + Field> ClonableArray<S, [S, ..3]> for Point3<S>;
 
 scalar_op!(impl Point2<S> * S -> Point2<S>)
 scalar_op!(impl Point3<S> * S -> Point3<S>)
@@ -60,10 +56,10 @@ scalar_op!(impl Point3<S> % S -> Point3<S>)
 impl<S: Field> ScalarMul<S> for Point2<S>;
 impl<S: Field> ScalarMul<S> for Point3<S>;
 
-coordinate_op!(impl<S> Point2<S> + Vec2<S> -> Point2<S>)
-coordinate_op!(impl<S> Point3<S> + Vec3<S> -> Point3<S>)
-coordinate_op!(impl<S> Point2<S> - Point2<S> -> Vec2<S>)
-coordinate_op!(impl<S> Point3<S> - Point3<S> -> Vec3<S>)
+array_op!(impl<S> Point2<S> + Vec2<S> -> Point2<S>)
+array_op!(impl<S> Point3<S> + Vec3<S> -> Point3<S>)
+array_op!(impl<S> Point2<S> - Point2<S> -> Vec2<S>)
+array_op!(impl<S> Point3<S> - Point3<S> -> Vec3<S>)
 
 impl<S: Field> AffineSpace<S, Vec2<S>> for Point2<S>;
 impl<S: Field> AffineSpace<S, Vec3<S>> for Point3<S>;

@@ -15,8 +15,7 @@
 
 #[macro_escape];
 
-/// Types that can be accessed via an unsigned index.
-pub trait Indexable<T, Slice> {
+pub trait Array<T, Slice> {
     fn len(&self) -> uint;
     fn i<'a>(&'a self, i: uint) -> &'a T;
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut T;
@@ -26,8 +25,8 @@ pub trait Indexable<T, Slice> {
     fn build(builder: &fn(i: uint) -> T) -> Self;
 
     #[inline]
-    fn map<U, SliceU, UU: Indexable<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
-        Indexable::build(|i| f(self.i(i)))
+    fn map<U, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
+        Array::build(|i| f(self.i(i)))
     }
 
     #[inline]
@@ -38,13 +37,13 @@ pub trait Indexable<T, Slice> {
     }
 
     #[inline]
-    fn bimap<U, SliceU, UU: Indexable<U, SliceU>,
-             V, SliceV, VV: Indexable<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
-        Indexable::build(|i| f(self.i(i), other.i(i)))
+    fn bimap<U, SliceU, UU: Array<U, SliceU>,
+             V, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
+        Array::build(|i| f(self.i(i), other.i(i)))
     }
 
     #[inline]
-    fn bimap_mut<U, SliceU, UU: Indexable<U, Slice>>(&mut self, other: &UU, f: &fn(&mut T, &U)) {
+    fn bimap_mut<U, SliceU, UU: Array<U, Slice>>(&mut self, other: &UU, f: &fn(&mut T, &U)) {
         for i in range(0, self.len()) {
             f(self.mut_i(i), other.i(i));
         }
@@ -60,9 +59,9 @@ pub trait Indexable<T, Slice> {
     }
 }
 
-macro_rules! indexable(
+macro_rules! array(
     (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr]) => (
-        impl<$S> Indexable<$T, [$T,..$n]> for $Self {
+        impl<$S> Array<$T, [$T,..$n]> for $Self {
             #[inline]
             fn len(&self) -> uint { $n }
 
@@ -98,8 +97,44 @@ macro_rules! indexable(
                 for i in range::<uint>(0, $n) {
                     s[i] = builder(i);
                 }
-                Indexable::from_slice(s)
+                Array::from_slice(s)
             }
         }
     )
 )
+
+macro_rules! array_op(
+    (impl<$S:ident> ($Op:ident, $op:ident) for ($Self:ty, $Other:ty) -> $Result:ty) => (
+        impl<$S: Field> $Op<$Other, $Result> for $Self {
+            #[inline(always)]
+            fn $op(&self, other: &$Other) -> $Result {
+                self.bimap(other, |a, b| a.$op(b))
+            }
+        }
+    );
+    (impl<$S:ident> ($Op:ident, $op:ident) for $Self:ty -> $Result:ty) => (
+        impl<$S: Field> $Op<$Result> for $Self {
+            #[inline(always)]
+            fn $op(&self) -> $Result {
+                self.map(|a| a.$op())
+            }
+        }
+    );
+    (impl<$S:ident> -$Self:ty -> $Result:ty) => (array_op!(impl<$S> (Neg, neg) for $Self -> $Result));
+    (impl<$S:ident> $Self:ty + $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Add, add) for ($Self, $Other) -> $Result));
+    (impl<$S:ident> $Self:ty - $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Sub, sub) for ($Self, $Other) -> $Result));
+    (impl<$S:ident> $Self:ty * $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Mul, mul) for ($Self, $Other) -> $Result));
+    (impl<$S:ident> $Self:ty / $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Div, div) for ($Self, $Other) -> $Result));
+    (impl<$S:ident> $Self:ty % $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Rem, rem) for ($Self, $Other) -> $Result));
+)
+
+/// An `Array` whose elements can be cloned
+pub trait ClonableArray<T: Clone, Slice>: Array<T, Slice> {
+    /// Swap two elements of the type in place.
+    #[inline]
+    fn swap(&mut self, a: uint, b: uint) {
+        let tmp = self.i(a).clone();
+        *self.mut_i(a) = self.i(b).clone();
+        *self.mut_i(b) = tmp;
+    }
+}

@@ -16,7 +16,7 @@
 #[macro_escape];
 
 pub use self::affine_space::AffineSpace;
-pub use self::coordinate::Coordinate;
+pub use self::array::{Array, ClonableArray};
 pub use self::euclidean_space::EuclideanSpace;
 pub use self::field::Field;
 pub use self::inner_product_space::InnerProductSpace;
@@ -29,7 +29,7 @@ pub use self::square_matrix::SquareMatrix;
 pub use self::vector_space::VectorSpace;
 
 pub mod affine_space;
-pub mod coordinate;
+pub mod array;
 pub mod euclidean_space;
 pub mod field;
 pub mod inner_product_space;

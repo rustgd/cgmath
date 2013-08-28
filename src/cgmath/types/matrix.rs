@@ -16,7 +16,6 @@
 use std::num::{One, one, zero};
 
 use traits::alg::*;
-use traits::util::*;
 use types::vector::*;
 
 #[deriving(Clone, Eq, Zero)] pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
@@ -75,13 +74,13 @@ impl<S: Field> Mat4<S> {
 
 // Trait impls
 
-indexable!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
-indexable!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
-indexable!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
+array!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
+array!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
+array!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
 
-impl<S: Clone + Field> Swappable<Vec2<S>, [Vec2<S>, ..2]> for Mat2<S>;
-impl<S: Clone + Field> Swappable<Vec3<S>, [Vec3<S>, ..3]> for Mat3<S>;
-impl<S: Clone + Field> Swappable<Vec4<S>, [Vec4<S>, ..4]> for Mat4<S>;
+impl<S: Clone + Field> ClonableArray<Vec2<S>, [Vec2<S>, ..2]> for Mat2<S>;
+impl<S: Clone + Field> ClonableArray<Vec3<S>, [Vec3<S>, ..3]> for Mat3<S>;
+impl<S: Clone + Field> ClonableArray<Vec4<S>, [Vec4<S>, ..4]> for Mat4<S>;
 
 scalar_op!(impl Mat2<S> * S -> Mat2<S>)
 scalar_op!(impl Mat3<S> * S -> Mat3<S>)
@@ -97,15 +96,15 @@ impl<S: Field> ScalarMul<S> for Mat2<S>;
 impl<S: Field> ScalarMul<S> for Mat3<S>;
 impl<S: Field> ScalarMul<S> for Mat4<S>;
 
-coordinate_op!(impl<S> Mat2<S> + Mat2<S> -> Mat2<S>)
-coordinate_op!(impl<S> Mat3<S> + Mat3<S> -> Mat3<S>)
-coordinate_op!(impl<S> Mat4<S> + Mat4<S> -> Mat4<S>)
-coordinate_op!(impl<S> Mat2<S> - Mat2<S> -> Mat2<S>)
-coordinate_op!(impl<S> Mat3<S> - Mat3<S> -> Mat3<S>)
-coordinate_op!(impl<S> Mat4<S> - Mat4<S> -> Mat4<S>)
-coordinate_op!(impl<S> -Mat2<S> -> Mat2<S>)
-coordinate_op!(impl<S> -Mat3<S> -> Mat3<S>)
-coordinate_op!(impl<S> -Mat4<S> -> Mat4<S>)
+array_op!(impl<S> Mat2<S> + Mat2<S> -> Mat2<S>)
+array_op!(impl<S> Mat3<S> + Mat3<S> -> Mat3<S>)
+array_op!(impl<S> Mat4<S> + Mat4<S> -> Mat4<S>)
+array_op!(impl<S> Mat2<S> - Mat2<S> -> Mat2<S>)
+array_op!(impl<S> Mat3<S> - Mat3<S> -> Mat3<S>)
+array_op!(impl<S> Mat4<S> - Mat4<S> -> Mat4<S>)
+array_op!(impl<S> -Mat2<S> -> Mat2<S>)
+array_op!(impl<S> -Mat3<S> -> Mat3<S>)
+array_op!(impl<S> -Mat4<S> -> Mat4<S>)
 
 impl<S: Field> Module<S> for Mat2<S>;
 impl<S: Field> Module<S> for Mat3<S>;
@@ -213,3 +212,105 @@ for Mat4<S>
                   self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
     }
 }
+
+impl<S: Clone + Field>
+SquareMatrix<S, Vec2<S>, [S, ..2], [Vec2<S>, ..2]>
+for Mat2<S>
+{
+    #[inline]
+    fn transpose_self(&mut self) {
+        self.swap_cr((0, 1), (1, 0));
+    }
+
+    #[inline]
+    fn trace(&self) -> S {
+        *self.cr(0, 0) + *self.cr(1, 1)
+    }
+
+    #[inline]
+    fn det(&self) -> S {
+        *self.cr(0, 0) * *self.cr(1, 1) - *self.cr(1, 0) * *self.cr(0, 1)
+    }
+
+    fn invert(&self) -> Option<Mat2<S>> { fail!() }
+
+    fn invert_self(&mut self) -> Mat2<S> { fail!() }
+
+    fn is_invertable(&self) -> bool { fail!() }
+}
+
+impl<S: Clone + Field>
+SquareMatrix<S, Vec3<S>, [S, ..3], [Vec3<S>, ..3]>
+for Mat3<S>
+{
+    #[inline]
+    fn transpose_self(&mut self) {
+        self.swap_cr((0, 1), (1, 0));
+        self.swap_cr((0, 2), (2, 0));
+        self.swap_cr((1, 2), (2, 1));
+    }
+
+    #[inline]
+    fn trace(&self) -> S {
+        *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2)
+    }
+
+    fn det(&self) -> S {
+        *self.cr(0, 0) * (*self.cr(1, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(1, 2)) -
+        *self.cr(1, 0) * (*self.cr(0, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(0, 2)) +
+        *self.cr(2, 0) * (*self.cr(0, 1) * *self.cr(1, 2) - *self.cr(1, 1) * *self.cr(0, 2))
+    }
+
+    fn invert(&self) -> Option<Mat3<S>> { fail!() }
+
+    fn invert_self(&mut self) -> Mat3<S> { fail!() }
+
+    fn is_invertable(&self) -> bool { fail!() }
+}
+
+impl<S: Clone + Field>
+SquareMatrix<S, Vec4<S>, [S, ..4], [Vec4<S>, ..4]>
+for Mat4<S>
+{
+    #[inline]
+    fn transpose_self(&mut self) {
+        self.swap_cr((0, 1), (1, 0));
+        self.swap_cr((0, 2), (2, 0));
+        self.swap_cr((0, 3), (3, 0));
+        self.swap_cr((1, 2), (2, 1));
+        self.swap_cr((1, 3), (3, 1));
+        self.swap_cr((2, 3), (3, 2));
+    }
+
+    #[inline]
+    fn trace(&self) -> S {
+        *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2) + *self.cr(3, 3)
+    }
+
+    fn det(&self) -> S {
+        let m0 = Mat3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m1 = Mat3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m2 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
+        let m3 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
+                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
+
+        self.cr(0, 0) * m0.det() -
+        self.cr(1, 0) * m1.det() +
+        self.cr(2, 0) * m2.det() -
+        self.cr(3, 0) * m3.det()
+    }
+
+    fn invert(&self) -> Option<Mat4<S>> { fail!() }
+
+    fn invert_self(&mut self) -> Mat4<S> { fail!() }
+
+    fn is_invertable(&self) -> bool { fail!() }
+}
+

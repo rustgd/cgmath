@@ -34,12 +34,3 @@ pub mod alg;
 /// use lmath::traits::ext::*;
 /// ~~~
 pub mod ext;
-
-/// TODO
-///
-/// # Example
-///
-/// ~~~rust
-/// use lmath::traits::util::*;
-/// ~~~
-pub mod util;

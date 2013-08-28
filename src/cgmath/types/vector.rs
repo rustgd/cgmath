@@ -18,7 +18,6 @@ use std::num::{Zero, zero};
 use std::num::{sqrt, atan2};
 
 use traits::alg::*;
-use traits::util::*;
 
 #[deriving(Eq, Zero, Clone)] pub struct Vec1<S> { x: S }
 #[deriving(Eq, Zero, Clone)] pub struct Vec2<S> { x: S, y: S }
@@ -55,7 +54,7 @@ macro_rules! impl_vec_clonable(
             /// Construct a vector from a single value.
             #[inline]
             pub fn from_value(value: $S) -> $Self<$S> {
-                Indexable::build(|_| value.clone())
+                Array::build(|_| value.clone())
             }
         }
     )
@@ -74,18 +73,16 @@ macro_rules! impl_vec_common(
             use super::*;
             use traits::alg::*;
             use traits::ext::*;
-            use traits::util::*;
 
-            indexable!(impl<$S> $Self -> [$S, ..$n])
-            impl<$S: Clone + Field> Swappable<$S, [$S, ..$n]> for $Self;
-            impl<$S: Clone + Field> Coordinate<$S, [$S, ..$n]> for $Self;
+            array!(impl<$S> $Self -> [$S, ..$n])
+            impl<$S: Clone + Field> ClonableArray<$S, [$S, ..$n]> for $Self;
 
             scalar_op!(impl $Self * $S -> $Self)
             scalar_op!(impl $Self / $S -> $Self)
             scalar_op!(impl $Self % $S -> $Self)
-            coordinate_op!(impl<$S> $Self + $Self -> $Self)
-            coordinate_op!(impl<$S> $Self - $Self -> $Self)
-            coordinate_op!(impl<$S> -$Self -> $Self)
+            array_op!(impl<$S> $Self + $Self -> $Self)
+            array_op!(impl<$S> $Self - $Self -> $Self)
+            array_op!(impl<$S> -$Self -> $Self)
 
             impl<$S: Field> ScalarMul<$S> for $Self;
             impl<$S: Field> Module<$S> for $Self;
