@@ -21,7 +21,7 @@ use traits::alg::VectorSpace;
 
 pub trait Matrix
 <
-    S: Field + Clone,
+    S: Field + Clone + ApproxEq<S>,
     RV: Clone + VectorSpace<S> + ClonableArray<S, RVSlice>, RVSlice, RSlice,
     CV: Clone + VectorSpace<S> + ClonableArray<S, CVSlice>, CVSlice, CSlice,
     MT//: Matrix<S, CV, CSlice, RV, RSlice, Self>

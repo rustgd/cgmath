@@ -138,8 +138,7 @@ impl<S: Field> Ring<S> for Mat2<S>;
 impl<S: Field> Ring<S> for Mat3<S>;
 impl<S: Field> Ring<S> for Mat4<S>;
 
-impl
-<S: Clone + Field>
+impl<S: Clone + Field + ApproxEq<S>>
 Matrix
 <
     S,
@@ -161,8 +160,7 @@ for Mat2<S>
     }
 }
 
-impl
-<S: Clone + Field>
+impl<S: Clone + Field + ApproxEq<S>>
 Matrix
 <
     S,
@@ -186,8 +184,7 @@ for Mat3<S>
     }
 }
 
-impl
-<S: Clone + Field>
+impl<S: Clone + Field + ApproxEq<S>>
 Matrix
 <
     S,
@@ -213,7 +210,7 @@ for Mat4<S>
     }
 }
 
-impl<S: Clone + Field>
+impl<S: Clone + Field + ApproxEq<S>>
 SquareMatrix<S, Vec2<S>, [S, ..2], [Vec2<S>, ..2]>
 for Mat2<S>
 {
@@ -228,18 +225,22 @@ for Mat2<S>
     }
 
     #[inline]
-    fn det(&self) -> S {
+    fn determinant(&self) -> S {
         *self.cr(0, 0) * *self.cr(1, 1) - *self.cr(1, 0) * *self.cr(0, 1)
     }
 
-    fn invert(&self) -> Option<Mat2<S>> { fail!() }
-
-    fn invert_self(&mut self) -> Mat2<S> { fail!() }
-
-    fn is_invertable(&self) -> bool { fail!() }
+    fn invert(&self) -> Option<Mat2<S>> {
+        let det = self.determinant();
+        if det.approx_eq(&zero()) {
+            None
+        } else {
+            Some(Mat2::new( self.cr(1, 1) / det, -self.cr(0, 1) / det,
+                           -self.cr(1, 0) / det,  self.cr(0, 0) / det))
+        }
+    }
 }
 
-impl<S: Clone + Field>
+impl<S: Clone + Field + ApproxEq<S>>
 SquareMatrix<S, Vec3<S>, [S, ..3], [Vec3<S>, ..3]>
 for Mat3<S>
 {
@@ -255,20 +256,25 @@ for Mat3<S>
         *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2)
     }
 
-    fn det(&self) -> S {
+    fn determinant(&self) -> S {
         *self.cr(0, 0) * (*self.cr(1, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(1, 2)) -
         *self.cr(1, 0) * (*self.cr(0, 1) * *self.cr(2, 2) - *self.cr(2, 1) * *self.cr(0, 2)) +
         *self.cr(2, 0) * (*self.cr(0, 1) * *self.cr(1, 2) - *self.cr(1, 1) * *self.cr(0, 2))
     }
 
-    fn invert(&self) -> Option<Mat3<S>> { fail!() }
-
-    fn invert_self(&mut self) -> Mat3<S> { fail!() }
-
-    fn is_invertable(&self) -> bool { fail!() }
+    fn invert(&self) -> Option<Mat3<S>> {
+        let det = self.determinant();
+        if det.approx_eq(&zero()) {
+            None
+        } else {
+            Some(Mat3::from_cols(self.c(1).cross(self.c(2)) / det,
+                                 self.c(2).cross(self.c(0)) / det,
+                                 self.c(0).cross(self.c(1)) / det).transpose())
+        }
+    }
 }
 
-impl<S: Clone + Field>
+impl<S: Clone + Real + Field + ApproxEq<S>>
 SquareMatrix<S, Vec4<S>, [S, ..4], [Vec4<S>, ..4]>
 for Mat4<S>
 {
@@ -287,7 +293,7 @@ for Mat4<S>
         *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2) + *self.cr(3, 3)
     }
 
-    fn det(&self) -> S {
+    fn determinant(&self) -> S {
         let m0 = Mat3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
                            self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
                            self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
@@ -301,16 +307,54 @@ for Mat4<S>
                            self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
                            self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
 
-        self.cr(0, 0) * m0.det() -
-        self.cr(1, 0) * m1.det() +
-        self.cr(2, 0) * m2.det() -
-        self.cr(3, 0) * m3.det()
+        self.cr(0, 0) * m0.determinant() -
+        self.cr(1, 0) * m1.determinant() +
+        self.cr(2, 0) * m2.determinant() -
+        self.cr(3, 0) * m3.determinant()
     }
 
-    fn invert(&self) -> Option<Mat4<S>> { fail!() }
+    fn invert(&self) -> Option<Mat4<S>> {
+        if self.is_invertible() {
+            // Gauss Jordan Elimination with partial pivoting
+            // So take this matrix, A, augmented with the identity
+            // and essentially reduce [A|I]
 
-    fn invert_self(&mut self) -> Mat4<S> { fail!() }
+            let mut A = self.clone();
+            let mut I = one::<Mat4<S>>();
 
-    fn is_invertable(&self) -> bool { fail!() }
+            for j in range(0u, 4u) {
+                // Find largest element in col j
+                let mut i1 = j;
+                for i in range(j + 1, 4) {
+                    if A.cr(j, i).abs() > A.cr(j, i1).abs() {
+                        i1 = i;
+                    }
+                }
+
+                // Swap columns i1 and j in A and I to
+                // put pivot on diagonal
+                A.swap_c(i1, j);
+                I.swap_c(i1, j);
+
+                // Scale col j to have a unit diagonal
+                *I.mut_c(j) = I.c(j) / *A.cr(j, j);
+                *A.mut_c(j) = A.c(j) / *A.cr(j, j);
+
+                // Eliminate off-diagonal elems in col j of A,
+                // doing identical ops to I
+                for i in range(0u, 4u) {
+                    if i != j {
+                        let ij_mul_aij = I.c(j) * *A.cr(i, j);
+                        let aj_mul_aij = A.c(j) * *A.cr(i, j);
+                        *I.mut_c(i) = I.c(i) - ij_mul_aij;
+                        *A.mut_c(i) = A.c(i) - aj_mul_aij;
+                    }
+                }
+            }
+            Some(I)
+        } else {
+            None
+        }
+    }
 }
 

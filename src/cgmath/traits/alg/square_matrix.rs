@@ -13,13 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::num;
+
 use traits::alg::Field;
 use traits::alg::Matrix;
 use traits::alg::VectorSpace;
 
 pub trait SquareMatrix
 <
-    S: Field,
+    S: Field + ApproxEq<S>,
     V: VectorSpace<S>,
     VVSlice, VSlice
 >
@@ -27,8 +29,16 @@ pub trait SquareMatrix
 {
     fn transpose_self(&mut self);
     fn trace(&self) -> S;
-    fn det(&self) -> S;
+    fn determinant(&self) -> S;
     fn invert(&self) -> Option<Self>;
-    fn invert_self(&mut self) -> Self;
-    fn is_invertable(&self) -> bool;
+
+    #[inline]
+    fn invert_self(&mut self) {
+        *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
+    }
+
+    #[inline]
+    fn is_invertible(&self) -> bool {
+        !self.determinant().approx_eq(&num::zero::<S>())
+    }
 }
