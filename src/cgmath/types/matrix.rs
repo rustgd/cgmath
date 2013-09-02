@@ -24,7 +24,7 @@ use types::vector::*;
 
 // Constructors
 
-impl<S: Field> Mat2<S> {
+impl<S: Clone + Field> Mat2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Mat2<S> {
@@ -36,9 +36,25 @@ impl<S: Field> Mat2<S> {
     pub fn from_cols(c0: Vec2<S>, c1: Vec2<S>) -> Mat2<S> {
         Mat2 { x: c0, y: c1 }
     }
+
+    #[inline]
+    pub fn from_value(value: S) -> Mat2<S> {
+        Mat2::new(value.clone(), zero(),
+                  zero(), value.clone())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat2<S> {
+        Mat2::from_value(zero())
+    }
+
+    #[inline]
+    pub fn ident() -> Mat2<S> {
+        Mat2::from_value(one())
+    }
 }
 
-impl<S: Field> Mat3<S> {
+impl<S: Clone + Field> Mat3<S> {
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
@@ -52,9 +68,26 @@ impl<S: Field> Mat3<S> {
     pub fn from_cols(c0: Vec3<S>, c1: Vec3<S>, c2: Vec3<S>) -> Mat3<S> {
         Mat3 { x: c0, y: c1, z: c2 }
     }
+
+    #[inline]
+    pub fn from_value(value: S) -> Mat3<S> {
+        Mat3::new(value.clone(), zero(), zero(),
+                  zero(), value.clone(), zero(),
+                  zero(), zero(), value.clone())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat3<S> {
+        Mat3::from_value(zero())
+    }
+
+    #[inline]
+    pub fn ident() -> Mat3<S> {
+        Mat3::from_value(one())
+    }
 }
 
-impl<S: Field> Mat4<S> {
+impl<S: Clone + Field> Mat4<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
@@ -69,6 +102,24 @@ impl<S: Field> Mat4<S> {
     #[inline]
     pub fn from_cols(c0: Vec4<S>, c1: Vec4<S>, c2: Vec4<S>, c3: Vec4<S>) -> Mat4<S> {
         Mat4 { x: c0, y: c1, z: c2, w: c3 }
+    }
+
+    #[inline]
+    pub fn from_value(value: S) -> Mat4<S> {
+        Mat4::new(value.clone(), zero(), zero(), zero(),
+                  zero(), value.clone(), zero(), zero(),
+                  zero(), zero(), value.clone(), zero(),
+                  zero(), zero(), zero(), value.clone())
+    }
+
+    #[inline]
+    pub fn zero() -> Mat4<S> {
+        Mat4::from_value(zero())
+    }
+
+    #[inline]
+    pub fn ident() -> Mat4<S> {
+        Mat4::from_value(one())
     }
 }
 
@@ -110,33 +161,21 @@ impl<S: Field> Module<S> for Mat2<S>;
 impl<S: Field> Module<S> for Mat3<S>;
 impl<S: Field> Module<S> for Mat4<S>;
 
-impl<S: Field> One for Mat2<S> {
-    fn one() -> Mat2<S> {
-        Mat2::new(one(), zero(),
-                  zero(), one())
-    }
+impl<S: Clone + Field> One for Mat2<S> {
+    #[inline] fn one() -> Mat2<S> { Mat2::ident() }
 }
 
-impl<S: Field> One for Mat3<S> {
-    fn one() -> Mat3<S> {
-        Mat3::new(one(), zero(), zero(),
-                  zero(), one(), zero(),
-                  zero(), zero(), one())
-    }
+impl<S: Clone + Field> One for Mat3<S> {
+    #[inline] fn one() -> Mat3<S> { Mat3::ident() }
 }
 
-impl<S: Field> One for Mat4<S> {
-    fn one() -> Mat4<S> {
-        Mat4::new(one(), zero(), zero(), zero(),
-                  zero(), one(), zero(), zero(),
-                  zero(), zero(), one(), zero(),
-                  zero(), zero(), zero(), one())
-    }
+impl<S: Clone + Field> One for Mat4<S> {
+    #[inline] fn one() -> Mat4<S> { Mat4::ident() }
 }
 
-impl<S: Field> Ring<S> for Mat2<S>;
-impl<S: Field> Ring<S> for Mat3<S>;
-impl<S: Field> Ring<S> for Mat4<S>;
+impl<S: Clone + Field> Ring<S> for Mat2<S>;
+impl<S: Clone + Field> Ring<S> for Mat3<S>;
+impl<S: Clone + Field> Ring<S> for Mat4<S>;
 
 impl<S: Clone + Field + ApproxEq<S>>
 Matrix
