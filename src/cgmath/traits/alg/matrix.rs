@@ -46,7 +46,7 @@ pub trait Matrix
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
-        self.map_mut(|c| c.swap(a, b));
+        for c in self.mut_iter() { c.swap(a, b) }
     }
 
     #[inline]

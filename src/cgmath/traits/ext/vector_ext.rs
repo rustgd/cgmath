@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::num::{zero, one};
+
 use traits::alg::Field;
 use traits::alg::VectorSpace;
 use traits::alg::Array;
@@ -37,19 +39,19 @@ pub trait VectorExt
     #[inline] fn div_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.div(b) ) }
     #[inline] fn rem_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.rem(b) ) }
 
-    #[inline] fn neg_self(&mut self) { self.map_mut(|x| *x = -*x); }
-    #[inline] fn add_self_s(&mut self, s: S) { self.map_mut(|x| *x = x.add(&s)); }
-    #[inline] fn sub_self_s(&mut self, s: S) { self.map_mut(|x| *x = x.sub(&s)); }
-    #[inline] fn mul_self_s(&mut self, s: S) { self.map_mut(|x| *x = x.mul(&s)); }
-    #[inline] fn div_self_s(&mut self, s: S) { self.map_mut(|x| *x = x.div(&s)); }
-    #[inline] fn rem_self_s(&mut self, s: S) { self.map_mut(|x| *x = x.rem(&s)); }
+    #[inline] fn neg_self(&mut self)         { for x in self.mut_iter() { *x = x.neg()   } }
+    #[inline] fn add_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.add(&s) } }
+    #[inline] fn sub_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.sub(&s) } }
+    #[inline] fn mul_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.mul(&s) } }
+    #[inline] fn div_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.div(&s) } }
+    #[inline] fn rem_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.rem(&s) } }
 
-    #[inline] fn add_self_v(&mut self, other: &Self) { self.bimap_mut::<S, Slice, Self>(other, |a, b| *a = a.add(b)) }
-    #[inline] fn sub_self_v(&mut self, other: &Self) { self.bimap_mut::<S, Slice, Self>(other, |a, b| *a = a.sub(b)) }
-    #[inline] fn mul_self_v(&mut self, other: &Self) { self.bimap_mut::<S, Slice, Self>(other, |a, b| *a = a.mul(b)) }
-    #[inline] fn div_self_v(&mut self, other: &Self) { self.bimap_mut::<S, Slice, Self>(other, |a, b| *a = a.div(b)) }
-    #[inline] fn rem_self_v(&mut self, other: &Self) { self.bimap_mut::<S, Slice, Self>(other, |a, b| *a = a.rem(b)) }
+    #[inline] fn add_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add(b) } }
+    #[inline] fn sub_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.sub(b) } }
+    #[inline] fn mul_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.mul(b) } }
+    #[inline] fn div_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.div(b) } }
+    #[inline] fn rem_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.rem(b) } }
 
-    #[inline] fn comp_add(&self) -> S { fail!() }
-    #[inline] fn comp_mul(&self) -> S { fail!() }
+    #[inline] fn comp_add(&self) -> S { self.iter().fold(zero::<S>(), |a, b| a.add(b)) }
+    #[inline] fn comp_mul(&self) -> S { self.iter().fold(one::<S>(),  |a, b| a.mul(b)) }
 }

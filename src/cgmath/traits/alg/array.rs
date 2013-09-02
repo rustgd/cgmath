@@ -15,10 +15,9 @@
 
 #[macro_escape];
 
-use std::vec::VecIterator;
+use std::vec::{VecIterator, VecMutIterator};
 
 pub trait Array<T, Slice> {
-    fn len(&self) -> uint;
     fn i<'a>(&'a self, i: uint) -> &'a T;
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut T;
     fn as_slice<'a>(&'a self) -> &'a Slice;
@@ -26,6 +25,7 @@ pub trait Array<T, Slice> {
     fn from_slice(slice: Slice) -> Self;
     fn build(builder: &fn(i: uint) -> T) -> Self;
     fn iter<'a>(&'a self) -> VecIterator<'a, T>;
+    fn mut_iter<'a>(&'a mut self) -> VecMutIterator<'a, T>;
 
     #[inline]
     fn map<U, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
@@ -33,41 +33,15 @@ pub trait Array<T, Slice> {
     }
 
     #[inline]
-    fn map_mut(&mut self, f: &fn(&mut T)) {
-        for i in range(0, self.len()) {
-            f(self.mut_i(i));
-        }
-    }
-
-    #[inline]
     fn bimap<U, SliceU, UU: Array<U, SliceU>,
              V, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
         Array::build(|i| f(self.i(i), other.i(i)))
-    }
-
-    #[inline]
-    fn bimap_mut<U, SliceU, UU: Array<U, Slice>>(&mut self, other: &UU, f: &fn(&mut T, &U)) {
-        for i in range(0, self.len()) {
-            f(self.mut_i(i), other.i(i));
-        }
-    }
-
-    #[inline]
-    fn fold<U>(&self, init: U, f: &fn(acc: &U, x: &T) -> U) -> U {
-        let mut acc = init;
-        for i in range(0, self.len()) {
-            acc = f(&acc, self.i(i));
-        }
-        acc
     }
 }
 
 macro_rules! array(
     (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr]) => (
         impl<$S> Array<$T, [$T,..$n]> for $Self {
-            #[inline]
-            fn len(&self) -> uint { $n }
-
             #[inline]
             fn i<'a>(&'a self, i: uint) -> &'a $T {
                 &'a self.as_slice()[i]
@@ -97,7 +71,7 @@ macro_rules! array(
             fn build(builder: &fn(i: uint) -> $T) -> $Self {
                 use std::unstable::intrinsics;
                 let mut s: [$T,..$n] = unsafe { intrinsics::uninit() };
-                for i in range::<uint>(0, $n) {
+                for i in range(0u, $n) {
                     s[i] = builder(i);
                 }
                 Array::from_slice(s)
@@ -106,6 +80,11 @@ macro_rules! array(
             #[inline]
             fn iter<'a>(&'a self) -> ::std::vec::VecIterator<'a, $T> {
                 self.as_slice().iter()
+            }
+
+            #[inline]
+            fn mut_iter<'a>(&'a mut self) -> ::std::vec::VecMutIterator<'a, $T> {
+                self.as_mut_slice().mut_iter()
             }
         }
     )
