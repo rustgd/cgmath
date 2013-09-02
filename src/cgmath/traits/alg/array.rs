@@ -15,6 +15,8 @@
 
 #[macro_escape];
 
+use std::vec::VecIterator;
+
 pub trait Array<T, Slice> {
     fn len(&self) -> uint;
     fn i<'a>(&'a self, i: uint) -> &'a T;
@@ -23,6 +25,7 @@ pub trait Array<T, Slice> {
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
     fn from_slice(slice: Slice) -> Self;
     fn build(builder: &fn(i: uint) -> T) -> Self;
+    fn iter<'a>(&'a self) -> VecIterator<'a, T>;
 
     #[inline]
     fn map<U, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
@@ -98,6 +101,11 @@ macro_rules! array(
                     s[i] = builder(i);
                 }
                 Array::from_slice(s)
+            }
+
+            #[inline]
+            fn iter<'a>(&'a self) -> ::std::vec::VecIterator<'a, $T> {
+                self.as_slice().iter()
             }
         }
     )

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num;
 use std::num::{Zero, zero};
 use std::num::{sqrt, atan2};
 
@@ -121,17 +120,21 @@ impl<S: Field> Vec3<S> {
 macro_rules! impl_vec_inner_product(
     ($Self:ident <$S:ident>) => (
         impl<$S:Real + Field + ApproxEq<$S>> InnerProductSpace<$S> for $Self<$S> {
+            #[inline]
             fn norm(&self) -> $S {
-                num::sqrt(self.inner(self))
+                sqrt(self.inner(self))
             }
 
+            #[inline]
             fn inner(&self, other: &$Self<$S>) -> $S {
-                let comp_sum: $Self<$S> = self.bimap(other, |a, b| a.mul(b));
-                comp_sum.fold(num::zero::<$S>(), |a, b| a.add(b))
+                self.iter().zip(other.iter())
+                    .map(|(a, b)| a.mul(b))
+                    .fold(zero::<$S>(), |a, b| a.add(&b))
             }
 
+            #[inline]
             fn is_orthogonal(&self, other: &$Self<$S>) -> bool {
-                self.inner(other).approx_eq(&num::zero())
+                self.inner(other).approx_eq(&zero())
             }
         }
     )
