@@ -16,12 +16,7 @@
 use std::num::{zero, one};
 
 use matrix::Mat4;
-
-/// Ick. We really need better from-int support in std::num.
-#[inline]
-fn two<T: Num>() -> T {
-    one::<T>() + one::<T>()
-}
+use util::two;
 
 /// Create a perspective projection matrix
 ///

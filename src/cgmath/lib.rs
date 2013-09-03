@@ -29,3 +29,11 @@ pub mod quaternion;
 pub mod vector;
 
 pub mod projection;
+
+pub mod util {
+    use std::num::one;
+
+    /// This is horrific. We really need better from-int support in std::num.
+    #[inline]
+    pub fn two<T: Num>() -> T { one::<T>() + one::<T>() }
+}

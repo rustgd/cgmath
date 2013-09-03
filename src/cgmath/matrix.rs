@@ -13,16 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Column major, square matrix types and traits.
+
 use std::num::{one, zero};
 
 use array::*;
 use vector::*;
 
-#[deriving(Clone, Eq)] pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
-#[deriving(Clone, Eq)] pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
-#[deriving(Clone, Eq)] pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
+/// A 2 x 2, column major matrix
+#[deriving(Clone, Eq)]
+pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
 
-// Constructors
+/// A 3 x 3, column major matrix
+#[deriving(Clone, Eq)]
+pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
+
+/// A 4 x 4, column major matrix
+#[deriving(Clone, Eq)]
+pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
 impl<S: Clone + Num> Mat2<S> {
     #[inline]
@@ -122,8 +130,6 @@ impl<S: Clone + Num> Mat4<S> {
         Mat4::from_value(one())
     }
 }
-
-// Trait impls
 
 array!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3])

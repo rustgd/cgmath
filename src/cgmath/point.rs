@@ -22,9 +22,11 @@ use std::num::zero;
 use array::*;
 use vector::*;
 
+/// A point in 2-dimensional space.
 #[deriving(Eq, Zero, Clone)]
 struct Point2<S> { x: S, y: S }
 
+/// A point in 2-dimensional space.
 #[deriving(Eq, Zero, Clone)]
 struct Point3<S> { x: S, y: S, z: S }
 
@@ -48,6 +50,7 @@ impl<S: Num> Point3<S> {
     pub fn origin() -> Point3<S> { zero() }
 }
 
+/// Specifies the numeric operations for point types.
 pub trait Point
 <
     S: Clone + Num,
