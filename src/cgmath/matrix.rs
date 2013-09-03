@@ -135,6 +135,7 @@ pub trait Matrix
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
++   Neg<Self>
 {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a V { self.i(c) }
@@ -173,6 +174,11 @@ pub trait Matrix
         *self.mut_cr(cb, rb) = tmp;
     }
 
+    #[inline]
+    fn neg_self(&mut self) {
+        for c in self.mut_iter() { *c = c.neg() }
+    }
+
     // fn swap_cr(&mut self, (ca, ra): (uint, uint), (cb, rb): (uint, uint)) {
     //     let tmp = self.cr(ca, ra).clone();
     //     *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
@@ -200,6 +206,10 @@ pub trait Matrix
     // pub fn is_rotated(&self) -> bool;
     // pub fn is_symmetric(&self) -> bool;
 }
+
+impl<S: Clone + Num> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Num> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Num> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { self.map(|c| c.neg()) } }
 
 impl<S: Clone + Num + ApproxEq<S>>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>

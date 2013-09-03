@@ -61,8 +61,8 @@ pub trait Vector
     Slice
 >
 :   Array<S, Slice>
++   Neg<Self>
 {
-    #[inline] fn neg(&self) -> Self { self.map(|x| x.neg()) }
     #[inline] fn neg_self(&mut self) { for x in self.mut_iter() { *x = x.neg()   } }
 
     #[inline] fn add_s(&self, s: S) -> Self { self.map(|x| x.add(&s)) }
@@ -99,6 +99,10 @@ pub trait Vector
             .fold(zero::<S>(), |a, b| a.add(&b))
     }
 }
+
+impl<S: Clone + Num> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { self.map(|x| x.neg()) } }
 
 impl<S: Clone + Num> Vector<S, [S, ..2]> for Vec2<S>;
 impl<S: Clone + Num> Vector<S, [S, ..3]> for Vec3<S>;
