@@ -15,7 +15,7 @@
 
 //! Column major, square matrix types and traits.
 
-use std::num::{one, zero, sin, cos};
+use std::num::{Zero, zero, One, one, sin, cos};
 
 use array::*;
 use quaternion::{Quat, ToQuat};
@@ -23,15 +23,15 @@ use vector::*;
 use util::half;
 
 /// A 2 x 2, column major matrix
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Zero)]
 pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
 
 /// A 3 x 3, column major matrix
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Zero)]
 pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 
 /// A 4 x 4, column major matrix
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Zero)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
 // Conversion traits
@@ -159,17 +159,22 @@ impl<S: Clone + Num> Mat4<S> {
     }
 }
 
+impl<S: Clone + Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::ident() } }
+impl<S: Clone + Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::ident() } }
+impl<S: Clone + Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::ident() } }
+
 array!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
 array!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
 
 pub trait Matrix
 <
-    S: Num + Clone + ApproxEq<S>, Slice,
+    S: Clone + Float, Slice,
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
 +   Neg<Self>
++   Zero + One
 {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a V { self.i(c) }
@@ -241,11 +246,11 @@ pub trait Matrix
     // pub fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Clone + Num> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { self.map(|c| c.neg()) } }
-impl<S: Clone + Num> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { self.map(|c| c.neg()) } }
-impl<S: Clone + Num> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { self.map(|c| c.neg()) } }
 
-impl<S: Clone + Num + ApproxEq<S>>
+impl<S: Clone + Float>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
@@ -286,7 +291,7 @@ for Mat2<S>
     }
 }
 
-impl<S: Clone + Num + ApproxEq<S>>
+impl<S: Clone + Float>
 Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
@@ -333,7 +338,7 @@ for Mat3<S>
     }
 }
 
-impl<S: Clone + Real + Num + ApproxEq<S>>
+impl<S: Clone + Float>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {

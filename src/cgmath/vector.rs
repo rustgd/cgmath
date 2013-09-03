@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero, one};
+use std::num::{Zero, zero, One, one};
 use std::num::{sqrt, atan2};
 
 use array::*;
@@ -69,6 +69,10 @@ array!(impl<S> Vec2<S> -> [S, ..2])
 array!(impl<S> Vec3<S> -> [S, ..3])
 array!(impl<S> Vec4<S> -> [S, ..4])
 
+impl<S: Clone + Num> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
+impl<S: Clone + Num> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
+impl<S: Clone + Num> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
@@ -79,6 +83,7 @@ pub trait Vector
 >
 :   Array<S, Slice>
 +   Neg<Self>
++   Zero + One
 {
     // TODO: These method impls use iterators and higher order functions to
     // provide generic impls for vector types of different dimensions. We
