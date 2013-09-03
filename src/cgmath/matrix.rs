@@ -15,7 +15,7 @@
 
 //! Column major, square matrix types and traits.
 
-use std::num::{one, zero};
+use std::num::{one, zero, sin, cos};
 
 use array::*;
 use quaternion::{Quat, ToQuat};
@@ -66,6 +66,17 @@ impl<S: Clone + Num> Mat2<S> {
     #[inline]
     pub fn ident() -> Mat2<S> {
         Mat2::from_value(one())
+    }
+}
+
+impl<S: Clone + Float> Mat2<S> {
+    #[inline]
+    pub fn from_angle(radians: S) -> Mat2<S> {
+        let cos_theta = cos(radians.clone());
+        let sin_theta = sin(radians.clone());
+
+        Mat2::new(cos_theta.clone(),  -sin_theta.clone(),
+                  sin_theta.clone(),  cos_theta.clone())
     }
 }
 
