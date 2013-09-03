@@ -30,6 +30,11 @@ pub struct Vec3<S> { x: S, y: S, z: S }
 #[deriving(Eq, Clone, Zero)]
 pub struct Vec4<S> { x: S, y: S, z: S, w: S }
 
+// Conversion traits
+pub trait ToVec2<S: Clone + Num> { fn to_vec2(&self) -> Vec2<S>; }
+pub trait ToVec3<S: Clone + Num> { fn to_vec3(&self) -> Vec3<S>; }
+pub trait ToVec4<S: Clone + Num> { fn to_vec4(&self) -> Vec4<S>; }
+
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (

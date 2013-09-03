@@ -33,7 +33,11 @@ pub mod projection;
 pub mod util {
     use std::num::one;
 
-    /// This is horrific. We really need better from-int support in std::num.
+    // These functions are horrific! We really need better from-int support
+    // in std::num.
+
     #[inline]
     pub fn two<T: Num>() -> T { one::<T>() + one::<T>() }
+    #[inline]
+    pub fn half<T: Real>() -> T { one::<T>() / two::<T>() }
 }

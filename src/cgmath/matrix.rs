@@ -18,7 +18,9 @@
 use std::num::{one, zero};
 
 use array::*;
+use quaternion::{Quat, ToQuat};
 use vector::*;
+use util::half;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq)]
@@ -31,6 +33,11 @@ pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 /// A 4 x 4, column major matrix
 #[deriving(Clone, Eq)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
+
+// Conversion traits
+pub trait ToMat2<S: Clone + Num> { fn to_mat2(&self) -> Mat2<S>; }
+pub trait ToMat3<S: Clone + Num> { fn to_mat3(&self) -> Mat3<S>; }
+pub trait ToMat4<S: Clone + Num> { fn to_mat4(&self) -> Mat4<S>; }
 
 impl<S: Clone + Num> Mat2<S> {
     #[inline]
@@ -92,6 +99,16 @@ impl<S: Clone + Num> Mat3<S> {
     #[inline]
     pub fn ident() -> Mat3<S> {
         Mat3::from_value(one())
+    }
+}
+
+impl<S: Clone + Float> Mat3<S> {
+    pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
+        let dir  = dir.normalize();
+        let side = dir.cross(&up.normalize());
+        let up   = side.cross(&dir).normalize();
+
+        Mat3::from_cols(up, side, dir)
     }
 }
 
@@ -401,5 +418,54 @@ for Mat4<S>
         } else {
             None
         }
+    }
+}
+
+impl<S:Clone + Float> ToQuat<S> for Mat3<S> {
+    /// Convert the matrix to a quaternion
+    fn to_quat(&self) -> Quat<S> {
+        // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
+        // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
+
+        let mut s;
+        let w; let x; let y; let z;
+        let trace = self.trace();
+
+        cond! (
+            (trace >= zero::<S>()) {
+                s = (one::<S>() + trace).sqrt();
+                w = half::<S>() * s;
+                s = half::<S>() / s;
+                x = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+            }
+            ((*self.cr(0, 0) > *self.cr(1, 1))
+            && (*self.cr(0, 0) > *self.cr(2, 2))) {
+                s = (half::<S>() + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2))).sqrt();
+                w = half::<S>() * s;
+                s = half::<S>() / s;
+                x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+                y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                z = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+            }
+            (*self.cr(1, 1) > *self.cr(2, 2)) {
+                s = (half::<S>() + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2))).sqrt();
+                w = half::<S>() * s;
+                s = half::<S>() / s;
+                x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+                y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                z = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+            }
+            _ {
+                s = (half::<S>() + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1))).sqrt();
+                w = half::<S>() * s;
+                s = half::<S>() / s;
+                x = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
+                y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
+                z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
+            }
+        )
+        Quat::new(w, x, y, z)
     }
 }
