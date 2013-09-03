@@ -17,8 +17,10 @@
 //! disinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
-use traits::alg::*;
-use types::vector::{Vec2, Vec3};
+use std::num::zero;
+
+use array::*;
+use vector::*;
 
 #[deriving(Eq, Zero, Clone)]
 struct Point2<S> { x: S, y: S }
@@ -26,40 +28,50 @@ struct Point2<S> { x: S, y: S }
 #[deriving(Eq, Zero, Clone)]
 struct Point3<S> { x: S, y: S, z: S }
 
-impl<S: Field> Point2<S> {
+impl<S: Num> Point2<S> {
     #[inline]
     pub fn new(x: S, y: S) -> Point2<S> {
         Point2 { x: x, y: y }
     }
+
+    #[inline]
+    pub fn origin() -> Point2<S> { zero() }
 }
 
-impl<S: Field> Point3<S> {
+impl<S: Num> Point3<S> {
     #[inline]
     pub fn new(x: S, y: S, z: S) -> Point3<S> {
         Point3 { x: x, y: y, z: z }
     }
+
+    #[inline]
+    pub fn origin() -> Point3<S> { zero() }
+}
+
+pub trait Point
+<
+    S: Clone + Num,
+    V: Vector<S, Slice>,
+    Slice
+>
+:   Array<S, Slice>
+{
+    #[inline] fn mul_s(&self, s: S) -> Self { self.map(|x| x.mul(&s)) }
+    #[inline] fn div_s(&self, s: S) -> Self { self.map(|x| x.div(&s)) }
+    #[inline] fn rem_s(&self, s: S) -> Self { self.map(|x| x.rem(&s)) }
+
+    #[inline] fn add_v(&self, other: &V) -> Self { self.bimap(other, |a, b| a.add(b) ) }
+    #[inline] fn sub_p(&self, other: &Self) -> V { self.bimap(other, |a, b| a.sub(b) ) }
+
+    #[inline] fn mul_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.mul(&s) } }
+    #[inline] fn div_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.div(&s) } }
+    #[inline] fn rem_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.rem(&s) } }
+
+    #[inline] fn add_self_v(&mut self, other: &V) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add(b) } }
 }
 
 array!(impl<S> Point2<S> -> [S, ..2])
 array!(impl<S> Point3<S> -> [S, ..3])
 
-impl<S: Clone + Field> ClonableArray<S, [S, ..2]> for Point2<S>;
-impl<S: Clone + Field> ClonableArray<S, [S, ..3]> for Point3<S>;
-
-scalar_op!(impl Point2<S> * S -> Point2<S>)
-scalar_op!(impl Point3<S> * S -> Point3<S>)
-scalar_op!(impl Point2<S> / S -> Point2<S>)
-scalar_op!(impl Point3<S> / S -> Point3<S>)
-scalar_op!(impl Point2<S> % S -> Point2<S>)
-scalar_op!(impl Point3<S> % S -> Point3<S>)
-
-impl<S: Field> ScalarMul<S> for Point2<S>;
-impl<S: Field> ScalarMul<S> for Point3<S>;
-
-array_op!(impl<S> Point2<S> + Vec2<S> -> Point2<S>)
-array_op!(impl<S> Point3<S> + Vec3<S> -> Point3<S>)
-array_op!(impl<S> Point2<S> - Point2<S> -> Vec2<S>)
-array_op!(impl<S> Point3<S> - Point3<S> -> Vec3<S>)
-
-impl<S: Field> AffineSpace<S, Vec2<S>> for Point2<S>;
-impl<S: Field> AffineSpace<S, Vec3<S>> for Point3<S>;
+impl<S: Clone + Num> Point<S, Vec2<S>, [S, ..2]> for Point2<S>;
+impl<S: Clone + Num> Point<S, Vec3<S>, [S, ..3]> for Point3<S>;

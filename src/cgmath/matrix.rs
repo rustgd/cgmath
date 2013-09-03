@@ -13,18 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{One, one, zero};
+use std::num::{one, zero};
 
-use traits::alg::*;
-use types::vector::*;
+use array::*;
+use vector::*;
 
-#[deriving(Clone, Eq, Zero)] pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
-#[deriving(Clone, Eq, Zero)] pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
-#[deriving(Clone, Eq, Zero)] pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
+#[deriving(Clone, Eq)] pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
+#[deriving(Clone, Eq)] pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
+#[deriving(Clone, Eq)] pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
 // Constructors
 
-impl<S: Clone + Field> Mat2<S> {
+impl<S: Clone + Num> Mat2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Mat2<S> {
@@ -54,7 +54,7 @@ impl<S: Clone + Field> Mat2<S> {
     }
 }
 
-impl<S: Clone + Field> Mat3<S> {
+impl<S: Clone + Num> Mat3<S> {
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
@@ -87,7 +87,7 @@ impl<S: Clone + Field> Mat3<S> {
     }
 }
 
-impl<S: Clone + Field> Mat4<S> {
+impl<S: Clone + Num> Mat4<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
@@ -129,62 +129,80 @@ array!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
 array!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
 
-impl<S: Clone + Field> ClonableArray<Vec2<S>, [Vec2<S>, ..2]> for Mat2<S>;
-impl<S: Clone + Field> ClonableArray<Vec3<S>, [Vec3<S>, ..3]> for Mat3<S>;
-impl<S: Clone + Field> ClonableArray<Vec4<S>, [Vec4<S>, ..4]> for Mat4<S>;
-
-scalar_op!(impl Mat2<S> * S -> Mat2<S>)
-scalar_op!(impl Mat3<S> * S -> Mat3<S>)
-scalar_op!(impl Mat4<S> * S -> Mat4<S>)
-scalar_op!(impl Mat2<S> / S -> Mat2<S>)
-scalar_op!(impl Mat3<S> / S -> Mat3<S>)
-scalar_op!(impl Mat4<S> / S -> Mat4<S>)
-scalar_op!(impl Mat2<S> % S -> Mat2<S>)
-scalar_op!(impl Mat3<S> % S -> Mat3<S>)
-scalar_op!(impl Mat4<S> % S -> Mat4<S>)
-
-impl<S: Field> ScalarMul<S> for Mat2<S>;
-impl<S: Field> ScalarMul<S> for Mat3<S>;
-impl<S: Field> ScalarMul<S> for Mat4<S>;
-
-array_op!(impl<S> Mat2<S> + Mat2<S> -> Mat2<S>)
-array_op!(impl<S> Mat3<S> + Mat3<S> -> Mat3<S>)
-array_op!(impl<S> Mat4<S> + Mat4<S> -> Mat4<S>)
-array_op!(impl<S> Mat2<S> - Mat2<S> -> Mat2<S>)
-array_op!(impl<S> Mat3<S> - Mat3<S> -> Mat3<S>)
-array_op!(impl<S> Mat4<S> - Mat4<S> -> Mat4<S>)
-array_op!(impl<S> -Mat2<S> -> Mat2<S>)
-array_op!(impl<S> -Mat3<S> -> Mat3<S>)
-array_op!(impl<S> -Mat4<S> -> Mat4<S>)
-
-impl<S: Field> Module<S> for Mat2<S>;
-impl<S: Field> Module<S> for Mat3<S>;
-impl<S: Field> Module<S> for Mat4<S>;
-
-impl<S: Clone + Field> One for Mat2<S> {
-    #[inline] fn one() -> Mat2<S> { Mat2::ident() }
-}
-
-impl<S: Clone + Field> One for Mat3<S> {
-    #[inline] fn one() -> Mat3<S> { Mat3::ident() }
-}
-
-impl<S: Clone + Field> One for Mat4<S> {
-    #[inline] fn one() -> Mat4<S> { Mat4::ident() }
-}
-
-impl<S: Clone + Field> Ring<S> for Mat2<S>;
-impl<S: Clone + Field> Ring<S> for Mat3<S>;
-impl<S: Clone + Field> Ring<S> for Mat4<S>;
-
-impl<S: Clone + Field + ApproxEq<S>>
-Matrix
+pub trait Matrix
 <
-    S,
-    Vec2<S>, [S, ..2], [Vec2<S>, ..2],
-    Vec2<S>, [S, ..2], [Vec2<S>, ..2],
-    Mat2<S>
+    S: Num + Clone + ApproxEq<S>, Slice,
+    V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
+:   Array<V, Slice>
+{
+    #[inline]
+    fn c<'a>(&'a self, c: uint) -> &'a V { self.i(c) }
+
+    #[inline]
+    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut V { self.mut_i(c) }
+
+    #[inline]
+    fn swap_c(&mut self, a: uint, b: uint) {
+        let tmp = self.c(a).clone();
+        *self.mut_c(a) = self.c(b).clone();
+        *self.mut_c(b) = tmp;
+    }
+
+    fn r(&self, r: uint) -> V;
+
+    #[inline]
+    fn swap_r(&mut self, a: uint, b: uint) {
+        for c in self.mut_iter() { c.swap(a, b) }
+    }
+
+    #[inline]
+    fn cr<'a>(&'a self, c: uint, r: uint) -> &'a S { self.i(c).i(r) }
+
+    #[inline]
+    fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut S {
+        self.mut_i(c).mut_i(r)
+    }
+
+    #[inline]
+    fn swap_cr(&mut self, a: (uint, uint), b: (uint, uint)) {
+        let (ca, ra) = a;
+        let (cb, rb) = b;
+        let tmp = self.cr(ca, ra).clone();
+        *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
+        *self.mut_cr(cb, rb) = tmp;
+    }
+
+    // fn swap_cr(&mut self, (ca, ra): (uint, uint), (cb, rb): (uint, uint)) {
+    //     let tmp = self.cr(ca, ra).clone();
+    //     *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
+    //     *self.mut_cr(cb, rb) = tmp;
+    // }
+
+    fn transpose(&self) -> Self;
+    fn transpose_self(&mut self);
+    fn trace(&self) -> S;
+    fn determinant(&self) -> S;
+    fn invert(&self) -> Option<Self>;
+
+    #[inline]
+    fn invert_self(&mut self) {
+        *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
+    }
+
+    #[inline]
+    fn is_invertible(&self) -> bool {
+        !self.determinant().approx_eq(&zero::<S>())
+    }
+
+    // pub fn is_identity(&self) -> bool;
+    // pub fn is_diagonal(&self) -> bool;
+    // pub fn is_rotated(&self) -> bool;
+    // pub fn is_symmetric(&self) -> bool;
+}
+
+impl<S: Clone + Num + ApproxEq<S>>
+Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
     #[inline]
@@ -197,62 +215,7 @@ for Mat2<S>
         Mat2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
                   self.cr(0, 1).clone(), self.cr(1, 1).clone())
     }
-}
 
-impl<S: Clone + Field + ApproxEq<S>>
-Matrix
-<
-    S,
-    Vec3<S>, [S, ..3], [Vec3<S>, ..3],
-    Vec3<S>, [S, ..3], [Vec3<S>, ..3],
-    Mat3<S>
->
-for Mat3<S>
-{
-    #[inline]
-    fn r(&self, r: uint) -> Vec3<S> {
-        Vec3::new(self.i(0).i(r).clone(),
-                  self.i(1).i(r).clone(),
-                  self.i(2).i(r).clone())
-    }
-
-    fn transpose(&self) -> Mat3<S> {
-        Mat3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
-    }
-}
-
-impl<S: Clone + Field + ApproxEq<S>>
-Matrix
-<
-    S,
-    Vec4<S>, [S, ..4], [Vec4<S>, ..4],
-    Vec4<S>, [S, ..4], [Vec4<S>, ..4],
-    Mat4<S>
->
-for Mat4<S>
-{
-    #[inline]
-    fn r(&self, r: uint) -> Vec4<S> {
-        Vec4::new(self.i(0).i(r).clone(),
-                  self.i(1).i(r).clone(),
-                  self.i(2).i(r).clone(),
-                  self.i(2).i(r).clone())
-    }
-
-    fn transpose(&self) -> Mat4<S> {
-        Mat4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                  self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
-    }
-}
-
-impl<S: Clone + Field + ApproxEq<S>>
-SquareMatrix<S, Vec2<S>, [S, ..2], [Vec2<S>, ..2]>
-for Mat2<S>
-{
     #[inline]
     fn transpose_self(&mut self) {
         self.swap_cr((0, 1), (1, 0));
@@ -279,10 +242,23 @@ for Mat2<S>
     }
 }
 
-impl<S: Clone + Field + ApproxEq<S>>
-SquareMatrix<S, Vec3<S>, [S, ..3], [Vec3<S>, ..3]>
+impl<S: Clone + Num + ApproxEq<S>>
+Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
+    #[inline]
+    fn r(&self, r: uint) -> Vec3<S> {
+        Vec3::new(self.i(0).i(r).clone(),
+                  self.i(1).i(r).clone(),
+                  self.i(2).i(r).clone())
+    }
+
+    fn transpose(&self) -> Mat3<S> {
+        Mat3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
+                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
+    }
+
     #[inline]
     fn transpose_self(&mut self) {
         self.swap_cr((0, 1), (1, 0));
@@ -306,17 +282,32 @@ for Mat3<S>
         if det.approx_eq(&zero()) {
             None
         } else {
-            Some(Mat3::from_cols(self.c(1).cross(self.c(2)) / det,
-                                 self.c(2).cross(self.c(0)) / det,
-                                 self.c(0).cross(self.c(1)) / det).transpose())
+            Some(Mat3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
+                                 self.c(2).cross(self.c(0)).div_s(det.clone()),
+                                 self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
         }
     }
 }
 
-impl<S: Clone + Real + Field + ApproxEq<S>>
-SquareMatrix<S, Vec4<S>, [S, ..4], [Vec4<S>, ..4]>
+impl<S: Clone + Real + Num + ApproxEq<S>>
+Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
+    #[inline]
+    fn r(&self, r: uint) -> Vec4<S> {
+        Vec4::new(self.i(0).i(r).clone(),
+                  self.i(1).i(r).clone(),
+                  self.i(2).i(r).clone(),
+                  self.i(2).i(r).clone())
+    }
+
+    fn transpose(&self) -> Mat4<S> {
+        Mat4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
+                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                  self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
+    }
+
     #[inline]
     fn transpose_self(&mut self) {
         self.swap_cr((0, 1), (1, 0));
@@ -359,7 +350,7 @@ for Mat4<S>
             // and essentially reduce [A|I]
 
             let mut A = self.clone();
-            let mut I = one::<Mat4<S>>();
+            let mut I = Mat4::ident();
 
             for j in range(0u, 4u) {
                 // Find largest element in col j
@@ -376,17 +367,17 @@ for Mat4<S>
                 I.swap_c(i1, j);
 
                 // Scale col j to have a unit diagonal
-                *I.mut_c(j) = I.c(j) / *A.cr(j, j);
-                *A.mut_c(j) = A.c(j) / *A.cr(j, j);
+                *I.mut_c(j) = I.c(j).div_s(A.cr(j, j).clone());
+                *A.mut_c(j) = A.c(j).div_s(A.cr(j, j).clone());
 
                 // Eliminate off-diagonal elems in col j of A,
                 // doing identical ops to I
                 for i in range(0u, 4u) {
                     if i != j {
-                        let ij_mul_aij = I.c(j) * *A.cr(i, j);
-                        let aj_mul_aij = A.c(j) * *A.cr(i, j);
-                        *I.mut_c(i) = I.c(i) - ij_mul_aij;
-                        *A.mut_c(i) = A.c(i) - aj_mul_aij;
+                        let ij_mul_aij = I.c(j).mul_s(A.cr(i, j).clone());
+                        let aj_mul_aij = A.c(j).mul_s(A.cr(i, j).clone());
+                        *I.mut_c(i) = I.c(i).sub_v(&ij_mul_aij);
+                        *A.mut_c(i) = A.c(i).sub_v(&aj_mul_aij);
                     }
                 }
             }
@@ -396,4 +387,3 @@ for Mat4<S>
         }
     }
 }
-

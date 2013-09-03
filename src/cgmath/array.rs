@@ -17,7 +17,12 @@
 
 use std::vec::{VecIterator, VecMutIterator};
 
-pub trait Array<T, Slice> {
+pub trait Array
+<
+    T: Clone,
+    Slice
+>
+{
     fn i<'a>(&'a self, i: uint) -> &'a T;
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut T;
     fn as_slice<'a>(&'a self) -> &'a Slice;
@@ -27,21 +32,29 @@ pub trait Array<T, Slice> {
     fn iter<'a>(&'a self) -> VecIterator<'a, T>;
     fn mut_iter<'a>(&'a mut self) -> VecMutIterator<'a, T>;
 
+    /// Swap two elements of the type in place.
     #[inline]
-    fn map<U, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
+    fn swap(&mut self, a: uint, b: uint) {
+        let tmp = self.i(a).clone();
+        *self.mut_i(a) = self.i(b).clone();
+        *self.mut_i(b) = tmp;
+    }
+
+    #[inline]
+    fn map<U: Clone, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
         Array::build(|i| f(self.i(i)))
     }
 
     #[inline]
-    fn bimap<U, SliceU, UU: Array<U, SliceU>,
-             V, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
+    fn bimap<U: Clone, SliceU, UU: Array<U, SliceU>,
+             V: Clone, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
         Array::build(|i| f(self.i(i), other.i(i)))
     }
 }
 
 macro_rules! array(
     (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr]) => (
-        impl<$S> Array<$T, [$T,..$n]> for $Self {
+        impl<$S: Clone> Array<$T, [$T,..$n]> for $Self {
             #[inline]
             fn i<'a>(&'a self, i: uint) -> &'a $T {
                 &'a self.as_slice()[i]
@@ -114,14 +127,3 @@ macro_rules! array_op(
     (impl<$S:ident> $Self:ty / $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Div, div) for ($Self, $Other) -> $Result));
     (impl<$S:ident> $Self:ty % $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Rem, rem) for ($Self, $Other) -> $Result));
 )
-
-/// An `Array` whose elements can be cloned
-pub trait ClonableArray<T: Clone, Slice>: Array<T, Slice> {
-    /// Swap two elements of the type in place.
-    #[inline]
-    fn swap(&mut self, a: uint, b: uint) {
-        let tmp = self.i(a).clone();
-        *self.mut_i(a) = self.i(b).clone();
-        *self.mut_i(b) = tmp;
-    }
-}

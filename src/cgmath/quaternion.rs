@@ -13,32 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num;
+use vector::Vec3;
 
-use traits::alg::Field;
-use traits::alg::Matrix;
-use traits::alg::VectorSpace;
+/// A quaternion in scalar/vector form
+#[deriving(Clone, Eq)]
+pub struct Quat<T> { s: T, v: Vec3<T> }
 
-pub trait SquareMatrix
-<
-    S: Field + ApproxEq<S>,
-    V: VectorSpace<S>,
-    VVSlice, VSlice
->
-:   Matrix<S, V, VVSlice, VSlice, V, VVSlice, VSlice, Self>
-{
-    fn transpose_self(&mut self);
-    fn trace(&self) -> S;
-    fn determinant(&self) -> S;
-    fn invert(&self) -> Option<Self>;
-
+impl<T: Clone + Num> Quat<T> {
+    /// Construct a new quaternion from one scalar component and three
+    /// imaginary components
     #[inline]
-    fn invert_self(&mut self) {
-        *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
+    pub fn new(w: T, xi: T, yj: T, zk: T) -> Quat<T> {
+        Quat::from_sv(w, Vec3::new(xi, yj, zk))
     }
 
+    /// Construct a new quaternion from a scalar and a vector
     #[inline]
-    fn is_invertible(&self) -> bool {
-        !self.determinant().approx_eq(&num::zero::<S>())
+    pub fn from_sv(s: T, v: Vec3<T>) -> Quat<T> {
+        Quat { s: s, v: v }
     }
 }

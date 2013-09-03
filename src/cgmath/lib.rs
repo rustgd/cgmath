@@ -22,5 +22,8 @@
 #[license = "ASL2"];
 #[crate_type = "lib"];
 
-pub mod traits;
-pub mod types;
+pub mod array;
+pub mod matrix;
+pub mod point;
+pub mod quaternion;
+pub mod vector;
