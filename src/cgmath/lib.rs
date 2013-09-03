@@ -28,6 +28,8 @@ pub mod point;
 pub mod quaternion;
 pub mod vector;
 
+pub mod ray;
+
 pub mod projection;
 
 pub mod util {
