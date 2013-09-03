@@ -35,6 +35,10 @@ pub trait ToVec2<S: Clone + Num> { fn to_vec2(&self) -> Vec2<S>; }
 pub trait ToVec3<S: Clone + Num> { fn to_vec3(&self) -> Vec3<S>; }
 pub trait ToVec4<S: Clone + Num> { fn to_vec4(&self) -> Vec4<S>; }
 
+approx_eq!(impl<S> Vec2<S>)
+approx_eq!(impl<S> Vec3<S>)
+approx_eq!(impl<S> Vec4<S>)
+
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (
@@ -166,6 +170,7 @@ pub trait EuclideanVector
     Slice
 >
 :   Vector<S, Slice>
++   ApproxEq<S>
 {
     /// Returns `true` if the vector is perpendicular (at right angles to)
     /// the other vector.

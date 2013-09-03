@@ -34,6 +34,10 @@ pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 #[deriving(Clone, Eq, Zero)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
+approx_eq!(impl<S> Mat2<S>)
+approx_eq!(impl<S> Mat3<S>)
+approx_eq!(impl<S> Mat4<S>)
+
 // Conversion traits
 pub trait ToMat2<S: Clone + Num> { fn to_mat2(&self) -> Mat2<S>; }
 pub trait ToMat3<S: Clone + Num> { fn to_mat3(&self) -> Mat3<S>; }
@@ -175,6 +179,7 @@ pub trait Matrix
 :   Array<V, Slice>
 +   Neg<Self>
 +   Zero + One
++   ApproxEq<S>
 {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a V { self.i(c) }
@@ -237,13 +242,21 @@ pub trait Matrix
 
     #[inline]
     fn is_invertible(&self) -> bool {
-        !self.determinant().approx_eq(&zero::<S>())
+        !self.determinant().approx_eq(&zero())
     }
 
-    // pub fn is_identity(&self) -> bool;
-    // pub fn is_diagonal(&self) -> bool;
-    // pub fn is_rotated(&self) -> bool;
-    // pub fn is_symmetric(&self) -> bool;
+    #[inline]
+    fn is_identity(&self) -> bool {
+        self.approx_eq(&one())
+    }
+
+    #[inline]
+    fn is_rotated(&self) -> bool {
+        !self.approx_eq(&one())
+    }
+
+    fn is_diagonal(&self) -> bool;
+    fn is_symmetric(&self) -> bool;
 }
 
 impl<S: Clone + Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { self.map(|c| c.neg()) } }
@@ -280,6 +293,7 @@ for Mat2<S>
         *self.cr(0, 0) * *self.cr(1, 1) - *self.cr(1, 0) * *self.cr(0, 1)
     }
 
+    #[inline]
     fn invert(&self) -> Option<Mat2<S>> {
         let det = self.determinant();
         if det.approx_eq(&zero()) {
@@ -288,6 +302,19 @@ for Mat2<S>
             Some(Mat2::new( self.cr(1, 1) / det, -self.cr(0, 1) / det,
                            -self.cr(1, 0) / det,  self.cr(0, 0) / det))
         }
+    }
+
+    #[inline]
+    fn is_diagonal(&self) -> bool {
+        self.cr(0, 1).approx_eq(&zero()) &&
+        self.cr(1, 0).approx_eq(&zero())
+    }
+
+
+    #[inline]
+    fn is_symmetric(&self) -> bool {
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(1, 0).approx_eq(self.cr(0, 1))
     }
 }
 
@@ -336,6 +363,28 @@ for Mat3<S>
                                  self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
         }
     }
+
+    fn is_diagonal(&self) -> bool {
+        self.cr(0, 1).approx_eq(&zero()) &&
+        self.cr(0, 2).approx_eq(&zero()) &&
+
+        self.cr(1, 0).approx_eq(&zero()) &&
+        self.cr(1, 2).approx_eq(&zero()) &&
+
+        self.cr(2, 0).approx_eq(&zero()) &&
+        self.cr(2, 1).approx_eq(&zero())
+    }
+
+    fn is_symmetric(&self) -> bool {
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(0, 2).approx_eq(self.cr(2, 0)) &&
+
+        self.cr(1, 0).approx_eq(self.cr(0, 1)) &&
+        self.cr(1, 2).approx_eq(self.cr(2, 1)) &&
+
+        self.cr(2, 0).approx_eq(self.cr(0, 2)) &&
+        self.cr(2, 1).approx_eq(self.cr(1, 2))
+    }
 }
 
 impl<S: Clone + Float>
@@ -357,7 +406,6 @@ for Mat4<S>
                   self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
     }
 
-    #[inline]
     fn transpose_self(&mut self) {
         self.swap_cr((0, 1), (1, 0));
         self.swap_cr((0, 2), (2, 0));
@@ -434,6 +482,42 @@ for Mat4<S>
         } else {
             None
         }
+    }
+
+    fn is_diagonal(&self) -> bool {
+        self.cr(0, 1).approx_eq(&zero()) &&
+        self.cr(0, 2).approx_eq(&zero()) &&
+        self.cr(0, 3).approx_eq(&zero()) &&
+
+        self.cr(1, 0).approx_eq(&zero()) &&
+        self.cr(1, 2).approx_eq(&zero()) &&
+        self.cr(1, 3).approx_eq(&zero()) &&
+
+        self.cr(2, 0).approx_eq(&zero()) &&
+        self.cr(2, 1).approx_eq(&zero()) &&
+        self.cr(2, 3).approx_eq(&zero()) &&
+
+        self.cr(3, 0).approx_eq(&zero()) &&
+        self.cr(3, 1).approx_eq(&zero()) &&
+        self.cr(3, 2).approx_eq(&zero())
+    }
+
+    fn is_symmetric(&self) -> bool {
+        self.cr(0, 1).approx_eq(self.cr(1, 0)) &&
+        self.cr(0, 2).approx_eq(self.cr(2, 0)) &&
+        self.cr(0, 3).approx_eq(self.cr(3, 0)) &&
+
+        self.cr(1, 0).approx_eq(self.cr(0, 1)) &&
+        self.cr(1, 2).approx_eq(self.cr(2, 1)) &&
+        self.cr(1, 3).approx_eq(self.cr(3, 1)) &&
+
+        self.cr(2, 0).approx_eq(self.cr(0, 2)) &&
+        self.cr(2, 1).approx_eq(self.cr(1, 2)) &&
+        self.cr(2, 3).approx_eq(self.cr(3, 2)) &&
+
+        self.cr(3, 0).approx_eq(self.cr(0, 3)) &&
+        self.cr(3, 1).approx_eq(self.cr(1, 3)) &&
+        self.cr(3, 2).approx_eq(self.cr(2, 3))
     }
 }
 

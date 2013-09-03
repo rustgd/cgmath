@@ -30,6 +30,9 @@ struct Point2<S> { x: S, y: S }
 #[deriving(Eq, Zero, Clone)]
 struct Point3<S> { x: S, y: S, z: S }
 
+approx_eq!(impl<S> Point2<S>)
+approx_eq!(impl<S> Point3<S>)
+
 impl<S: Num> Point2<S> {
     #[inline]
     pub fn new(x: S, y: S) -> Point2<S> {

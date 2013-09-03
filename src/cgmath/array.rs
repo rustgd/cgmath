@@ -103,27 +103,26 @@ macro_rules! array(
     )
 )
 
-macro_rules! array_op(
-    (impl<$S:ident> ($Op:ident, $op:ident) for ($Self:ty, $Other:ty) -> $Result:ty) => (
-        impl<$S: Field> $Op<$Other, $Result> for $Self {
-            #[inline(always)]
-            fn $op(&self, other: &$Other) -> $Result {
-                self.bimap(other, |a, b| a.$op(b))
+macro_rules! approx_eq(
+    (impl<$S:ident> $Self:ty) => (
+        impl<$S: Clone + ApproxEq<$S>> ApproxEq<$S> for $Self {
+            #[inline]
+            fn approx_epsilon() -> $S {
+                // TODO: fix this after static methods are fixed in rustc
+                fail!(~"Doesn't work!");
+            }
+
+            #[inline]
+            fn approx_eq(&self, other: &$Self) -> bool {
+                self.iter().zip(other.iter())
+                           .all(|(a, b)| a.approx_eq(b))
+            }
+
+            #[inline]
+            fn approx_eq_eps(&self, other: &$Self, approx_epsilon: &$S) -> bool {
+                self.iter().zip(other.iter())
+                           .all(|(a, b)| a.approx_eq_eps(b, approx_epsilon))
             }
         }
-    );
-    (impl<$S:ident> ($Op:ident, $op:ident) for $Self:ty -> $Result:ty) => (
-        impl<$S: Field> $Op<$Result> for $Self {
-            #[inline(always)]
-            fn $op(&self) -> $Result {
-                self.map(|a| a.$op())
-            }
-        }
-    );
-    (impl<$S:ident> -$Self:ty -> $Result:ty) => (array_op!(impl<$S> (Neg, neg) for $Self -> $Result));
-    (impl<$S:ident> $Self:ty + $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Add, add) for ($Self, $Other) -> $Result));
-    (impl<$S:ident> $Self:ty - $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Sub, sub) for ($Self, $Other) -> $Result));
-    (impl<$S:ident> $Self:ty * $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Mul, mul) for ($Self, $Other) -> $Result));
-    (impl<$S:ident> $Self:ty / $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Div, div) for ($Self, $Other) -> $Result));
-    (impl<$S:ident> $Self:ty % $Other:ty -> $Result:ty) => (array_op!(impl<$S> (Rem, rem) for ($Self, $Other) -> $Result));
+    )
 )
