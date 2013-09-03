@@ -199,10 +199,31 @@ pub trait EuclideanVector
     }
 
     /// Returns the result of linarly interpolating the length of the vector
-    /// to the length of `other` by the specified amount.
+    /// towards the length of `other` by the specified amount.
     #[inline]
     fn lerp(&self, other: &Self, amount: S) -> Self {
         self.add_v(&other.sub_v(self).mul_s(amount))
+    }
+
+    /// Normalises the vector to a length of `1`.
+    #[inline]
+    fn normalize_self(&mut self) {
+        let rlen = self.length().recip();
+        self.mul_self_s(rlen);
+    }
+
+    /// Normalizes the vector to `length`.
+    #[inline]
+    fn normalize_self_to(&mut self, length: S) {
+        let n = length / self.length();
+        self.mul_self_s(n);
+    }
+
+    /// Linearly interpolates the length of the vector towards the length of
+    /// `other` by the specified amount.
+    fn lerp_self(&mut self, other: &Self, amount: S) {
+        let v = other.sub_v(self).mul_s(amount);
+        self.add_self_v(&v);
     }
 }
 
