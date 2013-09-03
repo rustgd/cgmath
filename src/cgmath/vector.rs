@@ -152,7 +152,7 @@ impl<S: Clone + Num> Vec3<S> {
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector
 <
-    S: Clone + Real + ApproxEq<S>,
+    S: Clone + Float,
     Slice
 >
 :   Vector<S, Slice>
@@ -201,14 +201,14 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: Clone + Real + ApproxEq<S>> EuclideanVector<S, [S, ..2]> for Vec2<S> {
+impl<S: Clone + Float> EuclideanVector<S, [S, ..2]> for Vec2<S> {
     #[inline]
     fn angle(&self, other: &Vec2<S>) -> S {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
-impl<S: Clone + Real + ApproxEq<S>> EuclideanVector<S, [S, ..3]> for Vec3<S> {
+impl<S: Clone + Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
     fn angle(&self, other: &Vec3<S>) -> S {
         atan2(self.cross(other).length(), self.dot(other))
