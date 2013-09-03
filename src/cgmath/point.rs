@@ -78,3 +78,15 @@ array!(impl<S> Point3<S> -> [S, ..3])
 
 impl<S: Clone + Num> Point<S, Vec2<S>, [S, ..2]> for Point2<S>;
 impl<S: Clone + Num> Point<S, Vec3<S>, [S, ..3]> for Point3<S>;
+
+impl<S> ToStr for Point2<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("[%?, %?]", self.x, self.y)
+    }
+}
+
+impl<S> ToStr for Point3<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("[%?, %?, %?]", self.x, self.y, self.z)
+    }
+}

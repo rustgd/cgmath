@@ -219,3 +219,21 @@ impl<S: Clone + Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
+
+impl<S> ToStr for Vec2<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("[%?, %?]", self.x, self.y)
+    }
+}
+
+impl<S> ToStr for Vec3<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("[%?, %?, %?]", self.x, self.y, self.z)
+    }
+}
+
+impl<S> ToStr for Vec4<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("[%?, %?, %?, %?]", self.x, self.y, self.z, self.w)
+    }
+}

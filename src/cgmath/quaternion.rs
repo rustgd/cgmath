@@ -233,3 +233,9 @@ impl<S: Clone + Float> Neg<Quat<S>> for Quat<S> {
         Quat::from_sv(-self.s, -self.v)
     }
 }
+
+impl<S> ToStr for Quat<S> {
+    fn to_str(&self) -> ~str {
+        fmt!("%? + %?i + %?j + %?k", self.s, self.v.x, self.v.y, self.v.z)
+    }
+}
