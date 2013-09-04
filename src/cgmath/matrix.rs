@@ -218,16 +218,31 @@ pub trait Matrix
         *self.mut_cr(cb, rb) = tmp;
     }
 
-    #[inline]
-    fn neg_self(&mut self) {
-        for c in self.mut_iter() { *c = c.neg() }
-    }
-
     // fn swap_cr(&mut self, (ca, ra): (uint, uint), (cb, rb): (uint, uint)) {
     //     let tmp = self.cr(ca, ra).clone();
     //     *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
     //     *self.mut_cr(cb, rb) = tmp;
     // }
+
+    #[inline] fn neg_self(&mut self) { for c in self.mut_iter() { *c = c.neg() } }
+
+    #[inline] fn mul_s(&self, s: S) -> Self { self.map(|c| c.mul_s(s.clone())) }
+    #[inline] fn div_s(&self, s: S) -> Self { self.map(|c| c.div_s(s.clone())) }
+    #[inline] fn rem_s(&self, s: S) -> Self { self.map(|c| c.rem_s(s.clone())) }
+
+    #[inline] fn mul_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.mul_s(s.clone()) } }
+    #[inline] fn div_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.div_s(s.clone()) } }
+    #[inline] fn rem_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.rem_s(s.clone()) } }
+
+    fn mul_v(&self, v: &V) -> V;
+
+    #[inline] fn add_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.add_v(b) ) }
+    #[inline] fn sub_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.sub_v(b) ) }
+
+    #[inline] fn add_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add_v(b) } }
+    #[inline] fn sub_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.sub_v(b) } }
+
+    fn mul_m(&self, other: &Self) -> Self;
 
     fn transpose(&self) -> Self;
     fn transpose_self(&mut self);
@@ -271,6 +286,16 @@ for Mat2<S>
     fn r(&self, r: uint) -> Vec2<S> {
         Vec2::new(self.i(0).i(r).clone(),
                   self.i(1).i(r).clone())
+    }
+
+    fn mul_v(&self, v: &Vec2<S>) -> Vec2<S> {
+        Vec2::new(self.r(0).dot(v),
+                  self.r(1).dot(v))
+    }
+
+    fn mul_m(&self, other: &Mat2<S>) -> Mat2<S> {
+        Mat2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
     }
 
     fn transpose(&self) -> Mat2<S> {
@@ -329,6 +354,18 @@ for Mat3<S>
                   self.i(2).i(r).clone())
     }
 
+    fn mul_v(&self, v: &Vec3<S>) -> Vec3<S> {
+        Vec3::new(self.r(0).dot(v),
+                  self.r(1).dot(v),
+                  self.r(2).dot(v))
+    }
+
+    fn mul_m(&self, other: &Mat3<S>) -> Mat3<S> {
+        Mat3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
+                  self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
+    }
+
     fn transpose(&self) -> Mat3<S> {
         Mat3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
                   self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
@@ -355,9 +392,7 @@ for Mat3<S>
 
     fn invert(&self) -> Option<Mat3<S>> {
         let det = self.determinant();
-        if det.approx_eq(&zero()) {
-            None
-        } else {
+        if det.approx_eq(&zero()) { None } else {
             Some(Mat3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
                                  self.c(2).cross(self.c(0)).div_s(det.clone()),
                                  self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
@@ -397,6 +432,20 @@ for Mat4<S>
                   self.i(1).i(r).clone(),
                   self.i(2).i(r).clone(),
                   self.i(2).i(r).clone())
+    }
+
+    fn mul_v(&self, v: &Vec4<S>) -> Vec4<S> {
+        Vec4::new(self.r(0).dot(v),
+                  self.r(1).dot(v),
+                  self.r(2).dot(v),
+                  self.r(3).dot(v))
+    }
+
+    fn mul_m(&self, other: &Mat4<S>) -> Mat4<S> {
+        Mat4::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)), self.r(2).dot(other.c(0)), self.r(3).dot(other.c(0)),
+                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)), self.r(2).dot(other.c(1)), self.r(3).dot(other.c(1)),
+                  self.r(0).dot(other.c(2)), self.r(1).dot(other.c(2)), self.r(2).dot(other.c(2)), self.r(3).dot(other.c(2)),
+                  self.r(0).dot(other.c(3)), self.r(1).dot(other.c(3)), self.r(2).dot(other.c(3)), self.r(3).dot(other.c(3)))
     }
 
     fn transpose(&self) -> Mat4<S> {
