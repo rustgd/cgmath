@@ -24,10 +24,11 @@
 
 pub mod array;
 pub mod matrix;
-pub mod point;
 pub mod quaternion;
 pub mod vector;
 
+pub mod angle;
+pub mod point;
 pub mod ray;
 
 pub mod projection;
