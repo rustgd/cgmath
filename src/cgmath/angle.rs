@@ -86,17 +86,7 @@ pub trait Angle
     #[inline] fn mul_self_s(&mut self, s: S) { *self.mut_s() = *self.s() * s }
     #[inline] fn div_self_s(&mut self, s: S) { *self.mut_s() = *self.s() / s }
     #[inline] fn rem_self_s(&mut self, s: S) { *self.mut_s() = *self.s() % s }
-
-    #[inline] fn sin(&self) -> S { self.s().sin() }
-    #[inline] fn cos(&self) -> S { self.s().cos() }
-    #[inline] fn tan(&self) -> S { self.s().tan() }
-    #[inline] fn sin_cos(&self) -> (S, S) { self.s().sin_cos() }
 }
-
-#[inline] pub fn sin<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.sin() }
-#[inline] pub fn cos<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.cos() }
-#[inline] pub fn tan<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.tan() }
-#[inline] pub fn sin_cos<S: Clone + Float, A: Angle<S>>(theta: A) -> (S, S) { theta.sin_cos() }
 
 impl<S: Clone + Float> Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
@@ -106,21 +96,15 @@ impl<S: Clone + Float> Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
 }
 
-pub trait ScalarTrig: Clone + Float {
-    // These need underscores so that they don't conflict with the methods
-    // defined in the `std::num::Trigonometric` trait.
-    #[inline] fn asin_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.asin())) }
-    #[inline] fn acos_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.acos())) }
-    #[inline] fn atan_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.atan())) }
-    #[inline] fn atan2_<A: Angle<Self>>(&self, other: &Self) -> A { Angle::from(rad(self.atan2(other))) }
-}
+#[inline] pub fn sin<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.sin() }
+#[inline] pub fn cos<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.cos() }
+#[inline] pub fn tan<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.tan() }
+#[inline] pub fn sin_cos<S: Clone + Float, A: Angle<S>>(theta: A) -> (S, S) { theta.to_rad().s.sin_cos() }
 
-#[inline] pub fn asin<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.asin_() }
-#[inline] pub fn acos<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.acos_() }
-#[inline] pub fn atan<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.atan_() }
-#[inline] pub fn atan2<S: Clone + ScalarTrig, A: Angle<S>>(a: S, b: S) -> A { a.atan2_(&b) }
-
-impl<S: Clone + Float> ScalarTrig for S;
+#[inline] pub fn asin<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.asin())) }
+#[inline] pub fn acos<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.acos())) }
+#[inline] pub fn atan<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.atan())) }
+#[inline] pub fn atan2<S: Clone + Float, A: Angle<S>>(a: S, b: S) -> A { Angle::from(rad(a.atan2(&b))) }
 
 impl<S: Clone + Float> ToStr for Rad<S> { fn to_str(&self) -> ~str { fmt!("%? rad", self.s) } }
 impl<S: Clone + Float> ToStr for Deg<S> { fn to_str(&self) -> ~str { fmt!("%?°", self.s) } }
