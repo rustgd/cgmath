@@ -13,10 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Angle units for type-safe, self-documenting code.
+
+pub use std::num::{sinh, cosh, tanh};
+pub use std::num::{asinh, acosh, atanh};
+
 use std::num::Zero;
 
-#[deriving(Clone, Eq, Ord, Zero)] struct Rad<S> { s: S }
-#[deriving(Clone, Eq, Ord, Zero)] struct Deg<S> { s: S }
+#[deriving(Clone, Eq, Ord, Zero)] pub struct Rad<S> { s: S }
+#[deriving(Clone, Eq, Ord, Zero)] pub struct Deg<S> { s: S }
 
 #[inline] pub fn rad<S: Clone + Float>(s: S) -> Rad<S> { Rad { s: s } }
 #[inline] pub fn deg<S: Clone + Float>(s: S) -> Deg<S> { Deg { s: s } }
@@ -33,6 +38,25 @@ impl<S: Clone + Float> ToDeg<S> for Deg<S> { #[inline] fn to_deg(&self) -> Deg<S
 impl<S: Clone + Float> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
 impl<S: Clone + Float> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
 
+/// Private utility functions for converting to/from scalars
+trait ScalarConv<S> {
+    fn from(s: S) -> Self;
+    fn s<'a>(&'a self) -> &'a S;
+    fn mut_s<'a>(&'a mut self) -> &'a mut S;
+}
+
+impl<S: Clone + Float> ScalarConv<S> for Rad<S> {
+    #[inline] fn from(s: S) -> Rad<S> { rad(s) }
+    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
+    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
+}
+
+impl<S: Clone + Float> ScalarConv<S> for Deg<S> {
+    #[inline] fn from(s: S) -> Deg<S> { deg(s) }
+    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
+    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
+}
+
 pub trait Angle
 <
     S: Clone + Float
@@ -43,21 +67,19 @@ pub trait Angle
 +   Neg<Self>
 +   ToRad<S>
 +   ToDeg<S>
++   ScalarConv<S>
 {
-    fn from_s(s: S) -> Self;
     fn from<A: Angle<S>>(theta: A) -> Self;
-    fn s<'a>(&'a self) -> &'a S;
-    fn mut_s<'a>(&'a mut self) -> &'a mut S;
 
     #[inline] fn neg_self(&mut self) { *self = -*self }
 
-    #[inline] fn add_a(&self, other: Self) -> Self { Angle::from_s(*self.s() + *other.s()) }
-    #[inline] fn sub_a(&self, other: Self) -> Self { Angle::from_s(*self.s() - *other.s()) }
+    #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
+    #[inline] fn sub_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() - *other.s()) }
     #[inline] fn div_a(&self, other: Self) -> S { *self.s() / *other.s() }
     #[inline] fn rem_a(&self, other: Self) -> S { *self.s() % *other.s() }
-    #[inline] fn mul_s(&self, s: S) -> Self { Angle::from_s(*self.s() * s) }
-    #[inline] fn div_s(&self, s: S) -> Self { Angle::from_s(*self.s() / s) }
-    #[inline] fn rem_s(&self, s: S) -> Self { Angle::from_s(*self.s() % s) }
+    #[inline] fn mul_s(&self, s: S) -> Self { ScalarConv::from(*self.s() * s) }
+    #[inline] fn div_s(&self, s: S) -> Self { ScalarConv::from(*self.s() / s) }
+    #[inline] fn rem_s(&self, s: S) -> Self { ScalarConv::from(*self.s() % s) }
 
     #[inline] fn add_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() + *other.s() }
     #[inline] fn sub_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() - *other.s() }
@@ -68,41 +90,37 @@ pub trait Angle
     #[inline] fn sin(&self) -> S { self.s().sin() }
     #[inline] fn cos(&self) -> S { self.s().cos() }
     #[inline] fn tan(&self) -> S { self.s().tan() }
+    #[inline] fn sin_cos(&self) -> (S, S) { self.s().sin_cos() }
 }
 
-#[inline] fn sin<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.sin() }
-#[inline] fn cos<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.cos() }
-#[inline] fn tan<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.tan() }
+#[inline] pub fn sin<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.sin() }
+#[inline] pub fn cos<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.cos() }
+#[inline] pub fn tan<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.tan() }
+#[inline] pub fn sin_cos<S: Clone + Float, A: Angle<S>>(theta: A) -> (S, S) { theta.sin_cos() }
 
 impl<S: Clone + Float> Angle<S> for Rad<S> {
-    #[inline] fn from_s(s: S) -> Rad<S> { rad(s) }
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
 }
 
 impl<S: Clone + Float> Angle<S> for Deg<S> {
-    #[inline] fn from_s(s: S) -> Deg<S> { deg(s) }
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
 }
 
 pub trait ScalarTrig: Clone + Float {
+    // These need underscores so that they don't conflict with the methods
+    // defined in the `std::num::Trigonometric` trait.
     #[inline] fn asin_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.asin())) }
     #[inline] fn acos_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.acos())) }
     #[inline] fn atan_<A: Angle<Self>>(&self) -> A { Angle::from(rad(self.atan())) }
     #[inline] fn atan2_<A: Angle<Self>>(&self, other: &Self) -> A { Angle::from(rad(self.atan2(other))) }
 }
 
-#[inline] fn asin<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.asin_() }
-#[inline] fn acos<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.acos_() }
-#[inline] fn atan<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.atan_() }
-#[inline] fn atan2<S: Clone + ScalarTrig, A: Angle<S>>(a: S, b: S) -> A { a.atan2_(&b) }
+#[inline] pub fn asin<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.asin_() }
+#[inline] pub fn acos<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.acos_() }
+#[inline] pub fn atan<S: Clone + ScalarTrig, A: Angle<S>>(s: S) -> A { s.atan_() }
+#[inline] pub fn atan2<S: Clone + ScalarTrig, A: Angle<S>>(a: S, b: S) -> A { a.atan2_(&b) }
 
-impl ScalarTrig for f32;
-impl ScalarTrig for f64;
-impl ScalarTrig for float;
+impl<S: Clone + Float> ScalarTrig for S;
 
 impl<S: Clone + Float> ToStr for Rad<S> { fn to_str(&self) -> ~str { fmt!("%? rad", self.s) } }
 impl<S: Clone + Float> ToStr for Deg<S> { fn to_str(&self) -> ~str { fmt!("%?°", self.s) } }

@@ -15,9 +15,10 @@
 
 use std::num::{zero, one, sqrt};
 
-use util::two;
+use angle::{Angle, Rad, acos, cos, sin};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
+use util::two;
 
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
@@ -190,14 +191,14 @@ impl<S: Clone + Float> Quat<S> {
             // stay within the domain of acos()
             let robust_dot = dot.clamp(&-one::<S>(), &one::<S>());
 
-            let theta_0 = robust_dot.acos();    // the angle between the quaternions
-            let theta = theta_0 * amount;       // the fraction of theta specified by `amount`
+            let theta: Rad<S> = acos(robust_dot.clone());   // the angle between the quaternions
+            let theta: Rad<S> = theta.mul_s(amount);        // the fraction of theta specified by `amount`
 
             let q = other.sub_q(&self.mul_s(robust_dot))
                          .normalize();
 
-            self.mul_s(theta.cos())
-                .add_q(&q.mul_s(theta.sin()))
+            self.mul_s(cos(theta.clone()))
+                .add_q(&q.mul_s(sin(theta)))
         }
     }
 }

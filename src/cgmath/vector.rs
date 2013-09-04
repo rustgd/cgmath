@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{Zero, zero, One, one};
-use std::num::{sqrt, atan2};
+use std::num::{Zero, zero, One, one, sqrt};
 
-use array::*;
+use angle::{Rad, atan2};
+use array::Array;
 
 /// A 2-dimensional vector.
 #[deriving(Eq, Clone, Zero)]
@@ -193,7 +193,7 @@ pub trait EuclideanVector
     }
 
     /// The angle between the vector and `other`.
-    fn angle(&self, other: &Self) -> S;
+    fn angle(&self, other: &Self) -> Rad<S>;
 
     /// Returns a vector with the same direction, but with a `length` (or
     /// `norm`) of `1`.
@@ -239,14 +239,14 @@ pub trait EuclideanVector
 
 impl<S: Clone + Float> EuclideanVector<S, [S, ..2]> for Vec2<S> {
     #[inline]
-    fn angle(&self, other: &Vec2<S>) -> S {
+    fn angle(&self, other: &Vec2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
 impl<S: Clone + Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
-    fn angle(&self, other: &Vec3<S>) -> S {
+    fn angle(&self, other: &Vec3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }

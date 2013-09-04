@@ -15,6 +15,7 @@
 
 use std::num::{zero, one};
 
+use angle::{Angle, Rad, rad, tan};
 use matrix::Mat4;
 use util::two;
 
@@ -24,8 +25,8 @@ use util::two;
 ///
 /// This is the equivalent of the gluPerspective function, the algorithm of which
 /// can be found [here](http://www.opengl.org/wiki/GluPerspective_code).
-pub fn perspective<S: Clone + Float>(fovy: S, aspectRatio: S, near: S, far: S) -> Mat4<S> {
-    let ymax = near * (fovy / two::<S>()).to_radians().tan();
+pub fn perspective<S: Clone + Float>(fovy: Rad<S>, aspectRatio: S, near: S, far: S) -> Mat4<S> {
+    let ymax = near * tan(fovy.div_s(two::<S>()));
     let xmax = ymax * aspectRatio;
 
     frustum(-xmax, xmax, -ymax, ymax, near, far)
@@ -101,7 +102,7 @@ pub trait Projection<S> {
 /// A perspective projection based on a vertical field-of-view angle.
 #[deriving(Clone, Eq)]
 pub struct PerspectiveFov<S> {
-    fovy:   S,  //radians
+    fovy:   Rad<S>,
     aspect: S,
     near:   S,
     far:    S,
@@ -110,8 +111,8 @@ pub struct PerspectiveFov<S> {
 impl<S: Clone + Float> PerspectiveFov<S> {
     pub fn to_perspective(&self) -> Result<Perspective<S>, ~str> {
         do self.if_valid {
-            let angle = self.fovy / two::<S>();
-            let ymax = self.near * angle.tan();
+            let angle = self.fovy.div_s(two::<S>());
+            let ymax = self.near * tan(angle);
             let xmax = ymax * self.aspect;
 
             Perspective {
@@ -128,10 +129,10 @@ impl<S: Clone + Float> PerspectiveFov<S> {
 
 impl<S: Clone + Float> Projection<S> for PerspectiveFov<S> {
     fn if_valid<U:Clone>(&self, f: &fn() -> U) -> Result<U, ~str> {
-        let frac_pi_2: S = Real::frac_pi_2();
+        let half_turn: Rad<S> = rad(Real::frac_pi_2());
         cond! (
             (self.fovy   < zero())      { Err(fmt!("The vertical field of view cannot be below zero, found: %?", self.fovy)) }
-            (self.fovy   > frac_pi_2)   { Err(fmt!("The vertical field of view cannot be greater than a half turn, found: %?", self.fovy)) }
+            (self.fovy   > half_turn)   { Err(fmt!("The vertical field of view cannot be greater than a half turn, found: %?", self.fovy)) }
             (self.aspect < zero())      { Err(fmt!("The aspect ratio cannot be below zero, found: %?", self.aspect)) }
             (self.near   < zero())      { Err(fmt!("The near plane distance cannot be below zero, found: %?", self.near)) }
             (self.far    < zero())      { Err(fmt!("The far plane distance cannot be below zero, found: %?", self.far)) }
