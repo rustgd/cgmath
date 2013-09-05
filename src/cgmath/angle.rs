@@ -101,6 +101,10 @@ impl<S: Clone + Float> Angle<S> for Deg<S> {
 #[inline] pub fn tan<S: Clone + Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.tan() }
 #[inline] pub fn sin_cos<S: Clone + Float, A: Angle<S>>(theta: A) -> (S, S) { theta.to_rad().s.sin_cos() }
 
+#[inline] pub fn cot<S: Clone + Float, A: Angle<S>>(theta: A) -> S { tan(theta).recip() }
+#[inline] pub fn sec<S: Clone + Float, A: Angle<S>>(theta: A) -> S { cos(theta).recip() }
+#[inline] pub fn csc<S: Clone + Float, A: Angle<S>>(theta: A) -> S { sin(theta).recip() }
+
 #[inline] pub fn asin<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.asin())) }
 #[inline] pub fn acos<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.acos())) }
 #[inline] pub fn atan<S: Clone + Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.atan())) }
