@@ -16,6 +16,7 @@
 use std::num::{zero, one};
 
 use angle::{Angle, rad, tan, cot};
+use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
 use util::two;
 
@@ -62,7 +63,9 @@ pub fn ortho<S: Clone + Float>(left: S, right: S, bottom: S, top: S, near: S, fa
     }.to_mat4()
 }
 
-pub trait Projection<S>: ToMat4<S> {}
+pub trait Projection<S>: ToMat4<S> {
+    fn to_frustum(&self) -> Frustum<S>;
+}
 
 /// A perspective projection based on a vertical field-of-view angle.
 #[deriving(Clone, Eq)]
@@ -87,6 +90,12 @@ impl<S: Clone + Float, A: Angle<S>> PerspectiveFov<S, A> {
             near:    self.near.clone(),
             far:     self.far.clone(),
         }
+    }
+}
+
+impl<S: Clone + Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
+    fn to_frustum(&self) -> Frustum<S> {
+        self.to_perspective().to_frustum()
     }
 }
 
@@ -130,14 +139,18 @@ impl<S: Clone + Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
     }
 }
 
-impl<S: Clone + Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A>;
-
 /// A perspective projection with arbitrary left/right/bottom/top distances
 #[deriving(Clone, Eq)]
 pub struct Perspective<S> {
     left:   S,  right:  S,
     bottom: S,  top:    S,
     near:   S,  far:    S,
+}
+
+impl<S: Clone + Float> Projection<S> for Perspective<S> {
+    fn to_frustum(&self) -> Frustum<S> {
+        fail!("Not yet implemented!");
+    }
 }
 
 impl<S: Clone + Float> ToMat4<S> for Perspective<S> {
@@ -173,14 +186,18 @@ impl<S: Clone + Float> ToMat4<S> for Perspective<S> {
     }
 }
 
-impl<S: Clone + Float> Projection<S> for Perspective<S>;
-
 /// An orthographic projection with arbitrary left/right/bottom/top distances
 #[deriving(Clone, Eq)]
 pub struct Ortho<S> {
     left:   S,  right:  S,
     bottom: S,  top:    S,
     near:   S,  far:    S,
+}
+
+impl<S: Clone + Float> Projection<S> for Ortho<S> {
+    fn to_frustum(&self) -> Frustum<S> {
+        fail!("Not yet implemented!");
+    }
 }
 
 impl<S: Clone + Float> ToMat4<S> for Ortho<S> {
@@ -215,5 +232,3 @@ impl<S: Clone + Float> ToMat4<S> for Ortho<S> {
                   c3r0, c3r1, c3r2, c3r3)
     }
 }
-
-impl<S: Clone + Float> Projection<S> for Ortho<S>;

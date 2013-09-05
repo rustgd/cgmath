@@ -28,10 +28,18 @@ pub mod quaternion;
 pub mod vector;
 
 pub mod angle;
+pub mod plane;
 pub mod point;
 pub mod ray;
+pub mod rotation;
 
+pub mod frustum;
 pub mod projection;
+
+pub mod aabb;
+pub mod cylinder;
+pub mod obb;
+pub mod sphere;
 
 pub mod util {
     use std::num::one;
