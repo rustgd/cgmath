@@ -31,9 +31,9 @@ pub struct Vec3<S> { x: S, y: S, z: S }
 pub struct Vec4<S> { x: S, y: S, z: S, w: S }
 
 // Conversion traits
-pub trait ToVec2<S: Clone + Num> { fn to_vec2(&self) -> Vec2<S>; }
-pub trait ToVec3<S: Clone + Num> { fn to_vec3(&self) -> Vec3<S>; }
-pub trait ToVec4<S: Clone + Num> { fn to_vec4(&self) -> Vec4<S>; }
+pub trait ToVec2<S: Clone + Num + Ord> { fn to_vec2(&self) -> Vec2<S>; }
+pub trait ToVec3<S: Clone + Num + Ord> { fn to_vec3(&self) -> Vec3<S>; }
+pub trait ToVec4<S: Clone + Num + Ord> { fn to_vec4(&self) -> Vec4<S>; }
 
 approx_eq!(impl<S> Vec2<S>)
 approx_eq!(impl<S> Vec3<S>)
@@ -42,7 +42,7 @@ approx_eq!(impl<S> Vec4<S>)
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (
-        impl<$S: Clone + Num> $Self<$S> {
+        impl<$S: Clone + Num + Ord> $Self<$S> {
             #[inline]
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
@@ -73,16 +73,16 @@ array!(impl<S> Vec2<S> -> [S, ..2])
 array!(impl<S> Vec3<S> -> [S, ..3])
 array!(impl<S> Vec4<S> -> [S, ..4])
 
-impl<S: Clone + Num> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
-impl<S: Clone + Num> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
-impl<S: Clone + Num> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+impl<S: Clone + Num + Ord> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
+impl<S: Clone + Num + Ord> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
+impl<S: Clone + Num + Ord> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
 pub trait Vector
 <
-    S: Clone + Num,
+    S: Clone + Num + Ord,
     Slice
 >
 :   Array<S, Slice>
@@ -131,19 +131,25 @@ pub trait Vector
     #[inline] fn comp_add(&self) -> S { self.iter().fold(zero::<S>(), |a, b| a.add(b)) }
 
     /// The product of each component of the vector.
-    #[inline] fn comp_mul(&self) -> S { self.iter().fold(one::<S>(),  |a, b| a.mul(b)) }
+    #[inline] fn comp_mul(&self) -> S { self.iter().fold(one::<S>(), |a, b| a.mul(b)) }
+
+    /// The minimum component of the vector.
+    #[inline] fn comp_min(&self) -> S { self.iter().min().unwrap().clone() }
+
+    /// The maximum component of the vector.
+    #[inline] fn comp_max(&self) -> S { self.iter().max().unwrap().clone() }
 }
 
-impl<S: Clone + Num> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { self.map(|x| x.neg()) } }
-impl<S: Clone + Num> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { self.map(|x| x.neg()) } }
-impl<S: Clone + Num> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { self.map(|x| x.neg()) } }
 
-impl<S: Clone + Num> Vector<S, [S, ..2]> for Vec2<S>;
-impl<S: Clone + Num> Vector<S, [S, ..3]> for Vec3<S>;
-impl<S: Clone + Num> Vector<S, [S, ..4]> for Vec4<S>;
+impl<S: Clone + Num + Ord> Vector<S, [S, ..2]> for Vec2<S>;
+impl<S: Clone + Num + Ord> Vector<S, [S, ..3]> for Vec3<S>;
+impl<S: Clone + Num + Ord> Vector<S, [S, ..4]> for Vec4<S>;
 
 /// Operations specific to numeric two-dimensional vectors.
-impl<S: Clone + Num> Vec2<S> {
+impl<S: Clone + Num + Ord> Vec2<S> {
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(&self, other: &Vec2<S>) -> S {
@@ -152,13 +158,20 @@ impl<S: Clone + Num> Vec2<S> {
 }
 
 /// Operations specific to numeric three-dimensional vectors.
-impl<S: Clone + Num> Vec3<S> {
+impl<S: Clone + Num + Ord> Vec3<S> {
     /// Returns the cross product of the vector and `other`.
     #[inline]
     pub fn cross(&self, other: &Vec3<S>) -> Vec3<S> {
         Vec3::new((self.y * other.z) - (self.z * other.y),
                   (self.z * other.x) - (self.x * other.z),
                   (self.x * other.y) - (self.y * other.x))
+    }
+
+    /// Calculates the cross product of the vector and `other`, then stores the
+    /// result in `self`.
+    #[inline]
+    pub fn cross_self(&mut self, other: &Vec3<S>) {
+        *self = self.cross(other)
     }
 }
 

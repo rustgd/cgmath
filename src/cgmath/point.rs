@@ -79,8 +79,8 @@ pub trait Point
 array!(impl<S> Point2<S> -> [S, ..2])
 array!(impl<S> Point3<S> -> [S, ..3])
 
-impl<S: Clone + Num> Point<S, Vec2<S>, [S, ..2]> for Point2<S>;
-impl<S: Clone + Num> Point<S, Vec3<S>, [S, ..3]> for Point3<S>;
+impl<S: Clone + Num + Ord> Point<S, Vec2<S>, [S, ..2]> for Point2<S>;
+impl<S: Clone + Num + Ord> Point<S, Vec3<S>, [S, ..3]> for Point3<S>;
 
 impl<S> ToStr for Point2<S> {
     fn to_str(&self) -> ~str {

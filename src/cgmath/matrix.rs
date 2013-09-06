@@ -40,11 +40,11 @@ approx_eq!(impl<S> Mat3<S>)
 approx_eq!(impl<S> Mat4<S>)
 
 // Conversion traits
-pub trait ToMat2<S: Clone + Num> { fn to_mat2(&self) -> Mat2<S>; }
-pub trait ToMat3<S: Clone + Num> { fn to_mat3(&self) -> Mat3<S>; }
-pub trait ToMat4<S: Clone + Num> { fn to_mat4(&self) -> Mat4<S>; }
+pub trait ToMat2<S: Clone + Num + Ord> { fn to_mat2(&self) -> Mat2<S>; }
+pub trait ToMat3<S: Clone + Num + Ord> { fn to_mat3(&self) -> Mat3<S>; }
+pub trait ToMat4<S: Clone + Num + Ord> { fn to_mat4(&self) -> Mat4<S>; }
 
-impl<S: Clone + Num> Mat2<S> {
+impl<S: Clone + Num + Ord> Mat2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Mat2<S> {
@@ -85,7 +85,7 @@ impl<S: Clone + Float> Mat2<S> {
     }
 }
 
-impl<S: Clone + Num> Mat3<S> {
+impl<S: Clone + Num + Ord> Mat3<S> {
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
@@ -128,7 +128,7 @@ impl<S: Clone + Float> Mat3<S> {
     }
 }
 
-impl<S: Clone + Num> Mat4<S> {
+impl<S: Clone + Num + Ord> Mat4<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
