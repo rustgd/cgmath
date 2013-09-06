@@ -35,10 +35,6 @@ pub trait ToVec2<S: Clone + Num + Ord> { fn to_vec2(&self) -> Vec2<S>; }
 pub trait ToVec3<S: Clone + Num + Ord> { fn to_vec3(&self) -> Vec3<S>; }
 pub trait ToVec4<S: Clone + Num + Ord> { fn to_vec4(&self) -> Vec4<S>; }
 
-approx_eq!(impl<S> Vec2<S>)
-approx_eq!(impl<S> Vec3<S>)
-approx_eq!(impl<S> Vec4<S>)
-
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (
@@ -51,7 +47,7 @@ macro_rules! vec(
             /// Construct a vector from a single value.
             #[inline]
             pub fn from_value(value: $S) -> $Self<$S> {
-                Array::build(|_| value.clone())
+                $Self { $($field: value.clone()),+ }
             }
 
             /// The additive identity of the vector.
@@ -73,9 +69,9 @@ array!(impl<S> Vec2<S> -> [S, ..2])
 array!(impl<S> Vec3<S> -> [S, ..3])
 array!(impl<S> Vec4<S> -> [S, ..4])
 
-impl<S: Clone + Num + Ord> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
-impl<S: Clone + Num + Ord> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
-impl<S: Clone + Num + Ord> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+approx_eq!(impl<S> Vec2<S>)
+approx_eq!(impl<S> Vec3<S>)
+approx_eq!(impl<S> Vec4<S>)
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
@@ -89,44 +85,40 @@ pub trait Vector
 +   Neg<Self>
 +   Zero + One
 {
-    // TODO: These method impls use iterators and higher order functions to
-    // provide generic impls for vector types of different dimensions. We
-    // need to check llvm's output to see how well it optimses these.
+    #[inline] fn add_s(&self, s: S) -> Self;
+    #[inline] fn sub_s(&self, s: S) -> Self;
+    #[inline] fn mul_s(&self, s: S) -> Self;
+    #[inline] fn div_s(&self, s: S) -> Self;
+    #[inline] fn rem_s(&self, s: S) -> Self;
 
-    #[inline] fn add_s(&self, s: S) -> Self { self.map(|x| x.add(&s)) }
-    #[inline] fn sub_s(&self, s: S) -> Self { self.map(|x| x.sub(&s)) }
-    #[inline] fn mul_s(&self, s: S) -> Self { self.map(|x| x.mul(&s)) }
-    #[inline] fn div_s(&self, s: S) -> Self { self.map(|x| x.div(&s)) }
-    #[inline] fn rem_s(&self, s: S) -> Self { self.map(|x| x.rem(&s)) }
+    #[inline] fn add_v(&self, other: &Self) -> Self;
+    #[inline] fn sub_v(&self, other: &Self) -> Self;
+    #[inline] fn mul_v(&self, other: &Self) -> Self;
+    #[inline] fn div_v(&self, other: &Self) -> Self;
+    #[inline] fn rem_v(&self, other: &Self) -> Self;
 
-    #[inline] fn add_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.add(b) ) }
-    #[inline] fn sub_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.sub(b) ) }
-    #[inline] fn mul_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.mul(b) ) }
-    #[inline] fn div_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.div(b) ) }
-    #[inline] fn rem_v(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.rem(b) ) }
+    #[inline] fn neg_self(&mut self);
 
-    #[inline] fn neg_self(&mut self) { for x in self.mut_iter() { *x = x.neg() } }
+    #[inline] fn add_self_s(&mut self, s: S);
+    #[inline] fn sub_self_s(&mut self, s: S);
+    #[inline] fn mul_self_s(&mut self, s: S);
+    #[inline] fn div_self_s(&mut self, s: S);
+    #[inline] fn rem_self_s(&mut self, s: S);
 
-    #[inline] fn add_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.add(&s) } }
-    #[inline] fn sub_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.sub(&s) } }
-    #[inline] fn mul_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.mul(&s) } }
-    #[inline] fn div_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.div(&s) } }
-    #[inline] fn rem_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.rem(&s) } }
+    #[inline] fn add_self_v(&mut self, other: &Self);
+    #[inline] fn sub_self_v(&mut self, other: &Self);
+    #[inline] fn mul_self_v(&mut self, other: &Self);
+    #[inline] fn div_self_v(&mut self, other: &Self);
+    #[inline] fn rem_self_v(&mut self, other: &Self);
 
-    #[inline] fn add_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add(b) } }
-    #[inline] fn sub_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.sub(b) } }
-    #[inline] fn mul_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.mul(b) } }
-    #[inline] fn div_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.div(b) } }
-    #[inline] fn rem_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.rem(b) } }
+    /// The sum of each component of the vector.
+    #[inline] fn comp_add(&self) -> S;
+
+    /// The product of each component of the vector.
+    #[inline] fn comp_mul(&self) -> S;
 
     /// Vector dot product.
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
-
-    /// The sum of each component of the vector.
-    #[inline] fn comp_add(&self) -> S { self.iter().fold(zero::<S>(), |a, b| a.add(b)) }
-
-    /// The product of each component of the vector.
-    #[inline] fn comp_mul(&self) -> S { self.iter().fold(one::<S>(), |a, b| a.mul(b)) }
 
     /// The minimum component of the vector.
     #[inline] fn comp_min(&self) -> S { self.iter().min().unwrap().clone() }
@@ -135,6 +127,10 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.iter().max().unwrap().clone() }
 }
 
+impl<S: Clone + Num + Ord> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
+impl<S: Clone + Num + Ord> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
+impl<S: Clone + Num + Ord> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+
 impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { Vec2::new(-self.x, -self.y) } }
 impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { Vec3::new(-self.x, -self.y, -self.z) } }
 impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { Vec4::new(-self.x, -self.y, -self.z, -self.w) } }
@@ -142,10 +138,6 @@ impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) ->
 macro_rules! vector(
     (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (
         impl<$S: Clone + Num + Ord> Vector<$S, $Slice> for $Self<$S> {
-            // TODO: These method impls use iterators and higher order functions to
-            // provide generic impls for vector types of different dimensions. We
-            // need to check llvm's output to see how well it optimses these.
-
             #[inline] fn add_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.add(&s), $(self.$xs.add(&s)),+) }
             #[inline] fn sub_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.sub(&s), $(self.$xs.sub(&s)),+) }
             #[inline] fn mul_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.mul(&s), $(self.$xs.mul(&s)),+) }
