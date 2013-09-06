@@ -13,32 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "cgmath",
-       vers = "0.1",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/cgmath-rs")];
+use std::num::one;
 
-#[comment = "A mathematics library for computer graphics."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
+// These functions are horrific! We really need better from-int support
+// in std::num.
 
-pub mod array;
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
-
-pub mod angle;
-pub mod plane;
-pub mod point;
-pub mod ray;
-pub mod rotation;
-
-pub mod frustum;
-pub mod projection;
-
-pub mod aabb;
-pub mod cylinder;
-pub mod obb;
-pub mod sphere;
-
-pub mod util;
+#[inline]
+pub fn two<T: Num>() -> T { one::<T>() + one::<T>() }
+#[inline]
+pub fn half<T: Real>() -> T { one::<T>() / two::<T>() }
