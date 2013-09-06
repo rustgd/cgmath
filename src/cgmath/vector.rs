@@ -15,7 +15,7 @@
 
 use std::num::{Zero, zero, One, one, sqrt};
 
-use angle::{Rad, atan2};
+use angle::{Rad, atan2, acos};
 use array::Array;
 
 /// A 2-dimensional vector.
@@ -120,12 +120,7 @@ pub trait Vector
     #[inline] fn rem_self_v(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.rem(b) } }
 
     /// Vector dot product.
-    #[inline]
-    fn dot(&self, other: &Self) -> S {
-        self.iter().zip(other.iter())
-            .map(|(a, b)| a.mul(b))
-            .fold(zero::<S>(), |a, b| a.add(&b))
-    }
+    #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
 
     /// The sum of each component of the vector.
     #[inline] fn comp_add(&self) -> S { self.iter().fold(zero::<S>(), |a, b| a.add(b)) }
@@ -140,13 +135,55 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.iter().max().unwrap().clone() }
 }
 
-impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { self.map(|x| x.neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { self.map(|x| x.neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { self.map(|x| x.neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { Vec2::new(-self.x, -self.y) } }
+impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { Vec3::new(-self.x, -self.y, -self.z) } }
+impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { Vec4::new(-self.x, -self.y, -self.z, -self.w) } }
 
-impl<S: Clone + Num + Ord> Vector<S, [S, ..2]> for Vec2<S>;
-impl<S: Clone + Num + Ord> Vector<S, [S, ..3]> for Vec3<S>;
-impl<S: Clone + Num + Ord> Vector<S, [S, ..4]> for Vec4<S>;
+macro_rules! vector(
+    (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (
+        impl<$S: Clone + Num + Ord> Vector<$S, $Slice> for $Self<$S> {
+            // TODO: These method impls use iterators and higher order functions to
+            // provide generic impls for vector types of different dimensions. We
+            // need to check llvm's output to see how well it optimses these.
+
+            #[inline] fn add_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.add(&s), $(self.$xs.add(&s)),+) }
+            #[inline] fn sub_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.sub(&s), $(self.$xs.sub(&s)),+) }
+            #[inline] fn mul_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.mul(&s), $(self.$xs.mul(&s)),+) }
+            #[inline] fn div_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.div(&s), $(self.$xs.div(&s)),+) }
+            #[inline] fn rem_s(&self, s: S) -> $Self<$S> { $Self::new(self.$x.rem(&s), $(self.$xs.rem(&s)),+) }
+
+            #[inline] fn add_v(&self, other: &$Self<$S>) -> $Self<$S> { $Self::new(self.$x.add(&other.$x), $(self.$xs.add(&other.$xs)),+) }
+            #[inline] fn sub_v(&self, other: &$Self<$S>) -> $Self<$S> { $Self::new(self.$x.sub(&other.$x), $(self.$xs.sub(&other.$xs)),+) }
+            #[inline] fn mul_v(&self, other: &$Self<$S>) -> $Self<$S> { $Self::new(self.$x.mul(&other.$x), $(self.$xs.mul(&other.$xs)),+) }
+            #[inline] fn div_v(&self, other: &$Self<$S>) -> $Self<$S> { $Self::new(self.$x.div(&other.$x), $(self.$xs.div(&other.$xs)),+) }
+            #[inline] fn rem_v(&self, other: &$Self<$S>) -> $Self<$S> { $Self::new(self.$x.rem(&other.$x), $(self.$xs.rem(&other.$xs)),+) }
+
+            #[inline] fn neg_self(&mut self) { self.$x = -self.$x; $(self.$xs = -self.$xs;)+ }
+
+            #[inline] fn add_self_s(&mut self, s: S) { self.$x = self.$x.add(&s); $(self.$xs = self.$x.add(&s);)+ }
+            #[inline] fn sub_self_s(&mut self, s: S) { self.$x = self.$x.sub(&s); $(self.$xs = self.$x.sub(&s);)+ }
+            #[inline] fn mul_self_s(&mut self, s: S) { self.$x = self.$x.mul(&s); $(self.$xs = self.$x.mul(&s);)+ }
+            #[inline] fn div_self_s(&mut self, s: S) { self.$x = self.$x.div(&s); $(self.$xs = self.$x.div(&s);)+ }
+            #[inline] fn rem_self_s(&mut self, s: S) { self.$x = self.$x.rem(&s); $(self.$xs = self.$x.rem(&s);)+ }
+
+            #[inline] fn add_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.add(&other.$x); $(self.$xs = self.$xs.add(&other.$xs);)+ }
+            #[inline] fn sub_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.sub(&other.$x); $(self.$xs = self.$xs.sub(&other.$xs);)+ }
+            #[inline] fn mul_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.mul(&other.$x); $(self.$xs = self.$xs.mul(&other.$xs);)+ }
+            #[inline] fn div_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.div(&other.$x); $(self.$xs = self.$xs.div(&other.$xs);)+ }
+            #[inline] fn rem_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.rem(&other.$x); $(self.$xs = self.$xs.rem(&other.$xs);)+ }
+
+            /// The sum of each component of the vector.
+            #[inline] fn comp_add(&self) -> S { self.$x $(.add(&self.$xs))+ }
+
+            /// The product of each component of the vector.
+            #[inline] fn comp_mul(&self) -> S { self.$x $(.mul(&self.$xs))+ }
+        }
+    )
+)
+
+vector!(impl Vec2<S> [S, ..2] { x, y })
+vector!(impl Vec3<S> [S, ..3] { x, y, z })
+vector!(impl Vec4<S> [S, ..4] { x, y, z, w })
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: Clone + Num + Ord> Vec2<S> {
@@ -261,6 +298,13 @@ impl<S: Clone + Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
     fn angle(&self, other: &Vec3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
+    }
+}
+
+impl<S: Clone + Float> EuclideanVector<S, [S, ..4]> for Vec4<S> {
+    #[inline]
+    fn angle(&self, other: &Vec4<S>) -> Rad<S> {
+        acos(self.dot(other) / (self.length() * other.length()))
     }
 }
 
