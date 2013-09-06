@@ -84,3 +84,44 @@ fn test_cross() {
     a.cross_self(&b);
     assert_eq!(a, r);
 }
+
+#[cfg(test)]
+mod test_length {
+    use cgmath::vector::*;
+
+    #[test]
+    fn test_vec2(){
+        let (a, a_res) = (Vec2::new(3.0, 4.0), 5.0); // (3, 4, 5) Pythagorean triple
+        let (b, b_res) = (Vec2::new(5.0, 12.0), 13.0); // (5, 12, 13) Pythagorean triple
+
+        assert_eq!(a.length2(), a_res * a_res);
+        assert_eq!(b.length2(), b_res * b_res);
+
+        assert_eq!(a.length(), a_res);
+        assert_eq!(b.length(), b_res);
+    }
+
+    #[test]
+    fn test_vec3(){
+        let (a, a_res) = (Vec3::new(2.0, 3.0, 6.0), 7.0); // (2, 3, 6, 7) Pythagorean quadruple
+        let (b, b_res) = (Vec3::new(1.0, 4.0, 8.0), 9.0); // (1, 4, 8, 9) Pythagorean quadruple
+
+        assert_eq!(a.length2(), a_res * a_res);
+        assert_eq!(b.length2(), b_res * b_res);
+
+        assert_eq!(a.length(), a_res);
+        assert_eq!(b.length(), b_res);
+    }
+
+    #[test]
+    fn test_vec4(){
+        let (a, a_res) = (Vec4::new(1.0, 2.0, 4.0, 10.0), 11.0); // (1, 2, 4, 10, 11) Pythagorean quintuple
+        let (b, b_res) = (Vec4::new(1.0, 2.0, 8.0, 10.0), 13.0); // (1, 2, 8, 10, 13) Pythagorean quintuple
+
+        assert_eq!(a.length2(), a_res * a_res);
+        assert_eq!(b.length2(), b_res * b_res);
+
+        assert_eq!(a.length(), a_res);
+        assert_eq!(b.length(), b_res);
+    }
+}
