@@ -83,9 +83,9 @@ impl<S: Clone + Num + Ord> Vec4<S> {
     #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
 }
 
-array!(impl<S> Vec2<S> -> [S, ..2])
-array!(impl<S> Vec3<S> -> [S, ..3])
-array!(impl<S> Vec4<S> -> [S, ..4])
+array!(impl<S> Vec2<S> -> [S, ..2] _2)
+array!(impl<S> Vec3<S> -> [S, ..3] _3)
+array!(impl<S> Vec4<S> -> [S, ..4] _4)
 
 approx_eq!(impl<S> Vec2<S>)
 approx_eq!(impl<S> Vec3<S>)

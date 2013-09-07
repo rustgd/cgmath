@@ -163,9 +163,9 @@ impl<S: Clone + Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::i
 impl<S: Clone + Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::ident() } }
 impl<S: Clone + Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::ident() } }
 
-array!(impl<S> Mat2<S> -> [Vec2<S>, ..2])
-array!(impl<S> Mat3<S> -> [Vec3<S>, ..3])
-array!(impl<S> Mat4<S> -> [Vec4<S>, ..4])
+array!(impl<S> Mat2<S> -> [Vec2<S>, ..2] _2)
+array!(impl<S> Mat3<S> -> [Vec3<S>, ..3] _3)
+array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
 
 pub trait Matrix
 <

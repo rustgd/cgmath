@@ -76,8 +76,8 @@ pub trait Point
     #[inline] fn add_self_v(&mut self, other: &V) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add(b) } }
 }
 
-array!(impl<S> Point2<S> -> [S, ..2])
-array!(impl<S> Point3<S> -> [S, ..3])
+array!(impl<S> Point2<S> -> [S, ..2] _2)
+array!(impl<S> Point3<S> -> [S, ..3] _3)
 
 impl<S: Clone + Num + Ord> Point<S, Vec2<S>, [S, ..2]> for Point2<S>;
 impl<S: Clone + Num + Ord> Point<S, Vec3<S>, [S, ..3]> for Point3<S>;

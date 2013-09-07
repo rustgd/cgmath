@@ -53,7 +53,7 @@ pub trait Array
 }
 
 macro_rules! array(
-    (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr]) => (
+    (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr] $_n:ident) => (
         impl<$S: Clone> Array<$T, [$T,..$n]> for $Self {
             #[inline]
             fn i<'a>(&'a self, i: uint) -> &'a $T {
@@ -82,12 +82,7 @@ macro_rules! array(
 
             #[inline]
             fn build(builder: &fn(i: uint) -> $T) -> $Self {
-                use std::unstable::intrinsics;
-                let mut s: [$T,..$n] = unsafe { intrinsics::uninit() };
-                for i in range(0u, $n) {
-                    s[i] = builder(i);
-                }
-                Array::from_slice(s)
+                Array::from_slice(gen_builder!($_n))
             }
 
             #[inline]
@@ -101,6 +96,13 @@ macro_rules! array(
             }
         }
     )
+)
+
+macro_rules! gen_builder(
+    (_1) => ([builder(0)]);
+    (_2) => ([builder(0), builder(1)]);
+    (_3) => ([builder(0), builder(1), builder(2)]);
+    (_4) => ([builder(0), builder(1), builder(2), builder(3)]);
 )
 
 macro_rules! approx_eq(

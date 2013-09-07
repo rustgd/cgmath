@@ -103,7 +103,7 @@ pub trait ToRot3<S: Clone + Float> {
 #[deriving(Eq, Clone)]
 pub struct Euler<A> { x: A, y: A, z: A }
 
-array!(impl<A> Euler<A> -> [A, ..3])
+array!(impl<A> Euler<A> -> [A, ..3] _3)
 
 pub trait ToEuler<A> {
     fn to_euler(&self) -> Euler<A>;
