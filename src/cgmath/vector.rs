@@ -65,6 +65,24 @@ vec!(impl Vec2<S> { x, y })
 vec!(impl Vec3<S> { x, y, z })
 vec!(impl Vec4<S> { x, y, z, w })
 
+impl<S: Clone + Num + Ord> Vec2<S> {
+    #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
+    #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
+}
+
+impl<S: Clone + Num + Ord> Vec3<S> {
+    #[inline] pub fn unit_x() -> Vec3<S> { Vec3::new(one(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
+    #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
+}
+
+impl<S: Clone + Num + Ord> Vec4<S> {
+    #[inline] pub fn unit_x() -> Vec4<S> { Vec4::new(one(), zero(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vec4<S> { Vec4::new(zero(), one(), zero(), zero()) }
+    #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
+    #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
+}
+
 array!(impl<S> Vec2<S> -> [S, ..2])
 array!(impl<S> Vec3<S> -> [S, ..3])
 array!(impl<S> Vec4<S> -> [S, ..4])
