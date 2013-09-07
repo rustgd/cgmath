@@ -39,11 +39,6 @@ approx_eq!(impl<S> Mat2<S>)
 approx_eq!(impl<S> Mat3<S>)
 approx_eq!(impl<S> Mat4<S>)
 
-// Conversion traits
-pub trait ToMat2<S: Clone + Num + Ord> { fn to_mat2(&self) -> Mat2<S>; }
-pub trait ToMat3<S: Clone + Num + Ord> { fn to_mat3(&self) -> Mat3<S>; }
-pub trait ToMat4<S: Clone + Num + Ord> { fn to_mat4(&self) -> Mat4<S>; }
-
 impl<S: Clone + Num + Ord> Mat2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
@@ -568,6 +563,43 @@ for Mat4<S>
         self.cr(3, 0).approx_eq(self.cr(0, 3)) &&
         self.cr(3, 1).approx_eq(self.cr(1, 3)) &&
         self.cr(3, 2).approx_eq(self.cr(2, 3))
+    }
+}
+
+// Conversion traits
+pub trait ToMat2<S: Clone + Num + Ord> { fn to_mat2(&self) -> Mat2<S>; }
+pub trait ToMat3<S: Clone + Num + Ord> { fn to_mat3(&self) -> Mat3<S>; }
+pub trait ToMat4<S: Clone + Num + Ord> { fn to_mat4(&self) -> Mat4<S>; }
+
+impl<S: Clone + Float> ToMat3<S> for Mat2<S> {
+    /// Clone the elements of a 2-dimensional matrix into the top corner of a
+    /// 3-dimensional identity matrix.
+    fn to_mat3(&self) -> Mat3<S> {
+        Mat3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
+                  zero(), zero(), one())
+    }
+}
+
+impl<S: Clone + Float> ToMat4<S> for Mat2<S> {
+    /// Clone the elements of a 2-dimensional matrix into the top corner of a
+    /// 4-dimensional identity matrix.
+    fn to_mat4(&self) -> Mat4<S> {
+        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
+                  zero(), zero(), one(), zero(),
+                  zero(), zero(), zero(), one())
+    }
+}
+
+impl<S: Clone + Float> ToMat4<S> for Mat3<S> {
+    /// Clone the elements of a 3-dimensional matrix into the top corner of a
+    /// 4-dimensional identity matrix.
+    fn to_mat4(&self) -> Mat4<S> {
+        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
+                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
+                  self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
+                  zero(), zero(), zero(), one())
     }
 }
 
