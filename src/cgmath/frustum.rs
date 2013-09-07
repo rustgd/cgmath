@@ -15,17 +15,17 @@
 
 //! View frustum for visibility determination
 
-use plane::Plane3;
+use plane::Plane;
 use point::Point3;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<S> {
-    left:   Plane3<S>,
-    right:  Plane3<S>,
-    bottom: Plane3<S>,
-    top:    Plane3<S>,
-    near:   Plane3<S>,
-    far:    Plane3<S>,
+    left:   Plane<S>,
+    right:  Plane<S>,
+    bottom: Plane<S>,
+    top:    Plane<S>,
+    near:   Plane<S>,
+    far:    Plane<S>,
 }
 
 #[deriving(Clone, Eq)]

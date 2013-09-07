@@ -27,12 +27,12 @@ use std::fmt;
 ///   - `normal.z`: corresponds to `C` in the plane equation
 /// - `distance`: the distance value, corresponding to `D` in the plane equation
 #[deriving(Clone, Eq)]
-pub struct Plane3<S> {
+pub struct Plane<S> {
     normal: Vec3<S>,
     distance: S,
 }
 
-impl<S: Clone + fmt::Float> ToStr for Plane3<S> {
+impl<S: Clone + fmt::Float> ToStr for Plane<S> {
     fn to_str(&self) -> ~str {
         format!("{:f}x + {:f}y + {:f}z + {:f} = 0",
                 self.normal.x,
