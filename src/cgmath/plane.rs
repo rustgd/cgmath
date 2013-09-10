@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use intersect::Intersect;
+use point::Point3;
+use ray::Ray3;
 use vector::Vec3;
 
 use std::fmt;
@@ -30,6 +33,24 @@ use std::fmt;
 pub struct Plane<S> {
     normal: Vec3<S>,
     distance: S,
+}
+
+impl<S: Clone + Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
+    fn intersection(&self) -> Option<Point3<S>> {
+        fail!("Not yet implemented");
+    }
+}
+
+impl<S: Clone + Float> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
+    fn intersection(&self) -> Option<Ray3<S>> {
+        fail!("Not yet implemented");
+    }
+}
+
+impl<S: Clone + Float> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
+    fn intersection(&self) -> Option<Point3<S>> {
+        fail!("Not yet implemented");
+    }
 }
 
 impl<S: Clone + fmt::Float> ToStr for Plane<S> {

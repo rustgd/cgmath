@@ -13,33 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "cgmath",
-       vers = "0.1",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/cgmath-rs")];
-
-#[comment = "A mathematics library for computer graphics."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
-
-pub mod array;
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
-
-pub mod angle;
-pub mod plane;
-pub mod point;
-pub mod ray;
-pub mod rotation;
-
-pub mod projection;
-
-pub mod aabb;
-pub mod cylinder;
-pub mod frustum;
-pub mod intersect;
-pub mod obb;
-pub mod sphere;
-
-pub mod util;
+pub trait Intersect<Result> {
+    fn intersection(&self) -> Result;
+}
