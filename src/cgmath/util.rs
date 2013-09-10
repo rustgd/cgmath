@@ -20,5 +20,3 @@ use std::num::one;
 
 #[inline]
 pub fn two<T: Num>() -> T { one::<T>() + one::<T>() }
-#[inline]
-pub fn half<T: Real>() -> T { one::<T>() / two::<T>() }

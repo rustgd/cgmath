@@ -15,13 +15,12 @@
 
 //! Column major, square matrix types and traits.
 
-use std::num::{Zero, zero, One, one, sqrt};
+use std::num::{Zero, zero, One, one, cast, sqrt};
 
 use angle::{Rad, sin, cos};
 use array::Array;
 use quaternion::{Quat, ToQuat};
 use vector::*;
-use util::half;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq, Zero)]
@@ -609,38 +608,39 @@ impl<S:Clone + Float> ToQuat<S> for Mat3<S> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
         // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         let trace = self.trace();
+        let half: S = cast(0.5);
         cond! (
             (trace >= zero::<S>()) {
                 let s = sqrt(one::<S>() + trace);
-                let w = half::<S>() * s;
-                let s = half::<S>() / s;
+                let w = half * s;
+                let s = half / s;
                 let x = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 Quat::new(w, x, y, z)
             }
             ((*self.cr(0, 0) > *self.cr(1, 1)) && (*self.cr(0, 0) > *self.cr(2, 2))) {
-                let s = sqrt(half::<S>() + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2)));
-                let w = half::<S>() * s;
-                let s = half::<S>() / s;
+                let s = sqrt(half + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2)));
+                let w = half * s;
+                let s = half / s;
                 let x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 let y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let z = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 Quat::new(w, x, y, z)
             }
             (*self.cr(1, 1) > *self.cr(2, 2)) {
-                let s = sqrt(half::<S>() + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2)));
-                let w = half::<S>() * s;
-                let s = half::<S>() / s;
+                let s = sqrt(half + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2)));
+                let w = half * s;
+                let s = half / s;
                 let x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 let y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let z = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 Quat::new(w, x, y, z)
             }
             _ {
-                let s = sqrt(half::<S>() + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1)));
-                let w = half::<S>() * s;
-                let s = half::<S>() / s;
+                let s = sqrt(half + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1)));
+                let w = half * s;
+                let s = half / s;
                 let x = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
