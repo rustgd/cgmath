@@ -130,10 +130,10 @@ pub trait Vector
     #[inline] fn rem_self_v(&mut self, other: &Self);
 
     /// The sum of each component of the vector.
-    #[inline] fn comp_add(&self) -> S;
+    #[inline] fn comp_add(&self) -> S { self.zip(|a, b| a.add(b)) }
 
     /// The product of each component of the vector.
-    #[inline] fn comp_mul(&self) -> S;
+    #[inline] fn comp_mul(&self) -> S { self.zip(|a, b| a.mul(b)) }
 
     /// Vector dot product.
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
@@ -181,12 +181,6 @@ macro_rules! vector(
             #[inline] fn mul_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.mul(&other.$x); $(self.$xs = self.$xs.mul(&other.$xs);)+ }
             #[inline] fn div_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.div(&other.$x); $(self.$xs = self.$xs.div(&other.$xs);)+ }
             #[inline] fn rem_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.rem(&other.$x); $(self.$xs = self.$xs.rem(&other.$xs);)+ }
-
-            /// The sum of each component of the vector.
-            #[inline] fn comp_add(&self) -> S { self.$x $(.add(&self.$xs))+ }
-
-            /// The product of each component of the vector.
-            #[inline] fn comp_mul(&self) -> S { self.$x $(.mul(&self.$xs))+ }
         }
     )
 )

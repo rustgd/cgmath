@@ -50,6 +50,8 @@ pub trait Array
              V: Clone, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
         Array::build(|i| f(self.i(i), other.i(i)))
     }
+
+    fn zip(&self, f: &fn(&T, &T) -> T) -> T;
 }
 
 macro_rules! array(
@@ -94,15 +96,25 @@ macro_rules! array(
             fn mut_iter<'a>(&'a mut self) -> ::std::vec::VecMutIterator<'a, $T> {
                 self.as_mut_slice().mut_iter()
             }
+
+            #[inline]
+            fn zip(&self, f: &fn(&$T, &$T) -> $T) -> $T {
+                gen_zip!($_n)
+            }
         }
     )
 )
 
 macro_rules! gen_builder(
-    (_1) => ([builder(0)]);
     (_2) => ([builder(0), builder(1)]);
     (_3) => ([builder(0), builder(1), builder(2)]);
     (_4) => ([builder(0), builder(1), builder(2), builder(3)]);
+)
+
+macro_rules! gen_zip(
+    (_2) => (f(self.i(0), self.i(1)));
+    (_3) => (f(&f(self.i(0), self.i(1)), self.i(2)));
+    (_4) => (f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)));
 )
 
 macro_rules! approx_eq(
