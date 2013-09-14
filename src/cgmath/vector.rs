@@ -130,10 +130,10 @@ pub trait Vector
     #[inline] fn rem_self_v(&mut self, other: &Self);
 
     /// The sum of each component of the vector.
-    #[inline] fn comp_add(&self) -> S { self.zip(|a, b| a.add(b)) }
+    #[inline] fn comp_add(&self) -> S { self.fold(|a, b| a.add(b)) }
 
     /// The product of each component of the vector.
-    #[inline] fn comp_mul(&self) -> S { self.zip(|a, b| a.mul(b)) }
+    #[inline] fn comp_mul(&self) -> S { self.fold(|a, b| a.mul(b)) }
 
     /// Vector dot product.
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }

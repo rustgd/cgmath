@@ -40,7 +40,7 @@ pub trait Array
         *self.mut_i(b) = tmp;
     }
 
-    fn zip(&self, f: &fn(&T, &T) -> T) -> T;
+    fn fold(&self, f: &fn(&T, &T) -> T) -> T;
 }
 
 macro_rules! array(
@@ -87,8 +87,8 @@ macro_rules! array(
             }
 
             #[inline]
-            fn zip(&self, f: &fn(&$T, &$T) -> $T) -> $T {
-                gen_zip!($_n)
+            fn fold(&self, f: &fn(&$T, &$T) -> $T) -> $T {
+                gen_fold!($_n)
             }
         }
     )
@@ -105,7 +105,7 @@ macro_rules! gen_builder(
     (_4) => ([builder(0), builder(1), builder(2), builder(3)]);
 )
 
-macro_rules! gen_zip(
+macro_rules! gen_fold(
     (_2) => (f(self.i(0), self.i(1)));
     (_3) => (f(&f(self.i(0), self.i(1)), self.i(2)));
     (_4) => (f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)));
