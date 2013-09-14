@@ -189,7 +189,10 @@ pub trait Matrix
         *self.mut_c(b) = tmp;
     }
 
-    fn r(&self, r: uint) -> V;
+    #[inline]
+    fn r(&self, r: uint) -> V {
+        Array::build(|i| self.i(i).i(r).clone())
+    }
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
@@ -229,7 +232,7 @@ pub trait Matrix
     #[inline] fn div_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.div_s(s.clone()) } }
     #[inline] fn rem_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.rem_s(s.clone()) } }
 
-    fn mul_v(&self, v: &V) -> V;
+    #[inline] fn mul_v(&self, v: &V) -> V { Array::build(|i| self.r(i).dot(v)) }
 
     #[inline] fn add_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.add_v(b) ) }
     #[inline] fn sub_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.sub_v(b) ) }
@@ -241,8 +244,14 @@ pub trait Matrix
 
     fn transpose(&self) -> Self;
     fn transpose_self(&mut self);
-    fn trace(&self) -> S;
     fn determinant(&self) -> S;
+
+    #[inline]
+    fn diagonal(&self) -> V { Array::build(|i| self.cr(i, i).clone()) }
+
+    #[inline]
+    fn trace(&self) -> S { self.diagonal().comp_add() }
+
     fn invert(&self) -> Option<Self>;
 
     #[inline]
@@ -277,17 +286,6 @@ impl<S: Clone + Float>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
-    #[inline]
-    fn r(&self, r: uint) -> Vec2<S> {
-        Vec2::new(self.i(0).i(r).clone(),
-                  self.i(1).i(r).clone())
-    }
-
-    fn mul_v(&self, v: &Vec2<S>) -> Vec2<S> {
-        Vec2::new(self.r(0).dot(v),
-                  self.r(1).dot(v))
-    }
-
     fn mul_m(&self, other: &Mat2<S>) -> Mat2<S> {
         Mat2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
                   self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
@@ -301,11 +299,6 @@ for Mat2<S>
     #[inline]
     fn transpose_self(&mut self) {
         self.swap_cr((0, 1), (1, 0));
-    }
-
-    #[inline]
-    fn trace(&self) -> S {
-        *self.cr(0, 0) + *self.cr(1, 1)
     }
 
     #[inline]
@@ -342,19 +335,6 @@ impl<S: Clone + Float>
 Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
-    #[inline]
-    fn r(&self, r: uint) -> Vec3<S> {
-        Vec3::new(self.i(0).i(r).clone(),
-                  self.i(1).i(r).clone(),
-                  self.i(2).i(r).clone())
-    }
-
-    fn mul_v(&self, v: &Vec3<S>) -> Vec3<S> {
-        Vec3::new(self.r(0).dot(v),
-                  self.r(1).dot(v),
-                  self.r(2).dot(v))
-    }
-
     fn mul_m(&self, other: &Mat3<S>) -> Mat3<S> {
         Mat3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
                   self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
@@ -372,11 +352,6 @@ for Mat3<S>
         self.swap_cr((0, 1), (1, 0));
         self.swap_cr((0, 2), (2, 0));
         self.swap_cr((1, 2), (2, 1));
-    }
-
-    #[inline]
-    fn trace(&self) -> S {
-        *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2)
     }
 
     fn determinant(&self) -> S {
@@ -421,21 +396,6 @@ impl<S: Clone + Float>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
-    #[inline]
-    fn r(&self, r: uint) -> Vec4<S> {
-        Vec4::new(self.i(0).i(r).clone(),
-                  self.i(1).i(r).clone(),
-                  self.i(2).i(r).clone(),
-                  self.i(2).i(r).clone())
-    }
-
-    fn mul_v(&self, v: &Vec4<S>) -> Vec4<S> {
-        Vec4::new(self.r(0).dot(v),
-                  self.r(1).dot(v),
-                  self.r(2).dot(v),
-                  self.r(3).dot(v))
-    }
-
     fn mul_m(&self, other: &Mat4<S>) -> Mat4<S> {
         Mat4::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)), self.r(2).dot(other.c(0)), self.r(3).dot(other.c(0)),
                   self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)), self.r(2).dot(other.c(1)), self.r(3).dot(other.c(1)),
@@ -457,11 +417,6 @@ for Mat4<S>
         self.swap_cr((1, 2), (2, 1));
         self.swap_cr((1, 3), (3, 1));
         self.swap_cr((2, 3), (3, 2));
-    }
-
-    #[inline]
-    fn trace(&self) -> S {
-        *self.cr(0, 0) + *self.cr(1, 1) + *self.cr(2, 2) + *self.cr(3, 3)
     }
 
     fn determinant(&self) -> S {
