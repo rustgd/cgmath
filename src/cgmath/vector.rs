@@ -16,7 +16,7 @@
 use std::num::{Zero, zero, One, one, sqrt};
 
 use angle::{Rad, atan2, acos};
-use array::Array;
+use array::{Array, build};
 
 /// A 2-dimensional vector.
 #[deriving(Eq, Clone, Zero)]
@@ -103,17 +103,17 @@ pub trait Vector
 +   Neg<Self>
 +   Zero + One
 {
-    #[inline] fn add_s(&self, s: S) -> Self { Array::build(|i| self.i(i).add(&s)) }
-    #[inline] fn sub_s(&self, s: S) -> Self { Array::build(|i| self.i(i).sub(&s)) }
-    #[inline] fn mul_s(&self, s: S) -> Self { Array::build(|i| self.i(i).mul(&s)) }
-    #[inline] fn div_s(&self, s: S) -> Self { Array::build(|i| self.i(i).div(&s)) }
-    #[inline] fn rem_s(&self, s: S) -> Self { Array::build(|i| self.i(i).rem(&s)) }
+    #[inline] fn add_s(&self, s: S) -> Self { build(|i| self.i(i).add(&s)) }
+    #[inline] fn sub_s(&self, s: S) -> Self { build(|i| self.i(i).sub(&s)) }
+    #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul(&s)) }
+    #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div(&s)) }
+    #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem(&s)) }
 
-    #[inline] fn add_v(&self, other: &Self) -> Self { Array::build(|i| self.i(i).add(other.i(i))) }
-    #[inline] fn sub_v(&self, other: &Self) -> Self { Array::build(|i| self.i(i).sub(other.i(i))) }
-    #[inline] fn mul_v(&self, other: &Self) -> Self { Array::build(|i| self.i(i).mul(other.i(i))) }
-    #[inline] fn div_v(&self, other: &Self) -> Self { Array::build(|i| self.i(i).div(other.i(i))) }
-    #[inline] fn rem_v(&self, other: &Self) -> Self { Array::build(|i| self.i(i).rem(other.i(i))) }
+    #[inline] fn add_v(&self, other: &Self) -> Self { build(|i| self.i(i).add(other.i(i))) }
+    #[inline] fn sub_v(&self, other: &Self) -> Self { build(|i| self.i(i).sub(other.i(i))) }
+    #[inline] fn mul_v(&self, other: &Self) -> Self { build(|i| self.i(i).mul(other.i(i))) }
+    #[inline] fn div_v(&self, other: &Self) -> Self { build(|i| self.i(i).div(other.i(i))) }
+    #[inline] fn rem_v(&self, other: &Self) -> Self { build(|i| self.i(i).rem(other.i(i))) }
 
     #[inline] fn neg_self(&mut self);
 
@@ -151,9 +151,9 @@ impl<S: Clone + Num + Ord> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec
 impl<S: Clone + Num + Ord> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
 impl<S: Clone + Num + Ord> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
 
-impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { Array::build(|i| self.i(i).neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { Array::build(|i| self.i(i).neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { Array::build(|i| self.i(i).neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { build(|i| self.i(i).neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
+impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
 
 macro_rules! vector(
     (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (

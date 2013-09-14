@@ -94,6 +94,11 @@ macro_rules! array(
     )
 )
 
+#[inline]
+pub fn build<T: Clone, Slice, A: Array<T, Slice>>(builder: &fn(i: uint) -> T) -> A {
+    Array::build(builder)
+}
+
 macro_rules! gen_builder(
     (_2) => ([builder(0), builder(1)]);
     (_3) => ([builder(0), builder(1), builder(2)]);
