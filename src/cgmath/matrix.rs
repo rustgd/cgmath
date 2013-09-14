@@ -196,7 +196,7 @@ pub trait Matrix
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
-        for c in self.mut_iter() { c.swap(a, b) }
+        self.each_mut(|_, c| c.swap(a, b))
     }
 
     #[inline]
@@ -222,25 +222,25 @@ pub trait Matrix
     //     *self.mut_cr(cb, rb) = tmp;
     // }
 
-    #[inline] fn neg_self(&mut self) { for c in self.mut_iter() { *c = c.neg() } }
+    #[inline] fn neg_self(&mut self) { self.each_mut(|_, x| *x = x.neg()) }
 
     #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul_s(s.clone())) }
     #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div_s(s.clone())) }
     #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem_s(s.clone())) }
 
-    #[inline] fn mul_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.mul_s(s.clone()) } }
-    #[inline] fn div_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.div_s(s.clone()) } }
-    #[inline] fn rem_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.rem_s(s.clone()) } }
-
-    #[inline] fn mul_v(&self, v: &V) -> V { build(|i| self.r(i).dot(v)) }
-
     #[inline] fn add_m(&self, other: &Self) -> Self { build(|i| self.i(i).add_v(other.i(i))) }
     #[inline] fn sub_m(&self, other: &Self) -> Self { build(|i| self.i(i).sub_v(other.i(i))) }
 
-    #[inline] fn add_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add_v(b) } }
-    #[inline] fn sub_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.sub_v(b) } }
+    #[inline] fn mul_v(&self, v: &V) -> V { build(|i| self.r(i).dot(v)) }
 
     fn mul_m(&self, other: &Self) -> Self;
+
+    #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.mul_s(s.clone())) }
+    #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.div_s(s.clone())) }
+    #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.rem_s(s.clone())) }
+
+    #[inline] fn add_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.add_v(other.c(i))) }
+    #[inline] fn sub_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.sub_v(other.c(i))) }
 
     fn transpose(&self) -> Self;
     fn transpose_self(&mut self);

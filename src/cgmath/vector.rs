@@ -115,19 +115,19 @@ pub trait Vector
     #[inline] fn div_v(&self, other: &Self) -> Self { build(|i| self.i(i).div(other.i(i))) }
     #[inline] fn rem_v(&self, other: &Self) -> Self { build(|i| self.i(i).rem(other.i(i))) }
 
-    #[inline] fn neg_self(&mut self);
+    #[inline] fn neg_self(&mut self) { self.each_mut(|_, x| *x = x.neg()) }
 
-    #[inline] fn add_self_s(&mut self, s: S);
-    #[inline] fn sub_self_s(&mut self, s: S);
-    #[inline] fn mul_self_s(&mut self, s: S);
-    #[inline] fn div_self_s(&mut self, s: S);
-    #[inline] fn rem_self_s(&mut self, s: S);
+    #[inline] fn add_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.add(&s)) }
+    #[inline] fn sub_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.sub(&s)) }
+    #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.mul(&s)) }
+    #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.div(&s)) }
+    #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
 
-    #[inline] fn add_self_v(&mut self, other: &Self);
-    #[inline] fn sub_self_v(&mut self, other: &Self);
-    #[inline] fn mul_self_v(&mut self, other: &Self);
-    #[inline] fn div_self_v(&mut self, other: &Self);
-    #[inline] fn rem_self_v(&mut self, other: &Self);
+    #[inline] fn add_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
+    #[inline] fn sub_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.sub(other.i(i))) }
+    #[inline] fn mul_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.mul(other.i(i))) }
+    #[inline] fn div_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.div(other.i(i))) }
+    #[inline] fn rem_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.rem(other.i(i))) }
 
     /// The sum of each component of the vector.
     #[inline] fn comp_add(&self) -> S { self.fold(|a, b| a.add(b)) }
@@ -157,21 +157,7 @@ impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) ->
 
 macro_rules! vector(
     (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (
-        impl<$S: Clone + Num + Ord> Vector<$S, $Slice> for $Self<$S> {
-            #[inline] fn neg_self(&mut self) { self.$x = -self.$x; $(self.$xs = -self.$xs;)+ }
-
-            #[inline] fn add_self_s(&mut self, s: S) { self.$x = self.$x.add(&s); $(self.$xs = self.$x.add(&s);)+ }
-            #[inline] fn sub_self_s(&mut self, s: S) { self.$x = self.$x.sub(&s); $(self.$xs = self.$x.sub(&s);)+ }
-            #[inline] fn mul_self_s(&mut self, s: S) { self.$x = self.$x.mul(&s); $(self.$xs = self.$x.mul(&s);)+ }
-            #[inline] fn div_self_s(&mut self, s: S) { self.$x = self.$x.div(&s); $(self.$xs = self.$x.div(&s);)+ }
-            #[inline] fn rem_self_s(&mut self, s: S) { self.$x = self.$x.rem(&s); $(self.$xs = self.$x.rem(&s);)+ }
-
-            #[inline] fn add_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.add(&other.$x); $(self.$xs = self.$xs.add(&other.$xs);)+ }
-            #[inline] fn sub_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.sub(&other.$x); $(self.$xs = self.$xs.sub(&other.$xs);)+ }
-            #[inline] fn mul_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.mul(&other.$x); $(self.$xs = self.$xs.mul(&other.$xs);)+ }
-            #[inline] fn div_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.div(&other.$x); $(self.$xs = self.$xs.div(&other.$xs);)+ }
-            #[inline] fn rem_self_v(&mut self, other: &$Self<$S>) { self.$x = self.$x.rem(&other.$x); $(self.$xs = self.$xs.rem(&other.$xs);)+ }
-        }
+        impl<$S: Clone + Num + Ord> Vector<$S, $Slice> for $Self<$S>;
     )
 )
 

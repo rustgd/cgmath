@@ -41,6 +41,7 @@ pub trait Array
     }
 
     fn fold(&self, f: &fn(&T, &T) -> T) -> T;
+    fn each_mut(&mut self, f: &fn(i: uint, x: &mut T));
 }
 
 macro_rules! array(
@@ -90,6 +91,11 @@ macro_rules! array(
             fn fold(&self, f: &fn(&$T, &$T) -> $T) -> $T {
                 gen_fold!($_n)
             }
+
+            #[inline]
+            fn each_mut(&mut self, f: &fn(i: uint, x: &mut $T)) {
+                gen_each_mut!($_n)
+            }
         }
     )
 )
@@ -109,6 +115,12 @@ macro_rules! gen_fold(
     (_2) => (f(self.i(0), self.i(1)));
     (_3) => (f(&f(self.i(0), self.i(1)), self.i(2)));
     (_4) => (f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)));
+)
+
+macro_rules! gen_each_mut(
+    (_2) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)););
+    (_3) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)););
+    (_4) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)); f(3, self.mut_i(3)););
 )
 
 macro_rules! approx_eq(

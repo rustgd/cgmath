@@ -69,11 +69,11 @@ pub trait Point
     #[inline] fn add_v(&self, other: &V) -> Self { build(|i| self.i(i).add(other.i(i))) }
     #[inline] fn sub_p(&self, other: &Self) -> V { build(|i| self.i(i).sub(other.i(i))) }
 
-    #[inline] fn mul_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.mul(&s) } }
-    #[inline] fn div_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.div(&s) } }
-    #[inline] fn rem_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.rem(&s) } }
+    #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.mul(&s)) }
+    #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.div(&s)) }
+    #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
 
-    #[inline] fn add_self_v(&mut self, other: &V) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add(b) } }
+    #[inline] fn add_self_v(&mut self, other: &V) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
 }
 
 array!(impl<S> Point2<S> -> [S, ..2] _2)
