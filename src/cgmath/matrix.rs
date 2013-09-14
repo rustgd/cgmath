@@ -224,9 +224,9 @@ pub trait Matrix
 
     #[inline] fn neg_self(&mut self) { for c in self.mut_iter() { *c = c.neg() } }
 
-    #[inline] fn mul_s(&self, s: S) -> Self { self.map(|c| c.mul_s(s.clone())) }
-    #[inline] fn div_s(&self, s: S) -> Self { self.map(|c| c.div_s(s.clone())) }
-    #[inline] fn rem_s(&self, s: S) -> Self { self.map(|c| c.rem_s(s.clone())) }
+    #[inline] fn mul_s(&self, s: S) -> Self { Array::build(|i| self.i(i).mul_s(s.clone())) }
+    #[inline] fn div_s(&self, s: S) -> Self { Array::build(|i| self.i(i).div_s(s.clone())) }
+    #[inline] fn rem_s(&self, s: S) -> Self { Array::build(|i| self.i(i).rem_s(s.clone())) }
 
     #[inline] fn mul_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.mul_s(s.clone()) } }
     #[inline] fn div_self_s(&mut self, s: S) { for c in self.mut_iter() { *c = c.div_s(s.clone()) } }
@@ -234,8 +234,8 @@ pub trait Matrix
 
     #[inline] fn mul_v(&self, v: &V) -> V { Array::build(|i| self.r(i).dot(v)) }
 
-    #[inline] fn add_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.add_v(b) ) }
-    #[inline] fn sub_m(&self, other: &Self) -> Self { self.bimap(other, |a, b| a.sub_v(b) ) }
+    #[inline] fn add_m(&self, other: &Self) -> Self { Array::build(|i| self.i(i).add_v(other.i(i))) }
+    #[inline] fn sub_m(&self, other: &Self) -> Self { Array::build(|i| self.i(i).sub_v(other.i(i))) }
 
     #[inline] fn add_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.add_v(b) } }
     #[inline] fn sub_self_m(&mut self, other: &Self) { for (a, b) in self.mut_iter().zip(other.iter()) { *a = a.sub_v(b) } }
@@ -278,9 +278,9 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Clone + Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { self.map(|c| c.neg()) } }
-impl<S: Clone + Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { self.map(|c| c.neg()) } }
-impl<S: Clone + Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { self.map(|c| c.neg()) } }
+impl<S: Clone + Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { Array::build(|i| self.i(i).neg()) } }
+impl<S: Clone + Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { Array::build(|i| self.i(i).neg()) } }
+impl<S: Clone + Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { Array::build(|i| self.i(i).neg()) } }
 
 impl<S: Clone + Float>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>

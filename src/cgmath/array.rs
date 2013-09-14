@@ -40,17 +40,6 @@ pub trait Array
         *self.mut_i(b) = tmp;
     }
 
-    #[inline]
-    fn map<U: Clone, SliceU, UU: Array<U, SliceU>>(&self, f: &fn(&T) -> U) -> UU {
-        Array::build(|i| f(self.i(i)))
-    }
-
-    #[inline]
-    fn bimap<U: Clone, SliceU, UU: Array<U, SliceU>,
-             V: Clone, SliceV, VV: Array<V, SliceV>>(&self, other: &UU, f: &fn(&T, &U) -> V) -> VV {
-        Array::build(|i| f(self.i(i), other.i(i)))
-    }
-
     fn zip(&self, f: &fn(&T, &T) -> T) -> T;
 }
 

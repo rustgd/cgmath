@@ -62,12 +62,12 @@ pub trait Point
 >
 :   Array<S, Slice>
 {
-    #[inline] fn mul_s(&self, s: S) -> Self { self.map(|x| x.mul(&s)) }
-    #[inline] fn div_s(&self, s: S) -> Self { self.map(|x| x.div(&s)) }
-    #[inline] fn rem_s(&self, s: S) -> Self { self.map(|x| x.rem(&s)) }
+    #[inline] fn mul_s(&self, s: S) -> Self { Array::build(|i| self.i(i).mul(&s)) }
+    #[inline] fn div_s(&self, s: S) -> Self { Array::build(|i| self.i(i).div(&s)) }
+    #[inline] fn rem_s(&self, s: S) -> Self { Array::build(|i| self.i(i).rem(&s)) }
 
-    #[inline] fn add_v(&self, other: &V) -> Self { self.bimap(other, |a, b| a.add(b) ) }
-    #[inline] fn sub_p(&self, other: &Self) -> V { self.bimap(other, |a, b| a.sub(b) ) }
+    #[inline] fn add_v(&self, other: &V) -> Self { Array::build(|i| self.i(i).add(other.i(i))) }
+    #[inline] fn sub_p(&self, other: &Self) -> V { Array::build(|i| self.i(i).sub(other.i(i))) }
 
     #[inline] fn mul_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.mul(&s) } }
     #[inline] fn div_self_s(&mut self, s: S) { for x in self.mut_iter() { *x = x.div(&s) } }
