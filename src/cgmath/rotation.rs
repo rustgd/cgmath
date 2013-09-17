@@ -270,8 +270,8 @@ impl<S: Float> Rotation3<S> for Quat<S> {
 /// # Notes
 ///
 /// Whilst Euler angles are more intuitive to specify than quaternions,
-/// they are not reccomended for general use because they are prone to gimble
-/// lock.
+/// they are not recommended for general use because they are prone to gimble
+/// lock, and are hard to interpolate between.
 #[deriving(Eq, Clone)]
 pub struct Euler<A> { x: A, y: A, z: A }
 
@@ -368,8 +368,17 @@ impl<S: Float, A: Angle<S>> ApproxEq<S> for Euler<A> {
 }
 
 /// A rotation about an arbitrary axis
+///
+/// # Fields
+///
+/// - `v`: the axis of rotation
+/// - `a`: the angular rotation
 #[deriving(Eq, Clone)]
 pub struct AxisAngle<S, A> { v: Vec3<S>, a: A }
+
+pub trait ToAxisAngle<S, A> {
+    fn to_axis_angle(&self) -> AxisAngle<S, A>;
+}
 
 impl<S: Float, A: Angle<S>> AxisAngle<S, A> {
     #[inline]
@@ -431,10 +440,14 @@ impl<S: Float, A: Angle<S>> Rotation3<S> for AxisAngle<S, A> {
     fn concat_self(&mut self, _other: &AxisAngle<S, A>) { fail!("Not yet implemented"); }
 
     #[inline]
-    fn invert(&self) -> AxisAngle<S, A> { fail!("Not yet implemented") }
+    fn invert(&self) -> AxisAngle<S, A> {
+        AxisAngle::new(self.v.clone(), (-self.a).normalize())
+    }
 
     #[inline]
-    fn invert_self(&mut self) { fail!("Not yet implemented"); }
+    fn invert_self(&mut self) {
+        self.a = (-self.a).normalize()
+    }
 }
 
 impl<S: Float, A: Angle<S>> ApproxEq<S> for AxisAngle<S, A> {
