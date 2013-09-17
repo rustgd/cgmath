@@ -16,6 +16,7 @@
 use std::num::{zero, one, sqrt};
 
 use angle::{Angle, Rad, acos, cos, sin};
+use array::{Array, build};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
 use util::two;
@@ -23,6 +24,9 @@ use util::two;
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
 pub struct Quat<S> { s: S, v: Vec3<S> }
+
+array!(impl<S> Quat<S> -> [S, ..4] _4)
+approx_eq!(impl<S> Quat<S>)
 
 pub trait ToQuat<S: Clone + Float> {
     fn to_quat(&self) -> Quat<S>;
@@ -81,19 +85,13 @@ impl<S: Clone + Float> Quat<S> {
     /// The sum of this quaternion and `other`
     #[inline]
     pub fn add_q(&self, other: &Quat<S>) -> Quat<S> {
-        Quat::new(self.s   + other.s,
-                  self.v.x + other.v.x,
-                  self.v.y + other.v.y,
-                  self.v.z + other.v.z)
+        build(|i| self.i(i).add(other.i(i)))
     }
 
-    /// The sum of this quaternion and `other`
+    /// The difference between this quaternion and `other`
     #[inline]
     pub fn sub_q(&self, other: &Quat<S>) -> Quat<S> {
-        Quat::new(self.s   - other.s,
-                  self.v.x - other.v.x,
-                  self.v.y - other.v.y,
-                  self.v.z - other.v.z)
+        build(|i| self.i(i).add(other.i(i)))
     }
 
     /// The the result of multipliplying the quaternion by `other`
@@ -102,6 +100,31 @@ impl<S: Clone + Float> Quat<S> {
                   self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
                   self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
                   self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
+    }
+
+    #[inline]
+    pub fn mul_self_s(&mut self, s: S) {
+        self.each_mut(|_, x| *x = x.mul(&s))
+    }
+
+    #[inline]
+    pub fn div_self_s(&mut self, s: S) {
+        self.each_mut(|_, x| *x = x.div(&s))
+    }
+
+    #[inline]
+    pub fn add_self_q(&mut self, other: &Quat<S>) {
+        self.each_mut(|i, x| *x = x.add(other.i(i)));
+    }
+
+    #[inline]
+    pub fn sub_self_q(&mut self, other: &Quat<S>) {
+        self.each_mut(|i, x| *x = x.sub(other.i(i)));
+    }
+
+    #[inline]
+    pub fn mul_self_q(&mut self, other: &Quat<S>) {
+        *self = self.mul_q(other);
     }
 
     /// The dot product of the quaternion and `other`
@@ -114,12 +137,6 @@ impl<S: Clone + Float> Quat<S> {
     #[inline]
     pub fn conjugate(&self) -> Quat<S> {
         Quat::from_sv(self.s.clone(), -self.v.clone())
-    }
-
-    /// The multiplicative inverse of the quaternion
-    #[inline]
-    pub fn inverse(&self) -> Quat<S> {
-        self.conjugate().div_s(self.magnitude2())
     }
 
     /// The squared magnitude of the quaternion. This is useful for

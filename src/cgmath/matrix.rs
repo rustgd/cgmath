@@ -242,6 +242,8 @@ pub trait Matrix
     #[inline] fn add_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.add_v(other.c(i))) }
     #[inline] fn sub_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.sub_v(other.c(i))) }
 
+    #[inline] fn mul_self_m(&mut self, other: &Self) { *self = self.mul_m(other); }
+
     fn transpose(&self) -> Self;
     fn transpose_self(&mut self);
     fn determinant(&self) -> S;
