@@ -31,14 +31,14 @@ pub struct Vec3<S> { x: S, y: S, z: S }
 pub struct Vec4<S> { x: S, y: S, z: S, w: S }
 
 // Conversion traits
-pub trait ToVec2<S: Clone + Num + Ord> { fn to_vec2(&self) -> Vec2<S>; }
-pub trait ToVec3<S: Clone + Num + Ord> { fn to_vec3(&self) -> Vec3<S>; }
-pub trait ToVec4<S: Clone + Num + Ord> { fn to_vec4(&self) -> Vec4<S>; }
+pub trait ToVec2<S: Primitive> { fn to_vec2(&self) -> Vec2<S>; }
+pub trait ToVec3<S: Primitive> { fn to_vec3(&self) -> Vec3<S>; }
+pub trait ToVec4<S: Primitive> { fn to_vec4(&self) -> Vec4<S>; }
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (
-        impl<$S: Clone + Num + Ord> $Self<$S> {
+        impl<$S: Primitive> $Self<$S> {
             #[inline]
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
@@ -65,18 +65,18 @@ vec!(impl Vec2<S> { x, y })
 vec!(impl Vec3<S> { x, y, z })
 vec!(impl Vec4<S> { x, y, z, w })
 
-impl<S: Clone + Num + Ord> Vec2<S> {
+impl<S: Primitive> Vec2<S> {
     #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
     #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
 }
 
-impl<S: Clone + Num + Ord> Vec3<S> {
+impl<S: Primitive> Vec3<S> {
     #[inline] pub fn unit_x() -> Vec3<S> { Vec3::new(one(), zero(), zero()) }
     #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
     #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
 }
 
-impl<S: Clone + Num + Ord> Vec4<S> {
+impl<S: Primitive> Vec4<S> {
     #[inline] pub fn unit_x() -> Vec4<S> { Vec4::new(one(), zero(), zero(), zero()) }
     #[inline] pub fn unit_y() -> Vec4<S> { Vec4::new(zero(), one(), zero(), zero()) }
     #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
@@ -96,7 +96,7 @@ approx_eq!(impl<S> Vec4<S>)
 /// for pragmatic reasons.
 pub trait Vector
 <
-    S: Clone + Num + Ord,
+    S: Primitive,
     Slice
 >
 :   Array<S, Slice>
@@ -145,19 +145,19 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.iter().max().unwrap().clone() }
 }
 
-#[inline] fn dot<S: Clone + Num + Ord, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
-impl<S: Clone + Num + Ord> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
-impl<S: Clone + Num + Ord> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
-impl<S: Clone + Num + Ord> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+impl<S: Primitive> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
+impl<S: Primitive> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
+impl<S: Primitive> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
 
-impl<S: Clone + Num + Ord> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { build(|i| self.i(i).neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
-impl<S: Clone + Num + Ord> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
+impl<S: Primitive> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { build(|i| self.i(i).neg()) } }
+impl<S: Primitive> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
+impl<S: Primitive> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
 
 macro_rules! vector(
     (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (
-        impl<$S: Clone + Num + Ord> Vector<$S, $Slice> for $Self<$S>;
+        impl<$S: Primitive> Vector<$S, $Slice> for $Self<$S>;
     )
 )
 
@@ -166,7 +166,7 @@ vector!(impl Vec3<S> [S, ..3] { x, y, z })
 vector!(impl Vec4<S> [S, ..4] { x, y, z, w })
 
 /// Operations specific to numeric two-dimensional vectors.
-impl<S: Clone + Num + Ord> Vec2<S> {
+impl<S: Primitive> Vec2<S> {
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(&self, other: &Vec2<S>) -> S {
@@ -175,7 +175,7 @@ impl<S: Clone + Num + Ord> Vec2<S> {
 }
 
 /// Operations specific to numeric three-dimensional vectors.
-impl<S: Clone + Num + Ord> Vec3<S> {
+impl<S: Primitive> Vec3<S> {
     /// Returns the cross product of the vector and `other`.
     #[inline]
     pub fn cross(&self, other: &Vec3<S>) -> Vec3<S> {
@@ -196,7 +196,7 @@ impl<S: Clone + Num + Ord> Vec3<S> {
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector
 <
-    S: Clone + Float,
+    S: Float,
     Slice
 >
 :   Vector<S, Slice>
@@ -267,21 +267,21 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: Clone + Float> EuclideanVector<S, [S, ..2]> for Vec2<S> {
+impl<S: Float> EuclideanVector<S, [S, ..2]> for Vec2<S> {
     #[inline]
     fn angle(&self, other: &Vec2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
-impl<S: Clone + Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
+impl<S: Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
     fn angle(&self, other: &Vec3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
-impl<S: Clone + Float> EuclideanVector<S, [S, ..4]> for Vec4<S> {
+impl<S: Float> EuclideanVector<S, [S, ..4]> for Vec4<S> {
     #[inline]
     fn angle(&self, other: &Vec4<S>) -> Rad<S> {
         acos(self.dot(other) / (self.length() * other.length()))

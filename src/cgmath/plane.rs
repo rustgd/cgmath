@@ -35,19 +35,19 @@ pub struct Plane<S> {
     distance: S,
 }
 
-impl<S: Clone + Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
+impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         fail!("Not yet implemented");
     }
 }
 
-impl<S: Clone + Float> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
+impl<S: Float> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Ray3<S>> {
         fail!("Not yet implemented");
     }
 }
 
-impl<S: Clone + Float> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
+impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         fail!("Not yet implemented");
     }

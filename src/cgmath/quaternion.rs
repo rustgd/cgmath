@@ -27,11 +27,11 @@ pub struct Quat<S> { s: S, v: Vec3<S> }
 array!(impl<S> Quat<S> -> [S, ..4] _4)
 approx_eq!(impl<S> Quat<S>)
 
-pub trait ToQuat<S: Clone + Float> {
+pub trait ToQuat<S: Float> {
     fn to_quat(&self) -> Quat<S>;
 }
 
-impl<S: Clone + Float> Quat<S> {
+impl<S: Float> Quat<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
     #[inline]
@@ -174,7 +174,7 @@ impl<S: Clone + Float> Quat<S> {
     }
 }
 
-impl<S: Clone + Float> Quat<S> {
+impl<S: Float> Quat<S> {
     /// Spherical Linear Intoperlation
     ///
     /// Perform a spherical linear interpolation between the quaternion and
@@ -219,7 +219,7 @@ impl<S: Clone + Float> Quat<S> {
     }
 }
 
-impl<S: Clone + Float> ToMat3<S> for Quat<S> {
+impl<S: Float> ToMat3<S> for Quat<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
     fn to_mat3(&self) -> Mat3<S> {
         let x2 = self.v.x + self.v.x;
@@ -244,7 +244,7 @@ impl<S: Clone + Float> ToMat3<S> for Quat<S> {
     }
 }
 
-impl<S: Clone + Float> Neg<Quat<S>> for Quat<S> {
+impl<S: Float> Neg<Quat<S>> for Quat<S> {
     #[inline]
     fn neg(&self) -> Quat<S> {
         Quat::from_sv(-self.s, -self.v)

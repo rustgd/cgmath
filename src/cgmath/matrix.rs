@@ -38,7 +38,7 @@ approx_eq!(impl<S> Mat2<S>)
 approx_eq!(impl<S> Mat3<S>)
 approx_eq!(impl<S> Mat4<S>)
 
-impl<S: Clone + Num + Ord> Mat2<S> {
+impl<S: Primitive> Mat2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Mat2<S> {
@@ -68,7 +68,7 @@ impl<S: Clone + Num + Ord> Mat2<S> {
     }
 }
 
-impl<S: Clone + Float> Mat2<S> {
+impl<S: Float> Mat2<S> {
     #[inline]
     pub fn from_angle(theta: Rad<S>) -> Mat2<S> {
         let cos_theta = cos(theta.clone());
@@ -79,7 +79,7 @@ impl<S: Clone + Float> Mat2<S> {
     }
 }
 
-impl<S: Clone + Num + Ord> Mat3<S> {
+impl<S: Primitive> Mat3<S> {
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
@@ -112,7 +112,7 @@ impl<S: Clone + Num + Ord> Mat3<S> {
     }
 }
 
-impl<S: Clone + Float> Mat3<S> {
+impl<S: Float> Mat3<S> {
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
         let dir  = dir.normalize();
         let side = dir.cross(&up.normalize());
@@ -122,7 +122,7 @@ impl<S: Clone + Float> Mat3<S> {
     }
 }
 
-impl<S: Clone + Num + Ord> Mat4<S> {
+impl<S: Primitive> Mat4<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
@@ -158,9 +158,9 @@ impl<S: Clone + Num + Ord> Mat4<S> {
     }
 }
 
-impl<S: Clone + Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::ident() } }
-impl<S: Clone + Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::ident() } }
-impl<S: Clone + Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::ident() } }
+impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::ident() } }
+impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::ident() } }
+impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::ident() } }
 
 array!(impl<S> Mat2<S> -> [Vec2<S>, ..2] _2)
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3] _3)
@@ -168,7 +168,7 @@ array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
 
 pub trait Matrix
 <
-    S: Clone + Float, Slice,
+    S: Float, Slice,
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
@@ -280,11 +280,11 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Clone + Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
-impl<S: Clone + Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
-impl<S: Clone + Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
+impl<S: Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
+impl<S: Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
+impl<S: Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: Clone + Float>
+impl<S: Float>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
@@ -333,7 +333,7 @@ for Mat2<S>
     }
 }
 
-impl<S: Clone + Float>
+impl<S: Float>
 Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
@@ -394,7 +394,7 @@ for Mat3<S>
     }
 }
 
-impl<S: Clone + Float>
+impl<S: Float>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
@@ -523,11 +523,11 @@ for Mat4<S>
 }
 
 // Conversion traits
-pub trait ToMat2<S: Clone + Num + Ord> { fn to_mat2(&self) -> Mat2<S>; }
-pub trait ToMat3<S: Clone + Num + Ord> { fn to_mat3(&self) -> Mat3<S>; }
-pub trait ToMat4<S: Clone + Num + Ord> { fn to_mat4(&self) -> Mat4<S>; }
+pub trait ToMat2<S: Primitive> { fn to_mat2(&self) -> Mat2<S>; }
+pub trait ToMat3<S: Primitive> { fn to_mat3(&self) -> Mat3<S>; }
+pub trait ToMat4<S: Primitive> { fn to_mat4(&self) -> Mat4<S>; }
 
-impl<S: Clone + Float> ToMat3<S> for Mat2<S> {
+impl<S: Float> ToMat3<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 3-dimensional identity matrix.
     fn to_mat3(&self) -> Mat3<S> {
@@ -537,7 +537,7 @@ impl<S: Clone + Float> ToMat3<S> for Mat2<S> {
     }
 }
 
-impl<S: Clone + Float> ToMat4<S> for Mat2<S> {
+impl<S: Float> ToMat4<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
     fn to_mat4(&self) -> Mat4<S> {
@@ -548,7 +548,7 @@ impl<S: Clone + Float> ToMat4<S> for Mat2<S> {
     }
 }
 
-impl<S: Clone + Float> ToMat4<S> for Mat3<S> {
+impl<S: Float> ToMat4<S> for Mat3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
     fn to_mat4(&self) -> Mat4<S> {
@@ -559,7 +559,7 @@ impl<S: Clone + Float> ToMat4<S> for Mat3<S> {
     }
 }
 
-impl<S:Clone + Float> ToQuat<S> for Mat3<S> {
+impl<S:Float> ToQuat<S> for Mat3<S> {
     /// Convert the matrix to a quaternion
     fn to_quat(&self) -> Quat<S> {
         // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
