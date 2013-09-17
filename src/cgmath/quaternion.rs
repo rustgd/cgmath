@@ -13,13 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero, one, sqrt};
+use std::num::{zero, one, cast, sqrt};
 
 use angle::{Angle, Rad, acos, cos, sin};
 use array::{Array, build};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
-use util::two;
 
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
@@ -79,7 +78,7 @@ impl<S: Clone + Float> Quat<S> {
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<S>) -> Vec3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(two::<S>()).add_v(vec)
+        self.v.cross(&tmp).mul_s(cast(2)).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`

@@ -13,18 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero, one};
+use std::num::{zero, one, cast};
 
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
-use util::two;
 
 /// Create a perspective projection matrix.
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: Clone + Float, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Mat4<S> {
+pub fn perspective<S: Float, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Mat4<S> {
     PerspectiveFov {
         fovy:   fovy,
         aspect: aspect,
@@ -37,7 +36,7 @@ pub fn perspective<S: Clone + Float, A: Angle<S>>(fovy: A, aspect: S, near: S, f
 ///
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
-pub fn frustum<S: Clone + Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
+pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
     Perspective {
         left:   left,
         right:  right,
@@ -52,7 +51,7 @@ pub fn frustum<S: Clone + Float>(left: S, right: S, bottom: S, top: S, near: S, 
 ///
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
-pub fn ortho<S: Clone + Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
+pub fn ortho<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
     Ortho {
         left:   left,
         right:  right,
@@ -76,9 +75,9 @@ pub struct PerspectiveFov<S, A> {
     far:    S,
 }
 
-impl<S: Clone + Float, A: Angle<S>> PerspectiveFov<S, A> {
+impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
-        let angle = self.fovy.div_s(two::<S>());
+        let angle = self.fovy.div_s(cast(2));
         let ymax = self.near * tan(angle);
         let xmax = ymax * self.aspect;
 
@@ -93,13 +92,13 @@ impl<S: Clone + Float, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: Clone + Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
+impl<S: Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         self.to_perspective().to_frustum()
     }
 }
 
-impl<S: Clone + Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
+impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
     fn to_mat4(&self) -> Mat4<S> {
         let half_turn: A = Angle::turn_div_2();
 
@@ -110,7 +109,7 @@ impl<S: Clone + Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
         assert!(self.far    < zero(),    "The far plane distance cannot be below zero, found: %?", self.far);
         assert!(self.far    < self.near, "The far plane cannot be closer than the near plane, found: far: %?, near: %?", self.far, self.near);
 
-        let f = cot(self.fovy.div_s(two::<S>()));
+        let f = cot(self.fovy.div_s(cast(2)));
 
         let c0r0 = f / self.aspect;
         let c0r1 = zero();
@@ -129,7 +128,7 @@ impl<S: Clone + Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
 
         let c3r0 = zero();
         let c3r1 = zero();
-        let c3r2 = (two::<S>() * self.far * self.near) / (self.near - self.far);
+        let c3r2 = (cast::<int, S>(2) * self.far * self.near) / (self.near - self.far);
         let c3r3 = zero();
 
         Mat4::new(c0r0, c0r1, c0r2, c0r3,
@@ -147,25 +146,25 @@ pub struct Perspective<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Clone + Float> Projection<S> for Perspective<S> {
+impl<S: Float> Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         fail!("Not yet implemented!");
     }
 }
 
-impl<S: Clone + Float> ToMat4<S> for Perspective<S> {
+impl<S: Float> ToMat4<S> for Perspective<S> {
     fn to_mat4(&self) -> Mat4<S> {
         assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right);
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top);
         assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: %? far: %?", self.near, self.far);
 
-        let c0r0 = (two::<S>() * self.near) / (self.right - self.left);
+        let c0r0 = (cast::<int, S>(2) * self.near) / (self.right - self.left);
         let c0r1 = zero();
         let c0r2 = zero();
         let c0r3 = zero();
 
         let c1r0 = zero();
-        let c1r1 = (two::<S>() * self.near) / (self.top - self.bottom);
+        let c1r1 = (cast::<int, S>(2) * self.near) / (self.top - self.bottom);
         let c1r2 = zero();
         let c1r3 = zero();
 
@@ -176,7 +175,7 @@ impl<S: Clone + Float> ToMat4<S> for Perspective<S> {
 
         let c3r0 = zero();
         let c3r1 = zero();
-        let c3r2 = -(two::<S>() * self.far * self.near) / (self.far - self.near);
+        let c3r2 = -(cast::<int, S>(2) * self.far * self.near) / (self.far - self.near);
         let c3r3 = zero();
 
         Mat4::new(c0r0, c0r1, c0r2, c0r3,
@@ -194,31 +193,31 @@ pub struct Ortho<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Clone + Float> Projection<S> for Ortho<S> {
+impl<S: Float> Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
         fail!("Not yet implemented!");
     }
 }
 
-impl<S: Clone + Float> ToMat4<S> for Ortho<S> {
+impl<S: Float> ToMat4<S> for Ortho<S> {
     fn to_mat4(&self) -> Mat4<S> {
         assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: %? right: %?", self.left, self.right);
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top);
         assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: %? far: %?", self.near, self.far);
 
-        let c0r0 = two::<S>() / (self.right - self.left);
+        let c0r0 = cast::<int, S>(2) / (self.right - self.left);
         let c0r1 = zero();
         let c0r2 = zero();
         let c0r3 = zero();
 
         let c1r0 = zero();
-        let c1r1 = two::<S>() / (self.top - self.bottom);
+        let c1r1 = cast::<int, S>(2) / (self.top - self.bottom);
         let c1r2 = zero();
         let c1r3 = zero();
 
         let c2r0 = zero();
         let c2r1 = zero();
-        let c2r2 = -two::<S>() / (self.far - self.near);
+        let c2r2 = -cast::<int, S>(2) / (self.far - self.near);
         let c2r3 = -one::<S>();
 
         let c3r0 = -(self.right + self.left) / (self.right - self.left);
