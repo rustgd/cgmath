@@ -63,7 +63,7 @@ pub trait Angle
     S: Float
 >
 :   Clone + Zero
-+   Eq + Ord
++   Eq + Equiv<Self> + Ord
 +   ApproxEq<S>
 +   Neg<Self>
 +   ToRad<S>
@@ -142,6 +142,18 @@ impl<S: Float> Deg<S> {
     #[inline] pub fn turn_div_3() -> Deg<S> { Angle::turn_div_3() }
     #[inline] pub fn turn_div_4() -> Deg<S> { Angle::turn_div_4() }
     #[inline] pub fn turn_div_6() -> Deg<S> { Angle::turn_div_6() }
+}
+
+impl<S: Float> Equiv<Rad<S>> for Rad<S> {
+    fn equiv(&self, other: &Rad<S>) -> bool {
+        self.normalize() == other.normalize()
+    }
+}
+
+impl<S: Float> Equiv<Deg<S>> for Deg<S> {
+    fn equiv(&self, other: &Deg<S>) -> bool {
+        self.normalize() == other.normalize()
+    }
 }
 
 impl<S: Float> Angle<S> for Rad<S> {

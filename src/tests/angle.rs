@@ -16,10 +16,21 @@
 use cgmath::angle::*;
 
 #[test]
-fn angle_conv() {
+fn conv() {
     assert_approx_eq!(deg(-5.0).to_rad().to_deg(), deg(-5.0));
     assert_approx_eq!(deg(30.0).to_rad().to_deg(), deg(30.0));
 
     assert_approx_eq!(rad(-5.0).to_deg().to_rad(), rad(-5.0));
     assert_approx_eq!(rad(30.0).to_deg().to_rad(), rad(30.0));
+}
+
+#[test]
+fn equiv() {
+    assert!(Deg::<f32>::full_turn().equiv(&-Deg::<f32>::full_turn()))
+    assert!(Deg::<f32>::turn_div_2().equiv(&-Deg::<f32>::turn_div_2()))
+    assert!(Deg::<f32>::turn_div_3().sub_a(Deg::<f32>::full_turn()).equiv(&Deg::<f32>::turn_div_3()))
+
+    assert!(Rad::<f32>::full_turn().equiv(&-Rad::<f32>::full_turn()))
+    assert!(Rad::<f32>::turn_div_2().equiv(&-Rad::<f32>::turn_div_2()))
+    assert!(Rad::<f32>::turn_div_3().sub_a(Rad::<f32>::full_turn()).equiv(&Rad::<f32>::turn_div_3()))
 }
