@@ -19,13 +19,13 @@ use point::{Point2, Point3};
 use vector::{Vec2, Vec3};
 
 #[deriving(Clone, Eq)]
-pub struct AABB2<S> {
+pub struct Aabb2<S> {
     center: Point2<S>,
     size: Vec2<S>,
 }
 
 #[deriving(Clone, Eq)]
-pub struct AABB3<S> {
+pub struct Aabb3<S> {
     center: Point3<S>,
     size: Vec3<S>,
 }
