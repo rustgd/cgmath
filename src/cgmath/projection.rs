@@ -15,7 +15,7 @@
 
 use std::num::{zero, one};
 
-use angle::{Angle, rad, tan, cot};
+use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
 use util::two;
@@ -101,7 +101,7 @@ impl<S: Clone + Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
 
 impl<S: Clone + Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
     fn to_mat4(&self) -> Mat4<S> {
-        let half_turn: A = Angle::from(rad::<S>(Real::frac_pi_2()));
+        let half_turn: A = Angle::turn_div_2();
 
         assert!(self.fovy   < zero(),    "The vertical field of view cannot be below zero, found: %?", self.fovy);
         assert!(self.fovy   > half_turn, "The vertical field of view cannot be greater than a half turn, found: %?", self.fovy);
