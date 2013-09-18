@@ -13,24 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern mod cgmath;
+use cgmath::plane::*;
+use cgmath::point::*;
 
-// pub mod array;
-// pub mod matrix;
-// pub mod quaternion;
-pub mod vector;
+#[test]
+fn test_from_points() {
+    assert_eq!(Plane::from_points(Point3::new(5f, 0f,  5f),
+                                  Point3::new(5f, 5f,  5f),
+                                  Point3::new(5f, 0f, -1f)), Some(Plane::from_abcd(-1f, 0f, 0f, 5f)));
 
-pub mod angle;
-pub mod plane;
-// pub mod point;
-// pub mod ray;
-// pub mod rotation;
-
-// pub mod projection;
-
-// pub mod aabb;
-// pub mod cylinder;
-// pub mod frustum;
-// pub mod intersect;
-// pub mod obb;
-// pub mod sphere;
+    assert_eq!(Plane::from_points(Point3::new(0f, 5f, -5f),
+                                  Point3::new(0f, 5f,  0f),
+                                  Point3::new(0f, 5f,  5f)), None);     // The points are parallel
+}
