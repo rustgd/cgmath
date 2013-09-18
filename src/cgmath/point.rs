@@ -74,6 +74,12 @@ pub trait Point
     #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
 
     #[inline] fn add_self_v(&mut self, other: &V) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
+
+    /// This is a weird one, but its useful for plane calculations
+    #[inline]
+    fn dot(&self, v: &V) -> S {
+        build::<S, Slice, V>(|i| self.i(i).mul(v.i(i))).comp_add()
+    }
 }
 
 array!(impl<S> Point2<S> -> [S, ..2] _2)
