@@ -20,7 +20,8 @@ use std::num::{Zero, zero, One, one, cast, sqrt};
 use angle::{Rad, sin, cos};
 use array::{Array, build};
 use quaternion::{Quat, ToQuat};
-use vector::*;
+use vector::{Vector, EuclideanVector};
+use vector::{Vec2, Vec3, Vec4};
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq, Zero)]
@@ -562,8 +563,7 @@ impl<S: Float> ToMat4<S> for Mat3<S> {
 impl<S:Float> ToQuat<S> for Mat3<S> {
     /// Convert the matrix to a quaternion
     fn to_quat(&self) -> Quat<S> {
-        // Implemented using a mix of ideas from jMonkeyEngine and Ken Shoemake's
-        // paper on Quaternions: http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
+        // http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         let trace = self.trace();
         let half: S = cast(0.5);
         cond! (
