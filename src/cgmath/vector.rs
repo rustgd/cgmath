@@ -155,15 +155,9 @@ impl<S: Primitive> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S>
 impl<S: Primitive> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
 impl<S: Primitive> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
 
-macro_rules! vector(
-    (impl $Self:ident <$S:ident> $Slice:ty { $x:ident, $($xs:ident),+ }) => (
-        impl<$S: Primitive> Vector<$S, $Slice> for $Self<$S>;
-    )
-)
-
-vector!(impl Vec2<S> [S, ..2] { x, y })
-vector!(impl Vec3<S> [S, ..3] { x, y, z })
-vector!(impl Vec4<S> [S, ..4] { x, y, z, w })
+impl<S: Primitive> Vector<S, [S, ..2]> for Vec2<S>;
+impl<S: Primitive> Vector<S, [S, ..3]> for Vec3<S>;
+impl<S: Primitive> Vector<S, [S, ..4]> for Vec4<S>;
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: Primitive> Vec2<S> {
