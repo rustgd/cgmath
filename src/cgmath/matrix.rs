@@ -566,8 +566,8 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
         // http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         let trace = self.trace();
         let half: S = cast(0.5);
-        cond! (
-            (trace >= zero::<S>()) {
+        match () {
+            () if trace >= zero::<S>() => {
                 let s = sqrt(one::<S>() + trace);
                 let w = half * s;
                 let s = half / s;
@@ -576,7 +576,7 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 Quat::new(w, x, y, z)
             }
-            ((*self.cr(0, 0) > *self.cr(1, 1)) && (*self.cr(0, 0) > *self.cr(2, 2))) {
+            () if (*self.cr(0, 0) > *self.cr(1, 1)) && (*self.cr(0, 0) > *self.cr(2, 2)) => {
                 let s = sqrt(half + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2)));
                 let w = half * s;
                 let s = half / s;
@@ -585,7 +585,7 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
                 let z = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 Quat::new(w, x, y, z)
             }
-            (*self.cr(1, 1) > *self.cr(2, 2)) {
+            () if *self.cr(1, 1) > *self.cr(2, 2) => {
                 let s = sqrt(half + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2)));
                 let w = half * s;
                 let s = half / s;
@@ -594,7 +594,7 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
                 let z = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 Quat::new(w, x, y, z)
             }
-            _ {
+            () => {
                 let s = sqrt(half + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1)));
                 let w = half * s;
                 let s = half / s;
@@ -603,6 +603,6 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 Quat::new(w, x, y, z)
             }
-        )
+        }
     }
 }
