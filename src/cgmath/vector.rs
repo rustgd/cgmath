@@ -139,10 +139,10 @@ pub trait Vector
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
 
     /// The minimum component of the vector.
-    #[inline] fn comp_min(&self) -> S { self.iter().min().unwrap().clone() }
+    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| a.min(b)) }
 
     /// The maximum component of the vector.
-    #[inline] fn comp_max(&self) -> S { self.iter().max().unwrap().clone() }
+    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| a.max(b)) }
 }
 
 #[inline] fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
