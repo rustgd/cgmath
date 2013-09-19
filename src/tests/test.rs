@@ -16,7 +16,7 @@
 extern mod cgmath;
 
 // pub mod array;
-// pub mod matrix;
+pub mod matrix;
 // pub mod quaternion;
 pub mod vector;
 
