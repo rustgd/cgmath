@@ -311,9 +311,9 @@ impl<S: Float, A: Angle<S>> ToRot3<S> for Euler<A> {
 impl<S: Float, A: Angle<S>> ToQuat<S> for Euler<A> {
     fn to_quat(&self) -> Quat<S> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let (sx2, cx2) = sin_cos(self.x.div_s(cast(2)));
-        let (sy2, cy2) = sin_cos(self.y.div_s(cast(2)));
-        let (sz2, cz2) = sin_cos(self.z.div_s(cast(2)));
+        let (sx2, cx2) = sin_cos(self.x.mul_s(cast(0.5)));
+        let (sy2, cy2) = sin_cos(self.y.mul_s(cast(0.5)));
+        let (sz2, cz2) = sin_cos(self.z.mul_s(cast(0.5)));
 
         Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
                   sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
@@ -415,7 +415,7 @@ impl<S: Float, A: Angle<S>> ToRot3<S> for AxisAngle<S, A> {
 
 impl<S: Float, A: Angle<S>> ToQuat<S> for AxisAngle<S, A> {
     fn to_quat(&self) -> Quat<S> {
-        let half = self.a.div_s(cast(2));
+        let half = self.a.mul_s(cast(0.5));
         Quat::from_sv(
             cos(half.clone()),
             self.v.mul_s(sin(half.clone()))

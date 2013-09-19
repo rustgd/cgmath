@@ -112,6 +112,7 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
         assert!(self.far    < self.near, "The far plane cannot be closer than the near plane, found: far: %?, near: %?", self.far, self.near);
 
         let f = cot(self.fovy.div_s(cast(2)));
+        let two: S = cast(2);
 
         let c0r0 = f / self.aspect;
         let c0r1 = zero();
@@ -130,7 +131,7 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
 
         let c3r0 = zero();
         let c3r1 = zero();
-        let c3r2 = (cast::<int, S>(2) * self.far * self.near) / (self.near - self.far);
+        let c3r2 = (two * self.far * self.near) / (self.near - self.far);
         let c3r3 = zero();
 
         Mat4::new(c0r0, c0r1, c0r2, c0r3,
@@ -161,13 +162,15 @@ impl<S: Float> ToMat4<S> for Perspective<S> {
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top);
         assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: %? far: %?", self.near, self.far);
 
-        let c0r0 = (cast::<int, S>(2) * self.near) / (self.right - self.left);
+        let two: S = cast(2);
+
+        let c0r0 = (two * self.near) / (self.right - self.left);
         let c0r1 = zero();
         let c0r2 = zero();
         let c0r3 = zero();
 
         let c1r0 = zero();
-        let c1r1 = (cast::<int, S>(2) * self.near) / (self.top - self.bottom);
+        let c1r1 = (two * self.near) / (self.top - self.bottom);
         let c1r2 = zero();
         let c1r3 = zero();
 
@@ -178,7 +181,7 @@ impl<S: Float> ToMat4<S> for Perspective<S> {
 
         let c3r0 = zero();
         let c3r1 = zero();
-        let c3r2 = -(cast::<int, S>(2) * self.far * self.near) / (self.far - self.near);
+        let c3r2 = -(two * self.far * self.near) / (self.far - self.near);
         let c3r3 = zero();
 
         Mat4::new(c0r0, c0r1, c0r2, c0r3,
@@ -215,19 +218,21 @@ impl<S: Float> ToMat4<S> for Ortho<S> {
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: %? top: %?", self.bottom, self.top);
         assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: %? far: %?", self.near, self.far);
 
-        let c0r0 = cast::<int, S>(2) / (self.right - self.left);
+        let two: S = cast(2);
+
+        let c0r0 = two / (self.right - self.left);
         let c0r1 = zero();
         let c0r2 = zero();
         let c0r3 = zero();
 
         let c1r0 = zero();
-        let c1r1 = cast::<int, S>(2) / (self.top - self.bottom);
+        let c1r1 = two / (self.top - self.bottom);
         let c1r2 = zero();
         let c1r3 = zero();
 
         let c2r0 = zero();
         let c2r1 = zero();
-        let c2r2 = -cast::<int, S>(2) / (self.far - self.near);
+        let c2r2 = -two / (self.far - self.near);
         let c2r3 = -one::<S>();
 
         let c3r0 = -(self.right + self.left) / (self.right - self.left);
