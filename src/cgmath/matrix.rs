@@ -64,7 +64,7 @@ impl<S: Primitive> Mat2<S> {
     }
 
     #[inline]
-    pub fn ident() -> Mat2<S> {
+    pub fn identity() -> Mat2<S> {
         Mat2::from_value(one())
     }
 }
@@ -108,7 +108,7 @@ impl<S: Primitive> Mat3<S> {
     }
 
     #[inline]
-    pub fn ident() -> Mat3<S> {
+    pub fn identity() -> Mat3<S> {
         Mat3::from_value(one())
     }
 }
@@ -154,14 +154,14 @@ impl<S: Primitive> Mat4<S> {
     }
 
     #[inline]
-    pub fn ident() -> Mat4<S> {
+    pub fn identity() -> Mat4<S> {
         Mat4::from_value(one())
     }
 }
 
-impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::ident() } }
-impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::ident() } }
-impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::ident() } }
+impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
+impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
+impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
 
 array!(impl<S> Mat2<S> -> [Vec2<S>, ..2] _2)
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3] _3)
@@ -449,7 +449,7 @@ for Mat4<S>
             // and essentially reduce [A|I]
 
             let mut A = self.clone();
-            let mut I = Mat4::ident();
+            let mut I = Mat4::identity();
 
             for j in range(0u, 4u) {
                 // Find largest element in col j
