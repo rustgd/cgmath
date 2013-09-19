@@ -13,10 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::cast::transmute;
+
 use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
-use vector::{Vector, EuclideanVector, Vec3};
+use vector::{Vec3, Vec4};
+use vector::{Vector, EuclideanVector};
 
 use std::fmt;
 
@@ -55,6 +58,11 @@ impl<S: Float> Plane<S> {
     /// - `d`: the plane's distance value
     pub fn from_abcd(a: S, b: S, c: S, d: S) -> Plane<S> {
         Plane { n: Vec3::new(a, b, c), d: d }
+    }
+
+    /// Construct a plane from the components of a four-dimensional vector
+    pub fn from_vec4(v: Vec4<S>) -> Plane<S> {
+        unsafe { transmute(v) }
     }
 
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`

@@ -18,6 +18,7 @@ use std::num::{zero, one, cast};
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
+use plane::Plane;
 
 /// Create a perspective projection matrix.
 ///
@@ -94,7 +95,8 @@ impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
 
 impl<S: Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
-        self.to_perspective().to_frustum()
+        // TODO: Could this be faster?
+        Frustum::from_mat4(self.to_mat4())
     }
 }
 
@@ -148,7 +150,8 @@ pub struct Perspective<S> {
 
 impl<S: Float> Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
-        fail!("Not yet implemented!");
+        // TODO: Could this be faster?
+        Frustum::from_mat4(self.to_mat4())
     }
 }
 
@@ -195,7 +198,14 @@ pub struct Ortho<S> {
 
 impl<S: Float> Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
-        fail!("Not yet implemented!");
+        Frustum {
+            left:   Plane::from_abcd( one::<S>(), zero::<S>(), zero::<S>(), self.left.clone()),
+            right:  Plane::from_abcd(-one::<S>(), zero::<S>(), zero::<S>(), self.right.clone()),
+            bottom: Plane::from_abcd(zero::<S>(),  one::<S>(), zero::<S>(), self.bottom.clone()),
+            top:    Plane::from_abcd(zero::<S>(), -one::<S>(), zero::<S>(), self.top.clone()),
+            near:   Plane::from_abcd(zero::<S>(), zero::<S>(), -one::<S>(), self.near.clone()),
+            far:    Plane::from_abcd(zero::<S>(), zero::<S>(),  one::<S>(), self.far.clone()),
+        }
     }
 }
 

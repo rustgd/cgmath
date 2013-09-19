@@ -15,8 +15,10 @@
 
 //! View frustum for visibility determination
 
+use matrix::{Matrix, Mat4};
 use plane::Plane;
 use point::Point3;
+use vector::{Vector, EuclideanVector};
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<S> {
@@ -26,6 +28,32 @@ pub struct Frustum<S> {
     top:    Plane<S>,
     near:   Plane<S>,
     far:    Plane<S>,
+}
+
+impl<S: Float> Frustum<S> {
+    /// Constructs a frustum
+    pub fn new(left:   Plane<S>, right:  Plane<S>,
+               bottom: Plane<S>, top:    Plane<S>,
+               near:   Plane<S>, far:    Plane<S>) -> Frustum<S> {
+        Frustum {
+            left:   left,
+            right:  right,
+            bottom: bottom,
+            top:    top,
+            near:   near,
+            far:    far,
+        }
+    }
+
+    /// Extracts frustum planes from a projection matrix
+    pub fn from_mat4(mat: Mat4<S>) -> Frustum<S> {
+        Frustum::new(Plane::from_vec4(mat.r(3).add_v(&mat.r(0)).normalize()),
+                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(0)).normalize()),
+                     Plane::from_vec4(mat.r(3).add_v(&mat.r(1)).normalize()),
+                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(1)).normalize()),
+                     Plane::from_vec4(mat.r(3).add_v(&mat.r(2)).normalize()),
+                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(2)).normalize()))
+    }
 }
 
 #[deriving(Clone, Eq)]
