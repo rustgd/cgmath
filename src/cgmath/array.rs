@@ -106,21 +106,21 @@ pub fn build<T: Clone, Slice, A: Array<T, Slice>>(builder: &fn(i: uint) -> T) ->
 }
 
 macro_rules! gen_builder(
-    (_2) => ([builder(0), builder(1)]);
-    (_3) => ([builder(0), builder(1), builder(2)]);
-    (_4) => ([builder(0), builder(1), builder(2), builder(3)]);
+    (_2) => ({ [builder(0), builder(1)] });
+    (_3) => ({ [builder(0), builder(1), builder(2)] });
+    (_4) => ({ [builder(0), builder(1), builder(2), builder(3)] });
 )
 
 macro_rules! gen_fold(
-    (_2) => (f(self.i(0), self.i(1)));
-    (_3) => (f(&f(self.i(0), self.i(1)), self.i(2)));
-    (_4) => (f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)));
+    (_2) => ({ f(self.i(0), self.i(1)) });
+    (_3) => ({ f(&f(self.i(0), self.i(1)), self.i(2)) });
+    (_4) => ({ f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)) });
 )
 
 macro_rules! gen_each_mut(
-    (_2) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)););
-    (_3) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)););
-    (_4) => (f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)); f(3, self.mut_i(3)););
+    (_2) => ({ f(0, self.mut_i(0)); f(1, self.mut_i(1)); });
+    (_3) => ({ f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)); });
+    (_4) => ({ f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)); f(3, self.mut_i(3)); });
 )
 
 macro_rules! approx_eq(
