@@ -10,15 +10,14 @@ The library provides:
 - rotation matrices: `Rot2`, `Rot3`
 - rotations: `Euler`, `AxisAngle`
 - angle units: `Rad`, `Deg`
-- points: `Point2`, `Point3`, `Point4`
+- points: `Point2`, `Point3`
 - rays: `Ray2`, `Ray3`
 - plane: `Plane`
 - perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
-- a view frustum: `Frustrum`,
+- a view frustum: `Frustrum`
 - axis-aligned bounding boxes: `Aabb2`, `Aabb3`
 - oriented bounding boxes: `Obb2`, `Obb3`
 - collision primitives: `Sphere`, `Cylinder`
-- and more to come...?
 
 Not all of the functionality has been implemented yet, and the existing code
 is not fully covered by the testsuite. If you encounter any mistakes or
