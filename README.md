@@ -49,3 +49,9 @@ Pull requests are most welcome, especially in the realm of performance
 enhancements and fixing any mistakes I may have made along the way. Unit tests
 and benchmarks are also required, so help on that front would be most
 appreciated.
+
+## Support
+
+Contact `bjz` on irc.mozilla.org [#rust](http://mibbit.com/?server=irc.mozilla.org&channel=%23rust)
+and [#rust-gamedev](http://mibbit.com/?server=irc.mozilla.org&channel=%23rust-gamedev),
+or [post an issue](https://github.com/bjz/cgmath-rs/issues/new) on Github.
