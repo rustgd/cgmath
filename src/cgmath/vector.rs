@@ -155,9 +155,9 @@ impl<S: Primitive> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S>
 impl<S: Primitive> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
 impl<S: Primitive> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: Primitive> Vector<S, [S, ..2]> for Vec2<S>;
-impl<S: Primitive> Vector<S, [S, ..3]> for Vec3<S>;
-impl<S: Primitive> Vector<S, [S, ..4]> for Vec4<S>;
+impl<S: Primitive> Vector<S, [S, ..2]> for Vec2<S> {}
+impl<S: Primitive> Vector<S, [S, ..3]> for Vec3<S> {}
+impl<S: Primitive> Vector<S, [S, ..4]> for Vec4<S> {}
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: Primitive> Vec2<S> {
