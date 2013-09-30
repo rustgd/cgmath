@@ -17,7 +17,7 @@
 
 use std::num::{Zero, zero, One, one, cast, sqrt};
 
-use angle::{Rad, sin, cos};
+use angle::{Angle, Rad, sin, cos, sin_cos};
 use array::{Array, build};
 use quaternion::{Quat, ToQuat};
 use vector::{Vector, EuclideanVector};
@@ -120,6 +120,69 @@ impl<S: Float> Mat3<S> {
         let up   = side.cross(&dir).normalize();
 
         Mat3::from_cols(up, side, dir)
+    }
+
+    /// Create a matrix from a rotation around the `x` axis (pitch).
+    pub fn from_angle_x<A: Angle<S>>(theta: A) -> Mat3<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = sin_cos(theta);
+        Mat3::new(one(), zero(), zero(),
+                  zero(), c.clone(), s.clone(),
+                  zero(), -s.clone(), c.clone())
+    }
+
+    /// Create a matrix from a rotation around the `y` axis (yaw).
+    pub fn from_angle_y<A: Angle<S>>(theta: A) -> Mat3<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = sin_cos(theta);
+        Mat3::new(c.clone(), zero(), -s.clone(),
+                  zero(), one(), zero(),
+                  s.clone(), zero(), c.clone())
+    }
+
+    /// Create a matrix from a rotation around the `z` axis (roll).
+    pub fn from_angle_z<A: Angle<S>>(theta: A) -> Mat3<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = sin_cos(theta);
+        Mat3::new(c.clone(), s.clone(), zero(),
+                  -s.clone(), c.clone(), zero(),
+                  zero(), zero(), one())
+    }
+
+    /// Create a matrix from a set of euler angles.
+    ///
+    /// # Parameters
+    ///
+    /// - `x`: the angular rotation around the `x` axis (pitch).
+    /// - `y`: the angular rotation around the `y` axis (yaw).
+    /// - `z`: the angular rotation around the `z` axis (roll).
+    pub fn from_euler<A: Angle<S>>(x: A, y: A, z: A) -> Mat3<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = sin_cos(x);
+        let (sy, cy) = sin_cos(y);
+        let (sz, cz) = sin_cos(z);
+
+        Mat3::new(cy * cz, cy * sz, -sy,
+                  -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
+                  sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+    }
+
+    /// Create a matrix from a rotation around an arbitrary axis
+    pub fn from_axis_angle<A: Angle<S>>(axis: &Vec3<S>, angle: A) -> Mat3<S> {
+        let (s, c) = sin_cos(angle);
+        let _1subc = one::<S>() - c;
+
+        Mat3::new(_1subc * axis.x * axis.x + c,
+                  _1subc * axis.x * axis.y + s * axis.z,
+                  _1subc * axis.x * axis.z - s * axis.y,
+
+                  _1subc * axis.x * axis.y - s * axis.z,
+                  _1subc * axis.y * axis.y + c,
+                  _1subc * axis.y * axis.z + s * axis.x,
+
+                  _1subc * axis.x * axis.z + s * axis.y,
+                  _1subc * axis.y * axis.z - s * axis.x,
+                  _1subc * axis.z * axis.z + c)
     }
 }
 

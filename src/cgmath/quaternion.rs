@@ -15,7 +15,7 @@
 
 use std::num::{zero, one, cast, sqrt};
 
-use angle::{Angle, Rad, acos, cos, sin};
+use angle::{Angle, Rad, acos, cos, sin, sin_cos};
 use array::{Array, build};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
@@ -48,6 +48,51 @@ impl<S: Float> Quat<S> {
     #[inline]
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Quat<S> {
         Mat3::look_at(dir, up).to_quat()
+    }
+
+    /// Create a matrix from a rotation around the `x` axis (pitch).
+    #[inline]
+    pub fn from_angle_x<A: Angle<S>>(theta: A) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5))), sin(theta), zero(), zero())
+    }
+
+    /// Create a matrix from a rotation around the `y` axis (yaw).
+    #[inline]
+    pub fn from_angle_y<A: Angle<S>>(theta: A) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5))), zero(), sin(theta), zero())
+    }
+
+    /// Create a matrix from a rotation around the `z` axis (roll).
+    #[inline]
+    pub fn from_angle_z<A: Angle<S>>(theta: A) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5))), zero(), zero(), sin(theta))
+    }
+
+    /// Create a quaternion from a set of euler angles.
+    ///
+    /// # Parameters
+    ///
+    /// - `x`: the angular rotation around the `x` axis (pitch).
+    /// - `y`: the angular rotation around the `y` axis (yaw).
+    /// - `z`: the angular rotation around the `z` axis (roll).
+    pub fn from_euler<A: Angle<S>>(x: A, y: A, z: A) -> Quat<S> {
+        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
+        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5)));
+        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5)));
+        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5)));
+
+        Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
+                  sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
+                  cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
+                  cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
+    }
+
+    /// Create a quaternion from a rotation around an arbitrary axis
+    #[inline]
+    pub fn from_axis_angle<A: Angle<S>>(axis: &Vec3<S>, angle: A) -> Quat<S> {
+        let half = angle.mul_s(cast(0.5));
+        Quat::from_sv(cos(half.clone()),
+                      axis.mul_s(sin(half)))
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
