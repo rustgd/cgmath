@@ -104,12 +104,12 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
     fn to_mat4(&self) -> Mat4<S> {
         let half_turn: A = Angle::turn_div_2();
 
-        assert!(self.fovy   < zero(),    "The vertical field of view cannot be below zero, found: %?", self.fovy);
-        assert!(self.fovy   > half_turn, "The vertical field of view cannot be greater than a half turn, found: %?", self.fovy);
-        assert!(self.aspect < zero(),    "The aspect ratio cannot be below zero, found: %?", self.aspect);
-        assert!(self.near   < zero(),    "The near plane distance cannot be below zero, found: %?", self.near);
-        assert!(self.far    < zero(),    "The far plane distance cannot be below zero, found: %?", self.far);
-        assert!(self.far    < self.near, "The far plane cannot be closer than the near plane, found: far: %?, near: %?", self.far, self.near);
+        assert!(self.fovy   > zero(),    "The vertical field of view cannot be below zero, found: %?", self.fovy);
+        assert!(self.fovy   < half_turn, "The vertical field of view cannot be greater than a half turn, found: %?", self.fovy);
+        assert!(self.aspect > zero(),    "The aspect ratio cannot be below zero, found: %?", self.aspect);
+        assert!(self.near   > zero(),    "The near plane distance cannot be below zero, found: %?", self.near);
+        assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: %?", self.far);
+        assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: %?, near: %?", self.far, self.near);
 
         let f = cot(self.fovy.div_s(cast(2)));
         let two: S = cast(2);
