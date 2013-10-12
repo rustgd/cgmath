@@ -53,19 +53,19 @@ impl<S: Float> Quat<S> {
     /// Create a matrix from a rotation around the `x` axis (pitch).
     #[inline]
     pub fn from_angle_x<A: Angle<S>>(theta: A) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5))), sin(theta), zero(), zero())
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), sin(theta), zero(), zero())
     }
 
     /// Create a matrix from a rotation around the `y` axis (yaw).
     #[inline]
     pub fn from_angle_y<A: Angle<S>>(theta: A) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5))), zero(), sin(theta), zero())
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), sin(theta), zero())
     }
 
     /// Create a matrix from a rotation around the `z` axis (roll).
     #[inline]
     pub fn from_angle_z<A: Angle<S>>(theta: A) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5))), zero(), zero(), sin(theta))
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), zero(), sin(theta))
     }
 
     /// Create a quaternion from a set of euler angles.
@@ -77,9 +77,9 @@ impl<S: Float> Quat<S> {
     /// - `z`: the angular rotation around the `z` axis (roll).
     pub fn from_euler<A: Angle<S>>(x: A, y: A, z: A) -> Quat<S> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5)));
-        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5)));
-        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5)));
+        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
+        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
+        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
 
         Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
                   sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
@@ -90,7 +90,7 @@ impl<S: Float> Quat<S> {
     /// Create a quaternion from a rotation around an arbitrary axis
     #[inline]
     pub fn from_axis_angle<A: Angle<S>>(axis: &Vec3<S>, angle: A) -> Quat<S> {
-        let half = angle.mul_s(cast(0.5));
+        let half = angle.mul_s(cast(0.5).unwrap());
         Quat::from_sv(cos(half.clone()),
                       axis.mul_s(sin(half)))
     }
@@ -123,7 +123,7 @@ impl<S: Float> Quat<S> {
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<S>) -> Vec3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2)).add_v(vec)
+        self.v.cross(&tmp).mul_s(cast(2).unwrap()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -243,7 +243,7 @@ impl<S: Float> Quat<S> {
         use std::num::cast;
 
         let dot = self.dot(other);
-        let dot_threshold = cast(0.9995);
+        let dot_threshold = cast(0.9995).unwrap();
 
         // if quaternions are close together use `nlerp`
         if dot > dot_threshold {

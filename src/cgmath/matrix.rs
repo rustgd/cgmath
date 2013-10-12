@@ -628,7 +628,7 @@ impl<S:Float> ToQuat<S> for Mat3<S> {
     fn to_quat(&self) -> Quat<S> {
         // http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
         let trace = self.trace();
-        let half: S = cast(0.5);
+        let half: S = cast(0.5).unwrap();
         match () {
             () if trace >= zero::<S>() => {
                 let s = sqrt(one::<S>() + trace);

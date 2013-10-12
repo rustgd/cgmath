@@ -113,15 +113,15 @@ pub trait Angle
     /// Returns the interior bisector of the two angles
     #[inline]
     fn bisect(&self, other: Self) -> Self {
-        self.add_a(self.sub_a(other).mul_s(cast(0.5))).normalize()
+        self.add_a(self.sub_a(other).mul_s(cast(0.5).unwrap())).normalize()
     }
 
     fn full_turn() -> Self;
 
-    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2)) }
-    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3)) }
-    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4)) }
-    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6)) }
+    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2).unwrap()) }
+    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3).unwrap()) }
+    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4).unwrap()) }
+    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6).unwrap()) }
 }
 
 #[inline] pub fn bisect<S: Float, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
@@ -163,7 +163,7 @@ impl<S: Float> Angle<S> for Rad<S> {
 
 impl<S: Float> Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
-    #[inline] fn full_turn() -> Deg<S> { deg(cast(360)) }
+    #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
 
 #[inline] pub fn sin<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.sin() }
