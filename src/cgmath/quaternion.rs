@@ -252,14 +252,14 @@ impl<S: Float> Quat<S> {
             // stay within the domain of acos()
             let robust_dot = dot.clamp(&-one::<S>(), &one::<S>());
 
-            let theta: Rad<S> = acos(robust_dot.clone());   // the angle between the quaternions
-            let theta: Rad<S> = theta.mul_s(amount);        // the fraction of theta specified by `amount`
+            let theta: Rad<S> = acos(robust_dot.clone());
 
-            let q = other.sub_q(&self.mul_s(robust_dot))
-                         .normalize();
+            let scale1 = sin(theta.mul_s(one::<S>() - amount));
+            let scale2 = sin(theta.mul_s(amount));
 
-            self.mul_s(cos(theta.clone()))
-                .add_q(&q.mul_s(sin(theta)))
+            self.mul_s(scale1)
+                .add_q(&other.mul_s(scale2))
+                .mul_s(sin(theta).recip())
         }
     }
 }
