@@ -166,19 +166,19 @@ impl<S: Float> Angle<S> for Deg<S> {
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
 
-#[inline] pub fn sin<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.sin() }
-#[inline] pub fn cos<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.cos() }
-#[inline] pub fn tan<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.tan() }
-#[inline] pub fn sin_cos<S: Float, A: Angle<S>>(theta: A) -> (S, S) { theta.to_rad().s.sin_cos() }
+#[inline] pub fn sin<S: Float>(theta: Rad<S>) -> S { theta.s.sin() }
+#[inline] pub fn cos<S: Float>(theta: Rad<S>) -> S { theta.s.cos() }
+#[inline] pub fn tan<S: Float>(theta: Rad<S>) -> S { theta.s.tan() }
+#[inline] pub fn sin_cos<S: Float>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
 
-#[inline] pub fn cot<S: Float, A: Angle<S>>(theta: A) -> S { tan(theta).recip() }
-#[inline] pub fn sec<S: Float, A: Angle<S>>(theta: A) -> S { cos(theta).recip() }
-#[inline] pub fn csc<S: Float, A: Angle<S>>(theta: A) -> S { sin(theta).recip() }
+#[inline] pub fn cot<S: Float>(theta: Rad<S>) -> S { tan(theta).recip() }
+#[inline] pub fn sec<S: Float>(theta: Rad<S>) -> S { cos(theta).recip() }
+#[inline] pub fn csc<S: Float>(theta: Rad<S>) -> S { sin(theta).recip() }
 
-#[inline] pub fn asin<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.asin())) }
-#[inline] pub fn acos<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.acos())) }
-#[inline] pub fn atan<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.atan())) }
-#[inline] pub fn atan2<S: Float, A: Angle<S>>(a: S, b: S) -> A { Angle::from(rad(a.atan2(&b))) }
+#[inline] pub fn asin<S: Float>(s: S) -> Rad<S> { rad(s.asin()) }
+#[inline] pub fn acos<S: Float>(s: S) -> Rad<S> { rad(s.acos()) }
+#[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
+#[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(&b)) }
 
 impl<S: Float> ToStr for Rad<S> { fn to_str(&self) -> ~str { fmt!("%? rad", self.s) } }
 impl<S: Float> ToStr for Deg<S> { fn to_str(&self) -> ~str { fmt!("%?°", self.s) } }

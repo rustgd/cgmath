@@ -52,19 +52,19 @@ impl<S: Float> Quat<S> {
 
     /// Create a matrix from a rotation around the `x` axis (pitch).
     #[inline]
-    pub fn from_angle_x<A: Angle<S>>(theta: A) -> Quat<S> {
+    pub fn from_angle_x(theta: Rad<S>) -> Quat<S> {
         Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), sin(theta), zero(), zero())
     }
 
     /// Create a matrix from a rotation around the `y` axis (yaw).
     #[inline]
-    pub fn from_angle_y<A: Angle<S>>(theta: A) -> Quat<S> {
+    pub fn from_angle_y(theta: Rad<S>) -> Quat<S> {
         Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), sin(theta), zero())
     }
 
     /// Create a matrix from a rotation around the `z` axis (roll).
     #[inline]
-    pub fn from_angle_z<A: Angle<S>>(theta: A) -> Quat<S> {
+    pub fn from_angle_z(theta: Rad<S>) -> Quat<S> {
         Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), zero(), sin(theta))
     }
 
@@ -75,7 +75,7 @@ impl<S: Float> Quat<S> {
     /// - `x`: the angular rotation around the `x` axis (pitch).
     /// - `y`: the angular rotation around the `y` axis (yaw).
     /// - `z`: the angular rotation around the `z` axis (roll).
-    pub fn from_euler<A: Angle<S>>(x: A, y: A, z: A) -> Quat<S> {
+    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quat<S> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
         let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
         let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
@@ -89,7 +89,7 @@ impl<S: Float> Quat<S> {
 
     /// Create a quaternion from a rotation around an arbitrary axis
     #[inline]
-    pub fn from_axis_angle<A: Angle<S>>(axis: &Vec3<S>, angle: A) -> Quat<S> {
+    pub fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Quat<S> {
         let half = angle.mul_s(cast(0.5).unwrap());
         Quat::from_sv(cos(half.clone()),
                       axis.mul_s(sin(half)))

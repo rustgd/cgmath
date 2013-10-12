@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use angle::Angle;
+use angle::Rad;
 use matrix::Matrix;
 use matrix::{Mat2, ToMat2};
 use matrix::{Mat3, ToMat3};
@@ -154,17 +154,17 @@ impl<S: Float> Rot3<S> {
     }
 
     /// Create a rotation matrix from a rotation around the `x` axis (pitch).
-    pub fn from_angle_x<A: Angle<S>>(theta: A) -> Rot3<S> {
+    pub fn from_angle_x(theta: Rad<S>) -> Rot3<S> {
         Rot3 { mat: Mat3::from_angle_x(theta) }
     }
 
     /// Create a rotation matrix from a rotation around the `y` axis (yaw).
-    pub fn from_angle_y<A: Angle<S>>(theta: A) -> Rot3<S> {
+    pub fn from_angle_y(theta: Rad<S>) -> Rot3<S> {
         Rot3 { mat: Mat3::from_angle_y(theta) }
     }
 
     /// Create a rotation matrix from a rotation around the `z` axis (roll).
-    pub fn from_angle_z<A: Angle<S>>(theta: A) -> Rot3<S> {
+    pub fn from_angle_z(theta: Rad<S>) -> Rot3<S> {
         Rot3 { mat: Mat3::from_angle_z(theta) }
     }
 
@@ -175,12 +175,12 @@ impl<S: Float> Rot3<S> {
     /// - `x`: the angular rotation around the `x` axis (pitch).
     /// - `y`: the angular rotation around the `y` axis (yaw).
     /// - `z`: the angular rotation around the `z` axis (roll).
-    pub fn from_euler<A: Angle<S>>(x: A, y: A, z: A) -> Rot3<S> {
+    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Rot3<S> {
         Rot3 { mat: Mat3::from_euler(x, y ,z) }
     }
 
     /// Create a rotation matrix from a rotation around an arbitrary axis.
-    pub fn from_axis_angle<A: Angle<S>>(axis: &Vec3<S>, angle: A) -> Rot3<S> {
+    pub fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Rot3<S> {
         Rot3 { mat: Mat3::from_axis_angle(axis, angle) }
     }
 

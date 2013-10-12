@@ -79,7 +79,7 @@ pub struct PerspectiveFov<S, A> {
 impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let angle = self.fovy.div_s(cast(2).unwrap());
-        let ymax = self.near * tan(angle);
+        let ymax = self.near * tan(angle.to_rad());
         let xmax = ymax * self.aspect;
 
         Perspective {
@@ -111,7 +111,7 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
         assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: {:?}", self.far);
         assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", self.far, self.near);
 
-        let f = cot(self.fovy.div_s(cast(2).unwrap()));
+        let f = cot(self.fovy.div_s(cast(2).unwrap()).to_rad());
         let two: S = cast(2).unwrap();
 
         let c0r0 = f / self.aspect;
