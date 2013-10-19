@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
 use std::num::{zero, one, cast, sqrt};
 
 use angle::{Angle, Rad, acos, cos, sin, sin_cos};
@@ -296,8 +297,8 @@ impl<S: Float> Neg<Quat<S>> for Quat<S> {
     }
 }
 
-impl<S> ToStr for Quat<S> {
+impl<S: fmt::Default> ToStr for Quat<S> {
     fn to_str(&self) -> ~str {
-        fmt!("%? + %?i + %?j + %?k", self.s, self.v.x, self.v.y, self.v.z)
+        format!("{} + {}i + {}j + {}k", self.s, self.v.x, self.v.y, self.v.z)
     }
 }

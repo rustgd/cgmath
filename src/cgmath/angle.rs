@@ -15,11 +15,11 @@
 
 //! Angle units for type-safe, self-documenting code.
 
-pub use std::num::{cast, zero};
 pub use std::num::{sinh, cosh, tanh};
 pub use std::num::{asinh, acosh, atanh};
 
-use std::num::Zero;
+use std::fmt;
+use std::num::{Zero, zero, cast};
 
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Rad<S> { s: S }
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Deg<S> { s: S }
@@ -180,8 +180,8 @@ impl<S: Float> Angle<S> for Deg<S> {
 #[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
 #[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(&b)) }
 
-impl<S: Float> ToStr for Rad<S> { fn to_str(&self) -> ~str { fmt!("%? rad", self.s) } }
-impl<S: Float> ToStr for Deg<S> { fn to_str(&self) -> ~str { fmt!("%?°", self.s) } }
+impl<S: Float + fmt::Default> ToStr for Rad<S> { fn to_str(&self) -> ~str { format!("{} rad", self.s) } }
+impl<S: Float + fmt::Default> ToStr for Deg<S> { fn to_str(&self) -> ~str { format!("{}°", self.s) } }
 
 impl<S: Float> ApproxEq<S> for Rad<S> {
     #[inline]
