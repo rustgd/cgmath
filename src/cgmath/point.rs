@@ -17,6 +17,7 @@
 //! disinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
+use std::fmt;
 use std::num::zero;
 
 use array::*;
@@ -88,14 +89,14 @@ array!(impl<S> Point3<S> -> [S, ..3] _3)
 impl<S: Primitive> Point<S, Vec2<S>, [S, ..2]> for Point2<S> {}
 impl<S: Primitive> Point<S, Vec3<S>, [S, ..3]> for Point3<S> {}
 
-impl<S> ToStr for Point2<S> {
+impl<S: fmt::Default> ToStr for Point2<S> {
     fn to_str(&self) -> ~str {
-        fmt!("[%?, %?]", self.x, self.y)
+        format!("[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S> ToStr for Point3<S> {
+impl<S: fmt::Default> ToStr for Point3<S> {
     fn to_str(&self) -> ~str {
-        fmt!("[%?, %?, %?]", self.x, self.y, self.z)
+        format!("[{}, {}, {}]", self.x, self.y, self.z)
     }
 }

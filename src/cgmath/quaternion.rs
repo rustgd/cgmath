@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
 use std::num::{zero, one, cast, sqrt};
 
-use angle::{Angle, Rad, acos, cos, sin};
+use angle::{Angle, Rad, acos, cos, sin, sin_cos};
 use array::{Array, build};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
@@ -50,6 +51,51 @@ impl<S: Float> Quat<S> {
         Mat3::look_at(dir, up).to_quat()
     }
 
+    /// Create a matrix from a rotation around the `x` axis (pitch).
+    #[inline]
+    pub fn from_angle_x(theta: Rad<S>) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), sin(theta), zero(), zero())
+    }
+
+    /// Create a matrix from a rotation around the `y` axis (yaw).
+    #[inline]
+    pub fn from_angle_y(theta: Rad<S>) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), sin(theta), zero())
+    }
+
+    /// Create a matrix from a rotation around the `z` axis (roll).
+    #[inline]
+    pub fn from_angle_z(theta: Rad<S>) -> Quat<S> {
+        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), zero(), sin(theta))
+    }
+
+    /// Create a quaternion from a set of euler angles.
+    ///
+    /// # Parameters
+    ///
+    /// - `x`: the angular rotation around the `x` axis (pitch).
+    /// - `y`: the angular rotation around the `y` axis (yaw).
+    /// - `z`: the angular rotation around the `z` axis (roll).
+    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quat<S> {
+        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
+        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
+        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
+        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
+
+        Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
+                  sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
+                  cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
+                  cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
+    }
+
+    /// Create a quaternion from a rotation around an arbitrary axis
+    #[inline]
+    pub fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Quat<S> {
+        let half = angle.mul_s(cast(0.5).unwrap());
+        Quat::from_sv(cos(half.clone()),
+                      axis.mul_s(sin(half)))
+    }
+
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
     #[inline]
     pub fn zero() -> Quat<S> {
@@ -78,7 +124,7 @@ impl<S: Float> Quat<S> {
     #[inline]
     pub fn mul_v(&self, vec: &Vec3<S>) -> Vec3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2)).add_v(vec)
+        self.v.cross(&tmp).mul_s(cast(2).unwrap()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -198,7 +244,7 @@ impl<S: Float> Quat<S> {
         use std::num::cast;
 
         let dot = self.dot(other);
-        let dot_threshold = cast(0.9995);
+        let dot_threshold = cast(0.9995).unwrap();
 
         // if quaternions are close together use `nlerp`
         if dot > dot_threshold {
@@ -207,14 +253,14 @@ impl<S: Float> Quat<S> {
             // stay within the domain of acos()
             let robust_dot = dot.clamp(&-one::<S>(), &one::<S>());
 
-            let theta: Rad<S> = acos(robust_dot.clone());   // the angle between the quaternions
-            let theta: Rad<S> = theta.mul_s(amount);        // the fraction of theta specified by `amount`
+            let theta: Rad<S> = acos(robust_dot.clone());
 
-            let q = other.sub_q(&self.mul_s(robust_dot))
-                         .normalize();
+            let scale1 = sin(theta.mul_s(one::<S>() - amount));
+            let scale2 = sin(theta.mul_s(amount));
 
-            self.mul_s(cos(theta.clone()))
-                .add_q(&q.mul_s(sin(theta)))
+            self.mul_s(scale1)
+                .add_q(&other.mul_s(scale2))
+                .mul_s(sin(theta).recip())
         }
     }
 }
@@ -251,8 +297,8 @@ impl<S: Float> Neg<Quat<S>> for Quat<S> {
     }
 }
 
-impl<S> ToStr for Quat<S> {
+impl<S: fmt::Default> ToStr for Quat<S> {
     fn to_str(&self) -> ~str {
-        fmt!("%? + %?i + %?j + %?k", self.s, self.v.x, self.v.y, self.v.z)
+        format!("{} + {}i + {}j + {}k", self.s, self.v.x, self.v.y, self.v.z)
     }
 }

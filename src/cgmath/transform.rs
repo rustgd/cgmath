@@ -13,36 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "cgmath",
-       vers = "0.1",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/cgmath-rs")];
+pub trait Transform<S> {
+    fn transform_vec(&self, point: Point3<S>) -> Point3<S>;
+    fn transform_point(&self, point: Point3<S>) -> Point3<S>;
+    fn transform_ray(&self, ray: Ray3<S>) -> Ray3<S>;
+}
 
-#[comment = "A mathematics library for computer graphics."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
+/// A homogeneous transformation matrix.
+pub struct AffineMatrix3<S> {
+    mat: Mat4<S>,
+}
 
-#[feature(globs)];
-#[feature(macro_rules)];
+/// A transformation in three dimensions consisting of a rotation,
+/// displacement vector and scale amount.
+pub struct Transform3<S, R> {
+    rot: R,
+    disp: Vec3<S>,
+    scale: S,
+}
 
-pub mod array;
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
-
-pub mod angle;
-pub mod plane;
-pub mod point;
-pub mod ray;
-pub mod rotation;
-
-pub mod projection;
-
-pub mod aabb;
-pub mod cylinder;
-pub mod frustum;
-pub mod intersect;
-pub mod obb;
-pub mod sphere;
-
-pub mod ptr;
+impl<S: Float, R: Rotation3<S>> Transform3<S, R> {
+    #[inline]
+    pub fn new(rot: R, disp: Vec3<S>, scale: S) -> Transform3<S, R> {
+        Transform3 { rot: rot, disp: disp, scale: S }
+    }
+}

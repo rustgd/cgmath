@@ -15,11 +15,11 @@
 
 //! Angle units for type-safe, self-documenting code.
 
-pub use std::num::{cast, zero};
 pub use std::num::{sinh, cosh, tanh};
 pub use std::num::{asinh, acosh, atanh};
 
-use std::num::Zero;
+use std::fmt;
+use std::num::{Zero, zero, cast};
 
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Rad<S> { s: S }
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Deg<S> { s: S }
@@ -113,15 +113,15 @@ pub trait Angle
     /// Returns the interior bisector of the two angles
     #[inline]
     fn bisect(&self, other: Self) -> Self {
-        self.add_a(self.sub_a(other).mul_s(cast(0.5))).normalize()
+        self.add_a(self.sub_a(other).mul_s(cast(0.5).unwrap())).normalize()
     }
 
     fn full_turn() -> Self;
 
-    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2)) }
-    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3)) }
-    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4)) }
-    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6)) }
+    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2).unwrap()) }
+    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3).unwrap()) }
+    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4).unwrap()) }
+    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6).unwrap()) }
 }
 
 #[inline] pub fn bisect<S: Float, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
@@ -163,25 +163,25 @@ impl<S: Float> Angle<S> for Rad<S> {
 
 impl<S: Float> Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
-    #[inline] fn full_turn() -> Deg<S> { deg(cast(360)) }
+    #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
 
-#[inline] pub fn sin<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.sin() }
-#[inline] pub fn cos<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.cos() }
-#[inline] pub fn tan<S: Float, A: Angle<S>>(theta: A) -> S { theta.to_rad().s.tan() }
-#[inline] pub fn sin_cos<S: Float, A: Angle<S>>(theta: A) -> (S, S) { theta.to_rad().s.sin_cos() }
+#[inline] pub fn sin<S: Float>(theta: Rad<S>) -> S { theta.s.sin() }
+#[inline] pub fn cos<S: Float>(theta: Rad<S>) -> S { theta.s.cos() }
+#[inline] pub fn tan<S: Float>(theta: Rad<S>) -> S { theta.s.tan() }
+#[inline] pub fn sin_cos<S: Float>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
 
-#[inline] pub fn cot<S: Float, A: Angle<S>>(theta: A) -> S { tan(theta).recip() }
-#[inline] pub fn sec<S: Float, A: Angle<S>>(theta: A) -> S { cos(theta).recip() }
-#[inline] pub fn csc<S: Float, A: Angle<S>>(theta: A) -> S { sin(theta).recip() }
+#[inline] pub fn cot<S: Float>(theta: Rad<S>) -> S { tan(theta).recip() }
+#[inline] pub fn sec<S: Float>(theta: Rad<S>) -> S { cos(theta).recip() }
+#[inline] pub fn csc<S: Float>(theta: Rad<S>) -> S { sin(theta).recip() }
 
-#[inline] pub fn asin<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.asin())) }
-#[inline] pub fn acos<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.acos())) }
-#[inline] pub fn atan<S: Float, A: Angle<S>>(s: S) -> A { Angle::from(rad(s.atan())) }
-#[inline] pub fn atan2<S: Float, A: Angle<S>>(a: S, b: S) -> A { Angle::from(rad(a.atan2(&b))) }
+#[inline] pub fn asin<S: Float>(s: S) -> Rad<S> { rad(s.asin()) }
+#[inline] pub fn acos<S: Float>(s: S) -> Rad<S> { rad(s.acos()) }
+#[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
+#[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(&b)) }
 
-impl<S: Float> ToStr for Rad<S> { fn to_str(&self) -> ~str { fmt!("%? rad", self.s) } }
-impl<S: Float> ToStr for Deg<S> { fn to_str(&self) -> ~str { fmt!("%?°", self.s) } }
+impl<S: Float + fmt::Default> ToStr for Rad<S> { fn to_str(&self) -> ~str { format!("{} rad", self.s) } }
+impl<S: Float + fmt::Default> ToStr for Deg<S> { fn to_str(&self) -> ~str { format!("{}°", self.s) } }
 
 impl<S: Float> ApproxEq<S> for Rad<S> {
     #[inline]

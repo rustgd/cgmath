@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
 use std::num::{Zero, zero, One, one, sqrt};
 
 use angle::{Rad, atan2, acos};
@@ -282,20 +283,20 @@ impl<S: Float> EuclideanVector<S, [S, ..4]> for Vec4<S> {
     }
 }
 
-impl<S> ToStr for Vec2<S> {
+impl<S: fmt::Default> ToStr for Vec2<S> {
     fn to_str(&self) -> ~str {
-        fmt!("[%?, %?]", self.x, self.y)
+        format!("[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S> ToStr for Vec3<S> {
+impl<S: fmt::Default> ToStr for Vec3<S> {
     fn to_str(&self) -> ~str {
-        fmt!("[%?, %?, %?]", self.x, self.y, self.z)
+        format!("[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl<S> ToStr for Vec4<S> {
+impl<S: fmt::Default> ToStr for Vec4<S> {
     fn to_str(&self) -> ~str {
-        fmt!("[%?, %?, %?, %?]", self.x, self.y, self.z, self.w)
+        format!("[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }
 }
