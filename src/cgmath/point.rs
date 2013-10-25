@@ -24,11 +24,11 @@ use vector::*;
 
 /// A point in 2-dimensional space.
 #[deriving(Eq, Zero, Clone)]
-struct Point2<S> { x: S, y: S }
+pub struct Point2<S> { x: S, y: S }
 
 /// A point in 2-dimensional space.
 #[deriving(Eq, Zero, Clone)]
-struct Point3<S> { x: S, y: S, z: S }
+pub struct Point3<S> { x: S, y: S, z: S }
 
 approx_eq!(impl<S> Point2<S>)
 approx_eq!(impl<S> Point3<S>)
