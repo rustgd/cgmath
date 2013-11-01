@@ -13,27 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[feature(globs)];
+use cgmath::quaternion::*;
+use cgmath::transform::*;
+use cgmath::vector::*;
 
-extern mod cgmath;
-
-// pub mod array;
-pub mod matrix;
-// pub mod quaternion;
-pub mod vector;
-
-pub mod angle;
-pub mod plane;
-pub mod point;
-// pub mod ray;
-// pub mod rotation;
-pub mod transform;
-
-// pub mod projection;
-
-// pub mod aabb;
-// pub mod cylinder;
-// pub mod frustum;
-// pub mod intersect;
-// pub mod obb;
-// pub mod sphere;
+#[test]
+fn test_invert() {
+	let v = Vec3::new(1.0, 2.0, 3.0);
+	let t = Transform3D::new( 1.5, Quat::new(0.5,0.5,0.5,0.5), Vec3::new(6.0,-7.0,8.0) );
+	let ti = t.invert().expect("Expected successful inversion");
+	let vt = t.transform_vec( &v );
+    assert_approx_eq!(v, ti.transform_vec( &vt ));
+}

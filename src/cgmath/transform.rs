@@ -31,12 +31,22 @@ pub trait Transform
     P: Point<S,V,Slice>
 >
 {
+    fn identity() -> Self;
     fn transform_vec(&self, vec: &V) -> V;
     fn transform_point(&self, point: &P) -> P;
+    fn invert(&self) -> Option<Self>;
 
     #[inline]
     fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
         Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
+    }
+
+    #[inline]
+    fn invert_self(&mut self)-> bool    {
+        match self.invert() {
+            Some(t) => {*self = t; true},
+            None    => false,
+        }
     }
 }
 
@@ -58,6 +68,15 @@ impl
 >
 Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     #[inline]
+    fn identity() -> Decomposed<S,V,R>  {
+        Decomposed {
+            scale: num::one(),
+            rot: Rotation::identity(),
+            disp: num::zero(),
+        }
+    }
+
+    #[inline]
     fn transform_vec(&self, vec: &V) -> V   {
         self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
     }
@@ -65,6 +84,23 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     #[inline]
     fn transform_point(&self, point: &P) -> P   {
         self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
+    }
+
+    #[inline]
+    fn invert(&self) -> Option<Decomposed<S,V,R>>   {
+        if self.scale.approx_eq( &num::zero() )   {
+            None
+        }else   {
+            let _1 : S = num::one();
+            let s = _1 / self.scale;
+            let r = self.rot.invert();
+            let d = r.rotate_vec( &self.disp ).mul_s( -s );
+            Some( Decomposed {
+                scale: s,
+                rot: r,
+                disp: d,
+            })
+        }
     }
 }
 
@@ -93,6 +129,11 @@ pub struct AffineMatrix3<S> {
 impl<S : Clone + Float>
 Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S>  {
     #[inline]
+    fn identity() -> AffineMatrix3<S>  {
+       AffineMatrix3 { mat: Mat4::identity() }
+    }
+    
+    #[inline]
     fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S>  {
         self.mat.mul_v( &vec.extend(num::zero()) ).truncate()
     }
@@ -100,6 +141,11 @@ Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S>  {
     #[inline]
     fn transform_point(&self, point: &Point3<S>) -> Point3<S>   {
         Point3::from_homogeneous( &self.mat.mul_v( &point.to_homogeneous() ))
+    }
+
+    #[inline]
+    fn invert(&self) -> Option<AffineMatrix3<S>>   {
+        self.mat.invert().map(|m| AffineMatrix3{ mat: m })
     }   
 }
 
@@ -120,4 +166,3 @@ impl<S: Float> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
     }
 }
-

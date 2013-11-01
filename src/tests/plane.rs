@@ -18,11 +18,13 @@ use cgmath::point::*;
 
 #[test]
 fn test_from_points() {
-    assert_eq!(Plane::from_points(Point3::new(5f, 0f,  5f),
-                                  Point3::new(5f, 5f,  5f),
-                                  Point3::new(5f, 0f, -1f)), Some(Plane::from_abcd(-1f, 0f, 0f, 5f)));
+    assert_eq!(Plane::from_points(Point3::new(5.0, 0.0,  5.0),
+                                  Point3::new(5.0, 5.0,  5.0),
+                                  Point3::new(5.0, 0.0, -1.0)),
+    	Some(Plane::from_abcd(-1.0, 0.0, 0.0, 5.0)));
 
-    assert_eq!(Plane::from_points(Point3::new(0f, 5f, -5f),
-                                  Point3::new(0f, 5f,  0f),
-                                  Point3::new(0f, 5f,  5f)), None);     // The points are parallel
+    assert_eq!(Plane::from_points(Point3::new(0.0, 5.0, -5.0),
+                                  Point3::new(0.0, 5.0,  0.0),
+                                  Point3::new(0.0, 5.0,  5.0)),
+        None);     // The points are parallel
 }

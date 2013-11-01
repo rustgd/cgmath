@@ -36,9 +36,9 @@ fn test_comp_add() {
     assert_eq!(Vec3::new(1, 2, 3).comp_add(), 6);
     assert_eq!(Vec4::new(1, 2, 3, 4).comp_add(), 10);
 
-    assert_eq!(Vec2::new(3f, 4f).comp_add(), 7f);
-    assert_eq!(Vec3::new(4f, 5f, 6f).comp_add(), 15f);
-    assert_eq!(Vec4::new(5f, 6f, 7f, 8f).comp_add(), 26f);
+    assert_eq!(Vec2::new(3.0, 4.0).comp_add(), 7.0);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0).comp_add(), 15.0);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0).comp_add(), 26.0);
 }
 
 #[test]
@@ -47,9 +47,9 @@ fn test_comp_mul() {
     assert_eq!(Vec3::new(1, 2, 3).comp_mul(), 6);
     assert_eq!(Vec4::new(1, 2, 3, 4).comp_mul(), 24);
 
-    assert_eq!(Vec2::new(3f, 4f).comp_mul(), 12f);
-    assert_eq!(Vec3::new(4f, 5f, 6f).comp_mul(), 120f);
-    assert_eq!(Vec4::new(5f, 6f, 7f, 8f).comp_mul(), 1680f);
+    assert_eq!(Vec2::new(3.0, 4.0).comp_mul(), 12.0);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0).comp_mul(), 120.0);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0).comp_mul(), 1680.0);
 }
 
 #[test]
@@ -58,9 +58,9 @@ fn test_comp_min() {
     assert_eq!(Vec3::new(1, 2, 3).comp_min(), 1);
     assert_eq!(Vec4::new(1, 2, 3, 4).comp_min(), 1);
 
-    assert_eq!(Vec2::new(3f, 4f).comp_min(), 3f);
-    assert_eq!(Vec3::new(4f, 5f, 6f).comp_min(), 4f);
-    assert_eq!(Vec4::new(5f, 6f, 7f, 8f).comp_min(), 5f);
+    assert_eq!(Vec2::new(3.0, 4.0).comp_min(), 3.0);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0).comp_min(), 4.0);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0).comp_min(), 5.0);
 }
 
 #[test]
@@ -69,9 +69,9 @@ fn test_comp_max() {
     assert_eq!(Vec3::new(1, 2, 3).comp_max(), 3);
     assert_eq!(Vec4::new(1, 2, 3, 4).comp_max(), 4);
 
-    assert_eq!(Vec2::new(3f, 4f).comp_max(), 4f);
-    assert_eq!(Vec3::new(4f, 5f, 6f).comp_max(), 6f);
-    assert_eq!(Vec4::new(5f, 6f, 7f, 8f).comp_max(), 8f);
+    assert_eq!(Vec2::new(3.0, 4.0).comp_max(), 4.0);
+    assert_eq!(Vec3::new(4.0, 5.0, 6.0).comp_max(), 6.0);
+    assert_eq!(Vec4::new(5.0, 6.0, 7.0, 8.0).comp_max(), 8.0);
 }
 
 #[test]
@@ -88,9 +88,9 @@ fn test_cross() {
 
 #[test]
 fn test_is_perpendicular() {
-    assert!(Vec2::new(1f, 0f).is_perpendicular(&Vec2::new(0f, 1f)));
-    assert!(Vec3::new(0f, 1f, 0f).is_perpendicular(&Vec3::new(0f, 0f, 1f)));
-    assert!(Vec4::new(1f, 0f, 0f, 0f).is_perpendicular(&Vec4::new(0f, 0f, 0f, 1f)));
+    assert!(Vec2::new(1.0, 0.0).is_perpendicular(&Vec2::new(0.0, 1.0)));
+    assert!(Vec3::new(0.0, 1.0, 0.0).is_perpendicular(&Vec3::new(0.0, 0.0, 1.0)));
+    assert!(Vec4::new(1.0, 0.0, 0.0, 0.0).is_perpendicular(&Vec4::new(0.0, 0.0, 0.0, 1.0)));
 }
 
 #[cfg(test)]
@@ -99,8 +99,8 @@ mod test_length {
 
     #[test]
     fn test_vec2(){
-        let (a, a_res) = (Vec2::new(3f, 4f), 5f); // (3, 4, 5) Pythagorean triple
-        let (b, b_res) = (Vec2::new(5f, 12f), 13f); // (5, 12, 13) Pythagorean triple
+        let (a, a_res) = (Vec2::new(3.0, 4.0), 5.0); // (3, 4, 5) Pythagorean triple
+        let (b, b_res) = (Vec2::new(5.0, 12.0), 13.0); // (5, 12, 13) Pythagorean triple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -111,8 +111,8 @@ mod test_length {
 
     #[test]
     fn test_vec3(){
-        let (a, a_res) = (Vec3::new(2f, 3f, 6f), 7f); // (2, 3, 6, 7) Pythagorean quadruple
-        let (b, b_res) = (Vec3::new(1f, 4f, 8f), 9f); // (1, 4, 8, 9) Pythagorean quadruple
+        let (a, a_res) = (Vec3::new(2.0, 3.0, 6.0), 7.0); // (2, 3, 6, 7) Pythagorean quadruple
+        let (b, b_res) = (Vec3::new(1.0, 4.0, 8.0), 9.0); // (1, 4, 8, 9) Pythagorean quadruple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -123,8 +123,8 @@ mod test_length {
 
     #[test]
     fn test_vec4(){
-        let (a, a_res) = (Vec4::new(1f, 2f, 4f, 10f), 11f); // (1, 2, 4, 10, 11) Pythagorean quintuple
-        let (b, b_res) = (Vec4::new(1f, 2f, 8f, 10f), 13f); // (1, 2, 8, 10, 13) Pythagorean quintuple
+        let (a, a_res) = (Vec4::new(1.0, 2.0, 4.0, 10.0), 11.0); // (1, 2, 4, 10, 11) Pythagorean quintuple
+        let (b, b_res) = (Vec4::new(1.0, 2.0, 8.0, 10.0), 13.0); // (1, 2, 8, 10, 13) Pythagorean quintuple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -136,23 +136,23 @@ mod test_length {
 
 #[test]
 fn test_angle() {
-    assert_approx_eq!(Vec2::new(1f, 0f).angle(&Vec2::new(0f, 1f)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec2::new(10f, 0f).angle(&Vec2::new(0f, 5f)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec2::new(-1f, 0f).angle(&Vec2::new(0f, 1f)), -rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec2::new(1.0, 0.0).angle(&Vec2::new(0.0, 1.0)), rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec2::new(10.0, 0.0).angle(&Vec2::new(0.0, 5.0)), rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec2::new(-1.0, 0.0).angle(&Vec2::new(0.0, 1.0)), -rad(Real::frac_pi_2()));
 
-    assert_approx_eq!(Vec3::new(1f, 0f, 1f).angle(&Vec3::new(1f, 1f, 0f)), rad(Real::frac_pi_3()));
-    assert_approx_eq!(Vec3::new(10f, 0f, 10f).angle(&Vec3::new(5f, 5f, 0f)), rad(Real::frac_pi_3()));
-    assert_approx_eq!(Vec3::new(-1f, 0f, -1f).angle(&Vec3::new(1f, -1f, 0f)), rad(2f * Real::frac_pi_3()));
+    assert_approx_eq!(Vec3::new(1.0, 0.0, 1.0).angle(&Vec3::new(1.0, 1.0, 0.0)), rad(Real::frac_pi_3()));
+    assert_approx_eq!(Vec3::new(10.0, 0.0, 10.0).angle(&Vec3::new(5.0, 5.0, 0.0)), rad(Real::frac_pi_3()));
+    assert_approx_eq!(Vec3::new(-1.0, 0.0, -1.0).angle(&Vec3::new(1.0, -1.0, 0.0)), rad(2.0 * Real::frac_pi_3()));
 
-    assert_approx_eq!(Vec4::new(1f, 0f, 1f, 0f).angle(&Vec4::new(0f, 1f, 0f, 1f)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec4::new(10f, 0f, 10f, 0f).angle(&Vec4::new(0f, 5f, 0f, 5f)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec4::new(-1f, 0f, -1f, 0f).angle(&Vec4::new(0f, 1f, 0f, 1f)), rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec4::new(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)), rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec4::new(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new(0.0, 5.0, 0.0, 5.0)), rad(Real::frac_pi_2()));
+    assert_approx_eq!(Vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)), rad(Real::frac_pi_2()));
 }
 
 #[test]
 fn test_normalize() {
-    // TODO: test normalize_to, normalize_self, and normalize_self_to
-    assert_approx_eq!(Vec2::new(3f, 4f).normalize(), Vec2::new(3f/5f, 4f/5f));
-    assert_approx_eq!(Vec3::new(2f, 3f, 6f).normalize(), Vec3::new(2f/7f, 3f/7f, 6f/7f));
-    assert_approx_eq!(Vec4::new(1f, 2f, 4f, 10f).normalize(), Vec4::new(1f/11f, 2f/11f, 4f/11f, 10f/11f));
+    // TODO: test normalize_to, normalize_sel.0, and normalize_self_to
+    assert_approx_eq!(Vec2::new(3.0, 4.0).normalize(), Vec2::new(3.0/5.0, 4.0/5.0));
+    assert_approx_eq!(Vec3::new(2.0, 3.0, 6.0).normalize(), Vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0));
+    assert_approx_eq!(Vec4::new(1.0, 2.0, 4.0, 10.0).normalize(), Vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0));
 }

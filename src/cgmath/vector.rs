@@ -55,7 +55,7 @@ macro_rules! vec(
             #[inline]
             pub fn zero() -> $Self<$S> { $Self::from_value(zero()) }
 
-            /// The additive identity of the vector.
+            /// The multiplicative identity of the vector.
             #[inline]
             pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
         }
