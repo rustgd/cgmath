@@ -13,24 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern mod cgmath;
+use cgmath::point::*;
 
-// pub mod array;
-pub mod matrix;
-// pub mod quaternion;
-pub mod vector;
-
-pub mod angle;
-pub mod plane;
-pub mod point;
-// pub mod ray;
-// pub mod rotation;
-
-// pub mod projection;
-
-// pub mod aabb;
-// pub mod cylinder;
-// pub mod frustum;
-// pub mod intersect;
-// pub mod obb;
-// pub mod sphere;
+#[test]
+fn test_homogeneous() {
+	let p = Point3::new(1.0, 2.0, 3.0);
+    assert_eq!(p, Point3::from_homogeneous( &p.to_homogeneous() ));
+}

@@ -14,14 +14,13 @@
 // limitations under the License.
 
 use std::cast::transmute;
+use std::fmt;
 
 use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vec3, Vec4};
 use vector::{Vector, EuclideanVector};
-
-use std::fmt;
 
 /// A 3-dimendional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
 ///

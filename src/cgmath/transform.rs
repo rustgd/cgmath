@@ -13,10 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use matrix::Mat4;
-use point::Point;
+use std::num;
+
+use matrix::{Matrix, Mat4, ToMat4};
+use point::{Point, Point3};
 use ray::Ray;
-use rotation::Rotation;
+use rotation::{Rotation, Rotation3};
 use quaternion::Quat;
 use vector::{Vector, Vec3};
 
@@ -36,11 +38,6 @@ pub trait Transform
     fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
         Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
     }
-}
-
-/// A homogeneous transformation matrix.
-pub struct AffineMatrix3<S> {
-    mat: Mat4<S>,
 }
 
 /// A generic transformation consisting of a rotation,
@@ -71,14 +68,56 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     }
 }
 
+pub trait Transform3<S>
+: Transform<S, [S, ..3], Vec3<S>, Point3<S>>
++ ToMat4<S>
+{}
+
+impl<S: Float + Clone, R: Rotation3<S>>
+ToMat4<S> for Decomposed<S, Vec3<S>, R> {
+    fn to_mat4(&self) -> Mat4<S>   {
+        let mut m = self.rot.to_mat3().mul_s( self.scale.clone() ).to_mat4();
+        m.w = self.disp.extend( num::one() );
+        m
+    }
+}
+
+impl<S: Float, R: Rotation3<S>>
+Transform3<S> for Decomposed<S,Vec3<S>,R>   {}
+
+/// A homogeneous transformation matrix.
+pub struct AffineMatrix3<S> {
+    mat: Mat4<S>,
+}
+
+impl<S : Clone + Float>
+Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S>  {
+    #[inline]
+    fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S>  {
+        self.mat.mul_v( &vec.extend(num::zero()) ).truncate()
+    }
+
+    #[inline]
+    fn transform_point(&self, point: &Point3<S>) -> Point3<S>   {
+        Point3::from_homogeneous( &self.mat.mul_v( &point.to_homogeneous() ))
+    }   
+}
+
+impl<S: Clone + Primitive>
+ToMat4<S> for AffineMatrix3<S>  {
+    #[inline] fn to_mat4(&self) -> Mat4<S>    { self.mat.clone() }
+}
+
+
+
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Transform3<S>( Decomposed<S,Vec3<S>,Quat<S>> );
+pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
-impl<S: Float> Transform3<S> {
+impl<S: Float> Transform3D<S> {
     #[inline]
-    pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3<S> {
-       Transform3( Decomposed { scale: scale, rot: rot, disp: disp })
+    pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
+       Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
     }
 }
 
