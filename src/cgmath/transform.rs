@@ -14,10 +14,10 @@
 // limitations under the License.
 
 use matrix::Mat4;
-use point::{Point,Point3};
+use point::{Point, Point3};
 use ray::Ray;
 use rotation::Rotation3;
-use vector::{Vector,Vec3};
+use vector::{Vector, Vec3};
 
 /// A trait of affine transformation, that can be applied to points or vectors
 pub trait Transform
@@ -60,11 +60,11 @@ impl<S: Float, R: Rotation3<S>> Transform3<S, R> {
 impl <S: Float, R: Rotation3<S>> Transform<S, [S, .. 3], Vec3<S>, Point3<S>> for Transform3<S,R>   {
     #[inline]
     fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S>   {
-        self.rot.rotate_vec3( &vec.mul_s( self.scale.clone() ))
+        self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
     }
 
     #[inline]
     fn transform_point(&self, point: &Point3<S>) -> Point3<S>   {
-        self.rot.rotate_point3( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
+        self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
     }
 }

@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use point::{Point,Point2, Point3};
-use vector::{Vector,Vec2, Vec3};
+use point::{Point, Point2, Point3};
+use vector::{Vector, Vec2, Vec3};
 
+/// A generic ray
 #[deriving(Clone, Eq)]
 pub struct Ray<P,V>
 {
