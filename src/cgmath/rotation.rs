@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use angle::Rad;
+use array::Array;
 use matrix::Matrix;
 use matrix::{Mat2, ToMat2};
 use matrix::{Mat3, ToMat3};
@@ -25,10 +26,10 @@ use vector::{Vector, Vec2, Vec3};
 /// A trait for generic rotation
 pub trait Rotation
 <
-    S: Primitive + Clone,
+    S: Primitive,
     Slice,
     V: Vector<S,Slice>,
-    P: Point<S,V,Slice> + Clone
+    P: Point<S,V,Slice>
 >
 :   Eq
 +   ApproxEq<S>
@@ -38,7 +39,9 @@ pub trait Rotation
 
     #[inline]
     fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
-        Ray::new( ray.origin.clone(), self.rotate_vec(&ray.direction) )
+        Ray::new(   //FIXME: use clone derived from Array
+            Array::build(|i| ray.origin.i(i).clone()),
+            self.rotate_vec(&ray.direction) )
     }
 
     fn concat(&self, other: &Self) -> Self;

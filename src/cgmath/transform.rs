@@ -14,9 +14,10 @@
 // limitations under the License.
 
 use matrix::Mat4;
-use point::{Point, Point3};
+use point::Point;
 use ray::Ray;
-use rotation::Rotation3;
+use rotation::Rotation;
+use quaternion::Quat;
 use vector::{Vector, Vec3};
 
 /// A trait of affine transformation, that can be applied to points or vectors
@@ -42,29 +43,42 @@ pub struct AffineMatrix3<S> {
     mat: Mat4<S>,
 }
 
-/// A transformation in three dimensions consisting of a rotation,
+/// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Transform3<S, R> {
-    rot: R,
-    disp: Vec3<S>,
+pub struct Decomposed<S,V,R>    {
     scale: S,
+    rot: R,
+    disp: V,
 }
 
-impl<S: Float, R: Rotation3<S>> Transform3<S, R> {
+impl
+<
+    S: Float,
+    Slice,
+    V: Vector<S, Slice>,
+    P: Point<S, V, Slice>,
+    R: Rotation<S, Slice, V, P>
+>
+Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     #[inline]
-    pub fn new(rot: R, disp: Vec3<S>, scale: S) -> Transform3<S, R> {
-        Transform3 { rot: rot, disp: disp, scale: scale }
-    }
-}
-
-impl <S: Float, R: Rotation3<S>> Transform<S, [S, .. 3], Vec3<S>, Point3<S>> for Transform3<S,R>   {
-    #[inline]
-    fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S>   {
+    fn transform_vec(&self, vec: &V) -> V   {
         self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
     }
 
     #[inline]
-    fn transform_point(&self, point: &Point3<S>) -> Point3<S>   {
+    fn transform_point(&self, point: &P) -> P   {
         self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
     }
 }
+
+/// A transformation in three dimensions consisting of a rotation,
+/// displacement vector and scale amount.
+pub struct Transform3<S>( Decomposed<S,Vec3<S>,Quat<S>> );
+
+impl<S: Float> Transform3<S> {
+    #[inline]
+    pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3<S> {
+       Transform3( Decomposed { scale: scale, rot: rot, disp: disp })
+    }
+}
+
