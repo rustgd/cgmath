@@ -41,6 +41,11 @@ pub trait Transform
         Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
     }
 
+    #[inline]
+    fn transform_as_point(&self, vec: &V)-> V   {
+        self.transform_point( &Point::from_vec(vec) ).to_vec()
+    }
+
     fn concat(&self, other: &Self) -> Self;
     fn invert(&self) -> Option<Self>;
 
@@ -95,11 +100,10 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     }
 
     fn concat(&self, other: &Decomposed<S,V,R>) -> Decomposed<S,V,R>    {
-        let p = Point::from_vec( &other.disp );
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat( &other.rot ),
-            disp: self.transform_point( &p ).to_vec(),
+            disp: self.transform_as_point( &other.disp ),
         }
     }
 
