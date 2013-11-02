@@ -35,6 +35,7 @@ pub mod plane;
 pub mod point;
 pub mod ray;
 pub mod rotation;
+pub mod transform;
 
 pub mod projection;
 
