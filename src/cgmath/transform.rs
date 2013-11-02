@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num;
+use std::{fmt,num};
 
 use matrix::{Matrix, Mat4, ToMat4};
 use point::{Point, Point3};
@@ -136,6 +136,15 @@ ToMat4<S> for Decomposed<S, Vec3<S>, R> {
 
 impl<S: Float, R: Rotation3<S>>
 Transform3<S> for Decomposed<S,Vec3<S>,R>   {}
+
+impl<S: fmt::Default + Float, R: ToStr + Rotation3<S>>
+ToStr for Decomposed<S,Vec3<S>,R> {
+    fn to_str(&self) -> ~str {
+        format!("(scale({}), rot({:s}), disp{:s})",
+            self.scale, self.rot.to_str(), self.disp.to_str())
+    }
+}
+
 
 /// A homogeneous transformation matrix.
 pub struct AffineMatrix3<S> {
