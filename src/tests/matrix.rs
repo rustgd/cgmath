@@ -20,61 +20,61 @@ pub mod mat2 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
 
-    pub static A: Mat2<float> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
+    pub static A: Mat2<f64> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
                                        y: Vec2 { x: 2.0, y: 4.0 } };
-    pub static B: Mat2<float> = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
+    pub static B: Mat2<f64> = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
                                        y: Vec2 { x: 3.0, y: 5.0 } };
-    pub static C: Mat2<float> = Mat2 { x: Vec2 { x: 2.0, y: 1.0 },
+    pub static C: Mat2<f64> = Mat2 { x: Vec2 { x: 2.0, y: 1.0 },
                                        y: Vec2 { x: 1.0, y: 2.0 } };
 
-    pub static V: Vec2<float> = Vec2 { x: 1.0, y: 2.0 };
-    pub static F: float = 0.5;
+    pub static V: Vec2<f64> = Vec2 { x: 1.0, y: 2.0 };
+    pub static F: f64 = 0.5;
 }
 
 pub mod mat3 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
 
-    pub static A: Mat3<float> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
+    pub static A: Mat3<f64> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
                                        y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
                                        z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
-    pub static B: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+    pub static B: Mat3<f64> = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
                                        y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
                                        z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
-    pub static C: Mat3<float> = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
+    pub static C: Mat3<f64> = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
                                        y: Vec3 { x: 0.0, y: 2.0, z:  4.0 },
                                        z: Vec3 { x: 0.0, y: 0.0, z:  1.0 } };
-    pub static D: Mat3<float> = Mat3 { x: Vec3 { x: 3.0, y: 2.0, z:  1.0 },
+    pub static D: Mat3<f64> = Mat3 { x: Vec3 { x: 3.0, y: 2.0, z:  1.0 },
                                        y: Vec3 { x: 2.0, y: 3.0, z:  2.0 },
                                        z: Vec3 { x: 1.0, y: 2.0, z:  3.0 } };
 
-    pub static V: Vec3<float> = Vec3 { x: 1.0, y: 2.0, z:  3.0 };
-    pub static F: float = 0.5;
+    pub static V: Vec3<f64> = Vec3 { x: 1.0, y: 2.0, z:  3.0 };
+    pub static F: f64 = 0.5;
 }
 
 pub mod mat4 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
 
-    pub static A: Mat4<float> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
+    pub static A: Mat4<f64> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                        y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
                                        z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
                                        w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
-    pub static B: Mat4<float> = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+    pub static B: Mat4<f64> = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
                                        y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
                                        z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
                                        w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
-    pub static C: Mat4<float> = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
+    pub static C: Mat4<f64> = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
                                        y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
                                        z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
                                        w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
-    pub static D: Mat4<float> = Mat4 { x: Vec4 { x: 4.0, y: 3.0, z:  2.0, w:  1.0 },
+    pub static D: Mat4<f64> = Mat4 { x: Vec4 { x: 4.0, y: 3.0, z:  2.0, w:  1.0 },
                                        y: Vec4 { x: 3.0, y: 4.0, z:  3.0, w:  2.0 },
                                        z: Vec4 { x: 2.0, y: 3.0, z:  4.0, w:  3.0 },
                                        w: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  4.0 } };
 
-    pub static V: Vec4<float> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
-    pub static F: float = 0.5;
+    pub static V: Vec4<f64> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
+    pub static F: f64 = 0.5;
 }
 
 #[test]
@@ -227,7 +227,7 @@ fn test_trace() {
 fn test_transpose() {
     // Mat2
     assert_eq!(mat2::A.transpose(),
-               Mat2::<float>::new(1.0, 2.0,
+               Mat2::<f64>::new(1.0, 2.0,
                                   3.0, 4.0));
     let mut mut_a = mat2::A;
     mut_a.transpose_self();
@@ -235,7 +235,7 @@ fn test_transpose() {
 
     // Mat3
     assert_eq!(mat3::A.transpose(),
-               Mat3::<float>::new(1.0, 2.0, 3.0,
+               Mat3::<f64>::new(1.0, 2.0, 3.0,
                                   4.0, 5.0, 6.0,
                                   7.0, 8.0, 9.0));
     let mut mut_a = mat3::A;
@@ -244,7 +244,7 @@ fn test_transpose() {
 
     // Mat4
     assert_eq!(mat4::A.transpose(),
-               Mat4::<float>::new( 1.0,  2.0,  3.0,  4.0,
+               Mat4::<f64>::new( 1.0,  2.0,  3.0,  4.0,
                                    5.0,  6.0,  7.0,  8.0,
                                    9.0, 10.0, 11.0, 12.0,
                                   13.0, 14.0, 15.0, 16.0));
@@ -256,7 +256,7 @@ fn test_transpose() {
 #[test]
 fn test_invert() {
     // Mat2
-    assert!(Mat2::<float>::identity().invert().unwrap().is_identity());
+    assert!(Mat2::<f64>::identity().invert().unwrap().is_identity());
 
     assert_eq!(mat2::A.invert().unwrap(),
                Mat2::new(-2.0,  1.5,
@@ -268,7 +268,7 @@ fn test_invert() {
     assert_eq!(mut_a, mat2::A.invert().unwrap());
 
     // Mat3
-    assert!(Mat3::<float>::identity().invert().unwrap().is_identity());
+    assert!(Mat3::<f64>::identity().invert().unwrap().is_identity());
 
     assert_eq!(mat3::A.invert(), None);
 
@@ -281,7 +281,7 @@ fn test_invert() {
     assert_eq!(mut_c, mat3::C.invert().unwrap());
 
     // Mat4
-    assert!(Mat4::<float>::identity().invert().unwrap().is_identity());
+    assert!(Mat4::<f64>::identity().invert().unwrap().is_identity());
 
     assert_approx_eq!(mat4::C.invert().unwrap(),
                       Mat4::new( 5.0, -4.0,  1.0,  0.0,
@@ -297,11 +297,11 @@ fn test_invert() {
 fn test_predicates() {
     // Mat2
 
-    assert!(Mat2::<float>::identity().is_identity());
-    assert!(Mat2::<float>::identity().is_symmetric());
-    assert!(Mat2::<float>::identity().is_diagonal());
-    assert!(!Mat2::<float>::identity().is_rotated());
-    assert!(Mat2::<float>::identity().is_invertible());
+    assert!(Mat2::<f64>::identity().is_identity());
+    assert!(Mat2::<f64>::identity().is_symmetric());
+    assert!(Mat2::<f64>::identity().is_diagonal());
+    assert!(!Mat2::<f64>::identity().is_rotated());
+    assert!(Mat2::<f64>::identity().is_invertible());
 
     assert!(!mat2::A.is_identity());
     assert!(!mat2::A.is_symmetric());
@@ -319,11 +319,11 @@ fn test_predicates() {
 
     // Mat3
 
-    assert!(Mat3::<float>::identity().is_identity());
-    assert!(Mat3::<float>::identity().is_symmetric());
-    assert!(Mat3::<float>::identity().is_diagonal());
-    assert!(!Mat3::<float>::identity().is_rotated());
-    assert!(Mat3::<float>::identity().is_invertible());
+    assert!(Mat3::<f64>::identity().is_identity());
+    assert!(Mat3::<f64>::identity().is_symmetric());
+    assert!(Mat3::<f64>::identity().is_diagonal());
+    assert!(!Mat3::<f64>::identity().is_rotated());
+    assert!(Mat3::<f64>::identity().is_invertible());
 
     assert!(!mat3::A.is_identity());
     assert!(!mat3::A.is_symmetric());
@@ -341,11 +341,11 @@ fn test_predicates() {
 
     // Mat4
 
-    assert!(Mat4::<float>::identity().is_identity());
-    assert!(Mat4::<float>::identity().is_symmetric());
-    assert!(Mat4::<float>::identity().is_diagonal());
-    assert!(!Mat4::<float>::identity().is_rotated());
-    assert!(Mat4::<float>::identity().is_invertible());
+    assert!(Mat4::<f64>::identity().is_identity());
+    assert!(Mat4::<f64>::identity().is_symmetric());
+    assert!(Mat4::<f64>::identity().is_diagonal());
+    assert!(!Mat4::<f64>::identity().is_rotated());
+    assert!(Mat4::<f64>::identity().is_invertible());
 
     assert!(!mat4::A.is_identity());
     assert!(!mat4::A.is_symmetric());
