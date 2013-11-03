@@ -1,5 +1,7 @@
 # cgmath-rs
 
+[![Build Status](https://travis-ci.org/bjz/cgmath-rs.png?branch=master)](https://travis-ci.org/bjz/cgmath-rs)
+
 A linear algebra and mathematics library for computer graphics.
 
 The library provides:
