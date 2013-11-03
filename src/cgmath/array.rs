@@ -44,6 +44,18 @@ pub trait Array
     fn each_mut(&mut self, f: &fn(i: uint, x: &mut T));
 }
 
+/*impl  //TODO
+<
+    T: Clone,
+    Slice,
+    A: Array<T,Slice>
+>
+Clone for A    {
+    fn clone(&self) -> A    {
+        self.build(|i| self.i(i).clone())
+    }
+}*/
+
 macro_rules! array(
     (impl<$S:ident> $Self:ty -> [$T:ty, ..$n:expr] $_n:ident) => (
         impl<$S: Clone> Array<$T, [$T,..$n]> for $Self {

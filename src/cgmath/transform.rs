@@ -14,19 +14,27 @@
 // limitations under the License.
 
 use matrix::Mat4;
-use point::{Point,Point3};
-use ray::Ray3;
-use rotation::Rotation3;
-use vector::{Vector,Vec3};
+use point::Point;
+use ray::Ray;
+use rotation::Rotation;
+use quaternion::Quat;
+use vector::{Vector, Vec3};
 
+/// A trait of affine transformation, that can be applied to points or vectors
+pub trait Transform
+<
+    S: Primitive,
+    Slice,
+    V: Vector<S,Slice>,
+    P: Point<S,V,Slice>
+>
+{
+    fn transform_vec(&self, vec: &V) -> V;
+    fn transform_point(&self, point: &P) -> P;
 
-pub trait Transform3<S> {
-    fn transform_vec3(&self, vec: &Vec3<S>) -> Vec3<S>;
-    fn transform_point3(&self, point: &Point3<S>) -> Point3<S>;
-    
     #[inline]
-    fn transform_ray3(&self, ray: &Ray3<S>) -> Ray3<S>    {
-        Ray3::new( self.transform_point3(&ray.origin), self.transform_vec3(&ray.direction) )
+    fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
+        Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
     }
 }
 
@@ -35,29 +43,42 @@ pub struct AffineMatrix3<S> {
     mat: Mat4<S>,
 }
 
+/// A generic transformation consisting of a rotation,
+/// displacement vector and scale amount.
+pub struct Decomposed<S,V,R>    {
+    scale: S,
+    rot: R,
+    disp: V,
+}
+
+impl
+<
+    S: Float,
+    Slice,
+    V: Vector<S, Slice>,
+    P: Point<S, V, Slice>,
+    R: Rotation<S, Slice, V, P>
+>
+Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
+    #[inline]
+    fn transform_vec(&self, vec: &V) -> V   {
+        self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
+    }
+
+    #[inline]
+    fn transform_point(&self, point: &P) -> P   {
+        self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
+    }
+}
+
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Transform3D<S, R> {
-    rot: R,
-    disp: Vec3<S>,
-    scale: S,
-}
+pub struct Transform3<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
-impl<S: Float, R: Rotation3<S>> Transform3D<S, R> {
+impl<S: Float> Transform3<S> {
     #[inline]
-    pub fn new(rot: R, disp: Vec3<S>, scale: S) -> Transform3D<S, R> {
-        Transform3D { rot: rot, disp: disp, scale: scale }
+    pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3<S> {
+       Transform3( Decomposed { scale: scale, rot: rot, disp: disp })
     }
 }
 
-impl <S: Float, R: Rotation3<S>> Transform3<S> for Transform3D<S,R>   {
-    #[inline]
-    fn transform_vec3(&self, vec: &Vec3<S>) -> Vec3<S>   {
-        self.rot.rotate_vec3( &vec.mul_s( self.scale.clone() ))
-    }
-
-    #[inline]
-    fn transform_point3(&self, point: &Point3<S>) -> Point3<S>   {
-        self.rot.rotate_point3( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
-    }
-}
