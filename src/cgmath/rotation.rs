@@ -14,52 +14,72 @@
 // limitations under the License.
 
 use angle::Rad;
+use array::Array;
 use matrix::Matrix;
 use matrix::{Mat2, ToMat2};
 use matrix::{Mat3, ToMat3};
-use point::{Point2, Point3};
+use point::{Point, Point2, Point3};
 use quaternion::{Quat, ToQuat};
-use ray::{Ray2, Ray3};
+use ray::{Ray, Ray2, Ray3};
 use vector::{Vector, Vec2, Vec3};
+
+/// A trait for generic rotation
+pub trait Rotation
+<
+    S: Primitive,
+    Slice,
+    V: Vector<S,Slice>,
+    P: Point<S,V,Slice>
+>
+:   Eq
++   ApproxEq<S>
+{
+    fn identity() -> Self;
+    fn rotate_point(&self, point: &P) -> P;
+    fn rotate_vec(&self, vec: &V) -> V;
+
+    #[inline]
+    fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
+        Ray::new(   //FIXME: use clone derived from Array
+            Array::build(|i| ray.origin.i(i).clone()),
+            self.rotate_vec(&ray.direction) )
+    }
+
+    fn concat(&self, other: &Self) -> Self;
+    fn invert(&self) -> Self;
+
+    #[inline]
+    fn concat_self(&mut self, other: &Self) {
+        *self = self.concat(other);
+    }
+    
+    #[inline]
+    fn invert_self(&mut self)   {
+        *self = self.invert();
+    }
+}
 
 /// A two-dimensional rotation
 pub trait Rotation2
 <
     S
 >
-:   Eq
-+   ApproxEq<S>
+:   Rotation<S, [S, ..2], Vec2<S>, Point2<S>>
 +   ToMat2<S>
 +   ToBasis2<S>
-{
-    fn rotate_point2(&self, point: &Point2<S>) -> Point2<S>;
-    fn rotate_vec2(&self, vec: &Vec2<S>) -> Vec2<S>;
-    fn rotate_ray2(&self, ray: &Ray2<S>) -> Ray2<S>;
-    fn concat(&self, other: &Self) -> Self;
-    fn concat_self(&mut self, other: &Self);
-    fn invert(&self) -> Self;
-    fn invert_self(&mut self);
-}
+{}
 
 /// A three-dimensional rotation
 pub trait Rotation3
 <
     S
 >
-:   Eq
-+   ApproxEq<S>
+:   Rotation<S, [S, ..3], Vec3<S>, Point3<S>>
 +   ToMat3<S>
 +   ToBasis3<S>
 +   ToQuat<S>
-{
-    fn rotate_point3(&self, point: &Point3<S>) -> Point3<S>;
-    fn rotate_vec3(&self, vec: &Vec3<S>) -> Vec3<S>;
-    fn rotate_ray3(&self, ray: &Ray3<S>) -> Ray3<S>;
-    fn concat(&self, other: &Self) -> Self;
-    fn concat_self(&mut self, other: &Self);
-    fn invert(&self) -> Self;
-    fn invert_self(&mut self);
-}
+{}
+
 
 /// A two-dimensional rotation matrix.
 ///
@@ -91,15 +111,18 @@ impl<S: Float> ToMat2<S> for Basis2<S> {
     fn to_mat2(&self) -> Mat2<S> { self.mat.clone() }
 }
 
-impl<S: Float> Rotation2<S> for Basis2<S> {
+impl<S: Float> Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     #[inline]
-    fn rotate_point2(&self, _point: &Point2<S>) -> Point2<S> { fail!("Not yet implemented") }
+    fn identity() -> Basis2<S>  { Basis2{ mat: Mat2::identity() } }
+    
+    #[inline]
+    fn rotate_point(&self, _point: &Point2<S>) -> Point2<S> { fail!("Not yet implemented") }
 
     #[inline]
-    fn rotate_vec2(&self, vec: &Vec2<S>) -> Vec2<S> { self.mat.mul_v(vec) }
+    fn rotate_vec(&self, vec: &Vec2<S>) -> Vec2<S> { self.mat.mul_v(vec) }
 
     #[inline]
-    fn rotate_ray2(&self, _ray: &Ray2<S>) -> Ray2<S> { fail!("Not yet implemented") }
+    fn rotate_ray(&self, _ray: &Ray2<S>) -> Ray2<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat.mul_m(&other.mat) } }
@@ -135,6 +158,8 @@ impl<S: Float> ApproxEq<S> for Basis2<S> {
         self.mat.approx_eq_eps(&other.mat, approx_epsilon)
     }
 }
+
+impl<S: Float> Rotation2<S> for Basis2<S>   {}
 
 /// A three-dimensional rotation matrix.
 ///
@@ -207,15 +232,18 @@ impl<S: Float> ToQuat<S> for Basis3<S> {
     fn to_quat(&self) -> Quat<S> { self.mat.to_quat() }
 }
 
-impl<S: Float> Rotation3<S> for Basis3<S> {
+impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     #[inline]
-    fn rotate_point3(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
+    fn identity() -> Basis3<S>  { Basis3{ mat: Mat3::identity() } }
+    
+    #[inline]
+    fn rotate_point(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
 
     #[inline]
-    fn rotate_vec3(&self, vec: &Vec3<S>) -> Vec3<S> { self.mat.mul_v(vec) }
+    fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mat.mul_v(vec) }
 
     #[inline]
-    fn rotate_ray3(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
+    fn rotate_ray(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat.mul_m(&other.mat) } }
@@ -252,6 +280,8 @@ impl<S: Float> ApproxEq<S> for Basis3<S> {
     }
 }
 
+impl<S: Float> Rotation3<S> for Basis3<S>    {}
+
 // Quaternion Rotation impls
 
 impl<S: Float> ToBasis3<S> for Quat<S> {
@@ -264,15 +294,18 @@ impl<S: Float> ToQuat<S> for Quat<S> {
     fn to_quat(&self) -> Quat<S> { self.clone() }
 }
 
-impl<S: Float> Rotation3<S> for Quat<S> {
+impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     #[inline]
-    fn rotate_point3(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
+    fn identity() -> Quat<S>  { Quat::identity() }  
+    
+    #[inline]
+    fn rotate_point(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
 
     #[inline]
-    fn rotate_vec3(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }
+    fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }
 
     #[inline]
-    fn rotate_ray3(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
+    fn rotate_ray(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Quat<S>) -> Quat<S> { self.mul_q(other) }
@@ -286,3 +319,5 @@ impl<S: Float> Rotation3<S> for Quat<S> {
     #[inline]
     fn invert_self(&mut self) { *self = self.invert() }
 }
+
+impl<S: Float> Rotation3<S> for Quat<S> {}

@@ -18,7 +18,7 @@
 //! not have a fixed position.
 
 use std::fmt;
-use std::num::zero;
+use std::num::{one,zero};
 
 use array::*;
 use vector::*;
@@ -52,6 +52,19 @@ impl<S: Num> Point3<S> {
 
     #[inline]
     pub fn origin() -> Point3<S> { zero() }
+}
+
+impl<S: Clone + Num + Primitive> Point3<S> {
+    #[inline]
+    pub fn from_homogeneous(v: &Vec4<S>) -> Point3<S>   {
+        let _1 :S = one();
+        let e = v.truncate().mul_s( _1 / v.w );
+        Point3::new(e.x.clone(), e.y.clone(), e.z.clone())  //FIXME
+    }
+    #[inline]
+    pub fn to_homogeneous(&self) -> Vec4<S>   {
+        Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
+    }
 }
 
 /// Specifies the numeric operations for point types.

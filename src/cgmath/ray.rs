@@ -13,33 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use point::{Point2, Point3};
-use vector::{Vec2, Vec3};
+use point::{Point, Point2, Point3};
+use vector::{Vector, Vec2, Vec3};
 
+/// A generic ray
 #[deriving(Clone, Eq)]
-pub struct Ray2<S> {
-    origin: Point2<S>,
-    direction: Vec2<S>,
+pub struct Ray<P,V>
+{
+    origin: P,
+    direction: V,
 }
 
-impl<S> Ray2<S> {
-    /// Creates a new ray from a position coordinate and a direction vector
-    #[inline]
-    pub fn new(origin: Point2<S>, direction: Vec2<S>) -> Ray2<S> {
-        Ray2 { origin: origin, direction: direction }
+impl
+<
+    S: Primitive,
+    Slice,
+    V: Vector<S,Slice>,
+    P: Point<S,V,Slice>
+>  Ray<P,V>
+{
+    pub fn new(origin: P, direction: V) -> Ray<P,V> {
+        Ray { origin:origin, direction:direction }
     }
 }
 
-#[deriving(Clone, Eq)]
-pub struct Ray3<S> {
-    origin: Point3<S>,
-    direction: Vec3<S>,
-}
-
-impl<S> Ray3<S> {
-    /// Creates a new ray from a position coordinate and a direction vector
-    #[inline]
-    pub fn new(origin: Point3<S>, direction: Vec3<S>) -> Ray3<S> {
-        Ray3 { origin: origin, direction: direction }
-    }
-}
+pub type Ray2<S> = Ray<Point2<S>,Vec2<S>>;
+pub type Ray3<S> = Ray<Point3<S>,Vec3<S>>;

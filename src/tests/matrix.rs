@@ -15,10 +15,12 @@
 
 use cgmath::matrix::*;
 use cgmath::vector::*;
+type float = f64;
 
 pub mod mat2 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
+    type float = f64;
 
     pub static A: Mat2<f64> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
                                        y: Vec2 { x: 2.0, y: 4.0 } };
@@ -34,6 +36,7 @@ pub mod mat2 {
 pub mod mat3 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
+    type float = f64;
 
     pub static A: Mat3<f64> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
                                        y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
@@ -55,6 +58,7 @@ pub mod mat3 {
 pub mod mat4 {
     use cgmath::matrix::*;
     use cgmath::vector::*;
+    type float = f64;
 
     pub static A: Mat4<f64> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                        y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
