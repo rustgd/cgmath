@@ -15,6 +15,9 @@
 
 use cgmath::plane::*;
 use cgmath::point::*;
+use cgmath::vector::*;
+use cgmath::ray::*;
+use cgmath::intersect::Intersect;
 
 #[test]
 fn test_from_points() {
@@ -27,4 +30,17 @@ fn test_from_points() {
                                   Point3::new(0.0, 5.0,  0.0),
                                   Point3::new(0.0, 5.0,  5.0)),
         None);     // The points are parallel
+}
+
+#[test]
+fn test_ray_intersection() {
+    let p0 = Plane::from_abcd(1f64, 0f64, 0f64, -7f64);
+    let r0 = Ray3::new(Point3::new(2f64, 3f64, 4f64), Vec3::new(1f64, 1f64, 1f64).normalize());
+    assert_eq!((p0, r0).intersection(), Some(Point3::new(7f64, 8f64, 9f64)));
+
+    let p1 = Plane::from_points(Point3::new(5f64, 0f64,  5f64),
+                                  Point3::new(5f64, 5f64,  5f64),
+                                  Point3::new(5f64, 0f64, -1f64)).unwrap();
+    let r1 = Ray3::new(Point3::new(0f64, 0f64, 0f64), Vec3::new(-1f64, 0f64, 0f64).normalize());
+    assert_eq!((p1, r1).intersection(), None); // r1 points away from p1
 }

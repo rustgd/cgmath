@@ -15,10 +15,37 @@
 
 //! Bounding sphere
 
-use point::Point3;
+use intersect::Intersect;
+use point::{Point, Point3};
+use ray::Ray3;
+use vector::Vector;
+
+use std::num::NumCast;
+use std::num;
+
+fn cast<T: NumCast, U: NumCast>(n: T) -> U {
+            num::cast(n).unwrap()
+}
 
 #[deriving(Clone, Eq)]
 pub struct Sphere<S> {
     center: Point3<S>,
     radius: S,
+}
+
+impl<S: Float> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
+    fn intersection(&self) -> Option<Point3<S>> {
+        match *self {
+            (ref s, ref r) => 
+            {
+                let l = s.center.sub_p(&r.origin);
+                let tca = l.dot(&r.direction);
+                if tca < cast(0.0) { return None; }
+                let d2 = l.dot(&l) - tca*tca;
+                if (d2 > s.radius*s.radius) { return None; }
+                let thc = num::sqrt(s.radius*s.radius - d2);
+                Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
+            }
+        }
+    }
 }
