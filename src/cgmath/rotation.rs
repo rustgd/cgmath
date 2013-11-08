@@ -20,7 +20,7 @@ use matrix::{Mat2, ToMat2};
 use matrix::{Mat3, ToMat3};
 use point::{Point, Point2, Point3};
 use quaternion::{Quat, ToQuat};
-use ray::{Ray, Ray2, Ray3};
+use ray::Ray;
 use vector::{Vector, Vec2, Vec3};
 
 /// A trait for generic rotation
@@ -35,8 +35,12 @@ pub trait Rotation
 +   ApproxEq<S>
 {
     fn identity() -> Self;
-    fn rotate_point(&self, point: &P) -> P;
     fn rotate_vec(&self, vec: &V) -> V;
+
+    #[inline]
+    fn rotate_point(&self, point: &P) -> P  {
+        Point::from_vec( &self.rotate_vec( &point.to_vec() ) )
+    }
 
     #[inline]
     fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
@@ -116,13 +120,7 @@ impl<S: Float> Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     fn identity() -> Basis2<S>  { Basis2{ mat: Mat2::identity() } }
     
     #[inline]
-    fn rotate_point(&self, _point: &Point2<S>) -> Point2<S> { fail!("Not yet implemented") }
-
-    #[inline]
     fn rotate_vec(&self, vec: &Vec2<S>) -> Vec2<S> { self.mat.mul_v(vec) }
-
-    #[inline]
-    fn rotate_ray(&self, _ray: &Ray2<S>) -> Ray2<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat.mul_m(&other.mat) } }
@@ -237,13 +235,7 @@ impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     fn identity() -> Basis3<S>  { Basis3{ mat: Mat3::identity() } }
     
     #[inline]
-    fn rotate_point(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
-
-    #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mat.mul_v(vec) }
-
-    #[inline]
-    fn rotate_ray(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat.mul_m(&other.mat) } }
@@ -299,13 +291,7 @@ impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     fn identity() -> Quat<S>  { Quat::identity() }  
     
     #[inline]
-    fn rotate_point(&self, _point: &Point3<S>) -> Point3<S> { fail!("Not yet implemented") }
-
-    #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }
-
-    #[inline]
-    fn rotate_ray(&self, _ray: &Ray3<S>) -> Ray3<S> { fail!("Not yet implemented") }
 
     #[inline]
     fn concat(&self, other: &Quat<S>) -> Quat<S> { self.mul_q(other) }

@@ -61,6 +61,7 @@ impl<S: Clone + Num + Primitive> Point3<S> {
         let e = v.truncate().mul_s( _1 / v.w );
         Point3::new(e.x.clone(), e.y.clone(), e.z.clone())  //FIXME
     }
+
     #[inline]
     pub fn to_homogeneous(&self) -> Vec4<S>   {
         Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
@@ -76,6 +77,9 @@ pub trait Point
 >
 :   Array<S, Slice>
 {
+    #[inline] fn from_vec(v: &V) -> Self { build(|i| v.i(i).clone()) }
+    #[inline] fn to_vec(&self) -> V { build(|i| self.i(i).clone()) }
+
     #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul(&s)) }
     #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div(&s)) }
     #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem(&s)) }

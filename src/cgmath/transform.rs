@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num;
+use std::{fmt,num};
 
 use matrix::{Matrix, Mat4, ToMat4};
 use point::{Point, Point3};
@@ -32,13 +32,26 @@ pub trait Transform
 >
 {
     fn identity() -> Self;
+
     fn transform_vec(&self, vec: &V) -> V;
     fn transform_point(&self, point: &P) -> P;
-    fn invert(&self) -> Option<Self>;
 
     #[inline]
     fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
         Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
+    }
+
+    #[inline]
+    fn transform_as_point(&self, vec: &V)-> V   {
+        self.transform_point( &Point::from_vec(vec) ).to_vec()
+    }
+
+    fn concat(&self, other: &Self) -> Self;
+    fn invert(&self) -> Option<Self>;
+
+    #[inline]
+    fn concat_self(&mut self, other: &Self) {
+        *self = self.concat(other);
     }
 
     #[inline]
@@ -86,7 +99,14 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
         self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
     }
 
-    #[inline]
+    fn concat(&self, other: &Decomposed<S,V,R>) -> Decomposed<S,V,R>    {
+        Decomposed {
+            scale: self.scale * other.scale,
+            rot: self.rot.concat( &other.rot ),
+            disp: self.transform_as_point( &other.disp ),
+        }
+    }
+
     fn invert(&self) -> Option<Decomposed<S,V,R>>   {
         if self.scale.approx_eq( &num::zero() )   {
             None
@@ -121,6 +141,15 @@ ToMat4<S> for Decomposed<S, Vec3<S>, R> {
 impl<S: Float, R: Rotation3<S>>
 Transform3<S> for Decomposed<S,Vec3<S>,R>   {}
 
+impl<S: fmt::Default + Float, R: ToStr + Rotation3<S>>
+ToStr for Decomposed<S,Vec3<S>,R> {
+    fn to_str(&self) -> ~str {
+        format!("(scale({}), rot({:s}), disp{:s})",
+            self.scale, self.rot.to_str(), self.disp.to_str())
+    }
+}
+
+
 /// A homogeneous transformation matrix.
 pub struct AffineMatrix3<S> {
     mat: Mat4<S>,
@@ -144,6 +173,11 @@ Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S>  {
     }
 
     #[inline]
+    fn concat(&self, other: &AffineMatrix3<S>) -> AffineMatrix3<S>    {
+        AffineMatrix3 { mat: self.mat.mul_m( &other.mat ) }
+    }
+
+    #[inline]
     fn invert(&self) -> Option<AffineMatrix3<S>>   {
         self.mat.invert().map(|m| AffineMatrix3{ mat: m })
     }   
@@ -154,6 +188,8 @@ ToMat4<S> for AffineMatrix3<S>  {
     #[inline] fn to_mat4(&self) -> Mat4<S>    { self.mat.clone() }
 }
 
+impl<S: Float>
+Transform3<S> for AffineMatrix3<S>   {}
 
 
 /// A transformation in three dimensions consisting of a rotation,
