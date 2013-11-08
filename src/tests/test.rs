@@ -37,4 +37,4 @@ pub mod transform;
 // pub mod frustum;
 // pub mod intersect;
 // pub mod obb;
-// pub mod sphere;
+pub mod sphere;

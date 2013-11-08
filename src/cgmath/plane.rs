@@ -15,12 +15,14 @@
 
 use std::cast::transmute;
 use std::fmt;
+use std::num::Zero;
 
 use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vec3, Vec4};
 use vector::{Vector, EuclideanVector};
+
 
 /// A 3-dimendional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
 ///
@@ -86,7 +88,14 @@ impl<S: Float> Plane<S> {
 
 impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
-        fail!("Not yet implemented");
+        match *self {
+            (ref p, ref r) =>
+            {
+                  let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
+                  if t < Zero::zero() { None }
+                  else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
+            }
+        }
     }
 }
 
