@@ -37,12 +37,12 @@ pub trait Transform
     fn transform_point(&self, point: &P) -> P;
 
     #[inline]
-    fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
+    fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
         Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
     }
 
     #[inline]
-    fn transform_as_point(&self, vec: &V)-> V   {
+    fn transform_as_point(&self, vec: &V)-> V {
         self.transform_point( &Point::from_vec(vec) ).to_vec()
     }
 
@@ -55,7 +55,7 @@ pub trait Transform
     }
 
     #[inline]
-    fn invert_self(&mut self)-> bool    {
+    fn invert_self(&mut self)-> bool {
         match self.invert() {
             Some(t) => {*self = t; true},
             None    => false,
@@ -65,7 +65,7 @@ pub trait Transform
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Decomposed<S,V,R>    {
+pub struct Decomposed<S,V,R> {
     scale: S,
     rot: R,
     disp: V,
@@ -79,9 +79,9 @@ impl
     P: Point<S, V, Slice>,
     R: Rotation<S, Slice, V, P>
 >
-Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
+Transform<S, Slice, V, P> for Decomposed<S,V,R> {
     #[inline]
-    fn identity() -> Decomposed<S,V,R>  {
+    fn identity() -> Decomposed<S,V,R> {
         Decomposed {
             scale: num::one(),
             rot: Rotation::identity(),
@@ -90,16 +90,16 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
     }
 
     #[inline]
-    fn transform_vec(&self, vec: &V) -> V   {
+    fn transform_vec(&self, vec: &V) -> V {
         self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
     }
 
     #[inline]
-    fn transform_point(&self, point: &P) -> P   {
+    fn transform_point(&self, point: &P) -> P {
         self.rot.rotate_point( &point.mul_s( self.scale.clone() )).add_v( &self.disp )
     }
 
-    fn concat(&self, other: &Decomposed<S,V,R>) -> Decomposed<S,V,R>    {
+    fn concat(&self, other: &Decomposed<S,V,R>) -> Decomposed<S,V,R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat( &other.rot ),
@@ -107,10 +107,10 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R>    {
         }
     }
 
-    fn invert(&self) -> Option<Decomposed<S,V,R>>   {
-        if self.scale.approx_eq( &num::zero() )   {
+    fn invert(&self) -> Option<Decomposed<S,V,R>> {
+        if self.scale.approx_eq( &num::zero() ) {
             None
-        }else   {
+        }else {
             let _1 : S = num::one();
             let s = _1 / self.scale;
             let r = self.rot.invert();
@@ -131,7 +131,7 @@ pub trait Transform3<S>
 
 impl<S: Float + Clone, R: Rotation3<S>>
 ToMat4<S> for Decomposed<S, Vec3<S>, R> {
-    fn to_mat4(&self) -> Mat4<S>   {
+    fn to_mat4(&self) -> Mat4<S> {
         let mut m = self.rot.to_mat3().mul_s( self.scale.clone() ).to_mat4();
         m.w = self.disp.extend( num::one() );
         m
@@ -139,7 +139,7 @@ ToMat4<S> for Decomposed<S, Vec3<S>, R> {
 }
 
 impl<S: Float, R: Rotation3<S>>
-Transform3<S> for Decomposed<S,Vec3<S>,R>   {}
+Transform3<S> for Decomposed<S,Vec3<S>,R> {}
 
 impl<S: fmt::Default + Float, R: ToStr + Rotation3<S>>
 ToStr for Decomposed<S,Vec3<S>,R> {
@@ -156,40 +156,40 @@ pub struct AffineMatrix3<S> {
 }
 
 impl<S : Clone + Float>
-Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S>  {
+Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
-    fn identity() -> AffineMatrix3<S>  {
+    fn identity() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Mat4::identity() }
     }
     
     #[inline]
-    fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S>  {
+    fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S> {
         self.mat.mul_v( &vec.extend(num::zero()) ).truncate()
     }
 
     #[inline]
-    fn transform_point(&self, point: &Point3<S>) -> Point3<S>   {
+    fn transform_point(&self, point: &Point3<S>) -> Point3<S> {
         Point3::from_homogeneous( &self.mat.mul_v( &point.to_homogeneous() ))
     }
 
     #[inline]
-    fn concat(&self, other: &AffineMatrix3<S>) -> AffineMatrix3<S>    {
+    fn concat(&self, other: &AffineMatrix3<S>) -> AffineMatrix3<S> {
         AffineMatrix3 { mat: self.mat.mul_m( &other.mat ) }
     }
 
     #[inline]
-    fn invert(&self) -> Option<AffineMatrix3<S>>   {
+    fn invert(&self) -> Option<AffineMatrix3<S>> {
         self.mat.invert().map(|m| AffineMatrix3{ mat: m })
     }   
 }
 
 impl<S: Clone + Primitive>
-ToMat4<S> for AffineMatrix3<S>  {
-    #[inline] fn to_mat4(&self) -> Mat4<S>    { self.mat.clone() }
+ToMat4<S> for AffineMatrix3<S> {
+    #[inline] fn to_mat4(&self) -> Mat4<S> { self.mat.clone() }
 }
 
 impl<S: Float>
-Transform3<S> for AffineMatrix3<S>   {}
+Transform3<S> for AffineMatrix3<S> {}
 
 
 /// A transformation in three dimensions consisting of a rotation,

@@ -36,8 +36,7 @@ pub struct Sphere<S> {
 impl<S: Float> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         match *self {
-            (ref s, ref r) => 
-            {
+            (ref s, ref r) => {
                 let l = s.center.sub_p(&r.origin);
                 let tca = l.dot(&r.direction);
                 if tca < cast(0.0) { return None; }

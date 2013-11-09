@@ -70,9 +70,9 @@ impl<S: Primitive> Vec2<S> {
     #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
     #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
 }
-impl<S: Primitive + Clone> Vec2<S>  {
+impl<S: Primitive + Clone> Vec2<S> {
     #[inline]
-    pub fn extend(&self, z: S)-> Vec3<S>  {
+    pub fn extend(&self, z: S)-> Vec3<S> {
         Vec3::new(self.x.clone(), self.y.clone(), z)
     }
 }
@@ -82,13 +82,14 @@ impl<S: Primitive> Vec3<S> {
     #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
     #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
 }
-impl<S: Primitive + Clone> Vec3<S>  {
+impl<S: Primitive + Clone> Vec3<S> {
     #[inline]
-    pub fn extend(&self, w: S)-> Vec4<S>  {
+    pub fn extend(&self, w: S)-> Vec4<S> {
         Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
     }
+
     #[inline]
-    pub fn truncate(&self)-> Vec2<S>  {
+    pub fn truncate(&self)-> Vec2<S> {
         Vec2::new(self.x.clone(), self.y.clone())   //ignore Z
     }
 }
@@ -99,9 +100,10 @@ impl<S: Primitive> Vec4<S> {
     #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
     #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
 }
-impl<S: Primitive + Clone> Vec4<S>  {
+
+impl<S: Primitive + Clone> Vec4<S> {
     #[inline]
-    pub fn truncate(&self)-> Vec3<S>  {
+    pub fn truncate(&self)-> Vec3<S> {
         Vec3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
     }
 }

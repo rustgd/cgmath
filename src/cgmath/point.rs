@@ -56,14 +56,13 @@ impl<S: Num> Point3<S> {
 
 impl<S: Clone + Num + Primitive> Point3<S> {
     #[inline]
-    pub fn from_homogeneous(v: &Vec4<S>) -> Point3<S>   {
-        let _1 :S = one();
-        let e = v.truncate().mul_s( _1 / v.w );
+    pub fn from_homogeneous(v: &Vec4<S>) -> Point3<S> {
+        let e = v.truncate().mul_s(one::<S>() / v.w);
         Point3::new(e.x.clone(), e.y.clone(), e.z.clone())  //FIXME
     }
 
     #[inline]
-    pub fn to_homogeneous(&self) -> Vec4<S>   {
+    pub fn to_homogeneous(&self) -> Vec4<S> {
         Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
     }
 }

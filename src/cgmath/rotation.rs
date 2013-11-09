@@ -38,12 +38,12 @@ pub trait Rotation
     fn rotate_vec(&self, vec: &V) -> V;
 
     #[inline]
-    fn rotate_point(&self, point: &P) -> P  {
+    fn rotate_point(&self, point: &P) -> P {
         Point::from_vec( &self.rotate_vec( &point.to_vec() ) )
     }
 
     #[inline]
-    fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V>    {
+    fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
         Ray::new(   //FIXME: use clone derived from Array
             Array::build(|i| ray.origin.i(i).clone()),
             self.rotate_vec(&ray.direction) )
@@ -58,7 +58,7 @@ pub trait Rotation
     }
     
     #[inline]
-    fn invert_self(&mut self)   {
+    fn invert_self(&mut self) {
         *self = self.invert();
     }
 }
@@ -117,7 +117,7 @@ impl<S: Float> ToMat2<S> for Basis2<S> {
 
 impl<S: Float> Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     #[inline]
-    fn identity() -> Basis2<S>  { Basis2{ mat: Mat2::identity() } }
+    fn identity() -> Basis2<S> { Basis2{ mat: Mat2::identity() } }
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec2<S>) -> Vec2<S> { self.mat.mul_v(vec) }
@@ -157,7 +157,7 @@ impl<S: Float> ApproxEq<S> for Basis2<S> {
     }
 }
 
-impl<S: Float> Rotation2<S> for Basis2<S>   {}
+impl<S: Float> Rotation2<S> for Basis2<S> {}
 
 /// A three-dimensional rotation matrix.
 ///
@@ -232,7 +232,7 @@ impl<S: Float> ToQuat<S> for Basis3<S> {
 
 impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     #[inline]
-    fn identity() -> Basis3<S>  { Basis3{ mat: Mat3::identity() } }
+    fn identity() -> Basis3<S> { Basis3{ mat: Mat3::identity() } }
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mat.mul_v(vec) }
@@ -272,7 +272,7 @@ impl<S: Float> ApproxEq<S> for Basis3<S> {
     }
 }
 
-impl<S: Float> Rotation3<S> for Basis3<S>    {}
+impl<S: Float> Rotation3<S> for Basis3<S> {}
 
 // Quaternion Rotation impls
 
@@ -288,7 +288,7 @@ impl<S: Float> ToQuat<S> for Quat<S> {
 
 impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     #[inline]
-    fn identity() -> Quat<S>  { Quat::identity() }  
+    fn identity() -> Quat<S> { Quat::identity() }  
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }

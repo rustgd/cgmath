@@ -89,11 +89,10 @@ impl<S: Float> Plane<S> {
 impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         match *self {
-            (ref p, ref r) =>
-            {
-                  let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
-                  if t < Zero::zero() { None }
-                  else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
+            (ref p, ref r) => {
+                let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
+                if t < Zero::zero() { None }
+                else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
             }
         }
     }
