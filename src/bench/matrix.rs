@@ -63,7 +63,9 @@ pub mod mat4 {
 fn bench_mat2_mul_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_m(&mat2::B);
+        }
     }
 }
 
@@ -71,7 +73,9 @@ fn bench_mat2_mul_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_mul_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_m(&mat3::B);
+        }
     }
 }
 
@@ -79,7 +83,9 @@ fn bench_mat3_mul_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_mul_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_m(&mat4::B);
+        }
     }
 }
 
@@ -87,7 +93,9 @@ fn bench_mat4_mul_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_add_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.add_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.add_m(&mat2::B);
+        }
     }
 }
 
@@ -95,7 +103,9 @@ fn bench_mat2_add_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_add_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.add_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.add_m(&mat3::B);
+        }
     }
 }
 
@@ -103,7 +113,9 @@ fn bench_mat3_add_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_add_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.add_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.add_m(&mat4::B);
+        }
     }
 }
 
@@ -111,7 +123,9 @@ fn bench_mat4_add_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_sub_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.sub_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.sub_m(&mat2::B);
+        }
     }
 }
 
@@ -119,7 +133,9 @@ fn bench_mat2_sub_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_sub_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.sub_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.sub_m(&mat3::B);
+        }
     }
 }
 
@@ -127,7 +143,9 @@ fn bench_mat3_sub_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_sub_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.sub_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.sub_m(&mat4::B);
+        }
     }
 }
 
@@ -135,7 +153,9 @@ fn bench_mat4_sub_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_mul_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_s(2.0);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_s(2.0);
+        }
     }
 }
 
@@ -143,7 +163,9 @@ fn bench_mat2_mul_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_mul_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_s(2.0);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_s(2.0);
+        }
     }
 }
 
@@ -151,7 +173,9 @@ fn bench_mat3_mul_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_mul_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.mul_s(2.0);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.mul_s(2.0);
+        }
     }
 }
 
@@ -159,7 +183,9 @@ fn bench_mat4_mul_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_div_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.div_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.div_s(2.);
+        }
     }
 }
 
@@ -167,7 +193,9 @@ fn bench_mat2_div_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_div_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.div_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.div_s(2.);
+        }
     }
 }
 
@@ -175,7 +203,9 @@ fn bench_mat3_div_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_div_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.div_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.div_s(2.);
+        }
     }
 }
 
@@ -183,7 +213,9 @@ fn bench_mat4_div_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_rem_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.rem_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.rem_s(2.);
+        }
     }
 }
 
@@ -191,7 +223,9 @@ fn bench_mat2_rem_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_rem_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.rem_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.rem_s(2.);
+        }
     }
 }
 
@@ -199,7 +233,9 @@ fn bench_mat3_rem_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_rem_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.rem_s(2.);
+        for _ in range(0, 1000) {
+            mat_a = mat_a.rem_s(2.);
+        }
     }
 }
 
@@ -207,7 +243,9 @@ fn bench_mat4_rem_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_neg_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.neg_self();
+        for _ in range(0, 1000) {
+            mat_a.neg_self();
+        }
     }
 }
 
@@ -215,7 +253,9 @@ fn bench_mat2_neg_self(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_neg_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.neg_self();
+        for _ in range(0, 1000) {
+            mat_a.neg_self();
+        }
     }
 }
 
@@ -223,7 +263,9 @@ fn bench_mat3_neg_self(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_neg_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.neg_self();
+        for _ in range(0, 1000) {
+            mat_a.neg_self();
+        }
     }
 }
 
@@ -231,7 +273,9 @@ fn bench_mat4_neg_self(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_div_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.div_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.div_self_s(2.);
+        }
     }
 }
 
@@ -239,7 +283,9 @@ fn bench_mat2_div_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_div_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.div_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.div_self_s(2.);
+        }
     }
 }
 
@@ -247,7 +293,9 @@ fn bench_mat3_div_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_div_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.div_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.div_self_s(2.);
+        }
     }
 }
 
@@ -255,7 +303,9 @@ fn bench_mat4_div_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_rem_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.rem_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.rem_self_s(2.);
+        }
     }
 }
 
@@ -263,7 +313,9 @@ fn bench_mat2_rem_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_rem_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.rem_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.rem_self_s(2.);
+        }
     }
 }
 
@@ -271,7 +323,9 @@ fn bench_mat3_rem_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_rem_self_s(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.rem_self_s(2.);
+        for _ in range(0, 1000) {
+            mat_a.rem_self_s(2.);
+        }
     }
 }
 
@@ -279,7 +333,9 @@ fn bench_mat4_rem_self_s(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_mul_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.mul_self_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a.mul_self_m(&mat2::B);
+        }
     }
 }
 
@@ -287,7 +343,9 @@ fn bench_mat2_mul_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_mul_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.mul_self_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a.mul_self_m(&mat3::B);
+        }
     }
 }
 
@@ -295,7 +353,9 @@ fn bench_mat3_mul_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_mul_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.mul_self_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a.mul_self_m(&mat4::B);
+        }
     }
 }
 
@@ -303,7 +363,9 @@ fn bench_mat4_mul_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_add_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.add_self_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a.add_self_m(&mat2::B);
+        }
     }
 }
 
@@ -311,7 +373,9 @@ fn bench_mat2_add_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_add_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.add_self_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a.add_self_m(&mat3::B);
+        }
     }
 }
 
@@ -319,7 +383,9 @@ fn bench_mat3_add_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_add_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.add_self_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a.add_self_m(&mat4::B);
+        }
     }
 }
 
@@ -327,7 +393,9 @@ fn bench_mat4_add_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_sub_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.sub_self_m(&mat2::B);
+        for _ in range(0, 1000) {
+            mat_a.sub_self_m(&mat2::B);
+        }
     }
 }
 
@@ -335,7 +403,9 @@ fn bench_mat2_sub_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_sub_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.sub_self_m(&mat3::B);
+        for _ in range(0, 1000) {
+            mat_a.sub_self_m(&mat3::B);
+        }
     }
 }
 
@@ -343,7 +413,9 @@ fn bench_mat3_sub_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_sub_self_m(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.add_self_m(&mat4::B);
+        for _ in range(0, 1000) {
+            mat_a.add_self_m(&mat4::B);
+        }
     }
 }
 
@@ -352,7 +424,9 @@ fn bench_mat4_sub_self_m(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_transpose(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a = mat_a.transpose();
+        for _ in range(0, 1000) {
+            mat_a = mat_a.transpose();
+        }
     }
 }
 
@@ -360,7 +434,9 @@ fn bench_mat2_transpose(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_transpose(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a = mat_a.transpose();
+        for _ in range(0, 1000) {
+            mat_a = mat_a.transpose();
+        }
     }
 }
 
@@ -368,7 +444,9 @@ fn bench_mat3_transpose(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_transpose(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a = mat_a.transpose();
+        for _ in range(0, 1000) {
+            mat_a = mat_a.transpose();
+        }
     }
 }
 
@@ -376,7 +454,9 @@ fn bench_mat4_transpose(b: &mut extra::test::BenchHarness) {
 fn bench_mat2_transpose_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat2::A.clone();
     do b.iter {
-        mat_a.transpose_self();
+        for _ in range(0, 1000) {
+            mat_a.transpose_self();
+        }
     }
 }
 
@@ -384,7 +464,9 @@ fn bench_mat2_transpose_self(b: &mut extra::test::BenchHarness) {
 fn bench_mat3_transpose_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat3::A.clone();
     do b.iter {
-        mat_a.transpose_self();
+        for _ in range(0, 1000) {
+            mat_a.transpose_self();
+        }
     }
 }
 
@@ -392,6 +474,8 @@ fn bench_mat3_transpose_self(b: &mut extra::test::BenchHarness) {
 fn bench_mat4_transpose_self(b: &mut extra::test::BenchHarness) {
     let mut mat_a = mat4::A.clone();
     do b.iter {
-        mat_a.transpose_self();
+        for _ in range(0, 1000) {
+            mat_a.transpose_self();
+        }
     }
 }
