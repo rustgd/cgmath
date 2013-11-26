@@ -23,11 +23,11 @@ pub mod mat2 {
     type float = f64;
 
     pub static A: Mat2<f64> = Mat2 { x: Vec2 { x: 1.0, y: 3.0 },
-                                       y: Vec2 { x: 2.0, y: 4.0 } };
+                                     y: Vec2 { x: 2.0, y: 4.0 } };
     pub static B: Mat2<f64> = Mat2 { x: Vec2 { x: 2.0, y: 4.0 },
-                                       y: Vec2 { x: 3.0, y: 5.0 } };
+                                     y: Vec2 { x: 3.0, y: 5.0 } };
     pub static C: Mat2<f64> = Mat2 { x: Vec2 { x: 2.0, y: 1.0 },
-                                       y: Vec2 { x: 1.0, y: 2.0 } };
+                                     y: Vec2 { x: 1.0, y: 2.0 } };
 
     pub static V: Vec2<f64> = Vec2 { x: 1.0, y: 2.0 };
     pub static F: f64 = 0.5;
@@ -39,17 +39,17 @@ pub mod mat3 {
     type float = f64;
 
     pub static A: Mat3<f64> = Mat3 { x: Vec3 { x: 1.0, y: 4.0, z:  7.0 },
-                                       y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
-                                       z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
+                                     y: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
+                                     z: Vec3 { x: 3.0, y: 6.0, z:  9.0 } };
     pub static B: Mat3<f64> = Mat3 { x: Vec3 { x: 2.0, y: 5.0, z:  8.0 },
-                                       y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
-                                       z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
+                                     y: Vec3 { x: 3.0, y: 6.0, z:  9.0 },
+                                     z: Vec3 { x: 4.0, y: 7.0, z: 10.0 } };
     pub static C: Mat3<f64> = Mat3 { x: Vec3 { x: 2.0, y: 4.0, z:  6.0 },
-                                       y: Vec3 { x: 0.0, y: 2.0, z:  4.0 },
-                                       z: Vec3 { x: 0.0, y: 0.0, z:  1.0 } };
+                                     y: Vec3 { x: 0.0, y: 2.0, z:  4.0 },
+                                     z: Vec3 { x: 0.0, y: 0.0, z:  1.0 } };
     pub static D: Mat3<f64> = Mat3 { x: Vec3 { x: 3.0, y: 2.0, z:  1.0 },
-                                       y: Vec3 { x: 2.0, y: 3.0, z:  2.0 },
-                                       z: Vec3 { x: 1.0, y: 2.0, z:  3.0 } };
+                                     y: Vec3 { x: 2.0, y: 3.0, z:  2.0 },
+                                     z: Vec3 { x: 1.0, y: 2.0, z:  3.0 } };
 
     pub static V: Vec3<f64> = Vec3 { x: 1.0, y: 2.0, z:  3.0 };
     pub static F: f64 = 0.5;
@@ -61,21 +61,21 @@ pub mod mat4 {
     type float = f64;
 
     pub static A: Mat4<f64> = Mat4 { x: Vec4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
-                                       y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
-                                       z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
-                                       w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
+                                     y: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                                     z: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                                     w: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
     pub static B: Mat4<f64> = Mat4 { x: Vec4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
-                                       y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
-                                       z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
-                                       w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
+                                     y: Vec4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                                     z: Vec4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
+                                     w: Vec4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
     pub static C: Mat4<f64> = Mat4 { x: Vec4 { x: 3.0, y: 2.0, z:  1.0, w:  1.0 },
-                                       y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
-                                       z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
-                                       w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
+                                     y: Vec4 { x: 2.0, y: 3.0, z:  2.0, w:  2.0 },
+                                     z: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  3.0 },
+                                     w: Vec4 { x: 0.0, y: 1.0, z:  1.0, w:  0.0 } };
     pub static D: Mat4<f64> = Mat4 { x: Vec4 { x: 4.0, y: 3.0, z:  2.0, w:  1.0 },
-                                       y: Vec4 { x: 3.0, y: 4.0, z:  3.0, w:  2.0 },
-                                       z: Vec4 { x: 2.0, y: 3.0, z:  4.0, w:  3.0 },
-                                       w: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  4.0 } };
+                                     y: Vec4 { x: 3.0, y: 4.0, z:  3.0, w:  2.0 },
+                                     z: Vec4 { x: 2.0, y: 3.0, z:  4.0, w:  3.0 },
+                                     w: Vec4 { x: 1.0, y: 2.0, z:  3.0, w:  4.0 } };
 
     pub static V: Vec4<f64> = Vec4 { x: 1.0, y: 2.0, z: 3.0, w: 4.0 };
     pub static F: f64 = 0.5;

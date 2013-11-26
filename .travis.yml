@@ -5,3 +5,5 @@ install:
   - sudo apt-get install rust-nightly
 script:
   - rustpkg test tests
+  - rustpkg build --opt-level=3 bench
+  -  sh .travis.sh
