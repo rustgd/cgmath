@@ -458,15 +458,27 @@ for Mat3<S>
     }
 }
 
+// Using self.r(0).dot(other.c(0)) like the other matrix multiplies
+// causes the LLVM to miss identical loads and multiplies. This optimization
+// causes the code to be auto vectorized properly increasing the performance
+// around ~4 times.
+macro_rules! dot_mat4(
+    ($A:expr, $B:expr, $I:expr, $J:expr) => (
+        (*$A.cr(0, $I)) * (*$B.cr($J, 0)) +
+        (*$A.cr(1, $I)) * (*$B.cr($J, 1)) +
+        (*$A.cr(2, $I)) * (*$B.cr($J, 2)) +
+        (*$A.cr(3, $I)) * (*$B.cr($J, 3))
+))
+
 impl<S: Float>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
     fn mul_m(&self, other: &Mat4<S>) -> Mat4<S> {
-        Mat4::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)), self.r(2).dot(other.c(0)), self.r(3).dot(other.c(0)),
-                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)), self.r(2).dot(other.c(1)), self.r(3).dot(other.c(1)),
-                  self.r(0).dot(other.c(2)), self.r(1).dot(other.c(2)), self.r(2).dot(other.c(2)), self.r(3).dot(other.c(2)),
-                  self.r(0).dot(other.c(3)), self.r(1).dot(other.c(3)), self.r(2).dot(other.c(3)), self.r(3).dot(other.c(3)))
+        Mat4::new(dot_mat4!(self, other, 0, 0), dot_mat4!(self, other, 1, 0), dot_mat4!(self, other, 2, 0), dot_mat4!(self, other, 3, 0),
+                  dot_mat4!(self, other, 0, 1), dot_mat4!(self, other, 1, 1), dot_mat4!(self, other, 2, 1), dot_mat4!(self, other, 3, 1),
+                  dot_mat4!(self, other, 0, 2), dot_mat4!(self, other, 1, 2), dot_mat4!(self, other, 2, 2), dot_mat4!(self, other, 3, 2),
+                  dot_mat4!(self, other, 0, 3), dot_mat4!(self, other, 1, 3), dot_mat4!(self, other, 2, 3), dot_mat4!(self, other, 3, 3))
     }
 
     fn transpose(&self) -> Mat4<S> {
