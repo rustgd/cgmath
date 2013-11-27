@@ -28,7 +28,7 @@ pub trait Array
     fn as_slice<'a>(&'a self) -> &'a Slice;
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
     fn from_slice(slice: Slice) -> Self;
-    fn build(builder: &fn(i: uint) -> T) -> Self;
+    fn build(builder: |i: uint| -> T) -> Self;
     fn iter<'a>(&'a self) -> VecIterator<'a, T>;
     fn mut_iter<'a>(&'a mut self) -> VecMutIterator<'a, T>;
 
@@ -40,8 +40,8 @@ pub trait Array
         *self.mut_i(b) = tmp;
     }
 
-    fn fold(&self, f: &fn(&T, &T) -> T) -> T;
-    fn each_mut(&mut self, f: &fn(i: uint, x: &mut T));
+    fn fold(&self, f: |&T, &T| -> T) -> T;
+    fn each_mut(&mut self, f: |i: uint, x: &mut T|);
 }
 
 macro_rules! array(
@@ -73,7 +73,7 @@ macro_rules! array(
             }
 
             #[inline]
-            fn build(builder: &fn(i: uint) -> $T) -> $Self {
+            fn build(builder: |i: uint| -> $T) -> $Self {
                 Array::from_slice(gen_builder!($_n))
             }
 
@@ -88,12 +88,12 @@ macro_rules! array(
             }
 
             #[inline]
-            fn fold(&self, f: &fn(&$T, &$T) -> $T) -> $T {
+            fn fold(&self, f: |&$T, &$T| -> $T) -> $T {
                 gen_fold!($_n)
             }
 
             #[inline]
-            fn each_mut(&mut self, f: &fn(i: uint, x: &mut $T)) {
+            fn each_mut(&mut self, f: |i: uint, x: &mut $T|) {
                 gen_each_mut!($_n)
             }
         }
@@ -101,7 +101,7 @@ macro_rules! array(
 )
 
 #[inline]
-pub fn build<T: Clone, Slice, A: Array<T, Slice>>(builder: &fn(i: uint) -> T) -> A {
+pub fn build<T: Clone, Slice, A: Array<T, Slice>>(builder: |i: uint| -> T) -> A {
     Array::build(builder)
 }
 
