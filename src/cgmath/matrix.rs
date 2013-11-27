@@ -458,12 +458,16 @@ for Mat3<S>
     }
 }
 
+// Using self.r(0).dot(other.c(0)) like the other matrix multiplies
+// causes the LLVM to miss identical loads and multiplies. This optimization
+// causes the code to be auto vectorized properly increasing the performance
+// around ~4 times.
 macro_rules! dot_mat4(
     ($A:expr, $B:expr, $I:expr, $J:expr) => (
-        *$A.cr(0, $I) * *$B.cr($J, 0) +
-        *$A.cr(1, $I) * *$B.cr($J, 1) +
-        *$A.cr(2, $I) * *$B.cr($J, 2) +
-        *$A.cr(3, $I) * *$B.cr($J, 3)
+        (*$A.cr(0, $I)) * (*$B.cr($J, 0)) +
+        (*$A.cr(1, $I)) * (*$B.cr($J, 1)) +
+        (*$A.cr(2, $I)) * (*$B.cr($J, 2)) +
+        (*$A.cr(3, $I)) * (*$B.cr($J, 3))
 ))
 
 impl<S: Float>
