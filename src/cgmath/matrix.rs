@@ -19,6 +19,7 @@ use std::num::{Zero, zero, One, one, cast, sqrt};
 
 use angle::{Rad, sin, cos, sin_cos};
 use array::{Array, build};
+use point::{Point, Point3};
 use quaternion::{Quat, ToQuat};
 use vector::{Vector, EuclideanVector};
 use vector::{Vec2, Vec3, Vec4};
@@ -219,6 +220,19 @@ impl<S: Primitive> Mat4<S> {
     #[inline]
     pub fn identity() -> Mat4<S> {
         Mat4::from_value(one())
+    }
+}
+
+impl<S: Float> Mat4<S> {
+    pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> Mat4<S> {
+        let f = center.sub_p(eye).normalize();
+        let s = f.cross(&up.normalize());
+        let u = s.cross(&f).normalize();
+
+        Mat4::new(s.x.clone(), s.y.clone(), s.z.clone(), zero(),
+                  u.x.clone(), u.y.clone(), u.z.clone(), zero(),
+                  -f.x.clone(), -f.y.clone(), -f.z.clone(), zero(),
+                  -eye.dot(&s), -eye.dot(&u), -eye.dot(&f), one())
     }
 }
 
