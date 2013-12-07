@@ -226,13 +226,13 @@ impl<S: Primitive> Mat4<S> {
 impl<S: Float> Mat4<S> {
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> Mat4<S> {
         let f = center.sub_p(eye).normalize();
-        let s = f.cross(&up.normalize());
-        let u = s.cross(&f).normalize();
+        let s = f.cross(up).normalize();
+        let u = s.cross(&f);
 
-        Mat4::new(s.x.clone(), s.y.clone(), s.z.clone(), zero(),
-                  u.x.clone(), u.y.clone(), u.z.clone(), zero(),
-                  -f.x.clone(), -f.y.clone(), -f.z.clone(), zero(),
-                  -eye.dot(&s), -eye.dot(&u), -eye.dot(&f), one())
+        Mat4::new(s.x.clone(), u.x.clone(), -f.x.clone(), zero(),
+                  s.y.clone(), u.y.clone(), -f.y.clone(), zero(),
+                  s.z.clone(), u.z.clone(), -f.z.clone(), zero(),
+                  -eye.dot(&s), -eye.dot(&u), eye.dot(&f), one())
     }
 }
 
