@@ -33,6 +33,6 @@ impl<S: Clone> Ptr<S> for Mat2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { se
 impl<S: Clone> Ptr<S> for Mat3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
 impl<S: Clone> Ptr<S> for Mat4<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
 
-impl<'self, T, P: Ptr<T>> Ptr<T> for &'self [P] {
+impl<'a, T, P: Ptr<T>> Ptr<T> for &'a [P] {
     #[inline] fn ptr<'a>(&'a self) -> &'a T { self[0].ptr() }
 }
