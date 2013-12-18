@@ -170,7 +170,7 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.fold(|a, b| a.max(b)) }
 }
 
-#[inline] fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] pub fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
 impl<S: Primitive> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
 impl<S: Primitive> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
