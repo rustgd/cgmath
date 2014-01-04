@@ -26,15 +26,15 @@ use vector::{Vector, EuclideanVector};
 use vector::{Vec2, Vec3, Vec4};
 
 /// A 2 x 2, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq, Zero, Default)]
 pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
 
 /// A 3 x 3, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq, Zero, Default)]
 pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 
 /// A 4 x 4, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq, Zero, Default)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
 

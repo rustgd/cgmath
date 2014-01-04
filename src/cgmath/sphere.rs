@@ -27,7 +27,7 @@ fn cast<T: NumCast, U: NumCast>(n: T) -> U {
             num::cast(n).unwrap()
 }
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Sphere<S> {
     center: Point3<S>,
     radius: S,

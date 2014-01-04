@@ -21,7 +21,7 @@ use plane::Plane;
 use point::Point3;
 use vector::{Vector, EuclideanVector};
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Frustum<S> {
     left:   Plane<S>,
     right:  Plane<S>,
@@ -58,7 +58,7 @@ Frustum<S> {
     }
 }
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct FrustumPoints<S> {
     near_top_left:     Point3<S>,
     near_top_right:    Point3<S>,

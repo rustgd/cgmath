@@ -69,7 +69,7 @@ pub trait Projection<S>: ToMat4<S> {
 }
 
 /// A perspective projection based on a vertical field-of-view angle.
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct PerspectiveFov<S, A> {
     fovy:   A,
     aspect: S,
@@ -144,7 +144,7 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
 }
 
 /// A perspective projection with arbitrary left/right/bottom/top distances
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Perspective<S> {
     left:   S,  right:  S,
     bottom: S,  top:    S,
@@ -195,7 +195,7 @@ impl<S: Float> ToMat4<S> for Perspective<S> {
 }
 
 /// An orthographic projection with arbitrary left/right/bottom/top distances
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Ortho<S> {
     left:   S,  right:  S,
     bottom: S,  top:    S,
