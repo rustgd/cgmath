@@ -220,6 +220,22 @@ impl<S: Primitive> Mat4<S> {
     pub fn identity() -> Mat4<S> {
         Mat4::from_value(one())
     }
+
+    #[inline]
+    pub fn translate(x: S, y: S, z: S) -> Mat4<S> {
+        Mat4::new(one(),     zero(),    zero(),    zero(),
+                  zero(),    one(),     zero(),    zero(),
+                  zero(),    zero(),    one(),     zero(),
+                  x.clone(), y.clone(), z.clone(), one())
+    }
+
+    #[inline]
+    pub fn scale(x: S, y: S, z: S) -> Mat4<S> {
+        Mat4::new(x.clone(), zero(),    zero(),    zero(),
+                  zero(),    y.clone(), zero(),    zero(),
+                  zero(),    zero(),    z.clone(), zero(),
+                  zero(),    zero(),    zero(),    one())
+    }
 }
 
 impl<S: Float + ApproxEq<S>>
