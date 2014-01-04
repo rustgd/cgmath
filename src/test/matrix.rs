@@ -366,3 +366,35 @@ fn test_predicates() {
 
     assert!(Mat4::from_value(6.0).is_diagonal());
 }
+
+#[test]
+fn test_translate() {
+    let translate_x = Mat4::translate(1., 0., 0.);
+    let translate_y = Mat4::translate(0., 1., 0.);
+    let translate_z = Mat4::translate(0., 0., 1.);
+
+    let point = Vec4::new(1., 1., 1., 1.);
+    let point_x = Vec4::new(2., 1., 1., 1.);
+    let point_y = Vec4::new(1., 2., 1., 1.);
+    let point_z = Vec4::new(1., 1., 2., 1.);
+
+    assert_eq!(point_x, translate_x.mul_v(&point));
+    assert_eq!(point_y, translate_y.mul_v(&point));
+    assert_eq!(point_z, translate_z.mul_v(&point));
+}
+
+#[test]
+fn test_scale() {
+    let scale_x = Mat4::scale(2., 1., 1.);
+    let scale_y = Mat4::scale(1., 2., 1.);
+    let scale_z = Mat4::scale(1., 1., 2.);
+
+    let point = Vec4::new(1., 1., 1., 1.);
+    let point_x = Vec4::new(2., 1., 1., 1.);
+    let point_y = Vec4::new(1., 2., 1., 1.);
+    let point_z = Vec4::new(1., 1., 2., 1.);
+
+    assert_eq!(point_x, scale_x.mul_v(&point));
+    assert_eq!(point_y, scale_y.mul_v(&point));
+    assert_eq!(point_z, scale_z.mul_v(&point));
+}
