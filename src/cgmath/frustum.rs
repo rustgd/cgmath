@@ -15,6 +15,7 @@
 
 //! View frustum for visibility determination
 
+use approx::ApproxEq;
 use matrix::{Matrix, Mat4};
 use plane::Plane;
 use point::Point3;
@@ -30,7 +31,8 @@ pub struct Frustum<S> {
     far:    Plane<S>,
 }
 
-impl<S: Float> Frustum<S> {
+impl<S: Float + ApproxEq<S>>
+Frustum<S> {
     /// Constructs a frustum
     pub fn new(left:   Plane<S>, right:  Plane<S>,
                bottom: Plane<S>, top:    Plane<S>,

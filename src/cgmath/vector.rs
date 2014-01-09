@@ -17,6 +17,7 @@ use std::fmt;
 use std::num::{Zero, zero, One, one, sqrt};
 
 use angle::{Rad, atan2, acos};
+use approx::ApproxEq;
 use array::{Array, build};
 
 /// A 2-dimensional vector.
@@ -111,10 +112,6 @@ impl<S: Primitive + Clone> Vec4<S> {
 array!(impl<S> Vec2<S> -> [S, ..2] _2)
 array!(impl<S> Vec3<S> -> [S, ..3] _3)
 array!(impl<S> Vec4<S> -> [S, ..4] _4)
-
-approx_eq!(impl<S> Vec2<S>)
-approx_eq!(impl<S> Vec3<S>)
-approx_eq!(impl<S> Vec4<S>)
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
@@ -215,7 +212,7 @@ impl<S: Primitive> Vec3<S> {
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector
 <
-    S: Float,
+    S: Float + ApproxEq<S>,
     Slice
 >
 :   Vector<S, Slice>
@@ -286,21 +283,24 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: Float> EuclideanVector<S, [S, ..2]> for Vec2<S> {
+impl<S: Float + ApproxEq<S>>
+EuclideanVector<S, [S, ..2]> for Vec2<S> {
     #[inline]
     fn angle(&self, other: &Vec2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
-impl<S: Float> EuclideanVector<S, [S, ..3]> for Vec3<S> {
+impl<S: Float + ApproxEq<S>>
+EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
     fn angle(&self, other: &Vec3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
-impl<S: Float> EuclideanVector<S, [S, ..4]> for Vec4<S> {
+impl<S: Float + ApproxEq<S>>
+EuclideanVector<S, [S, ..4]> for Vec4<S> {
     #[inline]
     fn angle(&self, other: &Vec4<S>) -> Rad<S> {
         acos(self.dot(other) / (self.length() * other.length()))

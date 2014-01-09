@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[pkgid="cgmath#0.1"];
+#[crate_id="cgmath#0.1"];
+#[crate_type = "lib"];
 #[comment = "A mathematics library for computer graphics."];
 #[license = "ASL2"];
-#[crate_type = "lib"];
 
 #[feature(globs)];
 #[feature(macro_rules)];
@@ -42,4 +42,5 @@ pub mod intersect;
 pub mod obb;
 pub mod sphere;
 
+pub mod approx;
 pub mod ptr;

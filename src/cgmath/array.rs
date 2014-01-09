@@ -123,26 +123,3 @@ macro_rules! gen_each_mut(
     (_4) => ({ f(0, self.mut_i(0)); f(1, self.mut_i(1)); f(2, self.mut_i(2)); f(3, self.mut_i(3)); });
 )
 
-macro_rules! approx_eq(
-    (impl<$S:ident> $Self:ty) => (
-        impl<$S: Clone + ApproxEq<$S>> ApproxEq<$S> for $Self {
-            #[inline]
-            fn approx_epsilon() -> $S {
-                // TODO: fix this after static methods are fixed in rustc
-                fail!(~"Doesn't work!");
-            }
-
-            #[inline]
-            fn approx_eq(&self, other: &$Self) -> bool {
-                self.iter().zip(other.iter())
-                           .all(|(a, b)| a.approx_eq(b))
-            }
-
-            #[inline]
-            fn approx_eq_eps(&self, other: &$Self, approx_epsilon: &$S) -> bool {
-                self.iter().zip(other.iter())
-                           .all(|(a, b)| a.approx_eq_eps(b, approx_epsilon))
-            }
-        }
-    )
-)

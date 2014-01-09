@@ -10,13 +10,13 @@ The library provides:
 - square matrices: `Mat2`, `Mat3`, `Mat4`
 - a quaternion type: `Quat`
 - rotation matrices: `Rot2`, `Rot3`
-- rotations: `Euler`, `AxisAngle`
 - angle units: `Rad`, `Deg`
 - points: `Point2`, `Point3`
 - rays: `Ray2`, `Ray3`
-- plane: `Plane`
+- a plane: `Plane`
 - perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
 - a view frustum: `Frustrum`
+- spatial transformations: `AffineMatrix3`, `Transform3D`
 - axis-aligned bounding boxes: `Aabb2`, `Aabb3`
 - oriented bounding boxes: `Obb2`, `Obb3`
 - collision primitives: `Sphere`, `Cylinder`
