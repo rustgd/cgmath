@@ -16,12 +16,13 @@
 use cgmath::quaternion::*;
 use cgmath::transform::*;
 use cgmath::vector::*;
+use cgmath::approx::ApproxEq;
 
 #[test]
 fn test_invert() {
 	let v = Vec3::new(1.0, 2.0, 3.0);
-	let t = Transform3D::new( 1.5, Quat::new(0.5,0.5,0.5,0.5), Vec3::new(6.0,-7.0,8.0) );
-	let ti = t.invert().expect("Expected successful inversion");
-	let vt = t.transform_vec( &v );
-    assert_approx_eq!(v, ti.transform_vec( &vt ));
+	let t = Transform3D::new(1.5, Quat::new(0.5,0.5,0.5,0.5), Vec3::new(6.0,-7.0,8.0));
+	let ti = t.get().invert().expect("Expected successful inversion");
+	let vt = t.get().transform_vec( &v );
+    assert!(v.approx_eq( &ti.transform_vec( &vt ) ));
 }

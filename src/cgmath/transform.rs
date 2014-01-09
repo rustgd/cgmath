@@ -202,4 +202,9 @@ impl<S: Float> Transform3D<S> {
     pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
     }
+    #[inline]
+    pub fn get<'a>(&'a self) -> &'a Decomposed<S,Vec3<S>,Quat<S>> {
+        let &Transform3D(ref d) = self;
+        d
+    }
 }

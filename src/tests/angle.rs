@@ -14,14 +14,15 @@
 // limitations under the License.
 
 use cgmath::angle::*;
+use cgmath::approx::ApproxEq;
 
 #[test]
 fn conv() {
-    assert_approx_eq!(deg(-5.0).to_rad().to_deg(), deg(-5.0));
-    assert_approx_eq!(deg(30.0).to_rad().to_deg(), deg(30.0));
+    assert!(deg(-5.0).to_rad().to_deg().approx_eq( &deg(-5.0) ));
+    assert!(deg(30.0).to_rad().to_deg().approx_eq( &deg(30.0) ));
 
-    assert_approx_eq!(rad(-5.0).to_deg().to_rad(), rad(-5.0));
-    assert_approx_eq!(rad(30.0).to_deg().to_rad(), rad(30.0));
+    assert!(rad(-5.0).to_deg().to_rad().approx_eq( &rad(-5.0) ));
+    assert!(rad(30.0).to_deg().to_rad().approx_eq( &rad(30.0) ));
 }
 
 #[test]
