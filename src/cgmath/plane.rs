@@ -17,6 +17,7 @@ use std::cast::transmute;
 use std::fmt;
 use std::num::Zero;
 
+use approx::ApproxEq;
 use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
@@ -45,7 +46,8 @@ pub struct Plane<S> {
     d: S,
 }
 
-impl<S: Float> Plane<S> {
+impl<S: Float + ApproxEq<S>>
+Plane<S> {
     /// Construct a plane from a normal vector and a scalar distance
     pub fn new(n: Vec3<S>, d: S) -> Plane<S> {
         Plane { n: n, d: d }
@@ -110,23 +112,12 @@ impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
     }
 }
 
-impl<S: Float> ApproxEq<S> for Plane<S> {
+impl<S: Float + ApproxEq<S>>
+ApproxEq<S> for Plane<S> {
     #[inline]
-    fn approx_epsilon() -> S {
-        // TODO: fix this after static methods are fixed in rustc
-        fail!(~"Doesn't work!");
-    }
-
-    #[inline]
-    fn approx_eq(&self, other: &Plane<S>) -> bool {
-        self.n.approx_eq(&other.n) &&
-        self.d.approx_eq(&other.d)
-    }
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Plane<S>, approx_epsilon: &S) -> bool {
-        self.n.approx_eq_eps(&other.n, approx_epsilon) &&
-        self.d.approx_eq_eps(&other.d, approx_epsilon)
+    fn approx_eq_eps(&self, other: &Plane<S>, epsilon: &S) -> bool {
+        self.n.approx_eq_eps(&other.n, epsilon) &&
+        self.d.approx_eq_eps(&other.d, epsilon)
     }
 }
 

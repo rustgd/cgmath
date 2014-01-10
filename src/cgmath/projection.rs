@@ -16,6 +16,7 @@
 use std::num::{zero, one, cast};
 
 use angle::{Angle, tan, cot};
+use approx::ApproxEq;
 use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
 use plane::Plane;
@@ -93,7 +94,8 @@ impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: Float, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
+impl<S: Float + ApproxEq<S>, A: Angle<S>>
+Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_mat4(self.to_mat4())
@@ -149,7 +151,8 @@ pub struct Perspective<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Float> Projection<S> for Perspective<S> {
+impl<S: Float + ApproxEq<S>>
+Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_mat4(self.to_mat4())
@@ -199,7 +202,8 @@ pub struct Ortho<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Float> Projection<S> for Ortho<S> {
+impl<S: Float + ApproxEq<S>>
+Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
         Frustum {
             left:   Plane::from_abcd( one::<S>(), zero::<S>(), zero::<S>(), self.left.clone()),

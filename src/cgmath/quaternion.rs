@@ -17,6 +17,7 @@ use std::fmt;
 use std::num::{zero, one, cast, sqrt};
 
 use angle::{Angle, Rad, acos, cos, sin, sin_cos};
+use approx::ApproxEq;
 use array::{Array, build};
 use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
@@ -26,13 +27,13 @@ use vector::{Vec3, Vector, EuclideanVector};
 pub struct Quat<S> { s: S, v: Vec3<S> }
 
 array!(impl<S> Quat<S> -> [S, ..4] _4)
-approx_eq!(impl<S> Quat<S>)
 
 pub trait ToQuat<S: Float> {
     fn to_quat(&self) -> Quat<S>;
 }
 
-impl<S: Float> Quat<S> {
+impl<S: Float + ApproxEq<S>>
+Quat<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
     #[inline]
@@ -220,7 +221,8 @@ impl<S: Float> Quat<S> {
     }
 }
 
-impl<S: Float> Quat<S> {
+impl<S: Float + ApproxEq<S>>
+Quat<S> {
     /// Spherical Linear Intoperlation
     ///
     /// Perform a spherical linear interpolation between the quaternion and
@@ -265,7 +267,8 @@ impl<S: Float> Quat<S> {
     }
 }
 
-impl<S: Float> ToMat3<S> for Quat<S> {
+impl<S: Float + ApproxEq<S>>
+ToMat3<S> for Quat<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
     fn to_mat3(&self) -> Mat3<S> {
         let x2 = self.v.x + self.v.x;
@@ -290,7 +293,8 @@ impl<S: Float> ToMat3<S> for Quat<S> {
     }
 }
 
-impl<S: Float> Neg<Quat<S>> for Quat<S> {
+impl<S: Float + ApproxEq<S>>
+Neg<Quat<S>> for Quat<S> {
     #[inline]
     fn neg(&self) -> Quat<S> {
         Quat::from_sv(-self.s, -self.v)

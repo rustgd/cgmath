@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use angle::Rad;
+use approx::ApproxEq;
 use array::Array;
 use matrix::Matrix;
 use matrix::{Mat2, ToMat2};
@@ -115,7 +116,8 @@ impl<S: Float> ToMat2<S> for Basis2<S> {
     fn to_mat2(&self) -> Mat2<S> { self.mat.clone() }
 }
 
-impl<S: Float> Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
+impl<S: Float + ApproxEq<S>>
+Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Mat2::identity() } }
     
@@ -139,25 +141,16 @@ impl<S: Float> Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: Float> ApproxEq<S> for Basis2<S> {
+impl<S: Float + ApproxEq<S>>
+ApproxEq<S> for Basis2<S> {
     #[inline]
-    fn approx_epsilon() -> S {
-        // TODO: fix this after static methods are fixed in rustc
-        fail!(~"Doesn't work!");
-    }
-
-    #[inline]
-    fn approx_eq(&self, other: &Basis2<S>) -> bool {
-        self.mat.approx_eq(&other.mat)
-    }
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Basis2<S>, approx_epsilon: &S) -> bool {
-        self.mat.approx_eq_eps(&other.mat, approx_epsilon)
+    fn approx_eq_eps(&self, other: &Basis2<S>, epsilon: &S) -> bool {
+        self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
 
-impl<S: Float> Rotation2<S> for Basis2<S> {}
+impl<S: Float + ApproxEq<S>>
+Rotation2<S> for Basis2<S> {}
 
 /// A three-dimensional rotation matrix.
 ///
@@ -170,7 +163,8 @@ pub struct Basis3<S> {
     priv mat: Mat3<S>
 }
 
-impl<S: Float> Basis3<S> {
+impl<S: Float + ApproxEq<S>>
+Basis3<S> {
     #[inline]
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Basis3<S> {
         Basis3 { mat: Mat3::look_at(dir, up) }
@@ -225,12 +219,14 @@ impl<S: Float> ToMat3<S> for Basis3<S> {
     fn to_mat3(&self) -> Mat3<S> { self.mat.clone() }
 }
 
-impl<S: Float> ToQuat<S> for Basis3<S> {
+impl<S: Float + ApproxEq<S>>
+ToQuat<S> for Basis3<S> {
     #[inline]
     fn to_quat(&self) -> Quat<S> { self.mat.to_quat() }
 }
 
-impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
+impl<S: Float + ApproxEq<S>>
+Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Mat3::identity() } }
     
@@ -254,29 +250,21 @@ impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: Float> ApproxEq<S> for Basis3<S> {
+impl<S: Float + ApproxEq<S>>
+ApproxEq<S> for Basis3<S> {
     #[inline]
-    fn approx_epsilon() -> S {
-        // TODO: fix this after static methods are fixed in rustc
-        fail!(~"Doesn't work!");
-    }
-
-    #[inline]
-    fn approx_eq(&self, other: &Basis3<S>) -> bool {
-        self.mat.approx_eq(&other.mat)
-    }
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Basis3<S>, approx_epsilon: &S) -> bool {
-        self.mat.approx_eq_eps(&other.mat, approx_epsilon)
+    fn approx_eq_eps(&self, other: &Basis3<S>, epsilon: &S) -> bool {
+        self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
 
-impl<S: Float> Rotation3<S> for Basis3<S> {}
+impl<S: Float + ApproxEq<S>>
+Rotation3<S> for Basis3<S> {}
 
 // Quaternion Rotation impls
 
-impl<S: Float> ToBasis3<S> for Quat<S> {
+impl<S: Float + ApproxEq<S>>
+ToBasis3<S> for Quat<S> {
     #[inline]
     fn to_rot3(&self) -> Basis3<S> { Basis3 { mat: self.to_mat3() } }
 }
@@ -286,7 +274,8 @@ impl<S: Float> ToQuat<S> for Quat<S> {
     fn to_quat(&self) -> Quat<S> { self.clone() }
 }
 
-impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
+impl<S: Float + ApproxEq<S>>
+Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     #[inline]
     fn identity() -> Quat<S> { Quat::identity() }  
     
@@ -306,4 +295,5 @@ impl<S: Float> Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
-impl<S: Float> Rotation3<S> for Quat<S> {}
+impl<S: Float + ApproxEq<S>>
+Rotation3<S> for Quat<S> {}

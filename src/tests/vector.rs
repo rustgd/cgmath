@@ -15,6 +15,7 @@
 
 use cgmath::angle::*;
 use cgmath::vector::*;
+use cgmath::approx::ApproxEq;
 
 #[test]
 fn test_from_value() {
@@ -136,23 +137,23 @@ mod test_length {
 
 #[test]
 fn test_angle() {
-    assert_approx_eq!(Vec2::new(1.0, 0.0).angle(&Vec2::new(0.0, 1.0)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec2::new(10.0, 0.0).angle(&Vec2::new(0.0, 5.0)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec2::new(-1.0, 0.0).angle(&Vec2::new(0.0, 1.0)), -rad(Real::frac_pi_2()));
+    assert!(Vec2::new(1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
+    assert!(Vec2::new(10.0, 0.0).angle(&Vec2::new(0.0, 5.0)).approx_eq( &rad(Real::frac_pi_2()) ));
+    assert!(Vec2::new(-1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &-rad(Real::frac_pi_2()) ));
 
-    assert_approx_eq!(Vec3::new(1.0, 0.0, 1.0).angle(&Vec3::new(1.0, 1.0, 0.0)), rad(Real::frac_pi_3()));
-    assert_approx_eq!(Vec3::new(10.0, 0.0, 10.0).angle(&Vec3::new(5.0, 5.0, 0.0)), rad(Real::frac_pi_3()));
-    assert_approx_eq!(Vec3::new(-1.0, 0.0, -1.0).angle(&Vec3::new(1.0, -1.0, 0.0)), rad(2.0 * Real::frac_pi_3()));
+    assert!(Vec3::new(1.0, 0.0, 1.0).angle(&Vec3::new(1.0, 1.0, 0.0)).approx_eq( &rad(Real::frac_pi_3()) ));
+    assert!(Vec3::new(10.0, 0.0, 10.0).angle(&Vec3::new(5.0, 5.0, 0.0)).approx_eq( &rad(Real::frac_pi_3()) ));
+    assert!(Vec3::new(-1.0, 0.0, -1.0).angle(&Vec3::new(1.0, -1.0, 0.0)).approx_eq( &rad(2.0 * Real::frac_pi_3()) ));
 
-    assert_approx_eq!(Vec4::new(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec4::new(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new(0.0, 5.0, 0.0, 5.0)), rad(Real::frac_pi_2()));
-    assert_approx_eq!(Vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)), rad(Real::frac_pi_2()));
+    assert!(Vec4::new(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
+    assert!(Vec4::new(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new(0.0, 5.0, 0.0, 5.0)).approx_eq( &rad(Real::frac_pi_2()) ));
+    assert!(Vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
 }
 
 #[test]
 fn test_normalize() {
     // TODO: test normalize_to, normalize_sel.0, and normalize_self_to
-    assert_approx_eq!(Vec2::new(3.0, 4.0).normalize(), Vec2::new(3.0/5.0, 4.0/5.0));
-    assert_approx_eq!(Vec3::new(2.0, 3.0, 6.0).normalize(), Vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0));
-    assert_approx_eq!(Vec4::new(1.0, 2.0, 4.0, 10.0).normalize(), Vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0));
+    assert!(Vec2::new(3.0, 4.0).normalize().approx_eq( &Vec2::new(3.0/5.0, 4.0/5.0) ));
+    assert!(Vec3::new(2.0, 3.0, 6.0).normalize().approx_eq( &Vec3::new(2.0/7.0, 3.0/7.0, 6.0/7.0) ));
+    assert!(Vec4::new(1.0, 2.0, 4.0, 10.0).normalize().approx_eq( &Vec4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0) ));
 }

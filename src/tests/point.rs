@@ -14,9 +14,10 @@
 // limitations under the License.
 
 use cgmath::point::*;
+use cgmath::approx::ApproxEq;
 
 #[test]
 fn test_homogeneous() {
 	let p = Point3::new(1.0, 2.0, 3.0);
-    assert_approx_eq!(p, Point3::from_homogeneous( &p.to_homogeneous() ));
+    assert!(p.approx_eq( &Point3::from_homogeneous( &p.to_homogeneous() ) ));
 }

@@ -21,6 +21,8 @@ pub use std::num::{asinh, acosh, atanh};
 use std::fmt;
 use std::num::{Zero, zero, cast};
 
+use approx::ApproxEq;
+
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Rad<S> { s: S }
 #[deriving(Clone, Eq, Ord, Zero)] pub struct Deg<S> { s: S }
 
@@ -126,7 +128,8 @@ pub trait Angle
 
 #[inline] pub fn bisect<S: Float, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
 
-impl<S: Float> Rad<S> {
+impl<S: Float + ApproxEq<S>>
+Rad<S> {
     #[inline] pub fn zero() -> Rad<S> { zero() }
     #[inline] pub fn full_turn() -> Rad<S> { Angle::full_turn() }
     #[inline] pub fn turn_div_2() -> Rad<S> { Angle::turn_div_2() }
@@ -135,7 +138,8 @@ impl<S: Float> Rad<S> {
     #[inline] pub fn turn_div_6() -> Rad<S> { Angle::turn_div_6() }
 }
 
-impl<S: Float> Deg<S> {
+impl<S: Float + ApproxEq<S>>
+Deg<S> {
     #[inline] pub fn zero() -> Deg<S> { zero() }
     #[inline] pub fn full_turn() -> Deg<S> { Angle::full_turn() }
     #[inline] pub fn turn_div_2() -> Deg<S> { Angle::turn_div_2() }
@@ -144,24 +148,28 @@ impl<S: Float> Deg<S> {
     #[inline] pub fn turn_div_6() -> Deg<S> { Angle::turn_div_6() }
 }
 
-impl<S: Float> Equiv<Rad<S>> for Rad<S> {
+impl<S: Float + ApproxEq<S>>
+Equiv<Rad<S>> for Rad<S> {
     fn equiv(&self, other: &Rad<S>) -> bool {
         self.normalize() == other.normalize()
     }
 }
 
-impl<S: Float> Equiv<Deg<S>> for Deg<S> {
+impl<S: Float + ApproxEq<S>>
+Equiv<Deg<S>> for Deg<S> {
     fn equiv(&self, other: &Deg<S>) -> bool {
         self.normalize() == other.normalize()
     }
 }
 
-impl<S: Float> Angle<S> for Rad<S> {
+impl<S: Float + ApproxEq<S>>
+Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
     #[inline] fn full_turn() -> Rad<S> { rad(Real::two_pi()) }
 }
 
-impl<S: Float> Angle<S> for Deg<S> {
+impl<S: Float + ApproxEq<S>>
+Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
@@ -183,38 +191,18 @@ impl<S: Float> Angle<S> for Deg<S> {
 impl<S: Float + fmt::Default> ToStr for Rad<S> { fn to_str(&self) -> ~str { format!("{} rad", self.s) } }
 impl<S: Float + fmt::Default> ToStr for Deg<S> { fn to_str(&self) -> ~str { format!("{}°", self.s) } }
 
-impl<S: Float> ApproxEq<S> for Rad<S> {
+impl<S: Float + ApproxEq<S>>
+ApproxEq<S> for Rad<S> {
     #[inline]
-    fn approx_epsilon() -> S {
-        // TODO: fix this after static methods are fixed in rustc
-        fail!(~"Doesn't work!");
-    }
-
-    #[inline]
-    fn approx_eq(&self, other: &Rad<S>) -> bool {
-        self.s.approx_eq(&other.s)
-    }
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Rad<S>, approx_epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, approx_epsilon)
+    fn approx_eq_eps(&self, other: &Rad<S>, epsilon: &S) -> bool {
+        self.s.approx_eq_eps(&other.s, epsilon)
     }
 }
 
-impl<S: Float> ApproxEq<S> for Deg<S> {
+impl<S: Float + ApproxEq<S>>
+ApproxEq<S> for Deg<S> {
     #[inline]
-    fn approx_epsilon() -> S {
-        // TODO: fix this after static methods are fixed in rustc
-        fail!(~"Doesn't work!");
-    }
-
-    #[inline]
-    fn approx_eq(&self, other: &Deg<S>) -> bool {
-        self.s.approx_eq(&other.s)
-    }
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Deg<S>, approx_epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, approx_epsilon)
+    fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {
+        self.s.approx_eq_eps(&other.s, epsilon)
     }
 }

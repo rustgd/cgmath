@@ -15,6 +15,7 @@
 
 use cgmath::matrix::*;
 use cgmath::vector::*;
+use cgmath::approx::ApproxEq;
 type float = f64;
 
 pub mod mat2 {
@@ -287,11 +288,11 @@ fn test_invert() {
     // Mat4
     assert!(Mat4::<f64>::identity().invert().unwrap().is_identity());
 
-    assert_approx_eq!(mat4::C.invert().unwrap(),
-                      Mat4::new( 5.0, -4.0,  1.0,  0.0,
-                                -4.0,  8.0, -4.0,  0.0,
-                                 4.0, -8.0,  4.0,  8.0,
-                                -3.0,  4.0,  1.0, -8.0).mul_s(0.125));
+    assert!(mat4::C.invert().unwrap().approx_eq(&
+            Mat4::new( 5.0, -4.0,  1.0,  0.0,
+                      -4.0,  8.0, -4.0,  0.0,
+                       4.0, -8.0,  4.0,  8.0,
+                      -3.0,  4.0,  1.0, -8.0).mul_s(0.125)));
     let mut mut_c = mat4::C;
     mut_c.invert_self();
     assert_eq!(mut_c, mat4::C.invert().unwrap());

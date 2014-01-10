@@ -18,6 +18,7 @@
 use std::num::{Zero, zero, One, one, cast, sqrt};
 
 use angle::{Rad, sin, cos, sin_cos};
+use approx::ApproxEq;
 use array::{Array, build};
 use point::{Point, Point3};
 use quaternion::{Quat, ToQuat};
@@ -36,9 +37,6 @@ pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 #[deriving(Clone, Eq, Zero)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
-approx_eq!(impl<S> Mat2<S>)
-approx_eq!(impl<S> Mat3<S>)
-approx_eq!(impl<S> Mat4<S>)
 
 impl<S: Primitive> Mat2<S> {
     #[inline]
@@ -114,7 +112,8 @@ impl<S: Primitive> Mat3<S> {
     }
 }
 
-impl<S: Float> Mat3<S> {
+impl<S: Float + ApproxEq<S>>
+Mat3<S> {
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
         let dir  = dir.normalize();
         let side = dir.cross(&up.normalize());
@@ -223,7 +222,8 @@ impl<S: Primitive> Mat4<S> {
     }
 }
 
-impl<S: Float> Mat4<S> {
+impl<S: Float + ApproxEq<S>>
+Mat4<S> {
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> Mat4<S> {
         let f = center.sub_p(eye).normalize();
         let s = f.cross(up).normalize();
@@ -246,7 +246,7 @@ array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
 
 pub trait Matrix
 <
-    S: Float, Slice,
+    S: Float + ApproxEq<S>, Slice,
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
@@ -362,7 +362,7 @@ impl<S: Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { b
 impl<S: Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
 impl<S: Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: Float>
+impl<S: Float + ApproxEq<S>>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
@@ -411,7 +411,7 @@ for Mat2<S>
     }
 }
 
-impl<S: Float>
+impl<S: Float + ApproxEq<S>>
 Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
@@ -484,7 +484,7 @@ macro_rules! dot_mat4(
         (*$A.cr(3, $I)) * (*$B.cr($J, 3))
 ))
 
-impl<S: Float>
+impl<S: Float + ApproxEq<S>>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
@@ -617,7 +617,8 @@ pub trait ToMat2<S: Primitive> { fn to_mat2(&self) -> Mat2<S>; }
 pub trait ToMat3<S: Primitive> { fn to_mat3(&self) -> Mat3<S>; }
 pub trait ToMat4<S: Primitive> { fn to_mat4(&self) -> Mat4<S>; }
 
-impl<S: Float> ToMat3<S> for Mat2<S> {
+impl<S: Float + ApproxEq<S>>
+ToMat3<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 3-dimensional identity matrix.
     fn to_mat3(&self) -> Mat3<S> {
@@ -627,7 +628,8 @@ impl<S: Float> ToMat3<S> for Mat2<S> {
     }
 }
 
-impl<S: Float> ToMat4<S> for Mat2<S> {
+impl<S: Float + ApproxEq<S>>
+ToMat4<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
     fn to_mat4(&self) -> Mat4<S> {
@@ -638,7 +640,8 @@ impl<S: Float> ToMat4<S> for Mat2<S> {
     }
 }
 
-impl<S: Float> ToMat4<S> for Mat3<S> {
+impl<S: Float + ApproxEq<S>>
+ToMat4<S> for Mat3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
     fn to_mat4(&self) -> Mat4<S> {
@@ -649,7 +652,8 @@ impl<S: Float> ToMat4<S> for Mat3<S> {
     }
 }
 
-impl<S:Float> ToQuat<S> for Mat3<S> {
+impl<S: Float + ApproxEq<S>>
+ToQuat<S> for Mat3<S> {
     /// Convert the matrix to a quaternion
     fn to_quat(&self) -> Quat<S> {
         // http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
