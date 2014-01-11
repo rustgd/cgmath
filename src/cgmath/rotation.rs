@@ -92,7 +92,7 @@ pub trait Rotation3
 /// implemented more efficiently than the implementations for `math::Mat2`. To
 /// enforce orthogonality at the type level the operations have been restricted
 /// to a subeset of those implemented on `Mat2`.
-#[deriving(Eq, Clone)]
+#[deriving(Eq, Clone, Default)]
 pub struct Basis2<S> {
     priv mat: Mat2<S>
 }

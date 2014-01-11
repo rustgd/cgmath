@@ -23,7 +23,7 @@ use matrix::{Mat3, ToMat3};
 use vector::{Vec3, Vector, EuclideanVector};
 
 /// A quaternion in scalar/vector form
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Quat<S> { s: S, v: Vec3<S> }
 
 array!(impl<S> Quat<S> -> [S, ..4] _4)

@@ -21,15 +21,15 @@ use approx::ApproxEq;
 use array::{Array, build};
 
 /// A 2-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone, Zero, Default)]
 pub struct Vec2<S> { x: S, y: S }
 
 /// A 3-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone, Zero, Default)]
 pub struct Vec3<S> { x: S, y: S, z: S }
 
 /// A 4-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone, Zero, Default)]
 pub struct Vec4<S> { x: S, y: S, z: S, w: S }
 
 // Conversion traits    //FIXME: not used anywhere?

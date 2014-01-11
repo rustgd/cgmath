@@ -18,14 +18,14 @@
 use point::{Point2, Point3};
 use vector::{Vec2, Vec3};
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Obb2<S> {
     center: Point2<S>,
     axis: Vec2<S>,
     extents: Vec2<S>,
 }
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Obb3<S> {
     center: Point3<S>,
     axis: Vec3<S>,

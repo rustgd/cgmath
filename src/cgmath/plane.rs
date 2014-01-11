@@ -40,7 +40,7 @@ use vector::{Vector, EuclideanVector};
 /// The `a*x + b*y + c*z - d = 0` form is preferred over the other common
 /// alternative, `a*x + b*y + c*z + d = 0`, because it tends to avoid
 /// superfluous negations (see _Real Time Collision Detection_, p. 55).
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Default)]
 pub struct Plane<S> {
     n: Vec3<S>,
     d: S,

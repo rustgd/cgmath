@@ -66,6 +66,7 @@ pub trait Transform
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
+#[deriving(Clone, Default)]
 pub struct Decomposed<S,V,R> {
     scale: S,
     rot: R,
@@ -125,6 +126,7 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
     }
 }
 
+#[deriving(Clone, Default)]
 pub trait Transform3<S>
 : Transform<S, [S, ..3], Vec3<S>, Point3<S>>
 + ToMat4<S>
@@ -152,6 +154,7 @@ ToStr for Decomposed<S,Vec3<S>,R> {
 
 
 /// A homogeneous transformation matrix.
+#[deriving(Clone, Default)]
 pub struct AffineMatrix3<S> {
     mat: Mat4<S>,
 }
@@ -195,6 +198,7 @@ Transform3<S> for AffineMatrix3<S> {}
 
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
+#[deriving(Clone, Default)]
 pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
 impl<S: Float> Transform3D<S> {
