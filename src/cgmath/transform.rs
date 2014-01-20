@@ -16,7 +16,7 @@
 use std::{fmt,num};
 
 use approx::ApproxEq;
-use matrix::{Matrix, Mat4, ToMat4};
+use matrix::{Matrix, Mat4, ToMat4, ToMat3};
 use point::{Point, Point3};
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
@@ -197,7 +197,7 @@ Transform3<S> for AffineMatrix3<S> {}
 /// displacement vector and scale amount.
 pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
-impl<S: Float> Transform3D<S> {
+impl<S: Float+ApproxEq<S>> Transform3D<S> {
     #[inline]
     pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
@@ -207,4 +207,78 @@ impl<S: Float> Transform3D<S> {
         let &Transform3D(ref d) = self;
         d
     }
+
+    pub fn translate<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        let d = self.get();
+        Transform3DIntermediate {
+            mat: Mat4::translate(d.disp.x.clone(), d.disp.y.clone(), d.disp.z.clone()),
+            decomposed: d
+
+        }
+    }
+
+    pub fn scale<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        let d = self.get();
+        Transform3DIntermediate {
+            mat: Mat4::scale(d.scale.clone(), d.scale.clone(), d.scale.clone()),
+            decomposed: d
+
+        }
+    }
+
+    pub fn rotate<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        let d = self.get();
+        Transform3DIntermediate {
+            mat: d.rot.to_mat3().to_mat4(),
+            decomposed: d
+        }
+    }
+}
+
+
+pub struct Transform3DIntermediate<'a, S>
+{
+    mat: Mat4<S>,
+    decomposed: &'a Decomposed<S, Vec3<S>, Quat<S>>
+}
+
+impl<'a, S: Float+ApproxEq<S>> Transform3DIntermediate<'a, S> {
+    pub fn translate<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        Transform3DIntermediate {
+            mat: Mat4::translate(self.decomposed.disp.x.clone(),
+                                 self.decomposed.disp.y.clone(),
+                                 self.decomposed.disp.z.clone()).mul_m(&self.mat),
+            decomposed: self.decomposed
+
+        }
+    }
+
+    pub fn scale<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        Transform3DIntermediate {
+            mat: Mat4::scale(self.decomposed.scale.clone(),
+                             self.decomposed.scale.clone(),
+                             self.decomposed.scale.clone()).mul_m(&self.mat),
+            decomposed: self.decomposed
+
+        }
+    }
+
+    pub fn rotate<'a>(&'a self) -> Transform3DIntermediate<'a, S>
+    {
+        Transform3DIntermediate {
+            mat: self.decomposed.rot.to_mat3().to_mat4().mul_m(&self.mat),
+            decomposed: self.decomposed
+        }
+    }
+}
+
+impl<'a, S: Float + ApproxEq<S>>
+ToMat4<S> for Transform3DIntermediate<'a, S>
+{
+    fn to_mat4(&self) -> Mat4<S> { self.mat.clone() }
 }
