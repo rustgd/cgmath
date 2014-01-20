@@ -77,7 +77,7 @@ fn test_rotate_scale_translate_only() {
     let t = Transform3D::new(2.0,
                              Quat::from_euler(-Rad::turn_div_4(), Rad::zero(), Rad::zero()),
                              Vec3::new(6.0,-7.0,8.0));
-    let t_mat = t.translate().scale().rotate().to_mat4();
+    let t_mat = t.rotate().scale().translate().to_mat4();
     let t_mat2 = t.get().to_mat4();
 
     let v_out = t_mat.mul_v(&v);
