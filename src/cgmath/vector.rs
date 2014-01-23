@@ -20,99 +20,6 @@ use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array, build};
 
-/// A 2-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
-pub struct Vec2<S> { x: S, y: S }
-
-/// A 3-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
-pub struct Vec3<S> { x: S, y: S, z: S }
-
-/// A 4-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
-pub struct Vec4<S> { x: S, y: S, z: S, w: S }
-
-// Conversion traits    //FIXME: not used anywhere?
-pub trait ToVec2<S: Primitive> { fn to_vec2(&self) -> Vec2<S>; }
-pub trait ToVec3<S: Primitive> { fn to_vec3(&self) -> Vec3<S>; }
-pub trait ToVec4<S: Primitive> { fn to_vec4(&self) -> Vec4<S>; }
-
-// Utility macro for generating associated functions for the vectors
-macro_rules! vec(
-    (impl $Self:ident <$S:ident> { $($field:ident),+ }) => (
-        impl<$S: Primitive> $Self<$S> {
-            #[inline]
-            pub fn new($($field: $S),+) -> $Self<$S> {
-                $Self { $($field: $field),+ }
-            }
-
-            /// Construct a vector from a single value.
-            #[inline]
-            pub fn from_value(value: $S) -> $Self<$S> {
-                $Self { $($field: value.clone()),+ }
-            }
-
-            /// The additive identity of the vector.
-            #[inline]
-            pub fn zero() -> $Self<$S> { $Self::from_value(zero()) }
-
-            /// The multiplicative identity of the vector.
-            #[inline]
-            pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
-        }
-    )
-)
-
-vec!(impl Vec2<S> { x, y })
-vec!(impl Vec3<S> { x, y, z })
-vec!(impl Vec4<S> { x, y, z, w })
-
-impl<S: Primitive> Vec2<S> {
-    #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
-    #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
-}
-impl<S: Primitive + Clone> Vec2<S> {
-    #[inline]
-    pub fn extend(&self, z: S)-> Vec3<S> {
-        Vec3::new(self.x.clone(), self.y.clone(), z)
-    }
-}
-
-impl<S: Primitive> Vec3<S> {
-    #[inline] pub fn unit_x() -> Vec3<S> { Vec3::new(one(), zero(), zero()) }
-    #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
-    #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
-}
-impl<S: Primitive + Clone> Vec3<S> {
-    #[inline]
-    pub fn extend(&self, w: S)-> Vec4<S> {
-        Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
-    }
-
-    #[inline]
-    pub fn truncate(&self)-> Vec2<S> {
-        Vec2::new(self.x.clone(), self.y.clone())   //ignore Z
-    }
-}
-
-impl<S: Primitive> Vec4<S> {
-    #[inline] pub fn unit_x() -> Vec4<S> { Vec4::new(one(), zero(), zero(), zero()) }
-    #[inline] pub fn unit_y() -> Vec4<S> { Vec4::new(zero(), one(), zero(), zero()) }
-    #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
-    #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
-}
-
-impl<S: Primitive + Clone> Vec4<S> {
-    #[inline]
-    pub fn truncate(&self)-> Vec3<S> {
-        Vec3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
-    }
-}
-
-array!(impl<S> Vec2<S> -> [S, ..2] _2)
-array!(impl<S> Vec3<S> -> [S, ..3] _3)
-array!(impl<S> Vec4<S> -> [S, ..4] _4)
-
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
@@ -169,29 +76,93 @@ pub trait Vector
 
 #[inline] pub fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
-impl<S: Primitive> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
-impl<S: Primitive> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
-impl<S: Primitive> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+// Utility macro for generating associated functions for the vectors
+macro_rules! vec(
+    ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
+        #[deriving(Eq, Clone)]
+        pub struct $Self<S> { $($field: S),+ }
 
-impl<S: Primitive> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { build(|i| self.i(i).neg()) } }
-impl<S: Primitive> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
-impl<S: Primitive> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
+        impl<$S: Primitive> $Self<$S> {
+            #[inline]
+            pub fn new($($field: $S),+) -> $Self<$S> {
+                $Self { $($field: $field),+ }
+            }
 
-impl<S: Primitive> Vector<S, [S, ..2]> for Vec2<S> {}
-impl<S: Primitive> Vector<S, [S, ..3]> for Vec3<S> {}
-impl<S: Primitive> Vector<S, [S, ..4]> for Vec4<S> {}
+            /// Construct a vector from a single value.
+            #[inline]
+            pub fn from_value(value: $S) -> $Self<$S> {
+                $Self { $($field: value.clone()),+ }
+            }
+
+            /// The additive identity of the vector.
+            #[inline]
+            pub fn zero() -> $Self<$S> { $Self::from_value(zero()) }
+
+            /// The multiplicative identity of the vector.
+            #[inline]
+            pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
+        }
+
+        impl<S: Primitive> Add<$Self<S>, $Self<S>> for $Self<S> {
+            #[inline] fn add(&self, other: &$Self<S>) -> $Self<S> { self.add_v(other) }
+        }
+
+        impl<S: Primitive> Sub<$Self<S>, $Self<S>> for $Self<S> {
+            #[inline] fn sub(&self, other: &$Self<S>) -> $Self<S> { self.sub_v(other) }
+        }
+
+        impl<S: Primitive> Zero for $Self<S> {
+            #[inline] fn zero() -> $Self<S> { $Self::from_value(zero()) }
+            #[inline] fn is_zero(&self) -> bool { *self == zero() }
+        }
+
+        impl<S: Primitive> Neg<$Self<S>> for $Self<S> {
+            #[inline] fn neg(&self) -> $Self<S> { build(|i| self.i(i).neg()) }
+        }
+
+        impl<S: Primitive> Mul<$Self<S>, $Self<S>> for $Self<S> {
+            #[inline] fn mul(&self, other: &$Self<S>) -> $Self<S> { self.mul_v(other) }
+        }
+
+        impl<S: Primitive> One for $Self<S> {
+            #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
+        }
+
+        impl<S: Primitive> Vector<S, [S, ..$n]> for $Self<S> {}
+    )
+)
+
+vec!(Vec2<S> { x, y }, 2)
+vec!(Vec3<S> { x, y, z }, 3)
+vec!(Vec4<S> { x, y, z, w }, 4)
+
+array!(impl<S> Vec2<S> -> [S, ..2] _2)
+array!(impl<S> Vec3<S> -> [S, ..3] _3)
+array!(impl<S> Vec4<S> -> [S, ..4] _4)
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: Primitive> Vec2<S> {
+    #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
+    #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
+
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
     pub fn perp_dot(&self, other: &Vec2<S>) -> S {
         (self.x * other.y) - (self.y * other.x)
     }
+
+    #[inline]
+    pub fn extend(&self, z: S)-> Vec3<S> {
+        Vec3::new(self.x.clone(), self.y.clone(), z)
+    }
 }
 
 /// Operations specific to numeric three-dimensional vectors.
 impl<S: Primitive> Vec3<S> {
+    #[inline] pub fn unit_x() -> Vec3<S> { Vec3::new(one(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
+    #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
+
     /// Returns the cross product of the vector and `other`.
     #[inline]
     pub fn cross(&self, other: &Vec3<S>) -> Vec3<S> {
@@ -205,6 +176,29 @@ impl<S: Primitive> Vec3<S> {
     #[inline]
     pub fn cross_self(&mut self, other: &Vec3<S>) {
         *self = self.cross(other)
+    }
+
+    #[inline]
+    pub fn extend(&self, w: S)-> Vec4<S> {
+        Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
+    }
+
+    #[inline]
+    pub fn truncate(&self)-> Vec2<S> {
+        Vec2::new(self.x.clone(), self.y.clone())   //ignore Z
+    }
+}
+
+/// Operations specific to numeric four-dimensional vectors.
+impl<S: Primitive> Vec4<S> {
+    #[inline] pub fn unit_x() -> Vec4<S> { Vec4::new(one(), zero(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vec4<S> { Vec4::new(zero(), one(), zero(), zero()) }
+    #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
+    #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
+
+    #[inline]
+    pub fn truncate(&self)-> Vec3<S> {
+        Vec3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
     }
 }
 

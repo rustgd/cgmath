@@ -26,15 +26,15 @@ use vector::{Vector, EuclideanVector};
 use vector::{Vec2, Vec3, Vec4};
 
 /// A 2 x 2, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq)]
 pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
 
 /// A 3 x 3, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq)]
 pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
 
 /// A 4 x 4, column major matrix
-#[deriving(Clone, Eq, Zero)]
+#[deriving(Clone, Eq)]
 pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
 
 
@@ -236,10 +236,6 @@ Mat4<S> {
     }
 }
 
-impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
-impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
-impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
-
 array!(impl<S> Mat2<S> -> [Vec2<S>, ..2] _2)
 array!(impl<S> Mat3<S> -> [Vec3<S>, ..3] _3)
 array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
@@ -358,9 +354,29 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
+impl<S: Float> Add<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn add(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: Float> Add<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn add(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: Float> Add<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn add(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+
+impl<S: Float> Sub<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn sub(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: Float> Sub<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn sub(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: Float> Sub<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn sub(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+
 impl<S: Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
 impl<S: Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
 impl<S: Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
+
+impl<S: Float> Zero for Mat2<S> { #[inline] fn zero() -> Mat2<S> { Mat2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: Float> Zero for Mat3<S> { #[inline] fn zero() -> Mat3<S> { Mat3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: Float> Zero for Mat4<S> { #[inline] fn zero() -> Mat4<S> { Mat4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+
+impl<S: Float> Mul<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn mul(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: Float> Mul<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn mul(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: Float> Mul<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn mul(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+
+impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
+impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
+impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
 
 impl<S: Float + ApproxEq<S>>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
