@@ -18,17 +18,17 @@
 //! not have a fixed position.
 
 use std::fmt;
-use std::num::{one,zero};
+use std::num::{one, zero};
 
 use array::*;
 use vector::*;
 
 /// A point in 2-dimensional space.
-#[deriving(Eq, Zero, Clone)]
+#[deriving(Eq, Clone)]
 pub struct Point2<S> { x: S, y: S }
 
 /// A point in 3-dimensional space.
-#[deriving(Eq, Zero, Clone)]
+#[deriving(Eq, Clone)]
 pub struct Point3<S> { x: S, y: S, z: S }
 
 
@@ -39,7 +39,9 @@ impl<S: Num> Point2<S> {
     }
 
     #[inline]
-    pub fn origin() -> Point2<S> { zero() }
+    pub fn origin() -> Point2<S> {
+        Point2 { x: zero(), y: zero() }
+    }
 }
 
 impl<S: Num> Point3<S> {
@@ -49,7 +51,9 @@ impl<S: Num> Point3<S> {
     }
 
     #[inline]
-    pub fn origin() -> Point3<S> { zero() }
+    pub fn origin() -> Point3<S> {
+        Point3 { x: zero(), y: zero(), z: zero() }
+    }
 }
 
 impl<S: Clone + Num + Primitive> Point3<S> {

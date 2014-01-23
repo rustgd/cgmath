@@ -21,15 +21,15 @@ use approx::ApproxEq;
 use array::{Array, build};
 
 /// A 2-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone)]
 pub struct Vec2<S> { x: S, y: S }
 
 /// A 3-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone)]
 pub struct Vec3<S> { x: S, y: S, z: S }
 
 /// A 4-dimensional vector.
-#[deriving(Eq, Clone, Zero)]
+#[deriving(Eq, Clone)]
 pub struct Vec4<S> { x: S, y: S, z: S, w: S }
 
 // Conversion traits    //FIXME: not used anywhere?
@@ -169,13 +169,29 @@ pub trait Vector
 
 #[inline] pub fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
-impl<S: Primitive> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::ident() } }
-impl<S: Primitive> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::ident() } }
-impl<S: Primitive> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::ident() } }
+impl<S: Primitive> Add<Vec2<S>, Vec2<S>> for Vec2<S> { #[inline] fn add(&self, other: &Vec2<S>) -> Vec2<S> { self.add_v(other) } }
+impl<S: Primitive> Add<Vec3<S>, Vec3<S>> for Vec3<S> { #[inline] fn add(&self, other: &Vec3<S>) -> Vec3<S> { self.add_v(other) } }
+impl<S: Primitive> Add<Vec4<S>, Vec4<S>> for Vec4<S> { #[inline] fn add(&self, other: &Vec4<S>) -> Vec4<S> { self.add_v(other) } }
+
+impl<S: Primitive> Sub<Vec2<S>, Vec2<S>> for Vec2<S> { #[inline] fn sub(&self, other: &Vec2<S>) -> Vec2<S> { self.sub_v(other) } }
+impl<S: Primitive> Sub<Vec3<S>, Vec3<S>> for Vec3<S> { #[inline] fn sub(&self, other: &Vec3<S>) -> Vec3<S> { self.sub_v(other) } }
+impl<S: Primitive> Sub<Vec4<S>, Vec4<S>> for Vec4<S> { #[inline] fn sub(&self, other: &Vec4<S>) -> Vec4<S> { self.sub_v(other) } }
+
+impl<S: Primitive> Zero for Vec2<S> { #[inline] fn zero() -> Vec2<S> { Vec2::from_value(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: Primitive> Zero for Vec3<S> { #[inline] fn zero() -> Vec3<S> { Vec3::from_value(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: Primitive> Zero for Vec4<S> { #[inline] fn zero() -> Vec4<S> { Vec4::from_value(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
 impl<S: Primitive> Neg<Vec2<S>> for Vec2<S> { #[inline] fn neg(&self) -> Vec2<S> { build(|i| self.i(i).neg()) } }
 impl<S: Primitive> Neg<Vec3<S>> for Vec3<S> { #[inline] fn neg(&self) -> Vec3<S> { build(|i| self.i(i).neg()) } }
 impl<S: Primitive> Neg<Vec4<S>> for Vec4<S> { #[inline] fn neg(&self) -> Vec4<S> { build(|i| self.i(i).neg()) } }
+
+impl<S: Primitive> Mul<Vec2<S>, Vec2<S>> for Vec2<S> { #[inline] fn mul(&self, other: &Vec2<S>) -> Vec2<S> { self.mul_v(other) } }
+impl<S: Primitive> Mul<Vec3<S>, Vec3<S>> for Vec3<S> { #[inline] fn mul(&self, other: &Vec3<S>) -> Vec3<S> { self.mul_v(other) } }
+impl<S: Primitive> Mul<Vec4<S>, Vec4<S>> for Vec4<S> { #[inline] fn mul(&self, other: &Vec4<S>) -> Vec4<S> { self.mul_v(other) } }
+
+impl<S: Primitive> One for Vec2<S> { #[inline] fn one() -> Vec2<S> { Vec2::from_value(one()) } }
+impl<S: Primitive> One for Vec3<S> { #[inline] fn one() -> Vec3<S> { Vec3::from_value(one()) } }
+impl<S: Primitive> One for Vec4<S> { #[inline] fn one() -> Vec4<S> { Vec4::from_value(one()) } }
 
 impl<S: Primitive> Vector<S, [S, ..2]> for Vec2<S> {}
 impl<S: Primitive> Vector<S, [S, ..3]> for Vec3<S> {}
