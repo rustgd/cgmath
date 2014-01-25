@@ -68,7 +68,12 @@ impl<S: Primitive> Mat2<S> {
     }
 }
 
-impl<S: Float> Mat2<S> {
+impl<S: Float + ApproxEq<S>> Mat2<S> {
+    pub fn look_at(dir: &Vec2<S>, up: &Vec2<S>) -> Mat2<S> {
+        //TODO: verify look_at 2D
+        Mat2::from_cols(up.clone(), dir.clone()).transpose()
+    }
+
     #[inline]
     pub fn from_angle(theta: Rad<S>) -> Mat2<S> {
         let cos_theta = cos(theta.clone());
@@ -115,11 +120,11 @@ impl<S: Primitive> Mat3<S> {
 impl<S: Float + ApproxEq<S>>
 Mat3<S> {
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
-        let dir  = dir.normalize();
-        let side = dir.cross(&up.normalize());
-        let up   = side.cross(&dir).normalize();
+        let dir = dir.normalize();
+        let side = up.cross(&dir).normalize();
+        let up = dir.cross(&side).normalize();
 
-        Mat3::from_cols(up, side, dir)
+        Mat3::from_cols(side, up, dir).transpose()
     }
 
     /// Create a matrix from a rotation around the `x` axis (pitch).
@@ -672,7 +677,7 @@ impl<S: Float + ApproxEq<S>>
 ToQuat<S> for Mat3<S> {
     /// Convert the matrix to a quaternion
     fn to_quat(&self) -> Quat<S> {
-        // http://www.cs.ucr.edu/~vbz/resources/Quatut.pdf
+        // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
         let trace = self.trace();
         let half: S = cast(0.5).unwrap();
         match () {

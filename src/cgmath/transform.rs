@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,7 @@ pub trait Transform
 >
 {
     fn identity() -> Self;
+    fn look_at(eye: &P, center: &P, up: &V) -> Self;
 
     fn transform_vec(&self, vec: &V) -> V;
     fn transform_point(&self, point: &P) -> P;
@@ -87,6 +88,18 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
             scale: num::one(),
             rot: Rotation::identity(),
             disp: num::zero(),
+        }
+    }
+
+    #[inline]
+    fn look_at(eye: &P, center: &P, up: &V) -> Decomposed<S,V,R> {
+        let origin :P = Point::origin();
+        let rot :R = Rotation::look_at( &center.sub_p(eye), up );
+        let disp :V = rot.rotate_vec( &origin.sub_p(eye) );
+        Decomposed {
+            scale: num::one(),
+            rot: rot,
+            disp: disp,
         }
     }
 
@@ -161,6 +174,11 @@ Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Mat4::identity() }
+    }
+
+    #[inline]
+    fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> AffineMatrix3<S> {
+        AffineMatrix3 { mat: Mat4::look_at(eye, center, up) }
     }
     
     #[inline]

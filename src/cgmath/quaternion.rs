@@ -47,11 +47,6 @@ Quat<S> {
         Quat { s: s, v: v }
     }
 
-    #[inline]
-    pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Quat<S> {
-        Mat3::look_at(dir, up).to_quat()
-    }
-
     /// Create a matrix from a rotation around the `x` axis (pitch).
     #[inline]
     pub fn from_angle_x(theta: Rad<S>) -> Quat<S> {
