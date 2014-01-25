@@ -4,6 +4,9 @@ before_install:
 install:
   - sudo apt-get install rust-nightly
 script:
-  - rustpkg test tests
-  - rustpkg build --opt-level=3 bench
-  -  sh .travis.sh
+  - mkdir -p lib bin
+  - rustc --out-dir lib ./src/cgmath/lib.rs
+  - rustc --out-dir bin --test -L ./lib ./src/test/test.rs
+  - rustc --out-dir bin --test -L ./lib ./src/bench/bench.rs
+  - ./bin/test
+#  - ./bin/bench --bench
