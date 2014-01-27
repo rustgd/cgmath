@@ -28,8 +28,29 @@ pull request with a fix.
 
 ## Compilation
 
+### Building the library
+
 ~~~
-rustpkg build cgmath
+mkdir -p lib
+rustc --out-dir lib ./src/cgmath/lib.rs
+~~~
+
+### Running the tests
+
+~~~
+mkdir -p lib bin
+rustc --out-dir lib ./src/cgmath/lib.rs
+rustc --out-dir bin --test -L ./lib ./src/test/test.rs
+./bin/test
+~~~
+
+### Running the benchmarks
+
+~~~
+mkdir -p lib bin
+rustc --out-dir lib ./src/cgmath/lib.rs
+rustc --out-dir bin --test -L ./lib ./src/test/test.rs
+./bin/bench --bench
 ~~~
 
 ## Limitations
@@ -39,11 +60,7 @@ applications rather than general linear algebra. It only offers the 2, 3, and
 4 dimensional structures that are more than useful for most computer graphics
 applications. This design decision was made in order to simplify the
 implementation (Rust cannot paramerise over constants at compile time), and to
-make dimension-specific optimisations easier in the future. Those looking for
-n-dimensional mathematics can look to [nalgebra](https://github.com/sebcrozet/nalgebra).
-
-Currently, operators are not overloaded. This is due to limitations in Rust's
-generics that will be fixed sometime in the future.
+make dimension-specific optimisations easier in the future.
 
 ## Contributing
 
