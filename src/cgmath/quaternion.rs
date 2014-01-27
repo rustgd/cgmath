@@ -47,22 +47,25 @@ Quat<S> {
         Quat { s: s, v: v }
     }
 
-    /// Create a matrix from a rotation around the `x` axis (pitch).
+    /// Create a quaternion from a rotation around the `x` axis (pitch).
     #[inline]
     pub fn from_angle_x(theta: Rad<S>) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), sin(theta), zero(), zero())
+        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
+        Quat::new(c, s, zero(), zero())
     }
 
-    /// Create a matrix from a rotation around the `y` axis (yaw).
+    /// Create a quaternion from a rotation around the `y` axis (yaw).
     #[inline]
     pub fn from_angle_y(theta: Rad<S>) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), sin(theta), zero())
+        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
+        Quat::new(c, zero(), s, zero())
     }
 
-    /// Create a matrix from a rotation around the `z` axis (roll).
+    /// Create a quaternion from a rotation around the `z` axis (roll).
     #[inline]
     pub fn from_angle_z(theta: Rad<S>) -> Quat<S> {
-        Quat::new(cos(theta.mul_s(cast(0.5).unwrap())), zero(), zero(), sin(theta))
+        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
+        Quat::new(c, zero(), zero(), s)
     }
 
     /// Create a quaternion from a set of euler angles.
