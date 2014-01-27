@@ -24,11 +24,11 @@ use array::*;
 use vector::*;
 
 /// A point in 2-dimensional space.
-#[deriving(Eq, Clone)]
+#[deriving(Eq, Clone, IterBytes)]
 pub struct Point2<S> { x: S, y: S }
 
 /// A point in 3-dimensional space.
-#[deriving(Eq, Clone)]
+#[deriving(Eq, Clone, IterBytes)]
 pub struct Point3<S> { x: S, y: S, z: S }
 
 

@@ -79,7 +79,7 @@ pub trait Vector
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
-        #[deriving(Eq, Clone)]
+        #[deriving(Eq, Clone, IterBytes)]
         pub struct $Self<S> { $($field: S),+ }
 
         impl<$S: Primitive> $Self<$S> {
