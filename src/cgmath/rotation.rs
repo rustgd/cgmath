@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +36,8 @@ pub trait Rotation
 +   ApproxEq<S>
 {
     fn identity() -> Self;
+    fn look_at(dir: &V, up: &V) -> Self;
+
     fn rotate_vec(&self, vec: &V) -> V;
 
     #[inline]
@@ -120,6 +122,16 @@ impl<S: Float + ApproxEq<S>>
 Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Mat2::identity() } }
+
+    #[inline]
+    fn look_at(dir: &Vec2<S>, up: &Vec2<S>) -> Basis2<S> {
+        Basis2 { mat: Mat2::look_at(dir, up) }
+    }
+
+    #[inline]
+    fn look_at(dir: &Vec2<S>, up: &Vec2<S>) -> Basis2<S> {
+        Basis2 { mat: Mat2::look_at(dir, up) }
+    }
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec2<S>) -> Vec2<S> { self.mat.mul_v(vec) }
@@ -165,11 +177,6 @@ pub struct Basis3<S> {
 
 impl<S: Float + ApproxEq<S>>
 Basis3<S> {
-    #[inline]
-    pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Basis3<S> {
-        Basis3 { mat: Mat3::look_at(dir, up) }
-    }
-
     /// Create a rotation matrix from a rotation around the `x` axis (pitch).
     pub fn from_angle_x(theta: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Mat3::from_angle_x(theta) }
@@ -229,6 +236,11 @@ impl<S: Float + ApproxEq<S>>
 Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Mat3::identity() } }
+
+    #[inline]
+    fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Basis3<S> {
+        Basis3 { mat: Mat3::look_at(dir, up) }
+    }
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mat.mul_v(vec) }
@@ -278,6 +290,11 @@ impl<S: Float + ApproxEq<S>>
 Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     #[inline]
     fn identity() -> Quat<S> { Quat::identity() }  
+
+    #[inline]
+    fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Quat<S> {
+        Mat3::look_at(dir, up).to_quat()
+    }
     
     #[inline]
     fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }

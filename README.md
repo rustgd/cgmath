@@ -13,7 +13,7 @@ The library provides:
 - angle units: `Rad`, `Deg`
 - points: `Point2`, `Point3`
 - rays: `Ray2`, `Ray3`
-- a plane: `Plane`
+- a plane type: `Plane`
 - perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
 - a view frustum: `Frustrum`
 - spatial transformations: `AffineMatrix3`, `Transform3D`

@@ -37,22 +37,12 @@ impl<S: Num> Point2<S> {
     pub fn new(x: S, y: S) -> Point2<S> {
         Point2 { x: x, y: y }
     }
-
-    #[inline]
-    pub fn origin() -> Point2<S> {
-        Point2 { x: zero(), y: zero() }
-    }
 }
 
 impl<S: Num> Point3<S> {
     #[inline]
     pub fn new(x: S, y: S, z: S) -> Point3<S> {
         Point3 { x: x, y: y, z: z }
-    }
-
-    #[inline]
-    pub fn origin() -> Point3<S> {
-        Point3 { x: zero(), y: zero(), z: zero() }
     }
 }
 
@@ -78,6 +68,8 @@ pub trait Point
 >
 :   Array<S, Slice>
 {
+    #[inline] fn origin() -> Self{ build(|_i| zero::<S>()) }
+
     #[inline] fn from_vec(v: &V) -> Self { build(|i| v.i(i).clone()) }
     #[inline] fn to_vec(&self) -> V { build(|i| self.i(i).clone()) }
 
