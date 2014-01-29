@@ -15,6 +15,8 @@
 
 use std::{fmt,num};
 
+use std::num::one;
+
 use approx::ApproxEq;
 use matrix::{Matrix, Mat4, ToMat4};
 use point::{Point, Point3};
@@ -215,14 +217,24 @@ Transform3<S> for AffineMatrix3<S> {}
 /// displacement vector and scale amount.
 pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
-impl<S: Float> Transform3D<S> {
+impl<S: Float + ApproxEq<S>> Transform3D<S> {
     #[inline]
     pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
     }
+
+    #[inline]
+    pub fn translate(x: S, y: S, z: S) -> Transform3D<S> {
+       Transform3D( Decomposed { scale: one(), rot: Quat::zero(), disp: Vec3::new(x, y, z) })
+    }
+
     #[inline]
     pub fn get<'a>(&'a self) -> &'a Decomposed<S,Vec3<S>,Quat<S>> {
         let &Transform3D(ref d) = self;
         d
     }
+}
+
+impl<S: Float + ApproxEq<S>> ToMat4<S> for Transform3D<S> {
+    fn to_mat4(&self) -> Mat4<S> { self.get().to_mat4() }
 }
