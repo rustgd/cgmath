@@ -19,7 +19,7 @@ use std::num::{zero, one, cast, sqrt};
 use angle::{Angle, Rad, acos, cos, sin, sin_cos};
 use approx::ApproxEq;
 use array::{Array, build};
-use matrix::{Mat3, ToMat3};
+use matrix::{Mat3, ToMat3, ToMat4, Mat4};
 use vector::{Vec3, Vector, EuclideanVector};
 
 /// A quaternion in scalar/vector form
@@ -288,6 +288,33 @@ ToMat3<S> for Quat<S> {
         Mat3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
                   xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
                   xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2)
+    }
+}
+
+impl<S: Float + ApproxEq<S>>
+ToMat4<S> for Quat<S> {
+    /// Convert the quaternion to a 4 x 4 rotation matrix
+    fn to_mat4(&self) -> Mat4<S> {
+        let x2 = self.v.x + self.v.x;
+        let y2 = self.v.y + self.v.y;
+        let z2 = self.v.z + self.v.z;
+
+        let xx2 = x2 * self.v.x;
+        let xy2 = x2 * self.v.y;
+        let xz2 = x2 * self.v.z;
+
+        let yy2 = y2 * self.v.y;
+        let yz2 = y2 * self.v.z;
+        let zz2 = z2 * self.v.z;
+
+        let sy2 = y2 * self.s;
+        let sz2 = z2 * self.s;
+        let sx2 = x2 * self.s;
+
+        Mat4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
+                  xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),
+                  xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2, zero::<S>(),
+                  zero::<S>(), zero::<S>(), zero::<S>(), one::<S>())
     }
 }
 

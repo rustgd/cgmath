@@ -12,29 +12,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#[feature(globs)];
 
-#[feature(globs)];
+use cgmath::matrix::{ToMat4, ToMat3};
+use cgmath::quaternion::Quat;
 
-extern mod cgmath;
+#[test]
+fn to_mat4()
+{
+    let quat = Quat::new(2f32, 3f32, 4f32, 5f32);
 
-// pub mod array;
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
+    let mat_short = quat.to_mat4();
+    let mat_long = quat.to_mat3().to_mat4();
 
-pub mod angle;
-pub mod plane;
-pub mod point;
-// pub mod ray;
-// pub mod rotation;
-pub mod transform;
-
-// pub mod projection;
-
-// pub mod aabb;
-// pub mod cylinder;
-// pub mod frustum;
-// pub mod intersect;
-// pub mod obb;
-pub mod sphere;
+    assert!(mat_short == mat_long);
+}
