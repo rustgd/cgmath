@@ -32,7 +32,7 @@ pub mod transform;
 
 // pub mod projection;
 
-// pub mod aabb;
+pub mod aabb;
 // pub mod cylinder;
 // pub mod frustum;
 // pub mod intersect;
