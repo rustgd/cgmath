@@ -16,10 +16,12 @@
 use std::fmt;
 use std::num::{zero, one, cast, sqrt};
 
-use angle::{Angle, Rad, acos, cos, sin, sin_cos};
+use angle::{Angle, Rad, acos, sin, sin_cos};
 use approx::ApproxEq;
 use array::{Array, build};
 use matrix::{Mat3, ToMat3, ToMat4, Mat4};
+use point::{Point3};
+use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vec3, Vector, EuclideanVector};
 
 /// A quaternion in scalar/vector form
@@ -45,54 +47,6 @@ Quat<S> {
     #[inline]
     pub fn from_sv(s: S, v: Vec3<S>) -> Quat<S> {
         Quat { s: s, v: v }
-    }
-
-    /// Create a quaternion from a rotation around the `x` axis (pitch).
-    #[inline]
-    pub fn from_angle_x(theta: Rad<S>) -> Quat<S> {
-        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
-        Quat::new(c, s, zero(), zero())
-    }
-
-    /// Create a quaternion from a rotation around the `y` axis (yaw).
-    #[inline]
-    pub fn from_angle_y(theta: Rad<S>) -> Quat<S> {
-        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
-        Quat::new(c, zero(), s, zero())
-    }
-
-    /// Create a quaternion from a rotation around the `z` axis (roll).
-    #[inline]
-    pub fn from_angle_z(theta: Rad<S>) -> Quat<S> {
-        let (s, c) = sin_cos(theta.mul_s(cast(0.5).unwrap()));
-        Quat::new(c, zero(), zero(), s)
-    }
-
-    /// Create a quaternion from a set of euler angles.
-    ///
-    /// # Parameters
-    ///
-    /// - `x`: the angular rotation around the `x` axis (pitch).
-    /// - `y`: the angular rotation around the `y` axis (yaw).
-    /// - `z`: the angular rotation around the `z` axis (roll).
-    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quat<S> {
-        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
-        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
-        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
-
-        Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
-                  sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
-                  cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
-                  cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
-    }
-
-    /// Create a quaternion from a rotation around an arbitrary axis
-    #[inline]
-    pub fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Quat<S> {
-        let half = angle.mul_s(cast(0.5).unwrap());
-        Quat::from_sv(cos(half.clone()),
-                      axis.mul_s(sin(half)))
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
@@ -329,5 +283,73 @@ Neg<Quat<S>> for Quat<S> {
 impl<S: fmt::Default> ToStr for Quat<S> {
     fn to_str(&self) -> ~str {
         format!("{} + {}i + {}j + {}k", self.s, self.v.x, self.v.y, self.v.z)
+    }
+}
+
+// Quaternion Rotation impls
+
+impl<S: Float + ApproxEq<S>>
+ToBasis3<S> for Quat<S> {
+    #[inline]
+    fn to_rot3(&self) -> Basis3<S> { Basis3::from_quat(self) }
+}
+
+impl<S: Float> ToQuat<S> for Quat<S> {
+    #[inline]
+    fn to_quat(&self) -> Quat<S> { self.clone() }
+}
+
+impl<S: Float + ApproxEq<S>>
+Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
+    #[inline]
+    fn identity() -> Quat<S> { Quat::identity() }
+
+    #[inline]
+    fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Quat<S> {
+        Mat3::look_at(dir, up).to_quat()
+    }
+
+    #[inline]
+    fn between_vecs(a: &Vec3<S>, b: &Vec3<S>) -> Quat<S> {
+        //http://stackoverflow.com/questions/1171849/
+        //finding-quaternion-representing-the-rotation-from-one-vector-to-another
+        Quat::from_sv(one::<S>() + a.dot(b), a.cross(b)).normalize()
+    }
+
+    #[inline]
+    fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }
+
+    #[inline]
+    fn concat(&self, other: &Quat<S>) -> Quat<S> { self.mul_q(other) }
+
+    #[inline]
+    fn concat_self(&mut self, other: &Quat<S>) { self.mul_self_q(other); }
+
+    #[inline]
+    fn invert(&self) -> Quat<S> { self.conjugate().div_s(self.magnitude2()) }
+
+    #[inline]
+    fn invert_self(&mut self) { *self = self.invert() }
+}
+
+impl<S: Float + ApproxEq<S>>
+Rotation3<S> for Quat<S>
+{
+    #[inline]
+    fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Quat<S> {
+        let (s, c) = sin_cos(angle.mul_s(cast(0.5).unwrap()));
+        Quat::from_sv(c, axis.mul_s(s))
+    }
+
+    fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quat<S> {
+        // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
+        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
+        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
+        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
+
+        Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
+                  sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
+                  cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
+                  cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
     }
 }
