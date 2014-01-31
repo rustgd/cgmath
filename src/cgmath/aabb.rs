@@ -16,16 +16,37 @@
 //! Axis-aligned bounding boxes
 
 use point::{Point2, Point3};
-use vector::{Vec2, Vec3};
 
 #[deriving(Clone, Eq)]
 pub struct Aabb2<S> {
-    center: Point2<S>,
-    size: Vec2<S>,
+    min: Point2<S>,
+    max: Point2<S>,
+}
+
+impl<S: Num + Orderable> Aabb2<S> {
+    /// Construct a new axis-aligned bounding box from two points.
+    #[inline]
+    pub fn new(p1: &Point2<S>, p2: &Point2<S>) -> Aabb2<S> {
+        Aabb2 {
+            min: Point2::new(p1.x.min(&p2.x), p1.y.min(&p2.y)),
+            max: Point2::new(p1.x.max(&p2.x), p1.y.max(&p2.y)),
+        }
+    }
 }
 
 #[deriving(Clone, Eq)]
 pub struct Aabb3<S> {
-    center: Point3<S>,
-    size: Vec3<S>,
+    min: Point3<S>,
+    max: Point3<S>,
+}
+
+impl<S: Num + Orderable> Aabb3<S> {
+    /// Construct a new axis-aligned bounding box from two points.
+    #[inline]
+    pub fn new(p1: &Point3<S>, p2: &Point3<S>) -> Aabb3<S> {
+        Aabb3 {
+            min: Point3::new(p1.x.min(&p2.x), p1.y.min(&p2.y), p1.z.min(&p2.z)),
+            max: Point3::new(p1.x.max(&p2.x), p1.y.max(&p2.y), p1.z.max(&p2.z)),
+        }
+    }
 }
