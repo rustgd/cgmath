@@ -35,4 +35,7 @@ fn test_aabb() {
     assert!(!aabb.contains(&Point3::new(10, 30, 5)));
     assert!(aabb.contains(&Point3::new(-20, -10, -5)));
     assert!(!aabb.contains(&Point3::new(-21, -11, -6)));
+
+    assert_eq!(aabb.translate(&Vec3::new(1, 2, 3)),
+        Aabb3::new(&Point3::new(-19, 32, 8), &Point3::new(11, -8, -2)));
 }

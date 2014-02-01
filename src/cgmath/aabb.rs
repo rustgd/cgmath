@@ -51,6 +51,11 @@ pub trait Aabb
         let mx : P = build(|i| self.max().i(i).max(p.i(i)));
         Aabb::new(&mn, &mx)
     }
+
+    // Returns a new AABB that has its points translated by the given vector.
+    fn translate(&self, v: &V) -> Self {
+        Aabb::new(&self.min().add_v(v), &self.max().add_v(v))
+    }
 }
 
 #[deriving(Clone, Eq)]
