@@ -53,8 +53,18 @@ pub trait Aabb
     }
 
     // Returns a new AABB that has its points translated by the given vector.
-    fn translate(&self, v: &V) -> Self {
+    fn add_v(&self, v: &V) -> Self {
         Aabb::new(&self.min().add_v(v), &self.max().add_v(v))
+    }
+
+    fn mul_s(&self, s: S) -> Self {
+        Aabb::new(&self.min().mul_s(s.clone()), &self.max().mul_s(s.clone()))
+    }
+
+    fn mul_v(&self, v: &V) -> Self {
+        let mn : P = Point::from_vec(&self.min().to_vec().mul_v(v));
+        let mx : P = Point::from_vec(&self.max().to_vec().mul_v(v));
+        Aabb::new(&mn, &mx)
     }
 }
 
