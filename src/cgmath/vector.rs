@@ -301,19 +301,19 @@ EuclideanVector<S, [S, ..4]> for Vec4<S> {
     }
 }
 
-impl<S: fmt::Default> ToStr for Vec2<S> {
+impl<S: fmt::Show> ToStr for Vec2<S> {
     fn to_str(&self) -> ~str {
         format!("[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Default> ToStr for Vec3<S> {
+impl<S: fmt::Show> ToStr for Vec3<S> {
     fn to_str(&self) -> ~str {
         format!("[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl<S: fmt::Default> ToStr for Vec4<S> {
+impl<S: fmt::Show> ToStr for Vec4<S> {
     fn to_str(&self) -> ~str {
         format!("[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }

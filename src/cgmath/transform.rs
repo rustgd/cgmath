@@ -157,7 +157,7 @@ ToMat4<S> for Decomposed<S, Vec3<S>, R> {
 impl<S: Float + ApproxEq<S>, R: Rotation3<S>>
 Transform3<S> for Decomposed<S,Vec3<S>,R> {}
 
-impl<S: fmt::Default + Float, R: ToStr + Rotation3<S>>
+impl<S: fmt::Show + Float, R: ToStr + Rotation3<S>>
 ToStr for Decomposed<S,Vec3<S>,R> {
     fn to_str(&self) -> ~str {
         format!("(scale({}), rot({:s}), disp{:s})",
