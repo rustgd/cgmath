@@ -280,7 +280,7 @@ Neg<Quat<S>> for Quat<S> {
     }
 }
 
-impl<S: fmt::Default> ToStr for Quat<S> {
+impl<S: fmt::Show> ToStr for Quat<S> {
     fn to_str(&self) -> ~str {
         format!("{} + {}i + {}j + {}k", self.s, self.v.x, self.v.y, self.v.z)
     }

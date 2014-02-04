@@ -204,8 +204,8 @@ Angle<S> for Deg<S> {
 #[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
 #[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(&b)) }
 
-impl<S: Float + fmt::Default> ToStr for Rad<S> { fn to_str(&self) -> ~str { format!("{} rad", self.s) } }
-impl<S: Float + fmt::Default> ToStr for Deg<S> { fn to_str(&self) -> ~str { format!("{}°", self.s) } }
+impl<S: Float + fmt::Show> ToStr for Rad<S> { fn to_str(&self) -> ~str { format!("{} rad", self.s) } }
+impl<S: Float + fmt::Show> ToStr for Deg<S> { fn to_str(&self) -> ~str { format!("{}°", self.s) } }
 
 impl<S: Float + ApproxEq<S>>
 ApproxEq<S> for Rad<S> {
