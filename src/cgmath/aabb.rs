@@ -18,6 +18,7 @@
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vec2, Vec3};
 use array::build;
+use std::fmt;
 use std::num::{zero, one};
 use std::iter::Iterator;
 
@@ -91,6 +92,12 @@ impl<S: Primitive> Aabb<S, Vec2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
     #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.mx }
 }
 
+impl<S: fmt::Show> ToStr for Aabb2<S> {
+    fn to_str(&self) -> ~str {
+        format!("[{} - {}]", self.mn.to_str(), self.mx.to_str())
+    }
+}
+
 #[deriving(Clone, Eq)]
 pub struct Aabb3<S> {
     mn: Point3<S>,
@@ -112,4 +119,10 @@ impl<S: Primitive> Aabb<S, Vec3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
     fn new(p1: &Point3<S>, p2: &Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
     #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.mn }
     #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.mx }
+}
+
+impl<S: fmt::Show> ToStr for Aabb3<S> {
+    fn to_str(&self) -> ~str {
+        format!("[{} - {}]", self.mn.to_str(), self.mx.to_str())
+    }
 }
