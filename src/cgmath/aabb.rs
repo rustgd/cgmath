@@ -48,9 +48,9 @@ pub trait Aabb
 
     // Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
-        let mn : P = build(|i| self.min().i(i).min(p.i(i)));
-        let mx : P = build(|i| self.max().i(i).max(p.i(i)));
-        Aabb::new(&mn, &mx)
+        let min : P = build(|i| self.min().i(i).min(p.i(i)));
+        let max : P = build(|i| self.max().i(i).max(p.i(i)));
+        Aabb::new(&min, &max)
     }
 
     // Returns a new AABB that has its points translated by the given vector.
@@ -63,16 +63,16 @@ pub trait Aabb
     }
 
     fn mul_v(&self, v: &V) -> Self {
-        let mn : P = Point::from_vec(&self.min().to_vec().mul_v(v));
-        let mx : P = Point::from_vec(&self.max().to_vec().mul_v(v));
-        Aabb::new(&mn, &mx)
+        let min : P = Point::from_vec(&self.min().to_vec().mul_v(v));
+        let max : P = Point::from_vec(&self.max().to_vec().mul_v(v));
+        Aabb::new(&min, &max)
     }
 }
 
 #[deriving(Clone, Eq)]
 pub struct Aabb2<S> {
-    mn: Point2<S>,
-    mx: Point2<S>,
+    min: Point2<S>,
+    max: Point2<S>,
 }
 
 impl<S: Num + Orderable> Aabb2<S> {
@@ -80,28 +80,28 @@ impl<S: Num + Orderable> Aabb2<S> {
     #[inline]
     pub fn new(p1: &Point2<S>, p2: &Point2<S>) -> Aabb2<S> {
         Aabb2 {
-            mn: Point2::new(p1.x.min(&p2.x), p1.y.min(&p2.y)),
-            mx: Point2::new(p1.x.max(&p2.x), p1.y.max(&p2.y)),
+            min: Point2::new(p1.x.min(&p2.x), p1.y.min(&p2.y)),
+            max: Point2::new(p1.x.max(&p2.x), p1.y.max(&p2.y)),
         }
     }
 }
 
 impl<S: Primitive> Aabb<S, Vec2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
     fn new(p1: &Point2<S>, p2: &Point2<S>) -> Aabb2<S> { Aabb2::new(p1, p2) }
-    #[inline] fn min<'a>(&'a self) -> &'a Point2<S> { &self.mn }
-    #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.mx }
+    #[inline] fn min<'a>(&'a self) -> &'a Point2<S> { &self.min }
+    #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
 }
 
 impl<S: fmt::Show> ToStr for Aabb2<S> {
     fn to_str(&self) -> ~str {
-        format!("[{} - {}]", self.mn.to_str(), self.mx.to_str())
+        format!("[{} - {}]", self.min.to_str(), self.max.to_str())
     }
 }
 
 #[deriving(Clone, Eq)]
 pub struct Aabb3<S> {
-    mn: Point3<S>,
-    mx: Point3<S>,
+    min: Point3<S>,
+    max: Point3<S>,
 }
 
 impl<S: Num + Orderable> Aabb3<S> {
@@ -109,20 +109,20 @@ impl<S: Num + Orderable> Aabb3<S> {
     #[inline]
     pub fn new(p1: &Point3<S>, p2: &Point3<S>) -> Aabb3<S> {
         Aabb3 {
-            mn: Point3::new(p1.x.min(&p2.x), p1.y.min(&p2.y), p1.z.min(&p2.z)),
-            mx: Point3::new(p1.x.max(&p2.x), p1.y.max(&p2.y), p1.z.max(&p2.z)),
+            min: Point3::new(p1.x.min(&p2.x), p1.y.min(&p2.y), p1.z.min(&p2.z)),
+            max: Point3::new(p1.x.max(&p2.x), p1.y.max(&p2.y), p1.z.max(&p2.z)),
         }
     }
 }
 
 impl<S: Primitive> Aabb<S, Vec3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
     fn new(p1: &Point3<S>, p2: &Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
-    #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.mn }
-    #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.mx }
+    #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.min }
+    #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }
 }
 
 impl<S: fmt::Show> ToStr for Aabb3<S> {
     fn to_str(&self) -> ~str {
-        format!("[{} - {}]", self.mn.to_str(), self.mx.to_str())
+        format!("[{} - {}]", self.min.to_str(), self.max.to_str())
     }
 }
