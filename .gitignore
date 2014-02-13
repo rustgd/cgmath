@@ -1,5 +1,5 @@
 .DS_Store
-.rust
-bin
-build
-lib
+/lib/
+/bench/
+/test/
+/doc/
