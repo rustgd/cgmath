@@ -14,7 +14,8 @@
 // limitations under the License.
 
 #[crate_id="cgmath#0.1"];
-#[crate_type = "lib"];
+#[crate_type = "rlib"];
+#[crate_type = "dylib"];
 #[comment = "A mathematics library for computer graphics."];
 #[license = "ASL2"];
 
