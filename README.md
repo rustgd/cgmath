@@ -26,33 +26,6 @@ is not fully covered by the testsuite. If you encounter any mistakes or
 omissions please let me know by posting an issue, or even better: send me a
 pull request with a fix.
 
-## Compilation
-
-### Building the library
-
-~~~
-mkdir -p lib
-rustc --out-dir lib ./src/cgmath/lib.rs
-~~~
-
-### Running the tests
-
-~~~
-mkdir -p lib bin
-rustc --out-dir lib ./src/cgmath/lib.rs
-rustc --out-dir bin --test -L ./lib ./src/test/test.rs
-./bin/test
-~~~
-
-### Running the benchmarks
-
-~~~
-mkdir -p lib bin
-rustc --out-dir lib ./src/cgmath/lib.rs
-rustc --out-dir bin --test -L ./lib ./src/test/test.rs
-./bin/bench --bench
-~~~
-
 ## Limitations
 
 cgmath is _not_ an n-dimensional library and is aimed at computer graphics
