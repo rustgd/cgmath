@@ -173,7 +173,7 @@ Quat<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: Float + ApproxEq<S> + Ord>
 Quat<S> {
     /// Spherical Linear Intoperlation
     ///
@@ -205,7 +205,14 @@ Quat<S> {
             self.nlerp(other, amount)
         } else {
             // stay within the domain of acos()
-            let robust_dot = dot.clamp(&-one::<S>(), &one::<S>());
+            // TODO REMOVE WHEN https://github.com/mozilla/rust/issues/12068 IS RESOLVED
+            let robust_dot = if dot > one::<S>() {
+                one::<S>()
+            } else if dot < -one::<S>() {
+                -one::<S>()
+            } else {
+                dot
+            };
 
             let theta: Rad<S> = acos(robust_dot.clone());
 

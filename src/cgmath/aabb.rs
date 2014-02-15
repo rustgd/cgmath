@@ -21,6 +21,7 @@ use array::build;
 use std::fmt;
 use std::num::{zero, one};
 use std::iter::Iterator;
+use std::cmp::{max, min};
 
 pub trait Aabb
 <
@@ -48,8 +49,8 @@ pub trait Aabb
 
     // Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
-        let min : P = build(|i| self.min().i(i).min(p.i(i)));
-        let max : P = build(|i| self.max().i(i).max(p.i(i)));
+        let min : P = build(|i| min(self.min().i(i).clone(), p.i(i).clone()));
+        let max : P = build(|i| max(self.max().i(i).clone(), p.i(i).clone()));
         Aabb::new(min, max)
     }
 
@@ -75,13 +76,13 @@ pub struct Aabb2<S> {
     max: Point2<S>,
 }
 
-impl<S: Num + Orderable> Aabb2<S> {
+impl<S: Num + Ord + Clone> Aabb2<S> {
     /// Construct a new axis-aligned bounding box from two points.
     #[inline]
     pub fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> {
         Aabb2 {
-            min: Point2::new(p1.x.min(&p2.x), p1.y.min(&p2.y)),
-            max: Point2::new(p1.x.max(&p2.x), p1.y.max(&p2.y)),
+            min: Point2::new(min(p1.x.clone(), p2.x.clone()), min(p1.y.clone(), p2.y.clone())),
+            max: Point2::new(max(p1.x.clone(), p2.x.clone()), max(p1.y.clone(), p2.y.clone())),
         }
     }
 }
@@ -104,13 +105,13 @@ pub struct Aabb3<S> {
     max: Point3<S>,
 }
 
-impl<S: Num + Orderable> Aabb3<S> {
+impl<S: Num + Ord + Clone> Aabb3<S> {
     /// Construct a new axis-aligned bounding box from two points.
     #[inline]
     pub fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> {
         Aabb3 {
-            min: Point3::new(p1.x.min(&p2.x), p1.y.min(&p2.y), p1.z.min(&p2.z)),
-            max: Point3::new(p1.x.max(&p2.x), p1.y.max(&p2.y), p1.z.max(&p2.z)),
+            min: Point3::new(min(p1.x.clone(), p2.x.clone()), min(p1.y.clone(), p2.y.clone()), min(p1.z.clone(), p2.z.clone())),
+            max: Point3::new(max(p1.x.clone(), p2.x.clone()), max(p1.y.clone(), p2.y.clone()), max(p1.z.clone(), p2.z.clone())),
         }
     }
 }
