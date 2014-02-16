@@ -16,7 +16,7 @@
 
 #[feature(globs)];
 
-extern mod cgmath;
+extern crate cgmath;
 
 // pub mod array;
 pub mod matrix;
