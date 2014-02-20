@@ -137,17 +137,17 @@ mod test_length {
 
 #[test]
 fn test_angle() {
-    assert!(Vec2::new(1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
-    assert!(Vec2::new(10.0, 0.0).angle(&Vec2::new(0.0, 5.0)).approx_eq( &rad(Real::frac_pi_2()) ));
-    assert!(Vec2::new(-1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &-rad(Real::frac_pi_2()) ));
+    assert!(Vec2::new(1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &rad(Float::frac_pi_2()) ));
+    assert!(Vec2::new(10.0, 0.0).angle(&Vec2::new(0.0, 5.0)).approx_eq( &rad(Float::frac_pi_2()) ));
+    assert!(Vec2::new(-1.0, 0.0).angle(&Vec2::new(0.0, 1.0)).approx_eq( &-rad(Float::frac_pi_2()) ));
 
-    assert!(Vec3::new(1.0, 0.0, 1.0).angle(&Vec3::new(1.0, 1.0, 0.0)).approx_eq( &rad(Real::frac_pi_3()) ));
-    assert!(Vec3::new(10.0, 0.0, 10.0).angle(&Vec3::new(5.0, 5.0, 0.0)).approx_eq( &rad(Real::frac_pi_3()) ));
-    assert!(Vec3::new(-1.0, 0.0, -1.0).angle(&Vec3::new(1.0, -1.0, 0.0)).approx_eq( &rad(2.0 * Real::frac_pi_3()) ));
+    assert!(Vec3::new(1.0, 0.0, 1.0).angle(&Vec3::new(1.0, 1.0, 0.0)).approx_eq( &rad(Float::frac_pi_3()) ));
+    assert!(Vec3::new(10.0, 0.0, 10.0).angle(&Vec3::new(5.0, 5.0, 0.0)).approx_eq( &rad(Float::frac_pi_3()) ));
+    assert!(Vec3::new(-1.0, 0.0, -1.0).angle(&Vec3::new(1.0, -1.0, 0.0)).approx_eq( &rad(2.0 * Float::frac_pi_3()) ));
 
-    assert!(Vec4::new(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
-    assert!(Vec4::new(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new(0.0, 5.0, 0.0, 5.0)).approx_eq( &rad(Real::frac_pi_2()) ));
-    assert!(Vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Real::frac_pi_2()) ));
+    assert!(Vec4::new(1.0, 0.0, 1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Float::frac_pi_2()) ));
+    assert!(Vec4::new(10.0, 0.0, 10.0, 0.0).angle(&Vec4::new(0.0, 5.0, 0.0, 5.0)).approx_eq( &rad(Float::frac_pi_2()) ));
+    assert!(Vec4::new(-1.0, 0.0, -1.0, 0.0).angle(&Vec4::new(0.0, 1.0, 0.0, 1.0)).approx_eq( &rad(Float::frac_pi_2()) ));
 }
 
 #[test]
