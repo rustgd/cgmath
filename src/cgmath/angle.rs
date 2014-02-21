@@ -181,7 +181,7 @@ Equiv<Deg<S>> for Deg<S> {
 impl<S: Float + ApproxEq<S>>
 Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
-    #[inline] fn full_turn() -> Rad<S> { rad(Real::two_pi()) }
+    #[inline] fn full_turn() -> Rad<S> { rad(Float::two_pi()) }
 }
 
 impl<S: Float + ApproxEq<S>>
