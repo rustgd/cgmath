@@ -23,8 +23,8 @@ use std::num::{One, one, Zero, zero, cast};
 
 use approx::ApproxEq;
 
-#[deriving(Clone, Eq, Ord, IterBytes)] pub struct Rad<S> { s: S }
-#[deriving(Clone, Eq, Ord, IterBytes)] pub struct Deg<S> { s: S }
+#[deriving(Clone, Eq, Ord, Hash)] pub struct Rad<S> { s: S }
+#[deriving(Clone, Eq, Ord, Hash)] pub struct Deg<S> { s: S }
 
 #[inline] pub fn rad<S: Float>(s: S) -> Rad<S> { Rad { s: s } }
 #[inline] pub fn deg<S: Float>(s: S) -> Deg<S> { Deg { s: s } }
