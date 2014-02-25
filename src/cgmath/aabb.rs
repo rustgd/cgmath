@@ -93,9 +93,9 @@ impl<S: Primitive> Aabb<S, Vec2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
     #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
 }
 
-impl<S: fmt::Show> ToStr for Aabb2<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{} - {}]", self.min.to_str(), self.max.to_str())
+impl<S: fmt::Show> fmt::Show for Aabb2<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{} - {}]", self.min, self.max)
     }
 }
 
@@ -122,8 +122,8 @@ impl<S: Primitive> Aabb<S, Vec3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
     #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }
 }
 
-impl<S: fmt::Show> ToStr for Aabb3<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{} - {}]", self.min.to_str(), self.max.to_str())
+impl<S: fmt::Show> fmt::Show for Aabb3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{} - {}]", self.min, self.max)
     }
 }
