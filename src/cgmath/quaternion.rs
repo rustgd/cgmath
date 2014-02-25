@@ -287,9 +287,13 @@ Neg<Quat<S>> for Quat<S> {
     }
 }
 
-impl<S: fmt::Show> ToStr for Quat<S> {
-    fn to_str(&self) -> ~str {
-        format!("{} + {}i + {}j + {}k", self.s, self.v.x, self.v.y, self.v.z)
+impl<S: fmt::Show> fmt::Show for Quat<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "{} + {}i + {}j + {}k",
+                self.s,
+                self.v.x,
+                self.v.y,
+                self.v.z)
     }
 }
 

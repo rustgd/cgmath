@@ -302,20 +302,20 @@ EuclideanVector<S, [S, ..4]> for Vec4<S> {
     }
 }
 
-impl<S: fmt::Show> ToStr for Vec2<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{}, {}]", self.x, self.y)
+impl<S: fmt::Show> fmt::Show for Vec2<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Show> ToStr for Vec3<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{}, {}, {}]", self.x, self.y, self.z)
+impl<S: fmt::Show> fmt::Show for Vec3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl<S: fmt::Show> ToStr for Vec4<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+impl<S: fmt::Show> fmt::Show for Vec4<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }
 }

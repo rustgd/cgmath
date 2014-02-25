@@ -121,9 +121,9 @@ ApproxEq<S> for Plane<S> {
     }
 }
 
-impl<S: Clone + fmt::Float> ToStr for Plane<S> {
-    fn to_str(&self) -> ~str {
-        format!("{:f}x + {:f}y + {:f}z - {:f} = 0",
+impl<S: Clone + fmt::Float> fmt::Show for Plane<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "{:f}x + {:f}y + {:f}z - {:f} = 0",
                 self.n.x,
                 self.n.y,
                 self.n.z,

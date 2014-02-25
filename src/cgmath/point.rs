@@ -99,14 +99,14 @@ array!(impl<S> Point3<S> -> [S, ..3] _3)
 impl<S: Primitive> Point<S, Vec2<S>, [S, ..2]> for Point2<S> {}
 impl<S: Primitive> Point<S, Vec3<S>, [S, ..3]> for Point3<S> {}
 
-impl<S: fmt::Show> ToStr for Point2<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{}, {}]", self.x, self.y)
+impl<S: fmt::Show> fmt::Show for Point2<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Show> ToStr for Point3<S> {
-    fn to_str(&self) -> ~str {
-        format!("[{}, {}, {}]", self.x, self.y, self.z)
+impl<S: fmt::Show> fmt::Show for Point3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
