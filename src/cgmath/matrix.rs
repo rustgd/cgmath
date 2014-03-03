@@ -15,6 +15,7 @@
 
 //! Column major, square matrix types and traits.
 
+use std::fmt;
 use std::num::{Zero, zero, One, one, cast, sqrt};
 
 use angle::{Rad, sin, cos, sin_cos};
@@ -718,5 +719,32 @@ ToQuat<S> for Mat3<S> {
                 Quat::new(w, x, y, z)
             }
         }
+    }
+}
+
+impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat2<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[[{}, {}], [{}, {}]]",
+                self.cr(0, 0), self.cr(0, 1),
+                self.cr(1, 0), self.cr(1, 1))
+    }
+}
+
+impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
+                self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
+                self.cr(1, 0), self.cr(1, 1), self.cr(1, 2),
+                self.cr(2, 0), self.cr(2, 1), self.cr(2, 2))
+    }
+}
+
+impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat4<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f.buf, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
+                self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),
+                self.cr(1, 0), self.cr(1, 1), self.cr(1, 2), self.cr(1, 3),
+                self.cr(2, 0), self.cr(2, 1), self.cr(2, 2), self.cr(2, 3),
+                self.cr(3, 0), self.cr(3, 1), self.cr(3, 2), self.cr(3, 3))
     }
 }
