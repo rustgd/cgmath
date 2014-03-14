@@ -414,8 +414,8 @@ for Mat2<S>
         if det.approx_eq(&zero()) {
             None
         } else {
-            Some(Mat2::new( self.cr(1, 1) / det, -self.cr(0, 1) / det,
-                           -self.cr(1, 0) / det,  self.cr(0, 0) / det))
+            Some(Mat2::new( *self.cr(1, 1) / det, -*self.cr(0, 1) / det,
+                           -*self.cr(1, 0) / det,  *self.cr(0, 0) / det))
         }
     }
 
@@ -547,10 +547,10 @@ for Mat4<S>
                            self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
                            self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
 
-        self.cr(0, 0) * m0.determinant() -
-        self.cr(1, 0) * m1.determinant() +
-        self.cr(2, 0) * m2.determinant() -
-        self.cr(3, 0) * m3.determinant()
+        *self.cr(0, 0) * m0.determinant() -
+        *self.cr(1, 0) * m1.determinant() +
+        *self.cr(2, 0) * m2.determinant() -
+        *self.cr(3, 0) * m3.determinant()
     }
 
     fn invert(&self) -> Option<Mat4<S>> {
