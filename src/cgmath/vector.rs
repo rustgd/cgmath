@@ -15,7 +15,6 @@
 
 use std::fmt;
 use std::num::{Zero, zero, One, one, sqrt};
-use std::cmp::{max, min};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
@@ -69,10 +68,10 @@ pub trait Vector
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
 
     /// The minimum component of the vector.
-    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| min(a.clone(), b.clone())) }
+    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| if *a < *b { *a } else {*b }) }
 
     /// The maximum component of the vector.
-    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| max(a.clone(), b.clone())) }
+    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| if *a > *b { *a } else {*b }) }
 }
 
 #[inline] pub fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
