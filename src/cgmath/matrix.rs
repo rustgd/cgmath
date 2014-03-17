@@ -556,42 +556,42 @@ for Mat4<S>
     fn invert(&self) -> Option<Mat4<S>> {
         if self.is_invertible() {
             // Gauss Jordan Elimination with partial pivoting
-            // So take this matrix, A, augmented with the identity
-            // and essentially reduce [A|I]
+            // So take this matrix ('mat') augmented with the identity ('ident'),
+            // and essentially reduce [mat|ident]
 
-            let mut A = self.clone();
-            let mut I = Mat4::identity();
+            let mut mat = self.clone();
+            let mut ident = Mat4::identity();
 
             for j in range(0u, 4u) {
                 // Find largest element in col j
                 let mut i1 = j;
                 for i in range(j + 1, 4) {
-                    if A.cr(j, i).abs() > A.cr(j, i1).abs() {
+                    if mat.cr(j, i).abs() > mat.cr(j, i1).abs() {
                         i1 = i;
                     }
                 }
 
-                // Swap columns i1 and j in A and I to
+                // Swap columns i1 and j in mat and ident to
                 // put pivot on diagonal
-                A.swap_c(i1, j);
-                I.swap_c(i1, j);
+                mat.swap_c(i1, j);
+                ident.swap_c(i1, j);
 
                 // Scale col j to have a unit diagonal
-                *I.mut_c(j) = I.c(j).div_s(A.cr(j, j).clone());
-                *A.mut_c(j) = A.c(j).div_s(A.cr(j, j).clone());
+                *ident.mut_c(j) = ident.c(j).div_s(mat.cr(j, j).clone());
+                *mat.mut_c(j) = mat.c(j).div_s(mat.cr(j, j).clone());
 
-                // Eliminate off-diagonal elems in col j of A,
-                // doing identical ops to I
+                // Eliminate off-diagonal elems in col j of 'mat',
+                // doing identical ops to 'ident'
                 for i in range(0u, 4u) {
                     if i != j {
-                        let ij_mul_aij = I.c(j).mul_s(A.cr(i, j).clone());
-                        let aj_mul_aij = A.c(j).mul_s(A.cr(i, j).clone());
-                        *I.mut_c(i) = I.c(i).sub_v(&ij_mul_aij);
-                        *A.mut_c(i) = A.c(i).sub_v(&aj_mul_aij);
+                        let ij_mul_aij = ident.c(j).mul_s(mat.cr(i, j).clone());
+                        let aj_mul_aij = mat.c(j).mul_s(mat.cr(i, j).clone());
+                        *ident.mut_c(i) = ident.c(i).sub_v(&ij_mul_aij);
+                        *mat.mut_c(i) = mat.c(i).sub_v(&aj_mul_aij);
                     }
                 }
             }
-            Some(I)
+            Some(ident)
         } else {
             None
         }
