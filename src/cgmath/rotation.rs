@@ -23,11 +23,12 @@ use point::{Point, Point2, Point3};
 use quaternion::{Quat, ToQuat};
 use ray::Ray;
 use vector::{Vector, Vec2, Vec3};
+use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait for generic rotation
 pub trait Rotation
 <
-    S: Primitive,
+    S: PartOrdPrim,
     Slice,
     V: Vector<S,Slice>,
     P: Point<S,V,Slice>
@@ -156,7 +157,7 @@ impl<S: Float> ToMat2<S> for Basis2<S> {
     fn to_mat2(&self) -> Mat2<S> { self.mat.clone() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Mat2::identity() } }
@@ -191,7 +192,7 @@ Rotation<S, [S, ..2], Vec2<S>, Point2<S>> for Basis2<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ApproxEq<S> for Basis2<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Basis2<S>, epsilon: &S) -> bool {
@@ -199,7 +200,7 @@ ApproxEq<S> for Basis2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation2<S> for Basis2<S> {
     fn from_angle(theta: Rad<S>) -> Basis2<S> { Basis2 { mat: Mat2::from_angle(theta) } }
 }
@@ -215,7 +216,7 @@ pub struct Basis3<S> {
     priv mat: Mat3<S>
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Basis3<S> {
     #[inline]
     pub fn from_quat(quat: &Quat<S>) -> Basis3<S> { Basis3 { mat: quat.to_mat3() } }
@@ -238,13 +239,13 @@ impl<S: Float> ToMat3<S> for Basis3<S> {
     fn to_mat3(&self) -> Mat3<S> { self.mat.clone() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToQuat<S> for Basis3<S> {
     #[inline]
     fn to_quat(&self) -> Quat<S> { self.mat.to_quat() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Mat3::identity() } }
@@ -288,7 +289,7 @@ ApproxEq<S> for Basis3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation3<S> for Basis3<S> {
     fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Mat3::from_axis_angle(axis, angle) }

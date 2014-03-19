@@ -24,11 +24,12 @@ use ray::Ray;
 use rotation::{Rotation, Rotation3};
 use quaternion::Quat;
 use vector::{Vector, Vec3};
+use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait of affine transformation, that can be applied to points or vectors
 pub trait Transform
 <
-    S: Primitive,
+    S: PartOrdPrim,
     Slice,
     V: Vector<S,Slice>,
     P: Point<S,V,Slice>
@@ -77,7 +78,7 @@ pub struct Decomposed<S,V,R> {
 
 impl
 <
-    S: Float + ApproxEq<S>,
+    S: PartOrdFloat<S>,
     Slice,
     V: Vector<S, Slice>,
     P: Point<S, V, Slice>,
@@ -145,7 +146,7 @@ pub trait Transform3<S>
 + ToMat4<S>
 {}
 
-impl<S: Float + Clone + ApproxEq<S>, R: Rotation3<S>>
+impl<S: PartOrdFloat<S>, R: Rotation3<S>>
 ToMat4<S> for Decomposed<S, Vec3<S>, R> {
     fn to_mat4(&self) -> Mat4<S> {
         let mut m = self.rot.to_mat3().mul_s( self.scale.clone() ).to_mat4();
@@ -154,7 +155,7 @@ ToMat4<S> for Decomposed<S, Vec3<S>, R> {
     }
 }
 
-impl<S: Float + ApproxEq<S>, R: Rotation3<S>>
+impl<S: PartOrdFloat<S>, R: Rotation3<S>>
 Transform3<S> for Decomposed<S,Vec3<S>,R> {}
 
 impl<S: fmt::Show + Float, R: fmt::Show + Rotation3<S>>
@@ -171,7 +172,7 @@ pub struct AffineMatrix3<S> {
     mat: Mat4<S>,
 }
 
-impl<S : Clone + Float + ApproxEq<S>>
+impl<S : PartOrdFloat<S>>
 Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
@@ -204,12 +205,12 @@ Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
     }   
 }
 
-impl<S: Clone + Primitive>
+impl<S: PartOrdPrim>
 ToMat4<S> for AffineMatrix3<S> {
     #[inline] fn to_mat4(&self) -> Mat4<S> { self.mat.clone() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Transform3<S> for AffineMatrix3<S> {}
 
 
@@ -217,7 +218,7 @@ Transform3<S> for AffineMatrix3<S> {}
 /// displacement vector and scale amount.
 pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
 
-impl<S: Float + ApproxEq<S>> Transform3D<S> {
+impl<S: PartOrdFloat<S>> Transform3D<S> {
     #[inline]
     pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
@@ -235,6 +236,6 @@ impl<S: Float + ApproxEq<S>> Transform3D<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>> ToMat4<S> for Transform3D<S> {
+impl<S: PartOrdFloat<S>> ToMat4<S> for Transform3D<S> {
     fn to_mat4(&self) -> Mat4<S> { self.get().to_mat4() }
 }

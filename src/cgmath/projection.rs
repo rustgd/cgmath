@@ -16,10 +16,10 @@
 use std::num::{zero, one, cast};
 
 use angle::{Angle, tan, cot};
-use approx::ApproxEq;
 use frustum::Frustum;
 use matrix::{Mat4, ToMat4};
 use plane::Plane;
+use partial_ord::PartOrdFloat;
 
 /// Create a perspective projection matrix.
 ///
@@ -94,7 +94,7 @@ impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: Float + ApproxEq<S>, A: Angle<S>>
+impl<S: PartOrdFloat<S>, A: Angle<S>>
 Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
@@ -151,7 +151,7 @@ pub struct Perspective<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
@@ -202,7 +202,7 @@ pub struct Ortho<S> {
     near:   S,  far:    S,
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
         Frustum {

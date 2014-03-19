@@ -15,11 +15,11 @@
 
 //! View frustum for visibility determination
 
-use approx::ApproxEq;
 use matrix::{Matrix, Mat4};
 use plane::Plane;
 use point::Point3;
 use vector::{Vector, EuclideanVector};
+use partial_ord::PartOrdFloat;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<S> {
@@ -31,7 +31,7 @@ pub struct Frustum<S> {
     far:    Plane<S>,
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Frustum<S> {
     /// Constructs a frustum
     pub fn new(left:   Plane<S>, right:  Plane<S>,

@@ -19,6 +19,7 @@ use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::Vector;
+use partial_ord::PartOrdFloat;
 
 use std::num::NumCast;
 use std::num;
@@ -33,7 +34,7 @@ pub struct Sphere<S> {
     radius: S,
 }
 
-impl<S: Float> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
+impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         match *self {
             (ref s, ref r) => {

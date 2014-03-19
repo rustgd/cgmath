@@ -23,6 +23,7 @@ use matrix::{Mat3, ToMat3, ToMat4, Mat4};
 use point::{Point3};
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vec3, Vector, EuclideanVector};
+use partial_ord::PartOrdFloat;
 
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
@@ -34,7 +35,7 @@ pub trait ToQuat<S: Float> {
     fn to_quat(&self) -> Quat<S>;
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Quat<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
@@ -173,7 +174,7 @@ Quat<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S> + Ord>
+impl<S: PartOrdFloat<S>>
 Quat<S> {
     /// Spherical Linear Intoperlation
     ///
@@ -279,7 +280,7 @@ ToMat4<S> for Quat<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Neg<Quat<S>> for Quat<S> {
     #[inline]
     fn neg(&self) -> Quat<S> {
@@ -299,7 +300,7 @@ impl<S: fmt::Show> fmt::Show for Quat<S> {
 
 // Quaternion Rotation impls
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToBasis3<S> for Quat<S> {
     #[inline]
     fn to_rot3(&self) -> Basis3<S> { Basis3::from_quat(self) }
@@ -310,7 +311,7 @@ impl<S: Float> ToQuat<S> for Quat<S> {
     fn to_quat(&self) -> Quat<S> { self.clone() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     #[inline]
     fn identity() -> Quat<S> { Quat::identity() }
@@ -343,7 +344,7 @@ Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Rotation3<S> for Quat<S>
 {
     #[inline]

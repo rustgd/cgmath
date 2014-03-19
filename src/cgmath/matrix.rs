@@ -25,6 +25,7 @@ use point::{Point, Point3};
 use quaternion::{Quat, ToQuat};
 use vector::{Vector, EuclideanVector};
 use vector::{Vec2, Vec3, Vec4};
+use partial_ord::PartOrdFloat;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq)]
@@ -69,7 +70,7 @@ impl<S: Primitive> Mat2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>> Mat2<S> {
+impl<S: PartOrdFloat<S>> Mat2<S> {
     pub fn look_at(dir: &Vec2<S>, up: &Vec2<S>) -> Mat2<S> {
         //TODO: verify look_at 2D
         Mat2::from_cols(up.clone(), dir.clone()).transpose()
@@ -118,7 +119,7 @@ impl<S: Primitive> Mat3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Mat3<S> {
     pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
         let dir = dir.normalize();
@@ -228,7 +229,7 @@ impl<S: Primitive> Mat4<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Mat4<S> {
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> Mat4<S> {
         let f = center.sub_p(eye).normalize();
@@ -248,7 +249,7 @@ array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
 
 pub trait Matrix
 <
-    S: Float + ApproxEq<S>, Slice,
+    S: PartOrdFloat<S>, Slice,
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
@@ -360,31 +361,31 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Float> Add<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn add(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: Float> Add<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn add(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: Float> Add<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn add(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn add(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn add(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn add(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
 
-impl<S: Float> Sub<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn sub(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: Float> Sub<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn sub(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: Float> Sub<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn sub(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn sub(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn sub(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn sub(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
 
-impl<S: Float> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
-impl<S: Float> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
-impl<S: Float> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: Float> Zero for Mat2<S> { #[inline] fn zero() -> Mat2<S> { Mat2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: Float> Zero for Mat3<S> { #[inline] fn zero() -> Mat3<S> { Mat3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: Float> Zero for Mat4<S> { #[inline] fn zero() -> Mat4<S> { Mat4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Mat2<S> { #[inline] fn zero() -> Mat2<S> { Mat2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Mat3<S> { #[inline] fn zero() -> Mat3<S> { Mat3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Mat4<S> { #[inline] fn zero() -> Mat4<S> { Mat4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: Float> Mul<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn mul(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: Float> Mul<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn mul(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: Float> Mul<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn mul(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn mul(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn mul(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn mul(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
 
-impl<S: Float> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
-impl<S: Float> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
-impl<S: Float> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
+impl<S: PartOrdFloat<S>> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
+impl<S: PartOrdFloat<S>> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
+impl<S: PartOrdFloat<S>> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
 for Mat2<S>
 {
@@ -433,7 +434,7 @@ for Mat2<S>
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
 for Mat3<S>
 {
@@ -506,7 +507,7 @@ macro_rules! dot_mat4(
         (*$A.cr(3, $I)) * (*$B.cr($J, 3))
 ))
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
 for Mat4<S>
 {
@@ -639,7 +640,7 @@ pub trait ToMat2<S: Primitive> { fn to_mat2(&self) -> Mat2<S>; }
 pub trait ToMat3<S: Primitive> { fn to_mat3(&self) -> Mat3<S>; }
 pub trait ToMat4<S: Primitive> { fn to_mat4(&self) -> Mat4<S>; }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToMat3<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 3-dimensional identity matrix.
@@ -650,7 +651,7 @@ ToMat3<S> for Mat2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToMat4<S> for Mat2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
@@ -662,7 +663,7 @@ ToMat4<S> for Mat2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToMat4<S> for Mat3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
@@ -674,7 +675,7 @@ ToMat4<S> for Mat3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 ToQuat<S> for Mat3<S> {
     /// Convert the matrix to a quaternion
     fn to_quat(&self) -> Quat<S> {
@@ -722,7 +723,7 @@ ToQuat<S> for Mat3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat2<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}], [{}, {}]]",
                 self.cr(0, 0), self.cr(0, 1),
@@ -730,7 +731,7 @@ impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat3<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
@@ -739,7 +740,7 @@ impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S> + fmt::Show> fmt::Show for Mat4<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),
