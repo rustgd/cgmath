@@ -22,8 +22,8 @@ use std::fmt;
 use std::num::{zero, one};
 use std::iter::Iterator;
 
-fn _min<S: Ord>(a: S, b: S) -> S { if a < b { a } else { b }}
-fn _max<S: Ord>(a: S, b: S) -> S { if a > b { a } else { b }}
+fn partial_min<S: Ord>(a: S, b: S) -> S { if a < b { a } else { b }}
+fn partial_max<S: Ord>(a: S, b: S) -> S { if a > b { a } else { b }}
 
 pub trait Aabb
 <
@@ -51,8 +51,8 @@ pub trait Aabb
 
     // Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
-        let min : P = build(|i| _min(*self.min().i(i), *p.i(i)));
-        let max : P = build(|i| _max(*self.max().i(i), *p.i(i)));
+        let min : P = build(|i| partial_min(*self.min().i(i), *p.i(i)));
+        let max : P = build(|i| partial_max(*self.max().i(i), *p.i(i)));
         Aabb::new(min, max)
     }
 
@@ -83,8 +83,10 @@ impl<S: Num + Ord + Clone> Aabb2<S> {
     #[inline]
     pub fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> {
         Aabb2 {
-            min: Point2::new(_min(p1.x.clone(), p2.x.clone()), _min(p1.y.clone(), p2.y.clone())),
-            max: Point2::new(_max(p1.x.clone(), p2.x.clone()), _max(p1.y.clone(), p2.y.clone())),
+            min: Point2::new(partial_min(p1.x.clone(), p2.x.clone()),
+                             partial_min(p1.y.clone(), p2.y.clone())),
+            max: Point2::new(partial_max(p1.x.clone(), p2.x.clone()),
+                             partial_max(p1.y.clone(), p2.y.clone())),
         }
     }
 }
@@ -112,8 +114,12 @@ impl<S: Num + Ord + Clone> Aabb3<S> {
     #[inline]
     pub fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> {
         Aabb3 {
-            min: Point3::new(_min(p1.x.clone(), p2.x.clone()), _min(p1.y.clone(), p2.y.clone()), _min(p1.z.clone(), p2.z.clone())),
-            max: Point3::new(_max(p1.x.clone(), p2.x.clone()), _max(p1.y.clone(), p2.y.clone()), _max(p1.z.clone(), p2.z.clone())),
+            min: Point3::new(partial_min(p1.x.clone(), p2.x.clone()),
+                             partial_min(p1.y.clone(), p2.y.clone()),
+                             partial_min(p1.z.clone(), p2.z.clone())),
+            max: Point3::new(partial_max(p1.x.clone(), p2.x.clone()),
+                             partial_max(p1.y.clone(), p2.y.clone()),
+                             partial_max(p1.z.clone(), p2.z.clone())),
         }
     }
 }
