@@ -23,6 +23,7 @@ use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vec3, Vec4};
 use vector::{Vector, EuclideanVector};
+use partial_ord::PartOrdFloat;
 
 
 /// A 3-dimendional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
@@ -46,7 +47,7 @@ pub struct Plane<S> {
     d: S,
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 Plane<S> {
     /// Construct a plane from a normal vector and a scalar distance
     pub fn new(n: Vec3<S>, d: S) -> Plane<S> {
@@ -88,7 +89,7 @@ Plane<S> {
     }
 }
 
-impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
+impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         match *self {
             (ref p, ref r) => {

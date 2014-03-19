@@ -19,13 +19,14 @@ use std::num::{Zero, zero, One, one, sqrt};
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array, build};
+use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
 pub trait Vector
 <
-    S: Primitive,
+    S: PartOrdPrim,
     Slice
 >
 :   Array<S, Slice>
@@ -74,7 +75,7 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.fold(|a, b| if *a > *b { *a } else {*b }) }
 }
 
-#[inline] pub fn dot<S: Primitive, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] pub fn dot<S: PartOrdPrim, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
@@ -103,32 +104,32 @@ macro_rules! vec(
             pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
         }
 
-        impl<S: Primitive> Add<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: PartOrdPrim> Add<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn add(&self, other: &$Self<S>) -> $Self<S> { self.add_v(other) }
         }
 
-        impl<S: Primitive> Sub<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: PartOrdPrim> Sub<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn sub(&self, other: &$Self<S>) -> $Self<S> { self.sub_v(other) }
         }
 
-        impl<S: Primitive> Zero for $Self<S> {
+        impl<S: PartOrdPrim> Zero for $Self<S> {
             #[inline] fn zero() -> $Self<S> { $Self::from_value(zero()) }
             #[inline] fn is_zero(&self) -> bool { *self == zero() }
         }
 
-        impl<S: Primitive> Neg<$Self<S>> for $Self<S> {
+        impl<S: PartOrdPrim> Neg<$Self<S>> for $Self<S> {
             #[inline] fn neg(&self) -> $Self<S> { build(|i| self.i(i).neg()) }
         }
 
-        impl<S: Primitive> Mul<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: PartOrdPrim> Mul<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn mul(&self, other: &$Self<S>) -> $Self<S> { self.mul_v(other) }
         }
 
-        impl<S: Primitive> One for $Self<S> {
+        impl<S: PartOrdPrim> One for $Self<S> {
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
 
-        impl<S: Primitive> Vector<S, [S, ..$n]> for $Self<S> {}
+        impl<S: PartOrdPrim> Vector<S, [S, ..$n]> for $Self<S> {}
     )
 )
 
@@ -206,7 +207,7 @@ impl<S: Primitive> Vec4<S> {
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector
 <
-    S: Float + ApproxEq<S>,
+    S: PartOrdFloat<S>,
     Slice
 >
 :   Vector<S, Slice>
@@ -277,7 +278,7 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 EuclideanVector<S, [S, ..2]> for Vec2<S> {
     #[inline]
     fn angle(&self, other: &Vec2<S>) -> Rad<S> {
@@ -285,7 +286,7 @@ EuclideanVector<S, [S, ..2]> for Vec2<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 EuclideanVector<S, [S, ..3]> for Vec3<S> {
     #[inline]
     fn angle(&self, other: &Vec3<S>) -> Rad<S> {
@@ -293,7 +294,7 @@ EuclideanVector<S, [S, ..3]> for Vec3<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: PartOrdFloat<S>>
 EuclideanVector<S, [S, ..4]> for Vec4<S> {
     #[inline]
     fn angle(&self, other: &Vec4<S>) -> Rad<S> {

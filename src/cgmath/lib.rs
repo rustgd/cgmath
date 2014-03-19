@@ -45,3 +45,5 @@ pub mod sphere;
 
 pub mod approx;
 pub mod ptr;
+
+pub mod partial_ord;
