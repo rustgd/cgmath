@@ -15,7 +15,7 @@
 
 #[macro_escape];
 
-use std::vec::{Items, MutItems};
+use std::slice::{Items, MutItems};
 
 pub trait Array
 <
@@ -78,12 +78,12 @@ macro_rules! array(
             }
 
             #[inline]
-            fn iter<'a>(&'a self) -> ::std::vec::Items<'a, $T> {
+            fn iter<'a>(&'a self) -> ::std::slice::Items<'a, $T> {
                 self.as_slice().iter()
             }
 
             #[inline]
-            fn mut_iter<'a>(&'a mut self) -> ::std::vec::MutItems<'a, $T> {
+            fn mut_iter<'a>(&'a mut self) -> ::std::slice::MutItems<'a, $T> {
                 self.as_mut_slice().mut_iter()
             }
 
