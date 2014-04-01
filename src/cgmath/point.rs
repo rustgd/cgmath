@@ -26,11 +26,11 @@ use partial_ord::PartOrdPrim;
 
 /// A point in 2-dimensional space.
 #[deriving(Eq, Clone, Hash)]
-pub struct Point2<S> { x: S, y: S }
+pub struct Point2<S> { pub x: S, pub y: S }
 
 /// A point in 3-dimensional space.
 #[deriving(Eq, Clone, Hash)]
-pub struct Point3<S> { x: S, y: S, z: S }
+pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
 
 
 impl<S: Num> Point2<S> {

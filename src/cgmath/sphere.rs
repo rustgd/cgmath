@@ -30,8 +30,8 @@ fn cast<T: NumCast, U: NumCast>(n: T) -> U {
 
 #[deriving(Clone, Eq)]
 pub struct Sphere<S> {
-    center: Point3<S>,
-    radius: S,
+    pub center: Point3<S>,
+    pub radius: S,
 }
 
 impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {

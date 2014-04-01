@@ -29,15 +29,15 @@ use partial_ord::PartOrdFloat;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat2<S> { x: Vec2<S>, y: Vec2<S> }
+pub struct Mat2<S> { pub x: Vec2<S>, pub y: Vec2<S> }
 
 /// A 3 x 3, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat3<S> { x: Vec3<S>, y: Vec3<S>, z: Vec3<S> }
+pub struct Mat3<S> { pub x: Vec3<S>, pub y: Vec3<S>, pub z: Vec3<S> }
 
 /// A 4 x 4, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat4<S> { x: Vec4<S>, y: Vec4<S>, z: Vec4<S>, w: Vec4<S> }
+pub struct Mat4<S> { pub x: Vec4<S>, pub y: Vec4<S>, pub z: Vec4<S>, pub w: Vec4<S> }
 
 
 impl<S: Primitive> Mat2<S> {

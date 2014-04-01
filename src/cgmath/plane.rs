@@ -43,8 +43,8 @@ use partial_ord::PartOrdFloat;
 /// superfluous negations (see _Real Time Collision Detection_, p. 55).
 #[deriving(Clone, Eq)]
 pub struct Plane<S> {
-    n: Vec3<S>,
-    d: S,
+    pub n: Vec3<S>,
+    pub d: S,
 }
 
 impl<S: PartOrdFloat<S>>

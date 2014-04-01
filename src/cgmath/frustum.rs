@@ -23,12 +23,12 @@ use partial_ord::PartOrdFloat;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<S> {
-    left:   Plane<S>,
-    right:  Plane<S>,
-    bottom: Plane<S>,
-    top:    Plane<S>,
-    near:   Plane<S>,
-    far:    Plane<S>,
+    pub left:   Plane<S>,
+    pub right:  Plane<S>,
+    pub bottom: Plane<S>,
+    pub top:    Plane<S>,
+    pub near:   Plane<S>,
+    pub far:    Plane<S>,
 }
 
 impl<S: PartOrdFloat<S>>
@@ -60,12 +60,12 @@ Frustum<S> {
 
 #[deriving(Clone, Eq)]
 pub struct FrustumPoints<S> {
-    near_top_left:     Point3<S>,
-    near_top_right:    Point3<S>,
-    near_bottom_left:  Point3<S>,
-    near_bottom_right: Point3<S>,
-    far_top_left:      Point3<S>,
-    far_top_right:     Point3<S>,
-    far_bottom_left:   Point3<S>,
-    far_bottom_right:  Point3<S>,
+    pub near_top_left:     Point3<S>,
+    pub near_top_right:    Point3<S>,
+    pub near_bottom_left:  Point3<S>,
+    pub near_bottom_right: Point3<S>,
+    pub far_top_left:      Point3<S>,
+    pub far_top_right:     Point3<S>,
+    pub far_bottom_left:   Point3<S>,
+    pub far_bottom_right:  Point3<S>,
 }
