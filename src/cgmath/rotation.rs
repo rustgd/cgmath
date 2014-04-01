@@ -135,7 +135,7 @@ pub trait Rotation3
 /// to a subset of those implemented on `Mat2`.
 #[deriving(Eq, Clone)]
 pub struct Basis2<S> {
-    priv mat: Mat2<S>
+    mat: Mat2<S>
 }
 
 impl<S: Float> Basis2<S> {
@@ -213,7 +213,7 @@ Rotation2<S> for Basis2<S> {
 /// been restricted to a subeset of those implemented on `Mat3`.
 #[deriving(Eq, Clone)]
 pub struct Basis3<S> {
-    priv mat: Mat3<S>
+    mat: Mat3<S>
 }
 
 impl<S: PartOrdFloat<S>>

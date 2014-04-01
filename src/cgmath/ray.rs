@@ -20,8 +20,8 @@ use vector::{Vector, Vec2, Vec3};
 #[deriving(Clone, Eq)]
 pub struct Ray<P,V>
 {
-    origin: P,
-    direction: V,
+    pub origin: P,
+    pub direction: V,
 }
 
 impl

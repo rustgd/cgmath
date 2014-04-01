@@ -20,14 +20,14 @@ use vector::{Vec2, Vec3};
 
 #[deriving(Clone, Eq)]
 pub struct Obb2<S> {
-    center: Point2<S>,
-    axis: Vec2<S>,
-    extents: Vec2<S>,
+    pub center: Point2<S>,
+    pub axis: Vec2<S>,
+    pub extents: Vec2<S>,
 }
 
 #[deriving(Clone, Eq)]
 pub struct Obb3<S> {
-    center: Point3<S>,
-    axis: Vec3<S>,
-    extents: Vec3<S>,
+    pub center: Point3<S>,
+    pub axis: Vec3<S>,
+    pub extents: Vec3<S>,
 }

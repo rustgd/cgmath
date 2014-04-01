@@ -71,9 +71,9 @@ pub trait Transform
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
 pub struct Decomposed<S,V,R> {
-    scale: S,
-    rot: R,
-    disp: V,
+    pub scale: S,
+    pub rot: R,
+    pub disp: V,
 }
 
 impl
@@ -169,7 +169,7 @@ fmt::Show for Decomposed<S,Vec3<S>,R> {
 
 /// A homogeneous transformation matrix.
 pub struct AffineMatrix3<S> {
-    mat: Mat4<S>,
+    pub mat: Mat4<S>,
 }
 
 impl<S : PartOrdFloat<S>>

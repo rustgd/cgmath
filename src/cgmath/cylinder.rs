@@ -20,7 +20,7 @@ use vector::Vec3;
 
 #[deriving(Clone, Eq)]
 pub struct Cylinder<S> {
-    center: Point3<S>,
-    axis: Vec3<S>,
-    radius: S,
+    pub center: Point3<S>,
+    pub axis: Vec3<S>,
+    pub radius: S,
 }

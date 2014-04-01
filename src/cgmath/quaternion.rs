@@ -27,7 +27,7 @@ use partial_ord::PartOrdFloat;
 
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
-pub struct Quat<S> { s: S, v: Vec3<S> }
+pub struct Quat<S> { pub s: S, pub v: Vec3<S> }
 
 array!(impl<S> Quat<S> -> [S, ..4] _4)
 

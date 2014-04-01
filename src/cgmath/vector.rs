@@ -81,7 +81,7 @@ pub trait Vector
 macro_rules! vec(
     ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
         #[deriving(Eq, Clone, Hash)]
-        pub struct $Self<S> { $($field: S),+ }
+        pub struct $Self<S> { $(pub $field: S),+ }
 
         impl<$S: Primitive> $Self<$S> {
             #[inline]

@@ -72,8 +72,8 @@ pub trait Aabb
 
 #[deriving(Clone, Eq)]
 pub struct Aabb2<S> {
-    min: Point2<S>,
-    max: Point2<S>,
+    pub min: Point2<S>,
+    pub max: Point2<S>,
 }
 
 impl<S: PartOrdPrim> Aabb2<S> {
@@ -103,8 +103,8 @@ impl<S: fmt::Show> fmt::Show for Aabb2<S> {
 
 #[deriving(Clone, Eq)]
 pub struct Aabb3<S> {
-    min: Point3<S>,
-    max: Point3<S>,
+    pub min: Point3<S>,
+    pub max: Point3<S>,
 }
 
 impl<S: PartOrdPrim> Aabb3<S> {
