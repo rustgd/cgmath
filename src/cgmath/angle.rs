@@ -15,9 +15,6 @@
 
 //! Angle units for type-safe, self-documenting code.
 
-pub use std::num::{sinh, cosh, tanh};
-pub use std::num::{asinh, acosh, atanh};
-
 use std::fmt;
 use std::num::{One, one, Zero, zero, cast};
 

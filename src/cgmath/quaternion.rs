@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use std::fmt;
-use std::num::{zero, one, cast, sqrt};
+use std::num::{zero, one, cast};
 
 use angle::{Angle, Rad, acos, sin, sin_cos};
 use approx::ApproxEq;
@@ -155,7 +155,7 @@ Quat<S> {
     /// it is advisable to use the `magnitude2` method instead.
     #[inline]
     pub fn magnitude(&self) -> S {
-        sqrt(self.magnitude2())
+        self.magnitude2().sqrt()
     }
 
     /// The normalized quaternion

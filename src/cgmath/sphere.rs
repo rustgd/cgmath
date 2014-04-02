@@ -43,7 +43,7 @@ impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
                 if tca < cast(0.0) { return None; }
                 let d2 = l.dot(&l) - tca*tca;
                 if d2 > s.radius*s.radius { return None; }
-                let thc = num::sqrt(s.radius*s.radius - d2);
+                let thc = (s.radius*s.radius - d2).sqrt();
                 Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
             }
         }
