@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use std::fmt;
-use std::num::{Zero, zero, One, one, sqrt};
+use std::num::{Zero, zero, One, one};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
@@ -230,7 +230,7 @@ pub trait EuclideanVector
     /// The norm of the vector.
     #[inline]
     fn length(&self) -> S {
-        sqrt(self.dot(self))
+        self.dot(self).sqrt()
     }
 
     /// The angle between the vector and `other`.
