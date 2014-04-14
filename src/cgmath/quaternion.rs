@@ -96,9 +96,9 @@ Quaternion<S> {
     /// The the result of multipliplying the quaternion by `other`
     pub fn mul_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
         Quaternion::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
-                  self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
-                  self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
-                  self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
+                        self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
+                        self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
+                        self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
     }
 
     #[inline]
@@ -248,8 +248,8 @@ ToMatrix3<S> for Quaternion<S> {
         let sx2 = x2 * self.s;
 
         Matrix3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
-                  xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
-                  xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2)
+                     xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
+                     xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2)
     }
 }
 
@@ -274,9 +274,9 @@ ToMatrix4<S> for Quaternion<S> {
         let sx2 = x2 * self.s;
 
         Matrix4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
-                  xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),
-                  xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2, zero::<S>(),
-                  zero::<S>(), zero::<S>(), zero::<S>(), one::<S>())
+                     xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),
+                     xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2, zero::<S>(),
+                     zero::<S>(), zero::<S>(), zero::<S>(), one::<S>())
     }
 }
 
@@ -360,8 +360,8 @@ Rotation3<S> for Quaternion<S>
         let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
 
         Quaternion::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
-                  sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
-                  cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
-                  cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
+                        sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
+                        cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
+                        cz2 * cx2 * sy2 - sz2 * sx2 * cy2)
     }
 }

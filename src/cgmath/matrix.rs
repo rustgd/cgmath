@@ -45,7 +45,7 @@ impl<S: Primitive> Matrix2<S> {
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Matrix2<S> {
         Matrix2::from_cols(Vector2::new(c0r0, c0r1),
-                        Vector2::new(c1r0, c1r1))
+                           Vector2::new(c1r0, c1r1))
     }
 
     #[inline]
@@ -56,7 +56,7 @@ impl<S: Primitive> Matrix2<S> {
     #[inline]
     pub fn from_value(value: S) -> Matrix2<S> {
         Matrix2::new(value.clone(), zero(),
-                  zero(), value.clone())
+                     zero(), value.clone())
     }
 
     #[inline]
@@ -81,8 +81,8 @@ impl<S: PartOrdFloat<S>> Matrix2<S> {
         let cos_theta = cos(theta.clone());
         let sin_theta = sin(theta.clone());
 
-        Matrix2::new(cos_theta.clone(),  -sin_theta.clone(),
-                  sin_theta.clone(),  cos_theta.clone())
+        Matrix2::new(cos_theta.clone(), -sin_theta.clone(),
+                     sin_theta.clone(),  cos_theta.clone())
     }
 }
 
@@ -92,8 +92,8 @@ impl<S: Primitive> Matrix3<S> {
                c1r0:S, c1r1:S, c1r2:S,
                c2r0:S, c2r1:S, c2r2:S) -> Matrix3<S> {
         Matrix3::from_cols(Vector3::new(c0r0, c0r1, c0r2),
-                        Vector3::new(c1r0, c1r1, c1r2),
-                        Vector3::new(c2r0, c2r1, c2r2))
+                           Vector3::new(c1r0, c1r1, c1r2),
+                           Vector3::new(c2r0, c2r1, c2r2))
     }
 
     #[inline]
@@ -104,8 +104,8 @@ impl<S: Primitive> Matrix3<S> {
     #[inline]
     pub fn from_value(value: S) -> Matrix3<S> {
         Matrix3::new(value.clone(), zero(), zero(),
-                  zero(), value.clone(), zero(),
-                  zero(), zero(), value.clone())
+                     zero(), value.clone(), zero(),
+                     zero(), zero(), value.clone())
     }
 
     #[inline]
@@ -133,9 +133,9 @@ Matrix3<S> {
     pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Matrix3::new(one(), zero(), zero(),
-                  zero(), c.clone(), s.clone(),
-                  zero(), -s.clone(), c.clone())
+        Matrix3::new( one(),     zero(),    zero(),
+                     zero(),  c.clone(), s.clone(),
+                     zero(), -s.clone(), c.clone())
     }
 
     /// Create a matrix from a rotation around the `y` axis (yaw).
@@ -143,17 +143,17 @@ Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
         Matrix3::new(c.clone(), zero(), -s.clone(),
-                  zero(), one(), zero(),
-                  s.clone(), zero(), c.clone())
+                        zero(),  one(),     zero(),
+                     s.clone(), zero(),  c.clone())
     }
 
     /// Create a matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Matrix3::new(c.clone(), s.clone(), zero(),
-                  -s.clone(), c.clone(), zero(),
-                  zero(), zero(), one())
+        Matrix3::new( c.clone(), s.clone(), zero(),
+                     -s.clone(), c.clone(), zero(),
+                         zero(),    zero(),  one())
     }
 
     /// Create a matrix from a set of euler angles.
@@ -169,9 +169,9 @@ Matrix3<S> {
         let (sy, cy) = sin_cos(y);
         let (sz, cz) = sin_cos(z);
 
-        Matrix3::new(cy * cz, cy * sz, -sy,
-                  -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                  sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+        Matrix3::new(                cy * cz,                 cy * sz,     -sy,
+                     -cx * sz + sx * sy * cz,  cx * cz + sx * sy * sz, sx * cy,
+                      sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
     }
 
     /// Create a matrix from a rotation around an arbitrary axis
@@ -180,16 +180,16 @@ Matrix3<S> {
         let _1subc = one::<S>() - c;
 
         Matrix3::new(_1subc * axis.x * axis.x + c,
-                  _1subc * axis.x * axis.y + s * axis.z,
-                  _1subc * axis.x * axis.z - s * axis.y,
+                     _1subc * axis.x * axis.y + s * axis.z,
+                     _1subc * axis.x * axis.z - s * axis.y,
 
-                  _1subc * axis.x * axis.y - s * axis.z,
-                  _1subc * axis.y * axis.y + c,
-                  _1subc * axis.y * axis.z + s * axis.x,
+                     _1subc * axis.x * axis.y - s * axis.z,
+                     _1subc * axis.y * axis.y + c,
+                     _1subc * axis.y * axis.z + s * axis.x,
 
-                  _1subc * axis.x * axis.z + s * axis.y,
-                  _1subc * axis.y * axis.z - s * axis.x,
-                  _1subc * axis.z * axis.z + c)
+                     _1subc * axis.x * axis.z + s * axis.y,
+                     _1subc * axis.y * axis.z - s * axis.x,
+                     _1subc * axis.z * axis.z + c)
     }
 }
 
@@ -200,9 +200,9 @@ impl<S: Primitive> Matrix4<S> {
                c2r0: S, c2r1: S, c2r2: S, c2r3: S,
                c3r0: S, c3r1: S, c3r2: S, c3r3: S) -> Matrix4<S>  {
         Matrix4::from_cols(Vector4::new(c0r0, c0r1, c0r2, c0r3),
-                        Vector4::new(c1r0, c1r1, c1r2, c1r3),
-                        Vector4::new(c2r0, c2r1, c2r2, c2r3),
-                        Vector4::new(c3r0, c3r1, c3r2, c3r3))
+                           Vector4::new(c1r0, c1r1, c1r2, c1r3),
+                           Vector4::new(c2r0, c2r1, c2r2, c2r3),
+                           Vector4::new(c3r0, c3r1, c3r2, c3r3))
     }
 
     #[inline]
@@ -212,10 +212,10 @@ impl<S: Primitive> Matrix4<S> {
 
     #[inline]
     pub fn from_value(value: S) -> Matrix4<S> {
-        Matrix4::new(value.clone(), zero(), zero(), zero(),
-                  zero(), value.clone(), zero(), zero(),
-                  zero(), zero(), value.clone(), zero(),
-                  zero(), zero(), zero(), value.clone())
+        Matrix4::new(value.clone(),        zero(),        zero(),        zero(),
+                            zero(), value.clone(),        zero(),        zero(),
+                            zero(),        zero(), value.clone(),        zero(),
+                            zero(),        zero(),        zero(), value.clone())
     }
 
     #[inline]
@@ -236,10 +236,10 @@ Matrix4<S> {
         let s = f.cross(up).normalize();
         let u = s.cross(&f);
 
-        Matrix4::new(s.x.clone(), u.x.clone(), -f.x.clone(), zero(),
-                  s.y.clone(), u.y.clone(), -f.y.clone(), zero(),
-                  s.z.clone(), u.z.clone(), -f.z.clone(), zero(),
-                  -eye.dot(&s), -eye.dot(&u), eye.dot(&f), one())
+        Matrix4::new( s.x.clone(),  u.x.clone(), -f.x.clone(), zero(),
+                      s.y.clone(),  u.y.clone(), -f.y.clone(), zero(),
+                      s.z.clone(),  u.z.clone(), -f.z.clone(), zero(),
+                     -eye.dot(&s), -eye.dot(&u),  eye.dot(&f),  one())
     }
 }
 
@@ -391,12 +391,12 @@ for Matrix2<S>
 {
     fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
         Matrix2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
-                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
+                     self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
     }
 
     fn transpose(&self) -> Matrix2<S> {
         Matrix2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone())
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone())
     }
 
     #[inline]
@@ -416,7 +416,7 @@ for Matrix2<S>
             None
         } else {
             Some(Matrix2::new( *self.cr(1, 1) / det, -*self.cr(0, 1) / det,
-                           -*self.cr(1, 0) / det,  *self.cr(0, 0) / det))
+                              -*self.cr(1, 0) / det,  *self.cr(0, 0) / det))
         }
     }
 
@@ -440,14 +440,14 @@ for Matrix3<S>
 {
     fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
         Matrix3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
-                  self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
-                  self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
+                     self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
+                     self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
     }
 
     fn transpose(&self) -> Matrix3<S> {
         Matrix3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
     }
 
     #[inline]
@@ -467,8 +467,8 @@ for Matrix3<S>
         let det = self.determinant();
         if det.approx_eq(&zero()) { None } else {
             Some(Matrix3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
-                                 self.c(2).cross(self.c(0)).div_s(det.clone()),
-                                 self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
+                                    self.c(2).cross(self.c(0)).div_s(det.clone()),
+                                    self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
         }
     }
 
@@ -513,16 +513,16 @@ for Matrix4<S>
 {
     fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> {
         Matrix4::new(dot_matrix4!(self, other, 0, 0), dot_matrix4!(self, other, 1, 0), dot_matrix4!(self, other, 2, 0), dot_matrix4!(self, other, 3, 0),
-                  dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
-                  dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
-                  dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
+                     dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
+                     dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
+                     dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
     }
 
     fn transpose(&self) -> Matrix4<S> {
         Matrix4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                  self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                     self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
     }
 
     fn transpose_self(&mut self) {
@@ -536,17 +536,17 @@ for Matrix4<S>
 
     fn determinant(&self) -> S {
         let m0 = Matrix3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+                              self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
         let m1 = Matrix3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+                              self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
         let m2 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
+                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
         let m3 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
+                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
 
         *self.cr(0, 0) * m0.determinant() -
         *self.cr(1, 0) * m1.determinant() +
@@ -646,8 +646,8 @@ ToMatrix3<S> for Matrix2<S> {
     /// 3-dimensional identity matrix.
     fn to_matrix3(&self) -> Matrix3<S> {
         Matrix3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
-                  zero(), zero(), one())
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
+                                    zero(),                zero(),  one())
     }
 }
 
@@ -657,9 +657,9 @@ ToMatrix4<S> for Matrix2<S> {
     /// 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
         Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
-                  zero(), zero(), one(), zero(),
-                  zero(), zero(), zero(), one())
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
+                                    zero(),                zero(),  one(), zero(),
+                                    zero(),                zero(), zero(),  one())
     }
 }
 
@@ -669,9 +669,9 @@ ToMatrix4<S> for Matrix3<S> {
     /// 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
         Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
-                  self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
-                  zero(), zero(), zero(), one())
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
+                     self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
+                                    zero(),                zero(),                zero(),  one())
     }
 }
 

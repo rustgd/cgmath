@@ -137,9 +137,9 @@ impl<S: Float, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
         let c3r3 = zero();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                  c1r0, c1r1, c1r2, c1r3,
-                  c2r0, c2r1, c2r2, c2r3,
-                  c3r0, c3r1, c3r2, c3r3)
+                     c1r0, c1r1, c1r2, c1r3,
+                     c2r0, c2r1, c2r2, c2r3,
+                     c3r0, c3r1, c3r2, c3r3)
     }
 }
 
@@ -188,9 +188,9 @@ impl<S: Float> ToMatrix4<S> for Perspective<S> {
         let c3r3 = zero();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                  c1r0, c1r1, c1r2, c1r3,
-                  c2r0, c2r1, c2r2, c2r3,
-                  c3r0, c3r1, c3r2, c3r3)
+                     c1r0, c1r1, c1r2, c1r3,
+                     c2r0, c2r1, c2r2, c2r3,
+                     c3r0, c3r1, c3r2, c3r3)
     }
 }
 
@@ -245,8 +245,8 @@ impl<S: Float> ToMatrix4<S> for Ortho<S> {
         let c3r3 = one::<S>();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                  c1r0, c1r1, c1r2, c1r3,
-                  c2r0, c2r1, c2r2, c2r3,
-                  c3r0, c3r1, c3r2, c3r3)
+                     c1r0, c1r1, c1r2, c1r3,
+                     c2r0, c2r1, c2r2, c2r3,
+                     c3r0, c3r1, c3r2, c3r3)
     }
 }

@@ -26,9 +26,9 @@ pub mod matrix2 {
     type float = f32;
 
     pub static A: Matrix2<f32> = Matrix2 { x: Vector2 { x: 1.0, y: 3.0 },
-                                     y: Vector2 { x: 2.0, y: 4.0 } };
+                                           y: Vector2 { x: 2.0, y: 4.0 } };
     pub static B: Matrix2<f32> = Matrix2 { x: Vector2 { x: 2.0, y: 4.0 },
-                                     y: Vector2 { x: 3.0, y: 5.0 } };
+                                           y: Vector2 { x: 3.0, y: 5.0 } };
 }
 
 pub mod matrix3 {
@@ -37,11 +37,11 @@ pub mod matrix3 {
     type float = f32;
 
     pub static A: Matrix3<f32> = Matrix3 { x: Vector3 { x: 1.0, y: 4.0, z:  7.0 },
-                                     y: Vector3 { x: 2.0, y: 5.0, z:  8.0 },
-                                     z: Vector3 { x: 3.0, y: 6.0, z:  9.0 } };
+                                           y: Vector3 { x: 2.0, y: 5.0, z:  8.0 },
+                                           z: Vector3 { x: 3.0, y: 6.0, z:  9.0 } };
     pub static B: Matrix3<f32> = Matrix3 { x: Vector3 { x: 2.0, y: 5.0, z:  8.0 },
-                                     y: Vector3 { x: 3.0, y: 6.0, z:  9.0 },
-                                     z: Vector3 { x: 4.0, y: 7.0, z: 10.0 } };
+                                           y: Vector3 { x: 3.0, y: 6.0, z:  9.0 },
+                                           z: Vector3 { x: 4.0, y: 7.0, z: 10.0 } };
 }
 
 pub mod matrix4 {
@@ -50,13 +50,13 @@ pub mod matrix4 {
     type float = f32;
 
     pub static A: Matrix4<f32> = Matrix4 { x: Vector4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
-                                     y: Vector4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
-                                     z: Vector4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
-                                     w: Vector4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
+                                           y: Vector4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
+                                           z: Vector4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                                           w: Vector4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 } };
     pub static B: Matrix4<f32> = Matrix4 { x: Vector4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },
-                                     y: Vector4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
-                                     z: Vector4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
-                                     w: Vector4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
+                                           y: Vector4 { x: 3.0, y: 7.0, z: 11.0, w: 15.0 },
+                                           z: Vector4 { x: 4.0, y: 8.0, z: 12.0, w: 16.0 },
+                                           w: Vector4 { x: 5.0, y: 9.0, z: 13.0, w: 17.0 } };
 }
 
 #[bench]
