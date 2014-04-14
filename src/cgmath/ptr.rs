@@ -14,24 +14,24 @@
 // limitations under the License.
 
 use array::Array;
-use matrix::{Mat2, Mat3, Mat4};
+use matrix::{Matrix2, Matrix3, Matrix4};
 use point::{Point2, Point3};
-use vector::{Vec2, Vec3, Vec4};
+use vector::{Vector2, Vector3, Vector4};
 
 pub trait Ptr<T> {
     fn ptr<'a>(&'a self) -> &'a T;
 }
 
-impl<S: Clone> Ptr<S> for Vec2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
-impl<S: Clone> Ptr<S> for Vec3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
-impl<S: Clone> Ptr<S> for Vec4<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
+impl<S: Clone> Ptr<S> for Vector2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
+impl<S: Clone> Ptr<S> for Vector3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
+impl<S: Clone> Ptr<S> for Vector4<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
 
 impl<S: Clone> Ptr<S> for Point2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
 impl<S: Clone> Ptr<S> for Point3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0) } }
 
-impl<S: Clone> Ptr<S> for Mat2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
-impl<S: Clone> Ptr<S> for Mat3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
-impl<S: Clone> Ptr<S> for Mat4<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
+impl<S: Clone> Ptr<S> for Matrix2<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
+impl<S: Clone> Ptr<S> for Matrix3<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
+impl<S: Clone> Ptr<S> for Matrix4<S> { #[inline] fn ptr<'a>(&'a self) -> &'a S { self.i(0).i(0) } }
 
 impl<'a, T, P: Ptr<T>> Ptr<T> for &'a [P] {
     #[inline] fn ptr<'a>(&'a self) -> &'a T { self[0].ptr() }

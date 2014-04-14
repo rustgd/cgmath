@@ -19,83 +19,83 @@ use std::num::{zero, one, cast};
 use angle::{Angle, Rad, acos, sin, sin_cos};
 use approx::ApproxEq;
 use array::{Array, build};
-use matrix::{Mat3, ToMat3, ToMat4, Mat4};
+use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
 use point::{Point3};
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
-use vector::{Vec3, Vector, EuclideanVector};
+use vector::{Vector3, Vector, EuclideanVector};
 use partial_ord::PartOrdFloat;
 
 /// A quaternion in scalar/vector form
 #[deriving(Clone, Eq)]
-pub struct Quat<S> { pub s: S, pub v: Vec3<S> }
+pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
-array!(impl<S> Quat<S> -> [S, ..4] _4)
+array!(impl<S> Quaternion<S> -> [S, ..4] _4)
 
-pub trait ToQuat<S: Float> {
-    fn to_quat(&self) -> Quat<S>;
+pub trait ToQuaternion<S: Float> {
+    fn to_quaternion(&self) -> Quaternion<S>;
 }
 
 impl<S: PartOrdFloat<S>>
-Quat<S> {
+Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
     #[inline]
-    pub fn new(w: S, xi: S, yj: S, zk: S) -> Quat<S> {
-        Quat::from_sv(w, Vec3::new(xi, yj, zk))
+    pub fn new(w: S, xi: S, yj: S, zk: S) -> Quaternion<S> {
+        Quaternion::from_sv(w, Vector3::new(xi, yj, zk))
     }
 
     /// Construct a new quaternion from a scalar and a vector
     #[inline]
-    pub fn from_sv(s: S, v: Vec3<S>) -> Quat<S> {
-        Quat { s: s, v: v }
+    pub fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
+        Quaternion { s: s, v: v }
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
     #[inline]
-    pub fn zero() -> Quat<S> {
-        Quat::new(zero(), zero(), zero(), zero())
+    pub fn zero() -> Quaternion<S> {
+        Quaternion::new(zero(), zero(), zero(), zero())
     }
 
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
-    pub fn identity() -> Quat<S> {
-        Quat::from_sv(one::<S>(), Vec3::zero())
+    pub fn identity() -> Quaternion<S> {
+        Quaternion::from_sv(one::<S>(), Vector3::zero())
     }
 
     /// The result of multiplying the quaternion a scalar
     #[inline]
-    pub fn mul_s(&self, value: S) -> Quat<S> {
-        Quat::from_sv(self.s * value, self.v.mul_s(value))
+    pub fn mul_s(&self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s * value, self.v.mul_s(value))
     }
 
     /// The result of dividing the quaternion a scalar
     #[inline]
-    pub fn div_s(&self, value: S) -> Quat<S> {
-        Quat::from_sv(self.s / value, self.v.div_s(value))
+    pub fn div_s(&self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s / value, self.v.div_s(value))
     }
 
     /// The result of multiplying the quaternion by a vector
     #[inline]
-    pub fn mul_v(&self, vec: &Vec3<S>) -> Vec3<S>  {
+    pub fn mul_v(&self, vec: &Vector3<S>) -> Vector3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
         self.v.cross(&tmp).mul_s(cast(2).unwrap()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
     #[inline]
-    pub fn add_q(&self, other: &Quat<S>) -> Quat<S> {
+    pub fn add_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
         build(|i| self.i(i).add(other.i(i)))
     }
 
     /// The difference between this quaternion and `other`
     #[inline]
-    pub fn sub_q(&self, other: &Quat<S>) -> Quat<S> {
+    pub fn sub_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
         build(|i| self.i(i).add(other.i(i)))
     }
 
     /// The the result of multipliplying the quaternion by `other`
-    pub fn mul_q(&self, other: &Quat<S>) -> Quat<S> {
-        Quat::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
+    pub fn mul_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
+        Quaternion::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
                   self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
                   self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
                   self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
@@ -112,30 +112,30 @@ Quat<S> {
     }
 
     #[inline]
-    pub fn add_self_q(&mut self, other: &Quat<S>) {
+    pub fn add_self_q(&mut self, other: &Quaternion<S>) {
         self.each_mut(|i, x| *x = x.add(other.i(i)));
     }
 
     #[inline]
-    pub fn sub_self_q(&mut self, other: &Quat<S>) {
+    pub fn sub_self_q(&mut self, other: &Quaternion<S>) {
         self.each_mut(|i, x| *x = x.sub(other.i(i)));
     }
 
     #[inline]
-    pub fn mul_self_q(&mut self, other: &Quat<S>) {
+    pub fn mul_self_q(&mut self, other: &Quaternion<S>) {
         *self = self.mul_q(other);
     }
 
     /// The dot product of the quaternion and `other`
     #[inline]
-    pub fn dot(&self, other: &Quat<S>) -> S {
+    pub fn dot(&self, other: &Quaternion<S>) -> S {
         self.s * other.s + self.v.dot(&other.v)
     }
 
     /// The conjugate of the quaternion
     #[inline]
-    pub fn conjugate(&self) -> Quat<S> {
-        Quat::from_sv(self.s.clone(), -self.v.clone())
+    pub fn conjugate(&self) -> Quaternion<S> {
+        Quaternion::from_sv(self.s.clone(), -self.v.clone())
     }
 
     /// The squared magnitude of the quaternion. This is useful for
@@ -160,7 +160,7 @@ Quat<S> {
 
     /// The normalized quaternion
     #[inline]
-    pub fn normalize(&self) -> Quat<S> {
+    pub fn normalize(&self) -> Quaternion<S> {
         self.mul_s(one::<S>() / self.magnitude())
     }
 
@@ -169,13 +169,13 @@ Quat<S> {
     /// # Return value
     ///
     /// The intoperlated quaternion
-    pub fn nlerp(&self, other: &Quat<S>, amount: S) -> Quat<S> {
+    pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
         self.mul_s(one::<S>() - amount).add_q(&other.mul_s(amount)).normalize()
     }
 }
 
 impl<S: PartOrdFloat<S>>
-Quat<S> {
+Quaternion<S> {
     /// Spherical Linear Intoperlation
     ///
     /// Perform a spherical linear interpolation between the quaternion and
@@ -195,7 +195,7 @@ Quat<S> {
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-    pub fn slerp(&self, other: &Quat<S>, amount: S) -> Quat<S> {
+    pub fn slerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
         use std::num::cast;
 
         let dot = self.dot(other);
@@ -228,9 +228,9 @@ Quat<S> {
 }
 
 impl<S: Float + ApproxEq<S>>
-ToMat3<S> for Quat<S> {
+ToMatrix3<S> for Quaternion<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
-    fn to_mat3(&self) -> Mat3<S> {
+    fn to_matrix3(&self) -> Matrix3<S> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
         let z2 = self.v.z + self.v.z;
@@ -247,16 +247,16 @@ ToMat3<S> for Quat<S> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
 
-        Mat3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
+        Matrix3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
                   xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
                   xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2)
     }
 }
 
 impl<S: Float + ApproxEq<S>>
-ToMat4<S> for Quat<S> {
+ToMatrix4<S> for Quaternion<S> {
     /// Convert the quaternion to a 4 x 4 rotation matrix
-    fn to_mat4(&self) -> Mat4<S> {
+    fn to_matrix4(&self) -> Matrix4<S> {
         let x2 = self.v.x + self.v.x;
         let y2 = self.v.y + self.v.y;
         let z2 = self.v.z + self.v.z;
@@ -273,7 +273,7 @@ ToMat4<S> for Quat<S> {
         let sz2 = z2 * self.s;
         let sx2 = x2 * self.s;
 
-        Mat4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
+        Matrix4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
                   xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),
                   xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2, zero::<S>(),
                   zero::<S>(), zero::<S>(), zero::<S>(), one::<S>())
@@ -281,14 +281,14 @@ ToMat4<S> for Quat<S> {
 }
 
 impl<S: PartOrdFloat<S>>
-Neg<Quat<S>> for Quat<S> {
+Neg<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn neg(&self) -> Quat<S> {
-        Quat::from_sv(-self.s, -self.v)
+    fn neg(&self) -> Quaternion<S> {
+        Quaternion::from_sv(-self.s, -self.v)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Quat<S> {
+impl<S: fmt::Show> fmt::Show for Quaternion<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "{} + {}i + {}j + {}k",
                 self.s,
@@ -301,65 +301,65 @@ impl<S: fmt::Show> fmt::Show for Quat<S> {
 // Quaternion Rotation impls
 
 impl<S: PartOrdFloat<S>>
-ToBasis3<S> for Quat<S> {
+ToBasis3<S> for Quaternion<S> {
     #[inline]
-    fn to_rot3(&self) -> Basis3<S> { Basis3::from_quat(self) }
+    fn to_rot3(&self) -> Basis3<S> { Basis3::from_quaternion(self) }
 }
 
-impl<S: Float> ToQuat<S> for Quat<S> {
+impl<S: Float> ToQuaternion<S> for Quaternion<S> {
     #[inline]
-    fn to_quat(&self) -> Quat<S> { self.clone() }
+    fn to_quaternion(&self) -> Quaternion<S> { self.clone() }
 }
 
 impl<S: PartOrdFloat<S>>
-Rotation<S, [S, ..3], Vec3<S>, Point3<S>> for Quat<S> {
+Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
-    fn identity() -> Quat<S> { Quat::identity() }
+    fn identity() -> Quaternion<S> { Quaternion::identity() }
 
     #[inline]
-    fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Quat<S> {
-        Mat3::look_at(dir, up).to_quat()
+    fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Quaternion<S> {
+        Matrix3::look_at(dir, up).to_quaternion()
     }
 
     #[inline]
-    fn between_vecs(a: &Vec3<S>, b: &Vec3<S>) -> Quat<S> {
+    fn between_vectors(a: &Vector3<S>, b: &Vector3<S>) -> Quaternion<S> {
         //http://stackoverflow.com/questions/1171849/
         //finding-quaternion-representing-the-rotation-from-one-vector-to-another
-        Quat::from_sv(one::<S>() + a.dot(b), a.cross(b)).normalize()
+        Quaternion::from_sv(one::<S>() + a.dot(b), a.cross(b)).normalize()
     }
 
     #[inline]
-    fn rotate_vec(&self, vec: &Vec3<S>) -> Vec3<S> { self.mul_v(vec) }
+    fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self.mul_v(vec) }
 
     #[inline]
-    fn concat(&self, other: &Quat<S>) -> Quat<S> { self.mul_q(other) }
+    fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self.mul_q(other) }
 
     #[inline]
-    fn concat_self(&mut self, other: &Quat<S>) { self.mul_self_q(other); }
+    fn concat_self(&mut self, other: &Quaternion<S>) { self.mul_self_q(other); }
 
     #[inline]
-    fn invert(&self) -> Quat<S> { self.conjugate().div_s(self.magnitude2()) }
+    fn invert(&self) -> Quaternion<S> { self.conjugate().div_s(self.magnitude2()) }
 
     #[inline]
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
 impl<S: PartOrdFloat<S>>
-Rotation3<S> for Quat<S>
+Rotation3<S> for Quaternion<S>
 {
     #[inline]
-    fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Quat<S> {
+    fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5).unwrap()));
-        Quat::from_sv(c, axis.mul_s(s))
+        Quaternion::from_sv(c, axis.mul_s(s))
     }
 
-    fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quat<S> {
+    fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
         let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
         let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
         let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
 
-        Quat::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
+        Quaternion::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
                   sz2 * cx2 * cy2 - cz2 * sx2 * sy2,
                   cz2 * sx2 * cy2 + sz2 * cx2 * sy2,
                   cz2 * cx2 * sy2 - sz2 * sx2 * cy2)

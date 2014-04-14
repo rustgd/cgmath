@@ -16,7 +16,7 @@
 //! Axis-aligned bounding boxes
 
 use point::{Point, Point2, Point3};
-use vector::{Vector, Vec2, Vec3};
+use vector::{Vector, Vector2, Vector3};
 use array::build;
 use partial_ord::PartOrdPrim;
 use std::fmt;
@@ -89,7 +89,7 @@ impl<S: PartOrdPrim> Aabb2<S> {
     }
 }
 
-impl<S: PartOrdPrim> Aabb<S, Vec2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
+impl<S: PartOrdPrim> Aabb<S, Vector2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
     fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> { Aabb2::new(p1, p2) }
     #[inline] fn min<'a>(&'a self) -> &'a Point2<S> { &self.min }
     #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
@@ -122,7 +122,7 @@ impl<S: PartOrdPrim> Aabb3<S> {
     }
 }
 
-impl<S: PartOrdPrim> Aabb<S, Vec3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
+impl<S: PartOrdPrim> Aabb<S, Vector3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
     fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
     #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.min }
     #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }

@@ -17,7 +17,7 @@ use std::num::{zero, one, cast};
 
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
-use matrix::{Mat4, ToMat4};
+use matrix::{Matrix4, ToMatrix4};
 use plane::Plane;
 use partial_ord::PartOrdFloat;
 
@@ -25,20 +25,20 @@ use partial_ord::PartOrdFloat;
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: Float, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Mat4<S> {
+pub fn perspective<S: Float, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PerspectiveFov {
         fovy:   fovy,
         aspect: aspect,
         near:   near,
         far:    far,
-    }.to_mat4()
+    }.to_matrix4()
 }
 
 /// Create a perspective matrix from a view frustrum.
 ///
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
-pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
+pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
         left:   left,
         right:  right,
@@ -46,14 +46,14 @@ pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) 
         top:    top,
         near:   near,
         far:    far,
-    }.to_mat4()
+    }.to_matrix4()
 }
 
 /// Create an orthographic projection matrix.
 ///
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
-pub fn ortho<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Mat4<S> {
+pub fn ortho<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
         left:   left,
         right:  right,
@@ -61,10 +61,10 @@ pub fn ortho<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) ->
         top:    top,
         near:   near,
         far:    far,
-    }.to_mat4()
+    }.to_matrix4()
 }
 
-pub trait Projection<S>: ToMat4<S> {
+pub trait Projection<S>: ToMatrix4<S> {
     fn to_frustum(&self) -> Frustum<S>;
 }
 
@@ -98,12 +98,12 @@ impl<S: PartOrdFloat<S>, A: Angle<S>>
 Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
-        Frustum::from_mat4(self.to_mat4())
+        Frustum::from_matrix4(self.to_matrix4())
     }
 }
 
-impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
-    fn to_mat4(&self) -> Mat4<S> {
+impl<S: Float, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
+    fn to_matrix4(&self) -> Matrix4<S> {
         let half_turn: A = Angle::turn_div_2();
 
         assert!(self.fovy   > zero(),    "The vertical field of view cannot be below zero, found: {:?}", self.fovy);
@@ -136,7 +136,7 @@ impl<S: Float, A: Angle<S>> ToMat4<S> for PerspectiveFov<S, A> {
         let c3r2 = (two * self.far * self.near) / (self.near - self.far);
         let c3r3 = zero();
 
-        Mat4::new(c0r0, c0r1, c0r2, c0r3,
+        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                   c1r0, c1r1, c1r2, c1r3,
                   c2r0, c2r1, c2r2, c2r3,
                   c3r0, c3r1, c3r2, c3r3)
@@ -155,12 +155,12 @@ impl<S: PartOrdFloat<S>>
 Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
-        Frustum::from_mat4(self.to_mat4())
+        Frustum::from_matrix4(self.to_matrix4())
     }
 }
 
-impl<S: Float> ToMat4<S> for Perspective<S> {
-    fn to_mat4(&self) -> Mat4<S> {
+impl<S: Float> ToMatrix4<S> for Perspective<S> {
+    fn to_matrix4(&self) -> Matrix4<S> {
         assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
         assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", self.near, self.far);
@@ -187,7 +187,7 @@ impl<S: Float> ToMat4<S> for Perspective<S> {
         let c3r2 = -(two * self.far * self.near) / (self.far - self.near);
         let c3r3 = zero();
 
-        Mat4::new(c0r0, c0r1, c0r2, c0r3,
+        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                   c1r0, c1r1, c1r2, c1r3,
                   c2r0, c2r1, c2r2, c2r3,
                   c3r0, c3r1, c3r2, c3r3)
@@ -216,8 +216,8 @@ Projection<S> for Ortho<S> {
     }
 }
 
-impl<S: Float> ToMat4<S> for Ortho<S> {
-    fn to_mat4(&self) -> Mat4<S> {
+impl<S: Float> ToMatrix4<S> for Ortho<S> {
+    fn to_matrix4(&self) -> Matrix4<S> {
         assert!(self.left   < self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
         assert!(self.bottom < self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
         assert!(self.near   < self.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", self.near, self.far);
@@ -244,7 +244,7 @@ impl<S: Float> ToMat4<S> for Ortho<S> {
         let c3r2 = -(self.far + self.near) / (self.far - self.near);
         let c3r3 = one::<S>();
 
-        Mat4::new(c0r0, c0r1, c0r2, c0r3,
+        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                   c1r0, c1r1, c1r2, c1r3,
                   c2r0, c2r1, c2r2, c2r3,
                   c3r0, c3r1, c3r2, c3r3)

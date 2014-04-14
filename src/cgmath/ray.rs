@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use point::{Point, Point2, Point3};
-use vector::{Vector, Vec2, Vec3};
+use vector::{Vector, Vector2, Vector3};
 
 /// A generic ray
 #[deriving(Clone, Eq)]
@@ -37,5 +37,5 @@ impl
     }
 }
 
-pub type Ray2<S> = Ray<Point2<S>,Vec2<S>>;
-pub type Ray3<S> = Ray<Point3<S>,Vec3<S>>;
+pub type Ray2<S> = Ray<Point2<S>,Vector2<S>>;
+pub type Ray3<S> = Ray<Point3<S>,Vector3<S>>;

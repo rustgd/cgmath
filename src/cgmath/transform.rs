@@ -18,12 +18,12 @@ use std::{fmt,num};
 use std::num::one;
 
 use approx::ApproxEq;
-use matrix::{Matrix, Mat4, ToMat4};
+use matrix::{Matrix, Matrix4, ToMatrix4};
 use point::{Point, Point3};
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
-use quaternion::Quat;
-use vector::{Vector, Vec3};
+use quaternion::Quaternion;
+use vector::{Vector, Vector3};
 use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait of affine transformation, that can be applied to points or vectors
@@ -38,12 +38,12 @@ pub trait Transform
     fn identity() -> Self;
     fn look_at(eye: &P, center: &P, up: &V) -> Self;
 
-    fn transform_vec(&self, vec: &V) -> V;
+    fn transform_vector(&self, vec: &V) -> V;
     fn transform_point(&self, point: &P) -> P;
 
     #[inline]
     fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
-        Ray::new( self.transform_point(&ray.origin), self.transform_vec(&ray.direction) )
+        Ray::new( self.transform_point(&ray.origin), self.transform_vector(&ray.direction) )
     }
 
     #[inline]
@@ -98,7 +98,7 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
     fn look_at(eye: &P, center: &P, up: &V) -> Decomposed<S,V,R> {
         let origin :P = Point::origin();
         let rot :R = Rotation::look_at( &center.sub_p(eye), up );
-        let disp :V = rot.rotate_vec( &origin.sub_p(eye) );
+        let disp :V = rot.rotate_vector( &origin.sub_p(eye) );
         Decomposed {
             scale: num::one(),
             rot: rot,
@@ -107,8 +107,8 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
     }
 
     #[inline]
-    fn transform_vec(&self, vec: &V) -> V {
-        self.rot.rotate_vec( &vec.mul_s( self.scale.clone() ))
+    fn transform_vector(&self, vec: &V) -> V {
+        self.rot.rotate_vector( &vec.mul_s( self.scale.clone() ))
     }
 
     #[inline]
@@ -131,7 +131,7 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
             let _1 : S = num::one();
             let s = _1 / self.scale;
             let r = self.rot.invert();
-            let d = r.rotate_vec( &self.disp ).mul_s( -s );
+            let d = r.rotate_vector( &self.disp ).mul_s( -s );
             Some( Decomposed {
                 scale: s,
                 rot: r,
@@ -142,24 +142,24 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
 }
 
 pub trait Transform3<S>
-: Transform<S, [S, ..3], Vec3<S>, Point3<S>>
-+ ToMat4<S>
+: Transform<S, [S, ..3], Vector3<S>, Point3<S>>
++ ToMatrix4<S>
 {}
 
 impl<S: PartOrdFloat<S>, R: Rotation3<S>>
-ToMat4<S> for Decomposed<S, Vec3<S>, R> {
-    fn to_mat4(&self) -> Mat4<S> {
-        let mut m = self.rot.to_mat3().mul_s( self.scale.clone() ).to_mat4();
+ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
+    fn to_matrix4(&self) -> Matrix4<S> {
+        let mut m = self.rot.to_matrix3().mul_s( self.scale.clone() ).to_matrix4();
         m.w = self.disp.extend( num::one() );
         m
     }
 }
 
 impl<S: PartOrdFloat<S>, R: Rotation3<S>>
-Transform3<S> for Decomposed<S,Vec3<S>,R> {}
+Transform3<S> for Decomposed<S,Vector3<S>,R> {}
 
 impl<S: fmt::Show + Float, R: fmt::Show + Rotation3<S>>
-fmt::Show for Decomposed<S,Vec3<S>,R> {
+fmt::Show for Decomposed<S,Vector3<S>,R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "(scale({}), rot({}), disp{})",
             self.scale, self.rot, self.disp)
@@ -169,23 +169,23 @@ fmt::Show for Decomposed<S,Vec3<S>,R> {
 
 /// A homogeneous transformation matrix.
 pub struct AffineMatrix3<S> {
-    pub mat: Mat4<S>,
+    pub mat: Matrix4<S>,
 }
 
 impl<S : PartOrdFloat<S>>
-Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
+Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
-       AffineMatrix3 { mat: Mat4::identity() }
+       AffineMatrix3 { mat: Matrix4::identity() }
     }
 
     #[inline]
-    fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> AffineMatrix3<S> {
-        AffineMatrix3 { mat: Mat4::look_at(eye, center, up) }
+    fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> AffineMatrix3<S> {
+        AffineMatrix3 { mat: Matrix4::look_at(eye, center, up) }
     }
     
     #[inline]
-    fn transform_vec(&self, vec: &Vec3<S>) -> Vec3<S> {
+    fn transform_vector(&self, vec: &Vector3<S>) -> Vector3<S> {
         self.mat.mul_v( &vec.extend(num::zero()) ).truncate()
     }
 
@@ -206,8 +206,8 @@ Transform<S, [S, ..3], Vec3<S>, Point3<S>> for AffineMatrix3<S> {
 }
 
 impl<S: PartOrdPrim>
-ToMat4<S> for AffineMatrix3<S> {
-    #[inline] fn to_mat4(&self) -> Mat4<S> { self.mat.clone() }
+ToMatrix4<S> for AffineMatrix3<S> {
+    #[inline] fn to_matrix4(&self) -> Matrix4<S> { self.mat.clone() }
 }
 
 impl<S: PartOrdFloat<S>>
@@ -216,26 +216,26 @@ Transform3<S> for AffineMatrix3<S> {}
 
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Transform3D<S>( Decomposed<S,Vec3<S>,Quat<S>> );
+pub struct Transform3D<S>( Decomposed<S,Vector3<S>,Quaternion<S>> );
 
 impl<S: PartOrdFloat<S>> Transform3D<S> {
     #[inline]
-    pub fn new(scale: S, rot: Quat<S>, disp: Vec3<S>) -> Transform3D<S> {
+    pub fn new(scale: S, rot: Quaternion<S>, disp: Vector3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
     }
 
     #[inline]
     pub fn translate(x: S, y: S, z: S) -> Transform3D<S> {
-       Transform3D( Decomposed { scale: one(), rot: Quat::zero(), disp: Vec3::new(x, y, z) })
+       Transform3D( Decomposed { scale: one(), rot: Quaternion::zero(), disp: Vector3::new(x, y, z) })
     }
 
     #[inline]
-    pub fn get<'a>(&'a self) -> &'a Decomposed<S,Vec3<S>,Quat<S>> {
+    pub fn get<'a>(&'a self) -> &'a Decomposed<S,Vector3<S>,Quaternion<S>> {
         let &Transform3D(ref d) = self;
         d
     }
 }
 
-impl<S: PartOrdFloat<S>> ToMat4<S> for Transform3D<S> {
-    fn to_mat4(&self) -> Mat4<S> { self.get().to_mat4() }
+impl<S: PartOrdFloat<S>> ToMatrix4<S> for Transform3D<S> {
+    fn to_matrix4(&self) -> Matrix4<S> { self.get().to_matrix4() }
 }
