@@ -16,18 +16,18 @@
 //! Oriented bounding boxes
 
 use point::{Point2, Point3};
-use vector::{Vec2, Vec3};
+use vector::{Vector2, Vector3};
 
 #[deriving(Clone, Eq)]
 pub struct Obb2<S> {
     pub center: Point2<S>,
-    pub axis: Vec2<S>,
-    pub extents: Vec2<S>,
+    pub axis: Vector2<S>,
+    pub extents: Vector2<S>,
 }
 
 #[deriving(Clone, Eq)]
 pub struct Obb3<S> {
     pub center: Point3<S>,
-    pub axis: Vec3<S>,
-    pub extents: Vec3<S>,
+    pub axis: Vector3<S>,
+    pub extents: Vector3<S>,
 }

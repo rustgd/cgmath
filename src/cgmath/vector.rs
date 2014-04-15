@@ -133,41 +133,41 @@ macro_rules! vec(
     )
 )
 
-vec!(Vec2<S> { x, y }, 2)
-vec!(Vec3<S> { x, y, z }, 3)
-vec!(Vec4<S> { x, y, z, w }, 4)
+vec!(Vector2<S> { x, y }, 2)
+vec!(Vector3<S> { x, y, z }, 3)
+vec!(Vector4<S> { x, y, z, w }, 4)
 
-array!(impl<S> Vec2<S> -> [S, ..2] _2)
-array!(impl<S> Vec3<S> -> [S, ..3] _3)
-array!(impl<S> Vec4<S> -> [S, ..4] _4)
+array!(impl<S> Vector2<S> -> [S, ..2] _2)
+array!(impl<S> Vector3<S> -> [S, ..3] _3)
+array!(impl<S> Vector4<S> -> [S, ..4] _4)
 
 /// Operations specific to numeric two-dimensional vectors.
-impl<S: Primitive> Vec2<S> {
-    #[inline] pub fn unit_x() -> Vec2<S> { Vec2::new(one(), zero()) }
-    #[inline] pub fn unit_y() -> Vec2<S> { Vec2::new(zero(), one()) }
+impl<S: Primitive> Vector2<S> {
+    #[inline] pub fn unit_x() -> Vector2<S> { Vector2::new(one(), zero()) }
+    #[inline] pub fn unit_y() -> Vector2<S> { Vector2::new(zero(), one()) }
 
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
-    pub fn perp_dot(&self, other: &Vec2<S>) -> S {
+    pub fn perp_dot(&self, other: &Vector2<S>) -> S {
         (self.x * other.y) - (self.y * other.x)
     }
 
     #[inline]
-    pub fn extend(&self, z: S)-> Vec3<S> {
-        Vec3::new(self.x.clone(), self.y.clone(), z)
+    pub fn extend(&self, z: S)-> Vector3<S> {
+        Vector3::new(self.x.clone(), self.y.clone(), z)
     }
 }
 
 /// Operations specific to numeric three-dimensional vectors.
-impl<S: Primitive> Vec3<S> {
-    #[inline] pub fn unit_x() -> Vec3<S> { Vec3::new(one(), zero(), zero()) }
-    #[inline] pub fn unit_y() -> Vec3<S> { Vec3::new(zero(), one(), zero()) }
-    #[inline] pub fn unit_z() -> Vec3<S> { Vec3::new(zero(), zero(), one()) }
+impl<S: Primitive> Vector3<S> {
+    #[inline] pub fn unit_x() -> Vector3<S> { Vector3::new(one(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vector3<S> { Vector3::new(zero(), one(), zero()) }
+    #[inline] pub fn unit_z() -> Vector3<S> { Vector3::new(zero(), zero(), one()) }
 
     /// Returns the cross product of the vector and `other`.
     #[inline]
-    pub fn cross(&self, other: &Vec3<S>) -> Vec3<S> {
-        Vec3::new((self.y * other.z) - (self.z * other.y),
+    pub fn cross(&self, other: &Vector3<S>) -> Vector3<S> {
+        Vector3::new((self.y * other.z) - (self.z * other.y),
                   (self.z * other.x) - (self.x * other.z),
                   (self.x * other.y) - (self.y * other.x))
     }
@@ -175,31 +175,31 @@ impl<S: Primitive> Vec3<S> {
     /// Calculates the cross product of the vector and `other`, then stores the
     /// result in `self`.
     #[inline]
-    pub fn cross_self(&mut self, other: &Vec3<S>) {
+    pub fn cross_self(&mut self, other: &Vector3<S>) {
         *self = self.cross(other)
     }
 
     #[inline]
-    pub fn extend(&self, w: S)-> Vec4<S> {
-        Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
+    pub fn extend(&self, w: S)-> Vector4<S> {
+        Vector4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
     }
 
     #[inline]
-    pub fn truncate(&self)-> Vec2<S> {
-        Vec2::new(self.x.clone(), self.y.clone())   //ignore Z
+    pub fn truncate(&self)-> Vector2<S> {
+        Vector2::new(self.x.clone(), self.y.clone())   //ignore Z
     }
 }
 
 /// Operations specific to numeric four-dimensional vectors.
-impl<S: Primitive> Vec4<S> {
-    #[inline] pub fn unit_x() -> Vec4<S> { Vec4::new(one(), zero(), zero(), zero()) }
-    #[inline] pub fn unit_y() -> Vec4<S> { Vec4::new(zero(), one(), zero(), zero()) }
-    #[inline] pub fn unit_z() -> Vec4<S> { Vec4::new(zero(), zero(), one(), zero()) }
-    #[inline] pub fn unit_w() -> Vec4<S> { Vec4::new(zero(), zero(), zero(), one()) }
+impl<S: Primitive> Vector4<S> {
+    #[inline] pub fn unit_x() -> Vector4<S> { Vector4::new(one(), zero(), zero(), zero()) }
+    #[inline] pub fn unit_y() -> Vector4<S> { Vector4::new(zero(), one(), zero(), zero()) }
+    #[inline] pub fn unit_z() -> Vector4<S> { Vector4::new(zero(), zero(), one(), zero()) }
+    #[inline] pub fn unit_w() -> Vector4<S> { Vector4::new(zero(), zero(), zero(), one()) }
 
     #[inline]
-    pub fn truncate(&self)-> Vec3<S> {
-        Vec3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
+    pub fn truncate(&self)-> Vector3<S> {
+        Vector3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
     }
 }
 
@@ -279,42 +279,42 @@ pub trait EuclideanVector
 }
 
 impl<S: PartOrdFloat<S>>
-EuclideanVector<S, [S, ..2]> for Vec2<S> {
+EuclideanVector<S, [S, ..2]> for Vector2<S> {
     #[inline]
-    fn angle(&self, other: &Vec2<S>) -> Rad<S> {
+    fn angle(&self, other: &Vector2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
 impl<S: PartOrdFloat<S>>
-EuclideanVector<S, [S, ..3]> for Vec3<S> {
+EuclideanVector<S, [S, ..3]> for Vector3<S> {
     #[inline]
-    fn angle(&self, other: &Vec3<S>) -> Rad<S> {
+    fn angle(&self, other: &Vector3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
 impl<S: PartOrdFloat<S>>
-EuclideanVector<S, [S, ..4]> for Vec4<S> {
+EuclideanVector<S, [S, ..4]> for Vector4<S> {
     #[inline]
-    fn angle(&self, other: &Vec4<S>) -> Rad<S> {
+    fn angle(&self, other: &Vector4<S>) -> Rad<S> {
         acos(self.dot(other) / (self.length() * other.length()))
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vec2<S> {
+impl<S: fmt::Show> fmt::Show for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vec3<S> {
+impl<S: fmt::Show> fmt::Show for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vec4<S> {
+impl<S: fmt::Show> fmt::Show for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }

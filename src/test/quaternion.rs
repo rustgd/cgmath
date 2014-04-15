@@ -13,16 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cgmath::matrix::{ToMat4, ToMat3};
-use cgmath::quaternion::Quat;
+use cgmath::matrix::{ToMatrix4, ToMatrix3};
+use cgmath::quaternion::Quaternion;
 
 #[test]
-fn to_mat4()
+fn to_matrix4()
 {
-    let quat = Quat::new(2f32, 3f32, 4f32, 5f32);
+    let quaternion = Quaternion::new(2f32, 3f32, 4f32, 5f32);
 
-    let mat_short = quat.to_mat4();
-    let mat_long = quat.to_mat3().to_mat4();
+    let matrix_short = quaternion.to_matrix4();
+    let matrix_long = quaternion.to_matrix3().to_matrix4();
 
-    assert!(mat_short == mat_long);
+    assert!(matrix_short == matrix_long);
 }

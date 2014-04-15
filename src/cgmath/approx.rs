@@ -16,10 +16,10 @@
 use std::num;
 
 use array::Array;
-use matrix::{Mat2, Mat3, Mat4};
+use matrix::{Matrix2, Matrix3, Matrix4};
 use point::{Point2, Point3};
-use quaternion::Quat;
-use vector::{Vec2, Vec3, Vec4};
+use quaternion::Quaternion;
+use vector::{Vector2, Vector3, Vector4};
 
 pub trait ApproxEq<T: Float> {
     fn approx_epsilon(_hack: Option<Self>) -> T {
@@ -62,15 +62,15 @@ macro_rules! approx_array(
     )
 )
 
-approx_array!(impl<S> Mat2<S>)
-approx_array!(impl<S> Mat3<S>)
-approx_array!(impl<S> Mat4<S>)
+approx_array!(impl<S> Matrix2<S>)
+approx_array!(impl<S> Matrix3<S>)
+approx_array!(impl<S> Matrix4<S>)
 
-approx_array!(impl<S> Quat<S>)
+approx_array!(impl<S> Quaternion<S>)
 
-approx_array!(impl<S> Vec2<S>)
-approx_array!(impl<S> Vec3<S>)
-approx_array!(impl<S> Vec4<S>)
+approx_array!(impl<S> Vector2<S>)
+approx_array!(impl<S> Vector3<S>)
+approx_array!(impl<S> Vector4<S>)
 
 approx_array!(impl<S> Point2<S>)
 approx_array!(impl<S> Point3<S>)

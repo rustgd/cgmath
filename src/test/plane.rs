@@ -35,12 +35,12 @@ fn test_from_points() {
 #[test]
 fn test_ray_intersection() {
     let p0 = Plane::from_abcd(1f64, 0f64, 0f64, -7f64);
-    let r0: Ray3<f64> = Ray::new(Point3::new(2f64, 3f64, 4f64), Vec3::new(1f64, 1f64, 1f64).normalize());
+    let r0: Ray3<f64> = Ray::new(Point3::new(2f64, 3f64, 4f64), Vector3::new(1f64, 1f64, 1f64).normalize());
     assert_eq!((p0, r0).intersection(), Some(Point3::new(7f64, 8f64, 9f64)));
 
     let p1 = Plane::from_points(Point3::new(5f64, 0f64,  5f64),
-                                  Point3::new(5f64, 5f64,  5f64),
-                                  Point3::new(5f64, 0f64, -1f64)).unwrap();
-    let r1: Ray3<f64> = Ray::new(Point3::new(0f64, 0f64, 0f64), Vec3::new(-1f64, 0f64, 0f64).normalize());
+                                Point3::new(5f64, 5f64,  5f64),
+                                Point3::new(5f64, 0f64, -1f64)).unwrap();
+    let r1: Ray3<f64> = Ray::new(Point3::new(0f64, 0f64, 0f64), Vector3::new(-1f64, 0f64, 0f64).normalize());
     assert_eq!((p1, r1).intersection(), None); // r1 points away from p1
 }

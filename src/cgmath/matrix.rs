@@ -22,138 +22,138 @@ use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::{Array, build};
 use point::{Point, Point3};
-use quaternion::{Quat, ToQuat};
+use quaternion::{Quaternion, ToQuaternion};
 use vector::{Vector, EuclideanVector};
-use vector::{Vec2, Vec3, Vec4};
+use vector::{Vector2, Vector3, Vector4};
 use partial_ord::PartOrdFloat;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat2<S> { pub x: Vec2<S>, pub y: Vec2<S> }
+pub struct Matrix2<S> { pub x: Vector2<S>, pub y: Vector2<S> }
 
 /// A 3 x 3, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat3<S> { pub x: Vec3<S>, pub y: Vec3<S>, pub z: Vec3<S> }
+pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> }
 
 /// A 4 x 4, column major matrix
 #[deriving(Clone, Eq)]
-pub struct Mat4<S> { pub x: Vec4<S>, pub y: Vec4<S>, pub z: Vec4<S>, pub w: Vec4<S> }
+pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
-impl<S: Primitive> Mat2<S> {
+impl<S: Primitive> Matrix2<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
-               c1r0: S, c1r1: S) -> Mat2<S> {
-        Mat2::from_cols(Vec2::new(c0r0, c0r1),
-                        Vec2::new(c1r0, c1r1))
+               c1r0: S, c1r1: S) -> Matrix2<S> {
+        Matrix2::from_cols(Vector2::new(c0r0, c0r1),
+                           Vector2::new(c1r0, c1r1))
     }
 
     #[inline]
-    pub fn from_cols(c0: Vec2<S>, c1: Vec2<S>) -> Mat2<S> {
-        Mat2 { x: c0, y: c1 }
+    pub fn from_cols(c0: Vector2<S>, c1: Vector2<S>) -> Matrix2<S> {
+        Matrix2 { x: c0, y: c1 }
     }
 
     #[inline]
-    pub fn from_value(value: S) -> Mat2<S> {
-        Mat2::new(value.clone(), zero(),
-                  zero(), value.clone())
+    pub fn from_value(value: S) -> Matrix2<S> {
+        Matrix2::new(value.clone(), zero(),
+                     zero(), value.clone())
     }
 
     #[inline]
-    pub fn zero() -> Mat2<S> {
-        Mat2::from_value(zero())
+    pub fn zero() -> Matrix2<S> {
+        Matrix2::from_value(zero())
     }
 
     #[inline]
-    pub fn identity() -> Mat2<S> {
-        Mat2::from_value(one())
+    pub fn identity() -> Matrix2<S> {
+        Matrix2::from_value(one())
     }
 }
 
-impl<S: PartOrdFloat<S>> Mat2<S> {
-    pub fn look_at(dir: &Vec2<S>, up: &Vec2<S>) -> Mat2<S> {
+impl<S: PartOrdFloat<S>> Matrix2<S> {
+    pub fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Matrix2<S> {
         //TODO: verify look_at 2D
-        Mat2::from_cols(up.clone(), dir.clone()).transpose()
+        Matrix2::from_cols(up.clone(), dir.clone()).transpose()
     }
 
     #[inline]
-    pub fn from_angle(theta: Rad<S>) -> Mat2<S> {
+    pub fn from_angle(theta: Rad<S>) -> Matrix2<S> {
         let cos_theta = cos(theta.clone());
         let sin_theta = sin(theta.clone());
 
-        Mat2::new(cos_theta.clone(),  -sin_theta.clone(),
-                  sin_theta.clone(),  cos_theta.clone())
+        Matrix2::new(cos_theta.clone(), -sin_theta.clone(),
+                     sin_theta.clone(),  cos_theta.clone())
     }
 }
 
-impl<S: Primitive> Mat3<S> {
+impl<S: Primitive> Matrix3<S> {
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
-               c2r0:S, c2r1:S, c2r2:S) -> Mat3<S> {
-        Mat3::from_cols(Vec3::new(c0r0, c0r1, c0r2),
-                        Vec3::new(c1r0, c1r1, c1r2),
-                        Vec3::new(c2r0, c2r1, c2r2))
+               c2r0:S, c2r1:S, c2r2:S) -> Matrix3<S> {
+        Matrix3::from_cols(Vector3::new(c0r0, c0r1, c0r2),
+                           Vector3::new(c1r0, c1r1, c1r2),
+                           Vector3::new(c2r0, c2r1, c2r2))
     }
 
     #[inline]
-    pub fn from_cols(c0: Vec3<S>, c1: Vec3<S>, c2: Vec3<S>) -> Mat3<S> {
-        Mat3 { x: c0, y: c1, z: c2 }
+    pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
+        Matrix3 { x: c0, y: c1, z: c2 }
     }
 
     #[inline]
-    pub fn from_value(value: S) -> Mat3<S> {
-        Mat3::new(value.clone(), zero(), zero(),
-                  zero(), value.clone(), zero(),
-                  zero(), zero(), value.clone())
+    pub fn from_value(value: S) -> Matrix3<S> {
+        Matrix3::new(value.clone(), zero(), zero(),
+                     zero(), value.clone(), zero(),
+                     zero(), zero(), value.clone())
     }
 
     #[inline]
-    pub fn zero() -> Mat3<S> {
-        Mat3::from_value(zero())
+    pub fn zero() -> Matrix3<S> {
+        Matrix3::from_value(zero())
     }
 
     #[inline]
-    pub fn identity() -> Mat3<S> {
-        Mat3::from_value(one())
+    pub fn identity() -> Matrix3<S> {
+        Matrix3::from_value(one())
     }
 }
 
 impl<S: PartOrdFloat<S>>
-Mat3<S> {
-    pub fn look_at(dir: &Vec3<S>, up: &Vec3<S>) -> Mat3<S> {
+Matrix3<S> {
+    pub fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
         let side = up.cross(&dir).normalize();
         let up = dir.cross(&side).normalize();
 
-        Mat3::from_cols(side, up, dir).transpose()
+        Matrix3::from_cols(side, up, dir).transpose()
     }
 
     /// Create a matrix from a rotation around the `x` axis (pitch).
-    pub fn from_angle_x(theta: Rad<S>) -> Mat3<S> {
+    pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Mat3::new(one(), zero(), zero(),
-                  zero(), c.clone(), s.clone(),
-                  zero(), -s.clone(), c.clone())
+        Matrix3::new( one(),     zero(),    zero(),
+                     zero(),  c.clone(), s.clone(),
+                     zero(), -s.clone(), c.clone())
     }
 
     /// Create a matrix from a rotation around the `y` axis (yaw).
-    pub fn from_angle_y(theta: Rad<S>) -> Mat3<S> {
+    pub fn from_angle_y(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Mat3::new(c.clone(), zero(), -s.clone(),
-                  zero(), one(), zero(),
-                  s.clone(), zero(), c.clone())
+        Matrix3::new(c.clone(), zero(), -s.clone(),
+                        zero(),  one(),     zero(),
+                     s.clone(), zero(),  c.clone())
     }
 
     /// Create a matrix from a rotation around the `z` axis (roll).
-    pub fn from_angle_z(theta: Rad<S>) -> Mat3<S> {
+    pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Mat3::new(c.clone(), s.clone(), zero(),
-                  -s.clone(), c.clone(), zero(),
-                  zero(), zero(), one())
+        Matrix3::new( c.clone(), s.clone(), zero(),
+                     -s.clone(), c.clone(), zero(),
+                         zero(),    zero(),  one())
     }
 
     /// Create a matrix from a set of euler angles.
@@ -163,89 +163,89 @@ Mat3<S> {
     /// - `x`: the angular rotation around the `x` axis (pitch).
     /// - `y`: the angular rotation around the `y` axis (yaw).
     /// - `z`: the angular rotation around the `z` axis (roll).
-    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Mat3<S> {
+    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
         let (sx, cx) = sin_cos(x);
         let (sy, cy) = sin_cos(y);
         let (sz, cz) = sin_cos(z);
 
-        Mat3::new(cy * cz, cy * sz, -sy,
-                  -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                  sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+        Matrix3::new(                cy * cz,                 cy * sz,     -sy,
+                     -cx * sz + sx * sy * cz,  cx * cz + sx * sy * sz, sx * cy,
+                      sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
     }
 
     /// Create a matrix from a rotation around an arbitrary axis
-    pub fn from_axis_angle(axis: &Vec3<S>, angle: Rad<S>) -> Mat3<S> {
+    pub fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = sin_cos(angle);
         let _1subc = one::<S>() - c;
 
-        Mat3::new(_1subc * axis.x * axis.x + c,
-                  _1subc * axis.x * axis.y + s * axis.z,
-                  _1subc * axis.x * axis.z - s * axis.y,
+        Matrix3::new(_1subc * axis.x * axis.x + c,
+                     _1subc * axis.x * axis.y + s * axis.z,
+                     _1subc * axis.x * axis.z - s * axis.y,
 
-                  _1subc * axis.x * axis.y - s * axis.z,
-                  _1subc * axis.y * axis.y + c,
-                  _1subc * axis.y * axis.z + s * axis.x,
+                     _1subc * axis.x * axis.y - s * axis.z,
+                     _1subc * axis.y * axis.y + c,
+                     _1subc * axis.y * axis.z + s * axis.x,
 
-                  _1subc * axis.x * axis.z + s * axis.y,
-                  _1subc * axis.y * axis.z - s * axis.x,
-                  _1subc * axis.z * axis.z + c)
+                     _1subc * axis.x * axis.z + s * axis.y,
+                     _1subc * axis.y * axis.z - s * axis.x,
+                     _1subc * axis.z * axis.z + c)
     }
 }
 
-impl<S: Primitive> Mat4<S> {
+impl<S: Primitive> Matrix4<S> {
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
                c2r0: S, c2r1: S, c2r2: S, c2r3: S,
-               c3r0: S, c3r1: S, c3r2: S, c3r3: S) -> Mat4<S>  {
-        Mat4::from_cols(Vec4::new(c0r0, c0r1, c0r2, c0r3),
-                        Vec4::new(c1r0, c1r1, c1r2, c1r3),
-                        Vec4::new(c2r0, c2r1, c2r2, c2r3),
-                        Vec4::new(c3r0, c3r1, c3r2, c3r3))
+               c3r0: S, c3r1: S, c3r2: S, c3r3: S) -> Matrix4<S>  {
+        Matrix4::from_cols(Vector4::new(c0r0, c0r1, c0r2, c0r3),
+                           Vector4::new(c1r0, c1r1, c1r2, c1r3),
+                           Vector4::new(c2r0, c2r1, c2r2, c2r3),
+                           Vector4::new(c3r0, c3r1, c3r2, c3r3))
     }
 
     #[inline]
-    pub fn from_cols(c0: Vec4<S>, c1: Vec4<S>, c2: Vec4<S>, c3: Vec4<S>) -> Mat4<S> {
-        Mat4 { x: c0, y: c1, z: c2, w: c3 }
+    pub fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
+        Matrix4 { x: c0, y: c1, z: c2, w: c3 }
     }
 
     #[inline]
-    pub fn from_value(value: S) -> Mat4<S> {
-        Mat4::new(value.clone(), zero(), zero(), zero(),
-                  zero(), value.clone(), zero(), zero(),
-                  zero(), zero(), value.clone(), zero(),
-                  zero(), zero(), zero(), value.clone())
+    pub fn from_value(value: S) -> Matrix4<S> {
+        Matrix4::new(value.clone(),        zero(),        zero(),        zero(),
+                            zero(), value.clone(),        zero(),        zero(),
+                            zero(),        zero(), value.clone(),        zero(),
+                            zero(),        zero(),        zero(), value.clone())
     }
 
     #[inline]
-    pub fn zero() -> Mat4<S> {
-        Mat4::from_value(zero())
+    pub fn zero() -> Matrix4<S> {
+        Matrix4::from_value(zero())
     }
 
     #[inline]
-    pub fn identity() -> Mat4<S> {
-        Mat4::from_value(one())
+    pub fn identity() -> Matrix4<S> {
+        Matrix4::from_value(one())
     }
 }
 
 impl<S: PartOrdFloat<S>>
-Mat4<S> {
-    pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vec3<S>) -> Mat4<S> {
+Matrix4<S> {
+    pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> Matrix4<S> {
         let f = center.sub_p(eye).normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(&f);
 
-        Mat4::new(s.x.clone(), u.x.clone(), -f.x.clone(), zero(),
-                  s.y.clone(), u.y.clone(), -f.y.clone(), zero(),
-                  s.z.clone(), u.z.clone(), -f.z.clone(), zero(),
-                  -eye.dot(&s), -eye.dot(&u), eye.dot(&f), one())
+        Matrix4::new( s.x.clone(),  u.x.clone(), -f.x.clone(), zero(),
+                      s.y.clone(),  u.y.clone(), -f.y.clone(), zero(),
+                      s.z.clone(),  u.z.clone(), -f.z.clone(), zero(),
+                     -eye.dot(&s), -eye.dot(&u),  eye.dot(&f),  one())
     }
 }
 
-array!(impl<S> Mat2<S> -> [Vec2<S>, ..2] _2)
-array!(impl<S> Mat3<S> -> [Vec3<S>, ..3] _3)
-array!(impl<S> Mat4<S> -> [Vec4<S>, ..4] _4)
+array!(impl<S> Matrix2<S> -> [Vector2<S>, ..2] _2)
+array!(impl<S> Matrix3<S> -> [Vector3<S>, ..3] _3)
+array!(impl<S> Matrix4<S> -> [Vector4<S>, ..4] _4)
 
 pub trait Matrix
 <
@@ -361,42 +361,42 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: PartOrdFloat<S>> Add<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn add(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Add<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn add(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Add<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn add(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> Sub<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn sub(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Sub<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn sub(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Sub<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn sub(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> Neg<Mat2<S>> for Mat2<S> { #[inline] fn neg(&self) -> Mat2<S> { build(|i| self.i(i).neg()) } }
-impl<S: PartOrdFloat<S>> Neg<Mat3<S>> for Mat3<S> { #[inline] fn neg(&self) -> Mat3<S> { build(|i| self.i(i).neg()) } }
-impl<S: PartOrdFloat<S>> Neg<Mat4<S>> for Mat4<S> { #[inline] fn neg(&self) -> Mat4<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { build(|i| self.i(i).neg()) } }
+impl<S: PartOrdFloat<S>> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: PartOrdFloat<S>> Zero for Mat2<S> { #[inline] fn zero() -> Mat2<S> { Mat2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: PartOrdFloat<S>> Zero for Mat3<S> { #[inline] fn zero() -> Mat3<S> { Mat3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: PartOrdFloat<S>> Zero for Mat4<S> { #[inline] fn zero() -> Mat4<S> { Mat4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: PartOrdFloat<S>> Zero for Matrix4<S> { #[inline] fn zero() -> Matrix4<S> { Matrix4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: PartOrdFloat<S>> Mul<Mat2<S>, Mat2<S>> for Mat2<S> { #[inline] fn mul(&self, other: &Mat2<S>) -> Mat2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Mul<Mat3<S>, Mat3<S>> for Mat3<S> { #[inline] fn mul(&self, other: &Mat3<S>) -> Mat3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Mul<Mat4<S>, Mat4<S>> for Mat4<S> { #[inline] fn mul(&self, other: &Mat4<S>) -> Mat4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: PartOrdFloat<S>> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> One for Mat2<S> { #[inline] fn one() -> Mat2<S> { Mat2::identity() } }
-impl<S: PartOrdFloat<S>> One for Mat3<S> { #[inline] fn one() -> Mat3<S> { Mat3::identity() } }
-impl<S: PartOrdFloat<S>> One for Mat4<S> { #[inline] fn one() -> Mat4<S> { Mat4::identity() } }
+impl<S: PartOrdFloat<S>> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matrix2::identity() } }
+impl<S: PartOrdFloat<S>> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
+impl<S: PartOrdFloat<S>> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
 
 impl<S: PartOrdFloat<S>>
-Matrix<S, [Vec2<S>, ..2], Vec2<S>, [S, ..2]>
-for Mat2<S>
+Matrix<S, [Vector2<S>, ..2], Vector2<S>, [S, ..2]>
+for Matrix2<S>
 {
-    fn mul_m(&self, other: &Mat2<S>) -> Mat2<S> {
-        Mat2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
-                  self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
+    fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
+        Matrix2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
+                     self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
     }
 
-    fn transpose(&self) -> Mat2<S> {
-        Mat2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone())
+    fn transpose(&self) -> Matrix2<S> {
+        Matrix2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone())
     }
 
     #[inline]
@@ -410,13 +410,13 @@ for Mat2<S>
     }
 
     #[inline]
-    fn invert(&self) -> Option<Mat2<S>> {
+    fn invert(&self) -> Option<Matrix2<S>> {
         let det = self.determinant();
         if det.approx_eq(&zero()) {
             None
         } else {
-            Some(Mat2::new( *self.cr(1, 1) / det, -*self.cr(0, 1) / det,
-                           -*self.cr(1, 0) / det,  *self.cr(0, 0) / det))
+            Some(Matrix2::new( *self.cr(1, 1) / det, -*self.cr(0, 1) / det,
+                              -*self.cr(1, 0) / det,  *self.cr(0, 0) / det))
         }
     }
 
@@ -435,19 +435,19 @@ for Mat2<S>
 }
 
 impl<S: PartOrdFloat<S>>
-Matrix<S, [Vec3<S>, ..3], Vec3<S>, [S, ..3]>
-for Mat3<S>
+Matrix<S, [Vector3<S>, ..3], Vector3<S>, [S, ..3]>
+for Matrix3<S>
 {
-    fn mul_m(&self, other: &Mat3<S>) -> Mat3<S> {
-        Mat3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
-                  self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
-                  self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
+    fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
+        Matrix3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
+                     self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
+                     self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
     }
 
-    fn transpose(&self) -> Mat3<S> {
-        Mat3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
+    fn transpose(&self) -> Matrix3<S> {
+        Matrix3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
     }
 
     #[inline]
@@ -463,12 +463,12 @@ for Mat3<S>
         *self.cr(2, 0) * (*self.cr(0, 1) * *self.cr(1, 2) - *self.cr(1, 1) * *self.cr(0, 2))
     }
 
-    fn invert(&self) -> Option<Mat3<S>> {
+    fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
         if det.approx_eq(&zero()) { None } else {
-            Some(Mat3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
-                                 self.c(2).cross(self.c(0)).div_s(det.clone()),
-                                 self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
+            Some(Matrix3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
+                                    self.c(2).cross(self.c(0)).div_s(det.clone()),
+                                    self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
         }
     }
 
@@ -499,7 +499,7 @@ for Mat3<S>
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
-macro_rules! dot_mat4(
+macro_rules! dot_matrix4(
     ($A:expr, $B:expr, $I:expr, $J:expr) => (
         (*$A.cr(0, $I)) * (*$B.cr($J, 0)) +
         (*$A.cr(1, $I)) * (*$B.cr($J, 1)) +
@@ -508,21 +508,21 @@ macro_rules! dot_mat4(
 ))
 
 impl<S: PartOrdFloat<S>>
-Matrix<S, [Vec4<S>, ..4], Vec4<S>, [S, ..4]>
-for Mat4<S>
+Matrix<S, [Vector4<S>, ..4], Vector4<S>, [S, ..4]>
+for Matrix4<S>
 {
-    fn mul_m(&self, other: &Mat4<S>) -> Mat4<S> {
-        Mat4::new(dot_mat4!(self, other, 0, 0), dot_mat4!(self, other, 1, 0), dot_mat4!(self, other, 2, 0), dot_mat4!(self, other, 3, 0),
-                  dot_mat4!(self, other, 0, 1), dot_mat4!(self, other, 1, 1), dot_mat4!(self, other, 2, 1), dot_mat4!(self, other, 3, 1),
-                  dot_mat4!(self, other, 0, 2), dot_mat4!(self, other, 1, 2), dot_mat4!(self, other, 2, 2), dot_mat4!(self, other, 3, 2),
-                  dot_mat4!(self, other, 0, 3), dot_mat4!(self, other, 1, 3), dot_mat4!(self, other, 2, 3), dot_mat4!(self, other, 3, 3))
+    fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> {
+        Matrix4::new(dot_matrix4!(self, other, 0, 0), dot_matrix4!(self, other, 1, 0), dot_matrix4!(self, other, 2, 0), dot_matrix4!(self, other, 3, 0),
+                     dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
+                     dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
+                     dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
     }
 
-    fn transpose(&self) -> Mat4<S> {
-        Mat4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
-                  self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                  self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                  self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
+    fn transpose(&self) -> Matrix4<S> {
+        Matrix4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
+                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                     self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
     }
 
     fn transpose_self(&mut self) {
@@ -535,18 +535,18 @@ for Mat4<S>
     }
 
     fn determinant(&self) -> S {
-        let m0 = Mat3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
-        let m1 = Mat3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
-        let m2 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
-        let m3 = Mat3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                           self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
-                           self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
+        let m0 = Matrix3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                              self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m1 = Matrix3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
+                              self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
+        let m2 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
+                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
+        let m3 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
+                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
+                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
 
         *self.cr(0, 0) * m0.determinant() -
         *self.cr(1, 0) * m1.determinant() +
@@ -554,14 +554,14 @@ for Mat4<S>
         *self.cr(3, 0) * m3.determinant()
     }
 
-    fn invert(&self) -> Option<Mat4<S>> {
+    fn invert(&self) -> Option<Matrix4<S>> {
         if self.is_invertible() {
             // Gauss Jordan Elimination with partial pivoting
             // So take this matrix ('mat') augmented with the identity ('ident'),
             // and essentially reduce [mat|ident]
 
             let mut mat = self.clone();
-            let mut ident = Mat4::identity();
+            let mut ident = Matrix4::identity();
 
             for j in range(0u, 4u) {
                 // Find largest element in col j
@@ -636,49 +636,49 @@ for Mat4<S>
 }
 
 // Conversion traits
-pub trait ToMat2<S: Primitive> { fn to_mat2(&self) -> Mat2<S>; }
-pub trait ToMat3<S: Primitive> { fn to_mat3(&self) -> Mat3<S>; }
-pub trait ToMat4<S: Primitive> { fn to_mat4(&self) -> Mat4<S>; }
+pub trait ToMatrix2<S: Primitive> { fn to_matrix2(&self) -> Matrix2<S>; }
+pub trait ToMatrix3<S: Primitive> { fn to_matrix3(&self) -> Matrix3<S>; }
+pub trait ToMatrix4<S: Primitive> { fn to_matrix4(&self) -> Matrix4<S>; }
 
 impl<S: PartOrdFloat<S>>
-ToMat3<S> for Mat2<S> {
+ToMatrix3<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 3-dimensional identity matrix.
-    fn to_mat3(&self) -> Mat3<S> {
-        Mat3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
-                  zero(), zero(), one())
+    fn to_matrix3(&self) -> Matrix3<S> {
+        Matrix3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
+                                    zero(),                zero(),  one())
     }
 }
 
 impl<S: PartOrdFloat<S>>
-ToMat4<S> for Mat2<S> {
+ToMatrix4<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
-    fn to_mat4(&self) -> Mat4<S> {
-        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
-                  zero(), zero(), one(), zero(),
-                  zero(), zero(), zero(), one())
+    fn to_matrix4(&self) -> Matrix4<S> {
+        Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
+                                    zero(),                zero(),  one(), zero(),
+                                    zero(),                zero(), zero(),  one())
     }
 }
 
 impl<S: PartOrdFloat<S>>
-ToMat4<S> for Mat3<S> {
+ToMatrix4<S> for Matrix3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top corner of a
     /// 4-dimensional identity matrix.
-    fn to_mat4(&self) -> Mat4<S> {
-        Mat4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
-                  self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
-                  self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
-                  zero(), zero(), zero(), one())
+    fn to_matrix4(&self) -> Matrix4<S> {
+        Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
+                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
+                     self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
+                                    zero(),                zero(),                zero(),  one())
     }
 }
 
 impl<S: PartOrdFloat<S>>
-ToQuat<S> for Mat3<S> {
+ToQuaternion<S> for Matrix3<S> {
     /// Convert the matrix to a quaternion
-    fn to_quat(&self) -> Quat<S> {
+    fn to_quaternion(&self) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
         let trace = self.trace();
         let half: S = cast(0.5).unwrap();
@@ -690,7 +690,7 @@ ToQuat<S> for Mat3<S> {
                 let x = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
-                Quat::new(w, x, y, z)
+                Quaternion::new(w, x, y, z)
             }
             () if (*self.cr(0, 0) > *self.cr(1, 1)) && (*self.cr(0, 0) > *self.cr(2, 2)) => {
                 let s = (half + (*self.cr(0, 0) - *self.cr(1, 1) - *self.cr(2, 2))).sqrt();
@@ -699,7 +699,7 @@ ToQuat<S> for Mat3<S> {
                 let x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 let y = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let z = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
-                Quat::new(w, x, y, z)
+                Quaternion::new(w, x, y, z)
             }
             () if *self.cr(1, 1) > *self.cr(2, 2) => {
                 let s = (half + (*self.cr(1, 1) - *self.cr(0, 0) - *self.cr(2, 2))).sqrt();
@@ -708,7 +708,7 @@ ToQuat<S> for Mat3<S> {
                 let x = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
                 let y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let z = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
-                Quat::new(w, x, y, z)
+                Quaternion::new(w, x, y, z)
             }
             () => {
                 let s = (half + (*self.cr(2, 2) - *self.cr(0, 0) - *self.cr(1, 1))).sqrt();
@@ -717,13 +717,13 @@ ToQuat<S> for Mat3<S> {
                 let x = (*self.cr(2, 0) - *self.cr(0, 2)) * s;
                 let y = (*self.cr(1, 2) - *self.cr(2, 1)) * s;
                 let z = (*self.cr(0, 1) - *self.cr(1, 0)) * s;
-                Quat::new(w, x, y, z)
+                Quaternion::new(w, x, y, z)
             }
         }
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat2<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}], [{}, {}]]",
                 self.cr(0, 0), self.cr(0, 1),
@@ -731,7 +731,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat3<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
@@ -740,7 +740,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Mat4<S> {
+impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),

@@ -21,12 +21,12 @@ use approx::ApproxEq;
 use intersect::Intersect;
 use point::{Point, Point3};
 use ray::Ray3;
-use vector::{Vec3, Vec4};
+use vector::{Vector3, Vector4};
 use vector::{Vector, EuclideanVector};
 use partial_ord::PartOrdFloat;
 
 
-/// A 3-dimendional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
+/// A 3-dimensional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
 ///
 /// # Fields
 ///
@@ -43,14 +43,14 @@ use partial_ord::PartOrdFloat;
 /// superfluous negations (see _Real Time Collision Detection_, p. 55).
 #[deriving(Clone, Eq)]
 pub struct Plane<S> {
-    pub n: Vec3<S>,
+    pub n: Vector3<S>,
     pub d: S,
 }
 
 impl<S: PartOrdFloat<S>>
 Plane<S> {
     /// Construct a plane from a normal vector and a scalar distance
-    pub fn new(n: Vec3<S>, d: S) -> Plane<S> {
+    pub fn new(n: Vector3<S>, d: S) -> Plane<S> {
         Plane { n: n, d: d }
     }
 
@@ -61,11 +61,11 @@ Plane<S> {
     /// - `c`: the `z` component of the normal
     /// - `d`: the plane's distance value
     pub fn from_abcd(a: S, b: S, c: S, d: S) -> Plane<S> {
-        Plane { n: Vec3::new(a, b, c), d: d }
+        Plane { n: Vector3::new(a, b, c), d: d }
     }
 
     /// Construct a plane from the components of a four-dimensional vector
-    pub fn from_vec4(v: Vec4<S>) -> Plane<S> {
+    pub fn from_vector4(v: Vector4<S>) -> Plane<S> {
         unsafe { transmute(v) }
     }
 
@@ -78,7 +78,7 @@ Plane<S> {
         // find the normal vector that is perpendicular to v1 and v2
         let mut n = v0.cross(&v1);
 
-        if n.approx_eq(&Vec3::zero()) { None }
+        if n.approx_eq(&Vector3::zero()) { None }
         else {
             // compute the normal and the distance to the plane
             n.normalize_self();
@@ -125,9 +125,6 @@ ApproxEq<S> for Plane<S> {
 impl<S: Clone + fmt::Float> fmt::Show for Plane<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f.buf, "{:f}x + {:f}y + {:f}z - {:f} = 0",
-                self.n.x,
-                self.n.y,
-                self.n.z,
-                self.d)
+               self.n.x, self.n.y, self.n.z, self.d)
     }
 }

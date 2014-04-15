@@ -49,14 +49,14 @@ impl<S: Num> Point3<S> {
 
 impl<S: PartOrdPrim> Point3<S> {
     #[inline]
-    pub fn from_homogeneous(v: &Vec4<S>) -> Point3<S> {
+    pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
         let e = v.truncate().mul_s(one::<S>() / v.w);
         Point3::new(e.x.clone(), e.y.clone(), e.z.clone())  //FIXME
     }
 
     #[inline]
-    pub fn to_homogeneous(&self) -> Vec4<S> {
-        Vec4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
+    pub fn to_homogeneous(&self) -> Vector4<S> {
+        Vector4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
     }
 }
 
@@ -97,8 +97,8 @@ pub trait Point
 array!(impl<S> Point2<S> -> [S, ..2] _2)
 array!(impl<S> Point3<S> -> [S, ..3] _3)
 
-impl<S: PartOrdPrim> Point<S, Vec2<S>, [S, ..2]> for Point2<S> {}
-impl<S: PartOrdPrim> Point<S, Vec3<S>, [S, ..3]> for Point3<S> {}
+impl<S: PartOrdPrim> Point<S, Vector2<S>, [S, ..2]> for Point2<S> {}
+impl<S: PartOrdPrim> Point<S, Vector3<S>, [S, ..3]> for Point3<S> {}
 
 impl<S: fmt::Show> fmt::Show for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

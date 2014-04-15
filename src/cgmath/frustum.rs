@@ -15,7 +15,7 @@
 
 //! View frustum for visibility determination
 
-use matrix::{Matrix, Mat4};
+use matrix::{Matrix, Matrix4};
 use plane::Plane;
 use point::Point3;
 use vector::{Vector, EuclideanVector};
@@ -48,13 +48,13 @@ Frustum<S> {
     }
 
     /// Extracts frustum planes from a projection matrix
-    pub fn from_mat4(mat: Mat4<S>) -> Frustum<S> {
-        Frustum::new(Plane::from_vec4(mat.r(3).add_v(&mat.r(0)).normalize()),
-                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(0)).normalize()),
-                     Plane::from_vec4(mat.r(3).add_v(&mat.r(1)).normalize()),
-                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(1)).normalize()),
-                     Plane::from_vec4(mat.r(3).add_v(&mat.r(2)).normalize()),
-                     Plane::from_vec4(mat.r(3).sub_v(&mat.r(2)).normalize()))
+    pub fn from_matrix4(mat: Matrix4<S>) -> Frustum<S> {
+        Frustum::new(Plane::from_vector4(mat.r(3).add_v(&mat.r(0)).normalize()),
+                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(0)).normalize()),
+                     Plane::from_vector4(mat.r(3).add_v(&mat.r(1)).normalize()),
+                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(1)).normalize()),
+                     Plane::from_vector4(mat.r(3).add_v(&mat.r(2)).normalize()),
+                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(2)).normalize()))
     }
 }
 
