@@ -113,8 +113,8 @@ macro_rules! gen_builder(
 
 macro_rules! gen_fold(
     (_2) => ({ f(self.i(0), self.i(1)) });
-    (_3) => ({ f(&f(self.i(0), self.i(1)), self.i(2)) });
-    (_4) => ({ f(&f(&f(self.i(0), self.i(1)), self.i(2)), self.i(3)) });
+    (_3) => ({ let tmp = f(self.i(0), self.i(1)); f(&tmp, self.i(2)) });
+    (_4) => ({ let tmp1 = f(self.i(0), self.i(1)); let tmp2 = f(&tmp1, self.i(2)); f(&tmp2, self.i(3)) });
 )
 
 macro_rules! gen_each_mut(

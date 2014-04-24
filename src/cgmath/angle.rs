@@ -199,7 +199,7 @@ Angle<S> for Deg<S> {
 #[inline] pub fn asin<S: Float>(s: S) -> Rad<S> { rad(s.asin()) }
 #[inline] pub fn acos<S: Float>(s: S) -> Rad<S> { rad(s.acos()) }
 #[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
-#[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(&b)) }
+#[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
 
 impl<S: Float + fmt::Show>
 fmt::Show for Rad<S> {
