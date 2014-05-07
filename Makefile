@@ -54,17 +54,6 @@ doc:
 	mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
-install: lib
-	@ $(foreach crate, $(CRATE_FILES), \
-		cp $(LIB_DIR)/$(crate) $(LIB_INSTALL_DIR)/$(crate) && \
-		echo "Installed $(crate) to $(LIB_INSTALL_DIR)" ; \
-	)
-
-uninstall:
-	@-rm -f $(LIB_INSTALL_DIR)/lib$(CRATE_NAME)-*.rlib ||:
-	@-rm -f $(LIB_INSTALL_DIR)/lib$(CRATE_NAME)-*.so ||:
-	@-rm -f $(LIB_INSTALL_DIR)/lib$(CRATE_NAME)-*.dylib ||:
-
 clean:
 	rm -rf $(LIB_DIR)
 	rm -rf $(TEST_DIR)
@@ -78,6 +67,4 @@ clean:
 	bench \
 	check \
 	doc \
-	install \
-	uninstall \
 	clean

@@ -27,8 +27,6 @@ script:
   - make
 #  - make check     # bench is too slow
   - make test
-  - sudo env PATH=$PATH make install
-  - sudo make uninstall
   - make clean
   - make doc
 after_script:
