@@ -34,7 +34,7 @@ LIB_INSTALL_DIR     = $(INSTALL_PREFIX)/lib
 
 all: lib doc
 
-lib:
+lib: $(LIB_FILE)
 	mkdir -p $(LIB_DIR)
 	$(RUSTC) --out-dir=$(LIB_DIR) -O $(LIB_FILE)
 
