@@ -17,15 +17,17 @@ env:
   global:
     - secure: N41M4QTWbez7FRMh2HQqB3Z051FcruoRGLTdMdQJNMaZRqJiAfUBTO5NGXS5XGjIofknE4r/+WLv7KED2rTf6nvLFOHmGY2pL+agABcyD0DU0ltRLckjONWTxFN+SMTB0l38v3XIXxXX5y977Hl6wk3++kYZgCNVG3OTkJwWzQg=
 before_install:
-  - yes | sudo add-apt-repository ppa:hansjorg/rust
   - sudo apt-get update
 install:
-  - sudo apt-get install rust-nightly
+  - wget http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
+  - tar xzf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
+  - export PATH=$PATH:$(pwd)/rust-nightly-x86_64-unknown-linux-gnu/bin
+  - rustc -v
 script:
   - make
 #  - make check     # bench is too slow
   - make test
-  - sudo make install
+  - sudo env PATH=$PATH make install
   - sudo make uninstall
   - make clean
   - make doc
