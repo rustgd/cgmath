@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::cast::transmute;
+use std::mem::transmute;
 use std::fmt;
 use std::num::Zero;
 
