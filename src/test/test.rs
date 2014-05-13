@@ -26,6 +26,7 @@ pub mod vector;
 pub mod angle;
 pub mod plane;
 pub mod point;
+pub mod line;
 // pub mod ray;
 // pub mod rotation;
 pub mod transform;
