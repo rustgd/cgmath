@@ -59,17 +59,17 @@ macro_rules! array(
 
             #[inline]
             fn as_slice<'a>(&'a self) -> &'a [$T,..$n] {
-                unsafe { ::std::cast::transmute(self) }
+                unsafe { ::std::mem::transmute(self) }
             }
 
             #[inline]
             fn as_mut_slice<'a>(&'a mut self) -> &'a mut [$T,..$n] {
-                unsafe { ::std::cast::transmute(self) }
+                unsafe { ::std::mem::transmute(self) }
             }
 
             #[inline]
             fn from_slice(slice: [$T,..$n]) -> $Self {
-                unsafe { ::std::cast::transmute(slice) }
+                unsafe { ::std::mem::transmute(slice) }
             }
 
             #[inline]
