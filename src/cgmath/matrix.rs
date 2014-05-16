@@ -725,7 +725,7 @@ ToQuaternion<S> for Matrix3<S> {
 
 impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[[{}, {}], [{}, {}]]",
+        write!(f, "[[{}, {}], [{}, {}]]",
                 self.cr(0, 0), self.cr(0, 1),
                 self.cr(1, 0), self.cr(1, 1))
     }
@@ -733,7 +733,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix2<S> {
 
 impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
+        write!(f, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
                 self.cr(1, 0), self.cr(1, 1), self.cr(1, 2),
                 self.cr(2, 0), self.cr(2, 1), self.cr(2, 2))
@@ -742,7 +742,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix3<S> {
 
 impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
+        write!(f, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),
                 self.cr(1, 0), self.cr(1, 1), self.cr(1, 2), self.cr(1, 3),
                 self.cr(2, 0), self.cr(2, 1), self.cr(2, 2), self.cr(2, 3),

@@ -97,7 +97,7 @@ impl<S: PartOrdPrim> Aabb<S, Vector2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
 
 impl<S: fmt::Show> fmt::Show for Aabb2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{} - {}]", self.min, self.max)
+        write!(f, "[{} - {}]", self.min, self.max)
     }
 }
 
@@ -130,6 +130,6 @@ impl<S: PartOrdPrim> Aabb<S, Vector3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
 
 impl<S: fmt::Show> fmt::Show for Aabb3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{} - {}]", self.min, self.max)
+        write!(f, "[{} - {}]", self.min, self.max)
     }
 }

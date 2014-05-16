@@ -187,31 +187,31 @@ Angle<S> for Deg<S> {
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
 
-#[inline] pub fn sin<S: Float>(theta: Rad<S>) -> S { theta.s.sin() }
-#[inline] pub fn cos<S: Float>(theta: Rad<S>) -> S { theta.s.cos() }
-#[inline] pub fn tan<S: Float>(theta: Rad<S>) -> S { theta.s.tan() }
-#[inline] pub fn sin_cos<S: Float>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
+#[inline] pub fn sin<S: FloatMath>(theta: Rad<S>) -> S { theta.s.sin() }
+#[inline] pub fn cos<S: FloatMath>(theta: Rad<S>) -> S { theta.s.cos() }
+#[inline] pub fn tan<S: FloatMath>(theta: Rad<S>) -> S { theta.s.tan() }
+#[inline] pub fn sin_cos<S: FloatMath>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
 
-#[inline] pub fn cot<S: Float>(theta: Rad<S>) -> S { tan(theta).recip() }
-#[inline] pub fn sec<S: Float>(theta: Rad<S>) -> S { cos(theta).recip() }
-#[inline] pub fn csc<S: Float>(theta: Rad<S>) -> S { sin(theta).recip() }
+#[inline] pub fn cot<S: FloatMath>(theta: Rad<S>) -> S { tan(theta).recip() }
+#[inline] pub fn sec<S: FloatMath>(theta: Rad<S>) -> S { cos(theta).recip() }
+#[inline] pub fn csc<S: FloatMath>(theta: Rad<S>) -> S { sin(theta).recip() }
 
-#[inline] pub fn asin<S: Float>(s: S) -> Rad<S> { rad(s.asin()) }
-#[inline] pub fn acos<S: Float>(s: S) -> Rad<S> { rad(s.acos()) }
-#[inline] pub fn atan<S: Float>(s: S) -> Rad<S> { rad(s.atan()) }
-#[inline] pub fn atan2<S: Float>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
+#[inline] pub fn asin<S: FloatMath>(s: S) -> Rad<S> { rad(s.asin()) }
+#[inline] pub fn acos<S: FloatMath>(s: S) -> Rad<S> { rad(s.acos()) }
+#[inline] pub fn atan<S: FloatMath>(s: S) -> Rad<S> { rad(s.atan()) }
+#[inline] pub fn atan2<S: FloatMath>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
 
 impl<S: Float + fmt::Show>
 fmt::Show for Rad<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "{} rad", self.s)
+        write!(f, "{} rad", self.s)
     }
 }
 
 impl<S: Float + fmt::Show>
 fmt::Show for Deg<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "{}°", self.s)
+        write!(f, "{}°", self.s)
     }
 }
 

@@ -304,18 +304,18 @@ EuclideanVector<S, [S, ..4]> for Vector4<S> {
 
 impl<S: fmt::Show> fmt::Show for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{}, {}]", self.x, self.y)
+        write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
 impl<S: fmt::Show> fmt::Show for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{}, {}, {}]", self.x, self.y, self.z)
+        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
 impl<S: fmt::Show> fmt::Show for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+        write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }
 }
