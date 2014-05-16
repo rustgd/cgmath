@@ -46,7 +46,7 @@ macro_rules! gen_minmax_for_not_floats (
 gen_minmax_for_floats!(f32, f64)
 gen_minmax_for_not_floats!(int, i8, i16, i32, i64, uint, u8, u16, u32, u64)
 
-pub trait PartOrdFloat<S> : Float + ApproxEq<S> + PartOrdPrim {}
+pub trait PartOrdFloat<S> : FloatMath + ApproxEq<S> + PartOrdPrim {}
 impl PartOrdFloat<f32> for f32 {}
 impl PartOrdFloat<f64> for f64 {}
 

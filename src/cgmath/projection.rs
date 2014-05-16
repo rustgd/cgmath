@@ -25,7 +25,7 @@ use partial_ord::PartOrdFloat;
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: Float, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+pub fn perspective<S: FloatMath, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PerspectiveFov {
         fovy:   fovy,
         aspect: aspect,
@@ -77,7 +77,7 @@ pub struct PerspectiveFov<S, A> {
     pub far:    S,
 }
 
-impl<S: Float, A: Angle<S>> PerspectiveFov<S, A> {
+impl<S: FloatMath, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let angle = self.fovy.div_s(cast(2).unwrap());
         let ymax = self.near * tan(angle.to_rad());
@@ -102,7 +102,7 @@ Projection<S> for PerspectiveFov<S, A> {
     }
 }
 
-impl<S: Float, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
+impl<S: FloatMath, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let half_turn: A = Angle::turn_div_2();
 

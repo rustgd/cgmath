@@ -102,12 +102,12 @@ impl<S: PartOrdPrim> Point<S, Vector3<S>, [S, ..3]> for Point3<S> {}
 
 impl<S: fmt::Show> fmt::Show for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{}, {}]", self.x, self.y)
+        write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
 impl<S: fmt::Show> fmt::Show for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "[{}, {}, {}]", self.x, self.y, self.z)
+        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }

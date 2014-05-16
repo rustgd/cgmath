@@ -290,7 +290,7 @@ Neg<Quaternion<S>> for Quaternion<S> {
 
 impl<S: fmt::Show> fmt::Show for Quaternion<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f.buf, "{} + {}i + {}j + {}k",
+        write!(f, "{} + {}i + {}j + {}k",
                 self.s,
                 self.v.x,
                 self.v.y,
