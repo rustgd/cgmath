@@ -33,30 +33,51 @@ pub trait Vector
 +   Neg<Self>
 +   Zero + One
 {
+    /// Add a scalar to this vector, returning a new vector.
     #[inline] fn add_s(&self, s: S) -> Self { build(|i| self.i(i).add(&s)) }
+    /// Subtract a scalar from this vector, returning a new vector.
     #[inline] fn sub_s(&self, s: S) -> Self { build(|i| self.i(i).sub(&s)) }
+    /// Multiply this vector by a scalar, returning a new vector.
     #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul(&s)) }
+    /// Divide this vector by a scalar, returning a new vector.
     #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div(&s)) }
+    /// Take the remainder of this vector by a scalar, returning a new vector.
     #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem(&s)) }
 
+    /// Add this vector to another, returning a new vector.
     #[inline] fn add_v(&self, other: &Self) -> Self { build(|i| self.i(i).add(other.i(i))) }
+    /// Subtract another vector from this one, returning a new vector.
     #[inline] fn sub_v(&self, other: &Self) -> Self { build(|i| self.i(i).sub(other.i(i))) }
+    /// Multiply this vector by another, returning a new vector.
     #[inline] fn mul_v(&self, other: &Self) -> Self { build(|i| self.i(i).mul(other.i(i))) }
+    /// Divide this vector by another, returning a new vector.
     #[inline] fn div_v(&self, other: &Self) -> Self { build(|i| self.i(i).div(other.i(i))) }
+    /// Take the remainder of this vector by another, returning a new scalar.
     #[inline] fn rem_v(&self, other: &Self) -> Self { build(|i| self.i(i).rem(other.i(i))) }
 
+    /// Negate this vector in-place.
     #[inline] fn neg_self(&mut self) { self.each_mut(|_, x| *x = x.neg()) }
 
+    /// Add a scalar to this vector in-place.
     #[inline] fn add_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.add(&s)) }
+    /// Subtract a scalar from this vector, in-place.
     #[inline] fn sub_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.sub(&s)) }
+    /// Multiply this vector by a scalar, in-place.
     #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.mul(&s)) }
+    /// Divide this vector by a scalar, in-place.
     #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.div(&s)) }
+    /// Take the remainder of this vector by a scalar, in-place.
     #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
 
+    /// Add another vector to this one, in-place.
     #[inline] fn add_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
+    /// Subtract another vector from this one, in-place.
     #[inline] fn sub_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.sub(other.i(i))) }
+    /// Multiply this matrix by another, in-place.
     #[inline] fn mul_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.mul(other.i(i))) }
+    /// Divide this matrix by anothor, in-place.
     #[inline] fn div_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.div(other.i(i))) }
+    /// Take the remainder of this vector by another, in-place.
     #[inline] fn rem_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.rem(other.i(i))) }
 
     /// The sum of each component of the vector.
@@ -75,6 +96,7 @@ pub trait Vector
     #[inline] fn comp_max(&self) -> S { self.fold(|a, b| if *a > *b { *a } else {*b }) }
 }
 
+/// Dot product of two vectors.
 #[inline] pub fn dot<S: PartOrdPrim, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
@@ -84,12 +106,13 @@ macro_rules! vec(
         pub struct $Self<S> { $(pub $field: S),+ }
 
         impl<$S: Primitive> $Self<$S> {
+            /// Construct a new vector, using the provided values.
             #[inline]
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
             }
 
-            /// Construct a vector from a single value.
+            /// Construct a vector from a single value, replicating it.
             #[inline]
             pub fn from_value(value: $S) -> $Self<$S> {
                 $Self { $($field: value.clone()),+ }
@@ -143,7 +166,9 @@ array!(impl<S> Vector4<S> -> [S, ..4] _4)
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: Primitive> Vector2<S> {
+    /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector2<S> { Vector2::new(one(), zero()) }
+    /// A unit vector in the `y` direction.
     #[inline] pub fn unit_y() -> Vector2<S> { Vector2::new(zero(), one()) }
 
     /// The perpendicular dot product of the vector and `other`.
@@ -152,6 +177,8 @@ impl<S: Primitive> Vector2<S> {
         (self.x * other.y) - (self.y * other.x)
     }
 
+    /// Create a `Vector3`, using the `x` and `y` values from this vector, and the
+    /// provided `z`.
     #[inline]
     pub fn extend(&self, z: S)-> Vector3<S> {
         Vector3::new(self.x.clone(), self.y.clone(), z)
@@ -160,8 +187,11 @@ impl<S: Primitive> Vector2<S> {
 
 /// Operations specific to numeric three-dimensional vectors.
 impl<S: Primitive> Vector3<S> {
+    /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector3<S> { Vector3::new(one(), zero(), zero()) }
+    /// A unit vector in the `y` direction.
     #[inline] pub fn unit_y() -> Vector3<S> { Vector3::new(zero(), one(), zero()) }
+    /// A unit vector in the `w` direction.
     #[inline] pub fn unit_z() -> Vector3<S> { Vector3::new(zero(), zero(), one()) }
 
     /// Returns the cross product of the vector and `other`.
@@ -179,27 +209,35 @@ impl<S: Primitive> Vector3<S> {
         *self = self.cross(other)
     }
 
+    /// Create a `Vector4`, using the `x`, `y` and `z` values from this vector, and the
+    /// provided `w`.
     #[inline]
     pub fn extend(&self, w: S)-> Vector4<S> {
         Vector4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
     }
 
+    /// Create a `Vector2`, dropping the `z` value.
     #[inline]
     pub fn truncate(&self)-> Vector2<S> {
-        Vector2::new(self.x.clone(), self.y.clone())   //ignore Z
+        Vector2::new(self.x.clone(), self.y.clone())
     }
 }
 
 /// Operations specific to numeric four-dimensional vectors.
 impl<S: Primitive> Vector4<S> {
+    /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector4<S> { Vector4::new(one(), zero(), zero(), zero()) }
+    /// A unit vector in the `y` direction.
     #[inline] pub fn unit_y() -> Vector4<S> { Vector4::new(zero(), one(), zero(), zero()) }
+    /// A unit vector in the `z` direction.
     #[inline] pub fn unit_z() -> Vector4<S> { Vector4::new(zero(), zero(), one(), zero()) }
+    /// A unit vector in the `w` direction.
     #[inline] pub fn unit_w() -> Vector4<S> { Vector4::new(zero(), zero(), zero(), one()) }
 
+    /// Create a `Vector3`, dropping the `w` value.
     #[inline]
     pub fn truncate(&self)-> Vector3<S> {
-        Vector3::new(self.x.clone(), self.y.clone(), self.z.clone())   //ignore W
+        Vector3::new(self.x.clone(), self.y.clone(), self.z.clone())
     }
 }
 
@@ -213,8 +251,8 @@ pub trait EuclideanVector
 :   Vector<S, Slice>
 +   ApproxEq<S>
 {
-    /// Returns `true` if the vector is perpendicular (at right angles to)
-    /// the other vector.
+    /// Returns `true` if the vector is perpendicular (at right angles) to the
+    /// other vector.
     fn is_perpendicular(&self, other: &Self) -> bool {
         self.dot(other).approx_eq(&zero())
     }
@@ -233,7 +271,7 @@ pub trait EuclideanVector
         self.dot(self).sqrt()
     }
 
-    /// The angle between the vector and `other`.
+    /// The angle between the vector and `other`, in radians.
     fn angle(&self, other: &Self) -> Rad<S>;
 
     /// Returns a vector with the same direction, but with a `length` (or
