@@ -22,6 +22,7 @@
 #![feature(globs)]
 #![feature(macro_rules)]
 
+//! Computer graphics-centric math.
 pub use array::Array;
 
 mod array;
