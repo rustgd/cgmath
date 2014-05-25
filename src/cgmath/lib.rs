@@ -22,7 +22,10 @@
 #![feature(globs)]
 #![feature(macro_rules)]
 
-pub mod array;
+pub use array::Array;
+
+mod array;
+
 pub mod matrix;
 pub mod quaternion;
 pub mod vector;

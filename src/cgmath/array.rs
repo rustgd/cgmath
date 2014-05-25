@@ -17,30 +17,55 @@
 
 use std::slice::{Items, MutItems};
 
-pub trait Array
-<
-    T: Clone,
-    Slice
->
-{
+/// An array containing elements of type `T` represented with `Repr`
+///
+/// This trait abstracts over [T, ..N], and is manually implemented for arrays
+/// of length 2, 3, and 4.
+pub trait Array<T: Clone, Repr> {
+    /// Get a shared reference to the `i`th value.
     fn i<'a>(&'a self, i: uint) -> &'a T;
+
+    /// Get a mutable reference to the `i`th value.
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut T;
-    fn as_slice<'a>(&'a self) -> &'a Slice;
-    fn as_mut_slice<'a>(&'a mut self) -> &'a mut Slice;
-    fn from_slice(slice: Slice) -> Self;
+
+    /// Get a shared reference to this array's data as `Repr`.
+    fn as_slice<'a>(&'a self) -> &'a Repr;
+
+    /// Get a mutable reference to this array's data as `Repr`.
+    fn as_mut_slice<'a>(&'a mut self) -> &'a mut Repr;
+
+    /// Construct a new Array from its representation.
+    fn from_repr(repr: Repr) -> Self;
+
+    /// Create a new `Array` using a closure to generate the elements. The
+    /// closure is passed the index of the element it should produce.
     fn build(builder: |i: uint| -> T) -> Self;
+
+    /// Iterate over the elements of this `Array`, yielding shared references
+    /// to items.
     fn iter<'a>(&'a self) -> Items<'a, T>;
+
+    /// Iterate over the elements of this `Array`, yielding mutable references
+    /// to items.
     fn mut_iter<'a>(&'a mut self) -> MutItems<'a, T>;
 
-    /// Swap two elements of the type in place.
     #[inline]
+    /// Swap the elements at indices `a` and `b` in-place.
     fn swap(&mut self, a: uint, b: uint) {
         let tmp = self.i(a).clone();
         *self.mut_i(a) = self.i(b).clone();
         *self.mut_i(b) = tmp;
     }
 
+    /// Fold over this array, creating the same type as the type of the
+    /// elements. Use `.iter().fold(...)` for a more flexible fold. The first
+    /// element passed to the fold is the accumulator. It starts as the first
+    /// value in the array.
     fn fold(&self, f: |&T, &T| -> T) -> T;
+
+    /// Iterate over this array, yielding mutable references to items. The
+    /// closure is passed the index of the element the reference is pointing
+    /// at.
     fn each_mut(&mut self, f: |i: uint, x: &mut T|);
 }
 
@@ -68,13 +93,13 @@ macro_rules! array(
             }
 
             #[inline]
-            fn from_slice(slice: [$T,..$n]) -> $Self {
+            fn from_repr(slice: [$T,..$n]) -> $Self {
                 unsafe { ::std::mem::transmute(slice) }
             }
 
             #[inline]
             fn build(builder: |i: uint| -> $T) -> $Self {
-                Array::from_slice(gen_builder!($_n))
+                Array::from_repr(gen_builder!($_n))
             }
 
             #[inline]
