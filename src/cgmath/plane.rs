@@ -26,7 +26,7 @@ use vector::{Vector, EuclideanVector};
 use partial_ord::PartOrdFloat;
 
 
-/// A 3-dimensional plane formed from the equation: `a*x + b*y + c*z - d = 0`.
+/// A 3-dimensional plane formed from the equation: `A*x + B*y + C*z - D = 0`.
 ///
 /// # Fields
 ///
@@ -38,8 +38,8 @@ use partial_ord::PartOrdFloat;
 ///
 /// # Notes
 ///
-/// The `a*x + b*y + c*z - d = 0` form is preferred over the other common
-/// alternative, `a*x + b*y + c*z + d = 0`, because it tends to avoid
+/// The `A*x + B*y + C*z - D = 0` form is preferred over the other common
+/// alternative, `A*x + B*y + C*z + D = 0`, because it tends to avoid
 /// superfluous negations (see _Real Time Collision Detection_, p. 55).
 #[deriving(Clone, Eq)]
 pub struct Plane<S> {
@@ -49,7 +49,9 @@ pub struct Plane<S> {
 
 impl<S: PartOrdFloat<S>>
 Plane<S> {
-    /// Construct a plane from a normal vector and a scalar distance
+    /// Construct a plane from a normal vector and a scalar distance. The
+    /// plane will be perpendicular to `n`, and `d` units offset from the
+    /// origin.
     pub fn new(n: Vector3<S>, d: S) -> Plane<S> {
         Plane { n: n, d: d }
     }
