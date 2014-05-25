@@ -16,7 +16,8 @@
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 
-/// A generic ray
+/// A generic ray starting at `origin` and extending infinitely in
+/// `direction`.
 #[deriving(Clone, Eq)]
 pub struct Ray<P,V>
 {
