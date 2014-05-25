@@ -23,6 +23,10 @@
 #![feature(macro_rules)]
 
 //! Computer graphics-centric math.
+//!
+//! This crate provides useful mathematical primitives and operations on them.
+//! It is organized into one module per primitive.
+
 pub use array::Array;
 
 mod array;
