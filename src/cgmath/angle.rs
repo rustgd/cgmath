@@ -20,14 +20,27 @@ use std::num::{One, one, Zero, zero, cast};
 
 use approx::ApproxEq;
 
+/// An angle, in radians
 #[deriving(Clone, Eq, Ord, Hash)] pub struct Rad<S> { pub s: S }
+/// An angle, in degrees
 #[deriving(Clone, Eq, Ord, Hash)] pub struct Deg<S> { pub s: S }
 
+/// Create a new angle, in radians
 #[inline] pub fn rad<S: Float>(s: S) -> Rad<S> { Rad { s: s } }
+/// Create a new angle, in degrees
 #[inline] pub fn deg<S: Float>(s: S) -> Deg<S> { Deg { s: s } }
 
-pub trait ToRad<S: Float> { fn to_rad(&self) -> Rad<S>; }
-pub trait ToDeg<S: Float> { fn to_deg(&self) -> Deg<S>; }
+/// Represents types that can be converted to radians.
+pub trait ToRad<S: Float> {
+    /// Convert this value to radians.
+    fn to_rad(&self) -> Rad<S>;
+}
+
+/// Represents types that can be converted to degrees.
+pub trait ToDeg<S: Float> {
+    /// Convert this value to degrees.
+    fn to_deg(&self) -> Deg<S>;
+}
 
 impl<S: Float> ToRad<S> for Rad<S> { #[inline] fn to_rad(&self) -> Rad<S> { self.clone() } }
 impl<S: Float> ToRad<S> for Deg<S> { #[inline] fn to_rad(&self) -> Rad<S> { rad(self.s.to_radians()) } }
@@ -54,6 +67,7 @@ impl<S: Float> ScalarConv<S> for Deg<S> {
     #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
 }
 
+/// Operations on angles.
 pub trait Angle
 <
     S: Float
@@ -66,22 +80,38 @@ pub trait Angle
 +   ToDeg<S>
 +   ScalarConv<S>
 {
+    /// Create a new angle from any other valid angle.
     fn from<A: Angle<S>>(theta: A) -> Self;
 
+    /// Negate this angle, in-place.
     #[inline] fn neg_self(&mut self) { *self = -*self }
 
+    /// Add this angle with another, returning the new angle.
     #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
+    /// Subtract another angle from this one, returning the new angle.
     #[inline] fn sub_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() - *other.s()) }
+    /// Divide this angle by another, returning the ratio.
     #[inline] fn div_a(&self, other: Self) -> S { *self.s() / *other.s() }
+    /// Take the remainder of this angle with another.
     #[inline] fn rem_a(&self, other: Self) -> S { *self.s() % *other.s() }
+
+    /// Multiply this angle by a scalar, returning the new angle.
     #[inline] fn mul_s(&self, s: S) -> Self { ScalarConv::from(*self.s() * s) }
+    /// Divide this angle by a scalar, returing the new angle.
     #[inline] fn div_s(&self, s: S) -> Self { ScalarConv::from(*self.s() / s) }
+    /// Take the remainder of this angle by a scalar, returning the new angle.
     #[inline] fn rem_s(&self, s: S) -> Self { ScalarConv::from(*self.s() % s) }
 
+    /// Add this angle with another, in-place.
     #[inline] fn add_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() + *other.s() }
+    /// Subtract another angle from this one, in-place.
     #[inline] fn sub_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() - *other.s() }
+
+    /// Multiply this angle by a scalar, in-place.
     #[inline] fn mul_self_s(&mut self, s: S) { *self.mut_s() = *self.s() * s }
+    /// Divide this angle by a scalar, in-place.
     #[inline] fn div_self_s(&mut self, s: S) { *self.mut_s() = *self.s() / s }
+    /// Take the remainder of this angle by a scalar, in-place.
     #[inline] fn rem_self_s(&mut self, s: S) { *self.mut_s() = *self.s() % s }
 
     /// Return the angle, normalized to the range `[0, full_turn)`.

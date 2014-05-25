@@ -22,7 +22,7 @@ use vector::{Vector, Vector2};
 use partial_ord::PartOrdFloat;
 use intersect::Intersect;
 
-/// A generic directed line segment
+/// A generic directed line segment from `origin` to `dest`.
 #[deriving(Clone, Eq)]
 pub struct Line<P>
 {

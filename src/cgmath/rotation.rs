@@ -25,7 +25,8 @@ use ray::Ray;
 use vector::{Vector, Vector2, Vector3};
 use partial_ord::{PartOrdPrim, PartOrdFloat};
 
-/// A trait for generic rotation
+/// A trait for a generic rotation. A rotation is a transformation that
+/// creates a circular motion, and preserves at least one point in the space.
 pub trait Rotation
 <
     S: PartOrdPrim,
@@ -36,22 +37,27 @@ pub trait Rotation
 :   Eq
 +   ApproxEq<S>
 {
+    /// Create the identity transform (causes no transformation).
     fn identity() -> Self;
 
     /// Create a rotation to a given direction with an 'up' vector
     fn look_at(dir: &V, up: &V) -> Self;
-    
+
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
     fn between_vectors(a: &V, b: &V) -> Self;
 
+    /// Rotate a vector using this rotation.
     fn rotate_vector(&self, vec: &V) -> V;
 
+    /// Rotate a point using this rotation, by converting it to its
+    /// representation as a vector.
     #[inline]
     fn rotate_point(&self, point: &P) -> P {
         Point::from_vec( &self.rotate_vector( &point.to_vec() ) )
     }
 
+    /// Rotate a ray using this rotation.
     #[inline]
     fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
         Ray::new(   //FIXME: use clone derived from Array
@@ -59,21 +65,27 @@ pub trait Rotation
             self.rotate_vector(&ray.direction) )
     }
 
+    /// Create a new rotation which combines both this rotation, and another.
     fn concat(&self, other: &Self) -> Self;
+
+    /// Create a new rotation which "un-does" this rotation. That is,
+    /// `r.concat(r.invert())` is the identity.
     fn invert(&self) -> Self;
 
+    /// Modify this rotation in-place by combining it with another.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
         *self = self.concat(other);
     }
-    
+
+    /// Invert this rotation in-place.
     #[inline]
     fn invert_self(&mut self) {
         *self = self.invert();
     }
 }
 
-/// A two-dimensional rotation
+/// A two-dimensional rotation.
 pub trait Rotation2
 <
     S
@@ -82,12 +94,12 @@ pub trait Rotation2
 +   ToMatrix2<S>
 +   ToBasis2<S>
 {
-    // Create a rotation by a given angle. Thus is a redundant case of both
-    // from_axis_angle() and from_euler() for 2D space.
+    /// Create a rotation by a given angle. Thus is a redundant case of both
+    /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle(theta: Rad<S>) -> Self;
 }
 
-/// A three-dimensional rotation
+/// A three-dimensional rotation.
 pub trait Rotation3
 <
     S: Primitive
@@ -97,7 +109,7 @@ pub trait Rotation3
 +   ToBasis3<S>
 +   ToQuaternion<S>
 {
-    /// Create a rotation around a given axis.
+    /// Create a rotation using an angle around a given axis.
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
 
     /// Create a rotation from a set of euler angles.
@@ -109,17 +121,19 @@ pub trait Rotation3
     /// - `z`: the angular rotation around the `z` axis (roll).
     fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Self;
 
-    /// Create a rotation matrix from a rotation around the `x` axis (pitch).
+    /// Create a rotation from an angle around the `x` axis (pitch).
     #[inline]
     fn from_angle_x(theta: Rad<S>) -> Self {
         Rotation3::from_axis_angle( &Vector3::unit_x(), theta )
     }
 
+    /// Create a rotation from an angle around the `y` axis (yaw).
     #[inline]
     fn from_angle_y(theta: Rad<S>) -> Self {
         Rotation3::from_axis_angle( &Vector3::unit_y(), theta )
     }
 
+    /// Create a rotation from an angle around the `z` axis (roll).
     #[inline]
     fn from_angle_z(theta: Rad<S>) -> Self {
         Rotation3::from_axis_angle( &Vector3::unit_z(), theta )
@@ -139,11 +153,14 @@ pub struct Basis2<S> {
 }
 
 impl<S: Float> Basis2<S> {
+    /// Coerce to a `Matrix2`
     #[inline]
     pub fn as_matrix2<'a>(&'a self) -> &'a Matrix2<S> { &'a self.mat }
 }
 
+/// Represents types which can be converted to a rotation matrix.
 pub trait ToBasis2<S: Float> {
+    /// Convert this type to a rotation matrix.
     fn to_rot2(&self) -> Basis2<S>;
 }
 
@@ -171,7 +188,7 @@ Rotation<S, [S, ..2], Vector2<S>, Point2<S>> for Basis2<S> {
     fn between_vectors(a: &Vector2<S>, b: &Vector2<S>) -> Basis2<S> {
         Rotation2::from_angle( acos(a.dot(b)) )
     }
-    
+
     #[inline]
     fn rotate_vector(&self, vec: &Vector2<S>) -> Vector2<S> { self.mat.mul_v(vec) }
 
@@ -218,16 +235,20 @@ pub struct Basis3<S> {
 
 impl<S: PartOrdFloat<S>>
 Basis3<S> {
+    /// Create a new rotation matrix from a quaternion.
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
         Basis3 { mat: quaternion.to_matrix3() }
     }
-    
+
+    /// Coerce to a `Matrix3`
     #[inline]
     pub fn as_matrix3<'a>(&'a self) -> &'a Matrix3<S> { &'a self.mat }
 }
 
+/// Represents types which can be converted to a rotation matrix.
 pub trait ToBasis3<S: Float> {
+    /// Convert this type to a rotation matrix.
     fn to_rot3(&self) -> Basis3<S>;
 }
 
@@ -262,7 +283,7 @@ Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Basis3<S> {
         let q: Quaternion<S> = Rotation::between_vectors(a, b);
         q.to_rot3()
     }
-    
+
     #[inline]
     fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self.mat.mul_v(vec) }
 

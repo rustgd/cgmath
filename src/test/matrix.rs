@@ -301,19 +301,16 @@ fn test_predicates() {
     assert!(Matrix2::<f64>::identity().is_identity());
     assert!(Matrix2::<f64>::identity().is_symmetric());
     assert!(Matrix2::<f64>::identity().is_diagonal());
-    assert!(!Matrix2::<f64>::identity().is_rotated());
     assert!(Matrix2::<f64>::identity().is_invertible());
 
     assert!(!matrix2::A.is_identity());
     assert!(!matrix2::A.is_symmetric());
     assert!(!matrix2::A.is_diagonal());
-    assert!(matrix2::A.is_rotated());
     assert!(matrix2::A.is_invertible());
 
     assert!(!matrix2::C.is_identity());
     assert!(matrix2::C.is_symmetric());
     assert!(!matrix2::C.is_diagonal());
-    assert!(matrix2::C.is_rotated());
     assert!(matrix2::C.is_invertible());
 
     assert!(Matrix2::from_value(6.0).is_diagonal());
@@ -323,19 +320,16 @@ fn test_predicates() {
     assert!(Matrix3::<f64>::identity().is_identity());
     assert!(Matrix3::<f64>::identity().is_symmetric());
     assert!(Matrix3::<f64>::identity().is_diagonal());
-    assert!(!Matrix3::<f64>::identity().is_rotated());
     assert!(Matrix3::<f64>::identity().is_invertible());
 
     assert!(!matrix3::A.is_identity());
     assert!(!matrix3::A.is_symmetric());
     assert!(!matrix3::A.is_diagonal());
-    assert!(matrix3::A.is_rotated());
     assert!(!matrix3::A.is_invertible());
 
     assert!(!matrix3::D.is_identity());
     assert!(matrix3::D.is_symmetric());
     assert!(!matrix3::D.is_diagonal());
-    assert!(matrix3::D.is_rotated());
     assert!(matrix3::D.is_invertible());
 
     assert!(Matrix3::from_value(6.0).is_diagonal());
@@ -345,19 +339,16 @@ fn test_predicates() {
     assert!(Matrix4::<f64>::identity().is_identity());
     assert!(Matrix4::<f64>::identity().is_symmetric());
     assert!(Matrix4::<f64>::identity().is_diagonal());
-    assert!(!Matrix4::<f64>::identity().is_rotated());
     assert!(Matrix4::<f64>::identity().is_invertible());
 
     assert!(!matrix4::A.is_identity());
     assert!(!matrix4::A.is_symmetric());
     assert!(!matrix4::A.is_diagonal());
-    assert!(matrix4::A.is_rotated());
     assert!(!matrix4::A.is_invertible());
 
     assert!(!matrix4::D.is_identity());
     assert!(matrix4::D.is_symmetric());
     assert!(!matrix4::D.is_diagonal());
-    assert!(matrix4::D.is_rotated());
     assert!(matrix4::D.is_invertible());
 
     assert!(Matrix4::from_value(6.0).is_diagonal());

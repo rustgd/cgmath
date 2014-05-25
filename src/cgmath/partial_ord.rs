@@ -16,6 +16,9 @@
 use approx::ApproxEq;
 use std::cmp;
 
+/// A trait providing a [partial order][po] over a primitive type.
+///
+/// [po]: http://mathworld.wolfram.com/PartialOrder.html
 pub trait PartOrdPrim : Primitive {
     fn min(&self, b: Self) -> Self;
     fn max(&self, b: Self) -> Self;

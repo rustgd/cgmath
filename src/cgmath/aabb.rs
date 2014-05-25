@@ -14,6 +14,11 @@
 // limitations under the License.
 
 //! Axis-aligned bounding boxes
+//!
+//! An AABB is a geometric object which encompasses a set of points and is not
+//! rotated. It is either a rectangle or a rectangular prism (depending on the
+//! dimension) where the slope of every line is either 0 or undefined. These
+//! are useful for very cheap collision detection.
 
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
@@ -30,39 +35,52 @@ pub trait Aabb
     P: Point<S, V, Slice>,
     Slice
 > {
+    /// Create a new AABB using two points as opposing corners.
     fn new(p1: P, p2: P) -> Self;
+
+    /// Return a shared reference to the point nearest to (-inf, -inf).
     fn min<'a>(&'a self) -> &'a P;
+
+    /// Return a shared reference to the point nearest to (inf, inf).
     fn max<'a>(&'a self) -> &'a P;
+
+    /// Return the dimensions of this AABB.
     #[inline] fn dim(&self) -> V { self.max().sub_p(self.min()) }
+
+    /// Return the volume this AABB encloses.
     #[inline] fn volume(&self) -> S { self.dim().comp_mul() }
+
+    /// Return the center point of this AABB.
     #[inline] fn center(&self) -> P {
         let two = one::<S>() + one::<S>();
         self.min().add_v(&self.dim().div_s(two))
     }
 
-    // Tests whether a point is cointained in the box, inclusive for min corner
-    // and exclusive for the max corner.
+    /// Tests whether a point is cointained in the box, inclusive for min corner
+    /// and exclusive for the max corner.
     #[inline] fn contains(&self, p: &P) -> bool {
         p.sub_p(self.min()).iter().all(|x| *x >= zero::<S>()) &&
         self.max().sub_p(p).iter().all(|x| *x > zero::<S>())
     }
 
-    // Returns a new AABB that is grown to include the given point.
+    /// Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
         let min : P = build(|i| self.min().i(i).min(*p.i(i)));
         let max : P = build(|i| self.max().i(i).max(*p.i(i)));
         Aabb::new(min, max)
     }
 
-    // Returns a new AABB that has its points translated by the given vector.
+    /// Add a vector to every point in the AABB, returning a new AABB.
     fn add_v(&self, v: &V) -> Self {
         Aabb::new(self.min().add_v(v), self.max().add_v(v))
     }
 
+    /// Multiply every point in the AABB by a scalar, returning a new AABB.
     fn mul_s(&self, s: S) -> Self {
         Aabb::new(self.min().mul_s(s.clone()), self.max().mul_s(s.clone()))
     }
 
+    /// Multiply every point in the AABB by a vector, returning a new AABB.
     fn mul_v(&self, v: &V) -> Self {
         let min : P = Point::from_vec(&self.min().to_vec().mul_v(v));
         let max : P = Point::from_vec(&self.max().to_vec().mul_v(v));
@@ -70,6 +88,7 @@ pub trait Aabb
     }
 }
 
+/// A two-dimensional AABB, aka a rectangle.
 #[deriving(Clone, Eq)]
 pub struct Aabb2<S> {
     pub min: Point2<S>,
@@ -101,6 +120,7 @@ impl<S: fmt::Show> fmt::Show for Aabb2<S> {
     }
 }
 
+/// A three-dimensional AABB, aka a rectangular prism.
 #[deriving(Clone, Eq)]
 pub struct Aabb3<S> {
     pub min: Point3<S>,

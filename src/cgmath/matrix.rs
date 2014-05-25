@@ -41,6 +41,7 @@ pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>,
 
 
 impl<S: Primitive> Matrix2<S> {
+    /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
                c1r0: S, c1r1: S) -> Matrix2<S> {
@@ -48,22 +49,27 @@ impl<S: Primitive> Matrix2<S> {
                            Vector2::new(c1r0, c1r1))
     }
 
+    /// Create a new matrix, providing columns.
     #[inline]
     pub fn from_cols(c0: Vector2<S>, c1: Vector2<S>) -> Matrix2<S> {
         Matrix2 { x: c0, y: c1 }
     }
 
+    /// Create a new diagonal matrix, providing a single value to use for each
+    /// non-zero index.
     #[inline]
     pub fn from_value(value: S) -> Matrix2<S> {
         Matrix2::new(value.clone(), zero(),
                      zero(), value.clone())
     }
 
+    /// Create a zero matrix (all zeros).
     #[inline]
     pub fn zero() -> Matrix2<S> {
         Matrix2::from_value(zero())
     }
 
+    /// Create an identity matrix (diagonal matrix of ones).
     #[inline]
     pub fn identity() -> Matrix2<S> {
         Matrix2::from_value(one())
@@ -71,6 +77,8 @@ impl<S: Primitive> Matrix2<S> {
 }
 
 impl<S: PartOrdFloat<S>> Matrix2<S> {
+    /// Create a transformation matrix that will cause a vector to point at
+    /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Matrix2<S> {
         //TODO: verify look_at 2D
         Matrix2::from_cols(up.clone(), dir.clone()).transpose()
@@ -87,6 +95,7 @@ impl<S: PartOrdFloat<S>> Matrix2<S> {
 }
 
 impl<S: Primitive> Matrix3<S> {
+    /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
                c1r0:S, c1r1:S, c1r2:S,
@@ -96,11 +105,14 @@ impl<S: Primitive> Matrix3<S> {
                            Vector3::new(c2r0, c2r1, c2r2))
     }
 
+    /// Create a new matrix, providing columns.
     #[inline]
     pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
         Matrix3 { x: c0, y: c1, z: c2 }
     }
 
+    /// Create a new diagonal matrix, providing a single value to use for each
+    /// non-zero index.
     #[inline]
     pub fn from_value(value: S) -> Matrix3<S> {
         Matrix3::new(value.clone(), zero(), zero(),
@@ -108,11 +120,13 @@ impl<S: Primitive> Matrix3<S> {
                      zero(), zero(), value.clone())
     }
 
+    /// Create a zero matrix (all zeros).
     #[inline]
     pub fn zero() -> Matrix3<S> {
         Matrix3::from_value(zero())
     }
 
+    /// Create an identity matrix (diagonal matrix of ones).
     #[inline]
     pub fn identity() -> Matrix3<S> {
         Matrix3::from_value(one())
@@ -121,6 +135,8 @@ impl<S: Primitive> Matrix3<S> {
 
 impl<S: PartOrdFloat<S>>
 Matrix3<S> {
+    /// Create a transformation matrix that will cause a vector to point at
+    /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
         let side = up.cross(&dir).normalize();
@@ -194,6 +210,7 @@ Matrix3<S> {
 }
 
 impl<S: Primitive> Matrix4<S> {
+    /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
                c1r0: S, c1r1: S, c1r2: S, c1r3: S,
@@ -205,11 +222,14 @@ impl<S: Primitive> Matrix4<S> {
                            Vector4::new(c3r0, c3r1, c3r2, c3r3))
     }
 
+    /// Create a new matrix, providing columns.
     #[inline]
     pub fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
         Matrix4 { x: c0, y: c1, z: c2, w: c3 }
     }
 
+    /// Create a new diagonal matrix, providing a single value to use for each
+    /// non-zero index.
     #[inline]
     pub fn from_value(value: S) -> Matrix4<S> {
         Matrix4::new(value.clone(),        zero(),        zero(),        zero(),
@@ -218,11 +238,13 @@ impl<S: Primitive> Matrix4<S> {
                             zero(),        zero(),        zero(), value.clone())
     }
 
+    /// Create a zero matrix (all zeros).
     #[inline]
     pub fn zero() -> Matrix4<S> {
         Matrix4::from_value(zero())
     }
 
+    /// Create an identity matrix (diagonal matrix of ones).
     #[inline]
     pub fn identity() -> Matrix4<S> {
         Matrix4::from_value(one())
@@ -231,6 +253,8 @@ impl<S: Primitive> Matrix4<S> {
 
 impl<S: PartOrdFloat<S>>
 Matrix4<S> {
+    /// Create a transformation matrix that will cause a vector to point at
+    /// `dir`, using `up` for orientation.
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> Matrix4<S> {
         let f = center.sub_p(eye).normalize();
         let s = f.cross(up).normalize();
@@ -257,12 +281,15 @@ pub trait Matrix
 +   Zero + One
 +   ApproxEq<S>
 {
+    /// Get a shared reference to a column of this matrix.
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a V { self.i(c) }
 
+    /// Get a mutable reference to a column of this matrix.
     #[inline]
     fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut V { self.mut_i(c) }
 
+    /// Swap two columns of this matrix.
     #[inline]
     fn swap_c(&mut self, a: uint, b: uint) {
         let tmp = self.c(a).clone();
@@ -270,24 +297,32 @@ pub trait Matrix
         *self.mut_c(b) = tmp;
     }
 
+    /// Get a row from this matrix.
+    ///
+    /// Since matrixes in cgmath are stored column-major, this cannot return a
+    /// reference. It creates a new copy of the row instead.
     #[inline]
     fn r(&self, r: uint) -> V {
         build(|i| self.i(i).i(r).clone())
     }
 
+    /// Swap two rows of this matrix.
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
         self.each_mut(|_, c| c.swap(a, b))
     }
 
+    /// Return a shared reference to the element at column `c` and row `r`.
     #[inline]
     fn cr<'a>(&'a self, c: uint, r: uint) -> &'a S { self.i(c).i(r) }
 
+    /// Return a mutable reference to the element at column `c` and row `r`.
     #[inline]
     fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut S {
         self.mut_i(c).mut_i(r)
     }
 
+    /// Swap the values at index `a` and `b`
     #[inline]
     fn swap_cr(&mut self, a: (uint, uint), b: (uint, uint)) {
         let (ca, ra) = a;
@@ -297,67 +332,88 @@ pub trait Matrix
         *self.mut_cr(cb, rb) = tmp;
     }
 
-    // fn swap_cr(&mut self, (ca, ra): (uint, uint), (cb, rb): (uint, uint)) {
-    //     let tmp = self.cr(ca, ra).clone();
-    //     *self.mut_cr(ca, ra) = self.cr(cb, rb).clone();
-    //     *self.mut_cr(cb, rb) = tmp;
-    // }
-
+    /// Negate this matrix in-place (multiply by scalar -1).
     #[inline] fn neg_self(&mut self) { self.each_mut(|_, x| *x = x.neg()) }
 
-    #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul_s(s.clone())) }
-    #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div_s(s.clone())) }
-    #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem_s(s.clone())) }
+    /// Multiply this matrix by a scalar, returning the new matrix.
+    #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.c(i).mul_s(s.clone())) }
+    /// Divide this matrix by a scalar, returning the new matrix.
+    #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.c(i).div_s(s.clone())) }
+    /// Take the remainder of this matrix by a scalar, returning the new
+    /// matrix.
+    #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.c(i).rem_s(s.clone())) }
 
+    /// Add this matrix with another matrix, returning the new metrix.
     #[inline] fn add_m(&self, other: &Self) -> Self { build(|i| self.i(i).add_v(other.i(i))) }
+    /// Subtract another matrix from this matrix, returning the new matrix.
     #[inline] fn sub_m(&self, other: &Self) -> Self { build(|i| self.i(i).sub_v(other.i(i))) }
 
+    /// Multiplay a vector by this matrix, returning a new vector.
     #[inline] fn mul_v(&self, v: &V) -> V { build(|i| self.r(i).dot(v)) }
 
+    /// Multiply this matrix by another matrix, returning the new matrix.
     fn mul_m(&self, other: &Self) -> Self;
 
+    /// Multiply this matrix by a scalar, in-place.
     #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.mul_s(s.clone())) }
+    /// Divide this matrix by a scalar, in-place.
     #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.div_s(s.clone())) }
+    /// Take the remainder of this matrix, in-place.
     #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, c| *c = c.rem_s(s.clone())) }
 
+    /// Add this matrix with another matrix, in-place.
     #[inline] fn add_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.add_v(other.c(i))) }
+    /// Subtract another matrix from this matrix, in-place.
     #[inline] fn sub_self_m(&mut self, other: &Self) { self.each_mut(|i, c| *c = c.sub_v(other.c(i))) }
 
+    /// Multiply this matrix by another matrix, in-place.
     #[inline] fn mul_self_m(&mut self, other: &Self) { *self = self.mul_m(other); }
 
+    /// Transpose this matrix, returning a new matrix.
     fn transpose(&self) -> Self;
+    /// Transpose this matrix in-place.
     fn transpose_self(&mut self);
+    /// Take the determinant of this matrix.
     fn determinant(&self) -> S;
 
+    /// Return a vector containing the diagonal of this matrix.
     #[inline]
     fn diagonal(&self) -> V { build(|i| self.cr(i, i).clone()) }
 
+    /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
     fn trace(&self) -> S { self.diagonal().comp_add() }
 
+    /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
+    /// the identity matrix. Returns `None` if this matrix is not invertible
+    /// (has a determinant of zero).
     fn invert(&self) -> Option<Self>;
 
+    /// Invert this matrix in-place.
     #[inline]
     fn invert_self(&mut self) {
         *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
     }
 
+    /// Test if this matrix is invertible.
     #[inline]
     fn is_invertible(&self) -> bool {
         !self.determinant().approx_eq(&zero())
     }
 
+    /// Test if this matrix is the identity matrix. That is, it is diagonal
+    /// and every element in the diagonal is one.
     #[inline]
     fn is_identity(&self) -> bool {
         self.approx_eq(&one())
     }
 
-    #[inline]
-    fn is_rotated(&self) -> bool {
-        !self.approx_eq(&one())
-    }
-
+    /// Test if this is a diagonal matrix. That is, every element outside of
+    /// the diagonal is 0.
     fn is_diagonal(&self) -> bool;
+
+    /// Test if this matrix is symmetric. That is, it is equal to its
+    /// transpose.
     fn is_symmetric(&self) -> bool;
 }
 
@@ -636,14 +692,29 @@ for Matrix4<S>
 }
 
 // Conversion traits
-pub trait ToMatrix2<S: Primitive> { fn to_matrix2(&self) -> Matrix2<S>; }
-pub trait ToMatrix3<S: Primitive> { fn to_matrix3(&self) -> Matrix3<S>; }
-pub trait ToMatrix4<S: Primitive> { fn to_matrix4(&self) -> Matrix4<S>; }
+
+/// Represents types which can be converted to a Matrix2
+pub trait ToMatrix2<S: Primitive> {
+    /// Convert this value to a Matrix2
+    fn to_matrix2(&self) -> Matrix2<S>;
+}
+
+/// Represents types which can be converted to a Matrix3
+pub trait ToMatrix3<S: Primitive> {
+    /// Convert this value to a Matrix3
+    fn to_matrix3(&self) -> Matrix3<S>;
+}
+
+/// Represents types which can be converted to a Matrix4
+pub trait ToMatrix4<S: Primitive> {
+    /// Convert this value to a Matrix4
+    fn to_matrix4(&self) -> Matrix4<S>;
+}
 
 impl<S: PartOrdFloat<S>>
 ToMatrix3<S> for Matrix2<S> {
-    /// Clone the elements of a 2-dimensional matrix into the top corner of a
-    /// 3-dimensional identity matrix.
+    /// Clone the elements of a 2-dimensional matrix into the top-left corner
+    /// of a 3-dimensional identity matrix.
     fn to_matrix3(&self) -> Matrix3<S> {
         Matrix3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
                      self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
@@ -653,8 +724,8 @@ ToMatrix3<S> for Matrix2<S> {
 
 impl<S: PartOrdFloat<S>>
 ToMatrix4<S> for Matrix2<S> {
-    /// Clone the elements of a 2-dimensional matrix into the top corner of a
-    /// 4-dimensional identity matrix.
+    /// Clone the elements of a 2-dimensional matrix into the top-left corner
+    /// of a 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
         Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
                      self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
@@ -665,8 +736,8 @@ ToMatrix4<S> for Matrix2<S> {
 
 impl<S: PartOrdFloat<S>>
 ToMatrix4<S> for Matrix3<S> {
-    /// Clone the elements of a 3-dimensional matrix into the top corner of a
-    /// 4-dimensional identity matrix.
+    /// Clone the elements of a 3-dimensional matrix into the top-left corner
+    /// of a 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
         Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
                      self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),

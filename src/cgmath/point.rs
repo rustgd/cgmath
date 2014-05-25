@@ -69,25 +69,37 @@ pub trait Point
 >
 :   Array<S, Slice>
 {
+    /// Create a point at the origin.
     #[inline] fn origin() -> Self{ build(|_i| zero::<S>()) }
 
+    /// Create a point from a vector.
     #[inline] fn from_vec(v: &V) -> Self { build(|i| v.i(i).clone()) }
+    /// Convert a point to a vector.
     #[inline] fn to_vec(&self) -> V { build(|i| self.i(i).clone()) }
 
+    /// Multiply each component by a scalar, returning the new point.
     #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul(&s)) }
+    /// Divide each component by a scalar, returning the new point.
     #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div(&s)) }
+    /// Subtract a scalar from each component, returning the new point.
     #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem(&s)) }
 
+    /// Add a vector to this point, returning the new point.
     #[inline] fn add_v(&self, other: &V) -> Self { build(|i| self.i(i).add(other.i(i))) }
+    /// Subtract another point from this one, returning a new vector.
     #[inline] fn sub_p(&self, other: &Self) -> V { build(|i| self.i(i).sub(other.i(i))) }
 
+    /// Multiply each component by a scalar, in-place.
     #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.mul(&s)) }
+    /// Divide each component by a scalar, in-place.
     #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.div(&s)) }
+    /// Take the remainder of each component by a scalar, in-place.
     #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
 
+    /// Add a vector to this point, in-place.
     #[inline] fn add_self_v(&mut self, other: &V) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
 
-    /// This is a weird one, but its useful for plane calculations
+    /// This is a weird one, but its useful for plane calculations.
     #[inline]
     fn dot(&self, v: &V) -> S {
         build::<S, Slice, V>(|i| self.i(i).mul(v.i(i))).comp_add()
