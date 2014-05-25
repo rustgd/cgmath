@@ -26,7 +26,9 @@ use quaternion::Quaternion;
 use vector::{Vector, Vector3};
 use partial_ord::{PartOrdPrim, PartOrdFloat};
 
-/// A trait of affine transformation, that can be applied to points or vectors
+/// A trait representing an [affine
+/// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
+/// can be applied to points or vectors. An affine transformation is one which
 pub trait Transform
 <
     S: PartOrdPrim,
@@ -35,36 +37,50 @@ pub trait Transform
     P: Point<S,V,Slice>
 >
 {
+    /// Create an identity transformation. That is, a transformation which
+    /// does nothing.
     fn identity() -> Self;
+
+    /// Create a transformation that rotates a vector to look at `center` from
+    /// `eye`, using `up` for orientation.
     fn look_at(eye: &P, center: &P, up: &V) -> Self;
 
+    /// Transform a vector using this transform.
     fn transform_vector(&self, vec: &V) -> V;
+
+    /// Transform a point using this transform.
     fn transform_point(&self, point: &P) -> P;
 
+    /// Transform a ray using this transform.
     #[inline]
     fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
         Ray::new( self.transform_point(&ray.origin), self.transform_vector(&ray.direction) )
     }
 
+    /// Transform a vector as a point using this transform.
     #[inline]
-    fn transform_as_point(&self, vec: &V)-> V {
+    fn transform_as_point(&self, vec: &V) -> V {
         self.transform_point( &Point::from_vec(vec) ).to_vec()
     }
 
+    /// Combine this transform with another, yielding a new transformation
+    /// which has the effects of both.
     fn concat(&self, other: &Self) -> Self;
+
+    /// Create a transform that "un-does" this one.
     fn invert(&self) -> Option<Self>;
 
+    /// Combine this transform with another, in-place.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
         *self = self.concat(other);
     }
 
+    /// Invert this transform in-place, failing if the transformation is not
+    /// invertible.
     #[inline]
-    fn invert_self(&mut self)-> bool {
-        match self.invert() {
-            Some(t) => {*self = t; true},
-            None    => false,
-        }
+    fn invert_self(&mut self) {
+        *self = self.invert().unwrap()
     }
 }
 
@@ -183,7 +199,7 @@ Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> AffineMatrix3<S> {
         AffineMatrix3 { mat: Matrix4::look_at(eye, center, up) }
     }
-    
+
     #[inline]
     fn transform_vector(&self, vec: &Vector3<S>) -> Vector3<S> {
         self.mat.mul_v( &vec.extend(num::zero()) ).truncate()
@@ -202,7 +218,7 @@ Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn invert(&self) -> Option<AffineMatrix3<S>> {
         self.mat.invert().map(|m| AffineMatrix3{ mat: m })
-    }   
+    }
 }
 
 impl<S: PartOrdPrim>
