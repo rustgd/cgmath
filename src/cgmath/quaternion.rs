@@ -25,13 +25,16 @@ use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
 use partial_ord::PartOrdFloat;
 
-/// A quaternion in scalar/vector form
+/// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
+/// form.
 #[deriving(Clone, Eq)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
 array!(impl<S> Quaternion<S> -> [S, ..4] _4)
 
+/// Represents types which can be expressed as a quaternion.
 pub trait ToQuaternion<S: Float> {
+    /// Convert this value to a quaternion.
     fn to_quaternion(&self) -> Quaternion<S>;
 }
 
@@ -93,7 +96,7 @@ Quaternion<S> {
         build(|i| self.i(i).add(other.i(i)))
     }
 
-    /// The the result of multipliplying the quaternion by `other`
+    /// The result of multipliplying the quaternion by `other`
     pub fn mul_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
         Quaternion::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
                         self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
@@ -101,38 +104,43 @@ Quaternion<S> {
                         self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
     }
 
+    /// Multiply this quaternion by a scalar, in-place.
     #[inline]
     pub fn mul_self_s(&mut self, s: S) {
         self.each_mut(|_, x| *x = x.mul(&s))
     }
 
+    /// Divide this quaternion by a scalar, in-place.
     #[inline]
     pub fn div_self_s(&mut self, s: S) {
         self.each_mut(|_, x| *x = x.div(&s))
     }
 
+    /// Add this quaternion by another, in-place.
     #[inline]
     pub fn add_self_q(&mut self, other: &Quaternion<S>) {
         self.each_mut(|i, x| *x = x.add(other.i(i)));
     }
 
+    /// Subtract another quaternion from this one, in-place.
     #[inline]
     pub fn sub_self_q(&mut self, other: &Quaternion<S>) {
         self.each_mut(|i, x| *x = x.sub(other.i(i)));
     }
 
+    /// Multiply this quaternion by another, in-place.
     #[inline]
     pub fn mul_self_q(&mut self, other: &Quaternion<S>) {
         *self = self.mul_q(other);
     }
 
-    /// The dot product of the quaternion and `other`
+    /// The dot product of the quaternion and `other`.
     #[inline]
     pub fn dot(&self, other: &Quaternion<S>) -> S {
         self.s * other.s + self.v.dot(&other.v)
     }
 
-    /// The conjugate of the quaternion
+    /// The conjugate of the quaternion.
     #[inline]
     pub fn conjugate(&self) -> Quaternion<S> {
         Quaternion::from_sv(self.s.clone(), -self.v.clone())
@@ -158,17 +166,13 @@ Quaternion<S> {
         self.magnitude2().sqrt()
     }
 
-    /// The normalized quaternion
+    /// Normalize this quaternion, returning the new quaternion.
     #[inline]
     pub fn normalize(&self) -> Quaternion<S> {
         self.mul_s(one::<S>() / self.magnitude())
     }
 
-    /// Normalised linear interpolation
-    ///
-    /// # Return value
-    ///
-    /// The intoperlated quaternion
+    /// Do a normalized linear interpolation with `other`, by `amount`.
     pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
         self.mul_s(one::<S>() - amount).add_q(&other.mul_s(amount)).normalize()
     }
@@ -178,18 +182,15 @@ impl<S: PartOrdFloat<S>>
 Quaternion<S> {
     /// Spherical Linear Intoperlation
     ///
-    /// Perform a spherical linear interpolation between the quaternion and
+    /// Return the spherical linear interpolation between the quaternion and
     /// `other`. Both quaternions should be normalized first.
-    ///
-    /// # Return value
-    ///
-    /// The intoperlated quaternion
     ///
     /// # Performance notes
     ///
-    /// The `acos` operation used in `slerp` is an expensive operation, so unless
-    /// your quarternions a far away from each other it's generally more advisable
-    /// to use `nlerp` when you know your rotations are going to be small.
+    /// The `acos` operation used in `slerp` is an expensive operation, so
+    /// unless your quarternions are far away from each other it's generally
+    /// more advisable to use `nlerp` when you know your rotations are going
+    /// to be small.
     ///
     /// - [Understanding Slerp, Then Not Using It]
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
