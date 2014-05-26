@@ -74,4 +74,3 @@ approx_array!(impl<S> Vector4<S>)
 
 approx_array!(impl<S> Point2<S>)
 approx_array!(impl<S> Point3<S>)
-

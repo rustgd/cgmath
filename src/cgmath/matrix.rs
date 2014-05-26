@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,11 @@ use std::num::{Zero, zero, One, one, cast};
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::{Array, build};
+use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
 use quaternion::{Quaternion, ToQuaternion};
 use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
-use partial_ord::PartOrdFloat;
 
 /// A 2 x 2, column major matrix
 #[deriving(Clone, Eq)]
@@ -40,7 +40,7 @@ pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> 
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
-impl<S: Primitive> Matrix2<S> {
+impl<S: BaseNum> Matrix2<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
@@ -76,7 +76,7 @@ impl<S: Primitive> Matrix2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>> Matrix2<S> {
+impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Matrix2<S> {
@@ -94,7 +94,7 @@ impl<S: PartOrdFloat<S>> Matrix2<S> {
     }
 }
 
-impl<S: Primitive> Matrix3<S> {
+impl<S: BaseNum> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
@@ -133,7 +133,7 @@ impl<S: Primitive> Matrix3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Matrix3<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
@@ -209,7 +209,7 @@ Matrix3<S> {
     }
 }
 
-impl<S: Primitive> Matrix4<S> {
+impl<S: BaseNum> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
@@ -251,7 +251,7 @@ impl<S: Primitive> Matrix4<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Matrix4<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
@@ -273,7 +273,7 @@ array!(impl<S> Matrix4<S> -> [Vector4<S>, ..4] _4)
 
 pub trait Matrix
 <
-    S: PartOrdFloat<S>, Slice,
+    S: BaseFloat, Slice,
     V: Clone + Vector<S, VSlice> + Array<S, VSlice>, VSlice
 >
 :   Array<V, Slice>
@@ -417,31 +417,31 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: PartOrdFloat<S>> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: BaseFloat> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: BaseFloat> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: BaseFloat> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: BaseFloat> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: BaseFloat> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: BaseFloat> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { build(|i| self.i(i).neg()) } }
-impl<S: PartOrdFloat<S>> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { build(|i| self.i(i).neg()) } }
-impl<S: PartOrdFloat<S>> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { build(|i| self.i(i).neg()) } }
+impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { build(|i| self.i(i).neg()) } }
+impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { build(|i| self.i(i).neg()) } }
+impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { build(|i| self.i(i).neg()) } }
 
-impl<S: PartOrdFloat<S>> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: PartOrdFloat<S>> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: PartOrdFloat<S>> Zero for Matrix4<S> { #[inline] fn zero() -> Matrix4<S> { Matrix4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: BaseFloat> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: BaseFloat> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: BaseFloat> Zero for Matrix4<S> { #[inline] fn zero() -> Matrix4<S> { Matrix4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: PartOrdFloat<S>> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: PartOrdFloat<S>> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: BaseFloat> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: BaseFloat> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: BaseFloat> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
 
-impl<S: PartOrdFloat<S>> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matrix2::identity() } }
-impl<S: PartOrdFloat<S>> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
-impl<S: PartOrdFloat<S>> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
+impl<S: BaseFloat> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matrix2::identity() } }
+impl<S: BaseFloat> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
+impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Matrix<S, [Vector2<S>, ..2], Vector2<S>, [S, ..2]>
 for Matrix2<S>
 {
@@ -490,7 +490,7 @@ for Matrix2<S>
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Matrix<S, [Vector3<S>, ..3], Vector3<S>, [S, ..3]>
 for Matrix3<S>
 {
@@ -563,7 +563,7 @@ macro_rules! dot_matrix4(
         (*$A.cr(3, $I)) * (*$B.cr($J, 3))
 ))
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Matrix<S, [Vector4<S>, ..4], Vector4<S>, [S, ..4]>
 for Matrix4<S>
 {
@@ -694,24 +694,24 @@ for Matrix4<S>
 // Conversion traits
 
 /// Represents types which can be converted to a Matrix2
-pub trait ToMatrix2<S: Primitive> {
+pub trait ToMatrix2<S: BaseNum> {
     /// Convert this value to a Matrix2
     fn to_matrix2(&self) -> Matrix2<S>;
 }
 
 /// Represents types which can be converted to a Matrix3
-pub trait ToMatrix3<S: Primitive> {
+pub trait ToMatrix3<S: BaseNum> {
     /// Convert this value to a Matrix3
     fn to_matrix3(&self) -> Matrix3<S>;
 }
 
 /// Represents types which can be converted to a Matrix4
-pub trait ToMatrix4<S: Primitive> {
+pub trait ToMatrix4<S: BaseNum> {
     /// Convert this value to a Matrix4
     fn to_matrix4(&self) -> Matrix4<S>;
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 ToMatrix3<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
@@ -722,7 +722,7 @@ ToMatrix3<S> for Matrix2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 ToMatrix4<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
@@ -734,7 +734,7 @@ ToMatrix4<S> for Matrix2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 ToMatrix4<S> for Matrix3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
@@ -746,7 +746,7 @@ ToMatrix4<S> for Matrix3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 ToQuaternion<S> for Matrix3<S> {
     /// Convert the matrix to a quaternion
     fn to_quaternion(&self) -> Quaternion<S> {
@@ -794,7 +794,7 @@ ToQuaternion<S> for Matrix3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix2<S> {
+impl<S: BaseFloat> fmt::Show for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}], [{}, {}]]",
                 self.cr(0, 0), self.cr(0, 1),
@@ -802,7 +802,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix3<S> {
+impl<S: BaseFloat> fmt::Show for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
@@ -811,7 +811,7 @@ impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S> + fmt::Show> fmt::Show for Matrix4<S> {
+impl<S: BaseFloat> fmt::Show for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
                 self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),

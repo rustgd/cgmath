@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directionectory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
 
 use std::num::{Zero, zero, One, one};
 
+use num::{BaseFloat, BaseNum};
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2};
-use partial_ord::PartOrdFloat;
 use intersect::Intersect;
 
 /// A generic directed line segment from `origin` to `dest`.
@@ -32,7 +32,7 @@ pub struct Line<P>
 
 impl
 <
-    S: Primitive,
+    S: BaseNum,
     Slice,
     V: Vector<S,Slice>,
     P: Point<S,V,Slice>
@@ -49,7 +49,7 @@ pub type Line3<S> = Line<Point3<S>>;
 /// Determines if an intersection between two line segments is found. If the segments are
 /// collinear and overlapping, the intersection point that will be returned will be the first
 /// intersection point found by traversing the first line segment, starting at its origin.
-impl<S: PartOrdFloat<S>> Intersect<Option<Point2<S>>> for (Line2<S>, Line2<S>) {
+impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Line2<S>, Line2<S>) {
     fn intersection(&self) -> Option<Point2<S>> {
         match *self {
             (ref l1, ref l2) => {

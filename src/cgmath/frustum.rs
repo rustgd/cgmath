@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,10 @@
 //! View frustum for visibility determination
 
 use matrix::{Matrix, Matrix4};
+use num::BaseFloat;
 use plane::Plane;
 use point::Point3;
 use vector::{Vector, EuclideanVector};
-use partial_ord::PartOrdFloat;
 
 #[deriving(Clone, Eq)]
 pub struct Frustum<S> {
@@ -31,7 +31,7 @@ pub struct Frustum<S> {
     pub far:    Plane<S>,
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 Frustum<S> {
     /// Constructs a frustum
     pub fn new(left:   Plane<S>, right:  Plane<S>,

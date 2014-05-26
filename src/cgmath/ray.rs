@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directionectory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,30 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num::BaseNum;
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 
 /// A generic ray starting at `origin` and extending infinitely in
 /// `direction`.
 #[deriving(Clone, Eq)]
-pub struct Ray<P,V>
-{
+pub struct Ray<P,V> {
     pub origin: P,
     pub direction: V,
 }
 
-impl
-<
-    S: Primitive,
-    Slice,
-    V: Vector<S,Slice>,
-    P: Point<S,V,Slice>
->  Ray<P,V>
-{
+impl<S: BaseNum, Slice, V: Vector<S, Slice>, P: Point<S, V, Slice>> Ray<P, V> {
     pub fn new(origin: P, direction: V) -> Ray<P,V> {
-        Ray { origin:origin, direction:direction }
+        Ray { origin: origin, direction: direction }
     }
 }
 
-pub type Ray2<S> = Ray<Point2<S>,Vector2<S>>;
-pub type Ray3<S> = Ray<Point3<S>,Vector3<S>>;
+pub type Ray2<S> = Ray<Point2<S>, Vector2<S>>;
+pub type Ray3<S> = Ray<Point3<S>, Vector3<S>>;

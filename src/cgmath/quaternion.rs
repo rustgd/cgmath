@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,12 @@ use std::fmt;
 use std::num::{zero, one, cast};
 
 use angle::{Angle, Rad, acos, sin, sin_cos};
-use approx::ApproxEq;
 use array::{Array, build};
 use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
+use num::BaseFloat;
 use point::{Point3};
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
-use partial_ord::PartOrdFloat;
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
@@ -33,13 +32,12 @@ pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 array!(impl<S> Quaternion<S> -> [S, ..4] _4)
 
 /// Represents types which can be expressed as a quaternion.
-pub trait ToQuaternion<S: Float> {
+pub trait ToQuaternion<S: BaseFloat> {
     /// Convert this value to a quaternion.
     fn to_quaternion(&self) -> Quaternion<S>;
 }
 
-impl<S: PartOrdFloat<S>>
-Quaternion<S> {
+impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components
     #[inline]
@@ -178,8 +176,7 @@ Quaternion<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
-Quaternion<S> {
+impl<S: BaseFloat> Quaternion<S> {
     /// Spherical Linear Intoperlation
     ///
     /// Return the spherical linear interpolation between the quaternion and
@@ -228,8 +225,7 @@ Quaternion<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
-ToMatrix3<S> for Quaternion<S> {
+impl<S: BaseFloat> ToMatrix3<S> for Quaternion<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
     fn to_matrix3(&self) -> Matrix3<S> {
         let x2 = self.v.x + self.v.x;
@@ -254,8 +250,7 @@ ToMatrix3<S> for Quaternion<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
-ToMatrix4<S> for Quaternion<S> {
+impl<S: BaseFloat> ToMatrix4<S> for Quaternion<S> {
     /// Convert the quaternion to a 4 x 4 rotation matrix
     fn to_matrix4(&self) -> Matrix4<S> {
         let x2 = self.v.x + self.v.x;
@@ -281,15 +276,14 @@ ToMatrix4<S> for Quaternion<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
-Neg<Quaternion<S>> for Quaternion<S> {
+impl<S: BaseFloat> Neg<Quaternion<S>> for Quaternion<S> {
     #[inline]
     fn neg(&self) -> Quaternion<S> {
         Quaternion::from_sv(-self.s, -self.v)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Quaternion<S> {
+impl<S: BaseFloat> fmt::Show for Quaternion<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} + {}i + {}j + {}k",
                 self.s,
@@ -301,19 +295,17 @@ impl<S: fmt::Show> fmt::Show for Quaternion<S> {
 
 // Quaternion Rotation impls
 
-impl<S: PartOrdFloat<S>>
-ToBasis3<S> for Quaternion<S> {
+impl<S: BaseFloat> ToBasis3<S> for Quaternion<S> {
     #[inline]
     fn to_rot3(&self) -> Basis3<S> { Basis3::from_quaternion(self) }
 }
 
-impl<S: Float> ToQuaternion<S> for Quaternion<S> {
+impl<S: BaseFloat> ToQuaternion<S> for Quaternion<S> {
     #[inline]
     fn to_quaternion(&self) -> Quaternion<S> { self.clone() }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat> Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
     fn identity() -> Quaternion<S> { Quaternion::identity() }
 
@@ -345,9 +337,7 @@ Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Quaternion<S> {
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation3<S> for Quaternion<S>
-{
+impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     #[inline]
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5).unwrap()));
