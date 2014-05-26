@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@ use std::num::{zero, one, cast};
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Matrix4, ToMatrix4};
+use num::BaseFloat;
 use plane::Plane;
-use partial_ord::PartOrdFloat;
 
 /// Create a perspective projection matrix.
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: FloatMath, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+pub fn perspective<S: BaseFloat, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PerspectiveFov {
         fovy:   fovy,
         aspect: aspect,
@@ -38,7 +38,7 @@ pub fn perspective<S: FloatMath, A: Angle<S>>(fovy: A, aspect: S, near: S, far: 
 ///
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
-pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
         left:   left,
         right:  right,
@@ -53,7 +53,7 @@ pub fn frustum<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) 
 ///
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
-pub fn ortho<S: Float>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
         left:   left,
         right:  right,
@@ -77,7 +77,7 @@ pub struct PerspectiveFov<S, A> {
     pub far:    S,
 }
 
-impl<S: FloatMath, A: Angle<S>> PerspectiveFov<S, A> {
+impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let angle = self.fovy.div_s(cast(2).unwrap());
         let ymax = self.near * tan(angle.to_rad());
@@ -94,15 +94,14 @@ impl<S: FloatMath, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: PartOrdFloat<S>, A: Angle<S>>
-Projection<S> for PerspectiveFov<S, A> {
+impl<S: BaseFloat, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_matrix4(self.to_matrix4())
     }
 }
 
-impl<S: FloatMath, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
+impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let half_turn: A = Angle::turn_div_2();
 
@@ -151,15 +150,14 @@ pub struct Perspective<S> {
     pub near:   S,  far:    S,
 }
 
-impl<S: PartOrdFloat<S>>
-Projection<S> for Perspective<S> {
+impl<S: BaseFloat> Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_matrix4(self.to_matrix4())
     }
 }
 
-impl<S: Float> ToMatrix4<S> for Perspective<S> {
+impl<S: BaseFloat> ToMatrix4<S> for Perspective<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
         assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
         assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
@@ -202,8 +200,7 @@ pub struct Ortho<S> {
     pub near:   S,  far:    S,
 }
 
-impl<S: PartOrdFloat<S>>
-Projection<S> for Ortho<S> {
+impl<S: BaseFloat> Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
         Frustum {
             left:   Plane::from_abcd( one::<S>(), zero::<S>(), zero::<S>(), self.left.clone()),
@@ -216,7 +213,7 @@ Projection<S> for Ortho<S> {
     }
 }
 
-impl<S: Float> ToMatrix4<S> for Ortho<S> {
+impl<S: BaseFloat> ToMatrix4<S> for Ortho<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
         assert!(self.left   < self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
         assert!(self.bottom < self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);

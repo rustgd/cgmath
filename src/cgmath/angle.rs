@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ use std::fmt;
 use std::num::{One, one, Zero, zero, cast};
 
 use approx::ApproxEq;
+use num::BaseFloat;
 
 /// An angle, in radians
 #[deriving(Clone, Eq, Ord, Hash)] pub struct Rad<S> { pub s: S }
@@ -26,27 +27,27 @@ use approx::ApproxEq;
 #[deriving(Clone, Eq, Ord, Hash)] pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians
-#[inline] pub fn rad<S: Float>(s: S) -> Rad<S> { Rad { s: s } }
+#[inline] pub fn rad<S: BaseFloat>(s: S) -> Rad<S> { Rad { s: s } }
 /// Create a new angle, in degrees
-#[inline] pub fn deg<S: Float>(s: S) -> Deg<S> { Deg { s: s } }
+#[inline] pub fn deg<S: BaseFloat>(s: S) -> Deg<S> { Deg { s: s } }
 
 /// Represents types that can be converted to radians.
-pub trait ToRad<S: Float> {
+pub trait ToRad<S: BaseFloat> {
     /// Convert this value to radians.
     fn to_rad(&self) -> Rad<S>;
 }
 
 /// Represents types that can be converted to degrees.
-pub trait ToDeg<S: Float> {
+pub trait ToDeg<S: BaseFloat> {
     /// Convert this value to degrees.
     fn to_deg(&self) -> Deg<S>;
 }
 
-impl<S: Float> ToRad<S> for Rad<S> { #[inline] fn to_rad(&self) -> Rad<S> { self.clone() } }
-impl<S: Float> ToRad<S> for Deg<S> { #[inline] fn to_rad(&self) -> Rad<S> { rad(self.s.to_radians()) } }
+impl<S: BaseFloat> ToRad<S> for Rad<S> { #[inline] fn to_rad(&self) -> Rad<S> { self.clone() } }
+impl<S: BaseFloat> ToRad<S> for Deg<S> { #[inline] fn to_rad(&self) -> Rad<S> { rad(self.s.to_radians()) } }
 
-impl<S: Float> ToDeg<S> for Rad<S> { #[inline] fn to_deg(&self) -> Deg<S> { deg(self.s.to_degrees()) } }
-impl<S: Float> ToDeg<S> for Deg<S> { #[inline] fn to_deg(&self) -> Deg<S> { self.clone() } }
+impl<S: BaseFloat> ToDeg<S> for Rad<S> { #[inline] fn to_deg(&self) -> Deg<S> { deg(self.s.to_degrees()) } }
+impl<S: BaseFloat> ToDeg<S> for Deg<S> { #[inline] fn to_deg(&self) -> Deg<S> { self.clone() } }
 
 /// Private utility functions for converting to/from scalars
 trait ScalarConv<S> {
@@ -55,13 +56,13 @@ trait ScalarConv<S> {
     fn mut_s<'a>(&'a mut self) -> &'a mut S;
 }
 
-impl<S: Float> ScalarConv<S> for Rad<S> {
+impl<S: BaseFloat> ScalarConv<S> for Rad<S> {
     #[inline] fn from(s: S) -> Rad<S> { rad(s) }
     #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
     #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
 }
 
-impl<S: Float> ScalarConv<S> for Deg<S> {
+impl<S: BaseFloat> ScalarConv<S> for Deg<S> {
     #[inline] fn from(s: S) -> Deg<S> { deg(s) }
     #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
     #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
@@ -70,7 +71,7 @@ impl<S: Float> ScalarConv<S> for Deg<S> {
 /// Operations on angles.
 pub trait Angle
 <
-    S: Float
+    S: BaseFloat
 >
 :   Clone + Zero
 +   Eq + Equiv<Self> + Ord
@@ -150,9 +151,9 @@ pub trait Angle
     #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6).unwrap()) }
 }
 
-#[inline] pub fn bisect<S: Float, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
+#[inline] pub fn bisect<S: BaseFloat, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Rad<S> {
     #[inline] pub fn zero() -> Rad<S> { zero() }
     #[inline] pub fn full_turn() -> Rad<S> { Angle::full_turn() }
@@ -162,7 +163,7 @@ Rad<S> {
     #[inline] pub fn turn_div_6() -> Rad<S> { Angle::turn_div_6() }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Deg<S> {
     #[inline] pub fn zero() -> Deg<S> { zero() }
     #[inline] pub fn full_turn() -> Deg<S> { Angle::full_turn() }
@@ -173,79 +174,79 @@ Deg<S> {
 }
 
 
-impl<S: Float> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(&self, other: &Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
-impl<S: Float> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(&self, other: &Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
+impl<S: BaseFloat> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(&self, other: &Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
+impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(&self, other: &Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
 
-impl<S: Float> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(&self, other: &Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
-impl<S: Float> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(&self, other: &Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(&self, other: &Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(&self, other: &Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
 
-impl<S: Float> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
-impl<S: Float> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
+impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
+impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
 
-impl<S: Float> Zero for Rad<S> { #[inline] fn zero() -> Rad<S> { rad(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
-impl<S: Float> Zero for Deg<S> { #[inline] fn zero() -> Deg<S> { deg(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: BaseFloat> Zero for Rad<S> { #[inline] fn zero() -> Rad<S> { rad(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
+impl<S: BaseFloat> Zero for Deg<S> { #[inline] fn zero() -> Deg<S> { deg(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: Float> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(&self, other: &Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
-impl<S: Float> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(&self, other: &Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(&self, other: &Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(&self, other: &Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
 
-impl<S: Float> One for Rad<S> { #[inline] fn one() -> Rad<S> { rad(one()) } }
-impl<S: Float> One for Deg<S> { #[inline] fn one() -> Deg<S> { deg(one()) } }
+impl<S: BaseFloat> One for Rad<S> { #[inline] fn one() -> Rad<S> { rad(one()) } }
+impl<S: BaseFloat> One for Deg<S> { #[inline] fn one() -> Deg<S> { deg(one()) } }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Equiv<Rad<S>> for Rad<S> {
     fn equiv(&self, other: &Rad<S>) -> bool {
         self.normalize() == other.normalize()
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Equiv<Deg<S>> for Deg<S> {
     fn equiv(&self, other: &Deg<S>) -> bool {
         self.normalize() == other.normalize()
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
     #[inline] fn full_turn() -> Rad<S> { rad(Float::two_pi()) }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360).unwrap()) }
 }
 
-#[inline] pub fn sin<S: FloatMath>(theta: Rad<S>) -> S { theta.s.sin() }
-#[inline] pub fn cos<S: FloatMath>(theta: Rad<S>) -> S { theta.s.cos() }
-#[inline] pub fn tan<S: FloatMath>(theta: Rad<S>) -> S { theta.s.tan() }
-#[inline] pub fn sin_cos<S: FloatMath>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
+#[inline] pub fn sin<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.sin() }
+#[inline] pub fn cos<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.cos() }
+#[inline] pub fn tan<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.tan() }
+#[inline] pub fn sin_cos<S: BaseFloat>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
 
-#[inline] pub fn cot<S: FloatMath>(theta: Rad<S>) -> S { tan(theta).recip() }
-#[inline] pub fn sec<S: FloatMath>(theta: Rad<S>) -> S { cos(theta).recip() }
-#[inline] pub fn csc<S: FloatMath>(theta: Rad<S>) -> S { sin(theta).recip() }
+#[inline] pub fn cot<S: BaseFloat>(theta: Rad<S>) -> S { tan(theta).recip() }
+#[inline] pub fn sec<S: BaseFloat>(theta: Rad<S>) -> S { cos(theta).recip() }
+#[inline] pub fn csc<S: BaseFloat>(theta: Rad<S>) -> S { sin(theta).recip() }
 
-#[inline] pub fn asin<S: FloatMath>(s: S) -> Rad<S> { rad(s.asin()) }
-#[inline] pub fn acos<S: FloatMath>(s: S) -> Rad<S> { rad(s.acos()) }
-#[inline] pub fn atan<S: FloatMath>(s: S) -> Rad<S> { rad(s.atan()) }
-#[inline] pub fn atan2<S: FloatMath>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
+#[inline] pub fn asin<S: BaseFloat>(s: S) -> Rad<S> { rad(s.asin()) }
+#[inline] pub fn acos<S: BaseFloat>(s: S) -> Rad<S> { rad(s.acos()) }
+#[inline] pub fn atan<S: BaseFloat>(s: S) -> Rad<S> { rad(s.atan()) }
+#[inline] pub fn atan2<S: BaseFloat>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
 
-impl<S: Float + fmt::Show>
+impl<S: BaseFloat + fmt::Show>
 fmt::Show for Rad<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} rad", self.s)
     }
 }
 
-impl<S: Float + fmt::Show>
+impl<S: BaseFloat + fmt::Show>
 fmt::Show for Deg<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}°", self.s)
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 ApproxEq<S> for Rad<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Rad<S>, epsilon: &S) -> bool {
@@ -253,7 +254,7 @@ ApproxEq<S> for Rad<S> {
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat>
 ApproxEq<S> for Deg<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {

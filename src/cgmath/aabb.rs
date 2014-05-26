@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,14 @@
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use array::build;
-use partial_ord::PartOrdPrim;
+use num::BaseNum;
 use std::fmt;
 use std::num::{zero, one};
 use std::iter::Iterator;
 
 pub trait Aabb
 <
-    S: PartOrdPrim,
+    S: BaseNum,
     V: Vector<S, Slice>,
     P: Point<S, V, Slice>,
     Slice
@@ -65,8 +65,8 @@ pub trait Aabb
 
     /// Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
-        let min : P = build(|i| self.min().i(i).min(*p.i(i)));
-        let max : P = build(|i| self.max().i(i).max(*p.i(i)));
+        let min : P = build(|i| self.min().i(i).partial_min(*p.i(i)));
+        let max : P = build(|i| self.max().i(i).partial_max(*p.i(i)));
         Aabb::new(min, max)
     }
 
@@ -95,26 +95,26 @@ pub struct Aabb2<S> {
     pub max: Point2<S>,
 }
 
-impl<S: PartOrdPrim> Aabb2<S> {
+impl<S: BaseNum> Aabb2<S> {
     /// Construct a new axis-aligned bounding box from two points.
     #[inline]
     pub fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> {
         Aabb2 {
-            min: Point2::new(p1.x.min(p2.x),
-                             p1.y.min(p2.y)),
-            max: Point2::new(p1.x.max(p2.x),
-                             p1.y.max(p2.y)),
+            min: Point2::new(p1.x.partial_min(p2.x),
+                             p1.y.partial_min(p2.y)),
+            max: Point2::new(p1.x.partial_max(p2.x),
+                             p1.y.partial_max(p2.y)),
         }
     }
 }
 
-impl<S: PartOrdPrim> Aabb<S, Vector2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
+impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
     fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> { Aabb2::new(p1, p2) }
     #[inline] fn min<'a>(&'a self) -> &'a Point2<S> { &self.min }
     #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
 }
 
-impl<S: fmt::Show> fmt::Show for Aabb2<S> {
+impl<S: BaseNum> fmt::Show for Aabb2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{} - {}]", self.min, self.max)
     }
@@ -127,28 +127,28 @@ pub struct Aabb3<S> {
     pub max: Point3<S>,
 }
 
-impl<S: PartOrdPrim> Aabb3<S> {
+impl<S: BaseNum> Aabb3<S> {
     /// Construct a new axis-aligned bounding box from two points.
     #[inline]
     pub fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> {
         Aabb3 {
-            min: Point3::new(p1.x.min(p2.x),
-                             p1.y.min(p2.y),
-                             p1.z.min(p2.z)),
-            max: Point3::new(p1.x.max(p2.x),
-                             p1.y.max(p2.y),
-                             p1.z.max(p2.z)),
+            min: Point3::new(p1.x.partial_min(p2.x),
+                             p1.y.partial_min(p2.y),
+                             p1.z.partial_min(p2.z)),
+            max: Point3::new(p1.x.partial_max(p2.x),
+                             p1.y.partial_max(p2.y),
+                             p1.z.partial_max(p2.z)),
         }
     }
 }
 
-impl<S: PartOrdPrim> Aabb<S, Vector3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
+impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
     fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
     #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.min }
     #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }
 }
 
-impl<S: fmt::Show> fmt::Show for Aabb3<S> {
+impl<S: BaseNum> fmt::Show for Aabb3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{} - {}]", self.min, self.max)
     }

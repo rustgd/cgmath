@@ -19,17 +19,17 @@ use array::Array;
 use matrix::Matrix;
 use matrix::{Matrix2, ToMatrix2};
 use matrix::{Matrix3, ToMatrix3};
+use num::{BaseNum, BaseFloat};
 use point::{Point, Point2, Point3};
 use quaternion::{Quaternion, ToQuaternion};
 use ray::Ray;
 use vector::{Vector, Vector2, Vector3};
-use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
 pub trait Rotation
 <
-    S: PartOrdPrim,
+    S: BaseNum,
     Slice,
     V: Vector<S,Slice>,
     P: Point<S,V,Slice>
@@ -102,7 +102,7 @@ pub trait Rotation2
 /// A three-dimensional rotation.
 pub trait Rotation3
 <
-    S: Primitive
+    S: BaseNum
 >
 :   Rotation<S, [S, ..3], Vector3<S>, Point3<S>>
 +   ToMatrix3<S>
@@ -152,30 +152,29 @@ pub struct Basis2<S> {
     mat: Matrix2<S>
 }
 
-impl<S: Float> Basis2<S> {
+impl<S: BaseFloat> Basis2<S> {
     /// Coerce to a `Matrix2`
     #[inline]
     pub fn as_matrix2<'a>(&'a self) -> &'a Matrix2<S> { &'a self.mat }
 }
 
 /// Represents types which can be converted to a rotation matrix.
-pub trait ToBasis2<S: Float> {
+pub trait ToBasis2<S: BaseFloat> {
     /// Convert this type to a rotation matrix.
     fn to_rot2(&self) -> Basis2<S>;
 }
 
-impl<S: Float> ToBasis2<S> for Basis2<S> {
+impl<S: BaseFloat> ToBasis2<S> for Basis2<S> {
     #[inline]
     fn to_rot2(&self) -> Basis2<S> { self.clone() }
 }
 
-impl<S: Float> ToMatrix2<S> for Basis2<S> {
+impl<S: BaseFloat> ToMatrix2<S> for Basis2<S> {
     #[inline]
     fn to_matrix2(&self) -> Matrix2<S> { self.mat.clone() }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation<S, [S, ..2], Vector2<S>, Point2<S>> for Basis2<S> {
+impl<S: BaseFloat> Rotation<S, [S, ..2], Vector2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Matrix2::identity() } }
 
@@ -209,16 +208,14 @@ Rotation<S, [S, ..2], Vector2<S>, Point2<S>> for Basis2<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: PartOrdFloat<S>>
-ApproxEq<S> for Basis2<S> {
+impl<S: BaseFloat> ApproxEq<S> for Basis2<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Basis2<S>, epsilon: &S) -> bool {
         self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation2<S> for Basis2<S> {
+impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
     fn from_angle(theta: Rad<S>) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
 }
 
@@ -233,8 +230,7 @@ pub struct Basis3<S> {
     mat: Matrix3<S>
 }
 
-impl<S: PartOrdFloat<S>>
-Basis3<S> {
+impl<S: BaseFloat> Basis3<S> {
     /// Create a new rotation matrix from a quaternion.
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
@@ -247,29 +243,27 @@ Basis3<S> {
 }
 
 /// Represents types which can be converted to a rotation matrix.
-pub trait ToBasis3<S: Float> {
+pub trait ToBasis3<S: BaseFloat> {
     /// Convert this type to a rotation matrix.
     fn to_rot3(&self) -> Basis3<S>;
 }
 
-impl<S: Float> ToBasis3<S> for Basis3<S> {
+impl<S: BaseFloat> ToBasis3<S> for Basis3<S> {
     #[inline]
     fn to_rot3(&self) -> Basis3<S> { self.clone() }
 }
 
-impl<S: Float> ToMatrix3<S> for Basis3<S> {
+impl<S: BaseFloat> ToMatrix3<S> for Basis3<S> {
     #[inline]
     fn to_matrix3(&self) -> Matrix3<S> { self.mat.clone() }
 }
 
-impl<S: PartOrdFloat<S>>
-ToQuaternion<S> for Basis3<S> {
+impl<S: BaseFloat> ToQuaternion<S> for Basis3<S> {
     #[inline]
     fn to_quaternion(&self) -> Quaternion<S> { self.mat.to_quaternion() }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Basis3<S> {
+impl<S: BaseFloat> Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Matrix3::identity() } }
 
@@ -304,16 +298,14 @@ Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Basis3<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: Float + ApproxEq<S>>
-ApproxEq<S> for Basis3<S> {
+impl<S: BaseFloat> ApproxEq<S> for Basis3<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Basis3<S>, epsilon: &S) -> bool {
         self.mat.approx_eq_eps(&other.mat, epsilon)
     }
 }
 
-impl<S: PartOrdFloat<S>>
-Rotation3<S> for Basis3<S> {
+impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_axis_angle(axis, angle) }
     }

@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,14 +19,14 @@ use std::num::{Zero, zero, One, one};
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array, build};
-use partial_ord::{PartOrdPrim, PartOrdFloat};
+use num::{BaseNum, BaseFloat, PartialOrd};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
 pub trait Vector
 <
-    S: PartOrdPrim,
+    S: BaseNum,
     Slice
 >
 :   Array<S, Slice>
@@ -90,14 +90,14 @@ pub trait Vector
     #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
 
     /// The minimum component of the vector.
-    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| if *a < *b { *a } else {*b }) }
+    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| a.partial_min(*b)) }
 
     /// The maximum component of the vector.
-    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| if *a > *b { *a } else {*b }) }
+    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| a.partial_max(*b)) }
 }
 
 /// Dot product of two vectors.
-#[inline] pub fn dot<S: PartOrdPrim, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] pub fn dot<S: BaseNum, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
@@ -105,7 +105,7 @@ macro_rules! vec(
         #[deriving(Eq, TotalEq, Clone, Hash)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
-        impl<$S: Primitive> $Self<$S> {
+        impl<$S: BaseNum> $Self<$S> {
             /// Construct a new vector, using the provided values.
             #[inline]
             pub fn new($($field: $S),+) -> $Self<$S> {
@@ -127,32 +127,32 @@ macro_rules! vec(
             pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
         }
 
-        impl<S: PartOrdPrim> Add<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: BaseNum> Add<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn add(&self, other: &$Self<S>) -> $Self<S> { self.add_v(other) }
         }
 
-        impl<S: PartOrdPrim> Sub<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: BaseNum> Sub<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn sub(&self, other: &$Self<S>) -> $Self<S> { self.sub_v(other) }
         }
 
-        impl<S: PartOrdPrim> Zero for $Self<S> {
+        impl<S: BaseNum> Zero for $Self<S> {
             #[inline] fn zero() -> $Self<S> { $Self::from_value(zero()) }
             #[inline] fn is_zero(&self) -> bool { *self == zero() }
         }
 
-        impl<S: PartOrdPrim> Neg<$Self<S>> for $Self<S> {
+        impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
             #[inline] fn neg(&self) -> $Self<S> { build(|i| self.i(i).neg()) }
         }
 
-        impl<S: PartOrdPrim> Mul<$Self<S>, $Self<S>> for $Self<S> {
+        impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
             #[inline] fn mul(&self, other: &$Self<S>) -> $Self<S> { self.mul_v(other) }
         }
 
-        impl<S: PartOrdPrim> One for $Self<S> {
+        impl<S: BaseNum> One for $Self<S> {
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
 
-        impl<S: PartOrdPrim> Vector<S, [S, ..$n]> for $Self<S> {}
+        impl<S: BaseNum> Vector<S, [S, ..$n]> for $Self<S> {}
     )
 )
 
@@ -165,7 +165,7 @@ array!(impl<S> Vector3<S> -> [S, ..3] _3)
 array!(impl<S> Vector4<S> -> [S, ..4] _4)
 
 /// Operations specific to numeric two-dimensional vectors.
-impl<S: Primitive> Vector2<S> {
+impl<S: BaseNum> Vector2<S> {
     /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector2<S> { Vector2::new(one(), zero()) }
     /// A unit vector in the `y` direction.
@@ -186,7 +186,7 @@ impl<S: Primitive> Vector2<S> {
 }
 
 /// Operations specific to numeric three-dimensional vectors.
-impl<S: Primitive> Vector3<S> {
+impl<S: BaseNum> Vector3<S> {
     /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector3<S> { Vector3::new(one(), zero(), zero()) }
     /// A unit vector in the `y` direction.
@@ -224,7 +224,7 @@ impl<S: Primitive> Vector3<S> {
 }
 
 /// Operations specific to numeric four-dimensional vectors.
-impl<S: Primitive> Vector4<S> {
+impl<S: BaseNum> Vector4<S> {
     /// A unit vector in the `x` direction.
     #[inline] pub fn unit_x() -> Vector4<S> { Vector4::new(one(), zero(), zero(), zero()) }
     /// A unit vector in the `y` direction.
@@ -245,7 +245,7 @@ impl<S: Primitive> Vector4<S> {
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector
 <
-    S: PartOrdFloat<S>,
+    S: BaseFloat,
     Slice
 >
 :   Vector<S, Slice>
@@ -316,7 +316,7 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 EuclideanVector<S, [S, ..2]> for Vector2<S> {
     #[inline]
     fn angle(&self, other: &Vector2<S>) -> Rad<S> {
@@ -324,7 +324,7 @@ EuclideanVector<S, [S, ..2]> for Vector2<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 EuclideanVector<S, [S, ..3]> for Vector3<S> {
     #[inline]
     fn angle(&self, other: &Vector3<S>) -> Rad<S> {
@@ -332,7 +332,7 @@ EuclideanVector<S, [S, ..3]> for Vector3<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>>
+impl<S: BaseFloat>
 EuclideanVector<S, [S, ..4]> for Vector4<S> {
     #[inline]
     fn angle(&self, other: &Vector4<S>) -> Rad<S> {

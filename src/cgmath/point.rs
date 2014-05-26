@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ use std::fmt;
 use std::num::{one, zero};
 
 use array::*;
+use num::BaseNum;
 use vector::*;
-use partial_ord::PartOrdPrim;
 
 /// A point in 2-dimensional space.
 #[deriving(Eq, Clone, Hash)]
@@ -33,21 +33,21 @@ pub struct Point2<S> { pub x: S, pub y: S }
 pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
 
 
-impl<S: Num> Point2<S> {
+impl<S: BaseNum> Point2<S> {
     #[inline]
     pub fn new(x: S, y: S) -> Point2<S> {
         Point2 { x: x, y: y }
     }
 }
 
-impl<S: Num> Point3<S> {
+impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn new(x: S, y: S, z: S) -> Point3<S> {
         Point3 { x: x, y: y, z: z }
     }
 }
 
-impl<S: PartOrdPrim> Point3<S> {
+impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
         let e = v.truncate().mul_s(one::<S>() / v.w);
@@ -63,7 +63,7 @@ impl<S: PartOrdPrim> Point3<S> {
 /// Specifies the numeric operations for point types.
 pub trait Point
 <
-    S: PartOrdPrim,
+    S: BaseNum,
     V: Vector<S, Slice>,
     Slice
 >
@@ -109,16 +109,16 @@ pub trait Point
 array!(impl<S> Point2<S> -> [S, ..2] _2)
 array!(impl<S> Point3<S> -> [S, ..3] _3)
 
-impl<S: PartOrdPrim> Point<S, Vector2<S>, [S, ..2]> for Point2<S> {}
-impl<S: PartOrdPrim> Point<S, Vector3<S>, [S, ..3]> for Point3<S> {}
+impl<S: BaseNum> Point<S, Vector2<S>, [S, ..2]> for Point2<S> {}
+impl<S: BaseNum> Point<S, Vector3<S>, [S, ..3]> for Point3<S> {}
 
-impl<S: fmt::Show> fmt::Show for Point2<S> {
+impl<S: BaseNum> fmt::Show for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Point3<S> {
+impl<S: BaseNum> fmt::Show for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }

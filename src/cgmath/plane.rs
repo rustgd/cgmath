@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,11 +19,11 @@ use std::num::Zero;
 
 use approx::ApproxEq;
 use intersect::Intersect;
+use num::BaseFloat;
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vector3, Vector4};
 use vector::{Vector, EuclideanVector};
-use partial_ord::PartOrdFloat;
 
 
 /// A 3-dimensional plane formed from the equation: `A*x + B*y + C*z - D = 0`.
@@ -47,8 +47,7 @@ pub struct Plane<S> {
     pub d: S,
 }
 
-impl<S: PartOrdFloat<S>>
-Plane<S> {
+impl<S: BaseFloat> Plane<S> {
     /// Construct a plane from a normal vector and a scalar distance. The
     /// plane will be perpendicular to `n`, and `d` units offset from the
     /// origin.
@@ -91,7 +90,7 @@ Plane<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
+impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         match *self {
             (ref p, ref r) => {
@@ -103,19 +102,19 @@ impl<S: PartOrdFloat<S>> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     }
 }
 
-impl<S: Float> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
+impl<S: BaseFloat> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Ray3<S>> {
         fail!("Not yet implemented");
     }
 }
 
-impl<S: Float> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
+impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         fail!("Not yet implemented");
     }
 }
 
-impl<S: Float + ApproxEq<S>>
+impl<S: BaseFloat + ApproxEq<S>>
 ApproxEq<S> for Plane<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Plane<S>, epsilon: &S) -> bool {
@@ -124,7 +123,7 @@ ApproxEq<S> for Plane<S> {
     }
 }
 
-impl<S: Clone + fmt::Float> fmt::Show for Plane<S> {
+impl<S: BaseFloat> fmt::Show for Plane<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:f}x + {:f}y + {:f}z - {:f} = 0",
                self.n.x, self.n.y, self.n.z, self.d)

@@ -19,19 +19,19 @@ use std::num::one;
 
 use approx::ApproxEq;
 use matrix::{Matrix, Matrix4, ToMatrix4};
+use num::{BaseNum, BaseFloat};
 use point::{Point, Point3};
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
 use quaternion::Quaternion;
 use vector::{Vector, Vector3};
-use partial_ord::{PartOrdPrim, PartOrdFloat};
 
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
 pub trait Transform
 <
-    S: PartOrdPrim,
+    S: BaseNum,
     Slice,
     V: Vector<S,Slice>,
     P: Point<S,V,Slice>
@@ -94,7 +94,7 @@ pub struct Decomposed<S,V,R> {
 
 impl
 <
-    S: PartOrdFloat<S>,
+    S: BaseFloat,
     Slice,
     V: Vector<S, Slice>,
     P: Point<S, V, Slice>,
@@ -162,8 +162,7 @@ pub trait Transform3<S>
 + ToMatrix4<S>
 {}
 
-impl<S: PartOrdFloat<S>, R: Rotation3<S>>
-ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
+impl<S: BaseFloat, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let mut m = self.rot.to_matrix3().mul_s( self.scale.clone() ).to_matrix4();
         m.w = self.disp.extend( num::one() );
@@ -171,11 +170,9 @@ ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     }
 }
 
-impl<S: PartOrdFloat<S>, R: Rotation3<S>>
-Transform3<S> for Decomposed<S,Vector3<S>,R> {}
+impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S,Vector3<S>,R> {}
 
-impl<S: fmt::Show + Float, R: fmt::Show + Rotation3<S>>
-fmt::Show for Decomposed<S,Vector3<S>,R> {
+impl<S: BaseFloat, R: fmt::Show + Rotation3<S>> fmt::Show for Decomposed<S,Vector3<S>,R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "(scale({}), rot({}), disp{})",
             self.scale, self.rot, self.disp)
@@ -188,8 +185,7 @@ pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }
 
-impl<S : PartOrdFloat<S>>
-Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+impl<S : BaseFloat> Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Matrix4::identity() }
@@ -221,20 +217,18 @@ Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     }
 }
 
-impl<S: PartOrdPrim>
-ToMatrix4<S> for AffineMatrix3<S> {
+impl<S: BaseNum> ToMatrix4<S> for AffineMatrix3<S> {
     #[inline] fn to_matrix4(&self) -> Matrix4<S> { self.mat.clone() }
 }
 
-impl<S: PartOrdFloat<S>>
-Transform3<S> for AffineMatrix3<S> {}
+impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
 
 
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
 pub struct Transform3D<S>( Decomposed<S,Vector3<S>,Quaternion<S>> );
 
-impl<S: PartOrdFloat<S>> Transform3D<S> {
+impl<S: BaseFloat> Transform3D<S> {
     #[inline]
     pub fn new(scale: S, rot: Quaternion<S>, disp: Vector3<S>) -> Transform3D<S> {
        Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
@@ -252,6 +246,6 @@ impl<S: PartOrdFloat<S>> Transform3D<S> {
     }
 }
 
-impl<S: PartOrdFloat<S>> ToMatrix4<S> for Transform3D<S> {
+impl<S: BaseFloat> ToMatrix4<S> for Transform3D<S> {
     fn to_matrix4(&self) -> Matrix4<S> { self.get().to_matrix4() }
 }
