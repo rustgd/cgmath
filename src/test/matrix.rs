@@ -136,6 +136,7 @@ fn test_add_m() {
     let mut mut_a = matrix2::A;
     mut_a.add_self_m(&matrix2::B);
     assert_eq!(mut_a, matrix2::A.add_m(&matrix2::B));
+    assert_eq!(mut_a, matrix2::A + matrix2::B);
 
     // Matrix3
     assert_eq!(matrix3::A.add_m(&matrix3::B),
@@ -145,6 +146,7 @@ fn test_add_m() {
     let mut mut_a = matrix3::A;
     mut_a.add_self_m(&matrix3::B);
     assert_eq!(mut_a, matrix3::A.add_m(&matrix3::B));
+    assert_eq!(mut_a, matrix3::A + matrix3::B);
 
     // Matrix4
     assert_eq!(matrix4::A.add_m(&matrix4::B),
@@ -155,6 +157,7 @@ fn test_add_m() {
     let mut mut_a = matrix4::A;
     mut_a.add_self_m(&matrix4::B);
     assert_eq!(mut_a, matrix4::A.add_m(&matrix4::B));
+    assert_eq!(mut_a, matrix4::A + matrix4::B);
 }
 
 #[test]
@@ -166,6 +169,7 @@ fn test_sub_m() {
     let mut mut_a = matrix2::A;
     mut_a.sub_self_m(&matrix2::B);
     assert_eq!(mut_a, matrix2::A.sub_m(&matrix2::B));
+    assert_eq!(matrix2::A.sub_m(&matrix2::B), matrix2::A - matrix2::B);
 
     // Matrix3
     assert_eq!(matrix3::A.sub_m(&matrix3::B),
@@ -175,6 +179,7 @@ fn test_sub_m() {
     let mut mut_a = matrix3::A;
     mut_a.sub_self_m(&matrix3::B);
     assert_eq!(mut_a, matrix3::A.sub_m(&matrix3::B));
+    assert_eq!(matrix3::A.sub_m(&matrix3::B), matrix3::A - matrix3::B);
 
     // Matrix4
     assert_eq!(matrix4::A.sub_m(&matrix4::B),
@@ -185,6 +190,7 @@ fn test_sub_m() {
     let mut mut_a = matrix4::A;
     mut_a.sub_self_m(&matrix4::B);
     assert_eq!(mut_a, matrix4::A.sub_m(&matrix4::B));
+    assert_eq!(matrix4::A.sub_m(&matrix4::B), matrix4::A - matrix4::B);
 }
 
 #[test]
@@ -208,6 +214,10 @@ fn test_mul_m() {
                             110.0, 254.0, 398.0, 542.0,
                             120.0, 280.0, 440.0, 600.0,
                             130.0, 306.0, 482.0, 658.0));
+
+    assert_eq!(matrix2::A.mul_m(&matrix2::B), matrix2::A * matrix2::B);
+    assert_eq!(matrix3::A.mul_m(&matrix3::B), matrix3::A * matrix3::B);
+    assert_eq!(matrix4::A.mul_m(&matrix4::B), matrix4::A * matrix4::B);
 }
 
 #[test]
