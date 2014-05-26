@@ -417,13 +417,13 @@ pub trait Matrix
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: BaseFloat> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: BaseFloat> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).add_v(other.i(i))) } }
-impl<S: BaseFloat> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).add_v(other.i(i))) } }
+impl<S: BaseFloat> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(&self, other: &Matrix2<S>) -> Matrix2<S> { self.add_m(other) } }
+impl<S: BaseFloat> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(&self, other: &Matrix3<S>) -> Matrix3<S> { self.add_m(other) } }
+impl<S: BaseFloat> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(&self, other: &Matrix4<S>) -> Matrix4<S> { self.add_m(other) } }
 
-impl<S: BaseFloat> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: BaseFloat> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
-impl<S: BaseFloat> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).sub_v(other.i(i))) } }
+impl<S: BaseFloat> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(&self, other: &Matrix2<S>) -> Matrix2<S> { self.sub_m(other) } }
+impl<S: BaseFloat> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { self.sub_m(other) } }
+impl<S: BaseFloat> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { self.sub_m(other) } }
 
 impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { build(|i| self.i(i).neg()) } }
 impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { build(|i| self.i(i).neg()) } }
@@ -433,9 +433,9 @@ impl<S: BaseFloat> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Mat
 impl<S: BaseFloat> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Matrix4<S> { #[inline] fn zero() -> Matrix4<S> { Matrix4::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: BaseFloat> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(&self, other: &Matrix2<S>) -> Matrix2<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: BaseFloat> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(&self, other: &Matrix3<S>) -> Matrix3<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
-impl<S: BaseFloat> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(&self, other: &Matrix4<S>) -> Matrix4<S> { build(|i| self.i(i).mul_v(other.i(i))) } }
+impl<S: BaseFloat> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(&self, other: &Matrix2<S>) -> Matrix2<S> { self.mul_m(other) } }
+impl<S: BaseFloat> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(&self, other: &Matrix3<S>) -> Matrix3<S> { self.mul_m(other) } }
+impl<S: BaseFloat> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(&self, other: &Matrix4<S>) -> Matrix4<S> { self.mul_m(other) } }
 
 impl<S: BaseFloat> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matrix2::identity() } }
 impl<S: BaseFloat> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
