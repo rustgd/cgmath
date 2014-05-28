@@ -29,14 +29,7 @@ use vector::{Vector, Vector3};
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform
-<
-    S: BaseNum,
-    Slice,
-    V: Vector<S,Slice>,
-    P: Point<S,V,Slice>
->
-{
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>> {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn identity() -> Self;
@@ -92,15 +85,7 @@ pub struct Decomposed<S,V,R> {
     pub disp: V,
 }
 
-impl
-<
-    S: BaseFloat,
-    Slice,
-    V: Vector<S, Slice>,
-    P: Point<S, V, Slice>,
-    R: Rotation<S, Slice, V, P>
->
-Transform<S, Slice, V, P> for Decomposed<S,V,R> {
+impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform<S, V, P> for Decomposed<S,V,R> {
     #[inline]
     fn identity() -> Decomposed<S,V,R> {
         Decomposed {
@@ -157,10 +142,7 @@ Transform<S, Slice, V, P> for Decomposed<S,V,R> {
     }
 }
 
-pub trait Transform3<S>
-: Transform<S, [S, ..3], Vector3<S>, Point3<S>>
-+ ToMatrix4<S>
-{}
+pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>>+ ToMatrix4<S> {}
 
 impl<S: BaseFloat, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     fn to_matrix4(&self) -> Matrix4<S> {
@@ -185,7 +167,7 @@ pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }
 
-impl<S : BaseFloat> Transform<S, [S, ..3], Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+impl<S : BaseFloat> Transform<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Matrix4::identity() }
@@ -226,7 +208,7 @@ impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
 
 /// A transformation in three dimensions consisting of a rotation,
 /// displacement vector and scale amount.
-pub struct Transform3D<S>( Decomposed<S,Vector3<S>,Quaternion<S>> );
+pub struct Transform3D<S>(Decomposed<S,Vector3<S>,Quaternion<S>>);
 
 impl<S: BaseFloat> Transform3D<S> {
     #[inline]

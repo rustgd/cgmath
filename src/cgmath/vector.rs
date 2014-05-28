@@ -14,90 +14,85 @@
 // limitations under the License.
 
 use std::fmt;
+use std::mem;
 use std::num::{Zero, zero, One, one};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
-use array::{Array, build};
-use num::{BaseNum, BaseFloat, PartialOrd};
+use array::Array1;
+use num::{BaseNum, BaseFloat};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector
-<
-    S: BaseNum,
-    Slice
->
-:   Array<S, Slice>
-+   Neg<Self>
-+   Zero + One
-{
+pub trait Vector<S: BaseNum>: Array1<S>
+                  + Neg<Self>
+                  + Zero
+                  + One {
     /// Add a scalar to this vector, returning a new vector.
-    #[inline] fn add_s(&self, s: S) -> Self { build(|i| self.i(i).add(&s)) }
+    fn add_s(&self, s: S) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
-    #[inline] fn sub_s(&self, s: S) -> Self { build(|i| self.i(i).sub(&s)) }
+    fn sub_s(&self, s: S) -> Self;
     /// Multiply this vector by a scalar, returning a new vector.
-    #[inline] fn mul_s(&self, s: S) -> Self { build(|i| self.i(i).mul(&s)) }
+    fn mul_s(&self, s: S) -> Self;
     /// Divide this vector by a scalar, returning a new vector.
-    #[inline] fn div_s(&self, s: S) -> Self { build(|i| self.i(i).div(&s)) }
+    fn div_s(&self, s: S) -> Self;
     /// Take the remainder of this vector by a scalar, returning a new vector.
-    #[inline] fn rem_s(&self, s: S) -> Self { build(|i| self.i(i).rem(&s)) }
+    fn rem_s(&self, s: S) -> Self;
 
     /// Add this vector to another, returning a new vector.
-    #[inline] fn add_v(&self, other: &Self) -> Self { build(|i| self.i(i).add(other.i(i))) }
+    fn add_v(&self, v: &Self) -> Self;
     /// Subtract another vector from this one, returning a new vector.
-    #[inline] fn sub_v(&self, other: &Self) -> Self { build(|i| self.i(i).sub(other.i(i))) }
+    fn sub_v(&self, v: &Self) -> Self;
     /// Multiply this vector by another, returning a new vector.
-    #[inline] fn mul_v(&self, other: &Self) -> Self { build(|i| self.i(i).mul(other.i(i))) }
+    fn mul_v(&self, v: &Self) -> Self;
     /// Divide this vector by another, returning a new vector.
-    #[inline] fn div_v(&self, other: &Self) -> Self { build(|i| self.i(i).div(other.i(i))) }
+    fn div_v(&self, v: &Self) -> Self;
     /// Take the remainder of this vector by another, returning a new scalar.
-    #[inline] fn rem_v(&self, other: &Self) -> Self { build(|i| self.i(i).rem(other.i(i))) }
+    fn rem_v(&self, v: &Self) -> Self;
 
     /// Negate this vector in-place.
-    #[inline] fn neg_self(&mut self) { self.each_mut(|_, x| *x = x.neg()) }
+    fn neg_self(&mut self);
 
     /// Add a scalar to this vector in-place.
-    #[inline] fn add_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.add(&s)) }
+    fn add_self_s(&mut self, s: S);
     /// Subtract a scalar from this vector, in-place.
-    #[inline] fn sub_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.sub(&s)) }
+    fn sub_self_s(&mut self, s: S);
     /// Multiply this vector by a scalar, in-place.
-    #[inline] fn mul_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.mul(&s)) }
+    fn mul_self_s(&mut self, s: S);
     /// Divide this vector by a scalar, in-place.
-    #[inline] fn div_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.div(&s)) }
+    fn div_self_s(&mut self, s: S);
     /// Take the remainder of this vector by a scalar, in-place.
-    #[inline] fn rem_self_s(&mut self, s: S) { self.each_mut(|_, x| *x = x.rem(&s)) }
+    fn rem_self_s(&mut self, s: S);
 
     /// Add another vector to this one, in-place.
-    #[inline] fn add_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.add(other.i(i))) }
+    fn add_self_v(&mut self, v: &Self);
     /// Subtract another vector from this one, in-place.
-    #[inline] fn sub_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.sub(other.i(i))) }
+    fn sub_self_v(&mut self, v: &Self);
     /// Multiply this matrix by another, in-place.
-    #[inline] fn mul_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.mul(other.i(i))) }
+    fn mul_self_v(&mut self, v: &Self);
     /// Divide this matrix by anothor, in-place.
-    #[inline] fn div_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.div(other.i(i))) }
+    fn div_self_v(&mut self, v: &Self);
     /// Take the remainder of this vector by another, in-place.
-    #[inline] fn rem_self_v(&mut self, other: &Self) { self.each_mut(|i, x| *x = x.rem(other.i(i))) }
+    fn rem_self_v(&mut self, v: &Self);
 
     /// The sum of each component of the vector.
-    #[inline] fn comp_add(&self) -> S { self.fold(|a, b| a.add(b)) }
-
+    fn comp_add(&self) -> S;
     /// The product of each component of the vector.
-    #[inline] fn comp_mul(&self) -> S { self.fold(|a, b| a.mul(b)) }
+    fn comp_mul(&self) -> S;
 
     /// Vector dot product.
-    #[inline] fn dot(&self, other: &Self) -> S { self.mul_v(other).comp_add() }
+    #[inline]
+    fn dot(&self, v: &Self) -> S { self.mul_v(v).comp_add() }
 
     /// The minimum component of the vector.
-    #[inline] fn comp_min(&self) -> S { self.fold(|a, b| a.partial_min(*b)) }
-
+    fn comp_min(&self) -> S;
     /// The maximum component of the vector.
-    #[inline] fn comp_max(&self) -> S { self.fold(|a, b| a.partial_max(*b)) }
+    fn comp_max(&self) -> S;
 }
 
 /// Dot product of two vectors.
-#[inline] pub fn dot<S: BaseNum, Slice, V: Vector<S, Slice>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] pub fn dot<S: BaseNum, V: Vector<S>>(a: V, b: V) -> S { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
@@ -105,19 +100,23 @@ macro_rules! vec(
         #[deriving(Eq, TotalEq, Clone, Hash)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
-        impl<$S: BaseNum> $Self<$S> {
+        impl<$S> $Self<$S> {
             /// Construct a new vector, using the provided values.
             #[inline]
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
             }
+        }
 
+        impl<$S: Clone> $Self<$S> {
             /// Construct a vector from a single value, replicating it.
             #[inline]
             pub fn from_value(value: $S) -> $Self<$S> {
                 $Self { $($field: value.clone()),+ }
             }
+        }
 
+        impl<$S: BaseNum> $Self<$S> {
             /// The additive identity of the vector.
             #[inline]
             pub fn zero() -> $Self<$S> { $Self::from_value(zero()) }
@@ -127,12 +126,65 @@ macro_rules! vec(
             pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
         }
 
+        impl<S: Copy> Array1<S> for $Self<S> {
+            #[inline]
+            fn ptr<'a>(&'a self) -> &'a S { &self.x }
+
+            #[inline]
+            fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x }
+
+            #[inline]
+            fn i(&self, i: uint) -> S {
+                let slice: &[S, ..$n] = unsafe { mem::transmute(self) };
+                slice[i]
+            }
+
+            #[inline]
+            fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
+                let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
+                &'a mut slice[i]
+            }
+        }
+
+        impl<S: BaseNum> Vector<S> for $Self<S> {
+            #[inline] fn add_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field + s),+) }
+            #[inline] fn sub_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field - s),+) }
+            #[inline] fn mul_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field * s),+) }
+            #[inline] fn div_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field / s),+) }
+            #[inline] fn rem_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field % s),+) }
+
+            #[inline] fn add_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field + v.$field),+) }
+            #[inline] fn sub_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field - v.$field),+) }
+            #[inline] fn mul_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field * v.$field),+) }
+            #[inline] fn div_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field / v.$field),+) }
+            #[inline] fn rem_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field % v.$field),+) }
+
+            #[inline] fn neg_self(&mut self) { $(self.$field = -self.$field;)+ }
+
+            #[inline] fn add_self_s(&mut self, s: S) { $(self.$field = self.$field + s;)+ }
+            #[inline] fn sub_self_s(&mut self, s: S) { $(self.$field = self.$field - s;)+ }
+            #[inline] fn mul_self_s(&mut self, s: S) { $(self.$field = self.$field * s;)+ }
+            #[inline] fn div_self_s(&mut self, s: S) { $(self.$field = self.$field / s;)+ }
+            #[inline] fn rem_self_s(&mut self, s: S) { $(self.$field = self.$field % s;)+ }
+
+            #[inline] fn add_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field + v.$field;)+ }
+            #[inline] fn sub_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field - v.$field;)+ }
+            #[inline] fn mul_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field * v.$field;)+ }
+            #[inline] fn div_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field / v.$field;)+ }
+            #[inline] fn rem_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field % v.$field;)+ }
+
+            #[inline] fn comp_add(&self) -> S { fold!(&add, { $(self.$field),+ }) }
+            #[inline] fn comp_mul(&self) -> S { fold!(&mul, { $(self.$field),+ }) }
+            #[inline] fn comp_min(&self) -> S { fold!(partial_min, { $(self.$field),+ }) }
+            #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
+        }
+
         impl<S: BaseNum> Add<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn add(&self, other: &$Self<S>) -> $Self<S> { self.add_v(other) }
+            #[inline] fn add(&self, v: &$Self<S>) -> $Self<S> { self.add_v(v) }
         }
 
         impl<S: BaseNum> Sub<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn sub(&self, other: &$Self<S>) -> $Self<S> { self.sub_v(other) }
+            #[inline] fn sub(&self, v: &$Self<S>) -> $Self<S> { self.sub_v(v) }
         }
 
         impl<S: BaseNum> Zero for $Self<S> {
@@ -141,28 +193,38 @@ macro_rules! vec(
         }
 
         impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
-            #[inline] fn neg(&self) -> $Self<S> { build(|i| self.i(i).neg()) }
+            #[inline] fn neg(&self) -> $Self<S> { $Self::new($(-self.$field),+) }
         }
 
         impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn mul(&self, other: &$Self<S>) -> $Self<S> { self.mul_v(other) }
+            #[inline] fn mul(&self, v: &$Self<S>) -> $Self<S> { self.mul_v(v) }
         }
 
         impl<S: BaseNum> One for $Self<S> {
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
 
-        impl<S: BaseNum> Vector<S, [S, ..$n]> for $Self<S> {}
+        impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
+            #[inline]
+            fn approx_eq_eps(&self, other: &$Self<S>, epsilon: &S) -> bool {
+                $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
+            }
+        }
     )
 )
+
+macro_rules! fold {
+    (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
+    (&$method:ident, { $x:expr, $y:expr, $z:expr })          => { $x.$method(&$y).$method(&$z) };
+    (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => { $x.$method(&$y).$method(&$z).$method(&$w) };
+    ($method:ident, { $x:expr, $y:expr })                    => { $x.$method($y) };
+    ($method:ident, { $x:expr, $y:expr, $z:expr })           => { $x.$method($y).$method($z) };
+    ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
+}
 
 vec!(Vector2<S> { x, y }, 2)
 vec!(Vector3<S> { x, y, z }, 3)
 vec!(Vector4<S> { x, y, z, w }, 4)
-
-array!(impl<S> Vector2<S> -> [S, ..2] _2)
-array!(impl<S> Vector3<S> -> [S, ..3] _3)
-array!(impl<S> Vector4<S> -> [S, ..4] _4)
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {
@@ -243,14 +305,8 @@ impl<S: BaseNum> Vector4<S> {
 
 /// Specifies geometric operations for vectors. This is only implemented for
 /// 2-dimensional and 3-dimensional vectors.
-pub trait EuclideanVector
-<
-    S: BaseFloat,
-    Slice
->
-:   Vector<S, Slice>
-+   ApproxEq<S>
-{
+pub trait EuclideanVector<S: BaseFloat>: Vector<S>
+                                       + ApproxEq<S> {
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(&self, other: &Self) -> bool {
@@ -316,43 +372,40 @@ pub trait EuclideanVector
     }
 }
 
-impl<S: BaseFloat>
-EuclideanVector<S, [S, ..2]> for Vector2<S> {
+impl<S: BaseFloat> EuclideanVector<S> for Vector2<S> {
     #[inline]
     fn angle(&self, other: &Vector2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
-impl<S: BaseFloat>
-EuclideanVector<S, [S, ..3]> for Vector3<S> {
+impl<S: BaseFloat> EuclideanVector<S> for Vector3<S> {
     #[inline]
     fn angle(&self, other: &Vector3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
-impl<S: BaseFloat>
-EuclideanVector<S, [S, ..4]> for Vector4<S> {
+impl<S: BaseFloat> EuclideanVector<S> for Vector4<S> {
     #[inline]
     fn angle(&self, other: &Vector4<S>) -> Rad<S> {
         acos(self.dot(other) / (self.length() * other.length()))
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vector2<S> {
+impl<S: BaseNum> fmt::Show for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vector3<S> {
+impl<S: BaseNum> fmt::Show for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
     }
 }
 
-impl<S: fmt::Show> fmt::Show for Vector4<S> {
+impl<S: BaseNum> fmt::Show for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }

@@ -36,8 +36,6 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-pub use array::Array;
-
 mod array;
 
 pub mod matrix;
@@ -63,5 +61,3 @@ pub mod sphere;
 
 pub mod approx;
 pub mod num;
-pub mod ptr;
-

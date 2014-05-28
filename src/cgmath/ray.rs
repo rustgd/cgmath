@@ -25,7 +25,7 @@ pub struct Ray<P,V> {
     pub direction: V,
 }
 
-impl<S: BaseNum, Slice, V: Vector<S, Slice>, P: Point<S, V, Slice>> Ray<P, V> {
+impl<S: BaseNum, V: Vector<S>, P: Point<S, V>> Ray<P, V> {
     pub fn new(origin: P, direction: V) -> Ray<P,V> {
         Ray { origin: origin, direction: direction }
     }

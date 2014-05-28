@@ -15,7 +15,8 @@
 
 //! View frustum for visibility determination
 
-use matrix::{Matrix, Matrix4};
+use array::Array2;
+use matrix::Matrix4;
 use num::BaseFloat;
 use plane::Plane;
 use point::Point3;

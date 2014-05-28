@@ -15,12 +15,6 @@
 
 use std::num;
 
-use array::Array;
-use matrix::{Matrix2, Matrix3, Matrix4};
-use point::{Point2, Point3};
-use quaternion::Quaternion;
-use vector::{Vector2, Vector3, Vector4};
-
 pub trait ApproxEq<T: Float> {
     fn approx_epsilon(_hack: Option<Self>) -> T {
         num::cast(1.0e-5).unwrap()
@@ -35,7 +29,7 @@ pub trait ApproxEq<T: Float> {
 }
 
 
-macro_rules! approx_simple(
+macro_rules! approx_float(
     ($S:ident) => (
         impl ApproxEq<$S> for $S {
              #[inline]
@@ -46,31 +40,5 @@ macro_rules! approx_simple(
     )
 )
 
-approx_simple!(f32)
-approx_simple!(f64)
-
-
-macro_rules! approx_array(
-    (impl<$S:ident> $Self:ty) => (
-        impl<$S: Float + Clone + ApproxEq<$S>> ApproxEq<$S> for $Self {
-            #[inline]
-            fn approx_eq_eps(&self, other: &$Self, epsilon: &$S) -> bool {
-                self.iter().zip(other.iter())
-                           .all(|(a, b)| a.approx_eq_eps(b, epsilon))
-            }
-        }
-    )
-)
-
-approx_array!(impl<S> Matrix2<S>)
-approx_array!(impl<S> Matrix3<S>)
-approx_array!(impl<S> Matrix4<S>)
-
-approx_array!(impl<S> Quaternion<S>)
-
-approx_array!(impl<S> Vector2<S>)
-approx_array!(impl<S> Vector3<S>)
-approx_array!(impl<S> Vector4<S>)
-
-approx_array!(impl<S> Point2<S>)
-approx_array!(impl<S> Point3<S>)
+approx_float!(f32)
+approx_float!(f64)

@@ -15,7 +15,6 @@
 
 use angle::{Rad, acos};
 use approx::ApproxEq;
-use array::Array;
 use matrix::Matrix;
 use matrix::{Matrix2, ToMatrix2};
 use matrix::{Matrix3, ToMatrix3};
@@ -27,16 +26,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation
-<
-    S: BaseNum,
-    Slice,
-    V: Vector<S,Slice>,
-    P: Point<S,V,Slice>
->
-:   Eq
-+   ApproxEq<S>
-{
+pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Eq + ApproxEq<S> {
     /// Create the identity transform (causes no transformation).
     fn identity() -> Self;
 
@@ -59,10 +49,8 @@ pub trait Rotation
 
     /// Rotate a ray using this rotation.
     #[inline]
-    fn rotate_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
-        Ray::new(   //FIXME: use clone derived from Array
-            Array::build(|i| ray.origin.i(i).clone()),
-            self.rotate_vector(&ray.direction) )
+    fn rotate_ray(&self, ray: &Ray<P, V>) -> Ray<P,V> {
+        Ray::new(ray.origin.clone(), self.rotate_vector(&ray.direction))
     }
 
     /// Create a new rotation which combines both this rotation, and another.
@@ -86,29 +74,19 @@ pub trait Rotation
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2
-<
-    S
->
-:   Rotation<S, [S, ..2], Vector2<S>, Point2<S>>
-+   ToMatrix2<S>
-+   ToBasis2<S>
-{
+pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
+                      + ToMatrix2<S>
+                      + ToBasis2<S> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle(theta: Rad<S>) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3
-<
-    S: BaseNum
->
-:   Rotation<S, [S, ..3], Vector3<S>, Point3<S>>
-+   ToMatrix3<S>
-+   ToBasis3<S>
-+   ToQuaternion<S>
-{
+pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
+                               + ToMatrix3<S>
+                               + ToBasis3<S>
+                               + ToQuaternion<S>{
     /// Create a rotation using an angle around a given axis.
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
 
@@ -174,7 +152,7 @@ impl<S: BaseFloat> ToMatrix2<S> for Basis2<S> {
     fn to_matrix2(&self) -> Matrix2<S> { self.mat.clone() }
 }
 
-impl<S: BaseFloat> Rotation<S, [S, ..2], Vector2<S>, Point2<S>> for Basis2<S> {
+impl<S: BaseFloat> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Matrix2::identity() } }
 
@@ -263,7 +241,7 @@ impl<S: BaseFloat> ToQuaternion<S> for Basis3<S> {
     fn to_quaternion(&self) -> Quaternion<S> { self.mat.to_quaternion() }
 }
 
-impl<S: BaseFloat> Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Basis3<S> {
+impl<S: BaseFloat> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Matrix3::identity() } }
 
