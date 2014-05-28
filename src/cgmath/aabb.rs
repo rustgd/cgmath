@@ -22,19 +22,11 @@
 
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
-use array::build;
 use num::BaseNum;
 use std::fmt;
 use std::num::{zero, one};
-use std::iter::Iterator;
 
-pub trait Aabb
-<
-    S: BaseNum,
-    V: Vector<S, Slice>,
-    P: Point<S, V, Slice>,
-    Slice
-> {
+pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
     /// Create a new AABB using two points as opposing corners.
     fn new(p1: P, p2: P) -> Self;
 
@@ -45,28 +37,29 @@ pub trait Aabb
     fn max<'a>(&'a self) -> &'a P;
 
     /// Return the dimensions of this AABB.
-    #[inline] fn dim(&self) -> V { self.max().sub_p(self.min()) }
+    #[inline]
+    fn dim(&self) -> V { self.max().sub_p(self.min()) }
 
     /// Return the volume this AABB encloses.
-    #[inline] fn volume(&self) -> S { self.dim().comp_mul() }
+    #[inline]
+    fn volume(&self) -> S { self.dim().comp_mul() }
 
     /// Return the center point of this AABB.
-    #[inline] fn center(&self) -> P {
+    #[inline]
+    fn center(&self) -> P {
         let two = one::<S>() + one::<S>();
         self.min().add_v(&self.dim().div_s(two))
     }
 
     /// Tests whether a point is cointained in the box, inclusive for min corner
     /// and exclusive for the max corner.
-    #[inline] fn contains(&self, p: &P) -> bool {
-        p.sub_p(self.min()).iter().all(|x| *x >= zero::<S>()) &&
-        self.max().sub_p(p).iter().all(|x| *x > zero::<S>())
-    }
+    #[inline]
+    fn contains(&self, p: &P) -> bool;
 
     /// Returns a new AABB that is grown to include the given point.
     fn grow(&self, p: &P) -> Self {
-        let min : P = build(|i| self.min().i(i).partial_min(*p.i(i)));
-        let max : P = build(|i| self.max().i(i).partial_max(*p.i(i)));
+        let min = self.min().min(p);
+        let max = self.max().max(p);
         Aabb::new(min, max)
     }
 
@@ -108,10 +101,23 @@ impl<S: BaseNum> Aabb2<S> {
     }
 }
 
-impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>, [S, ..2]> for Aabb2<S> {
+impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>> for Aabb2<S> {
+    #[inline]
     fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> { Aabb2::new(p1, p2) }
-    #[inline] fn min<'a>(&'a self) -> &'a Point2<S> { &self.min }
-    #[inline] fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
+
+    #[inline]
+    fn min<'a>(&'a self) -> &'a Point2<S> { &self.min }
+
+    #[inline]
+    fn max<'a>(&'a self) -> &'a Point2<S> { &self.max }
+
+    #[inline]
+    fn contains(&self, p: &Point2<S>) -> bool {
+        let v_min = p.sub_p(self.min());
+        let v_max = self.max().sub_p(p);
+        v_min.x >= zero() && v_min.y >= zero() &&
+        v_max.x >  zero() && v_max.y >  zero()
+    }
 }
 
 impl<S: BaseNum> fmt::Show for Aabb2<S> {
@@ -142,10 +148,23 @@ impl<S: BaseNum> Aabb3<S> {
     }
 }
 
-impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>, [S, ..3]> for Aabb3<S> {
+impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>> for Aabb3<S> {
+    #[inline]
     fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
-    #[inline] fn min<'a>(&'a self) -> &'a Point3<S> { &self.min }
-    #[inline] fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }
+
+    #[inline]
+    fn min<'a>(&'a self) -> &'a Point3<S> { &self.min }
+
+    #[inline]
+    fn max<'a>(&'a self) -> &'a Point3<S> { &self.max }
+
+    #[inline]
+    fn contains(&self, p: &Point3<S>) -> bool {
+        let v_min = p.sub_p(self.min());
+        let v_max = self.max().sub_p(p);
+        v_min.x >= zero() && v_min.y >= zero() && v_min.z >= zero() &&
+        v_max.x >  zero() && v_max.y >  zero() && v_max.z >  zero()
+    }
 }
 
 impl<S: BaseNum> fmt::Show for Aabb3<S> {

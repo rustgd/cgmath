@@ -24,20 +24,12 @@ use intersect::Intersect;
 
 /// A generic directed line segment from `origin` to `dest`.
 #[deriving(Clone, Eq)]
-pub struct Line<P>
-{
+pub struct Line<P> {
     pub origin: P,
     pub dest: P,
 }
 
-impl
-<
-    S: BaseNum,
-    Slice,
-    V: Vector<S,Slice>,
-    P: Point<S,V,Slice>
->  Line<P>
-{
+impl<S: BaseNum, V: Vector<S>, P: Point<S, V>>  Line<P> {
     pub fn new(origin: P, dest: P) -> Line<P> {
         Line { origin:origin, dest:dest }
     }

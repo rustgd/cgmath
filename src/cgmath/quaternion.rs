@@ -14,13 +14,15 @@
 // limitations under the License.
 
 use std::fmt;
+use std::mem;
 use std::num::{zero, one, cast};
 
 use angle::{Angle, Rad, acos, sin, sin_cos};
-use array::{Array, build};
+use approx::ApproxEq;
+use array::Array1;
 use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
 use num::BaseFloat;
-use point::{Point3};
+use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
 
@@ -29,12 +31,30 @@ use vector::{Vector3, Vector, EuclideanVector};
 #[deriving(Clone, Eq)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
-array!(impl<S> Quaternion<S> -> [S, ..4] _4)
-
 /// Represents types which can be expressed as a quaternion.
 pub trait ToQuaternion<S: BaseFloat> {
     /// Convert this value to a quaternion.
     fn to_quaternion(&self) -> Quaternion<S>;
+}
+
+impl<S: Copy> Array1<S> for Quaternion<S> {
+    #[inline]
+    fn ptr<'a>(&'a self) -> &'a S { &self.s }
+
+    #[inline]
+    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.s }
+
+    #[inline]
+    fn i(&self, i: uint) -> S {
+        let slice: &[S, ..4] = unsafe { mem::transmute(self) };
+        slice[i]
+    }
+
+    #[inline]
+    fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
+        let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
+        &'a mut slice[i]
+    }
 }
 
 impl<S: BaseFloat> Quaternion<S> {
@@ -85,13 +105,13 @@ impl<S: BaseFloat> Quaternion<S> {
     /// The sum of this quaternion and `other`
     #[inline]
     pub fn add_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        build(|i| self.i(i).add(other.i(i)))
+        Quaternion::from_sv(self.s + other.s, self.v + other.v)
     }
 
     /// The difference between this quaternion and `other`
     #[inline]
     pub fn sub_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        build(|i| self.i(i).add(other.i(i)))
+        Quaternion::from_sv(self.s - other.s, self.v - other.v)
     }
 
     /// The result of multipliplying the quaternion by `other`
@@ -105,37 +125,42 @@ impl<S: BaseFloat> Quaternion<S> {
     /// Multiply this quaternion by a scalar, in-place.
     #[inline]
     pub fn mul_self_s(&mut self, s: S) {
-        self.each_mut(|_, x| *x = x.mul(&s))
+        self.s = self.s * s;
+        self.v.mul_self_s(s);
     }
 
     /// Divide this quaternion by a scalar, in-place.
     #[inline]
     pub fn div_self_s(&mut self, s: S) {
-        self.each_mut(|_, x| *x = x.div(&s))
+        self.s = self.s / s;
+        self.v.div_self_s(s);
     }
 
     /// Add this quaternion by another, in-place.
     #[inline]
-    pub fn add_self_q(&mut self, other: &Quaternion<S>) {
-        self.each_mut(|i, x| *x = x.add(other.i(i)));
+    pub fn add_self_q(&mut self, q: &Quaternion<S>) {
+        self.s = self.s + q.s;
+        self.v.add_self_v(&q.v);
     }
 
     /// Subtract another quaternion from this one, in-place.
     #[inline]
-    pub fn sub_self_q(&mut self, other: &Quaternion<S>) {
-        self.each_mut(|i, x| *x = x.sub(other.i(i)));
+    pub fn sub_self_q(&mut self, q: &Quaternion<S>) {
+        self.s = self.s - q.s;
+        self.v.sub_self_v(&q.v);
     }
 
     /// Multiply this quaternion by another, in-place.
     #[inline]
-    pub fn mul_self_q(&mut self, other: &Quaternion<S>) {
-        *self = self.mul_q(other);
+    pub fn mul_self_q(&mut self, q: &Quaternion<S>) {
+        self.s = self.s * q.s;
+        self.v.mul_self_v(&q.v);
     }
 
-    /// The dot product of the quaternion and `other`.
+    /// The dot product of the quaternion and `q`.
     #[inline]
-    pub fn dot(&self, other: &Quaternion<S>) -> S {
-        self.s * other.s + self.v.dot(&other.v)
+    pub fn dot(&self, q: &Quaternion<S>) -> S {
+        self.s * q.s + self.v.dot(&q.v)
     }
 
     /// The conjugate of the quaternion.
@@ -173,6 +198,14 @@ impl<S: BaseFloat> Quaternion<S> {
     /// Do a normalized linear interpolation with `other`, by `amount`.
     pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
         self.mul_s(one::<S>() - amount).add_q(&other.mul_s(amount)).normalize()
+    }
+}
+
+impl<S: BaseFloat> ApproxEq<S> for Quaternion<S> {
+    #[inline]
+    fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
+        self.s.approx_eq_eps(&other.s, epsilon) &&
+        self.v.approx_eq_eps(&other.v, epsilon)
     }
 }
 
@@ -305,7 +338,7 @@ impl<S: BaseFloat> ToQuaternion<S> for Quaternion<S> {
     fn to_quaternion(&self) -> Quaternion<S> { self.clone() }
 }
 
-impl<S: BaseFloat> Rotation<S, [S, ..3], Vector3<S>, Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
     fn identity() -> Quaternion<S> { Quaternion::identity() }
 
