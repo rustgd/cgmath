@@ -36,7 +36,7 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-mod array;
+pub mod array;
 
 pub mod matrix;
 pub mod quaternion;
