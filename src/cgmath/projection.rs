@@ -105,12 +105,12 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let half_turn: A = Angle::turn_div_2();
 
-        assert!(self.fovy   > zero(),    "The vertical field of view cannot be below zero, found: {:?}", self.fovy);
-        assert!(self.fovy   < half_turn, "The vertical field of view cannot be greater than a half turn, found: {:?}", self.fovy);
-        assert!(self.aspect > zero(),    "The aspect ratio cannot be below zero, found: {:?}", self.aspect);
-        assert!(self.near   > zero(),    "The near plane distance cannot be below zero, found: {:?}", self.near);
-        assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: {:?}", self.far);
-        assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", self.far, self.near);
+        assert!(self.fovy   > zero(),    "The vertical field of view cannot be below zero, found: {}", self.fovy);
+        assert!(self.fovy   < half_turn, "The vertical field of view cannot be greater than a half turn, found: {}", self.fovy);
+        assert!(self.aspect > zero(),    "The aspect ratio cannot be below zero, found: {}", self.aspect);
+        assert!(self.near   > zero(),    "The near plane distance cannot be below zero, found: {}", self.near);
+        assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: {}", self.far);
+        assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: {}, near: {}", self.far, self.near);
 
         let f = cot(self.fovy.div_s(cast(2).unwrap()).to_rad());
         let two: S = cast(2).unwrap();
@@ -159,9 +159,9 @@ impl<S: BaseFloat> Projection<S> for Perspective<S> {
 
 impl<S: BaseFloat> ToMatrix4<S> for Perspective<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
-        assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
-        assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
-        assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", self.near, self.far);
+        assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
+        assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);
+        assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: {} far: {}", self.near, self.far);
 
         let two: S = cast(2).unwrap();
 
@@ -215,9 +215,9 @@ impl<S: BaseFloat> Projection<S> for Ortho<S> {
 
 impl<S: BaseFloat> ToMatrix4<S> for Ortho<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
-        assert!(self.left   < self.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", self.left, self.right);
-        assert!(self.bottom < self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
-        assert!(self.near   < self.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", self.near, self.far);
+        assert!(self.left   < self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
+        assert!(self.bottom < self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);
+        assert!(self.near   < self.far,   "`near` cannot be greater than `far`, found: near: {} far: {}", self.near, self.far);
 
         let two: S = cast(2).unwrap();
 

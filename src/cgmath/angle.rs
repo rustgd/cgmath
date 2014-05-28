@@ -80,6 +80,7 @@ pub trait Angle
 +   ToRad<S>
 +   ToDeg<S>
 +   ScalarConv<S>
++   fmt::Show
 {
     /// Create a new angle from any other valid angle.
     fn from<A: Angle<S>>(theta: A) -> Self;
