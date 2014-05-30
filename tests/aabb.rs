@@ -20,6 +20,8 @@ extern crate cgmath;
 use cgmath::aabb::*;
 use cgmath::point::{Point2, Point3};
 use cgmath::vector::{Vector2, Vector3};
+use cgmath::ray::{Ray};
+use cgmath::intersect::Intersect;
 
 #[test]
 fn test_aabb() {
@@ -63,4 +65,18 @@ fn test_aabb() {
 
     assert_eq!(aabb.mul_v(&Vector3::new(1i, 2i, 3i)),
         Aabb3::new(Point3::new(-20i, -20i, -15i), Point3::new(10i, 60i, 15i)));
+}
+
+#[test]
+fn test_aabb_ray_intersect() {
+    let aabb = Aabb2::new(Point2::new(-5.0f32, 5.0), Point2::new(5.0, 10.0));
+    let ray1 = Ray::new(Point2::new(0.0f32, 0.0), Vector2::new(0.0, 1.0));
+    let ray2 = Ray::new(Point2::new(-10.0f32, 0.0), Vector2::new(2.5, 1.0));
+    let ray3 = Ray::new(Point2::new(0.0f32, 0.0), Vector2::new(-1.0, -1.0));
+    let ray4 = Ray::new(Point2::new(3.0f32, 7.0), Vector2::new(1.0, 1.0));
+
+    assert_eq!((ray1, aabb).intersection(), Some(Point2::new(0.0, 5.0)));
+    assert_eq!((ray2, aabb).intersection(), Some(Point2::new(2.5, 5.0)));
+    assert_eq!((ray3, aabb).intersection(), None);
+    assert_eq!((ray4, aabb).intersection(), Some(Point2::new(5.0, 9.0)));
 }
