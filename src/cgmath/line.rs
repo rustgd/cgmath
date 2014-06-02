@@ -23,7 +23,7 @@ use vector::{Vector, Vector2};
 use intersect::Intersect;
 
 /// A generic directed line segment from `origin` to `dest`.
-#[deriving(Clone, Eq)]
+#[deriving(Clone, PartialEq)]
 pub struct Line<P> {
     pub origin: P,
     pub dest: P,

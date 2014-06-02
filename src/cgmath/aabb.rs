@@ -82,7 +82,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
 }
 
 /// A two-dimensional AABB, aka a rectangle.
-#[deriving(Clone, Eq)]
+#[deriving(Clone, PartialEq)]
 pub struct Aabb2<S> {
     pub min: Point2<S>,
     pub max: Point2<S>,
@@ -127,7 +127,7 @@ impl<S: BaseNum> fmt::Show for Aabb2<S> {
 }
 
 /// A three-dimensional AABB, aka a rectangular prism.
-#[deriving(Clone, Eq)]
+#[deriving(Clone, PartialEq)]
 pub struct Aabb3<S> {
     pub min: Point3<S>,
     pub max: Point3<S>,

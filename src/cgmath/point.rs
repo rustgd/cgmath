@@ -27,11 +27,11 @@ use num::{BaseNum, BaseFloat};
 use vector::*;
 
 /// A point in 2-dimensional space.
-#[deriving(Eq, Clone, Hash)]
+#[deriving(PartialEq, Clone, Hash)]
 pub struct Point2<S> { pub x: S, pub y: S }
 
 /// A point in 3-dimensional space.
-#[deriving(Eq, Clone, Hash)]
+#[deriving(PartialEq, Clone, Hash)]
 pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
 
 

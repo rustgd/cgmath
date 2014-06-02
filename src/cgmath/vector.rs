@@ -97,7 +97,7 @@ pub trait Vector<S: BaseNum>: Array1<S>
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
-        #[deriving(Eq, TotalEq, Clone, Hash)]
+        #[deriving(PartialEq, Eq, Clone, Hash)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
         impl<$S> $Self<$S> {

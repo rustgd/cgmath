@@ -18,7 +18,7 @@
 use point::Point3;
 use vector::Vector3;
 
-#[deriving(Clone, Eq)]
+#[deriving(Clone, PartialEq)]
 pub struct Cylinder<S> {
     pub center: Point3<S>,
     pub axis: Vector3<S>,
