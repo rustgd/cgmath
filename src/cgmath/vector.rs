@@ -301,6 +301,18 @@ impl<S: BaseNum> Vector4<S> {
     pub fn truncate(&self)-> Vector3<S> {
         Vector3::new(self.x.clone(), self.y.clone(), self.z.clone())
     }
+
+    /// Create a `Vector3`, dropping the nth element
+    #[inline]
+    pub fn truncate_n(&self, n: int)-> Vector3<S> {
+        match n {
+            0 => Vector3::new(self.y.clone(), self.z.clone(), self.w.clone()),
+            1 => Vector3::new(self.x.clone(), self.z.clone(), self.w.clone()),
+            2 => Vector3::new(self.x.clone(), self.y.clone(), self.w.clone()),
+            3 => Vector3::new(self.x.clone(), self.y.clone(), self.z.clone()),
+            _ => fail!("{} is out of range", n)
+        }
+    }
 }
 
 /// Specifies geometric operations for vectors. This is only implemented for

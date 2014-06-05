@@ -913,44 +913,36 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn invert(&self) -> Option<Matrix4<S>> {
-        if self.is_invertible() {
-            // Gauss Jordan Elimination with partial pivoting
-            // So take this matrix ('mat') augmented with the identity ('ident'),
-            // and essentially reduce [mat|ident]
+        let det = self.determinant();
+        if !det.approx_eq(&zero()) {
+            let one: S = one();
+            let inv_det = one / det;
+            let t = self.transpose();
+            let cf = |i, j| {
+                let mat = match i {
+                    0 => Matrix3::from_cols(t.y.truncate_n(j),
+                                            t.z.truncate_n(j),
+                                            t.w.truncate_n(j)),
+                    1 => Matrix3::from_cols(t.x.truncate_n(j),
+                                            t.z.truncate_n(j),
+                                            t.w.truncate_n(j)),
+                    2 => Matrix3::from_cols(t.x.truncate_n(j),
+                                            t.y.truncate_n(j),
+                                            t.w.truncate_n(j)),
+                    3 => Matrix3::from_cols(t.x.truncate_n(j),
+                                            t.y.truncate_n(j),
+                                            t.z.truncate_n(j)),
+                    _ => fail!("out of range")
+                };
+                let sign = if (i+j) & 1 == 1 {-one} else {one};
+                mat.determinant() * sign * inv_det
+            };
 
-            let mut mat = self.clone();
-            let mut ident = Matrix4::identity();
+            Some(Matrix4::new(cf(0, 0), cf(0, 1), cf(0, 2), cf(0, 3),
+                              cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
+                              cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
+                              cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
 
-            for j in range(0u, 4u) {
-                // Find largest element in col j
-                let mut i1 = j;
-                for i in range(j + 1, 4) {
-                    if mat.cr(j, i).abs() > mat.cr(j, i1).abs() {
-                        i1 = i;
-                    }
-                }
-
-                // Swap columns i1 and j in mat and ident to
-                // put pivot on diagonal
-                mat.swap_c(i1, j);
-                ident.swap_c(i1, j);
-
-                // Scale col j to have a unit diagonal
-                *ident.mut_c(j) = ident.c(j).div_s(mat.cr(j, j).clone());
-                *mat.mut_c(j) = mat.c(j).div_s(mat.cr(j, j).clone());
-
-                // Eliminate off-diagonal elems in col j of 'mat',
-                // doing identical ops to 'ident'
-                for i in range(0u, 4u) {
-                    if i != j {
-                        let ij_mul_aij = ident.c(j).mul_s(mat.cr(i, j).clone());
-                        let aj_mul_aij = mat.c(j).mul_s(mat.cr(i, j).clone());
-                        *ident.mut_c(i) = ident.c(i).sub_v(&ij_mul_aij);
-                        *mat.mut_c(i) = mat.c(i).sub_v(&aj_mul_aij);
-                    }
-                }
-            }
-            Some(ident)
         } else {
             None
         }
