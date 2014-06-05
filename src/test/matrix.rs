@@ -302,6 +302,30 @@ fn test_invert() {
     let mut mut_c = matrix4::C;
     mut_c.invert_self();
     assert_eq!(mut_c, matrix4::C.invert().unwrap());
+
+    let mat_c = Matrix4::new(-0.131917, -0.76871,   0.625846, 0.,
+                             -0.,        0.631364,  0.775487, 0.,
+                             -0.991261,  0.1023,   -0.083287, 0.,
+                              0.,       -1.262728, -1.550973, 1.);
+    assert!(mat_c.invert().unwrap().mul_m(&mat_c).is_identity());
+
+    let mat_d = Matrix4::new( 0.065455, -0.720002,  0.690879, 0.,
+                             -0.,        0.692364,  0.721549, 0.,
+                             -0.997856, -0.047229,  0.045318, 0.,
+                              0.,       -1.384727, -1.443098, 1.);
+    assert!(mat_d.invert().unwrap().mul_m(&mat_d).is_identity());
+
+    let mat_e = Matrix4::new( 0.409936,  0.683812, -0.603617, 0.,
+                              0.,        0.661778,  0.7497,   0.,
+                              0.912114, -0.307329,  0.271286, 0.,
+                             -0.,       -1.323555, -1.499401, 1.);
+    assert!(mat_e.invert().unwrap().mul_m(&mat_e).is_identity());
+
+    let mat_f = Matrix4::new(-0.160691, -0.772608,  0.614211, 0.,
+                             -0.,        0.622298,  0.78278,  0.,
+                             -0.987005,  0.125786, -0.099998, 0.,
+                              0.,       -1.244597, -1.565561, 1.);
+    assert!(mat_f.invert().unwrap().mul_m(&mat_f).is_identity());
 }
 
 #[test]
