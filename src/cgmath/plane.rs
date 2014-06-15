@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::mem::transmute;
 use std::fmt;
 use std::num::Zero;
 
@@ -67,7 +66,9 @@ impl<S: BaseFloat> Plane<S> {
 
     /// Construct a plane from the components of a four-dimensional vector
     pub fn from_vector4(v: Vector4<S>) -> Plane<S> {
-        unsafe { transmute(v) }
+        match v {
+            Vector4 { x, y, z, w } => Plane { n: Vector3::new(x, y, z), d: w },
+        }
     }
 
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`
