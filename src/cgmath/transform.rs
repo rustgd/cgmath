@@ -204,30 +204,3 @@ impl<S: BaseNum> ToMatrix4<S> for AffineMatrix3<S> {
 }
 
 impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
-
-
-/// A transformation in three dimensions consisting of a rotation,
-/// displacement vector and scale amount.
-pub struct Transform3D<S>(Decomposed<S,Vector3<S>,Quaternion<S>>);
-
-impl<S: BaseFloat> Transform3D<S> {
-    #[inline]
-    pub fn new(scale: S, rot: Quaternion<S>, disp: Vector3<S>) -> Transform3D<S> {
-       Transform3D( Decomposed { scale: scale, rot: rot, disp: disp })
-    }
-
-    #[inline]
-    pub fn translate(x: S, y: S, z: S) -> Transform3D<S> {
-       Transform3D( Decomposed { scale: one(), rot: Quaternion::zero(), disp: Vector3::new(x, y, z) })
-    }
-
-    #[inline]
-    pub fn get<'a>(&'a self) -> &'a Decomposed<S,Vector3<S>,Quaternion<S>> {
-        let &Transform3D(ref d) = self;
-        d
-    }
-}
-
-impl<S: BaseFloat> ToMatrix4<S> for Transform3D<S> {
-    fn to_matrix4(&self) -> Matrix4<S> { self.get().to_matrix4() }
-}
