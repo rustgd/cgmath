@@ -17,7 +17,7 @@ RUSTC               = rustc
 RUSTDOC             = rustdoc
 
 SRC_DIR             = src
-LIB_FILE            = $(SRC_DIR)/cgmath/lib.rs
+LIB_FILE            = $(SRC_DIR)/cgmath.rs
 TEST_FILE           = $(SRC_DIR)/test/test.rs
 BENCH_FILE          = $(SRC_DIR)/bench/bench.rs
 

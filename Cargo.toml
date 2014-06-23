@@ -1,0 +1,18 @@
+[package]
+
+name = "cgmath-rs"
+version = "0.0.1"
+authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+        "Brian Heylin",
+        "Colin Sherratt",
+        "Dzmitry Malyshau",
+        "Erick Tryzelaar",
+        "Luqman Aden",
+        "Maik Klein",
+        "Mikko Perttunen",
+        "Tomasz Stachowiak"
+]
+
+[[lib]]
+
+name = "cgmath"
