@@ -22,9 +22,13 @@ use cgmath::approx::ApproxEq;
 #[test]
 fn test_invert() {
 	let v = Vector3::new(1.0, 2.0, 3.0);
-	let t = Transform3D::new(1.5, Quaternion::new(0.5,0.5,0.5,0.5), Vector3::new(6.0,-7.0,8.0));
-	let ti = t.get().invert().expect("Expected successful inversion");
-	let vt = t.get().transform_vector( &v );
+	let t = Decomposed {
+        scale: 1.5,
+        rot: Quaternion::new(0.5,0.5,0.5,0.5),
+        disp: Vector3::new(6.0,-7.0,8.0)
+    };
+	let ti = t.invert().expect("Expected successful inversion");
+	let vt = t.transform_vector( &v );
     assert!(v.approx_eq( &ti.transform_vector( &vt ) ));
 }
 
