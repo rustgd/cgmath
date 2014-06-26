@@ -1069,7 +1069,7 @@ impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
     fn to_quaternion(&self) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
         let trace = self.trace();
-        let half: S = cast(0.5).unwrap();
+        let half: S = cast(0.5f64).unwrap();
         match () {
             () if trace >= zero::<S>() => {
                 let s = (one::<S>() + trace).sqrt();

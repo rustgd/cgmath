@@ -99,7 +99,7 @@ impl<S: BaseFloat> Quaternion<S> {
     #[inline]
     pub fn mul_v(&self, vec: &Vector3<S>) -> Vector3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2).unwrap()).add_v(vec)
+        self.v.cross(&tmp).mul_s(cast(2i).unwrap()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`
@@ -230,7 +230,7 @@ impl<S: BaseFloat> Quaternion<S> {
         use std::num::cast;
 
         let dot = self.dot(other);
-        let dot_threshold = cast(0.9995).unwrap();
+        let dot_threshold = cast(0.9995f64).unwrap();
 
         // if quaternions are close together use `nlerp`
         if dot > dot_threshold {
@@ -373,15 +373,15 @@ impl<S: BaseFloat> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     #[inline]
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
-        let (s, c) = sin_cos(angle.mul_s(cast(0.5).unwrap()));
+        let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));
         Quaternion::from_sv(c, axis.mul_s(s))
     }
 
     fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
         // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Conversion
-        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5).unwrap()));
-        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5).unwrap()));
-        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5).unwrap()));
+        let (sx2, cx2) = sin_cos(x.mul_s(cast(0.5f64).unwrap()));
+        let (sy2, cy2) = sin_cos(y.mul_s(cast(0.5f64).unwrap()));
+        let (sz2, cz2) = sin_cos(z.mul_s(cast(0.5f64).unwrap()));
 
         Quaternion::new(cz2 * cx2 * cy2 + sz2 * sx2 * sy2,
                         sz2 * cx2 * cy2 - cz2 * sx2 * sy2,

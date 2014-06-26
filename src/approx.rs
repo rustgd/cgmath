@@ -17,7 +17,7 @@ use std::num;
 
 pub trait ApproxEq<T: Float> {
     fn approx_epsilon(_hack: Option<Self>) -> T {
-        num::cast(1.0e-5).unwrap()
+        num::cast(1.0e-5f64).unwrap()
     }
 
     fn approx_eq(&self, other: &Self) -> bool {
