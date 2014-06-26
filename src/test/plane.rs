@@ -21,14 +21,14 @@ use cgmath::intersect::Intersect;
 
 #[test]
 fn test_from_points() {
-    assert_eq!(Plane::from_points(Point3::new(5.0, 0.0,  5.0),
-                                  Point3::new(5.0, 5.0,  5.0),
-                                  Point3::new(5.0, 0.0, -1.0)),
-    	Some(Plane::from_abcd(-1.0, 0.0, 0.0, 5.0)));
+    assert_eq!(Plane::from_points(Point3::new(5.0f64, 0.0f64,  5.0f64),
+                                  Point3::new(5.0f64, 5.0f64,  5.0f64),
+                                  Point3::new(5.0f64, 0.0f64, -1.0f64)),
+    	Some(Plane::from_abcd(-1.0f64, 0.0f64, 0.0f64, 5.0f64)));
 
-    assert_eq!(Plane::from_points(Point3::new(0.0, 5.0, -5.0),
-                                  Point3::new(0.0, 5.0,  0.0),
-                                  Point3::new(0.0, 5.0,  5.0)),
+    assert_eq!(Plane::from_points(Point3::new(0.0f64, 5.0f64, -5.0f64),
+                                  Point3::new(0.0f64, 5.0f64,  0.0f64),
+                                  Point3::new(0.0f64, 5.0f64,  5.0f64)),
         None);     // The points are parallel
 }
 

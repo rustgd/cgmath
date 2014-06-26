@@ -21,11 +21,11 @@ use cgmath::approx::ApproxEq;
 
 #[test]
 fn test_invert() {
-	let v = Vector3::new(1.0, 2.0, 3.0);
+	let v = Vector3::new(1.0f64, 2.0f64, 3.0f64);
 	let t = Decomposed {
-        scale: 1.5,
-        rot: Quaternion::new(0.5,0.5,0.5,0.5),
-        disp: Vector3::new(6.0,-7.0,8.0)
+        scale: 1.5f64,
+        rot: Quaternion::new(0.5f64,0.5,0.5,0.5),
+        disp: Vector3::new(6.0f64,-7.0f64,8.0)
     };
 	let ti = t.invert().expect("Expected successful inversion");
 	let vt = t.transform_vector( &v );
@@ -34,11 +34,11 @@ fn test_invert() {
 
 #[test]
 fn test_look_at() {
-	let eye = Point3::new(0.0, 0.0, -5.0);
-	let center = Point3::new(0.0, 0.0, 0.0);
-	let up = Vector3::new(1.0, 0.0, 0.0);
+	let eye = Point3::new(0.0f64, 0.0f64, -5.0f64);
+	let center = Point3::new(0.0f64, 0.0f64, 0.0f64);
+	let up = Vector3::new(1.0f64, 0.0f64, 0.0f64);
 	let t: Decomposed<f64,Vector3<f64>,Quaternion<f64>> = Transform::look_at(&eye, &center, &up);
-	let point = Point3::new(1.0, 0.0, 0.0);
-	let view_point = Point3::new(0.0, 1.0, 5.0);
+	let point = Point3::new(1.0f64, 0.0f64, 0.0f64);
+	let view_point = Point3::new(0.0f64, 1.0f64, 5.0f64);
 	assert!( t.transform_point(&point).approx_eq(&view_point) );
 }
