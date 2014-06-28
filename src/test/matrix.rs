@@ -329,6 +329,14 @@ fn test_invert() {
 }
 
 #[test]
+fn test_from_translation() {
+    let mat = Matrix4::from_translation(&Vector3::new(1.0f64, 2.0f64, 3.0f64));
+    let vertex = Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64);
+    let res = mat.mul_v(&vertex);
+    assert_eq!(res, Vector4::new(1., 2., 3., 1.));
+}
+
+#[test]
 fn test_predicates() {
     // Matrix2
 
