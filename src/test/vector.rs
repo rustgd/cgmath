@@ -157,3 +157,48 @@ fn test_normalize() {
     assert!(Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize().approx_eq( &Vector3::new(2.0/7.0, 3.0/7.0, 6.0/7.0) ));
     assert!(Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize().approx_eq( &Vector4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0) ));
 }
+
+#[cfg(test)]
+mod test_float_operations {
+    use cgmath::vector::*;
+    use cgmath::num::FloatOperations;
+    
+    #[test]
+    fn test_floor_ceil_fract_trunc_round() {
+        let a = Vector3::new(3.14f64, 5.2f64, 6.73f64);
+        let b = -a;
+        assert_eq!(a.trunc() + a.fract(), a);
+        assert_eq!(a.floor() + a.fract(), a);
+        assert_eq!(b.ceil() + b.fract(), b);
+        assert_eq!(a.ceil() - a.floor(), Vector3::from_value(1.0f64));
+        assert_eq!(b.round(), Vector3::new(-3.0f64, -5.0f64, -7.0f64));
+    }
+
+    #[test]
+    fn test_ln_exp() {
+        let a = Vector3::new(3.14f64, 5.2f64, 6.73f64);
+        assert_eq!(a.exp().ln(), a);
+    }
+
+    #[test]
+    fn test_sqrt_rsqrt_recip() {
+        let a = Vector3::new(3.14f64, 5.2f64, 6.73f64);
+        assert_eq!(a.sqrt() * a.rsqrt(), Vector3::from_value(1.0f64));
+        assert_eq!(a.recip() * a, Vector3::from_value(1.0f64));
+    }
+
+    #[test]
+    fn test_pow_log() {
+        let a = Vector3::new(3.0f64, 5.0f64, 6.0f64);
+        let b = -a;
+        assert_eq!(a.powi(2), Vector3::new(9.0f64, 25.0f64, 36.0f64));
+        assert_eq!(a.powi(2), b.powf(2.0f64));
+        assert_eq!(Vector3::from_value(1.0f64).log(10.0f64), Vector3::from_value(0.0f64));
+    }
+
+    #[test]
+    fn test_min_max() {
+        assert_eq!(Vector3::new(3.0f64, 5.0f64, 6.0f64).min(5.0f64), Vector3::new(3.0f64, 5.0f64, 5.0f64));
+        assert_eq!(Vector3::new(3.0f64, 5.0f64, 6.0f64).max(5.0f64), Vector3::new(5.0f64, 5.0f64, 6.0f64));
+    }
+}
