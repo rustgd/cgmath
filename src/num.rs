@@ -93,3 +93,39 @@ pub trait BaseFloat : BaseNum + FloatMath + ApproxEq<Self> + fmt::Float {}
 
 impl BaseFloat for f32 {}
 impl BaseFloat for f64 {}
+
+/// Represents an object for which float-like operations are sensible. This
+/// trait provides similar methods to the built-in Float and FloatMath.
+pub trait FloatOperations<T: BaseFloat> {
+    /// Find the largest integer which is smaller than this object.
+    fn floor(&self) -> Self;
+    /// Find the  smallest integer which is larger than this object.
+    fn ceil(&self) -> Self;
+    /// Remove the integer part of the object.
+    fn fract(&self) -> Self;
+    /// Remove the non-integer part of the object.
+    fn trunc(&self) -> Self;
+    /// Round the object to the nearest integer.
+    fn round(&self) -> Self;
+    /// Take the natural logarithm of the object.
+    fn ln(&self) -> Self;
+    /// Calculate the exponent of the object.
+    fn exp(&self) -> Self;
+    /// Calculate the square root of the object.
+    fn sqrt(&self) -> Self;
+    /// Calculate the inverse square root of the object.
+    fn rsqrt(&self) -> Self;
+    /// Calculate the multiplicative inverse of the object.
+    fn recip(&self) -> Self;
+    /// Raise the object to the power `n`.
+    fn powi(&self, n: i32) -> Self;
+    /// Raise the object to the power `n`. This method will usually be slower
+    /// than the integer version.
+    fn powf(&self, n: T) -> Self;
+    /// Take the logarithm of base `base` of the object.
+    fn log(&self, base: T) -> Self;
+    /// Find the larger of the two objects.
+    fn max(&self, other: T) -> Self;
+    /// Find the smaller of the two objects.
+    fn min(&self, other: T) -> Self;
+}

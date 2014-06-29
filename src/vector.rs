@@ -20,7 +20,7 @@ use std::num::{Zero, zero, One, one};
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::Array1;
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, FloatOperations};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
@@ -422,3 +422,30 @@ impl<S: BaseNum> fmt::Show for Vector4<S> {
         write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
     }
 }
+
+// Utility macro for implementing FloatOperations for vectors of floats
+macro_rules! vector_floatoperations (
+    ($Self:ident <$S:ident>, $($field:ident),+ ) => (
+            impl<$S : BaseFloat> FloatOperations<$S> for $Self<$S> {
+                #[inline] fn floor(&self) -> $Self<$S> { $Self::new($(self.$field.floor()),+) }
+                #[inline] fn ceil(&self) -> $Self<$S> { $Self::new($(self.$field.ceil()),+) }
+                #[inline] fn fract(&self) -> $Self<$S> { $Self::new($(self.$field.fract()),+) }
+                #[inline] fn trunc(&self) -> $Self<$S> { $Self::new($(self.$field.trunc()),+) }
+                #[inline] fn round(&self) -> $Self<$S> { $Self::new($(self.$field.round()),+) }
+                #[inline] fn ln(&self) -> $Self<$S> { $Self::new($(self.$field.ln()),+) }
+                #[inline] fn exp(&self) -> $Self<$S> { $Self::new($(self.$field.exp()),+) }
+                #[inline] fn sqrt(&self) -> $Self<$S> { $Self::new($(self.$field.sqrt()),+) }
+                #[inline] fn rsqrt(&self) -> $Self<$S> { $Self::new($(self.$field.rsqrt()),+) }
+                #[inline] fn recip(&self) -> $Self<$S> { $Self::new($(self.$field.recip()),+) }
+                #[inline] fn powi(&self, n: i32) -> $Self<$S> { $Self::new($(self.$field.powi(n)),+) }
+                #[inline] fn powf(&self, n: $S) -> $Self<$S> { $Self::new($(self.$field.powf(n)),+) }
+                #[inline] fn log(&self, base: $S) -> $Self<$S> { $Self::new($(self.$field.log(base)),+) }
+                #[inline] fn min(&self, other: $S) -> $Self<$S> { $Self::new($(self.$field.min(other)),+) }
+                #[inline] fn max(&self, other: $S) -> $Self<$S> { $Self::new($(self.$field.max(other)),+) }
+        }
+    )
+)
+
+vector_floatoperations!(Vector2<S>, x, y)
+vector_floatoperations!(Vector3<S>, x, y, z)
+vector_floatoperations!(Vector4<S>, x, y, z, w)
