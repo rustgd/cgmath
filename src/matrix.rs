@@ -250,6 +250,15 @@ impl<S: BaseNum> Matrix4<S> {
     pub fn identity() -> Matrix4<S> {
         Matrix4::from_value(one())
     }
+
+    /// Create a translation matrix from a Vector3
+    #[inline]
+    pub fn from_translation(v: &Vector3<S>) -> Matrix4<S> {
+        Matrix4::new(one(),  zero(), zero(), zero(),
+                     zero(), one(),  zero(), zero(),
+                     zero(), zero(), one(),  zero(),
+                     v.x,    v.y,    v.z,    one())
+    }
 }
 
 impl<S: BaseFloat>
