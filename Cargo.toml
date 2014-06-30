@@ -1,6 +1,6 @@
 [package]
 
-name = "cgmath-rs"
+name = "cgmath"
 version = "0.0.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
