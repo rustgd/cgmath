@@ -4,3 +4,27 @@
 /test/
 /doc/
 *.swp
+
+# rust-empty
+*~
+*#
+*.o
+*.so
+*.dylib
+*.dSYM
+*.dll
+*.rlib
+*.dummy
+*.exe
+*-test
+/bin/main
+/bin/test-internal
+/bin/test-external
+/target/
+/build/
+/.rust/
+rusti.sh
+watch.sh
+/examples/**
+!/examples/*.rs
+!/examples/assets/
