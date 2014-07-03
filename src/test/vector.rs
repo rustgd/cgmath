@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use cgmath::angle::*;
+use cgmath::array::*;
 use cgmath::vector::*;
 use cgmath::approx::ApproxEq;
 
@@ -156,4 +157,10 @@ fn test_normalize() {
     assert!(Vector2::new(3.0f64, 4.0f64).normalize().approx_eq( &Vector2::new(3.0/5.0, 4.0/5.0) ));
     assert!(Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize().approx_eq( &Vector3::new(2.0/7.0, 3.0/7.0, 6.0/7.0) ));
     assert!(Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize().approx_eq( &Vector4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0) ));
+}
+
+#[test]
+fn test_map() {
+    assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.floor()), Vector3::new(7.0f64, 3.0f64, -7.0f64));
+    assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.max(0.0f64)), Vector3::new(7.12f64, 3.8f64, 0.0f64));
 }

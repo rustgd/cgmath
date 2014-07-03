@@ -120,6 +120,13 @@ impl<S: BaseNum> Array1<S> for Point2<S> {
         let slice: &'a mut [S, ..2] = unsafe { mem::transmute(self) };
         &'a mut slice[i]
     }
+
+    #[inline]
+    fn map(&mut self, op: |S| -> S) -> Point2<S> {
+        self.x = op(self.x);
+        self.y = op(self.y);
+        *self
+    }
 }
 
 impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
@@ -237,6 +244,14 @@ impl<S: BaseNum> Array1<S> for Point3<S> {
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
         let slice: &'a mut [S, ..3] = unsafe { mem::transmute(self) };
         &'a mut slice[i]
+    }
+
+    #[inline]
+    fn map(&mut self, op: |S| -> S) -> Point3<S> {
+        self.x = op(self.x);
+        self.y = op(self.y);
+        self.z = op(self.z);
+        *self
     }
 }
 

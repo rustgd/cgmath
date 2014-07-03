@@ -55,6 +55,15 @@ impl<S: Copy> Array1<S> for Quaternion<S> {
         let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
         &'a mut slice[i]
     }
+
+    #[inline]
+    fn map(&mut self, op: |S| -> S) -> Quaternion<S> {
+        self.s = op(self.s);
+        self.v.x = op(self.v.x);
+        self.v.y = op(self.v.y);
+        self.v.z = op(self.v.z);
+        *self
+    }
 }
 
 impl<S: BaseFloat> Quaternion<S> {
