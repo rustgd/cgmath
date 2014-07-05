@@ -396,13 +396,13 @@ impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a Vector2<S> {
         let slice: &'a [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &'a slice[c]
+        &slice[c]
     }
 
     #[inline]
     fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector2<S> {
         let slice: &'a mut [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &'a mut slice[c]
+        &mut slice[c]
     }
 
     #[inline]
@@ -428,13 +428,13 @@ impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a Vector3<S> {
         let slice: &'a [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &'a slice[c]
+        &slice[c]
     }
 
     #[inline]
     fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector3<S> {
         let slice: &'a mut [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &'a mut slice[c]
+        &mut slice[c]
     }
 
     #[inline]
@@ -462,13 +462,13 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
     fn c<'a>(&'a self, c: uint) -> &'a Vector4<S> {
         let slice: &'a [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &'a slice[c]
+        &slice[c]
     }
 
     #[inline]
     fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector4<S> {
         let slice: &'a mut [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &'a mut slice[c]
+        &mut slice[c]
     }
 
     #[inline]

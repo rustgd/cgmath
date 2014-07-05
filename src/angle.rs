@@ -58,14 +58,14 @@ trait ScalarConv<S> {
 
 impl<S: BaseFloat> ScalarConv<S> for Rad<S> {
     #[inline] fn from(s: S) -> Rad<S> { rad(s) }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
+    #[inline] fn s<'a>(&'a self) -> &'a S { &self.s }
+    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &mut self.s }
 }
 
 impl<S: BaseFloat> ScalarConv<S> for Deg<S> {
     #[inline] fn from(s: S) -> Deg<S> { deg(s) }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &'a self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &'a mut self.s }
+    #[inline] fn s<'a>(&'a self) -> &'a S { &self.s }
+    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &mut self.s }
 }
 
 /// Operations on angles.
