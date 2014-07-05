@@ -118,7 +118,7 @@ impl<S: BaseNum> Array1<S> for Point2<S> {
     #[inline]
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
         let slice: &'a mut [S, ..2] = unsafe { mem::transmute(self) };
-        &'a mut slice[i]
+        &mut slice[i]
     }
 }
 
@@ -236,7 +236,7 @@ impl<S: BaseNum> Array1<S> for Point3<S> {
     #[inline]
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
         let slice: &'a mut [S, ..3] = unsafe { mem::transmute(self) };
-        &'a mut slice[i]
+        &mut slice[i]
     }
 }
 

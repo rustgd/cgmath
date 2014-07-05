@@ -53,7 +53,7 @@ impl<S: Copy> Array1<S> for Quaternion<S> {
     #[inline]
     fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
         let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
-        &'a mut slice[i]
+        &mut slice[i]
     }
 }
 

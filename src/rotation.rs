@@ -133,7 +133,7 @@ pub struct Basis2<S> {
 impl<S: BaseFloat> Basis2<S> {
     /// Coerce to a `Matrix2`
     #[inline]
-    pub fn as_matrix2<'a>(&'a self) -> &'a Matrix2<S> { &'a self.mat }
+    pub fn as_matrix2<'a>(&'a self) -> &'a Matrix2<S> { &self.mat }
 }
 
 /// Represents types which can be converted to a rotation matrix.
@@ -217,7 +217,7 @@ impl<S: BaseFloat> Basis3<S> {
 
     /// Coerce to a `Matrix3`
     #[inline]
-    pub fn as_matrix3<'a>(&'a self) -> &'a Matrix3<S> { &'a self.mat }
+    pub fn as_matrix3<'a>(&'a self) -> &'a Matrix3<S> { &self.mat }
 }
 
 /// Represents types which can be converted to a rotation matrix.

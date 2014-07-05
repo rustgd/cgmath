@@ -142,7 +142,7 @@ macro_rules! vec(
             #[inline]
             fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
                 let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
-                &'a mut slice[i]
+                &mut slice[i]
             }
         }
 
