@@ -418,9 +418,9 @@ impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |Vector2<S>| -> Vector2<S>) -> Matrix2<S> {
-        self.x = op(self.x);
-        self.y = op(self.y);
+    fn map(&mut self, op: |&Vector2<S>| -> Vector2<S>) -> Matrix2<S> {
+        self.x = op(&self.x);
+        self.y = op(&self.y);
         *self
     }
 }
@@ -459,10 +459,10 @@ impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |Vector3<S>| -> Vector3<S>) -> Matrix3<S> {
-        self.x = op(self.x);
-        self.y = op(self.y);
-        self.z = op(self.z);
+    fn map(&mut self, op: |&Vector3<S>| -> Vector3<S>) -> Matrix3<S> {
+        self.x = op(&self.x);
+        self.y = op(&self.y);
+        self.z = op(&self.z);
         *self
     }
 }
@@ -503,11 +503,11 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |Vector4<S>| -> Vector4<S>) -> Matrix4<S> {
-        self.x = op(self.x);
-        self.y = op(self.y);
-        self.z = op(self.z);
-        self.w = op(self.w);
+    fn map(&mut self, op: |&Vector4<S>| -> Vector4<S>) -> Matrix4<S> {
+        self.x = op(&self.x);
+        self.y = op(&self.y);
+        self.z = op(&self.z);
+        self.w = op(&self.w);
         *self
     }
 }

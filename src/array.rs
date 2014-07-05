@@ -98,5 +98,5 @@ pub trait Array2<Column: Array1<Element>, Row: Array1<Element>, Element: Copy> {
     }
 
     /// Apply a function to each column.
-    fn map(&mut self, op: |Column| -> Column) -> Self;
+    fn map(&mut self, op: |&Column| -> Column) -> Self;
 }
