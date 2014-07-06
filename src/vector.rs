@@ -144,6 +144,9 @@ macro_rules! vec(
                 let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
                 &mut slice[i]
             }
+
+            #[inline]
+            fn map(&mut self, op: |S| -> S) -> $Self<S> { $(self.$field = op(self.$field);)+ *self }
         }
 
         impl<S: BaseNum> Vector<S> for $Self<S> {

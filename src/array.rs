@@ -42,6 +42,9 @@ pub trait Array1<Element: Copy> {
     fn replace_i(&mut self, i: uint, src: Element) -> Element {
         mem::replace(self.mut_i(i), src)
     }
+
+    /// Apply a function to each element.
+    fn map(&mut self, op: |Element| -> Element) -> Self;
 }
 
 /// A column-major array
@@ -93,4 +96,7 @@ pub trait Array2<Column: Array1<Element>, Row: Array1<Element>, Element: Copy> {
         let (bc, br) = b;
         unsafe { ptr::swap(self.mut_cr(ac, ar), self.mut_cr(bc, br)) };
     }
+
+    /// Apply a function to each column.
+    fn map(&mut self, op: |&Column| -> Column) -> Self;
 }
