@@ -26,6 +26,10 @@ is not fully covered by the testsuite. If you encounter any mistakes or
 omissions please let me know by posting an issue, or even better: send me a
 pull request with a fix.
 
+## Documentation
+
+[View](rust-ci.org/bjz/cgmath-rs/doc/cgmath/)
+
 ## Limitations
 
 cgmath is _not_ an n-dimensional library and is aimed at computer graphics
