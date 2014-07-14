@@ -15,15 +15,18 @@
 
 env:
   global:
-    - secure: N41M4QTWbez7FRMh2HQqB3Z051FcruoRGLTdMdQJNMaZRqJiAfUBTO5NGXS5XGjIofknE4r/+WLv7KED2rTf6nvLFOHmGY2pL+agABcyD0DU0ltRLckjONWTxFN+SMTB0l38v3XIXxXX5y977Hl6wk3++kYZgCNVG3OTkJwWzQg=
+    - LD_LIBRARY_PATH: /usr/local/lib
+    - secure: ZhxsGkZWYT7tKdneILFdpGco49DIP3DzYmu9dGE1+PmKUmyRoBhh2Pn76Sty5JxmWPF+BtxTVbOduzsRZpSZEOikSS63NSjhUMTy+PGjyJvW07cDmjO8n8BVqW9idp2rCPAGNunTtjTgPUFjO4oBC5slYU+kvouAryg+paSsxN8=
 before_install:
   - yes | sudo add-apt-repository ppa:cmrx64/cargo
   - sudo apt-get update
 install:
+  # cargo
   - sudo apt-get install cargo
-  - wget http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - tar xzf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - export PATH=$PATH:$(pwd)/rust-nightly-x86_64-unknown-linux-gnu/bin
+  # rustc
+  - curl http://static.rust-lang.org/cargo-dist/cargo-nightly-linux.tar.gz |
+    sudo tar --strip-components 1 -C /usr -xzf -
+  - curl http://www.rust-lang.org/rustup.sh | sudo sh -
   - rustc -v
 script:
   - cargo build
