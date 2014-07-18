@@ -159,9 +159,9 @@ impl<S: BaseFloat> Projection<S> for Perspective<S> {
 
 impl<S: BaseFloat> ToMatrix4<S> for Perspective<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
-        assert!(self.left   > self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
-        assert!(self.bottom > self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);
-        assert!(self.near   > self.far,   "`near` cannot be greater than `far`, found: near: {} far: {}", self.near, self.far);
+        assert!(self.left   <= self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
+        assert!(self.bottom <= self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);
+        assert!(self.near   <= self.far,   "`near` cannot be greater than `far`, found: near: {} far: {}", self.near, self.far);
 
         let two: S = cast(2i).unwrap();
 
