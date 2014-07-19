@@ -28,7 +28,7 @@ pull request with a fix.
 
 ## Documentation
 
-[View](rust-ci.org/bjz/cgmath-rs/doc/cgmath/)
+[View](http://rust-ci.org/bjz/cgmath-rs/doc/cgmath/index.html)
 
 ## Limitations
 
