@@ -21,12 +21,8 @@ before_install:
   - yes | sudo add-apt-repository ppa:cmrx64/cargo
   - sudo apt-get update
 install:
-  # cargo
-  - sudo apt-get install cargo
-  # rustc
-  - curl http://static.rust-lang.org/cargo-dist/cargo-nightly-linux.tar.gz |
-    sudo tar --strip-components 1 -C /usr -xzf -
-  - curl http://www.rust-lang.org/rustup.sh | sudo sh -
+  - wget http://www.rust-lang.org/rustup.sh
+  - sudo sh ./rustup.sh
   - rustc -v
 script:
   - cargo build
@@ -36,4 +32,6 @@ script:
   - make clean
   - make doc
 after_script:
-  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+  - wget -O after_script.sh http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN
+  - chmod +x after_script.sh
+  - sh ./after_script.sh
