@@ -33,7 +33,7 @@ script:
   - make
 #  - make check     # bench is too slow
   - make test
-  - make clean
   - make doc
+  - make doctest
 after_script:
   - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
