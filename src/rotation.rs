@@ -125,6 +125,41 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// implemented more efficiently than the implementations for `math::Matrix2`. To
 /// enforce orthogonality at the type level the operations have been restricted
 /// to a subset of those implemented on `Matrix2`.
+///
+/// ## Example
+/// 
+/// Suppose we want to rotate a vector that lies in the x-y plane by some
+/// angle. We can accomplish this quite easily with a two-dimensional rotation
+/// matrix:
+///
+/// ```rust
+/// use cgmath::angle::rad;
+/// use cgmath::vector::Vector2;
+/// use cgmath::matrix::{Matrix, ToMatrix2};
+/// use cgmath::rotation::{Rotation, Rotation2, Basis2};
+/// use cgmath::approx::ApproxEq;
+///
+/// // For simplicity, we will rotate the unit x vector to the unit y vector --
+/// // so the angle is 90 degrees, or π/2.
+/// let unit_x: Vector2<f64> = Vector2::unit_x();
+/// let rot: Basis2<f64> = Rotation2::from_angle(rad(0.5f64 * Float::pi()));
+///
+/// // Rotate the vector using the two-dimensional rotation matrix:
+/// let unit_y = rot.rotate_vector(&unit_x);
+///
+/// // Since sin(π/2) may not be exactly zero due to rounding errors, we can
+/// // use cgmath's approx_eq() feature to show that it is close enough.
+/// assert!(unit_y.approx_eq(&-Vector2::unit_y()));
+///
+/// // This is exactly equivalent to using the raw matrix itself:
+/// let unit_y2 = rot.to_matrix2().mul_v(&unit_x);
+/// assert_eq!(unit_y2, unit_y);
+///
+/// // Note that we can also concatenate rotations:
+/// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * Float::pi()));
+/// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
+/// assert!(unit_y3.approx_eq(&unit_y2));
+/// ```
 #[deriving(PartialEq, Clone)]
 pub struct Basis2<S> {
     mat: Matrix2<S>

@@ -54,6 +54,10 @@ doc:
 	mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
+doctest:
+	mkdir -p $(DOC_DIR)
+	$(RUSTDOC) --test -L $(LIB_DIR) -o $(DOC_DIR) $(LIB_FILE)
+
 clean:
 	rm -rf $(LIB_DIR)
 	rm -rf $(TEST_DIR)

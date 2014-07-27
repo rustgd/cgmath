@@ -29,8 +29,8 @@ script:
   - make
 #  - make check     # bench is too slow
   - make test
-  - make clean
   - make doc
+  - make doctest
 after_script:
   - wget -O after_script.sh http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN
   - chmod +x after_script.sh
