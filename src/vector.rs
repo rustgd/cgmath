@@ -203,6 +203,14 @@ macro_rules! vec(
             #[inline] fn mul(&self, v: &$Self<S>) -> $Self<S> { self.mul_v(v) }
         }
 
+        impl<S: BaseNum> Div<$Self<S>, $Self<S>> for $Self<S> {
+            #[inline] fn div(&self, v: &$Self<S>) -> $Self<S> { self.div_v(v) }
+        }
+
+        impl<S: BaseNum> Rem<$Self<S>, $Self<S>> for $Self<S> {
+            #[inline] fn rem(&self, v: &$Self<S>) -> $Self<S> { self.rem_v(v) }
+        }
+
         impl<S: BaseNum> One for $Self<S> {
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
