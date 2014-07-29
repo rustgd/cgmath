@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![crate_id="cgmath#0.1"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 #![comment = "A mathematics library for computer graphics."]
