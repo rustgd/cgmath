@@ -108,11 +108,11 @@ macro_rules! vec(
             }
         }
 
-        impl<$S: Clone> $Self<$S> {
+        impl<$S: Copy> $Self<$S> {
             /// Construct a vector from a single value, replicating it.
             #[inline]
             pub fn from_value(value: $S) -> $Self<$S> {
-                $Self { $($field: value.clone()),+ }
+                $Self { $($field: value),+ }
             }
         }
 
@@ -128,25 +128,9 @@ macro_rules! vec(
 
         impl<S: Copy> Array1<S> for $Self<S> {
             #[inline]
-            fn ptr<'a>(&'a self) -> &'a S { &self.x }
-
-            #[inline]
-            fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x }
-
-            #[inline]
-            fn i(&self, i: uint) -> S {
-                let slice: &[S, ..$n] = unsafe { mem::transmute(self) };
-                slice[i]
+            fn map(&mut self, op: |S| -> S) -> $Self<S> {
+                $(self.$field = op(self.$field);)+ *self
             }
-
-            #[inline]
-            fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
-                let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
-                &mut slice[i]
-            }
-
-            #[inline]
-            fn map(&mut self, op: |S| -> S) -> $Self<S> { $(self.$field = op(self.$field);)+ *self }
         }
 
         impl<S: BaseNum> Vector<S> for $Self<S> {
@@ -215,16 +199,20 @@ macro_rules! vec(
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
 
-        impl<S: BaseNum> Index<uint, S> for $Self<S> {
+        impl<S: Copy> Index<uint, S> for $Self<S> {
             #[inline]
-            fn index<'a>(&'a self, index: &uint) -> &'a S {
+            fn index<'a>(&'a self, i: &uint) -> &'a S {
                 let slice: &[S, ..$n] = unsafe { mem::transmute(self) };
-                &slice[*index]
+                &slice[*i]
             }
         }
 
-        impl<S: BaseNum> IndexMut<uint, S> for $Self<S> {
-            #[inline] fn index_mut<'a>(&'a mut self, index: &uint) -> &'a mut S { self.mut_i(*index) }
+        impl<S: Copy> IndexMut<uint, S> for $Self<S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+                let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
+                &mut slice[*i]
+            }
         }
 
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
@@ -266,7 +254,7 @@ impl<S: BaseNum> Vector2<S> {
     /// provided `z`.
     #[inline]
     pub fn extend(&self, z: S)-> Vector3<S> {
-        Vector3::new(self.x.clone(), self.y.clone(), z)
+        Vector3::new(self.x, self.y, z)
     }
 }
 
@@ -283,8 +271,8 @@ impl<S: BaseNum> Vector3<S> {
     #[inline]
     pub fn cross(&self, other: &Vector3<S>) -> Vector3<S> {
         Vector3::new((self.y * other.z) - (self.z * other.y),
-                  (self.z * other.x) - (self.x * other.z),
-                  (self.x * other.y) - (self.y * other.x))
+                     (self.z * other.x) - (self.x * other.z),
+                     (self.x * other.y) - (self.y * other.x))
     }
 
     /// Calculates the cross product of the vector and `other`, then stores the
@@ -298,13 +286,13 @@ impl<S: BaseNum> Vector3<S> {
     /// provided `w`.
     #[inline]
     pub fn extend(&self, w: S)-> Vector4<S> {
-        Vector4::new(self.x.clone(), self.y.clone(), self.z.clone(), w)
+        Vector4::new(self.x, self.y, self.z, w)
     }
 
     /// Create a `Vector2`, dropping the `z` value.
     #[inline]
     pub fn truncate(&self)-> Vector2<S> {
-        Vector2::new(self.x.clone(), self.y.clone())
+        Vector2::new(self.x, self.y)
     }
 }
 
@@ -322,17 +310,17 @@ impl<S: BaseNum> Vector4<S> {
     /// Create a `Vector3`, dropping the `w` value.
     #[inline]
     pub fn truncate(&self)-> Vector3<S> {
-        Vector3::new(self.x.clone(), self.y.clone(), self.z.clone())
+        Vector3::new(self.x, self.y, self.z)
     }
 
     /// Create a `Vector3`, dropping the nth element
     #[inline]
     pub fn truncate_n(&self, n: int)-> Vector3<S> {
         match n {
-            0 => Vector3::new(self.y.clone(), self.z.clone(), self.w.clone()),
-            1 => Vector3::new(self.x.clone(), self.z.clone(), self.w.clone()),
-            2 => Vector3::new(self.x.clone(), self.y.clone(), self.w.clone()),
-            3 => Vector3::new(self.x.clone(), self.y.clone(), self.z.clone()),
+            0 => Vector3::new(self.y, self.z, self.w),
+            1 => Vector3::new(self.x, self.z, self.w),
+            2 => Vector3::new(self.x, self.y, self.w),
+            3 => Vector3::new(self.x, self.y, self.z),
             _ => fail!("{} is out of range", n)
         }
     }

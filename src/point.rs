@@ -53,12 +53,12 @@ impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
         let e = v.truncate().mul_s(one::<S>() / v.w);
-        Point3::new(e.x.clone(), e.y.clone(), e.z.clone())  //FIXME
+        Point3::new(e.x, e.y, e.z)  //FIXME
     }
 
     #[inline]
     pub fn to_homogeneous(&self) -> Vector4<S> {
-        Vector4::new(self.x.clone(), self.y.clone(), self.z.clone(), one())
+        Vector4::new(self.x, self.y, self.z, one())
     }
 }
 
@@ -104,28 +104,26 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
 
 impl<S: BaseNum> Array1<S> for Point2<S> {
     #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.x }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x }
-
-    #[inline]
-    fn i(&self, i: uint) -> S {
-        let slice: &[S, ..2] = unsafe { mem::transmute(self) };
-        slice[i]
-    }
-
-    #[inline]
-    fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
-        let slice: &'a mut [S, ..2] = unsafe { mem::transmute(self) };
-        &mut slice[i]
-    }
-
-    #[inline]
     fn map(&mut self, op: |S| -> S) -> Point2<S> {
         self.x = op(self.x);
         self.y = op(self.y);
         *self
+    }
+}
+
+impl<S: BaseNum> Index<uint, S> for Point2<S> {
+    #[inline]
+    fn index<'a>(&'a self, i: &uint) -> &'a S {
+        let slice: &[S, ..2] = unsafe { mem::transmute(self) };
+        &slice[*i]
+    }
+}
+
+impl<S: BaseNum> IndexMut<uint, S> for Point2<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+        let slice: &'a mut [S, ..2] = unsafe { mem::transmute(self) };
+        &mut slice[*i]
     }
 }
 
@@ -229,29 +227,27 @@ impl<S: BaseFloat> ApproxEq<S> for Point2<S> {
 
 impl<S: BaseNum> Array1<S> for Point3<S> {
     #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.x }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x }
-
-    #[inline]
-    fn i(&self, i: uint) -> S {
-        let slice: &[S, ..3] = unsafe { mem::transmute(self) };
-        slice[i]
-    }
-
-    #[inline]
-    fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
-        let slice: &'a mut [S, ..3] = unsafe { mem::transmute(self) };
-        &mut slice[i]
-    }
-
-    #[inline]
     fn map(&mut self, op: |S| -> S) -> Point3<S> {
         self.x = op(self.x);
         self.y = op(self.y);
         self.z = op(self.z);
         *self
+    }
+}
+
+impl<S: BaseNum> Index<uint, S> for Point3<S> {
+    #[inline]
+    fn index<'a>(&'a self, i: &uint) -> &'a S {
+        let slice: &[S, ..3] = unsafe { mem::transmute(self) };
+        &slice[*i]
+    }
+}
+
+impl<S: BaseNum> IndexMut<uint, S> for Point3<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+        let slice: &'a mut [S, ..3] = unsafe { mem::transmute(self) };
+        &mut slice[*i]
     }
 }
 

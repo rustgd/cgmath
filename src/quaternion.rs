@@ -37,25 +37,7 @@ pub trait ToQuaternion<S: BaseFloat> {
     fn to_quaternion(&self) -> Quaternion<S>;
 }
 
-impl<S: Copy> Array1<S> for Quaternion<S> {
-    #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.s }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.s }
-
-    #[inline]
-    fn i(&self, i: uint) -> S {
-        let slice: &[S, ..4] = unsafe { mem::transmute(self) };
-        slice[i]
-    }
-
-    #[inline]
-    fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut S {
-        let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
-        &mut slice[i]
-    }
-
+impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
     #[inline]
     fn map(&mut self, op: |S| -> S) -> Quaternion<S> {
         self.s = op(self.s);
@@ -63,6 +45,22 @@ impl<S: Copy> Array1<S> for Quaternion<S> {
         self.v.y = op(self.v.y);
         self.v.z = op(self.v.z);
         *self
+    }
+}
+
+impl<S: BaseFloat> Index<uint, S> for Quaternion<S> {
+    #[inline]
+    fn index<'a>(&'a self, i: &uint) -> &'a S {
+        let slice: &[S, ..4] = unsafe { mem::transmute(self) };
+        &slice[*i]
+    }
+}
+
+impl<S: BaseFloat> IndexMut<uint, S> for Quaternion<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+        let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
+        &mut slice[*i]
     }
 }
 

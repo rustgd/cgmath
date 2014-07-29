@@ -388,33 +388,15 @@ impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matri
 
 impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.x.x }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x.x }
-
-    #[inline]
-    fn c<'a>(&'a self, c: uint) -> &'a Vector2<S> {
-        let slice: &'a [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &slice[c]
-    }
-
-    #[inline]
-    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector2<S> {
-        let slice: &'a mut [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &mut slice[c]
-    }
-
-    #[inline]
     fn r(&self, r: uint) -> Vector2<S> {
-        Vector2::new(self.cr(0, r),
-                     self.cr(1, r))
+        Vector2::new(self[0][r],
+                     self[1][r])
     }
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap_i(a, b);
-        self.mut_c(1).swap_i(a, b);
+        (&mut self[0]).swap_i(a, b);
+        (&mut self[1]).swap_i(a, b);
     }
 
     #[inline]
@@ -425,37 +407,35 @@ impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
+impl<S: Copy> Index<uint, Vector2<S>> for Matrix2<S> {
+    #[inline]
+    fn index<'a>(&'a self, c: &uint) -> &'a Vector2<S> {
+        let slice: &'a [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
+        &slice[*c]
+    }
+}
+
+impl<S: Copy> IndexMut<uint, Vector2<S>> for Matrix2<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector2<S> {
+        let slice: &'a mut [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
+        &mut slice[*c]
+    }
+}
+
 impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.x.x }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x.x }
-
-    #[inline]
-    fn c<'a>(&'a self, c: uint) -> &'a Vector3<S> {
-        let slice: &'a [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &slice[c]
-    }
-
-    #[inline]
-    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector3<S> {
-        let slice: &'a mut [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &mut slice[c]
-    }
-
-    #[inline]
     fn r(&self, r: uint) -> Vector3<S> {
-        Vector3::new(self.cr(0, r),
-                     self.cr(1, r),
-                     self.cr(2, r))
+        Vector3::new(self[0][r],
+                     self[1][r],
+                     self[2][r])
     }
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap_i(a, b);
-        self.mut_c(1).swap_i(a, b);
-        self.mut_c(2).swap_i(a, b);
+        (&mut self[0]).swap_i(a, b);
+        (&mut self[1]).swap_i(a, b);
+        (&mut self[2]).swap_i(a, b);
     }
 
     #[inline]
@@ -467,39 +447,37 @@ impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
+impl<S: Copy> Index<uint, Vector3<S>> for Matrix3<S> {
+    #[inline]
+    fn index<'a>(&'a self, c: &uint) -> &'a Vector3<S> {
+        let slice: &'a [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
+        &slice[*c]
+    }
+}
+
+impl<S: Copy> IndexMut<uint, Vector3<S>> for Matrix3<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector3<S> {
+        let slice: &'a mut [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
+        &mut slice[*c]
+    }
+}
+
 impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
-    fn ptr<'a>(&'a self) -> &'a S { &self.x.x }
-
-    #[inline]
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut S { &mut self.x.x }
-
-    #[inline]
-    fn c<'a>(&'a self, c: uint) -> &'a Vector4<S> {
-        let slice: &'a [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &slice[c]
-    }
-
-    #[inline]
-    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Vector4<S> {
-        let slice: &'a mut [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &mut slice[c]
-    }
-
-    #[inline]
     fn r(&self, r: uint) -> Vector4<S> {
-        Vector4::new(self.cr(0, r),
-                     self.cr(1, r),
-                     self.cr(2, r),
-                     self.cr(3, r))
+        Vector4::new(self[0][r],
+                     self[1][r],
+                     self[2][r],
+                     self[3][r])
     }
 
     #[inline]
     fn swap_r(&mut self, a: uint, b: uint) {
-        self.mut_c(0).swap_i(a, b);
-        self.mut_c(1).swap_i(a, b);
-        self.mut_c(2).swap_i(a, b);
-        self.mut_c(3).swap_i(a, b);
+        (&mut self[0]).swap_i(a, b);
+        (&mut self[1]).swap_i(a, b);
+        (&mut self[2]).swap_i(a, b);
+        (&mut self[3]).swap_i(a, b);
     }
 
     #[inline]
@@ -512,35 +490,51 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 }
 
+impl<S: Copy> Index<uint, Vector4<S>> for Matrix4<S> {
+    #[inline]
+    fn index<'a>(&'a self, c: &uint) -> &'a Vector4<S> {
+        let slice: &'a [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
+        &slice[*c]
+    }
+}
+
+impl<S: Copy> IndexMut<uint, Vector4<S>> for Matrix4<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector4<S> {
+        let slice: &'a mut [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
+        &mut slice[*c]
+    }
+}
+
 impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self.c(0).mul_s(s),
-                           self.c(1).mul_s(s))
+        Matrix2::from_cols(self[0].mul_s(s),
+                           self[1].mul_s(s))
     }
 
     #[inline]
     fn div_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self.c(0).div_s(s),
-                           self.c(1).div_s(s))
+        Matrix2::from_cols(self[0].div_s(s),
+                           self[1].div_s(s))
     }
 
     #[inline]
     fn rem_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self.c(0).rem_s(s),
-                           self.c(1).rem_s(s))
+        Matrix2::from_cols(self[0].rem_s(s),
+                           self[1].rem_s(s))
     }
 
     #[inline]
     fn add_m(&self, m: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::from_cols(self.c(0).add_v(m.c(0)),
-                           self.c(1).add_v(m.c(1)))
+        Matrix2::from_cols(self[0].add_v(&m[0]),
+                           self[1].add_v(&m[1]))
     }
 
     #[inline]
     fn sub_m(&self, m: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::from_cols(self.c(0).sub_v(m.c(0)),
-                           self.c(1).sub_v(m.c(1)))
+        Matrix2::from_cols(self[0].sub_v(&m[0]),
+                           self[1].sub_v(&m[1]))
     }
 
     #[inline]
@@ -550,49 +544,49 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     }
 
     fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::new(self.r(0).dot(other.c(0)), self.r(1).dot(other.c(0)),
-                     self.r(0).dot(other.c(1)), self.r(1).dot(other.c(1)))
+        Matrix2::new(self.r(0).dot(&other[0]), self.r(1).dot(&other[0]),
+                     self.r(0).dot(&other[1]), self.r(1).dot(&other[1]))
     }
 
     #[inline]
     fn neg_self(&mut self) {
-        self.mut_c(0).neg_self();
-        self.mut_c(1).neg_self();
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
     }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self.mut_c(0).mul_self_s(s);
-        self.mut_c(1).mul_self_s(s);
+        (&mut self[0]).mul_self_s(s);
+        (&mut self[1]).mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self.mut_c(0).div_self_s(s);
-        self.mut_c(1).div_self_s(s);
+        (&mut self[0]).div_self_s(s);
+        (&mut self[1]).div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        self.mut_c(0).rem_self_s(s);
-        self.mut_c(1).rem_self_s(s);
+        (&mut self[0]).rem_self_s(s);
+        (&mut self[1]).rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix2<S>) {
-        self.mut_c(0).add_self_v(m.c(0));
-        self.mut_c(1).add_self_v(m.c(1));
+        (&mut self[0]).add_self_v(&m[0]);
+        (&mut self[1]).add_self_v(&m[1]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix2<S>) {
-        self.mut_c(0).sub_self_v(m.c(0));
-        self.mut_c(1).sub_self_v(m.c(1));
+        (&mut self[0]).sub_self_v(&m[0]);
+        (&mut self[1]).sub_self_v(&m[1]);
     }
 
     fn transpose(&self) -> Matrix2<S> {
-        Matrix2::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(),
-                     self.cr(0, 1).clone(), self.cr(1, 1).clone())
+        Matrix2::new(self[0][0], self[1][0],
+                     self[0][1], self[1][1])
     }
 
     #[inline]
@@ -602,13 +596,13 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn determinant(&self) -> S {
-        self.cr(0, 0) * self.cr(1, 1) - self.cr(1, 0) * self.cr(0, 1)
+        self[0][0] * self[1][1] - self[1][0] * self[0][1]
     }
 
     #[inline]
     fn diagonal(&self) -> Vector2<S> {
-        Vector2::new(self.cr(0, 0),
-                     self.cr(1, 1))
+        Vector2::new(self[0][0],
+                     self[1][1])
     }
 
     #[inline]
@@ -617,59 +611,59 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
         if det.approx_eq(&zero()) {
             None
         } else {
-            Some(Matrix2::new( self.cr(1, 1) / det, -self.cr(0, 1) / det,
-                              -self.cr(1, 0) / det,  self.cr(0, 0) / det))
+            Some(Matrix2::new( self[1][1] / det, -self[0][1] / det,
+                              -self[1][0] / det,  self[0][0] / det))
         }
     }
 
     #[inline]
     fn is_diagonal(&self) -> bool {
-        self.cr(0, 1).approx_eq(&zero()) &&
-        self.cr(1, 0).approx_eq(&zero())
+        (&self[0][1]).approx_eq(&zero()) &&
+        (&self[1][0]).approx_eq(&zero())
     }
 
 
     #[inline]
     fn is_symmetric(&self) -> bool {
-        self.cr(0, 1).approx_eq(&self.cr(1, 0)) &&
-        self.cr(1, 0).approx_eq(&self.cr(0, 1))
+        (&self[0][1]).approx_eq(&self[1][0]) &&
+        (&self[1][0]).approx_eq(&self[0][1])
     }
 }
 
 impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self.c(0).mul_s(s),
-                           self.c(1).mul_s(s),
-                           self.c(2).mul_s(s))
+        Matrix3::from_cols(self[0].mul_s(s),
+                           self[1].mul_s(s),
+                           self[2].mul_s(s))
     }
 
     #[inline]
     fn div_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self.c(0).div_s(s),
-                           self.c(1).div_s(s),
-                           self.c(2).div_s(s))
+        Matrix3::from_cols(self[0].div_s(s),
+                           self[1].div_s(s),
+                           self[2].div_s(s))
     }
 
     #[inline]
     fn rem_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self.c(0).rem_s(s),
-                           self.c(1).rem_s(s),
-                           self.c(2).rem_s(s))
+        Matrix3::from_cols(self[0].rem_s(s),
+                           self[1].rem_s(s),
+                           self[2].rem_s(s))
     }
 
     #[inline]
     fn add_m(&self, m: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::from_cols(self.c(0).add_v(m.c(0)),
-                           self.c(1).add_v(m.c(1)),
-                           self.c(2).add_v(m.c(2)))
+        Matrix3::from_cols(self[0].add_v(&m[0]),
+                           self[1].add_v(&m[1]),
+                           self[2].add_v(&m[2]))
     }
 
     #[inline]
     fn sub_m(&self, m: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::from_cols(self.c(0).sub_v(m.c(0)),
-                           self.c(1).sub_v(m.c(1)),
-                           self.c(2).sub_v(m.c(2)))
+        Matrix3::from_cols(self[0].sub_v(&m[0]),
+                           self[1].sub_v(&m[1]),
+                           self[2].sub_v(&m[2]))
     }
 
     #[inline]
@@ -680,57 +674,57 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 
     fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::new(self.r(0).dot(other.c(0)),self.r(1).dot(other.c(0)),self.r(2).dot(other.c(0)),
-                     self.r(0).dot(other.c(1)),self.r(1).dot(other.c(1)),self.r(2).dot(other.c(1)),
-                     self.r(0).dot(other.c(2)),self.r(1).dot(other.c(2)),self.r(2).dot(other.c(2)))
+        Matrix3::new(self.r(0).dot(&other[0]),self.r(1).dot(&other[0]),self.r(2).dot(&other[0]),
+                     self.r(0).dot(&other[1]),self.r(1).dot(&other[1]),self.r(2).dot(&other[1]),
+                     self.r(0).dot(&other[2]),self.r(1).dot(&other[2]),self.r(2).dot(&other[2]))
     }
 
     #[inline]
     fn neg_self(&mut self) {
-        self.mut_c(0).neg_self();
-        self.mut_c(1).neg_self();
-        self.mut_c(2).neg_self();
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
+        (&mut self[2]).neg_self();
     }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self.mut_c(0).mul_self_s(s);
-        self.mut_c(1).mul_self_s(s);
-        self.mut_c(2).mul_self_s(s);
+        (&mut self[0]).mul_self_s(s);
+        (&mut self[1]).mul_self_s(s);
+        (&mut self[2]).mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self.mut_c(0).div_self_s(s);
-        self.mut_c(1).div_self_s(s);
-        self.mut_c(2).div_self_s(s);
+        (&mut self[0]).div_self_s(s);
+        (&mut self[1]).div_self_s(s);
+        (&mut self[2]).div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        self.mut_c(0).rem_self_s(s);
-        self.mut_c(1).rem_self_s(s);
-        self.mut_c(2).rem_self_s(s);
+        (&mut self[0]).rem_self_s(s);
+        (&mut self[1]).rem_self_s(s);
+        (&mut self[2]).rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix3<S>) {
-        self.mut_c(0).add_self_v(m.c(0));
-        self.mut_c(1).add_self_v(m.c(1));
-        self.mut_c(2).add_self_v(m.c(2));
+        (&mut self[0]).add_self_v(&m[0]);
+        (&mut self[1]).add_self_v(&m[1]);
+        (&mut self[2]).add_self_v(&m[2]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix3<S>) {
-        self.mut_c(0).sub_self_v(m.c(0));
-        self.mut_c(1).sub_self_v(m.c(1));
-        self.mut_c(2).sub_self_v(m.c(2));
+        (&mut self[0]).sub_self_v(&m[0]);
+        (&mut self[1]).sub_self_v(&m[1]);
+        (&mut self[2]).sub_self_v(&m[2]);
     }
 
     fn transpose(&self) -> Matrix3<S> {
-        Matrix3::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(),
-                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone())
+        Matrix3::new(self[0][0], self[1][0], self[2][0],
+                     self[0][1], self[1][1], self[2][1],
+                     self[0][2], self[1][2], self[2][2])
     }
 
     #[inline]
@@ -741,47 +735,47 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 
     fn determinant(&self) -> S {
-        self.cr(0, 0) * (self.cr(1, 1) * self.cr(2, 2) - self.cr(2, 1) * self.cr(1, 2)) -
-        self.cr(1, 0) * (self.cr(0, 1) * self.cr(2, 2) - self.cr(2, 1) * self.cr(0, 2)) +
-        self.cr(2, 0) * (self.cr(0, 1) * self.cr(1, 2) - self.cr(1, 1) * self.cr(0, 2))
+        self[0][0] * (self[1][1] * self[2][2] - self[2][1] * self[1][2]) -
+        self[1][0] * (self[0][1] * self[2][2] - self[2][1] * self[0][2]) +
+        self[2][0] * (self[0][1] * self[1][2] - self[1][1] * self[0][2])
     }
 
     #[inline]
     fn diagonal(&self) -> Vector3<S> {
-        Vector3::new(self.cr(0, 0),
-                     self.cr(1, 1),
-                     self.cr(2, 2))
+        Vector3::new(self[0][0],
+                     self[1][1],
+                     self[2][2])
     }
 
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
         if det.approx_eq(&zero()) { None } else {
-            Some(Matrix3::from_cols(self.c(1).cross(self.c(2)).div_s(det.clone()),
-                                    self.c(2).cross(self.c(0)).div_s(det.clone()),
-                                    self.c(0).cross(self.c(1)).div_s(det.clone())).transpose())
+            Some(Matrix3::from_cols(self[1].cross(&self[2]).div_s(det),
+                                    self[2].cross(&self[0]).div_s(det),
+                                    self[0].cross(&self[1]).div_s(det)).transpose())
         }
     }
 
     fn is_diagonal(&self) -> bool {
-        self.cr(0, 1).approx_eq(&zero()) &&
-        self.cr(0, 2).approx_eq(&zero()) &&
+        (&self[0][1]).approx_eq(&zero()) &&
+        (&self[0][2]).approx_eq(&zero()) &&
 
-        self.cr(1, 0).approx_eq(&zero()) &&
-        self.cr(1, 2).approx_eq(&zero()) &&
+        (&self[1][0]).approx_eq(&zero()) &&
+        (&self[1][2]).approx_eq(&zero()) &&
 
-        self.cr(2, 0).approx_eq(&zero()) &&
-        self.cr(2, 1).approx_eq(&zero())
+        (&self[2][0]).approx_eq(&zero()) &&
+        (&self[2][1]).approx_eq(&zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        self.cr(0, 1).approx_eq(&self.cr(1, 0)) &&
-        self.cr(0, 2).approx_eq(&self.cr(2, 0)) &&
+        (&self[0][1]).approx_eq(&self[1][0]) &&
+        (&self[0][2]).approx_eq(&self[2][0]) &&
 
-        self.cr(1, 0).approx_eq(&self.cr(0, 1)) &&
-        self.cr(1, 2).approx_eq(&self.cr(2, 1)) &&
+        (&self[1][0]).approx_eq(&self[0][1]) &&
+        (&self[1][2]).approx_eq(&self[2][1]) &&
 
-        self.cr(2, 0).approx_eq(&self.cr(0, 2)) &&
-        self.cr(2, 1).approx_eq(&self.cr(1, 2))
+        (&self[2][0]).approx_eq(&self[0][2]) &&
+        (&self[2][1]).approx_eq(&self[1][2])
     }
 }
 
@@ -791,51 +785,51 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 // around ~4 times.
 macro_rules! dot_matrix4(
     ($A:expr, $B:expr, $I:expr, $J:expr) => (
-        ($A.cr(0, $I)) * ($B.cr($J, 0)) +
-        ($A.cr(1, $I)) * ($B.cr($J, 1)) +
-        ($A.cr(2, $I)) * ($B.cr($J, 2)) +
-        ($A.cr(3, $I)) * ($B.cr($J, 3))
+        ($A[0][$I]) * ($B[$J][0]) +
+        ($A[1][$I]) * ($B[$J][1]) +
+        ($A[2][$I]) * ($B[$J][2]) +
+        ($A[3][$I]) * ($B[$J][3])
 ))
 
 impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self.c(0).mul_s(s),
-                           self.c(1).mul_s(s),
-                           self.c(2).mul_s(s),
-                           self.c(3).mul_s(s))
+        Matrix4::from_cols(self[0].mul_s(s),
+                           self[1].mul_s(s),
+                           self[2].mul_s(s),
+                           self[3].mul_s(s))
     }
 
     #[inline]
     fn div_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self.c(0).div_s(s),
-                           self.c(1).div_s(s),
-                           self.c(2).div_s(s),
-                           self.c(3).div_s(s))
+        Matrix4::from_cols(self[0].div_s(s),
+                           self[1].div_s(s),
+                           self[2].div_s(s),
+                           self[3].div_s(s))
     }
 
     #[inline]
     fn rem_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self.c(0).rem_s(s),
-                           self.c(1).rem_s(s),
-                           self.c(2).rem_s(s),
-                           self.c(3).rem_s(s))
+        Matrix4::from_cols(self[0].rem_s(s),
+                           self[1].rem_s(s),
+                           self[2].rem_s(s),
+                           self[3].rem_s(s))
     }
 
     #[inline]
     fn add_m(&self, m: &Matrix4<S>) -> Matrix4<S> {
-        Matrix4::from_cols(self.c(0).add_v(m.c(0)),
-                           self.c(1).add_v(m.c(1)),
-                           self.c(2).add_v(m.c(2)),
-                           self.c(3).add_v(m.c(3)))
+        Matrix4::from_cols(self[0].add_v(&m[0]),
+                           self[1].add_v(&m[1]),
+                           self[2].add_v(&m[2]),
+                           self[3].add_v(&m[3]))
     }
 
     #[inline]
     fn sub_m(&self, m: &Matrix4<S>) -> Matrix4<S> {
-        Matrix4::from_cols(self.c(0).sub_v(m.c(0)),
-                           self.c(1).sub_v(m.c(1)),
-                           self.c(2).sub_v(m.c(2)),
-                           self.c(3).sub_v(m.c(3)))
+        Matrix4::from_cols(self[0].sub_v(&m[0]),
+                           self[1].sub_v(&m[1]),
+                           self[2].sub_v(&m[2]),
+                           self[3].sub_v(&m[3]))
     }
 
     #[inline]
@@ -855,57 +849,57 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     #[inline]
     fn neg_self(&mut self) {
-        self.mut_c(0).neg_self();
-        self.mut_c(1).neg_self();
-        self.mut_c(2).neg_self();
-        self.mut_c(3).neg_self();
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
+        (&mut self[2]).neg_self();
+        (&mut self[3]).neg_self();
     }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self.mut_c(0).mul_self_s(s);
-        self.mut_c(1).mul_self_s(s);
-        self.mut_c(2).mul_self_s(s);
-        self.mut_c(3).mul_self_s(s);
+        (&mut self[0]).mul_self_s(s);
+        (&mut self[1]).mul_self_s(s);
+        (&mut self[2]).mul_self_s(s);
+        (&mut self[3]).mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self.mut_c(0).div_self_s(s);
-        self.mut_c(1).div_self_s(s);
-        self.mut_c(2).div_self_s(s);
-        self.mut_c(3).div_self_s(s);
+        (&mut self[0]).div_self_s(s);
+        (&mut self[1]).div_self_s(s);
+        (&mut self[2]).div_self_s(s);
+        (&mut self[3]).div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        self.mut_c(0).rem_self_s(s);
-        self.mut_c(1).rem_self_s(s);
-        self.mut_c(2).rem_self_s(s);
-        self.mut_c(3).rem_self_s(s);
+        (&mut self[0]).rem_self_s(s);
+        (&mut self[1]).rem_self_s(s);
+        (&mut self[2]).rem_self_s(s);
+        (&mut self[3]).rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix4<S>) {
-        self.mut_c(0).add_self_v(m.c(0));
-        self.mut_c(1).add_self_v(m.c(1));
-        self.mut_c(2).add_self_v(m.c(2));
-        self.mut_c(3).add_self_v(m.c(3));
+        (&mut self[0]).add_self_v(&m[0]);
+        (&mut self[1]).add_self_v(&m[1]);
+        (&mut self[2]).add_self_v(&m[2]);
+        (&mut self[3]).add_self_v(&m[3]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix4<S>) {
-        self.mut_c(0).sub_self_v(m.c(0));
-        self.mut_c(1).sub_self_v(m.c(1));
-        self.mut_c(2).sub_self_v(m.c(2));
-        self.mut_c(3).sub_self_v(m.c(3));
+        (&mut self[0]).sub_self_v(&m[0]);
+        (&mut self[1]).sub_self_v(&m[1]);
+        (&mut self[2]).sub_self_v(&m[2]);
+        (&mut self[3]).sub_self_v(&m[3]);
     }
 
     fn transpose(&self) -> Matrix4<S> {
-        Matrix4::new(self.cr(0, 0).clone(), self.cr(1, 0).clone(), self.cr(2, 0).clone(), self.cr(3, 0).clone(),
-                     self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                     self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                     self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone())
+        Matrix4::new(self[0][0], self[1][0], self[2][0], self[3][0],
+                     self[0][1], self[1][1], self[2][1], self[3][1],
+                     self[0][2], self[1][2], self[2][2], self[3][2],
+                     self[0][3], self[1][3], self[2][3], self[3][3])
     }
 
     fn transpose_self(&mut self) {
@@ -918,31 +912,31 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn determinant(&self) -> S {
-        let m0 = Matrix3::new(self.cr(1, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                              self.cr(1, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                              self.cr(1, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
-        let m1 = Matrix3::new(self.cr(0, 1).clone(), self.cr(2, 1).clone(), self.cr(3, 1).clone(),
-                              self.cr(0, 2).clone(), self.cr(2, 2).clone(), self.cr(3, 2).clone(),
-                              self.cr(0, 3).clone(), self.cr(2, 3).clone(), self.cr(3, 3).clone());
-        let m2 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(3, 1).clone(),
-                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(3, 2).clone(),
-                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(3, 3).clone());
-        let m3 = Matrix3::new(self.cr(0, 1).clone(), self.cr(1, 1).clone(), self.cr(2, 1).clone(),
-                              self.cr(0, 2).clone(), self.cr(1, 2).clone(), self.cr(2, 2).clone(),
-                              self.cr(0, 3).clone(), self.cr(1, 3).clone(), self.cr(2, 3).clone());
+        let m0 = Matrix3::new(self[1][1], self[2][1], self[3][1],
+                              self[1][2], self[2][2], self[3][2],
+                              self[1][3], self[2][3], self[3][3]);
+        let m1 = Matrix3::new(self[0][1], self[2][1], self[3][1],
+                              self[0][2], self[2][2], self[3][2],
+                              self[0][3], self[2][3], self[3][3]);
+        let m2 = Matrix3::new(self[0][1], self[1][1], self[3][1],
+                              self[0][2], self[1][2], self[3][2],
+                              self[0][3], self[1][3], self[3][3]);
+        let m3 = Matrix3::new(self[0][1], self[1][1], self[2][1],
+                              self[0][2], self[1][2], self[2][2],
+                              self[0][3], self[1][3], self[2][3]);
 
-        self.cr(0, 0) * m0.determinant() -
-        self.cr(1, 0) * m1.determinant() +
-        self.cr(2, 0) * m2.determinant() -
-        self.cr(3, 0) * m3.determinant()
+        self[0][0] * m0.determinant() -
+        self[1][0] * m1.determinant() +
+        self[2][0] * m2.determinant() -
+        self[3][0] * m3.determinant()
     }
 
     #[inline]
     fn diagonal(&self) -> Vector4<S> {
-        Vector4::new(self.cr(0, 0),
-                     self.cr(1, 1),
-                     self.cr(2, 2),
-                     self.cr(3, 3))
+        Vector4::new(self[0][0],
+                     self[1][1],
+                     self[2][2],
+                     self[3][3])
     }
 
     fn invert(&self) -> Option<Matrix4<S>> {
@@ -982,66 +976,66 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        self.cr(0, 1).approx_eq(&zero()) &&
-        self.cr(0, 2).approx_eq(&zero()) &&
-        self.cr(0, 3).approx_eq(&zero()) &&
+        (&self[0][1]).approx_eq(&zero()) &&
+        (&self[0][2]).approx_eq(&zero()) &&
+        (&self[0][3]).approx_eq(&zero()) &&
 
-        self.cr(1, 0).approx_eq(&zero()) &&
-        self.cr(1, 2).approx_eq(&zero()) &&
-        self.cr(1, 3).approx_eq(&zero()) &&
+        (&self[1][0]).approx_eq(&zero()) &&
+        (&self[1][2]).approx_eq(&zero()) &&
+        (&self[1][3]).approx_eq(&zero()) &&
 
-        self.cr(2, 0).approx_eq(&zero()) &&
-        self.cr(2, 1).approx_eq(&zero()) &&
-        self.cr(2, 3).approx_eq(&zero()) &&
+        (&self[2][0]).approx_eq(&zero()) &&
+        (&self[2][1]).approx_eq(&zero()) &&
+        (&self[2][3]).approx_eq(&zero()) &&
 
-        self.cr(3, 0).approx_eq(&zero()) &&
-        self.cr(3, 1).approx_eq(&zero()) &&
-        self.cr(3, 2).approx_eq(&zero())
+        (&self[3][0]).approx_eq(&zero()) &&
+        (&self[3][1]).approx_eq(&zero()) &&
+        (&self[3][2]).approx_eq(&zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        self.cr(0, 1).approx_eq(&self.cr(1, 0)) &&
-        self.cr(0, 2).approx_eq(&self.cr(2, 0)) &&
-        self.cr(0, 3).approx_eq(&self.cr(3, 0)) &&
+        (&self[0][1]).approx_eq(&self[1][0]) &&
+        (&self[0][2]).approx_eq(&self[2][0]) &&
+        (&self[0][3]).approx_eq(&self[3][0]) &&
 
-        self.cr(1, 0).approx_eq(&self.cr(0, 1)) &&
-        self.cr(1, 2).approx_eq(&self.cr(2, 1)) &&
-        self.cr(1, 3).approx_eq(&self.cr(3, 1)) &&
+        (&self[1][0]).approx_eq(&self[0][1]) &&
+        (&self[1][2]).approx_eq(&self[2][1]) &&
+        (&self[1][3]).approx_eq(&self[3][1]) &&
 
-        self.cr(2, 0).approx_eq(&self.cr(0, 2)) &&
-        self.cr(2, 1).approx_eq(&self.cr(1, 2)) &&
-        self.cr(2, 3).approx_eq(&self.cr(3, 2)) &&
+        (&self[2][0]).approx_eq(&self[0][2]) &&
+        (&self[2][1]).approx_eq(&self[1][2]) &&
+        (&self[2][3]).approx_eq(&self[3][2]) &&
 
-        self.cr(3, 0).approx_eq(&self.cr(0, 3)) &&
-        self.cr(3, 1).approx_eq(&self.cr(1, 3)) &&
-        self.cr(3, 2).approx_eq(&self.cr(2, 3))
+        (&self[3][0]).approx_eq(&self[0][3]) &&
+        (&self[3][1]).approx_eq(&self[1][3]) &&
+        (&self[3][2]).approx_eq(&self[2][3])
     }
 }
 
 impl<S: BaseFloat> ApproxEq<S> for Matrix2<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix2<S>, epsilon: &S) -> bool {
-        self.c(0).approx_eq_eps(other.c(0), epsilon) &&
-        self.c(1).approx_eq_eps(other.c(1), epsilon)
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon)
     }
 }
 
 impl<S: BaseFloat> ApproxEq<S> for Matrix3<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix3<S>, epsilon: &S) -> bool {
-        self.c(0).approx_eq_eps(other.c(0), epsilon) &&
-        self.c(1).approx_eq_eps(other.c(1), epsilon) &&
-        self.c(2).approx_eq_eps(other.c(2), epsilon)
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon)
     }
 }
 
 impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix4<S>, epsilon: &S) -> bool {
-        self.c(0).approx_eq_eps(other.c(0), epsilon) &&
-        self.c(1).approx_eq_eps(other.c(1), epsilon) &&
-        self.c(2).approx_eq_eps(other.c(2), epsilon) &&
-        self.c(3).approx_eq_eps(other.c(3), epsilon)
+        self[0].approx_eq_eps(&other[0], epsilon) &&
+        self[1].approx_eq_eps(&other[1], epsilon) &&
+        self[2].approx_eq_eps(&other[2], epsilon) &&
+        self[3].approx_eq_eps(&other[3], epsilon)
     }
 }
 
@@ -1069,9 +1063,9 @@ impl<S: BaseFloat> ToMatrix3<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
     fn to_matrix3(&self) -> Matrix3<S> {
-        Matrix3::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(),
-                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(),
-                                    zero(),                zero(),  one())
+        Matrix3::new(self[0][0], self[0][1], zero(),
+                     self[1][0], self[1][1], zero(),
+                         zero(),     zero(),  one())
     }
 }
 
@@ -1079,10 +1073,10 @@ impl<S: BaseFloat> ToMatrix4<S> for Matrix2<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), zero(), zero(),
-                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), zero(), zero(),
-                                    zero(),                zero(),  one(), zero(),
-                                    zero(),                zero(), zero(),  one())
+        Matrix4::new(self[0][0], self[0][1], zero(), zero(),
+                     self[1][0], self[1][1], zero(), zero(),
+                         zero(),     zero(),  one(), zero(),
+                         zero(),     zero(), zero(),  one())
     }
 }
 
@@ -1090,10 +1084,10 @@ impl<S: BaseFloat> ToMatrix4<S> for Matrix3<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self.cr(0, 0).clone(), self.cr(0, 1).clone(), self.cr(0, 2).clone(), zero(),
-                     self.cr(1, 0).clone(), self.cr(1, 1).clone(), self.cr(1, 2).clone(), zero(),
-                     self.cr(2, 0).clone(), self.cr(2, 1).clone(), self.cr(2, 2).clone(), zero(),
-                                    zero(),                zero(),                zero(),  one())
+        Matrix4::new(self[0][0], self[0][1], self[0][2], zero(),
+                     self[1][0], self[1][1], self[1][2], zero(),
+                     self[2][0], self[2][1], self[2][2], zero(),
+                         zero(),     zero(),     zero(),  one())
     }
 }
 
@@ -1108,36 +1102,36 @@ impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
                 let s = (one::<S>() + trace).sqrt();
                 let w = half * s;
                 let s = half / s;
-                let x = (self.cr(1, 2) - self.cr(2, 1)) * s;
-                let y = (self.cr(2, 0) - self.cr(0, 2)) * s;
-                let z = (self.cr(0, 1) - self.cr(1, 0)) * s;
+                let x = (self[1][2] - self[2][1]) * s;
+                let y = (self[2][0] - self[0][2]) * s;
+                let z = (self[0][1] - self[1][0]) * s;
                 Quaternion::new(w, x, y, z)
             }
-            () if (self.cr(0, 0) > self.cr(1, 1)) && (self.cr(0, 0) > self.cr(2, 2)) => {
-                let s = (half + (self.cr(0, 0) - self.cr(1, 1) - self.cr(2, 2))).sqrt();
+            () if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) => {
+                let s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
                 let w = half * s;
                 let s = half / s;
-                let x = (self.cr(0, 1) - self.cr(1, 0)) * s;
-                let y = (self.cr(2, 0) - self.cr(0, 2)) * s;
-                let z = (self.cr(1, 2) - self.cr(2, 1)) * s;
+                let x = (self[0][1] - self[1][0]) * s;
+                let y = (self[2][0] - self[0][2]) * s;
+                let z = (self[1][2] - self[2][1]) * s;
                 Quaternion::new(w, x, y, z)
             }
-            () if self.cr(1, 1) > self.cr(2, 2) => {
-                let s = (half + (self.cr(1, 1) - self.cr(0, 0) - self.cr(2, 2))).sqrt();
+            () if self[1][1] > self[2][2] => {
+                let s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
                 let w = half * s;
                 let s = half / s;
-                let x = (self.cr(0, 1) - self.cr(1, 0)) * s;
-                let y = (self.cr(1, 2) - self.cr(2, 1)) * s;
-                let z = (self.cr(2, 0) - self.cr(0, 2)) * s;
+                let x = (self[0][1] - self[1][0]) * s;
+                let y = (self[1][2] - self[2][1]) * s;
+                let z = (self[2][0] - self[0][2]) * s;
                 Quaternion::new(w, x, y, z)
             }
             () => {
-                let s = (half + (self.cr(2, 2) - self.cr(0, 0) - self.cr(1, 1))).sqrt();
+                let s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
                 let w = half * s;
                 let s = half / s;
-                let x = (self.cr(2, 0) - self.cr(0, 2)) * s;
-                let y = (self.cr(1, 2) - self.cr(2, 1)) * s;
-                let z = (self.cr(0, 1) - self.cr(1, 0)) * s;
+                let x = (self[2][0] - self[0][2]) * s;
+                let y = (self[1][2] - self[2][1]) * s;
+                let z = (self[0][1] - self[1][0]) * s;
                 Quaternion::new(w, x, y, z)
             }
         }
@@ -1147,26 +1141,26 @@ impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
 impl<S: BaseNum> fmt::Show for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}], [{}, {}]]",
-                self.cr(0, 0), self.cr(0, 1),
-                self.cr(1, 0), self.cr(1, 1))
+                self[0][0], self[0][1],
+                self[1][0], self[1][1])
     }
 }
 
 impl<S: BaseNum> fmt::Show for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]",
-                self.cr(0, 0), self.cr(0, 1), self.cr(0, 2),
-                self.cr(1, 0), self.cr(1, 1), self.cr(1, 2),
-                self.cr(2, 0), self.cr(2, 1), self.cr(2, 2))
+                self[0][0], self[0][1], self[0][2],
+                self[1][0], self[1][1], self[1][2],
+                self[2][0], self[2][1], self[2][2])
     }
 }
 
 impl<S: BaseNum> fmt::Show for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}], [{}, {}, {}, {}]]",
-                self.cr(0, 0), self.cr(0, 1), self.cr(0, 2), self.cr(0, 3),
-                self.cr(1, 0), self.cr(1, 1), self.cr(1, 2), self.cr(1, 3),
-                self.cr(2, 0), self.cr(2, 1), self.cr(2, 2), self.cr(2, 3),
-                self.cr(3, 0), self.cr(3, 1), self.cr(3, 2), self.cr(3, 3))
+                self[0][0], self[0][1], self[0][2], self[0][3],
+                self[1][0], self[1][1], self[1][2], self[1][3],
+                self[2][0], self[2][1], self[2][2], self[2][3],
+                self[3][0], self[3][1], self[3][2], self[3][3])
     }
 }
