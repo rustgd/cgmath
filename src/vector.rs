@@ -215,6 +215,18 @@ macro_rules! vec(
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
         }
 
+        impl<S: BaseNum> Index<uint, S> for $Self<S> {
+            #[inline]
+            fn index<'a>(&'a self, index: &uint) -> &'a S {
+                let slice: &[S, ..$n] = unsafe { mem::transmute(self) };
+                &slice[*index]
+            }
+        }
+
+        impl<S: BaseNum> IndexMut<uint, S> for $Self<S> {
+            #[inline] fn index_mut<'a>(&'a mut self, index: &uint) -> &'a mut S { self.mut_i(*index) }
+        }
+
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
             #[inline]
             fn approx_eq_eps(&self, other: &$Self<S>, epsilon: &S) -> bool {
