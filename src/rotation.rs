@@ -149,7 +149,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 ///
 /// // Since sin(π/2) may not be exactly zero due to rounding errors, we can
 /// // use cgmath's approx_eq() feature to show that it is close enough.
-/// assert!(unit_y.approx_eq(&-Vector2::unit_y()));
+/// assert!(unit_y.approx_eq(&Vector2::unit_y()));
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
 /// let unit_y2 = rot.to_matrix2().mul_v(&unit_x);

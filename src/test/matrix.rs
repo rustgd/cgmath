@@ -15,6 +15,7 @@
 
 use cgmath::matrix::*;
 use cgmath::vector::*;
+use cgmath::angle::rad;
 use cgmath::approx::ApproxEq;
 
 pub mod matrix2 {
@@ -394,4 +395,19 @@ fn test_predicates() {
     assert!(matrix4::D.is_invertible());
 
     assert!(Matrix4::from_value(6.0f64).is_diagonal());
+}
+
+#[test]
+fn test_from_angle() {
+    // Rotate the vector (1, 0) by π/2 radians to the vector (0, 1)
+    let rot1 = Matrix2::from_angle(rad(0.5f64 * Float::pi()));
+    assert!(rot1.mul_v(&Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+
+    // Rotate the vector (-1, 0) by -π/2 radians to the vector (0, 1)
+    let rot2 = -rot1;
+    assert!(rot2.mul_v(&-Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+
+    // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
+    let rot3: Matrix2<f64> = Matrix2::from_angle(rad(Float::pi()));
+    assert!(rot3.mul_v(&Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
 }
