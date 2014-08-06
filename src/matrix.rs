@@ -90,8 +90,8 @@ impl<S: BaseFloat> Matrix2<S> {
         let cos_theta = cos(theta.clone());
         let sin_theta = sin(theta.clone());
 
-        Matrix2::new(cos_theta.clone(), -sin_theta.clone(),
-                     sin_theta.clone(),  cos_theta.clone())
+        Matrix2::new(cos_theta.clone(),  sin_theta.clone(),
+                     -sin_theta.clone(), cos_theta.clone())
     }
 }
 
