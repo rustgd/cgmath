@@ -208,6 +208,13 @@ Matrix3<S> {
                      _1subc * axis.y * axis.z - s * axis.x,
                      _1subc * axis.z * axis.z + c)
     }
+
+    /// Create a matrix from a non-uniform scale 
+    pub fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
+        Matrix3::new(value.x, zero(),  zero(),
+                     zero(),  value.y, zero(),
+                     zero(),  zero(),  value.z)
+    }
 }
 
 impl<S: BaseNum> Matrix4<S> {
