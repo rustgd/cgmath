@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cgmath::point::*;
-use cgmath::approx::ApproxEq;
+#![feature(globs)]
+
+extern crate cgmath;
+
+use cgmath::matrix::{ToMatrix4, ToMatrix3};
+use cgmath::quaternion::Quaternion;
 
 #[test]
-fn test_homogeneous() {
-	let p = Point3::new(1.0f64, 2.0f64, 3.0f64);
-    assert!(p.approx_eq( &Point3::from_homogeneous( &p.to_homogeneous() ) ));
+fn to_matrix4()
+{
+    let quaternion = Quaternion::new(2f32, 3f32, 4f32, 5f32);
+
+    let matrix_short = quaternion.to_matrix4();
+    let matrix_long = quaternion.to_matrix3().to_matrix4();
+
+    assert!(matrix_short == matrix_long);
 }

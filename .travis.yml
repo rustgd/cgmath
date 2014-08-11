@@ -13,25 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+language: rust
 env:
   global:
-    - LD_LIBRARY_PATH: /usr/local/lib
-    - secure: ZhxsGkZWYT7tKdneILFdpGco49DIP3DzYmu9dGE1+PmKUmyRoBhh2Pn76Sty5JxmWPF+BtxTVbOduzsRZpSZEOikSS63NSjhUMTy+PGjyJvW07cDmjO8n8BVqW9idp2rCPAGNunTtjTgPUFjO4oBC5slYU+kvouAryg+paSsxN8=
-before_install:
-  - yes | sudo add-apt-repository ppa:cmrx64/cargo
-  - sudo apt-get update
-install:
-  - wget http://www.rust-lang.org/rustup.sh
-  - sudo sh ./rustup.sh
-  - rustc -v
+    - secure: S0l5RmsFJgbDdzXjHsCluexb1R9RklpxZMJgr9RcieeqSqaJDPUht53yBZDyuk04/KzEbtM5yxogJd2tcv2E4EogPLL8oG77GItNc/i6jy4TLUjU28WKOMiBvYA/1rhb7f/DEQgj7DtIHP/rQGKH8goUdJfqGbk7EawP7FSxC2Y=
 script:
   - cargo build
-  - make
-#  - make check     # bench is too slow
-  - make test
-  - make doc
-  - make doctest
+  - cargo test
+  - cargo doc
 after_script:
-  - wget -O after_script.sh http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN
-  - chmod +x after_script.sh
-  - sh ./after_script.sh
+  # the doc directory needs to be in the root for rust-ci
+  - mv target/doc doc
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
