@@ -21,7 +21,7 @@ use std::num::{Zero, zero, One, one, cast};
 
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
-use array::{Array1, Array2};
+use array::{Array1, Array2, FixedArray};
 use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
 use quaternion::{Quaternion, ToQuaternion};
@@ -209,7 +209,7 @@ Matrix3<S> {
                      _1subc * axis.z * axis.z + c)
     }
 
-    /// Create a matrix from a non-uniform scale 
+    /// Create a matrix from a non-uniform scale
     pub fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
         Matrix3::new(value.x, zero(),  zero(),
                      zero(),  value.y, zero(),
@@ -377,9 +377,9 @@ impl<S: BaseFloat> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub
 impl<S: BaseFloat> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { self.sub_m(other) } }
 impl<S: BaseFloat> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { self.sub_m(other) } }
 
-impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { Matrix2::from_cols(self.c(0).neg(), self.c(1).neg()) } }
-impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { Matrix3::from_cols(self.c(0).neg(), self.c(1).neg(), self.c(2).neg()) } }
-impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { Matrix4::from_cols(self.c(0).neg(), self.c(1).neg(), self.c(2).neg(), self.c(3).neg()) } }
+impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { Matrix2::from_cols(self[0].neg(), self[1].neg()) } }
+impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { Matrix3::from_cols(self[0].neg(), self[1].neg(), self[2].neg()) } }
+impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { Matrix4::from_cols(self[0].neg(), self[1].neg(), self[2].neg(), self[3].neg()) } }
 
 impl<S: BaseFloat> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
@@ -393,17 +393,74 @@ impl<S: BaseFloat> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matri
 impl<S: BaseFloat> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
 impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
 
+impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
+    #[inline]
+    fn into_fixed(self) -> [[S, ..2], ..2] {
+        match self {
+            Matrix2 { x, y } => [
+                x.into_fixed(),
+                y.into_fixed(),
+            ],
+        }
+    }
+
+    #[inline]
+    fn as_fixed<'a>(&'a self) -> &'a [[S, ..2], ..2] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..2], ..2] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn from_fixed(_v: [[S, ..2], ..2]) -> Matrix2<S> {
+        // match v {
+        //     [x, y] => Matrix2 {
+        //         x: FixedArray::from_fixed(x),
+        //         y: FixedArray::from_fixed(y),
+        //     },
+        // }
+        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+    }
+
+    #[inline]
+    fn from_fixed_ref<'a>(v: &'a [[S, ..2], ..2]) -> &'a Matrix2<S> {
+        unsafe { mem::transmute(v) }
+    }
+
+    #[inline]
+    fn from_fixed_mut<'a>(v: &'a mut [[S, ..2], ..2]) -> &'a mut Matrix2<S> {
+        unsafe { mem::transmute(v) }
+    }
+}
+
+impl<S> Index<uint, Vector2<S>> for Matrix2<S> {
+    #[inline]
+    fn index<'a>(&'a self, i: &uint) -> &'a Vector2<S> {
+        FixedArray::from_fixed_ref(&self.as_fixed()[*i])
+    }
+}
+
+impl<S> IndexMut<uint, Vector2<S>> for Matrix2<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector2<S> {
+        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
+    }
+}
+
 impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector2<S> {
+    fn row(&self, r: uint) -> Vector2<S> {
         Vector2::new(self[0][r],
                      self[1][r])
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
     }
 
     #[inline]
@@ -414,35 +471,78 @@ impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
-impl<S: Copy> Index<uint, Vector2<S>> for Matrix2<S> {
+impl<S> FixedArray<[[S, ..3], ..3]> for Matrix3<S> {
     #[inline]
-    fn index<'a>(&'a self, c: &uint) -> &'a Vector2<S> {
-        let slice: &'a [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &slice[*c]
+    fn into_fixed(self) -> [[S, ..3], ..3] {
+        match self {
+            Matrix3 { x, y, z } => [
+                x.into_fixed(),
+                y.into_fixed(),
+                z.into_fixed(),
+            ],
+        }
+    }
+
+    #[inline]
+    fn as_fixed<'a>(&'a self) -> &'a [[S, ..3], ..3] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..3], ..3] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn from_fixed(_v: [[S, ..3], ..3]) -> Matrix3<S> {
+        // match v {
+        //     [x, y, z] => Matrix3 {
+        //         x: FixedArray::from_fixed(x),
+        //         y: FixedArray::from_fixed(y),
+        //         z: FixedArray::from_fixed(z),
+        //     },
+        // }
+        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+    }
+
+    #[inline]
+    fn from_fixed_ref<'a>(v: &'a [[S, ..3], ..3]) -> &'a Matrix3<S> {
+        unsafe { mem::transmute(v) }
+    }
+
+    #[inline]
+    fn from_fixed_mut<'a>(v: &'a mut [[S, ..3], ..3]) -> &'a mut Matrix3<S> {
+        unsafe { mem::transmute(v) }
     }
 }
 
-impl<S: Copy> IndexMut<uint, Vector2<S>> for Matrix2<S> {
+impl<S> Index<uint, Vector3<S>> for Matrix3<S> {
     #[inline]
-    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector2<S> {
-        let slice: &'a mut [Vector2<S>, ..2] = unsafe { mem::transmute(self) };
-        &mut slice[*c]
+    fn index<'a>(&'a self, i: &uint) -> &'a Vector3<S> {
+        FixedArray::from_fixed_ref(&self.as_fixed()[*i])
+    }
+}
+
+impl<S> IndexMut<uint, Vector3<S>> for Matrix3<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector3<S> {
+        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
     }
 }
 
 impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector3<S> {
+    fn row(&self, r: uint) -> Vector3<S> {
         Vector3::new(self[0][r],
                      self[1][r],
                      self[2][r])
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
-        (&mut self[2]).swap_i(a, b);
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
+        (&mut self[2]).swap_elems(a, b);
     }
 
     #[inline]
@@ -454,25 +554,70 @@ impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
-impl<S: Copy> Index<uint, Vector3<S>> for Matrix3<S> {
+impl<S> FixedArray<[[S, ..4], ..4]> for Matrix4<S> {
     #[inline]
-    fn index<'a>(&'a self, c: &uint) -> &'a Vector3<S> {
-        let slice: &'a [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &slice[*c]
+    fn into_fixed(self) -> [[S, ..4], ..4] {
+        match self {
+            Matrix4 { x, y, z, w } => [
+                x.into_fixed(),
+                y.into_fixed(),
+                z.into_fixed(),
+                w.into_fixed(),
+            ],
+        }
+    }
+
+    #[inline]
+    fn as_fixed<'a>(&'a self) -> &'a [[S, ..4], ..4] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..4], ..4] {
+        unsafe { mem::transmute(self) }
+    }
+
+    #[inline]
+    fn from_fixed(_v: [[S, ..4], ..4]) -> Matrix4<S> {
+        // match v {
+        //     [x, y, z, w] => Matrix4 {
+        //         x: FixedArray::from_fixed(x),
+        //         y: FixedArray::from_fixed(y),
+        //         z: FixedArray::from_fixed(z),
+        //         w: FixedArray::from_fixed(w),
+        //     },
+        // }
+        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+    }
+
+    #[inline]
+    fn from_fixed_ref<'a>(v: &'a [[S, ..4], ..4]) -> &'a Matrix4<S> {
+        unsafe { mem::transmute(v) }
+    }
+
+    #[inline]
+    fn from_fixed_mut<'a>(v: &'a mut [[S, ..4], ..4]) -> &'a mut Matrix4<S> {
+        unsafe { mem::transmute(v) }
     }
 }
 
-impl<S: Copy> IndexMut<uint, Vector3<S>> for Matrix3<S> {
+impl<S> Index<uint, Vector4<S>> for Matrix4<S> {
     #[inline]
-    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector3<S> {
-        let slice: &'a mut [Vector3<S>, ..3] = unsafe { mem::transmute(self) };
-        &mut slice[*c]
+    fn index<'a>(&'a self, i: &uint) -> &'a Vector4<S> {
+        FixedArray::from_fixed_ref(&self.as_fixed()[*i])
+    }
+}
+
+impl<S> IndexMut<uint, Vector4<S>> for Matrix4<S> {
+    #[inline]
+    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector4<S> {
+        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
     }
 }
 
 impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector4<S> {
+    fn row(&self, r: uint) -> Vector4<S> {
         Vector4::new(self[0][r],
                      self[1][r],
                      self[2][r],
@@ -480,11 +625,11 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
-        (&mut self[2]).swap_i(a, b);
-        (&mut self[3]).swap_i(a, b);
+    fn swap_rows(&mut self, a: uint, b: uint) {
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
+        (&mut self[2]).swap_elems(a, b);
+        (&mut self[3]).swap_elems(a, b);
     }
 
     #[inline]
@@ -494,22 +639,6 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
         self.z = op(&self.z);
         self.w = op(&self.w);
         *self
-    }
-}
-
-impl<S: Copy> Index<uint, Vector4<S>> for Matrix4<S> {
-    #[inline]
-    fn index<'a>(&'a self, c: &uint) -> &'a Vector4<S> {
-        let slice: &'a [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &slice[*c]
-    }
-}
-
-impl<S: Copy> IndexMut<uint, Vector4<S>> for Matrix4<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, c: &uint) -> &'a mut Vector4<S> {
-        let slice: &'a mut [Vector4<S>, ..4] = unsafe { mem::transmute(self) };
-        &mut slice[*c]
     }
 }
 
@@ -546,13 +675,13 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector2<S>) -> Vector2<S> {
-        Vector2::new(self.r(0).dot(v),
-                     self.r(1).dot(v))
+        Vector2::new(self.row(0).dot(v),
+                     self.row(1).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::new(self.r(0).dot(&other[0]), self.r(1).dot(&other[0]),
-                     self.r(0).dot(&other[1]), self.r(1).dot(&other[1]))
+        Matrix2::new(self.row(0).dot(&other[0]), self.row(1).dot(&other[0]),
+                     self.row(0).dot(&other[1]), self.row(1).dot(&other[1]))
     }
 
     #[inline]
@@ -598,7 +727,7 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
+        self.swap_elems((0, 1), (1, 0));
     }
 
     #[inline]
@@ -675,15 +804,15 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector3<S>) -> Vector3<S> {
-        Vector3::new(self.r(0).dot(v),
-                     self.r(1).dot(v),
-                     self.r(2).dot(v))
+        Vector3::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::new(self.r(0).dot(&other[0]),self.r(1).dot(&other[0]),self.r(2).dot(&other[0]),
-                     self.r(0).dot(&other[1]),self.r(1).dot(&other[1]),self.r(2).dot(&other[1]),
-                     self.r(0).dot(&other[2]),self.r(1).dot(&other[2]),self.r(2).dot(&other[2]))
+        Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
+                     self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
+                     self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
     }
 
     #[inline]
@@ -736,9 +865,9 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     #[inline]
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
-        self.swap_cr((0, 2), (2, 0));
-        self.swap_cr((1, 2), (2, 1));
+        self.swap_elems((0, 1), (1, 0));
+        self.swap_elems((0, 2), (2, 0));
+        self.swap_elems((1, 2), (2, 1));
     }
 
     fn determinant(&self) -> S {
@@ -786,7 +915,7 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 }
 
-// Using self.r(0).dot(other.c(0)) like the other matrix multiplies
+// Using self.row(0).dot(other[0]) like the other matrix multiplies
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
@@ -841,10 +970,10 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector4<S>) -> Vector4<S> {
-        Vector4::new(self.r(0).dot(v),
-                     self.r(1).dot(v),
-                     self.r(2).dot(v),
-                     self.r(3).dot(v))
+        Vector4::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v),
+                     self.row(3).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> {
@@ -910,12 +1039,12 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
-        self.swap_cr((0, 2), (2, 0));
-        self.swap_cr((0, 3), (3, 0));
-        self.swap_cr((1, 2), (2, 1));
-        self.swap_cr((1, 3), (3, 1));
-        self.swap_cr((2, 3), (3, 2));
+        self.swap_elems((0, 1), (1, 0));
+        self.swap_elems((0, 2), (2, 0));
+        self.swap_elems((0, 3), (3, 0));
+        self.swap_elems((1, 2), (2, 1));
+        self.swap_elems((1, 3), (3, 1));
+        self.swap_elems((2, 3), (3, 2));
     }
 
     fn determinant(&self) -> S {

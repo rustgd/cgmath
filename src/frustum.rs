@@ -50,12 +50,12 @@ Frustum<S> {
 
     /// Extracts frustum planes from a projection matrix
     pub fn from_matrix4(mat: Matrix4<S>) -> Frustum<S> {
-        Frustum::new(Plane::from_vector4(mat.r(3).add_v(&mat.r(0)).normalize()),
-                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(0)).normalize()),
-                     Plane::from_vector4(mat.r(3).add_v(&mat.r(1)).normalize()),
-                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(1)).normalize()),
-                     Plane::from_vector4(mat.r(3).add_v(&mat.r(2)).normalize()),
-                     Plane::from_vector4(mat.r(3).sub_v(&mat.r(2)).normalize()))
+        Frustum::new(Plane::from_vector4(mat.row(3).add_v(&mat.row(0)).normalize()),
+                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(0)).normalize()),
+                     Plane::from_vector4(mat.row(3).add_v(&mat.row(1)).normalize()),
+                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(1)).normalize()),
+                     Plane::from_vector4(mat.row(3).add_v(&mat.row(2)).normalize()),
+                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(2)).normalize()))
     }
 }
 

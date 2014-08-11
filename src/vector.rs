@@ -105,7 +105,7 @@ use std::num::{Zero, zero, One, one};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
-use array::Array1;
+use array::{Array1, FixedArray};
 use num::{BaseNum, BaseFloat};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
@@ -212,9 +212,56 @@ macro_rules! vec(
             pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
         }
 
-        impl<S: Copy> Array1<S> for $Self<S> {
+        impl<$S> FixedArray<[$S, ..$n]> for $Self<$S> {
             #[inline]
-            fn map(&mut self, op: |S| -> S) -> $Self<S> {
+            fn into_fixed(self) -> [$S, ..$n] {
+                match self { $Self { $($field),+ } => [$($field),+] }
+            }
+
+            #[inline]
+            fn as_fixed<'a>(&'a self) -> &'a [$S, ..$n] {
+                unsafe { mem::transmute(self) }
+            }
+
+            #[inline]
+            fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [$S, ..$n] {
+                unsafe { mem::transmute(self) }
+            }
+
+            #[inline]
+            fn from_fixed(_v: [$S, ..$n]) -> $Self<$S> {
+                // match v { [$($field),+] => $Self { $($field: $field),+ } }
+                fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+            }
+
+            #[inline]
+            fn from_fixed_ref<'a>(v: &'a [$S, ..$n]) -> &'a $Self<$S> {
+                unsafe { mem::transmute(v) }
+            }
+
+            #[inline]
+            fn from_fixed_mut<'a>(v: &'a mut [$S, ..$n]) -> &'a mut $Self<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+
+        impl<$S: Copy> Index<uint, S> for $Self<$S> {
+            #[inline]
+            fn index<'a>(&'a self, i: &uint) -> &'a $S {
+                &self.as_fixed()[*i]
+            }
+        }
+
+        impl<$S: Copy> IndexMut<uint, S> for $Self<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut $S {
+                &mut self.as_mut_fixed()[*i]
+            }
+        }
+
+        impl<$S: Copy> Array1<$S> for $Self<$S> {
+            #[inline]
+            fn map(&mut self, op: |$S| -> $S) -> $Self<$S> {
                 $(self.$field = op(self.$field);)+ *self
             }
         }
@@ -283,22 +330,6 @@ macro_rules! vec(
 
         impl<S: BaseNum> One for $Self<S> {
             #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
-        }
-
-        impl<S: Copy> Index<uint, S> for $Self<S> {
-            #[inline]
-            fn index<'a>(&'a self, i: &uint) -> &'a S {
-                let slice: &[S, ..$n] = unsafe { mem::transmute(self) };
-                &slice[*i]
-            }
-        }
-
-        impl<S: Copy> IndexMut<uint, S> for $Self<S> {
-            #[inline]
-            fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
-                let slice: &'a mut [S, ..$n] = unsafe { mem::transmute(self) };
-                &mut slice[*i]
-            }
         }
 
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
