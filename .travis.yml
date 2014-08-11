@@ -20,6 +20,7 @@ env:
 script:
   - cargo build
   - cargo test
+  - make -C bench
   - cargo doc
 after_script:
   # the doc directory needs to be in the root for rust-ci
