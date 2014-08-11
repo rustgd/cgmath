@@ -209,7 +209,7 @@ Matrix3<S> {
                      _1subc * axis.z * axis.z + c)
     }
 
-    /// Create a matrix from a non-uniform scale 
+    /// Create a matrix from a non-uniform scale
     pub fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
         Matrix3::new(value.x, zero(),  zero(),
                      zero(),  value.y, zero(),
@@ -377,9 +377,9 @@ impl<S: BaseFloat> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub
 impl<S: BaseFloat> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(&self, other: &Matrix3<S>) -> Matrix3<S> { self.sub_m(other) } }
 impl<S: BaseFloat> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(&self, other: &Matrix4<S>) -> Matrix4<S> { self.sub_m(other) } }
 
-impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { Matrix2::from_cols(self.c(0).neg(), self.c(1).neg()) } }
-impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { Matrix3::from_cols(self.c(0).neg(), self.c(1).neg(), self.c(2).neg()) } }
-impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { Matrix4::from_cols(self.c(0).neg(), self.c(1).neg(), self.c(2).neg(), self.c(3).neg()) } }
+impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(&self) -> Matrix2<S> { Matrix2::from_cols(self[0].neg(), self[1].neg()) } }
+impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(&self) -> Matrix3<S> { Matrix3::from_cols(self[0].neg(), self[1].neg(), self[2].neg()) } }
+impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(&self) -> Matrix4<S> { Matrix4::from_cols(self[0].neg(), self[1].neg(), self[2].neg(), self[3].neg()) } }
 
 impl<S: BaseFloat> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool { *self == zero() } }

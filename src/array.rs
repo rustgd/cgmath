@@ -28,20 +28,6 @@ pub trait Array1<Element: Copy>: Index<uint, Element> + IndexMut<uint, Element> 
         &mut (*self)[0]
     }
 
-    /// Get a shared reference to the `i`th value.
-    #[deprecated = "Use index operator instead"]
-    #[inline]
-    fn i<'a>(&'a self, i: uint) -> &'a Element {
-        &(*self)[i]
-    }
-
-    /// Get a mutable reference to the `i`th value.
-    #[deprecated = "Use index operator instead"]
-    #[inline]
-    fn mut_i<'a>(&'a mut self, i: uint) -> &'a mut Element {
-        &mut (*self)[i]
-    }
-
     #[inline]
     /// Swap the elements at indices `i` and `j` in-place.
     fn swap_i(&mut self, i: uint, j: uint) {
@@ -72,20 +58,6 @@ pub trait Array2<Column: Array1<Element>, Row: Array1<Element>, Element: Copy>:
         &mut (*self)[0][0]
     }
 
-    /// Get a shared reference to a column of this array.
-    #[deprecated = "Use index operator instead"]
-    #[inline]
-    fn c<'a>(&'a self, c: uint) -> &'a Column {
-        &(*self)[c]
-    }
-
-    /// Get a mutable reference to a column of this array.
-    #[deprecated = "Use index operator instead"]
-    #[inline]
-    fn mut_c<'a>(&'a mut self, c: uint) -> &'a mut Column {
-        &mut (*self)[c]
-    }
-
     /// Swap two columns of this array.
     #[inline]
     fn swap_c(&mut self, a: uint, b: uint) {
@@ -103,20 +75,6 @@ pub trait Array2<Column: Array1<Element>, Row: Array1<Element>, Element: Copy>:
 
     /// Swap two rows of this array.
     fn swap_r(&mut self, a: uint, b: uint);
-
-    /// Return a shared reference to the element at column `c` and row `r`.
-    #[deprecated = "Use index operators instead"]
-    #[inline]
-    fn cr<'a>(&'a self, c: uint, r: uint) -> &'a Element {
-        &(*self)[c][r]
-    }
-
-    /// Return a mutable reference to the element at column `c` and row `r`.
-    #[deprecated = "Use index operators instead"]
-    #[inline]
-    fn mut_cr<'a>(&'a mut self, c: uint, r: uint) -> &'a mut Element {
-        &mut (*self)[c][r]
-    }
 
     /// Swap the values at index `a` and `b`
     #[inline]
