@@ -402,8 +402,8 @@ impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
     }
 
     #[inline]
@@ -440,9 +440,9 @@ impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
-        (&mut self[2]).swap_i(a, b);
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
+        (&mut self[2]).swap_elems(a, b);
     }
 
     #[inline]
@@ -481,10 +481,10 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: uint, b: uint) {
-        (&mut self[0]).swap_i(a, b);
-        (&mut self[1]).swap_i(a, b);
-        (&mut self[2]).swap_i(a, b);
-        (&mut self[3]).swap_i(a, b);
+        (&mut self[0]).swap_elems(a, b);
+        (&mut self[1]).swap_elems(a, b);
+        (&mut self[2]).swap_elems(a, b);
+        (&mut self[3]).swap_elems(a, b);
     }
 
     #[inline]
@@ -546,13 +546,13 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector2<S>) -> Vector2<S> {
-        Vector2::new(self.r(0).dot(v),
-                     self.r(1).dot(v))
+        Vector2::new(self.row(0).dot(v),
+                     self.row(1).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::new(self.r(0).dot(&other[0]), self.r(1).dot(&other[0]),
-                     self.r(0).dot(&other[1]), self.r(1).dot(&other[1]))
+        Matrix2::new(self.row(0).dot(&other[0]), self.row(1).dot(&other[0]),
+                     self.row(0).dot(&other[1]), self.row(1).dot(&other[1]))
     }
 
     #[inline]
@@ -598,7 +598,7 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
+        self.swap_elems((0, 1), (1, 0));
     }
 
     #[inline]
@@ -675,15 +675,15 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector3<S>) -> Vector3<S> {
-        Vector3::new(self.r(0).dot(v),
-                     self.r(1).dot(v),
-                     self.r(2).dot(v))
+        Vector3::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::new(self.r(0).dot(&other[0]),self.r(1).dot(&other[0]),self.r(2).dot(&other[0]),
-                     self.r(0).dot(&other[1]),self.r(1).dot(&other[1]),self.r(2).dot(&other[1]),
-                     self.r(0).dot(&other[2]),self.r(1).dot(&other[2]),self.r(2).dot(&other[2]))
+        Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
+                     self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
+                     self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
     }
 
     #[inline]
@@ -736,9 +736,9 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     #[inline]
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
-        self.swap_cr((0, 2), (2, 0));
-        self.swap_cr((1, 2), (2, 1));
+        self.swap_elems((0, 1), (1, 0));
+        self.swap_elems((0, 2), (2, 0));
+        self.swap_elems((1, 2), (2, 1));
     }
 
     fn determinant(&self) -> S {
@@ -786,7 +786,7 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 }
 
-// Using self.r(0).dot(other.c(0)) like the other matrix multiplies
+// Using self.row(0).dot(other[0]) like the other matrix multiplies
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
@@ -841,10 +841,10 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     #[inline]
     fn mul_v(&self, v: &Vector4<S>) -> Vector4<S> {
-        Vector4::new(self.r(0).dot(v),
-                     self.r(1).dot(v),
-                     self.r(2).dot(v),
-                     self.r(3).dot(v))
+        Vector4::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v),
+                     self.row(3).dot(v))
     }
 
     fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> {
@@ -910,12 +910,12 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn transpose_self(&mut self) {
-        self.swap_cr((0, 1), (1, 0));
-        self.swap_cr((0, 2), (2, 0));
-        self.swap_cr((0, 3), (3, 0));
-        self.swap_cr((1, 2), (2, 1));
-        self.swap_cr((1, 3), (3, 1));
-        self.swap_cr((2, 3), (3, 2));
+        self.swap_elems((0, 1), (1, 0));
+        self.swap_elems((0, 2), (2, 0));
+        self.swap_elems((0, 3), (3, 0));
+        self.swap_elems((1, 2), (2, 1));
+        self.swap_elems((1, 3), (3, 1));
+        self.swap_elems((2, 3), (3, 2));
     }
 
     fn determinant(&self) -> S {
