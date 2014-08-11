@@ -395,13 +395,13 @@ impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matri
 
 impl<S: Copy> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector2<S> {
+    fn row(&self, r: uint) -> Vector2<S> {
         Vector2::new(self[0][r],
                      self[1][r])
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: uint, b: uint) {
         (&mut self[0]).swap_i(a, b);
         (&mut self[1]).swap_i(a, b);
     }
@@ -432,14 +432,14 @@ impl<S: Copy> IndexMut<uint, Vector2<S>> for Matrix2<S> {
 
 impl<S: Copy> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector3<S> {
+    fn row(&self, r: uint) -> Vector3<S> {
         Vector3::new(self[0][r],
                      self[1][r],
                      self[2][r])
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: uint, b: uint) {
         (&mut self[0]).swap_i(a, b);
         (&mut self[1]).swap_i(a, b);
         (&mut self[2]).swap_i(a, b);
@@ -472,7 +472,7 @@ impl<S: Copy> IndexMut<uint, Vector3<S>> for Matrix3<S> {
 
 impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
-    fn r(&self, r: uint) -> Vector4<S> {
+    fn row(&self, r: uint) -> Vector4<S> {
         Vector4::new(self[0][r],
                      self[1][r],
                      self[2][r],
@@ -480,7 +480,7 @@ impl<S: Copy> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 
     #[inline]
-    fn swap_r(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: uint, b: uint) {
         (&mut self[0]).swap_i(a, b);
         (&mut self[1]).swap_i(a, b);
         (&mut self[2]).swap_i(a, b);
