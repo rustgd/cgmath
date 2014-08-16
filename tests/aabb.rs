@@ -17,11 +17,10 @@
 
 extern crate cgmath;
 
-use cgmath::aabb::*;
-use cgmath::point::{Point2, Point3};
-use cgmath::vector::{Vector2, Vector3};
-use cgmath::ray::{Ray};
-use cgmath::intersect::Intersect;
+use cgmath::{Aabb, Aabb2, Aabb3};
+use cgmath::{Point2, Point3};
+use cgmath::{Vector2, Vector3};
+use cgmath::{Ray, Intersect};
 
 #[test]
 fn test_aabb() {

@@ -17,12 +17,7 @@
 
 extern crate cgmath;
 
-use cgmath::sphere::*;
-use cgmath::point::*;
-use cgmath::vector::*;
-use cgmath::ray::*;
-use cgmath::approx::ApproxEq;
-use cgmath::intersect::Intersect;
+use cgmath::*;
 
 #[test]
 fn test_intersection() {

@@ -18,9 +18,7 @@ use approx::ApproxEq;
 use std::cmp;
 use std::fmt;
 
-/// A trait providing a [partial ordering][po]
-///
-/// [po]: http://mathworld.wolfram.com/PartialOrder.html
+/// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
     fn partial_min(self, other: Self) -> Self;
     fn partial_max(self, other: Self) -> Self;

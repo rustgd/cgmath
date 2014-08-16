@@ -17,10 +17,7 @@
 
 extern crate cgmath;
 
-use cgmath::angle::*;
-use cgmath::array::*;
-use cgmath::vector::*;
-use cgmath::approx::ApproxEq;
+use cgmath::*;
 
 #[test]
 fn test_from_value() {
@@ -101,7 +98,7 @@ fn test_is_perpendicular() {
 
 #[cfg(test)]
 mod test_length {
-    use cgmath::vector::*;
+    use cgmath::*;
 
     #[test]
     fn test_vector2(){

@@ -17,14 +17,10 @@
 
 extern crate cgmath;
 
-use cgmath::matrix::*;
-use cgmath::vector::*;
-use cgmath::angle::rad;
-use cgmath::approx::ApproxEq;
+use cgmath::*;
 
 pub mod matrix2 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix2<f64> = Matrix2 { x: Vector2 { x: 1.0f64, y: 3.0f64 },
                                            y: Vector2 { x: 2.0f64, y: 4.0f64 } };
@@ -38,8 +34,7 @@ pub mod matrix2 {
 }
 
 pub mod matrix3 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix3<f64> = Matrix3 { x: Vector3 { x: 1.0f64, y: 4.0f64, z:  7.0f64 },
                                            y: Vector3 { x: 2.0f64, y: 5.0f64, z:  8.0f64 },
@@ -59,8 +54,7 @@ pub mod matrix3 {
 }
 
 pub mod matrix4 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix4<f64> = Matrix4 { x: Vector4 { x: 1.0f64, y: 5.0f64, z:  9.0f64, w: 13.0f64 },
                                            y: Vector4 { x: 2.0f64, y: 6.0f64, z: 10.0f64, w: 14.0f64 },

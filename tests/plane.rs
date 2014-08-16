@@ -17,11 +17,7 @@
 
 extern crate cgmath;
 
-use cgmath::plane::*;
-use cgmath::point::*;
-use cgmath::vector::*;
-use cgmath::ray::*;
-use cgmath::intersect::Intersect;
+use cgmath::*;
 
 #[test]
 fn test_from_points() {

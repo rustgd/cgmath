@@ -22,7 +22,7 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::vector::{Vector2, Vector3, Vector4};
+//! use cgmath::{Vector2, Vector3, Vector4};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(Vector3::new(0.0f64, 0.0f64, 0.0f64), Vector3::zero());
@@ -37,7 +37,7 @@
 //!
 //! ```rust
 //! use std::num::{Zero, One};
-//! use cgmath::vector::{Vector2, Vector3, Vector4};
+//! use cgmath::{Vector2, Vector3, Vector4};
 //!
 //! let a: Vector2<f64> = Vector2::new(3.0, 4.0);
 //! let b: Vector2<f64> = Vector2::new(-3.0, -4.0);
@@ -67,7 +67,7 @@
 //!
 //! ```rust
 //! use std::num::Zero;
-//! use cgmath::vector::{Vector, Vector2, Vector3, Vector4, dot};
+//! use cgmath::{Vector, Vector2, Vector3, Vector4, dot};
 //!
 //! // All vectors implement the dot product as a method:
 //! let a: Vector2<f64> = Vector2::new(3.0, 6.0);
