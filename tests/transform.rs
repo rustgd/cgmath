@@ -17,11 +17,7 @@
 
 extern crate cgmath;
 
-use cgmath::quaternion::*;
-use cgmath::transform::*;
-use cgmath::point::*;
-use cgmath::vector::*;
-use cgmath::approx::ApproxEq;
+use cgmath::*;
 
 #[test]
 fn test_invert() {

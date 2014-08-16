@@ -13,14 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cgmath::matrix::*;
-use cgmath::vector::*;
+use cgmath::*;
 
 use test::Bencher;
 
 pub mod matrix2 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix2<f32> = Matrix2 { x: Vector2 { x: 1.0, y: 3.0 },
                                            y: Vector2 { x: 2.0, y: 4.0 } };
@@ -29,8 +27,7 @@ pub mod matrix2 {
 }
 
 pub mod matrix3 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix3<f32> = Matrix3 { x: Vector3 { x: 1.0, y: 4.0, z:  7.0 },
                                            y: Vector3 { x: 2.0, y: 5.0, z:  8.0 },
@@ -41,8 +38,7 @@ pub mod matrix3 {
 }
 
 pub mod matrix4 {
-    use cgmath::matrix::*;
-    use cgmath::vector::*;
+    use cgmath::*;
 
     pub static A: Matrix4<f32> = Matrix4 { x: Vector4 { x: 1.0, y: 5.0, z:  9.0, w: 13.0 },
                                            y: Vector4 { x: 2.0, y: 6.0, z: 10.0, w: 14.0 },

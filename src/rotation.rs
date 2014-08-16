@@ -127,17 +127,17 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// to a subset of those implemented on `Matrix2`.
 ///
 /// ## Example
-/// 
+///
 /// Suppose we want to rotate a vector that lies in the x-y plane by some
 /// angle. We can accomplish this quite easily with a two-dimensional rotation
 /// matrix:
 ///
 /// ```rust
-/// use cgmath::angle::rad;
-/// use cgmath::vector::Vector2;
-/// use cgmath::matrix::{Matrix, ToMatrix2};
-/// use cgmath::rotation::{Rotation, Rotation2, Basis2};
-/// use cgmath::approx::ApproxEq;
+/// use cgmath::rad;
+/// use cgmath::Vector2;
+/// use cgmath::{Matrix, ToMatrix2};
+/// use cgmath::{Rotation, Rotation2, Basis2};
+/// use cgmath::ApproxEq;
 ///
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
 /// // so the angle is 90 degrees, or π/2.

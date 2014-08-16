@@ -17,8 +17,8 @@
 
 extern crate cgmath;
 
-use cgmath::matrix::{ToMatrix4, ToMatrix3};
-use cgmath::quaternion::Quaternion;
+use cgmath::{ToMatrix4, ToMatrix3};
+use cgmath::Quaternion;
 
 #[test]
 fn to_matrix4()

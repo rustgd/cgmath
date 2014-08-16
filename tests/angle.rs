@@ -17,16 +17,17 @@
 
 extern crate cgmath;
 
-use cgmath::angle::*;
-use cgmath::approx::ApproxEq;
+use cgmath::{Angle, Rad, Deg, rad, deg};
+use cgmath::{ToRad, ToDeg};
+use cgmath::ApproxEq;
 
 #[test]
 fn conv() {
-    assert!(deg(-5.0f64).to_rad().to_deg().approx_eq( &deg(-5.0f64) ));
-    assert!(deg(30.0f64).to_rad().to_deg().approx_eq( &deg(30.0f64) ));
+    assert!(deg(-5.0f64).to_rad().to_deg().approx_eq(&deg(-5.0f64)));
+    assert!(deg(30.0f64).to_rad().to_deg().approx_eq(&deg(30.0f64)));
 
-    assert!(rad(-5.0f64).to_deg().to_rad().approx_eq( &rad(-5.0f64) ));
-    assert!(rad(30.0f64).to_deg().to_rad().approx_eq( &rad(30.0f64) ));
+    assert!(rad(-5.0f64).to_deg().to_rad().approx_eq(&rad(-5.0f64)));
+    assert!(rad(30.0f64).to_deg().to_rad().approx_eq(&rad(30.0f64)));
 }
 
 #[test]

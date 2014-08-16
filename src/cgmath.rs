@@ -35,28 +35,72 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-pub mod array;
+// Re-exports
 
-pub mod matrix;
-pub mod quaternion;
-pub mod vector;
+pub use array::{Array1, Array2, FixedArray};
 
-pub mod angle;
-pub mod plane;
-pub mod point;
-pub mod line;
-pub mod ray;
-pub mod rotation;
-pub mod transform;
+pub use matrix::Matrix;
+pub use matrix::{Matrix2, Matrix3, Matrix4};
+pub use matrix::{ToMatrix2, ToMatrix3, ToMatrix4};
+pub use quaternion::{Quaternion, ToQuaternion};
+pub use vector::{Vector, EuclideanVector};
+pub use vector::{Vector2, Vector3, Vector4};
+pub use vector::dot;
 
-pub mod projection;
+pub use angle::{rad, deg};
+pub use angle::{Angle, Rad, Deg};
+pub use angle::{ToRad, ToDeg};
+pub use angle::bisect;
+pub use angle::{sin, cos, tan, sin_cos};
+pub use angle::{cot, sec, csc};
+pub use angle::{acos, asin, atan, atan2};
+pub use plane::Plane;
+pub use point::{Point, Point2, Point3};
+pub use line::{Line, Line2, Line3};
+pub use ray::{Ray, Ray2, Ray3};
+pub use rotation::{Rotation, Rotation2, Rotation3};
+pub use rotation::{Basis3, Basis2};
+pub use rotation::{ToBasis2, ToBasis3};
+pub use transform::{Transform, Transform3};
+pub use transform::{Decomposed, AffineMatrix3};
 
-pub mod aabb;
-pub mod cylinder;
-pub mod frustum;
-pub mod intersect;
-pub mod obb;
-pub mod sphere;
+pub use projection::{perspective, frustum, ortho};
+pub use projection::{Projection, PerspectiveFov, Perspective, Ortho};
 
-pub mod approx;
-pub mod num;
+pub use aabb::{Aabb, Aabb2, Aabb3, Aabb3};
+pub use cylinder::Cylinder;
+pub use frustum::{Frustum, FrustumPoints};
+pub use intersect::Intersect;
+pub use obb::{Obb2, Obb3};
+pub use sphere::Sphere;
+
+pub use approx::ApproxEq;
+pub use num::{PartialOrd, BaseNum, BaseInt, BaseFloat};
+
+// Modules
+
+mod array;
+
+mod matrix;
+mod quaternion;
+mod vector;
+
+mod angle;
+mod plane;
+mod point;
+mod line;
+mod ray;
+mod rotation;
+mod transform;
+
+mod projection;
+
+mod aabb;
+mod cylinder;
+mod frustum;
+mod intersect;
+mod obb;
+mod sphere;
+
+mod approx;
+mod num;

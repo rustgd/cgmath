@@ -17,8 +17,8 @@
 
 extern crate cgmath;
 
-use cgmath::point::*;
-use cgmath::approx::ApproxEq;
+use cgmath::Point3;
+use cgmath::ApproxEq;
 
 #[test]
 fn test_homogeneous() {

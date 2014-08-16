@@ -17,11 +17,7 @@
 
 extern crate cgmath;
 
-use cgmath::line::*;
-use cgmath::point::*;
-use cgmath::ray::*;
-use cgmath::vector::*;
-use cgmath::intersect::Intersect;
+use cgmath::*;
 
 #[test]
 fn test_line_intersection() {
