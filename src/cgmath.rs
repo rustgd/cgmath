@@ -67,7 +67,7 @@ pub use transform::{Decomposed, AffineMatrix3};
 pub use projection::{perspective, frustum, ortho};
 pub use projection::{Projection, PerspectiveFov, Perspective, Ortho};
 
-pub use aabb::{Aabb, Aabb2, Aabb3, Aabb3};
+pub use aabb::{Aabb, Aabb2, Aabb3};
 pub use cylinder::Cylinder;
 pub use frustum::{Frustum, FrustumPoints};
 pub use intersect::Intersect;
