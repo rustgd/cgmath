@@ -19,7 +19,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A generic ray starting at `origin` and extending infinitely in
 /// `direction`.
-#[deriving(Clone, PartialEq)]
+#[deriving(Clone, PartialEq, Encodable, Decodable)]
 pub struct Ray<P,V> {
     pub origin: P,
     pub direction: V,

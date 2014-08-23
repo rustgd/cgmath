@@ -23,7 +23,7 @@ use vector::Vector;
 
 use std::num::zero;
 
-#[deriving(Clone, PartialEq)]
+#[deriving(Clone, PartialEq, Encodable, Decodable)]
 pub struct Sphere<S> {
     pub center: Point3<S>,
     pub radius: S,

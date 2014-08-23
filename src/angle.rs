@@ -22,9 +22,11 @@ use approx::ApproxEq;
 use num::BaseFloat;
 
 /// An angle, in radians
-#[deriving(Clone, PartialEq, PartialOrd, Hash)] pub struct Rad<S> { pub s: S }
+#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable)]
+pub struct Rad<S> { pub s: S }
 /// An angle, in degrees
-#[deriving(Clone, PartialEq, PartialOrd, Hash)] pub struct Deg<S> { pub s: S }
+#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable)]
+pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians
 #[inline] pub fn rad<S: BaseFloat>(s: S) -> Rad<S> { Rad { s: s } }
