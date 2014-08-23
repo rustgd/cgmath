@@ -35,6 +35,8 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
+extern crate serialize;
+
 // Re-exports
 
 pub use array::{Array1, Array2, FixedArray};
