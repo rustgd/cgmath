@@ -89,6 +89,12 @@ impl<S: BaseFloat> Plane<S> {
             Some(Plane::new(n, d))
         }
     }
+
+    /// Construct a plane from a point and a normal vector.
+    /// The plane will contain the point `p` and be perpendicular to `n`.
+    pub fn from_point_normal(p: Point3<S>, n: Vector3<S>) -> Plane<S> {
+        Plane { n: n, d: p.dot(&n) }
+    }
 }
 
 impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
