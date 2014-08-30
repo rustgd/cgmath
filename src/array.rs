@@ -46,7 +46,7 @@ pub trait Array1<Element: Copy>: Index<uint, Element> + IndexMut<uint, Element> 
 }
 
 /// A column-major array
-pub trait Array2<Column: Array1<Element>, Row: Array1<Element>, Element: Copy>:
+pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element: Copy>:
         Index<uint, Column> + IndexMut<uint, Column> {
     /// Get the pointer to the first element of the array.
     fn ptr<'a>(&'a self) -> &'a Element {

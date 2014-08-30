@@ -13,6 +13,6 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Tomasz Stachowiak"
 ]
 
-[[lib]]
+[lib]
 
 name = "cgmath"
