@@ -345,7 +345,7 @@ impl<S: BaseFloat> ToQuaternion<S> for Quaternion<S> {
     fn to_quaternion(&self) -> Quaternion<S> { self.clone() }
 }
 
-impl<S: BaseFloat> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
     fn identity() -> Quaternion<S> { Quaternion::identity() }
 

@@ -25,7 +25,7 @@ use plane::Plane;
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: BaseFloat, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+pub fn perspective<S: BaseFloat + 'static, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PerspectiveFov {
         fovy:   fovy,
         aspect: aspect,
@@ -38,7 +38,7 @@ pub fn perspective<S: BaseFloat, A: Angle<S>>(fovy: A, aspect: S, near: S, far: 
 ///
 /// This is the equivalent of the now deprecated [glFrustrum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
-pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn frustum<S: BaseFloat + 'static>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
         left:   left,
         right:  right,
@@ -53,7 +53,7 @@ pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far:
 ///
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
-pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn ortho<S: BaseFloat + 'static>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
         left:   left,
         right:  right,
@@ -94,7 +94,7 @@ impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: BaseFloat, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
+impl<S: BaseFloat + 'static, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_matrix4(self.to_matrix4())
@@ -150,14 +150,14 @@ pub struct Perspective<S> {
     pub near:   S,  far:    S,
 }
 
-impl<S: BaseFloat> Projection<S> for Perspective<S> {
+impl<S: BaseFloat + 'static> Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_matrix4(self.to_matrix4())
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Perspective<S> {
+impl<S: BaseFloat + 'static> ToMatrix4<S> for Perspective<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
         assert!(self.left   <= self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
         assert!(self.bottom <= self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);

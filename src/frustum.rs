@@ -32,7 +32,7 @@ pub struct Frustum<S> {
     pub far:    Plane<S>,
 }
 
-impl<S: BaseFloat>
+impl<S: BaseFloat + 'static>
 Frustum<S> {
     /// Constructs a frustum
     pub fn new(left:   Plane<S>, right:  Plane<S>,
