@@ -141,7 +141,7 @@ impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform
 
 pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>>+ ToMatrix4<S> {}
 
-impl<S: BaseFloat, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
+impl<S: BaseFloat + 'static, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let mut m = self.rot.to_matrix3().mul_s(self.scale.clone()).to_matrix4();
         m.w = self.disp.extend(num::one());
@@ -164,7 +164,7 @@ pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }
 
-impl<S : BaseFloat> Transform<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+impl<S: BaseFloat + 'static> Transform<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn identity() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Matrix4::identity() }

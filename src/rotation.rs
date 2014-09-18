@@ -187,7 +187,7 @@ impl<S: BaseFloat> ToMatrix2<S> for Basis2<S> {
     fn to_matrix2(&self) -> Matrix2<S> { self.mat.clone() }
 }
 
-impl<S: BaseFloat> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
+impl<S: BaseFloat + 'static> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
     #[inline]
     fn identity() -> Basis2<S> { Basis2{ mat: Matrix2::identity() } }
 
@@ -228,7 +228,7 @@ impl<S: BaseFloat> ApproxEq<S> for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
+impl<S: BaseFloat + 'static> Rotation2<S> for Basis2<S> {
     fn from_angle(theta: Rad<S>) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
 }
 
@@ -271,12 +271,12 @@ impl<S: BaseFloat> ToMatrix3<S> for Basis3<S> {
     fn to_matrix3(&self) -> Matrix3<S> { self.mat.clone() }
 }
 
-impl<S: BaseFloat> ToQuaternion<S> for Basis3<S> {
+impl<S: BaseFloat + 'static> ToQuaternion<S> for Basis3<S> {
     #[inline]
     fn to_quaternion(&self) -> Quaternion<S> { self.mat.to_quaternion() }
 }
 
-impl<S: BaseFloat> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {
+impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn identity() -> Basis3<S> { Basis3{ mat: Matrix3::identity() } }
 
@@ -318,7 +318,7 @@ impl<S: BaseFloat> ApproxEq<S> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
+impl<S: BaseFloat + 'static> Rotation3<S> for Basis3<S> {
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_axis_angle(axis, angle) }
     }
