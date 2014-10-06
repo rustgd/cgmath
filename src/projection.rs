@@ -234,7 +234,7 @@ impl<S: BaseFloat> ToMatrix4<S> for Ortho<S> {
         let c2r0 = zero();
         let c2r1 = zero();
         let c2r2 = -two / (self.far - self.near);
-        let c2r3 = -one::<S>();
+        let c2r3 = zero();
 
         let c3r0 = -(self.right + self.left) / (self.right - self.left);
         let c3r1 = -(self.top + self.bottom) / (self.top - self.bottom);
