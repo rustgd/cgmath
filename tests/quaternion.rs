@@ -20,6 +20,9 @@ extern crate cgmath;
 use cgmath::{ToMatrix4, ToMatrix3};
 use cgmath::Quaternion;
 
+use cgmath::{Rad, rad, ApproxEq};
+use cgmath::Rotation3;
+
 #[test]
 fn to_matrix4()
 {
@@ -29,4 +32,54 @@ fn to_matrix4()
     let matrix_long = quaternion.to_matrix3().to_matrix4();
 
     assert!(matrix_short == matrix_long);
+}
+
+#[test]
+fn to_and_from_quaternion()
+{
+    fn eq(a: (Rad<f32>, Rad<f32>, Rad<f32>), b: (Rad<f32>, Rad<f32>, Rad<f32>)) {
+        let (ax, ay, az) = a;
+        let (bx, by, bz) = b;
+        if !(ax.approx_eq_eps(&bx, &0.001) &&
+             ay.approx_eq_eps(&by, &0.001) &&
+             az.approx_eq_eps(&bz, &0.001)) {
+            fail!("{} != {}", a, b)
+        }
+    }
+
+    let hpi = Float::frac_pi_2();
+
+    let zero: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(0f32));
+    eq((rad(0f32), rad(0f32), rad(0f32)), zero.to_euler());
+
+    let x_1: Quaternion<f32> = Rotation3::from_euler(rad(1f32), rad(0f32), rad(0f32));
+    eq((rad(1f32), rad(0f32), rad(0f32)), x_1.to_euler());
+
+    let y_1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(1f32), rad(0f32));
+    eq((rad(0f32), rad(1f32), rad(0f32)), y_1.to_euler());
+
+    let z_1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(1f32));
+    eq((rad(0f32), rad(0f32), rad(1f32)), z_1.to_euler());
+
+    let x_n1: Quaternion<f32> = Rotation3::from_euler(rad(-1f32), rad(0f32), rad(0f32));
+    eq((rad(-1f32), rad(0f32), rad(0f32)), x_n1.to_euler());
+
+    let y_n1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(-1f32), rad(0f32));
+    eq((rad(0f32), rad(-1f32), rad(0f32)), y_n1.to_euler());
+
+    let z_n1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(-1f32));
+    eq((rad(0f32), rad(0f32), rad(-1f32)), z_n1.to_euler());
+
+    let xzy_1: Quaternion<f32> = Rotation3::from_euler(rad(1f32), rad(1f32), rad(1f32));
+    eq((rad(1f32), rad(1f32), rad(1f32)), xzy_1.to_euler());
+
+    let xzy_n1: Quaternion<f32> = Rotation3::from_euler(rad(-1f32), rad(-1f32), rad(-1f32));
+    eq((rad(-1f32), rad(-1f32), rad(-1f32)), xzy_n1.to_euler());
+
+    let xzy_hp: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(hpi), rad(1f32));
+    eq((rad(0f32), rad(hpi), rad(1f32)), xzy_hp.to_euler());
+
+    let xzy_nhp: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(-hpi), rad(1f32));
+    eq((rad(0f32), rad(-hpi), rad(1f32)), xzy_nhp.to_euler());
+
 }
