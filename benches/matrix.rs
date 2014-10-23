@@ -13,6 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(globs)]
+
+extern crate cgmath;
+extern crate test;
+
 use cgmath::*;
 
 use test::Bencher;
