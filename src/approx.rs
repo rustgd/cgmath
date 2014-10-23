@@ -42,3 +42,29 @@ macro_rules! approx_float(
 
 approx_float!(f32)
 approx_float!(f64)
+
+#[macro_export]
+macro_rules! assert_approx_eq_eps(
+    ($given: expr, $expected: expr, $eps: expr) => ({
+        let eps = &($eps);
+        let (given_val, expected_val) = (&($given), &($expected));
+        if !given_val.approx_eq_eps(expected_val, eps) {
+            fail!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+                *given_val, *expected_val, *eps
+            )
+        }
+    })
+)
+
+#[macro_export]
+macro_rules! assert_approx_eq(
+    ($given: expr, $expected: expr) => ({
+        let (given_val, expected_val) = (&($given), &($expected));
+        if !given_val.approx_eq(expected_val) {
+            fail!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+                *given_val, *expected_val,
+                ApproxEq::approx_epsilon(Some(*given_val))
+            )
+        }
+    })
+)
