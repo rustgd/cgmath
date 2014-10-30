@@ -111,13 +111,13 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
 
 impl<S: BaseFloat> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Ray3<S>> {
-        fail!("Not yet implemented");
+        panic!("Not yet implemented");
     }
 }
 
 impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
-        fail!("Not yet implemented");
+        panic!("Not yet implemented");
     }
 }
 

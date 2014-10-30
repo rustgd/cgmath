@@ -121,7 +121,7 @@ impl<S> FixedArray<[S, ..2]> for Point2<S> {
     #[inline]
     fn from_fixed(_v: [S, ..2]) -> Point2<S> {
         // match v { [x, y] => Point2 { x: x, y: y } }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]
@@ -275,7 +275,7 @@ impl<S> FixedArray<[S, ..3]> for Point3<S> {
     #[inline]
     fn from_fixed(_v: [S, ..3]) -> Point3<S> {
         // match v { [x, y, z] => Point3 { x: x, y: y, z: z } }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]
