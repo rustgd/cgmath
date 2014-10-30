@@ -231,7 +231,7 @@ macro_rules! vec(
             #[inline]
             fn from_fixed(_v: [$S, ..$n]) -> $Self<$S> {
                 // match v { [$($field),+] => $Self { $($field: $field),+ } }
-                fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+                panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
             }
 
             #[inline]
@@ -438,7 +438,7 @@ impl<S: BaseNum> Vector4<S> {
             1 => Vector3::new(self.x, self.z, self.w),
             2 => Vector3::new(self.x, self.y, self.w),
             3 => Vector3::new(self.x, self.y, self.z),
-            _ => fail!("{} is out of range", n)
+            _ => panic!("{} is out of range", n)
         }
     }
 }

@@ -422,7 +422,7 @@ impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
         //         y: FixedArray::from_fixed(y),
         //     },
         // }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]
@@ -502,7 +502,7 @@ impl<S> FixedArray<[[S, ..3], ..3]> for Matrix3<S> {
         //         z: FixedArray::from_fixed(z),
         //     },
         // }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]
@@ -587,7 +587,7 @@ impl<S> FixedArray<[[S, ..4], ..4]> for Matrix4<S> {
         //         w: FixedArray::from_fixed(w),
         //     },
         // }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]
@@ -1095,7 +1095,7 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
                     3 => Matrix3::from_cols(t.x.truncate_n(j),
                                             t.y.truncate_n(j),
                                             t.z.truncate_n(j)),
-                    _ => fail!("out of range")
+                    _ => panic!("out of range")
                 };
                 let sign = if (i+j) & 1 == 1 {-one} else {one};
                 mat.determinant() * sign * inv_det
