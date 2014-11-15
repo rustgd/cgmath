@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::num;
+use std::num::Float;
 
 pub trait ApproxEq<T: Float> {
     fn approx_epsilon(_hack: Option<Self>) -> T {
@@ -34,7 +35,7 @@ macro_rules! approx_float(
         impl ApproxEq<$S> for $S {
              #[inline]
             fn approx_eq_eps(&self, other: &$S, epsilon: &$S) -> bool {
-                 num::abs(*self - *other) < *epsilon
+                 (*self - *other).abs() < *epsilon
             }
         }
     )

@@ -17,6 +17,7 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
+use std::num::{FloatMath, Int, Primitive};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {

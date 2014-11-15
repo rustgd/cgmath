@@ -15,7 +15,7 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{zero, one, cast};
+use std::num::{zero, one, cast, Float};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
@@ -266,7 +266,7 @@ impl<S: BaseFloat> Quaternion<S> {
 
     /// Convert a Quaternion to Eular angles
     ///     This is a polar singularity aware conversion
-    ///  
+    ///
     ///  Based on:
     /// - [Maths - Conversion Quaternion to Euler]
     ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
@@ -280,7 +280,7 @@ impl<S: BaseFloat> Quaternion<S> {
 
         let unit = sqx + sqy + sqz + sqw;
         let test = qx*qy + qz*qw;
-        
+
         if test > sig * unit {
             (
                 rad(zero::<S>()),
