@@ -18,6 +18,7 @@
 extern crate cgmath;
 
 use cgmath::*;
+use std::num::Float;
 
 pub mod matrix2 {
     use cgmath::*;

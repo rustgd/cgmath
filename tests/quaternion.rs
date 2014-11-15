@@ -23,6 +23,8 @@ use cgmath::Quaternion;
 use cgmath::{Rad, rad, ApproxEq};
 use cgmath::Rotation3;
 
+use std::num::Float;
+
 #[test]
 fn to_matrix4()
 {

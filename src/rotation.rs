@@ -138,6 +138,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// use cgmath::{Matrix, ToMatrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
 /// use cgmath::ApproxEq;
+/// use std::num::Float;
 ///
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
 /// // so the angle is 90 degrees, or π/2.

@@ -16,7 +16,7 @@
 //! Angle units for type-safe, self-documenting code.
 
 use std::fmt;
-use std::num::{One, one, Zero, zero, cast};
+use std::num::{One, one, Zero, zero, cast, Float};
 
 use approx::ApproxEq;
 use num::BaseFloat;
