@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero, one, cast};
+use std::num::cast;
 
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Matrix4, ToMatrix4};
-use num::BaseFloat;
+use num::{BaseFloat, zero, one};
 use plane::Plane;
 
 /// Create a perspective projection matrix.

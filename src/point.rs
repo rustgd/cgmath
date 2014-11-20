@@ -19,11 +19,10 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{one, zero};
 
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, one, zero};
 use vector::*;
 
 /// A point in 2-dimensional space.

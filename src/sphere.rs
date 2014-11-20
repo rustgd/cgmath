@@ -16,12 +16,10 @@
 //! Bounding sphere
 
 use intersect::Intersect;
-use num::BaseFloat;
+use num::{BaseFloat, zero};
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::Vector;
-
-use std::num::zero;
 
 #[deriving(Clone, PartialEq, Encodable, Decodable)]
 pub struct Sphere<S> {
