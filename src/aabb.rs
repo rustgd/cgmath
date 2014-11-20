@@ -24,9 +24,9 @@ use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use ray::{Ray2};
 use intersect::Intersect;
-use num::{BaseNum, BaseFloat};
+use num::{zero, one, BaseNum, BaseFloat};
 use std::fmt;
-use std::num::{zero, one, Float};
+use std::num::Float;
 
 pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
     /// Create a new AABB using two points as opposing corners.

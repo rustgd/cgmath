@@ -14,11 +14,10 @@
 // limitations under the License.
 
 use std::fmt;
-use std::num::Zero;
 
 use approx::ApproxEq;
 use intersect::Intersect;
-use num::BaseFloat;
+use num::{BaseFloat, Zero, zero};
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vector3, Vector4};
@@ -80,7 +79,7 @@ impl<S: BaseFloat> Plane<S> {
         // find the normal vector that is perpendicular to v1 and v2
         let mut n = v0.cross(&v1);
 
-        if n.approx_eq(&Vector3::zero()) { None }
+        if n.approx_eq(&zero()) { None }
         else {
             // compute the normal and the distance to the plane
             n.normalize_self();

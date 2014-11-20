@@ -15,9 +15,7 @@
 
 //! Line segments
 
-use std::num::{Zero, zero, One, one};
-
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, Zero, zero, One, one};
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2};
 use ray::{Ray2};

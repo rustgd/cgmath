@@ -17,12 +17,12 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{Zero, zero, One, one, cast};
+use std::num::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::{Array1, Array2, FixedArray};
-use num::{BaseFloat, BaseNum};
+use num::{BaseFloat, BaseNum, Zero, zero, One, one};
 use point::{Point, Point3};
 use quaternion::{Quaternion, ToQuaternion};
 use vector::{Vector, EuclideanVector};

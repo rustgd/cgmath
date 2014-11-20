@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{fmt, num};
+use std::fmt;
 
 use approx::ApproxEq;
 use matrix::{Matrix, Matrix4, ToMatrix4};
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, zero, one};
 use point::{Point, Point3};
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
@@ -87,9 +87,9 @@ impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform
     #[inline]
     fn identity() -> Decomposed<S, V, R> {
         Decomposed {
-            scale: num::one(),
+            scale: one(),
             rot: Rotation::identity(),
-            disp: num::zero(),
+            disp: zero(),
         }
     }
 
@@ -99,7 +99,7 @@ impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform
         let rot: R = Rotation::look_at(&center.sub_p(eye), up);
         let disp: V = rot.rotate_vector(&origin.sub_p(eye));
         Decomposed {
-            scale: num::one(),
+            scale: one(),
             rot: rot,
             disp: disp,
         }
@@ -124,10 +124,10 @@ impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform
     }
 
     fn invert(&self) -> Option<Decomposed<S, V, R>> {
-        if self.scale.approx_eq(&num::zero()) {
+        if self.scale.approx_eq(&zero()) {
             None
         } else {
-            let s = num::one::<S>() / self.scale;
+            let s = one::<S>() / self.scale;
             let r = self.rot.invert();
             let d = r.rotate_vector(&self.disp).mul_s(-s);
             Some(Decomposed {
@@ -144,7 +144,7 @@ pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>>+ ToMatrix4<S> {}
 impl<S: BaseFloat + 'static, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let mut m = self.rot.to_matrix3().mul_s(self.scale.clone()).to_matrix4();
-        m.w = self.disp.extend(num::one());
+        m.w = self.disp.extend(one());
         m
     }
 }
@@ -177,7 +177,7 @@ impl<S: BaseFloat + 'static> Transform<S, Vector3<S>, Point3<S>> for AffineMatri
 
     #[inline]
     fn transform_vector(&self, vec: &Vector3<S>) -> Vector3<S> {
-        self.mat.mul_v(&vec.extend(num::zero())).truncate()
+        self.mat.mul_v(&vec.extend(zero())).truncate()
     }
 
     #[inline]

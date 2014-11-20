@@ -15,13 +15,13 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{zero, one, cast, Float};
+use std::num::{cast, Float};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
 use array::Array1;
 use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
-use num::BaseFloat;
+use num::{BaseFloat, one, zero};
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
@@ -87,7 +87,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quaternion<S> {
-        Quaternion::from_sv(one::<S>(), Vector3::zero())
+        Quaternion::from_sv(one::<S>(), zero())
     }
 
     /// The result of multiplying the quaternion a scalar

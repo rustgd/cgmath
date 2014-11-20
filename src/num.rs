@@ -17,7 +17,7 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
-use std::num::{FloatMath, Int, Primitive};
+use std::num::{FloatMath, Int, NumCast, Float};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
@@ -57,21 +57,90 @@ macro_rules! partial_ord_float (
 partial_ord_float!(f32)
 partial_ord_float!(f64)
 
-/// Base numeric types with partial ordering
-pub trait BaseNum: Primitive + PartialOrd + fmt::Show {}
+/// Additive neutral element
+pub trait Zero {
+    fn zero() -> Self;
+    fn is_zero(&self) -> bool;
+}
 
-impl BaseNum for i8 {}
-impl BaseNum for i16 {}
-impl BaseNum for i32 {}
-impl BaseNum for i64 {}
-impl BaseNum for int {}
-impl BaseNum for u8 {}
-impl BaseNum for u16 {}
-impl BaseNum for u32 {}
-impl BaseNum for u64 {}
-impl BaseNum for uint {}
-impl BaseNum for f32 {}
-impl BaseNum for f64 {}
+/// Multiplicative neutral element
+pub trait One {
+    fn one() -> Self;
+}
+
+/// Base numeric types with partial ordering
+pub trait BaseNum:
+    Copy + NumCast + Clone + Add<Self, Self> + Sub<Self, Self> +
+    Mul<Self, Self> + Div<Self, Self> + Rem<Self, Self> + Neg<Self> + PartialEq
+    + PartialOrd + cmp::PartialOrd + fmt::Show + Zero + One
+{}
+
+
+macro_rules! impl_basenum_int (
+    ($T: ident) => (
+        impl BaseNum for $T {}
+        impl Zero for $T {
+            fn zero() -> $T {
+                Int::zero()
+            }
+
+            fn is_zero(&self) -> bool {
+                *self == Int::zero()
+            }
+        }
+
+        impl One for $T {
+            fn one() -> $T {
+                Int::one()
+            }
+        }
+    )
+)
+
+impl_basenum_int!(i8)
+impl_basenum_int!(i16)
+impl_basenum_int!(i32)
+impl_basenum_int!(i64)
+impl_basenum_int!(u8)
+impl_basenum_int!(u16)
+impl_basenum_int!(u32)
+impl_basenum_int!(u64)
+impl_basenum_int!(int)
+impl_basenum_int!(uint)
+
+
+macro_rules! impl_basenum_float (
+    ($T: ident) => (
+        impl BaseNum for $T {}
+        impl Zero for $T {
+            fn zero() -> $T {
+                Float::zero()
+            }
+
+            fn is_zero(&self) -> bool {
+                *self == Float::zero()
+            }
+        }
+
+        impl One for $T {
+            fn one() -> $T {
+                Float::one()
+            }
+        }
+    )
+)
+
+impl_basenum_float!(f32)
+impl_basenum_float!(f64)
+
+pub fn zero<T: Zero>() -> T {
+    Zero::zero()
+}
+
+pub fn one<T: One>() -> T {
+    One::one()
+}
+
 
 /// Base integer types
 pub trait BaseInt : BaseNum + Int {}

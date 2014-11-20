@@ -16,10 +16,10 @@
 //! Angle units for type-safe, self-documenting code.
 
 use std::fmt;
-use std::num::{One, one, Zero, zero, cast, Float};
+use std::num::{cast, Float};
 
 use approx::ApproxEq;
-use num::BaseFloat;
+use num::{BaseFloat, One, one, Zero, zero};
 
 /// An angle, in radians
 #[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
