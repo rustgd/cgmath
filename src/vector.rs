@@ -98,6 +98,7 @@
 
 use std::fmt;
 use std::mem;
+use std::num::NumCast;
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
@@ -206,6 +207,14 @@ macro_rules! vec(
         impl<$S: One> One for $Self<$S> {
             #[inline]
             fn one() -> $Self<$S> { $Self { $($field: one()),+ } }
+        }
+
+        impl<$S: NumCast + Copy> $Self<$S> {
+            /// Component-wise casting to another type
+            #[inline]
+            pub fn cast<T: NumCast>(&self) -> $Self<T> {
+                $Self { $($field: NumCast::from(self.$field).unwrap()),+ }
+            }
         }
 
         impl<$S> FixedArray<[$S, ..$n]> for $Self<$S> {
