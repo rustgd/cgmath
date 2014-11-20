@@ -88,7 +88,7 @@ impl BaseInt for u64 {}
 impl BaseInt for uint {}
 
 /// Base floating point types
-pub trait BaseFloat : BaseNum + FloatMath + ApproxEq<Self> + fmt::Float {}
+pub trait BaseFloat : BaseNum + FloatMath + ApproxEq<Self> {}
 
 impl BaseFloat for f32 {}
 impl BaseFloat for f64 {}
