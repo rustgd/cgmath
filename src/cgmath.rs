@@ -77,7 +77,7 @@ pub use obb::{Obb2, Obb3};
 pub use sphere::Sphere;
 
 pub use approx::ApproxEq;
-pub use num::{BaseNum, BaseInt, BaseFloat, One, one, Zero, zero};
+pub use num::{PartialOrd, BaseNum, BaseInt, BaseFloat, One, one, Zero, zero};
 
 // Modules
 
