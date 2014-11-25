@@ -16,6 +16,7 @@
 //! Angle units for type-safe, self-documenting code.
 
 use std::fmt;
+use std::f64;
 use std::num::{cast, Float};
 
 use approx::ApproxEq;
@@ -212,7 +213,7 @@ Equiv<Deg<S>> for Deg<S> {
 impl<S: BaseFloat>
 Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
-    #[inline] fn full_turn() -> Rad<S> { rad(Float::two_pi()) }
+    #[inline] fn full_turn() -> Rad<S> { rad(cast(f64::consts::PI_2).unwrap()) }
 }
 
 impl<S: BaseFloat>

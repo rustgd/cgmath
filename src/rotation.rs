@@ -63,7 +63,7 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
     /// Modify this rotation in-place by combining it with another.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
-        *self = self.concat(other);
+        *self = Rotation::concat(self, other);
     }
 
     /// Invert this rotation in-place.
