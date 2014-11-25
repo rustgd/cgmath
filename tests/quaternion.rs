@@ -23,7 +23,7 @@ use cgmath::Quaternion;
 use cgmath::{Rad, rad, ApproxEq};
 use cgmath::Rotation3;
 
-use std::num::Float;
+use std::f32;
 
 #[test]
 fn to_matrix4()
@@ -49,7 +49,7 @@ fn to_and_from_quaternion()
         }
     }
 
-    let hpi = Float::frac_pi_2();
+    let hpi = f32::consts::FRAC_PI_2;
 
     let zero: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(0f32));
     eq((rad(0f32), rad(0f32), rad(0f32)), zero.to_euler());
