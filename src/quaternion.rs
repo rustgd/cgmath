@@ -15,6 +15,7 @@
 
 use std::fmt;
 use std::mem;
+use std::f64;
 use std::num::{cast, Float};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
@@ -284,11 +285,11 @@ impl<S: BaseFloat> Quaternion<S> {
         if test > sig * unit {
             (
                 rad(zero::<S>()),
-                rad(Float::frac_pi_2()),
+                rad(cast(f64::consts::FRAC_PI_2).unwrap()),
                 rad(two * qx.atan2(qw)),
             )
         } else if test < -sig * unit {
-            let y: S = Float::frac_pi_2();
+            let y: S = cast(f64::consts::FRAC_PI_2).unwrap();
             (
                 rad(zero::<S>()),
                 rad(-y),

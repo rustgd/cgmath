@@ -63,7 +63,7 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>> {
     /// Combine this transform with another, in-place.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
-        *self = self.concat(other);
+        *self = Transform::concat(self, other);
     }
 
     /// Invert this transform in-place, failing if the transformation is not
