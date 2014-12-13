@@ -23,10 +23,10 @@ use approx::ApproxEq;
 use num::{BaseFloat, One, one, Zero, zero};
 
 /// An angle, in radians
-#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
+#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
 pub struct Rad<S> { pub s: S }
 /// An angle, in degrees
-#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
+#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
 pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians
@@ -77,7 +77,7 @@ pub trait Angle
     S: BaseFloat
 >
 :   Clone + Zero
-+   PartialEq + Equiv<Self> + PartialOrd
++   PartialEq + PartialOrd
 +   ApproxEq<S>
 +   Neg<Self>
 +   ToRad<S>
@@ -153,6 +153,8 @@ pub trait Angle
     #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i).unwrap()) }
     #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i).unwrap()) }
     #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i).unwrap()) }
+    
+    #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
 
 #[inline] pub fn bisect<S: BaseFloat, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
@@ -195,20 +197,6 @@ impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(&self, othe
 
 impl<S: BaseFloat> One for Rad<S> { #[inline] fn one() -> Rad<S> { rad(one()) } }
 impl<S: BaseFloat> One for Deg<S> { #[inline] fn one() -> Deg<S> { deg(one()) } }
-
-impl<S: BaseFloat>
-Equiv<Rad<S>> for Rad<S> {
-    fn equiv(&self, other: &Rad<S>) -> bool {
-        self.normalize() == other.normalize()
-    }
-}
-
-impl<S: BaseFloat>
-Equiv<Deg<S>> for Deg<S> {
-    fn equiv(&self, other: &Deg<S>) -> bool {
-        self.normalize() == other.normalize()
-    }
-}
 
 impl<S: BaseFloat>
 Angle<S> for Rad<S> {

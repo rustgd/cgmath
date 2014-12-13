@@ -22,7 +22,7 @@ use ray::{Ray2};
 use intersect::Intersect;
 
 /// A generic directed line segment from `origin` to `dest`.
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Line<P> {
     pub origin: P,
     pub dest: P,
