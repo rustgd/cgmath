@@ -161,7 +161,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
-#[deriving(PartialEq, Clone, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Encodable, Decodable)]
 pub struct Basis2<S> {
     mat: Matrix2<S>
 }
@@ -239,7 +239,7 @@ impl<S: BaseFloat + 'static> Rotation2<S> for Basis2<S> {
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
 /// been restricted to a subeset of those implemented on `Matrix3`.
-#[deriving(PartialEq, Clone, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Encodable, Decodable)]
 pub struct Basis3<S> {
     mat: Matrix3<S>
 }

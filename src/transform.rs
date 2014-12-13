@@ -76,7 +76,7 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>> {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[deriving(Encodable, Decodable)]
+#[deriving(Copy, Clone, Encodable, Decodable)]
 pub struct Decomposed<S, V, R> {
     pub scale: S,
     pub rot: R,
@@ -159,7 +159,7 @@ impl<S: BaseFloat, R: fmt::Show + Rotation3<S>> fmt::Show for Decomposed<S,Vecto
 }
 
 /// A homogeneous transformation matrix.
-#[deriving(Encodable, Decodable)]
+#[deriving(Copy, Clone, Encodable, Decodable)]
 pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }

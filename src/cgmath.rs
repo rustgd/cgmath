@@ -15,8 +15,6 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![comment = "A mathematics library for computer graphics."]
-#![license = "ASL2"]
 
 #![feature(globs)]
 #![feature(macro_rules)]

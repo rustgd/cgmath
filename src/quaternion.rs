@@ -29,7 +29,7 @@ use vector::{Vector3, Vector, EuclideanVector};
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
-#[deriving(Clone, PartialEq, Encodable, Decodable, Rand)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable, Rand)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
 /// Represents types which can be expressed as a quaternion.
