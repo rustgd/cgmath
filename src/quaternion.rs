@@ -417,7 +417,7 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
+impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
     #[inline]
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));
