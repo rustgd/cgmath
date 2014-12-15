@@ -149,7 +149,7 @@ impl<S: BaseFloat + 'static, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vec
     }
 }
 
-impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S,Vector3<S>,R> {}
+impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S,Vector3<S>,R> where S: 'static {}
 
 impl<S: BaseFloat, R: fmt::Show + Rotation3<S>> fmt::Show for Decomposed<S,Vector3<S>,R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -200,4 +200,4 @@ impl<S: BaseNum> ToMatrix4<S> for AffineMatrix3<S> {
     #[inline] fn to_matrix4(&self) -> Matrix4<S> { self.mat.clone() }
 }
 
-impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
+impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> where S: 'static {}
