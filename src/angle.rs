@@ -180,11 +180,11 @@ Deg<S> {
 }
 
 
-impl<S: BaseFloat> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(&self, other: &Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
-impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(&self, other: &Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
+impl<S: BaseFloat> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(self, other: Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
+impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(self, other: Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
 
-impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(&self, other: &Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
-impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(&self, other: &Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(self, other: Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(self, other: Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
 
 impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
 impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
@@ -192,8 +192,8 @@ impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { 
 impl<S: BaseFloat> Zero for Rad<S> { #[inline] fn zero() -> Rad<S> { rad(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Deg<S> { #[inline] fn zero() -> Deg<S> { deg(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: BaseFloat> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(&self, other: &Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
-impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(&self, other: &Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(self, other: Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(self, other: Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
 
 impl<S: BaseFloat> One for Rad<S> { #[inline] fn one() -> Rad<S> { rad(one()) } }
 impl<S: BaseFloat> One for Deg<S> { #[inline] fn one() -> Deg<S> { deg(one()) } }
