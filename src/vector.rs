@@ -298,18 +298,18 @@ macro_rules! vec(
             #[inline] fn div_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field / v.$field;)+ }
             #[inline] fn rem_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field % v.$field;)+ }
 
-            #[inline] fn comp_add(&self) -> S { fold!(&add, { $(self.$field),+ }) }
-            #[inline] fn comp_mul(&self) -> S { fold!(&mul, { $(self.$field),+ }) }
+            #[inline] fn comp_add(&self) -> S { fold!(add, { $(self.$field),+ }) }
+            #[inline] fn comp_mul(&self) -> S { fold!(mul, { $(self.$field),+ }) }
             #[inline] fn comp_min(&self) -> S { fold!(partial_min, { $(self.$field),+ }) }
             #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
         }
 
         impl<S: BaseNum> Add<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn add(&self, v: &$Self<S>) -> $Self<S> { self.add_v(v) }
+            #[inline] fn add(self, v: $Self<S>) -> $Self<S> { self.add_v(&v) }
         }
 
         impl<S: BaseNum> Sub<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn sub(&self, v: &$Self<S>) -> $Self<S> { self.sub_v(v) }
+            #[inline] fn sub(self, v: $Self<S>) -> $Self<S> { self.sub_v(&v) }
         }
 
         impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
@@ -317,15 +317,15 @@ macro_rules! vec(
         }
 
         impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn mul(&self, v: &$Self<S>) -> $Self<S> { self.mul_v(v) }
+            #[inline] fn mul(self, v: $Self<S>) -> $Self<S> { self.mul_v(&v) }
         }
 
         impl<S: BaseNum> Div<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn div(&self, v: &$Self<S>) -> $Self<S> { self.div_v(v) }
+            #[inline] fn div(self, v: $Self<S>) -> $Self<S> { self.div_v(&v) }
         }
 
         impl<S: BaseNum> Rem<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn rem(&self, v: &$Self<S>) -> $Self<S> { self.rem_v(v) }
+            #[inline] fn rem(self, v: $Self<S>) -> $Self<S> { self.rem_v(&v) }
         }
 
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
