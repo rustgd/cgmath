@@ -32,18 +32,18 @@ macro_rules! partial_ord_int (
             fn partial_max(self, other: $T) -> $T { cmp::max(self, other) }
         }
     )
-)
+);
 
-partial_ord_int!(int)
-partial_ord_int!(i8)
-partial_ord_int!(i16)
-partial_ord_int!(i32)
-partial_ord_int!(i64)
-partial_ord_int!(uint)
-partial_ord_int!(u8)
-partial_ord_int!(u16)
-partial_ord_int!(u32)
-partial_ord_int!(u64)
+partial_ord_int!(int);
+partial_ord_int!(i8);
+partial_ord_int!(i16);
+partial_ord_int!(i32);
+partial_ord_int!(i64);
+partial_ord_int!(uint);
+partial_ord_int!(u8);
+partial_ord_int!(u16);
+partial_ord_int!(u32);
+partial_ord_int!(u64);
 
 macro_rules! partial_ord_float (
     ($T:ident) => (
@@ -52,10 +52,10 @@ macro_rules! partial_ord_float (
             fn partial_max(self, other: $T) -> $T { self.max(other) }
         }
     )
-)
+);
 
-partial_ord_float!(f32)
-partial_ord_float!(f64)
+partial_ord_float!(f32);
+partial_ord_float!(f64);
 
 /// Additive neutral element
 pub trait Zero {
@@ -95,18 +95,18 @@ macro_rules! impl_basenum_int (
             }
         }
     )
-)
+);
 
-impl_basenum_int!(i8)
-impl_basenum_int!(i16)
-impl_basenum_int!(i32)
-impl_basenum_int!(i64)
-impl_basenum_int!(u8)
-impl_basenum_int!(u16)
-impl_basenum_int!(u32)
-impl_basenum_int!(u64)
-impl_basenum_int!(int)
-impl_basenum_int!(uint)
+impl_basenum_int!(i8);
+impl_basenum_int!(i16);
+impl_basenum_int!(i32);
+impl_basenum_int!(i64);
+impl_basenum_int!(u8);
+impl_basenum_int!(u16);
+impl_basenum_int!(u32);
+impl_basenum_int!(u64);
+impl_basenum_int!(int);
+impl_basenum_int!(uint);
 
 
 macro_rules! impl_basenum_float (
@@ -128,10 +128,10 @@ macro_rules! impl_basenum_float (
             }
         }
     )
-)
+);
 
-impl_basenum_float!(f32)
-impl_basenum_float!(f64)
+impl_basenum_float!(f32);
+impl_basenum_float!(f64);
 
 pub fn zero<T: Zero>() -> T {
     Zero::zero()
