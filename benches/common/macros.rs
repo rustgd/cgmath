@@ -36,7 +36,7 @@ macro_rules! bench_binop(
             })
         }
     }
-)
+);
 
 macro_rules! bench_binop_deref(
     ($name: ident, $t1: ty, $t2: ty, $binop: ident) => {
@@ -59,7 +59,7 @@ macro_rules! bench_binop_deref(
             })
         }
     }
-)
+);
 
 macro_rules! bench_unop(
     ($name: ident, $t: ty, $unop: ident) => {
@@ -81,7 +81,7 @@ macro_rules! bench_unop(
             })
         }
     }
-)
+);
 
 macro_rules! bench_construction(
     ($name: ident, $t: ty, $constructor: path $(, $args: ident: $types: ty)*) => {
@@ -104,4 +104,4 @@ macro_rules! bench_construction(
             })
         }
     }
-)
+);
