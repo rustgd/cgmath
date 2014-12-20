@@ -26,12 +26,12 @@ use cgmath::*;
 #[path="common/macros.rs"]
 mod macros;
 
-bench_binop!(_bench_quat_add_q, Quaternion<f32>, Quaternion<f32>, add_q)
-bench_binop!(_bench_quat_sub_q, Quaternion<f32>, Quaternion<f32>, sub_q)
-bench_binop!(_bench_quat_mul_q, Quaternion<f32>, Quaternion<f32>, mul_q)
-bench_binop!(_bench_quat_mul_v, Quaternion<f32>, Vector3<f32>, mul_v)
-bench_binop_deref!(_bench_quat_mul_s, Quaternion<f32>, f32, mul_s)
-bench_binop_deref!(_bench_quat_div_s, Quaternion<f32>, f32, div_s)
-bench_unop!(_bench_quat_invert, Quaternion<f32>, invert)
-bench_unop!(_bench_quat_conjugate, Quaternion<f32>, conjugate)
-bench_unop!(_bench_quat_normalize, Quaternion<f32>, normalize)
+bench_binop!(_bench_quat_add_q, Quaternion<f32>, Quaternion<f32>, add_q);
+bench_binop!(_bench_quat_sub_q, Quaternion<f32>, Quaternion<f32>, sub_q);
+bench_binop!(_bench_quat_mul_q, Quaternion<f32>, Quaternion<f32>, mul_q);
+bench_binop!(_bench_quat_mul_v, Quaternion<f32>, Vector3<f32>, mul_v);
+bench_binop_deref!(_bench_quat_mul_s, Quaternion<f32>, f32, mul_s);
+bench_binop_deref!(_bench_quat_div_s, Quaternion<f32>, f32, div_s);
+bench_unop!(_bench_quat_invert, Quaternion<f32>, invert);
+bench_unop!(_bench_quat_conjugate, Quaternion<f32>, conjugate);
+bench_unop!(_bench_quat_normalize, Quaternion<f32>, normalize);

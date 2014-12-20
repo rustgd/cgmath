@@ -422,7 +422,7 @@ impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
         //         y: FixedArray::from_fixed(y),
         //     },
         // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
     }
 
     #[inline]
@@ -925,7 +925,7 @@ macro_rules! dot_matrix4(
         ($A[1][$I]) * ($B[$J][1]) +
         ($A[2][$I]) * ($B[$J][2]) +
         ($A[3][$I]) * ($B[$J][3])
-))
+));
 
 impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]

@@ -39,10 +39,10 @@ macro_rules! approx_float(
             }
         }
     )
-)
+);
 
-approx_float!(f32)
-approx_float!(f64)
+approx_float!(f32);
+approx_float!(f64);
 
 #[macro_export]
 macro_rules! assert_approx_eq_eps(
@@ -52,10 +52,10 @@ macro_rules! assert_approx_eq_eps(
         if !given_val.approx_eq_eps(expected_val, eps) {
             panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
                 *given_val, *expected_val, *eps
-            )
+            );
         }
     })
-)
+);
 
 #[macro_export]
 macro_rules! assert_approx_eq(
@@ -65,7 +65,7 @@ macro_rules! assert_approx_eq(
             panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
                 *given_val, *expected_val,
                 ApproxEq::approx_epsilon(Some(*given_val))
-            )
+            );
         }
     })
-)
+);

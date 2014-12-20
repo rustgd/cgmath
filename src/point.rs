@@ -120,7 +120,7 @@ impl<S> FixedArray<[S, ..2]> for Point2<S> {
     #[inline]
     fn from_fixed(_v: [S, ..2]) -> Point2<S> {
         // match v { [x, y] => Point2 { x: x, y: y } }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
     }
 
     #[inline]

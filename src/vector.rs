@@ -236,7 +236,7 @@ macro_rules! vec(
             #[inline]
             fn from_fixed(_v: [$S, ..$n]) -> $Self<$S> {
                 // match v { [$($field),+] => $Self { $($field: $field),+ } }
-                panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
+                panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
             }
 
             #[inline]
@@ -335,7 +335,7 @@ macro_rules! vec(
             }
         }
     )
-)
+);
 
 macro_rules! fold {
     (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
@@ -346,9 +346,9 @@ macro_rules! fold {
     ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
 }
 
-vec!(Vector2<S> { x, y }, 2)
-vec!(Vector3<S> { x, y, z }, 3)
-vec!(Vector4<S> { x, y, z, w }, 4)
+vec!(Vector2<S> { x, y }, 2);
+vec!(Vector3<S> { x, y, z }, 3);
+vec!(Vector4<S> { x, y, z, w }, 4);
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {
