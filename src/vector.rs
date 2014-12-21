@@ -313,7 +313,7 @@ macro_rules! vec(
         }
 
         impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
-            #[inline] fn neg(&self) -> $Self<S> { $Self::new($(-self.$field),+) }
+            #[inline] fn neg(self) -> $Self<S> { $Self::new($(-self.$field),+) }
         }
 
         impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
