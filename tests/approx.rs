@@ -1,4 +1,4 @@
-// Copyright 2013 The CGMath Developers. For a full listing of the authors,
+// Copyright 2014 The CGMath Developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,28 +12,33 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #![feature(globs)]
+#![feature(phase)]
 
+#[phase(plugin, link)]
 extern crate cgmath;
-extern crate test;
 
-// pub mod array;
-pub mod matrix;
-// pub mod quaternion;
-//pub mod vector;
+use cgmath::*;
 
-//pub mod angle;
-//pub mod plane;
-//pub mod point;
-// pub mod ray;
-// pub mod rotation;
-//pub mod transform;
+#[test]
+fn macro_assert_approx_eq_eps() {
+    assert_approx_eq_eps!(1.0f64, 1.001, 0.01);
+}
 
-// pub mod projection;
+#[test]
+#[should_fail]
+fn macro_assert_approx_eq_eps_fail() {
+    assert_approx_eq_eps!(1.0f32, 1.02, 0.01);
+}
 
-// pub mod aabb;
-// pub mod cylinder;
-// pub mod frustum;
-// pub mod intersect;
-// pub mod obb;
-//pub mod sphere;
+#[test]
+fn macro_assert_approx_eq() {
+    assert_approx_eq!(7.0f32 / 5.0, 1.4);
+}
+
+#[test]
+#[should_fail]
+fn macro_assert_approx_eq_fail() {
+    assert_approx_eq!(1.0f64 / 3.0, 0.333);
+}

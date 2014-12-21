@@ -16,16 +16,17 @@
 //! Angle units for type-safe, self-documenting code.
 
 use std::fmt;
-use std::num::{One, one, Zero, zero, cast};
+use std::f64;
+use std::num::{cast, Float};
 
 use approx::ApproxEq;
-use num::BaseFloat;
+use num::{BaseFloat, One, one, Zero, zero};
 
 /// An angle, in radians
-#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
 pub struct Rad<S> { pub s: S }
 /// An angle, in degrees
-#[deriving(Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, Encodable, Decodable, Rand)]
 pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians
@@ -76,7 +77,7 @@ pub trait Angle
     S: BaseFloat
 >
 :   Clone + Zero
-+   PartialEq + Equiv<Self> + PartialOrd
++   PartialEq + PartialOrd
 +   ApproxEq<S>
 +   Neg<Self>
 +   ToRad<S>
@@ -88,7 +89,7 @@ pub trait Angle
     fn from<A: Angle<S>>(theta: A) -> Self;
 
     /// Negate this angle, in-place.
-    #[inline] fn neg_self(&mut self) { *self = -*self }
+    #[inline] fn neg_self(&mut self) { *self = -(*self).clone() }
 
     /// Add this angle with another, returning the new angle.
     #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
@@ -152,6 +153,8 @@ pub trait Angle
     #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i).unwrap()) }
     #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i).unwrap()) }
     #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i).unwrap()) }
+    
+    #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
 
 #[inline] pub fn bisect<S: BaseFloat, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
@@ -177,42 +180,28 @@ Deg<S> {
 }
 
 
-impl<S: BaseFloat> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(&self, other: &Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
-impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(&self, other: &Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
+impl<S: BaseFloat> Add<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn add(self, other: Rad<S>) -> Rad<S> { rad(self.s + other.s) } }
+impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(self, other: Deg<S>) -> Deg<S> { deg(self.s + other.s) } }
 
-impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(&self, other: &Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
-impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(&self, other: &Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(self, other: Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
+impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(self, other: Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
 
-impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
-impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
+impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(self) -> Rad<S> { rad(-self.s) } }
+impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(self) -> Deg<S> { deg(-self.s) } }
 
 impl<S: BaseFloat> Zero for Rad<S> { #[inline] fn zero() -> Rad<S> { rad(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Deg<S> { #[inline] fn zero() -> Deg<S> { deg(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 
-impl<S: BaseFloat> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(&self, other: &Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
-impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(&self, other: &Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn mul(self, other: Rad<S>) -> Rad<S> { rad(self.s * other.s) } }
+impl<S: BaseFloat> Mul<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn mul(self, other: Deg<S>) -> Deg<S> { deg(self.s * other.s) } }
 
 impl<S: BaseFloat> One for Rad<S> { #[inline] fn one() -> Rad<S> { rad(one()) } }
 impl<S: BaseFloat> One for Deg<S> { #[inline] fn one() -> Deg<S> { deg(one()) } }
 
 impl<S: BaseFloat>
-Equiv<Rad<S>> for Rad<S> {
-    fn equiv(&self, other: &Rad<S>) -> bool {
-        self.normalize() == other.normalize()
-    }
-}
-
-impl<S: BaseFloat>
-Equiv<Deg<S>> for Deg<S> {
-    fn equiv(&self, other: &Deg<S>) -> bool {
-        self.normalize() == other.normalize()
-    }
-}
-
-impl<S: BaseFloat>
 Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
-    #[inline] fn full_turn() -> Rad<S> { rad(Float::two_pi()) }
+    #[inline] fn full_turn() -> Rad<S> { rad(cast(f64::consts::PI_2).unwrap()) }
 }
 
 impl<S: BaseFloat>

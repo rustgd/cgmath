@@ -24,9 +24,9 @@ use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use ray::{Ray2};
 use intersect::Intersect;
-use num::{BaseNum, BaseFloat};
+use num::{zero, one, BaseNum, BaseFloat};
 use std::fmt;
-use std::num::{zero, one, Float};
+use std::num::Float;
 
 pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
     /// Create a new AABB using two points as opposing corners.
@@ -84,7 +84,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
 }
 
 /// A two-dimensional AABB, aka a rectangle.
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Aabb2<S> {
     pub min: Point2<S>,
     pub max: Point2<S>,
@@ -129,7 +129,7 @@ impl<S: BaseNum> fmt::Show for Aabb2<S> {
 }
 
 /// A three-dimensional AABB, aka a rectangular prism.
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Aabb3<S> {
     pub min: Point3<S>,
     pub max: Point3<S>,

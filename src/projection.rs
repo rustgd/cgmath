@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero, one, cast};
+use std::num::cast;
 
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Matrix4, ToMatrix4};
-use num::BaseFloat;
+use num::{BaseFloat, zero, one};
 use plane::Plane;
 
 /// Create a perspective projection matrix.
@@ -69,7 +69,7 @@ pub trait Projection<S>: ToMatrix4<S> {
 }
 
 /// A perspective projection based on a vertical field-of-view angle.
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct PerspectiveFov<S, A> {
     pub fovy:   A,
     pub aspect: S,
@@ -143,7 +143,7 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
 }
 
 /// A perspective projection with arbitrary left/right/bottom/top distances
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Perspective<S> {
     pub left:   S,  right:  S,
     pub bottom: S,  top:    S,
@@ -193,7 +193,7 @@ impl<S: BaseFloat + 'static> ToMatrix4<S> for Perspective<S> {
 }
 
 /// An orthographic projection with arbitrary left/right/bottom/top distances
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Ortho<S> {
     pub left:   S,  right:  S,
     pub bottom: S,  top:    S,
@@ -215,10 +215,6 @@ impl<S: BaseFloat> Projection<S> for Ortho<S> {
 
 impl<S: BaseFloat> ToMatrix4<S> for Ortho<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
-        assert!(self.left   < self.right, "`left` cannot be greater than `right`, found: left: {} right: {}", self.left, self.right);
-        assert!(self.bottom < self.top,   "`bottom` cannot be greater than `top`, found: bottom: {} top: {}", self.bottom, self.top);
-        assert!(self.near   < self.far,   "`near` cannot be greater than `far`, found: near: {} far: {}", self.near, self.far);
-
         let two: S = cast(2i).unwrap();
 
         let c0r0 = two / (self.right - self.left);

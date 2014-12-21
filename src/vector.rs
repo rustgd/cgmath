@@ -22,29 +22,27 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector2, Vector3, Vector4};
+//! use cgmath::{Vector2, Vector3, Vector4, one, zero};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
-//! assert_eq!(Vector3::new(0.0f64, 0.0f64, 0.0f64), Vector3::zero());
-//! assert_eq!(Vector4::from_value(1.0f64), Vector4::ident());
+//! assert_eq!(Vector3::new(0.0f64, 0.0f64, 0.0f64), zero());
+//! assert_eq!(Vector4::from_value(1.0f64), one());
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
 //! subtraction, element-wise multiplication, element-wise division, negation)
-//! using the built-in operators. The additive and multiplicative inverses
-//! (zero and one) provided by the standard library's `Zero` and `One` are also
-//! available:
+//! using the built-in operators. The additive and multiplicative neutral
+//! elements (zero and one) are also provided by this library
 //!
 //! ```rust
-//! use std::num::{Zero, One};
-//! use cgmath::{Vector2, Vector3, Vector4};
+//! use cgmath::{Vector2, Vector3, Vector4, one, zero};
 //!
 //! let a: Vector2<f64> = Vector2::new(3.0, 4.0);
 //! let b: Vector2<f64> = Vector2::new(-3.0, -4.0);
 //!
-//! assert_eq!(a + b, Zero::zero());
+//! assert_eq!(a + b, zero());
 //! assert_eq!(-(a * b), Vector2::new(9.0f64, 16.0f64));
-//! assert_eq!(a / One::one(), a);
+//! assert_eq!(a / one(), a);
 //!
 //! // As with Rust's `int` and `f32` types, Vectors of different types cannot
 //! // be added and so on with impunity. The following will fail to compile:
@@ -66,13 +64,12 @@
 //! and [cross products](http://en.wikipedia.org/wiki/Cross_product).
 //!
 //! ```rust
-//! use std::num::Zero;
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, dot};
+//! use cgmath::{Vector, Vector2, Vector3, Vector4, dot, zero};
 //!
 //! // All vectors implement the dot product as a method:
 //! let a: Vector2<f64> = Vector2::new(3.0, 6.0);
 //! let b: Vector2<f64> = Vector2::new(-2.0, 1.0);
-//! assert_eq!(a.dot(&b), Zero::zero());
+//! assert_eq!(a.dot(&b), zero());
 //!
 //! // But there is also a top-level function:
 //! assert_eq!(a.dot(&b), dot(a, b));
@@ -101,20 +98,17 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{Zero, zero, One, one};
+use std::num::NumCast;
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<S>
-                  + Neg<Self>
-                  + Zero
-                  + One {
+pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Self> {
     /// Add a scalar to this vector, returning a new vector.
     fn add_s(&self, s: S) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
@@ -183,7 +177,7 @@ pub trait Vector<S: BaseNum>: Array1<S>
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
-        #[deriving(PartialEq, Eq, Clone, Hash, Encodable, Decodable)]
+        #[deriving(PartialEq, Eq, Copy, Clone, Hash, Encodable, Decodable, Rand)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
         impl<$S> $Self<$S> {
@@ -202,14 +196,25 @@ macro_rules! vec(
             }
         }
 
-        impl<$S: BaseNum> $Self<$S> {
-            /// The additive identity of the vector.
+        impl<$S: Zero> Zero for $Self<$S> {
             #[inline]
-            pub fn zero() -> $Self<$S> { $Self::from_value(zero()) }
+            fn zero() -> $Self<S> { $Self { $($field: zero()),+ } }
 
-            /// The multiplicative identity of the vector.
             #[inline]
-            pub fn ident() -> $Self<$S> { $Self::from_value(one()) }
+            fn is_zero(&self) -> bool { $((self.$field.is_zero()) )&&+ }
+        }
+
+        impl<$S: One> One for $Self<$S> {
+            #[inline]
+            fn one() -> $Self<$S> { $Self { $($field: one()),+ } }
+        }
+
+        impl<$S: NumCast + Copy> $Self<$S> {
+            /// Component-wise casting to another type
+            #[inline]
+            pub fn cast<T: NumCast>(&self) -> $Self<T> {
+                $Self { $($field: NumCast::from(self.$field).unwrap()),+ }
+            }
         }
 
         impl<$S> FixedArray<[$S, ..$n]> for $Self<$S> {
@@ -231,7 +236,7 @@ macro_rules! vec(
             #[inline]
             fn from_fixed(_v: [$S, ..$n]) -> $Self<$S> {
                 // match v { [$($field),+] => $Self { $($field: $field),+ } }
-                fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+                panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
             }
 
             #[inline]
@@ -293,43 +298,34 @@ macro_rules! vec(
             #[inline] fn div_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field / v.$field;)+ }
             #[inline] fn rem_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field % v.$field;)+ }
 
-            #[inline] fn comp_add(&self) -> S { fold!(&add, { $(self.$field),+ }) }
-            #[inline] fn comp_mul(&self) -> S { fold!(&mul, { $(self.$field),+ }) }
+            #[inline] fn comp_add(&self) -> S { fold!(add, { $(self.$field),+ }) }
+            #[inline] fn comp_mul(&self) -> S { fold!(mul, { $(self.$field),+ }) }
             #[inline] fn comp_min(&self) -> S { fold!(partial_min, { $(self.$field),+ }) }
             #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
         }
 
         impl<S: BaseNum> Add<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn add(&self, v: &$Self<S>) -> $Self<S> { self.add_v(v) }
+            #[inline] fn add(self, v: $Self<S>) -> $Self<S> { self.add_v(&v) }
         }
 
         impl<S: BaseNum> Sub<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn sub(&self, v: &$Self<S>) -> $Self<S> { self.sub_v(v) }
-        }
-
-        impl<S: BaseNum> Zero for $Self<S> {
-            #[inline] fn zero() -> $Self<S> { $Self::from_value(zero()) }
-            #[inline] fn is_zero(&self) -> bool { *self == zero() }
+            #[inline] fn sub(self, v: $Self<S>) -> $Self<S> { self.sub_v(&v) }
         }
 
         impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
-            #[inline] fn neg(&self) -> $Self<S> { $Self::new($(-self.$field),+) }
+            #[inline] fn neg(self) -> $Self<S> { $Self::new($(-self.$field),+) }
         }
 
         impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn mul(&self, v: &$Self<S>) -> $Self<S> { self.mul_v(v) }
+            #[inline] fn mul(self, v: $Self<S>) -> $Self<S> { self.mul_v(&v) }
         }
 
         impl<S: BaseNum> Div<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn div(&self, v: &$Self<S>) -> $Self<S> { self.div_v(v) }
+            #[inline] fn div(self, v: $Self<S>) -> $Self<S> { self.div_v(&v) }
         }
 
         impl<S: BaseNum> Rem<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn rem(&self, v: &$Self<S>) -> $Self<S> { self.rem_v(v) }
-        }
-
-        impl<S: BaseNum> One for $Self<S> {
-            #[inline] fn one() -> $Self<S> { $Self::from_value(one()) }
+            #[inline] fn rem(self, v: $Self<S>) -> $Self<S> { self.rem_v(&v) }
         }
 
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
@@ -339,7 +335,7 @@ macro_rules! vec(
             }
         }
     )
-)
+);
 
 macro_rules! fold {
     (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
@@ -350,9 +346,9 @@ macro_rules! fold {
     ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
 }
 
-vec!(Vector2<S> { x, y }, 2)
-vec!(Vector3<S> { x, y, z }, 3)
-vec!(Vector4<S> { x, y, z, w }, 4)
+vec!(Vector2<S> { x, y }, 2);
+vec!(Vector3<S> { x, y, z }, 3);
+vec!(Vector4<S> { x, y, z, w }, 4);
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {
@@ -438,7 +434,7 @@ impl<S: BaseNum> Vector4<S> {
             1 => Vector3::new(self.x, self.z, self.w),
             2 => Vector3::new(self.x, self.y, self.w),
             3 => Vector3::new(self.x, self.y, self.z),
-            _ => fail!("{} is out of range", n)
+            _ => panic!("{} is out of range", n)
         }
     }
 }

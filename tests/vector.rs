@@ -14,10 +14,15 @@
 // limitations under the License.
 
 #![feature(globs)]
+#![feature(phase)]
 
+#[phase(plugin)]
+extern crate cgmath;
 extern crate cgmath;
 
 use cgmath::*;
+use std::f64;
+use std::num::{Float, FloatMath};
 
 #[test]
 fn test_from_value() {
@@ -139,17 +144,17 @@ mod test_length {
 
 #[test]
 fn test_angle() {
-    assert!(Vector2::new(1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &rad(Float::frac_pi_2()) ));
-    assert!(Vector2::new(10.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 5.0f64)).approx_eq( &rad(Float::frac_pi_2()) ));
-    assert!(Vector2::new(-1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &-rad(Float::frac_pi_2()) ));
+    assert!(Vector2::new(1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(10.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(-1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &-rad(f64::consts::FRAC_PI_2) ));
 
-    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(&Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &rad(Float::frac_pi_3()) ));
-    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(&Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &rad(Float::frac_pi_3()) ));
-    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(&Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &rad(2.0f64 * Float::frac_pi_3()) ));
+    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(&Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(&Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(&Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &rad(2.0f64 * f64::consts::FRAC_PI_3) ));
 
-    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(Float::frac_pi_2()) ));
-    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &rad(Float::frac_pi_2()) ));
-    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(Float::frac_pi_2()) ));
+    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
 }
 
 #[test]
@@ -164,4 +169,11 @@ fn test_normalize() {
 fn test_map() {
     assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.floor()), Vector3::new(7.0f64, 3.0f64, -7.0f64));
     assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.max(0.0f64)), Vector3::new(7.12f64, 3.8f64, 0.0f64));
+}
+
+#[test]
+fn test_cast() {
+    assert_approx_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
+    assert_approx_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));
+    assert_approx_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
 }

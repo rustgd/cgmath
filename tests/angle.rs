@@ -32,11 +32,11 @@ fn conv() {
 
 #[test]
 fn equiv() {
-    assert!(Deg::<f32>::full_turn().equiv(&-Deg::<f32>::full_turn()))
-    assert!(Deg::<f32>::turn_div_2().equiv(&-Deg::<f32>::turn_div_2()))
-    assert!(Deg::<f32>::turn_div_3().sub_a(Deg::<f32>::full_turn()).equiv(&Deg::<f32>::turn_div_3()))
+    assert!(Deg::<f32>::full_turn().equiv(&-Deg::<f32>::full_turn()));
+    assert!(Deg::<f32>::turn_div_2().equiv(&-Deg::<f32>::turn_div_2()));
+    assert!(Deg::<f32>::turn_div_3().sub_a(Deg::<f32>::full_turn()).equiv(&Deg::<f32>::turn_div_3()));
 
-    assert!(Rad::<f32>::full_turn().equiv(&-Rad::<f32>::full_turn()))
-    assert!(Rad::<f32>::turn_div_2().equiv(&-Rad::<f32>::turn_div_2()))
-    assert!(Rad::<f32>::turn_div_3().sub_a(Rad::<f32>::full_turn()).equiv(&Rad::<f32>::turn_div_3()))
+    assert!(Rad::<f32>::full_turn().equiv(&-Rad::<f32>::full_turn()));
+    assert!(Rad::<f32>::turn_div_2().equiv(&-Rad::<f32>::turn_div_2()));
+    assert!(Rad::<f32>::turn_div_3().sub_a(Rad::<f32>::full_turn()).equiv(&Rad::<f32>::turn_div_3()));
 }

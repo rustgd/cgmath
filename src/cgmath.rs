@@ -15,8 +15,6 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![comment = "A mathematics library for computer graphics."]
-#![license = "ASL2"]
 
 #![feature(globs)]
 #![feature(macro_rules)]
@@ -77,7 +75,7 @@ pub use obb::{Obb2, Obb3};
 pub use sphere::Sphere;
 
 pub use approx::ApproxEq;
-pub use num::{PartialOrd, BaseNum, BaseInt, BaseFloat};
+pub use num::{PartialOrd, BaseNum, BaseInt, BaseFloat, One, one, Zero, zero};
 
 // Modules
 

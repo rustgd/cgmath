@@ -6,17 +6,17 @@ A linear algebra and mathematics library for computer graphics.
 
 The library provides:
 
-- vectors: `Vec2`, `Vec3`, `Vec4`
-- square matrices: `Mat2`, `Mat3`, `Mat4`
-- a quaternion type: `Quat`
-- rotation matrices: `Rot2`, `Rot3`
+- vectors: `Vector2`, `Vector3`, `Vector4`
+- square matrices: `Matrix2`, `Matrix3`, `Matrix4`
+- a quaternion type: `Quaternion`
+- rotation matrices: `Basis2`, `Basis3`
 - angle units: `Rad`, `Deg`
 - points: `Point2`, `Point3`
-- rays: `Ray2`, `Ray3`
+- a generic ray: `Ray`
 - a plane type: `Plane`
 - perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
-- a view frustum: `Frustrum`
-- spatial transformations: `AffineMatrix3`, `Transform3D`
+- a view frustum: `Frustum`
+- spatial transformations: `AffineMatrix3`, `Transform3`
 - axis-aligned bounding boxes: `Aabb2`, `Aabb3`
 - oriented bounding boxes: `Obb2`, `Obb3`
 - collision primitives: `Sphere`, `Cylinder`

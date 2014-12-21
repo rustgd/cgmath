@@ -14,11 +14,10 @@
 // limitations under the License.
 
 use std::fmt;
-use std::num::Zero;
 
 use approx::ApproxEq;
 use intersect::Intersect;
-use num::BaseFloat;
+use num::{BaseFloat, Zero, zero};
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vector3, Vector4};
@@ -40,7 +39,7 @@ use vector::{Vector, EuclideanVector};
 /// The `A*x + B*y + C*z - D = 0` form is preferred over the other common
 /// alternative, `A*x + B*y + C*z + D = 0`, because it tends to avoid
 /// superfluous negations (see _Real Time Collision Detection_, p. 55).
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
 pub struct Plane<S> {
     pub n: Vector3<S>,
     pub d: S,
@@ -80,7 +79,7 @@ impl<S: BaseFloat> Plane<S> {
         // find the normal vector that is perpendicular to v1 and v2
         let mut n = v0.cross(&v1);
 
-        if n.approx_eq(&Vector3::zero()) { None }
+        if n.approx_eq(&zero()) { None }
         else {
             // compute the normal and the distance to the plane
             n.normalize_self();
@@ -111,13 +110,13 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
 
 impl<S: BaseFloat> Intersect<Option<Ray3<S>>> for (Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Ray3<S>> {
-        fail!("Not yet implemented");
+        panic!("Not yet implemented");
     }
 }
 
 impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Plane<S>, Plane<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
-        fail!("Not yet implemented");
+        panic!("Not yet implemented");
     }
 }
 
@@ -132,7 +131,7 @@ ApproxEq<S> for Plane<S> {
 
 impl<S: BaseFloat> fmt::Show for Plane<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:f}x + {:f}y + {:f}z - {:f} = 0",
+        write!(f, "{}x + {}y + {}z - {} = 0",
                self.n.x, self.n.y, self.n.z, self.d)
     }
 }

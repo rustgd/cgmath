@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::num;
+use std::num::Float;
 
 pub trait ApproxEq<T: Float> {
     fn approx_epsilon(_hack: Option<Self>) -> T {
@@ -34,11 +35,37 @@ macro_rules! approx_float(
         impl ApproxEq<$S> for $S {
              #[inline]
             fn approx_eq_eps(&self, other: &$S, epsilon: &$S) -> bool {
-                 num::abs(*self - *other) < *epsilon
+                 (*self - *other).abs() < *epsilon
             }
         }
     )
-)
+);
 
-approx_float!(f32)
-approx_float!(f64)
+approx_float!(f32);
+approx_float!(f64);
+
+#[macro_export]
+macro_rules! assert_approx_eq_eps(
+    ($given: expr, $expected: expr, $eps: expr) => ({
+        let eps = &($eps);
+        let (given_val, expected_val) = (&($given), &($expected));
+        if !given_val.approx_eq_eps(expected_val, eps) {
+            panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+                *given_val, *expected_val, *eps
+            );
+        }
+    })
+);
+
+#[macro_export]
+macro_rules! assert_approx_eq(
+    ($given: expr, $expected: expr) => ({
+        let (given_val, expected_val) = (&($given), &($expected));
+        if !given_val.approx_eq(expected_val) {
+            panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+                *given_val, *expected_val,
+                ApproxEq::approx_epsilon(Some(*given_val))
+            );
+        }
+    })
+);

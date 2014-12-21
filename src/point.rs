@@ -19,19 +19,18 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{one, zero};
 
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, one, zero};
 use vector::*;
 
 /// A point in 2-dimensional space.
-#[deriving(PartialEq, Clone, Hash, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Hash, Encodable, Decodable)]
 pub struct Point2<S> { pub x: S, pub y: S }
 
 /// A point in 3-dimensional space.
-#[deriving(PartialEq, Clone, Hash, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Hash, Encodable, Decodable)]
 pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
 
 
@@ -121,7 +120,7 @@ impl<S> FixedArray<[S, ..2]> for Point2<S> {
     #[inline]
     fn from_fixed(_v: [S, ..2]) -> Point2<S> {
         // match v { [x, y] => Point2 { x: x, y: y } }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
     }
 
     #[inline]
@@ -275,7 +274,7 @@ impl<S> FixedArray<[S, ..3]> for Point3<S> {
     #[inline]
     fn from_fixed(_v: [S, ..3]) -> Point3<S> {
         // match v { [x, y, z] => Point3 { x: x, y: y, z: z } }
-        fail!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
     }
 
     #[inline]

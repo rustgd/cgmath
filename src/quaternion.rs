@@ -15,20 +15,21 @@
 
 use std::fmt;
 use std::mem;
-use std::num::{zero, one, cast};
+use std::f64;
+use std::num::{cast, Float};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
 use array::Array1;
 use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
-use num::BaseFloat;
+use num::{BaseFloat, one, zero};
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
-#[deriving(Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, Encodable, Decodable, Rand)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
 /// Represents types which can be expressed as a quaternion.
@@ -87,7 +88,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quaternion<S> {
-        Quaternion::from_sv(one::<S>(), Vector3::zero())
+        Quaternion::from_sv(one::<S>(), zero())
     }
 
     /// The result of multiplying the quaternion a scalar
@@ -266,7 +267,7 @@ impl<S: BaseFloat> Quaternion<S> {
 
     /// Convert a Quaternion to Eular angles
     ///     This is a polar singularity aware conversion
-    ///  
+    ///
     ///  Based on:
     /// - [Maths - Conversion Quaternion to Euler]
     ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
@@ -280,15 +281,15 @@ impl<S: BaseFloat> Quaternion<S> {
 
         let unit = sqx + sqy + sqz + sqw;
         let test = qx*qy + qz*qw;
-        
+
         if test > sig * unit {
             (
                 rad(zero::<S>()),
-                rad(Float::frac_pi_2()),
+                rad(cast(f64::consts::FRAC_PI_2).unwrap()),
                 rad(two * qx.atan2(qw)),
             )
         } else if test < -sig * unit {
-            let y: S = Float::frac_pi_2();
+            let y: S = cast(f64::consts::FRAC_PI_2).unwrap();
             (
                 rad(zero::<S>()),
                 rad(-y),
@@ -357,7 +358,7 @@ impl<S: BaseFloat> ToMatrix4<S> for Quaternion<S> {
 
 impl<S: BaseFloat> Neg<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn neg(&self) -> Quaternion<S> {
+    fn neg(self) -> Quaternion<S> {
         Quaternion::from_sv(-self.s, -self.v)
     }
 }
@@ -416,7 +417,7 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S
     fn invert_self(&mut self) { *self = self.invert() }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
+impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
     #[inline]
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));

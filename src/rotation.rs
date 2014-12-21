@@ -63,7 +63,7 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
     /// Modify this rotation in-place by combining it with another.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
-        *self = self.concat(other);
+        *self = Rotation::concat(self, other);
     }
 
     /// Invert this rotation in-place.
@@ -138,11 +138,12 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// use cgmath::{Matrix, ToMatrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
 /// use cgmath::ApproxEq;
+/// use std::f64;
 ///
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
 /// // so the angle is 90 degrees, or π/2.
 /// let unit_x: Vector2<f64> = Vector2::unit_x();
-/// let rot: Basis2<f64> = Rotation2::from_angle(rad(0.5f64 * Float::pi()));
+/// let rot: Basis2<f64> = Rotation2::from_angle(rad(0.5f64 * f64::consts::PI));
 ///
 /// // Rotate the vector using the two-dimensional rotation matrix:
 /// let unit_y = rot.rotate_vector(&unit_x);
@@ -156,11 +157,11 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// assert_eq!(unit_y2, unit_y);
 ///
 /// // Note that we can also concatenate rotations:
-/// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * Float::pi()));
+/// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
-#[deriving(PartialEq, Clone, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Encodable, Decodable)]
 pub struct Basis2<S> {
     mat: Matrix2<S>
 }
@@ -238,7 +239,7 @@ impl<S: BaseFloat + 'static> Rotation2<S> for Basis2<S> {
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
 /// been restricted to a subeset of those implemented on `Matrix3`.
-#[deriving(PartialEq, Clone, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Encodable, Decodable)]
 pub struct Basis3<S> {
     mat: Matrix3<S>
 }
