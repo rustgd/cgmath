@@ -89,7 +89,7 @@ pub trait Angle
     fn from<A: Angle<S>>(theta: A) -> Self;
 
     /// Negate this angle, in-place.
-    #[inline] fn neg_self(&mut self) { *self = -*self }
+    #[inline] fn neg_self(&mut self) { *self = -(*self).clone() }
 
     /// Add this angle with another, returning the new angle.
     #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
@@ -186,8 +186,8 @@ impl<S: BaseFloat> Add<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn add(self, other
 impl<S: BaseFloat> Sub<Rad<S>, Rad<S>> for Rad<S> { #[inline] fn sub(self, other: Rad<S>) -> Rad<S> { rad(self.s - other.s) } }
 impl<S: BaseFloat> Sub<Deg<S>, Deg<S>> for Deg<S> { #[inline] fn sub(self, other: Deg<S>) -> Deg<S> { deg(self.s - other.s) } }
 
-impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(&self) -> Rad<S> { rad(-self.s) } }
-impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(&self) -> Deg<S> { deg(-self.s) } }
+impl<S: BaseFloat> Neg<Rad<S>> for Rad<S> { #[inline] fn neg(self) -> Rad<S> { rad(-self.s) } }
+impl<S: BaseFloat> Neg<Deg<S>> for Deg<S> { #[inline] fn neg(self) -> Deg<S> { deg(-self.s) } }
 
 impl<S: BaseFloat> Zero for Rad<S> { #[inline] fn zero() -> Rad<S> { rad(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }
 impl<S: BaseFloat> Zero for Deg<S> { #[inline] fn zero() -> Deg<S> { deg(zero()) } #[inline] fn is_zero(&self) -> bool { *self == zero() } }

@@ -358,7 +358,7 @@ impl<S: BaseFloat> ToMatrix4<S> for Quaternion<S> {
 
 impl<S: BaseFloat> Neg<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn neg(&self) -> Quaternion<S> {
+    fn neg(self) -> Quaternion<S> {
         Quaternion::from_sv(-self.s, -self.v)
     }
 }
