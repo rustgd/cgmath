@@ -26,11 +26,11 @@ use num::{BaseNum, BaseFloat, one, zero};
 use vector::*;
 
 /// A point in 2-dimensional space.
-#[deriving(PartialEq, Copy, Clone, Hash, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Point2<S> { pub x: S, pub y: S }
 
 /// A point in 3-dimensional space.
-#[deriving(PartialEq, Copy, Clone, Hash, Encodable, Decodable)]
+#[deriving(PartialEq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
 
 

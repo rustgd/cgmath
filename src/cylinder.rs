@@ -18,7 +18,7 @@
 use point::Point3;
 use vector::Vector3;
 
-#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Cylinder<S> {
     pub center: Point3<S>,
     pub axis: Vector3<S>,
