@@ -14,5 +14,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 ]
 
 [lib]
-
 name = "cgmath"
+
+[dependencies]
+rustc-serialize="*"

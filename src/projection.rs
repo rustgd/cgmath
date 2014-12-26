@@ -69,7 +69,7 @@ pub trait Projection<S>: ToMatrix4<S> {
 }
 
 /// A perspective projection based on a vertical field-of-view angle.
-#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct PerspectiveFov<S, A> {
     pub fovy:   A,
     pub aspect: S,
@@ -143,7 +143,7 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
 }
 
 /// A perspective projection with arbitrary left/right/bottom/top distances
-#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Perspective<S> {
     pub left:   S,  right:  S,
     pub bottom: S,  top:    S,
@@ -193,7 +193,7 @@ impl<S: BaseFloat + 'static> ToMatrix4<S> for Perspective<S> {
 }
 
 /// An orthographic projection with arbitrary left/right/bottom/top distances
-#[deriving(Copy, Clone, PartialEq, Encodable, Decodable)]
+#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Ortho<S> {
     pub left:   S,  right:  S,
     pub bottom: S,  top:    S,

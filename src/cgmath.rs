@@ -33,7 +33,7 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-extern crate serialize;
+extern crate "rustc-serialize" as rustc_serialize;
 
 // Re-exports
 
