@@ -14,8 +14,9 @@
 // limitations under the License.
 
 use std::fmt;
-use std::mem;
 use std::f64;
+use std::mem;
+use std::ops::{Neg, Index, IndexMut};
 use std::num::{cast, Float};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
@@ -29,7 +30,7 @@ use vector::{Vector3, Vector, EuclideanVector};
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
 /// Represents types which can be expressed as a quaternion.
@@ -52,7 +53,7 @@ impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
 impl<S: BaseFloat> Index<uint, S> for Quaternion<S> {
     #[inline]
     fn index<'a>(&'a self, i: &uint) -> &'a S {
-        let slice: &[S, ..4] = unsafe { mem::transmute(self) };
+        let slice: &[S; 4] = unsafe { mem::transmute(self) };
         &slice[*i]
     }
 }
@@ -60,7 +61,7 @@ impl<S: BaseFloat> Index<uint, S> for Quaternion<S> {
 impl<S: BaseFloat> IndexMut<uint, S> for Quaternion<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
-        let slice: &'a mut [S, ..4] = unsafe { mem::transmute(self) };
+        let slice: &'a mut [S; 4] = unsafe { mem::transmute(self) };
         &mut slice[*i]
     }
 }

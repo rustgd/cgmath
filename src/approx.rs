@@ -16,7 +16,7 @@
 use std::num;
 use std::num::Float;
 
-pub trait ApproxEq<T: Float> {
+pub trait ApproxEq<T: Float>: Sized {
     fn approx_epsilon(_hack: Option<Self>) -> T {
         num::cast(1.0e-5f64).unwrap()
     }

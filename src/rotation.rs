@@ -26,7 +26,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> {
+pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> + Sized {
     /// Create the identity transform (causes no transformation).
     fn identity() -> Self;
 
@@ -161,7 +161,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
-#[deriving(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct Basis2<S> {
     mat: Matrix2<S>
 }
@@ -239,7 +239,7 @@ impl<S: BaseFloat + 'static> Rotation2<S> for Basis2<S> {
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
 /// been restricted to a subeset of those implemented on `Matrix3`.
-#[deriving(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct Basis3<S> {
     mat: Matrix3<S>
 }
