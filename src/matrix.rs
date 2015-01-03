@@ -17,6 +17,7 @@
 
 use std::fmt;
 use std::mem;
+use std::ops::{Add, Sub, Mul, Neg, Index, IndexMut};
 use std::num::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
@@ -29,15 +30,15 @@ use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
 pub struct Matrix2<S> { pub x: Vector2<S>, pub y: Vector2<S> }
 
 /// A 3 x 3, column major matrix
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
 pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> }
 
 /// A 4 x 4, column major matrix
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
@@ -287,7 +288,8 @@ Matrix4<S> {
 pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
                                                     + Neg<Self>
                                                     + Zero + One
-                                                    + ApproxEq<S> {
+                                                    + ApproxEq<S>
+                                                    + Sized {
     /// Multiply this matrix by a scalar, returning the new matrix.
     fn mul_s(&self, s: S) -> Self;
     /// Divide this matrix by a scalar, returning the new matrix.
@@ -393,9 +395,9 @@ impl<S: BaseFloat> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matri
 impl<S: BaseFloat> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
 impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
 
-impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
+impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     #[inline]
-    fn into_fixed(self) -> [[S, ..2], ..2] {
+    fn into_fixed(self) -> [[S; 2]; 2] {
         match self {
             Matrix2 { x, y } => [
                 x.into_fixed(),
@@ -405,17 +407,17 @@ impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
     }
 
     #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S, ..2], ..2] {
+    fn as_fixed<'a>(&'a self) -> &'a [[S; 2]; 2] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..2], ..2] {
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 2]; 2] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn from_fixed(_v: [[S, ..2], ..2]) -> Matrix2<S> {
+    fn from_fixed(_v: [[S; 2]; 2]) -> Matrix2<S> {
         // match v {
         //     [x, y] => Matrix2 {
         //         x: FixedArray::from_fixed(x),
@@ -426,12 +428,12 @@ impl<S> FixedArray<[[S, ..2], ..2]> for Matrix2<S> {
     }
 
     #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S, ..2], ..2]) -> &'a Matrix2<S> {
+    fn from_fixed_ref<'a>(v: &'a [[S; 2]; 2]) -> &'a Matrix2<S> {
         unsafe { mem::transmute(v) }
     }
 
     #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S, ..2], ..2]) -> &'a mut Matrix2<S> {
+    fn from_fixed_mut<'a>(v: &'a mut [[S; 2]; 2]) -> &'a mut Matrix2<S> {
         unsafe { mem::transmute(v) }
     }
 }
@@ -471,9 +473,9 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
-impl<S> FixedArray<[[S, ..3], ..3]> for Matrix3<S> {
+impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     #[inline]
-    fn into_fixed(self) -> [[S, ..3], ..3] {
+    fn into_fixed(self) -> [[S; 3]; 3] {
         match self {
             Matrix3 { x, y, z } => [
                 x.into_fixed(),
@@ -484,17 +486,17 @@ impl<S> FixedArray<[[S, ..3], ..3]> for Matrix3<S> {
     }
 
     #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S, ..3], ..3] {
+    fn as_fixed<'a>(&'a self) -> &'a [[S; 3]; 3] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..3], ..3] {
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 3]; 3] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn from_fixed(_v: [[S, ..3], ..3]) -> Matrix3<S> {
+    fn from_fixed(_v: [[S; 3]; 3]) -> Matrix3<S> {
         // match v {
         //     [x, y, z] => Matrix3 {
         //         x: FixedArray::from_fixed(x),
@@ -506,12 +508,12 @@ impl<S> FixedArray<[[S, ..3], ..3]> for Matrix3<S> {
     }
 
     #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S, ..3], ..3]) -> &'a Matrix3<S> {
+    fn from_fixed_ref<'a>(v: &'a [[S; 3]; 3]) -> &'a Matrix3<S> {
         unsafe { mem::transmute(v) }
     }
 
     #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S, ..3], ..3]) -> &'a mut Matrix3<S> {
+    fn from_fixed_mut<'a>(v: &'a mut [[S; 3]; 3]) -> &'a mut Matrix3<S> {
         unsafe { mem::transmute(v) }
     }
 }
@@ -554,9 +556,9 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
-impl<S> FixedArray<[[S, ..4], ..4]> for Matrix4<S> {
+impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     #[inline]
-    fn into_fixed(self) -> [[S, ..4], ..4] {
+    fn into_fixed(self) -> [[S; 4]; 4] {
         match self {
             Matrix4 { x, y, z, w } => [
                 x.into_fixed(),
@@ -568,17 +570,17 @@ impl<S> FixedArray<[[S, ..4], ..4]> for Matrix4<S> {
     }
 
     #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S, ..4], ..4] {
+    fn as_fixed<'a>(&'a self) -> &'a [[S; 4]; 4] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S, ..4], ..4] {
+    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 4]; 4] {
         unsafe { mem::transmute(self) }
     }
 
     #[inline]
-    fn from_fixed(_v: [[S, ..4], ..4]) -> Matrix4<S> {
+    fn from_fixed(_v: [[S; 4]; 4]) -> Matrix4<S> {
         // match v {
         //     [x, y, z, w] => Matrix4 {
         //         x: FixedArray::from_fixed(x),
@@ -591,12 +593,12 @@ impl<S> FixedArray<[[S, ..4], ..4]> for Matrix4<S> {
     }
 
     #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S, ..4], ..4]) -> &'a Matrix4<S> {
+    fn from_fixed_ref<'a>(v: &'a [[S; 4]; 4]) -> &'a Matrix4<S> {
         unsafe { mem::transmute(v) }
     }
 
     #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S, ..4], ..4]) -> &'a mut Matrix4<S> {
+    fn from_fixed_mut<'a>(v: &'a mut [[S; 4]; 4]) -> &'a mut Matrix4<S> {
         unsafe { mem::transmute(v) }
     }
 }

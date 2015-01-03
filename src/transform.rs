@@ -26,7 +26,7 @@ use vector::{Vector, Vector3};
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>> {
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn identity() -> Self;
@@ -76,7 +76,7 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>> {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[deriving(Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct Decomposed<S, V, R> {
     pub scale: S,
     pub rot: R,
@@ -159,7 +159,7 @@ impl<S: BaseFloat, R: fmt::Show + Rotation3<S>> fmt::Show for Decomposed<S,Vecto
 }
 
 /// A homogeneous transformation matrix.
-#[deriving(Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }

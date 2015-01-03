@@ -28,7 +28,7 @@ use num::{zero, one, BaseNum, BaseFloat};
 use std::fmt;
 use std::num::Float;
 
-pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
+pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     /// Create a new AABB using two points as opposing corners.
     fn new(p1: P, p2: P) -> Self;
 
@@ -84,7 +84,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>> {
 }
 
 /// A two-dimensional AABB, aka a rectangle.
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Aabb2<S> {
     pub min: Point2<S>,
     pub max: Point2<S>,
@@ -129,7 +129,7 @@ impl<S: BaseNum> fmt::Show for Aabb2<S> {
 }
 
 /// A three-dimensional AABB, aka a rectangular prism.
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Aabb3<S> {
     pub min: Point3<S>,
     pub max: Point3<S>,

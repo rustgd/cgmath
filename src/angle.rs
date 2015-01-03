@@ -17,16 +17,17 @@
 
 use std::fmt;
 use std::f64;
+use std::ops::{Add, Sub, Mul, Neg};
 use std::num::{cast, Float};
 
 use approx::ApproxEq;
 use num::{BaseFloat, One, one, Zero, zero};
 
 /// An angle, in radians
-#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable, Rand)]
 pub struct Rad<S> { pub s: S }
 /// An angle, in degrees
-#[deriving(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable, Rand)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable, Rand)]
 pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians

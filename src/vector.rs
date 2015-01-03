@@ -98,6 +98,7 @@
 
 use std::fmt;
 use std::mem;
+use std::ops::{Add, Sub, Mul, Div, Neg, Rem, Index, IndexMut};
 use std::num::NumCast;
 
 use angle::{Rad, atan2, acos};
@@ -108,7 +109,7 @@ use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Self> {
+pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Self> + Sized {
     /// Add a scalar to this vector, returning a new vector.
     fn add_s(&self, s: S) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
@@ -177,7 +178,7 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Self> {
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
-        #[deriving(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable, Rand)]
+        #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable, Rand)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
         impl<$S> $Self<$S> {
@@ -217,35 +218,35 @@ macro_rules! vec(
             }
         }
 
-        impl<$S> FixedArray<[$S, ..$n]> for $Self<$S> {
+        impl<$S> FixedArray<[$S; $n]> for $Self<$S> {
             #[inline]
-            fn into_fixed(self) -> [$S, ..$n] {
+            fn into_fixed(self) -> [$S; $n] {
                 match self { $Self { $($field),+ } => [$($field),+] }
             }
 
             #[inline]
-            fn as_fixed<'a>(&'a self) -> &'a [$S, ..$n] {
+            fn as_fixed<'a>(&'a self) -> &'a [$S; $n] {
                 unsafe { mem::transmute(self) }
             }
 
             #[inline]
-            fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [$S, ..$n] {
+            fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [$S; $n] {
                 unsafe { mem::transmute(self) }
             }
 
             #[inline]
-            fn from_fixed(_v: [$S, ..$n]) -> $Self<$S> {
+            fn from_fixed(_v: [$S; $n]) -> $Self<$S> {
                 // match v { [$($field),+] => $Self { $($field: $field),+ } }
                 panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
             }
 
             #[inline]
-            fn from_fixed_ref<'a>(v: &'a [$S, ..$n]) -> &'a $Self<$S> {
+            fn from_fixed_ref<'a>(v: &'a [$S; $n]) -> &'a $Self<$S> {
                 unsafe { mem::transmute(v) }
             }
 
             #[inline]
-            fn from_fixed_mut<'a>(v: &'a mut [$S, ..$n]) -> &'a mut $Self<$S> {
+            fn from_fixed_mut<'a>(v: &'a mut [$S; $n]) -> &'a mut $Self<$S> {
                 unsafe { mem::transmute(v) }
             }
         }

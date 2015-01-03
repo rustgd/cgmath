@@ -33,6 +33,10 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
+// This is necessary for #[derive(RustcEncodable, RustcDecodable)] for now.
+// See https://github.com/nikomatsakis/rust/commit/c61a0092bc236c4be6
+#![feature(old_orphan_check)]
+
 extern crate "rustc-serialize" as rustc_serialize;
 
 // Re-exports

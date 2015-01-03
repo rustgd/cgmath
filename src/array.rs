@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::mem;
+use std::ops::{Index, IndexMut};
 use std::ptr;
 
 /// An array containing elements of type `Element`
