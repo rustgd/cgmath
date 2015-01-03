@@ -21,7 +21,7 @@ use point::{Point, Point3};
 use ray::Ray3;
 use vector::Vector;
 
-#[deriving(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Sphere<S> {
     pub center: Point3<S>,
     pub radius: S,

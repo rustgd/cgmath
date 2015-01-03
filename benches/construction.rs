@@ -19,6 +19,7 @@ extern crate test;
 extern crate cgmath;
 
 use std::rand::{IsaacRng, Rng};
+use std::iter;
 use test::Bencher;
 use cgmath::{Quaternion, Basis2, Basis3, Vector3, Rotation2, Rotation3, Rad};
 
@@ -30,15 +31,15 @@ fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
 
     let mut rng = IsaacRng::new_unseeded();
 
-    let axis  = Vec::from_fn(LEN, |_| rng.gen::<Vector3<f32>>());
-    let angle = Vec::from_fn(LEN, |_| rng.gen::<Rad<f32>>());
+    let axis: Vec<_> = iter::range(0, LEN).map(|_| rng.gen::<Vector3<f32>>()).collect();
+    let angle: Vec<_> = iter::range(0, LEN).map(|_| rng.gen::<Rad<f32>>()).collect();
     let mut i = 0;
 
     bh.iter(|| {
         i = (i + 1) & (LEN - 1);
 
         unsafe {
-            let res: T = Rotation3::from_axis_angle(axis.unsafe_get(i), *angle.unsafe_get(i));
+            let res: T = Rotation3::from_axis_angle(axis.get_unchecked(i), *angle.get_unchecked(i));
             test::black_box(res)
         }
     })
