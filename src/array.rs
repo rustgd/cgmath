@@ -15,6 +15,7 @@
 
 use std::mem;
 use std::ptr;
+use std::ops::*;
 
 /// An array containing elements of type `Element`
 pub trait Array1<Element: Copy>: Index<uint, Element> + IndexMut<uint, Element> {

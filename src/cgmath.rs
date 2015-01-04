@@ -18,6 +18,7 @@
 
 #![feature(globs)]
 #![feature(macro_rules)]
+#![feature(old_orphan_check)]
 
 //! Computer graphics-centric math.
 //!
