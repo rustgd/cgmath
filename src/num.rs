@@ -71,8 +71,8 @@ pub trait One {
 
 /// Base numeric types with partial ordering
 pub trait BaseNum:
-    Copy + NumCast + Clone + Add<Self, Self> + Sub<Self, Self> +
-    Mul<Self, Self> + Div<Self, Self> + Rem<Self, Self> + Neg<Self> + PartialEq
+    Copy + NumCast + Clone + Add<Output=Self> + Sub<Output=Self> +
+    Mul<Output=Self> + Div<Output=Self> + Rem<Output=Self> + Neg<Output=Self> + PartialEq
     + PartialOrd + cmp::PartialOrd + fmt::Show + Zero + One
 {}
 

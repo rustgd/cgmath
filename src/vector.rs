@@ -109,7 +109,7 @@ use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Self> {
+pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
     /// Add a scalar to this vector, returning a new vector.
     fn add_s(&self, s: S) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
@@ -251,14 +251,18 @@ macro_rules! vec(
             }
         }
 
-        impl<$S: Copy> Index<uint, S> for $Self<$S> {
+        impl<$S: Copy> Index<uint> for $Self<$S> {
+            type Output = S;
+
             #[inline]
             fn index<'a>(&'a self, i: &uint) -> &'a $S {
                 &self.as_fixed()[*i]
             }
         }
 
-        impl<$S: Copy> IndexMut<uint, S> for $Self<$S> {
+        impl<$S: Copy> IndexMut<uint> for $Self<$S> {
+            type Output = S;
+
             #[inline]
             fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut $S {
                 &mut self.as_mut_fixed()[*i]
@@ -305,28 +309,46 @@ macro_rules! vec(
             #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
         }
 
-        impl<S: BaseNum> Add<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn add(self, v: $Self<S>) -> $Self<S> { self.add_v(&v) }
+        impl<S: BaseNum> Add for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn add(self, v: $Self<S>) -> $Self<S> { self.add_v(&v) }
         }
 
-        impl<S: BaseNum> Sub<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn sub(self, v: $Self<S>) -> $Self<S> { self.sub_v(&v) }
+        impl<S: BaseNum> Sub for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn sub(self, v: $Self<S>) -> $Self<S> { self.sub_v(&v) }
         }
 
-        impl<S: BaseNum> Neg<$Self<S>> for $Self<S> {
-            #[inline] fn neg(self) -> $Self<S> { $Self::new($(-self.$field),+) }
+        impl<S: BaseNum> Neg for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn neg(self) -> $Self<S> { $Self::new($(-self.$field),+) }
         }
 
-        impl<S: BaseNum> Mul<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn mul(self, v: $Self<S>) -> $Self<S> { self.mul_v(&v) }
+        impl<S: BaseNum> Mul for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn mul(self, v: $Self<S>) -> $Self<S> { self.mul_v(&v) }
         }
 
-        impl<S: BaseNum> Div<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn div(self, v: $Self<S>) -> $Self<S> { self.div_v(&v) }
+        impl<S: BaseNum> Div for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn div(self, v: $Self<S>) -> $Self<S> { self.div_v(&v) }
         }
 
-        impl<S: BaseNum> Rem<$Self<S>, $Self<S>> for $Self<S> {
-            #[inline] fn rem(self, v: $Self<S>) -> $Self<S> { self.rem_v(&v) }
+        impl<S: BaseNum> Rem for $Self<S> {
+            type Output = $Self<S>;
+
+            #[inline]
+            fn rem(self, v: $Self<S>) -> $Self<S> { self.rem_v(&v) }
         }
 
         impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
