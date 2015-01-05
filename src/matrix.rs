@@ -286,7 +286,7 @@ Matrix4<S> {
 }
 
 pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
-                                                    + Neg<Self>
+                                                    + Neg
                                                     + Zero + One
                                                     + ApproxEq<S>
                                                     + Sized {
@@ -371,29 +371,122 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: BaseFloat + 'static> Add<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn add(self, other: Matrix2<S>) -> Matrix2<S> { self.add_m(&other) } }
-impl<S: BaseFloat + 'static> Add<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn add(self, other: Matrix3<S>) -> Matrix3<S> { self.add_m(&other) } }
-impl<S: BaseFloat + 'static> Add<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn add(self, other: Matrix4<S>) -> Matrix4<S> { self.add_m(&other) } }
+impl<S: BaseFloat + 'static> Add for Matrix2<S> {
+    type Output = Matrix2<S>;
 
-impl<S: BaseFloat + 'static> Sub<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn sub(self, other: Matrix2<S>) -> Matrix2<S> { self.sub_m(&other) } }
-impl<S: BaseFloat + 'static> Sub<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn sub(self, other: Matrix3<S>) -> Matrix3<S> { self.sub_m(&other) } }
-impl<S: BaseFloat + 'static> Sub<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn sub(self, other: Matrix4<S>) -> Matrix4<S> { self.sub_m(&other) } }
+    #[inline]
+    fn add(self, other: Matrix2<S>) -> Matrix2<S> { self.add_m(&other) }
+}
 
-impl<S: BaseFloat> Neg<Matrix2<S>> for Matrix2<S> { #[inline] fn neg(self) -> Matrix2<S> { Matrix2::from_cols(self[0].neg(), self[1].neg()) } }
-impl<S: BaseFloat> Neg<Matrix3<S>> for Matrix3<S> { #[inline] fn neg(self) -> Matrix3<S> { Matrix3::from_cols(self[0].neg(), self[1].neg(), self[2].neg()) } }
-impl<S: BaseFloat> Neg<Matrix4<S>> for Matrix4<S> { #[inline] fn neg(self) -> Matrix4<S> { Matrix4::from_cols(self[0].neg(), self[1].neg(), self[2].neg(), self[3].neg()) } }
+impl<S: BaseFloat + 'static> Add for Matrix3<S> {
+    type Output = Matrix3<S>;
 
-impl<S: BaseFloat> Zero for Matrix2<S> { #[inline] fn zero() -> Matrix2<S> { Matrix2::zero() } #[inline] fn is_zero(&self) -> bool{ *self == zero() } }
-impl<S: BaseFloat> Zero for Matrix3<S> { #[inline] fn zero() -> Matrix3<S> { Matrix3::zero() } #[inline] fn is_zero(&self) -> bool{ *self == zero() } }
-impl<S: BaseFloat> Zero for Matrix4<S> { #[inline] fn zero() -> Matrix4<S> { Matrix4::zero() } #[inline] fn is_zero(&self) -> bool{ *self == zero() } }
+    #[inline]
+    fn add(self, other: Matrix3<S>) -> Matrix3<S> { self.add_m(&other) }
+}
 
-impl<S: BaseFloat + 'static> Mul<Matrix2<S>, Matrix2<S>> for Matrix2<S> { #[inline] fn mul(self, other: Matrix2<S>) -> Matrix2<S> { self.mul_m(&other) } }
-impl<S: BaseFloat + 'static> Mul<Matrix3<S>, Matrix3<S>> for Matrix3<S> { #[inline] fn mul(self, other: Matrix3<S>) -> Matrix3<S> { self.mul_m(&other) } }
-impl<S: BaseFloat + 'static> Mul<Matrix4<S>, Matrix4<S>> for Matrix4<S> { #[inline] fn mul(self, other: Matrix4<S>) -> Matrix4<S> { self.mul_m(&other) } }
+impl<S: BaseFloat + 'static> Add for Matrix4<S> {
+    type Output = Matrix4<S>;
 
-impl<S: BaseFloat> One for Matrix2<S> { #[inline] fn one() -> Matrix2<S> { Matrix2::identity() } }
-impl<S: BaseFloat> One for Matrix3<S> { #[inline] fn one() -> Matrix3<S> { Matrix3::identity() } }
-impl<S: BaseFloat> One for Matrix4<S> { #[inline] fn one() -> Matrix4<S> { Matrix4::identity() } }
+    #[inline]
+    fn add(self, other: Matrix4<S>) -> Matrix4<S> { self.add_m(&other) }
+}
+
+impl<S: BaseFloat + 'static> Sub for Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    #[inline]
+    fn sub(self, other: Matrix2<S>) -> Matrix2<S> { self.sub_m(&other) }
+}
+
+impl<S: BaseFloat + 'static> Sub for Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    #[inline]
+    fn sub(self, other: Matrix3<S>) -> Matrix3<S> { self.sub_m(&other) }
+}
+
+impl<S: BaseFloat + 'static> Sub for Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    #[inline]
+    fn sub(self, other: Matrix4<S>) -> Matrix4<S> { self.sub_m(&other) }
+}
+
+impl<S: BaseFloat> Neg for Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix2<S> { Matrix2::from_cols(self[0].neg(), self[1].neg()) }
+}
+
+impl<S: BaseFloat> Neg for Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix3<S> { Matrix3::from_cols(self[0].neg(), self[1].neg(), self[2].neg()) }
+}
+
+impl<S: BaseFloat> Neg for Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix4<S> { Matrix4::from_cols(self[0].neg(), self[1].neg(), self[2].neg(), self[3].neg()) }
+}
+
+impl<S: BaseFloat> Zero for Matrix2<S> {
+    #[inline]
+    fn zero() -> Matrix2<S> { Matrix2::zero() }
+    #[inline]
+    fn is_zero(&self) -> bool{ *self == zero() }
+}
+
+impl<S: BaseFloat> Zero for Matrix3<S> {
+    #[inline]
+    fn zero() -> Matrix3<S> { Matrix3::zero() }
+    #[inline]
+    fn is_zero(&self) -> bool{ *self == zero() }
+}
+
+impl<S: BaseFloat> Zero for Matrix4<S> {
+    #[inline]
+    fn zero() -> Matrix4<S> { Matrix4::zero() }
+    #[inline]
+    fn is_zero(&self) -> bool{ *self == zero() }
+}
+
+impl<S: BaseFloat + 'static> Mul for Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    #[inline]
+    fn mul(self, other: Matrix2<S>) -> Matrix2<S> { self.mul_m(&other) }
+}
+
+impl<S: BaseFloat + 'static> Mul for Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    #[inline]
+    fn mul(self, other: Matrix3<S>) -> Matrix3<S> { self.mul_m(&other) }
+}
+
+impl<S: BaseFloat + 'static> Mul for Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    #[inline]
+    fn mul(self, other: Matrix4<S>) -> Matrix4<S> { self.mul_m(&other) }
+}
+
+impl<S: BaseFloat> One for Matrix2<S> {
+    #[inline]
+    fn one() -> Matrix2<S> { Matrix2::identity() }
+}
+impl<S: BaseFloat> One for Matrix3<S> {
+    #[inline]
+    fn one() -> Matrix3<S> { Matrix3::identity() }
+}
+impl<S: BaseFloat> One for Matrix4<S> {
+    #[inline] fn one() -> Matrix4<S> { Matrix4::identity() }
+}
 
 impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     #[inline]
@@ -438,14 +531,18 @@ impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     }
 }
 
-impl<S> Index<uint, Vector2<S>> for Matrix2<S> {
+impl<S> Index<uint> for Matrix2<S> {
+    type Output =  Vector2<S>;
+
     #[inline]
     fn index<'a>(&'a self, i: &uint) -> &'a Vector2<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint, Vector2<S>> for Matrix2<S> {
+impl<S> IndexMut<uint> for Matrix2<S> {
+    type Output =  Vector2<S>;
+
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector2<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
@@ -518,14 +615,18 @@ impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     }
 }
 
-impl<S> Index<uint, Vector3<S>> for Matrix3<S> {
+impl<S> Index<uint> for Matrix3<S> {
+    type Output = Vector3<S>;
+
     #[inline]
     fn index<'a>(&'a self, i: &uint) -> &'a Vector3<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint, Vector3<S>> for Matrix3<S> {
+impl<S> IndexMut<uint> for Matrix3<S> {
+    type Output = Vector3<S>;
+
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector3<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
@@ -603,14 +704,18 @@ impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     }
 }
 
-impl<S> Index<uint, Vector4<S>> for Matrix4<S> {
+impl<S> Index<uint> for Matrix4<S> {
+    type Output = Vector4<S>;
+
     #[inline]
     fn index<'a>(&'a self, i: &uint) -> &'a Vector4<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint, Vector4<S>> for Matrix4<S> {
+impl<S> IndexMut<uint> for Matrix4<S> {
+    type Output = Vector4<S>;
+
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector4<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])

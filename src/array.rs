@@ -18,7 +18,7 @@ use std::ptr;
 use std::ops::*;
 
 /// An array containing elements of type `Element`
-pub trait Array1<Element: Copy>: Index<uint, Element> + IndexMut<uint, Element> {
+pub trait Array1<Element: Copy>: Index<uint, Output=Element> + IndexMut<uint, Output=Element> {
     /// Get the pointer to the first element of the array.
     fn ptr<'a>(&'a self) -> &'a Element {
         &(*self)[0]
@@ -48,7 +48,7 @@ pub trait Array1<Element: Copy>: Index<uint, Element> + IndexMut<uint, Element> 
 
 /// A column-major array
 pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element: Copy>:
-        Index<uint, Column> + IndexMut<uint, Column> {
+        Index<uint, Output=Column> + IndexMut<uint, Output=Column> {
     /// Get the pointer to the first element of the array.
     fn ptr<'a>(&'a self) -> &'a Element {
         &(*self)[0][0]

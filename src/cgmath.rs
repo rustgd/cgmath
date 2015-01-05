@@ -19,6 +19,7 @@
 #![feature(globs)]
 #![feature(macro_rules)]
 #![feature(old_orphan_check)]
+#![feature(associated_types)]
 
 //! Computer graphics-centric math.
 //!
