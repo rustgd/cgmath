@@ -153,7 +153,7 @@ impl<S: BaseNum> IndexMut<uint> for Point2<S> {
 
 impl<S: BaseNum> Array1<S> for Point2<S> {
     #[inline]
-    fn map(&mut self, op: |S| -> S) -> Point2<S> {
+    fn map<F>(&mut self, mut op: F) -> Point2<S> where F: FnMut(S) -> S {
         self.x = op(self.x);
         self.y = op(self.y);
         *self
@@ -311,7 +311,7 @@ impl<S: BaseNum> IndexMut<uint> for Point3<S> {
 
 impl<S: BaseNum> Array1<S> for Point3<S> {
     #[inline]
-    fn map(&mut self, op: |S| -> S) -> Point3<S> {
+    fn map<F>(&mut self, mut op: F) -> Point3<S> where F: FnMut(S) -> S {
         self.x = op(self.x);
         self.y = op(self.y);
         self.z = op(self.z);

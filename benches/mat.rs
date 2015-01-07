@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(macro_rules)]
-#![feature(globs)]
+
+
 
 extern crate test;
 extern crate cgmath;
@@ -24,7 +24,7 @@ use test::Bencher;
 use cgmath::*;
 
 #[path="common/macros.rs"]
-mod macros;
+#[macro_use] mod macros;
 
 bench_binop!(_bench_matrix2_mul_m, Matrix2<f32>, Matrix2<f32>, mul_m);
 bench_binop!(_bench_matrix3_mul_m, Matrix3<f32>, Matrix3<f32>, mul_m);

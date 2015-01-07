@@ -563,7 +563,7 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |&Vector2<S>| -> Vector2<S>) -> Matrix2<S> {
+    fn map<F>(&mut self, mut op: F) -> Matrix2<S> where F: FnMut(&Vector2<S>) -> Vector2<S> {
         self.x = op(&self.x);
         self.y = op(&self.y);
         *self
@@ -649,7 +649,7 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |&Vector3<S>| -> Vector3<S>) -> Matrix3<S> {
+    fn map<F>(&mut self, mut op: F) -> Matrix3<S> where F: FnMut(&Vector3<S>) -> Vector3<S> {
         self.x = op(&self.x);
         self.y = op(&self.y);
         self.z = op(&self.z);
@@ -740,7 +740,7 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 
     #[inline]
-    fn map(&mut self, op: |&Vector4<S>| -> Vector4<S>) -> Matrix4<S> {
+    fn map<F>(&mut self, mut op: F) -> Matrix4<S> where F: FnMut(&Vector4<S>) -> Vector4<S> {
         self.x = op(&self.x);
         self.y = op(&self.y);
         self.z = op(&self.z);
@@ -1188,7 +1188,7 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
             let one: S = one();
             let inv_det = one / det;
             let t = self.transpose();
-            let cf = |i, j| {
+            let cf = |&: i, j| {
                 let mat = match i {
                     0 => Matrix3::from_cols(t.y.truncate_n(j),
                                             t.z.truncate_n(j),

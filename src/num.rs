@@ -17,7 +17,7 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
-use std::num::{FloatMath, Int, NumCast, Float};
+use std::num::{Float, Int, NumCast};
 use std::ops::*;
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
@@ -158,7 +158,7 @@ impl BaseInt for u64 {}
 impl BaseInt for uint {}
 
 /// Base floating point types
-pub trait BaseFloat : BaseNum + FloatMath + ApproxEq<Self> {}
+pub trait BaseFloat : BaseNum + Float + ApproxEq<Self> {}
 
 impl BaseFloat for f32 {}
 impl BaseFloat for f64 {}

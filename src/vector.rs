@@ -271,7 +271,7 @@ macro_rules! vec(
 
         impl<$S: Copy> Array1<$S> for $Self<$S> {
             #[inline]
-            fn map(&mut self, op: |$S| -> $S) -> $Self<$S> {
+            fn map<F>(&mut self, mut op: F) -> $Self<$S> where F: FnMut($S) -> $S {
                 $(self.$field = op(self.$field);)+ *self
             }
         }
