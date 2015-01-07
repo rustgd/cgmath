@@ -41,7 +41,7 @@ pub trait ToQuaternion<S: BaseFloat> {
 
 impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
     #[inline]
-    fn map(&mut self, op: |S| -> S) -> Quaternion<S> {
+    fn map<F>(&mut self, mut op: F) -> Quaternion<S> where F: FnMut(S) -> S {
         self.s = op(self.s);
         self.v.x = op(self.v.x);
         self.v.y = op(self.v.y);

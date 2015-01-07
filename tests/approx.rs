@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(globs)]
+
 #![feature(phase)]
 
-#[phase(plugin, link)]
+#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;

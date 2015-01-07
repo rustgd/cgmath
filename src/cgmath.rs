@@ -16,11 +16,6 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
-#![feature(globs)]
-#![feature(macro_rules)]
-#![feature(old_orphan_check)]
-#![feature(associated_types)]
-
 //! Computer graphics-centric math.
 //!
 //! This crate provides useful mathematical primitives and operations on them.

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(macro_rules)]
+
 
 extern crate test;
 extern crate cgmath;
@@ -24,7 +24,7 @@ use test::Bencher;
 use cgmath::{Quaternion, Basis2, Basis3, Vector3, Rotation2, Rotation3, Rad};
 
 #[path="common/macros.rs"]
-mod macros;
+#[macro_use] mod macros;
 
 fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
     const LEN: uint = 1 << 13;

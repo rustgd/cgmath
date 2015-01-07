@@ -43,7 +43,8 @@ pub trait Array1<Element: Copy>: Index<uint, Output=Element> + IndexMut<uint, Ou
     }
 
     /// Apply a function to each element.
-    fn map(&mut self, op: |Element| -> Element) -> Self;
+    fn map<F>(&mut self, op: F) -> Self
+        where F:  FnMut(Element) -> Element;
 }
 
 /// A column-major array
@@ -86,7 +87,8 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
     }
 
     /// Apply a function to each column.
-    fn map(&mut self, op: |&Column| -> Column) -> Self;
+    fn map<F>(&mut self, op: F) -> Self
+        where F: FnMut(&Column) -> Column;
 }
 
 /// Homogeneous arrays of elements that can be converted to and from `[T, ..N]`

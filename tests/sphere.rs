@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(globs)]
+
 
 extern crate cgmath;
 
 use cgmath::*;
-use std::num::FloatMath;
+use std::num::Float;
 
 #[test]
 fn test_intersection() {
