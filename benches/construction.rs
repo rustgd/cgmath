@@ -55,7 +55,7 @@ fn _bench_rot3_from_axisangle(bh: &mut Bencher) {
     bench_from_axis_angle::<Basis3<f32>>(bh)
 }
 
-bench_construction!(_bench_rot2_from_axisangle, Basis2<f32>, Rotation2::from_angle, angle: Rad<f32>);
+bench_construction!(_bench_rot2_from_axisangle, Basis2<f32>, Rotation2::from_angle [ angle: Rad<f32> ]);
 
-bench_construction!(_bench_quat_from_euler_angles, Quaternion<f32>, Rotation3::from_euler, roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>);
-bench_construction!(_bench_rot3_from_euler_angles, Basis3<f32>, Rotation3::from_euler, roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>);
+bench_construction!(_bench_quat_from_euler_angles, Quaternion<f32>, Rotation3::from_euler [roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>]);
+bench_construction!(_bench_rot3_from_euler_angles, Basis3<f32>, Rotation3::from_euler [roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>]);

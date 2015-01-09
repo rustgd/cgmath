@@ -82,7 +82,7 @@ macro_rules! bench_unop(
 );
 
 macro_rules! bench_construction(
-    ($name: ident, $t: ty, $constructor: path $(, $args: ident: $types: ty)*) => {
+    ($name: ident, $t: ty, $constructor: path [ $($args: ident: $types: ty),+ ]) => {
         #[bench]
         fn $name(bh: &mut Bencher) {
             const LEN: uint = 1 << 13;
