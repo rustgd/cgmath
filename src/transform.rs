@@ -153,7 +153,7 @@ impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S,Vector3<S>,R>
 
 impl<S: BaseFloat, R: fmt::Show + Rotation3<S>> fmt::Show for Decomposed<S,Vector3<S>,R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "(scale({}), rot({}), disp{})",
+        write!(f, "(scale({:?}), rot({:?}), disp{:?})",
             self.scale, self.rot, self.disp)
     }
 }

@@ -457,7 +457,7 @@ impl<S: BaseNum> Vector4<S> {
             1 => Vector3::new(self.x, self.z, self.w),
             2 => Vector3::new(self.x, self.y, self.w),
             3 => Vector3::new(self.x, self.y, self.z),
-            _ => panic!("{} is out of range", n)
+            _ => panic!("{:?} is out of range", n)
         }
     }
 }
@@ -555,18 +555,18 @@ impl<S: BaseFloat> EuclideanVector<S> for Vector4<S> {
 
 impl<S: BaseNum> fmt::Show for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}]", self.x, self.y)
+        write!(f, "[{:?}, {:?}]", self.x, self.y)
     }
 }
 
 impl<S: BaseNum> fmt::Show for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}, {}]", self.x, self.y, self.z)
+        write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
     }
 }
 
 impl<S: BaseNum> fmt::Show for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}, {}, {}, {}]", self.x, self.y, self.z, self.w)
+        write!(f, "[{:?}, {:?}, {:?}, {:?}]", self.x, self.y, self.z, self.w)
     }
 }

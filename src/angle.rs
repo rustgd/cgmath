@@ -284,14 +284,14 @@ Angle<S> for Deg<S> {
 impl<S: BaseFloat + fmt::Show>
 fmt::Show for Rad<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} rad", self.s)
+        write!(f, "{:?} rad", self.s)
     }
 }
 
 impl<S: BaseFloat + fmt::Show>
 fmt::Show for Deg<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}°", self.s)
+        write!(f, "{:?}°", self.s)
     }
 }
 
