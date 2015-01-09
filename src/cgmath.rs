@@ -15,6 +15,7 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
+#![feature(old_impl_check)]
 
 //! Computer graphics-centric math.
 //!

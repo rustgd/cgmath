@@ -14,8 +14,6 @@
 // limitations under the License.
 
 
-#![feature(phase)]
-
 #[macro_use]
 extern crate cgmath;
 

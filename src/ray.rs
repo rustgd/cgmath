@@ -25,6 +25,7 @@ pub struct Ray<P,V> {
     pub direction: V,
 }
 
+#[old_impl_check]
 impl<S: BaseNum, V: Vector<S>, P: Point<S, V>> Ray<P, V> {
     pub fn new(origin: P, direction: V) -> Ray<P,V> {
         Ray { origin: origin, direction: direction }

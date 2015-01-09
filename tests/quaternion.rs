@@ -45,7 +45,7 @@ fn to_and_from_quaternion()
         if !(ax.approx_eq_eps(&bx, &0.001) &&
              ay.approx_eq_eps(&by, &0.001) &&
              az.approx_eq_eps(&bz, &0.001)) {
-            panic!("{} != {}", a, b)
+            panic!("{:?} != {:?}", a, b)
         }
     }
 

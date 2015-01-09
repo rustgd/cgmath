@@ -50,7 +50,7 @@ macro_rules! assert_approx_eq_eps(
         let eps = &($eps);
         let (given_val, expected_val) = (&($given), &($expected));
         if !given_val.approx_eq_eps(expected_val, eps) {
-            panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+            panic!("assertion failed: `left ≈ right` (left: `{:?}`, right: `{:?}`, tolerance: `{:?}`)",
                 *given_val, *expected_val, *eps
             );
         }
@@ -62,7 +62,7 @@ macro_rules! assert_approx_eq(
     ($given: expr, $expected: expr) => ({
         let (given_val, expected_val) = (&($given), &($expected));
         if !given_val.approx_eq(expected_val) {
-            panic!("assertion failed: `left ≈ right` (left: `{}`, right: `{}`, tolerance: `{}`)",
+            panic!("assertion failed: `left ≈ right` (left: `{:?}`, right: `{:?}`, tolerance: `{:?}`)",
                 *given_val, *expected_val,
                 ApproxEq::approx_epsilon(Some(*given_val))
             );

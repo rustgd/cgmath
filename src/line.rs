@@ -28,6 +28,7 @@ pub struct Line<P> {
     pub dest: P,
 }
 
+#[old_impl_check]
 impl<S: BaseNum, V: Vector<S>, P: Point<S, V>>  Line<P> {
     pub fn new(origin: P, dest: P) -> Line<P> {
         Line { origin:origin, dest:dest }
