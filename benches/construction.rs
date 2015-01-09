@@ -27,7 +27,7 @@ use cgmath::{Quaternion, Basis2, Basis3, Vector3, Rotation2, Rotation3, Rad};
 #[macro_use] mod macros;
 
 fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
-    const LEN: uint = 1 << 13;
+    const LEN: usize = 1 << 13;
 
     let mut rng = IsaacRng::new_unseeded();
 

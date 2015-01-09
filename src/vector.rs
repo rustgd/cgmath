@@ -251,20 +251,20 @@ macro_rules! vec(
             }
         }
 
-        impl<$S: Copy> Index<uint> for $Self<$S> {
+        impl<$S: Copy> Index<usize> for $Self<$S> {
             type Output = S;
 
             #[inline]
-            fn index<'a>(&'a self, i: &uint) -> &'a $S {
+            fn index<'a>(&'a self, i: &usize) -> &'a $S {
                 &self.as_fixed()[*i]
             }
         }
 
-        impl<$S: Copy> IndexMut<uint> for $Self<$S> {
+        impl<$S: Copy> IndexMut<usize> for $Self<$S> {
             type Output = S;
 
             #[inline]
-            fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut $S {
+            fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut $S {
                 &mut self.as_mut_fixed()[*i]
             }
         }
@@ -451,7 +451,7 @@ impl<S: BaseNum> Vector4<S> {
 
     /// Create a `Vector3`, dropping the nth element
     #[inline]
-    pub fn truncate_n(&self, n: int)-> Vector3<S> {
+    pub fn truncate_n(&self, n: isize)-> Vector3<S> {
         match n {
             0 => Vector3::new(self.y, self.z, self.w),
             1 => Vector3::new(self.x, self.z, self.w),
