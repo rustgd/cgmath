@@ -135,18 +135,18 @@ impl<S> FixedArray<[S; 2]> for Point2<S> {
     }
 }
 
-impl<S: BaseNum> Index<uint> for Point2<S> {
+impl<S: BaseNum> Index<usize> for Point2<S> {
     type Output = S;
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a S {
+    fn index<'a>(&'a self, i: &usize) -> &'a S {
         &self.as_fixed()[*i]
     }
 }
 
-impl<S: BaseNum> IndexMut<uint> for Point2<S> {
+impl<S: BaseNum> IndexMut<usize> for Point2<S> {
     type Output = S;
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         &mut self.as_mut_fixed()[*i]
     }
 }
@@ -291,20 +291,20 @@ impl<S> FixedArray<[S; 3]> for Point3<S> {
     }
 }
 
-impl<S: BaseNum> Index<uint> for Point3<S> {
+impl<S: BaseNum> Index<usize> for Point3<S> {
     type Output = S;
 
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a S {
+    fn index<'a>(&'a self, i: &usize) -> &'a S {
         &self.as_fixed()[*i]
     }
 }
 
-impl<S: BaseNum> IndexMut<uint> for Point3<S> {
+impl<S: BaseNum> IndexMut<usize> for Point3<S> {
     type Output = S;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         &mut self.as_mut_fixed()[*i]
     }
 }

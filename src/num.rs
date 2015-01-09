@@ -35,12 +35,12 @@ macro_rules! partial_ord_int (
     )
 );
 
-partial_ord_int!(int);
+partial_ord_int!(isize);
 partial_ord_int!(i8);
 partial_ord_int!(i16);
 partial_ord_int!(i32);
 partial_ord_int!(i64);
-partial_ord_int!(uint);
+partial_ord_int!(usize);
 partial_ord_int!(u8);
 partial_ord_int!(u16);
 partial_ord_int!(u32);
@@ -106,8 +106,8 @@ impl_basenum_int!(u8);
 impl_basenum_int!(u16);
 impl_basenum_int!(u32);
 impl_basenum_int!(u64);
-impl_basenum_int!(int);
-impl_basenum_int!(uint);
+impl_basenum_int!(isize);
+impl_basenum_int!(usize);
 
 
 macro_rules! impl_basenum_float (
@@ -150,12 +150,12 @@ impl BaseInt for i8 {}
 impl BaseInt for i16 {}
 impl BaseInt for i32 {}
 impl BaseInt for i64 {}
-impl BaseInt for int {}
+impl BaseInt for isize {}
 impl BaseInt for u8 {}
 impl BaseInt for u16 {}
 impl BaseInt for u32 {}
 impl BaseInt for u64 {}
-impl BaseInt for uint {}
+impl BaseInt for usize {}
 
 /// Base floating point types
 pub trait BaseFloat : BaseNum + Float + ApproxEq<Self> {}

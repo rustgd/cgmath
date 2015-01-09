@@ -79,7 +79,7 @@ pub struct PerspectiveFov<S, A> {
 
 impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
-        let angle = self.fovy.div_s(cast(2i).unwrap());
+        let angle = self.fovy.div_s(cast(2i8).unwrap());
         let ymax = self.near * tan(angle.to_rad());
         let xmax = ymax * self.aspect;
 
@@ -112,8 +112,8 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
         assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: {:?}", self.far);
         assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", self.far, self.near);
 
-        let f = cot(self.fovy.div_s(cast(2i).unwrap()).to_rad());
-        let two: S = cast(2i).unwrap();
+        let f = cot(self.fovy.div_s(cast(2i8).unwrap()).to_rad());
+        let two: S = cast(2i8).unwrap();
 
         let c0r0 = f / self.aspect;
         let c0r1 = zero();
@@ -163,7 +163,7 @@ impl<S: BaseFloat + 'static> ToMatrix4<S> for Perspective<S> {
         assert!(self.bottom <= self.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", self.bottom, self.top);
         assert!(self.near   <= self.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", self.near, self.far);
 
-        let two: S = cast(2i).unwrap();
+        let two: S = cast(2i8).unwrap();
 
         let c0r0 = (two * self.near) / (self.right - self.left);
         let c0r1 = zero();
@@ -215,7 +215,7 @@ impl<S: BaseFloat> Projection<S> for Ortho<S> {
 
 impl<S: BaseFloat> ToMatrix4<S> for Ortho<S> {
     fn to_matrix4(&self) -> Matrix4<S> {
-        let two: S = cast(2i).unwrap();
+        let two: S = cast(2i8).unwrap();
 
         let c0r0 = two / (self.right - self.left);
         let c0r1 = zero();

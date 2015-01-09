@@ -50,21 +50,21 @@ impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Index<uint> for Quaternion<S> {
+impl<S: BaseFloat> Index<usize> for Quaternion<S> {
     type Output = S;
 
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a S {
+    fn index<'a>(&'a self, i: &usize) -> &'a S {
         let slice: &[S; 4] = unsafe { mem::transmute(self) };
         &slice[*i]
     }
 }
 
-impl<S: BaseFloat> IndexMut<uint> for Quaternion<S> {
+impl<S: BaseFloat> IndexMut<usize> for Quaternion<S> {
     type Output = S;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut S {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         let slice: &'a mut [S; 4] = unsafe { mem::transmute(self) };
         &mut slice[*i]
     }
@@ -112,7 +112,7 @@ impl<S: BaseFloat> Quaternion<S> {
     #[inline]
     pub fn mul_v(&self, vec: &Vector3<S>) -> Vector3<S>  {
         let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2i).unwrap()).add_v(vec)
+        self.v.cross(&tmp).mul_s(cast(2i8).unwrap()).add_v(vec)
     }
 
     /// The sum of this quaternion and `other`

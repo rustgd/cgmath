@@ -531,33 +531,33 @@ impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     }
 }
 
-impl<S> Index<uint> for Matrix2<S> {
+impl<S> Index<usize> for Matrix2<S> {
     type Output =  Vector2<S>;
 
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a Vector2<S> {
+    fn index<'a>(&'a self, i: &usize) -> &'a Vector2<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint> for Matrix2<S> {
+impl<S> IndexMut<usize> for Matrix2<S> {
     type Output =  Vector2<S>;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector2<S> {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector2<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
     }
 }
 
 impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
-    fn row(&self, r: uint) -> Vector2<S> {
+    fn row(&self, r: usize) -> Vector2<S> {
         Vector2::new(self[0][r],
                      self[1][r])
     }
 
     #[inline]
-    fn swap_rows(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: usize, b: usize) {
         (&mut self[0]).swap_elems(a, b);
         (&mut self[1]).swap_elems(a, b);
     }
@@ -615,34 +615,34 @@ impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     }
 }
 
-impl<S> Index<uint> for Matrix3<S> {
+impl<S> Index<usize> for Matrix3<S> {
     type Output = Vector3<S>;
 
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a Vector3<S> {
+    fn index<'a>(&'a self, i: &usize) -> &'a Vector3<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint> for Matrix3<S> {
+impl<S> IndexMut<usize> for Matrix3<S> {
     type Output = Vector3<S>;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector3<S> {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector3<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
     }
 }
 
 impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
-    fn row(&self, r: uint) -> Vector3<S> {
+    fn row(&self, r: usize) -> Vector3<S> {
         Vector3::new(self[0][r],
                      self[1][r],
                      self[2][r])
     }
 
     #[inline]
-    fn swap_rows(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: usize, b: usize) {
         (&mut self[0]).swap_elems(a, b);
         (&mut self[1]).swap_elems(a, b);
         (&mut self[2]).swap_elems(a, b);
@@ -704,27 +704,27 @@ impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     }
 }
 
-impl<S> Index<uint> for Matrix4<S> {
+impl<S> Index<usize> for Matrix4<S> {
     type Output = Vector4<S>;
 
     #[inline]
-    fn index<'a>(&'a self, i: &uint) -> &'a Vector4<S> {
+    fn index<'a>(&'a self, i: &usize) -> &'a Vector4<S> {
         FixedArray::from_fixed_ref(&self.as_fixed()[*i])
     }
 }
 
-impl<S> IndexMut<uint> for Matrix4<S> {
+impl<S> IndexMut<usize> for Matrix4<S> {
     type Output = Vector4<S>;
 
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &uint) -> &'a mut Vector4<S> {
+    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector4<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
     }
 }
 
 impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
-    fn row(&self, r: uint) -> Vector4<S> {
+    fn row(&self, r: usize) -> Vector4<S> {
         Vector4::new(self[0][r],
                      self[1][r],
                      self[2][r],
@@ -732,7 +732,7 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 
     #[inline]
-    fn swap_rows(&mut self, a: uint, b: uint) {
+    fn swap_rows(&mut self, a: usize, b: usize) {
         (&mut self[0]).swap_elems(a, b);
         (&mut self[1]).swap_elems(a, b);
         (&mut self[2]).swap_elems(a, b);

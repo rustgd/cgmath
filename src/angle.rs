@@ -150,10 +150,10 @@ pub trait Angle
 
     fn full_turn() -> Self;
 
-    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2i).unwrap()) }
-    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i).unwrap()) }
-    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i).unwrap()) }
-    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i).unwrap()) }
+    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2i8).unwrap()) }
+    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i8).unwrap()) }
+    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i8).unwrap()) }
+    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i8).unwrap()) }
     
     #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
@@ -264,7 +264,7 @@ Angle<S> for Rad<S> {
 impl<S: BaseFloat>
 Angle<S> for Deg<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
-    #[inline] fn full_turn() -> Deg<S> { deg(cast(360i).unwrap()) }
+    #[inline] fn full_turn() -> Deg<S> { deg(cast(360i32).unwrap()) }
 }
 
 #[inline] pub fn sin<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.sin() }
