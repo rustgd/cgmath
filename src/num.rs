@@ -73,7 +73,7 @@ pub trait One {
 pub trait BaseNum:
     Copy + NumCast + Clone + Add<Output=Self> + Sub<Output=Self> +
     Mul<Output=Self> + Div<Output=Self> + Rem<Output=Self> + Neg<Output=Self> + PartialEq
-    + PartialOrd + cmp::PartialOrd + fmt::Show + Zero + One
+    + PartialOrd + cmp::PartialOrd + fmt::Debug + Zero + One
 {}
 
 
