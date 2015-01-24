@@ -84,7 +84,7 @@ pub trait Angle
 +   ToRad<S>
 +   ToDeg<S>
 +   ScalarConv<S>
-+   fmt::Show
++   fmt::Debug
 {
     /// Create a new angle from any other valid angle.
     fn from<A: Angle<S>>(theta: A) -> Self;
@@ -154,7 +154,7 @@ pub trait Angle
     #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i8).unwrap()) }
     #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i8).unwrap()) }
     #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i8).unwrap()) }
-    
+
     #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
 
@@ -281,15 +281,15 @@ Angle<S> for Deg<S> {
 #[inline] pub fn atan<S: BaseFloat>(s: S) -> Rad<S> { rad(s.atan()) }
 #[inline] pub fn atan2<S: BaseFloat>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
 
-impl<S: BaseFloat + fmt::Show>
-fmt::Show for Rad<S> {
+impl<S: BaseFloat + fmt::Debug>
+fmt::Debug for Rad<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?} rad", self.s)
     }
 }
 
-impl<S: BaseFloat + fmt::Show>
-fmt::Show for Deg<S> {
+impl<S: BaseFloat + fmt::Debug>
+fmt::Debug for Deg<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}°", self.s)
     }
