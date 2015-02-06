@@ -43,7 +43,7 @@ pub use matrix::{ToMatrix2, ToMatrix3, ToMatrix4};
 pub use quaternion::{Quaternion, ToQuaternion};
 pub use vector::{Vector, EuclideanVector};
 pub use vector::{Vector2, Vector3, Vector4};
-pub use vector::dot;
+pub use vector::{dot, vec2, vec3, vec4};
 
 pub use angle::{rad, deg};
 pub use angle::{Angle, Rad, Deg};
