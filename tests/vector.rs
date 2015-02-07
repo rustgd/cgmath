@@ -21,6 +21,13 @@ use std::f64;
 use std::num::Float;
 
 #[test]
+fn test_constructor() {
+    assert_eq!(vec2(1f32, 2f32), Vector2::new(1f32, 2f32));
+    assert_eq!(vec3(1f64, 2f64, 3f64), Vector3::new(1f64, 2f64, 3f64));
+    assert_eq!(vec4(1is, 2is, 3is, 4is), Vector4::new(1is, 2is, 3is, 4is));
+}
+
+#[test]
 fn test_from_value() {
     assert_eq!(Vector2::from_value(102i), Vector2::new(102i, 102i));
     assert_eq!(Vector3::from_value(22i), Vector3::new(22i, 22i, 22i));

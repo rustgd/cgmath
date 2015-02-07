@@ -22,10 +22,10 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector2, Vector3, Vector4, one, zero};
+//! use cgmath::{Vector2, Vector3, Vector4, one, zero, vec3};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
-//! assert_eq!(Vector3::new(0.0f64, 0.0f64, 0.0f64), zero());
+//! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), zero());
 //! assert_eq!(Vector4::from_value(1.0f64), one());
 //! ```
 //!
@@ -177,7 +177,7 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
-    ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr) => (
+    ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => (
         #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable, Rand)]
         pub struct $Self<S> { $(pub $field: S),+ }
 
@@ -187,6 +187,12 @@ macro_rules! vec(
             pub fn new($($field: $S),+) -> $Self<$S> {
                 $Self { $($field: $field),+ }
             }
+        }
+
+        /// The short constructor.
+        #[inline]
+        pub fn $constructor<S>($($field: S),+) -> $Self<S> {
+            $Self::new($($field),+)
         }
 
         impl<$S: Copy> $Self<$S> {
@@ -369,9 +375,9 @@ macro_rules! fold {
     ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
 }
 
-vec!(Vector2<S> { x, y }, 2);
-vec!(Vector3<S> { x, y, z }, 3);
-vec!(Vector4<S> { x, y, z, w }, 4);
+vec!(Vector2<S> { x, y }, 2, vec2);
+vec!(Vector3<S> { x, y, z }, 3, vec3);
+vec!(Vector4<S> { x, y, z, w }, 4, vec4);
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {
