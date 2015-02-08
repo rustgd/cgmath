@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(core)]
+
 extern crate cgmath;
 
 use cgmath::{Vector4, ortho, Matrix, Matrix4, Vector};
