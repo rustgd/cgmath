@@ -61,8 +61,6 @@ impl<S: BaseFloat> Index<usize> for Quaternion<S> {
 }
 
 impl<S: BaseFloat> IndexMut<usize> for Quaternion<S> {
-    type Output = S;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         let slice: &'a mut [S; 4] = unsafe { mem::transmute(self) };
@@ -363,7 +361,7 @@ impl<S: BaseFloat> ToMatrix4<S> for Quaternion<S> {
 
 impl<S: BaseFloat> Neg for Quaternion<S> {
     type Output = Quaternion<S>;
- 
+
     #[inline]
     fn neg(self) -> Quaternion<S> {
         Quaternion::from_sv(-self.s, -self.v)

@@ -144,7 +144,6 @@ impl<S: BaseNum> Index<usize> for Point2<S> {
 }
 
 impl<S: BaseNum> IndexMut<usize> for Point2<S> {
-    type Output = S;
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         &mut self.as_mut_fixed()[*i]
@@ -301,8 +300,6 @@ impl<S: BaseNum> Index<usize> for Point3<S> {
 }
 
 impl<S: BaseNum> IndexMut<usize> for Point3<S> {
-    type Output = S;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
         &mut self.as_mut_fixed()[*i]
