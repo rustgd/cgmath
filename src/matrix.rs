@@ -541,8 +541,6 @@ impl<S> Index<usize> for Matrix2<S> {
 }
 
 impl<S> IndexMut<usize> for Matrix2<S> {
-    type Output =  Vector2<S>;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector2<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
@@ -625,8 +623,6 @@ impl<S> Index<usize> for Matrix3<S> {
 }
 
 impl<S> IndexMut<usize> for Matrix3<S> {
-    type Output = Vector3<S>;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector3<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
@@ -714,8 +710,6 @@ impl<S> Index<usize> for Matrix4<S> {
 }
 
 impl<S> IndexMut<usize> for Matrix4<S> {
-    type Output = Vector4<S>;
-
     #[inline]
     fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut Vector4<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[*i])
