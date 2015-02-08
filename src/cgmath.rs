@@ -15,7 +15,7 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![feature(old_impl_check)]
+#![feature(old_impl_check, plugin)]
 
 //! Computer graphics-centric math.
 //!
@@ -32,6 +32,9 @@
 //! These are provided for convenience.
 
 extern crate "rustc-serialize" as rustc_serialize;
+extern crate rand;
+#[plugin]
+extern crate rand_macros;
 
 // Re-exports
 

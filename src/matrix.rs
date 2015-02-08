@@ -30,15 +30,18 @@ use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive_Rand]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix2<S> { pub x: Vector2<S>, pub y: Vector2<S> }
 
 /// A 3 x 3, column major matrix
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive_Rand]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> }
 
 /// A 4 x 4, column major matrix
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable, Rand)]
+#[derive_Rand]
+#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
