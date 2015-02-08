@@ -557,19 +557,19 @@ impl<S: BaseFloat> EuclideanVector<S> for Vector4<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Show for Vector2<S> {
+impl<S: BaseNum> fmt::Debug for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}]", self.x, self.y)
     }
 }
 
-impl<S: BaseNum> fmt::Show for Vector3<S> {
+impl<S: BaseNum> fmt::Debug for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
     }
 }
 
-impl<S: BaseNum> fmt::Show for Vector4<S> {
+impl<S: BaseNum> fmt::Debug for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}, {:?}]", self.x, self.y, self.z, self.w)
     }

@@ -368,7 +368,7 @@ impl<S: BaseFloat> Neg for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> fmt::Show for Quaternion<S> {
+impl<S: BaseFloat> fmt::Debug for Quaternion<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?} + {:?}i + {:?}j + {:?}k",
                 self.s,

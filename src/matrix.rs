@@ -1375,7 +1375,7 @@ impl<S: BaseFloat + 'static> ToQuaternion<S> for Matrix3<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Show for Matrix2<S> {
+impl<S: BaseNum> fmt::Debug for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}], [{:?}, {:?}]]",
                 self[0][0], self[0][1],
@@ -1383,7 +1383,7 @@ impl<S: BaseNum> fmt::Show for Matrix2<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Show for Matrix3<S> {
+impl<S: BaseNum> fmt::Debug for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2],
@@ -1392,7 +1392,7 @@ impl<S: BaseNum> fmt::Show for Matrix3<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Show for Matrix4<S> {
+impl<S: BaseNum> fmt::Debug for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2], self[0][3],

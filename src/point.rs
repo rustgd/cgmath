@@ -428,13 +428,13 @@ impl<S: BaseFloat> ApproxEq<S> for Point3<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Show for Point2<S> {
+impl<S: BaseNum> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}]", self.x, self.y)
     }
 }
 
-impl<S: BaseNum> fmt::Show for Point3<S> {
+impl<S: BaseNum> fmt::Debug for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
     }

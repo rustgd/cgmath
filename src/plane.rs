@@ -129,7 +129,7 @@ ApproxEq<S> for Plane<S> {
     }
 }
 
-impl<S: BaseFloat> fmt::Show for Plane<S> {
+impl<S: BaseFloat> fmt::Debug for Plane<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}x + {:?}y + {:?}z - {:?} = 0",
                self.n.x, self.n.y, self.n.z, self.d)
