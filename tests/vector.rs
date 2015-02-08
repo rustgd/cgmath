@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(core)]
+
 #[macro_use]
 extern crate cgmath;
 
@@ -29,23 +31,23 @@ fn test_constructor() {
 
 #[test]
 fn test_from_value() {
-    assert_eq!(Vector2::from_value(102i), Vector2::new(102i, 102i));
-    assert_eq!(Vector3::from_value(22i), Vector3::new(22i, 22i, 22i));
+    assert_eq!(Vector2::from_value(102is), Vector2::new(102is, 102is));
+    assert_eq!(Vector3::from_value(22is), Vector3::new(22is, 22is, 22is));
     assert_eq!(Vector4::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
 }
 
 #[test]
 fn test_dot() {
-    assert_eq!(Vector2::new(1i, 2i).dot(&Vector2::new(3i, 4i)), 11i);
-    assert_eq!(Vector3::new(1i, 2i, 3i).dot(&Vector3::new(4i, 5i, 6i)), 32i);
-    assert_eq!(Vector4::new(1i, 2i, 3i, 4i).dot(&Vector4::new(5i, 6i, 7i, 8i)), 70i);
+    assert_eq!(Vector2::new(1is, 2is).dot(&Vector2::new(3is, 4is)), 11is);
+    assert_eq!(Vector3::new(1is, 2is, 3is).dot(&Vector3::new(4is, 5is, 6is)), 32is);
+    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).dot(&Vector4::new(5is, 6is, 7is, 8is)), 70is);
 }
 
 #[test]
 fn test_comp_add() {
-    assert_eq!(Vector2::new(1i, 2i).comp_add(), 3i);
-    assert_eq!(Vector3::new(1i, 2i, 3i).comp_add(), 6i);
-    assert_eq!(Vector4::new(1i, 2i, 3i, 4i).comp_add(), 10i);
+    assert_eq!(Vector2::new(1is, 2is).comp_add(), 3is);
+    assert_eq!(Vector3::new(1is, 2is, 3is).comp_add(), 6is);
+    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_add(), 10is);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_add(), 7.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_add(), 15.0f64);
@@ -54,9 +56,9 @@ fn test_comp_add() {
 
 #[test]
 fn test_comp_mul() {
-    assert_eq!(Vector2::new(1i, 2i).comp_mul(), 2i);
-    assert_eq!(Vector3::new(1i, 2i, 3i).comp_mul(), 6i);
-    assert_eq!(Vector4::new(1i, 2i, 3i, 4i).comp_mul(), 24i);
+    assert_eq!(Vector2::new(1is, 2is).comp_mul(), 2is);
+    assert_eq!(Vector3::new(1is, 2is, 3is).comp_mul(), 6is);
+    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_mul(), 24is);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_mul(), 12.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_mul(), 120.0f64);
@@ -65,9 +67,9 @@ fn test_comp_mul() {
 
 #[test]
 fn test_comp_min() {
-    assert_eq!(Vector2::new(1i, 2i).comp_min(), 1i);
-    assert_eq!(Vector3::new(1i, 2i, 3i).comp_min(), 1i);
-    assert_eq!(Vector4::new(1i, 2i, 3i, 4i).comp_min(), 1i);
+    assert_eq!(Vector2::new(1is, 2is).comp_min(), 1is);
+    assert_eq!(Vector3::new(1is, 2is, 3is).comp_min(), 1is);
+    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_min(), 1is);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_min(), 3.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_min(), 4.0f64);
@@ -76,9 +78,9 @@ fn test_comp_min() {
 
 #[test]
 fn test_comp_max() {
-    assert_eq!(Vector2::new(1i, 2i).comp_max(), 2i);
-    assert_eq!(Vector3::new(1i, 2i, 3i).comp_max(), 3i);
-    assert_eq!(Vector4::new(1i, 2i, 3i, 4i).comp_max(), 4i);
+    assert_eq!(Vector2::new(1is, 2is).comp_max(), 2is);
+    assert_eq!(Vector3::new(1is, 2is, 3is).comp_max(), 3is);
+    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_max(), 4is);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_max(), 4.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_max(), 6.0f64);
@@ -87,9 +89,9 @@ fn test_comp_max() {
 
 #[test]
 fn test_cross() {
-    let a = Vector3::new(1i, 2i, 3i);
-    let b = Vector3::new(4i, 5i, 6i);
-    let r = Vector3::new(-3i, 6i, -3i);
+    let a = Vector3::new(1is, 2is, 3is);
+    let b = Vector3::new(4is, 5is, 6is);
+    let r = Vector3::new(-3is, 6is, -3is);
     assert_eq!(a.cross(&b), r);
 
     let mut a = a;
@@ -110,8 +112,8 @@ mod test_length {
 
     #[test]
     fn test_vector2(){
-        let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3i, 4i, 5i) Pythagorean triple
-        let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5i, 12i, 13i) Pythagorean triple
+        let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3is, 4is, 5is) Pythagorean triple
+        let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5is, 12is, 13is) Pythagorean triple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -122,8 +124,8 @@ mod test_length {
 
     #[test]
     fn test_vector3(){
-        let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2i, 3i, 6i, 7i) Pythagorean quadruple
-        let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1i, 4i, 8i, 9i) Pythagorean quadruple
+        let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2is, 3is, 6is, 7is) Pythagorean quadruple
+        let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1is, 4is, 8is, 9is) Pythagorean quadruple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -134,8 +136,8 @@ mod test_length {
 
     #[test]
     fn test_vector4(){
-        let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1i, 2i, 4i, 10i, 11i) Pythagorean quintuple
-        let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1i, 2i, 8i, 10i, 13i) Pythagorean quintuple
+        let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1is, 2is, 4is, 10is, 11is) Pythagorean quintuple
+        let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1is, 2is, 8is, 10is, 13is) Pythagorean quintuple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);

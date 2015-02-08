@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(test)]
 
-
-
+extern crate rand;
 extern crate test;
 extern crate cgmath;
 
-use std::rand::{IsaacRng, Rng};
+use rand::{IsaacRng, Rng};
 use test::Bencher;
 use cgmath::*;
 

@@ -18,3 +18,5 @@ name = "cgmath"
 
 [dependencies]
 rustc-serialize="*"
+rand_macros="*"
+rand="*"
