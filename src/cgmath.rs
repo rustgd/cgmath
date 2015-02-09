@@ -34,6 +34,7 @@
 extern crate "rustc-serialize" as rustc_serialize;
 extern crate rand;
 #[plugin]
+#[no_link]
 extern crate rand_macros;
 
 // Re-exports
