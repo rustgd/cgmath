@@ -177,58 +177,58 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
-    ($Self:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => (
+    ($Self_:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => (
         #[derive_Rand]
         #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
-        pub struct $Self<S> { $(pub $field: S),+ }
+        pub struct $Self_<S> { $(pub $field: S),+ }
 
-        impl<$S> $Self<$S> {
+        impl<$S> $Self_<$S> {
             /// Construct a new vector, using the provided values.
             #[inline]
-            pub fn new($($field: $S),+) -> $Self<$S> {
-                $Self { $($field: $field),+ }
+            pub fn new($($field: $S),+) -> $Self_<$S> {
+                $Self_ { $($field: $field),+ }
             }
         }
 
         /// The short constructor.
         #[inline]
-        pub fn $constructor<S>($($field: S),+) -> $Self<S> {
-            $Self::new($($field),+)
+        pub fn $constructor<S>($($field: S),+) -> $Self_<S> {
+            $Self_::new($($field),+)
         }
 
-        impl<$S: Copy> $Self<$S> {
+        impl<$S: Copy> $Self_<$S> {
             /// Construct a vector from a single value, replicating it.
             #[inline]
-            pub fn from_value(value: $S) -> $Self<$S> {
-                $Self { $($field: value),+ }
+            pub fn from_value(value: $S) -> $Self_<$S> {
+                $Self_ { $($field: value),+ }
             }
         }
 
-        impl<$S: Zero> Zero for $Self<$S> {
+        impl<$S: Zero> Zero for $Self_<$S> {
             #[inline]
-            fn zero() -> $Self<S> { $Self { $($field: zero()),+ } }
+            fn zero() -> $Self_<S> { $Self_ { $($field: zero()),+ } }
 
             #[inline]
             fn is_zero(&self) -> bool { $((self.$field.is_zero()) )&&+ }
         }
 
-        impl<$S: One> One for $Self<$S> {
+        impl<$S: One> One for $Self_<$S> {
             #[inline]
-            fn one() -> $Self<$S> { $Self { $($field: one()),+ } }
+            fn one() -> $Self_<$S> { $Self_ { $($field: one()),+ } }
         }
 
-        impl<$S: NumCast + Copy> $Self<$S> {
+        impl<$S: NumCast + Copy> $Self_<$S> {
             /// Component-wise casting to another type
             #[inline]
-            pub fn cast<T: NumCast>(&self) -> $Self<T> {
-                $Self { $($field: NumCast::from(self.$field).unwrap()),+ }
+            pub fn cast<T: NumCast>(&self) -> $Self_<T> {
+                $Self_ { $($field: NumCast::from(self.$field).unwrap()),+ }
             }
         }
 
-        impl<$S> FixedArray<[$S; $n]> for $Self<$S> {
+        impl<$S> FixedArray<[$S; $n]> for $Self_<$S> {
             #[inline]
             fn into_fixed(self) -> [$S; $n] {
-                match self { $Self { $($field),+ } => [$($field),+] }
+                match self { $Self_ { $($field),+ } => [$($field),+] }
             }
 
             #[inline]
@@ -242,23 +242,23 @@ macro_rules! vec(
             }
 
             #[inline]
-            fn from_fixed(_v: [$S; $n]) -> $Self<$S> {
+            fn from_fixed(_v: [$S; $n]) -> $Self_<$S> {
                 // match v { [$($field),+] => $Self { $($field: $field),+ } }
                 panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
             }
 
             #[inline]
-            fn from_fixed_ref<'a>(v: &'a [$S; $n]) -> &'a $Self<$S> {
+            fn from_fixed_ref<'a>(v: &'a [$S; $n]) -> &'a $Self_<$S> {
                 unsafe { mem::transmute(v) }
             }
 
             #[inline]
-            fn from_fixed_mut<'a>(v: &'a mut [$S; $n]) -> &'a mut $Self<$S> {
+            fn from_fixed_mut<'a>(v: &'a mut [$S; $n]) -> &'a mut $Self_<$S> {
                 unsafe { mem::transmute(v) }
             }
         }
 
-        impl<$S: Copy> Index<usize> for $Self<$S> {
+        impl<$S: Copy> Index<usize> for $Self_<$S> {
             type Output = S;
 
             #[inline]
@@ -267,32 +267,32 @@ macro_rules! vec(
             }
         }
 
-        impl<$S: Copy> IndexMut<usize> for $Self<$S> {
+        impl<$S: Copy> IndexMut<usize> for $Self_<$S> {
             #[inline]
             fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut $S {
                 &mut self.as_mut_fixed()[*i]
             }
         }
 
-        impl<$S: Copy> Array1<$S> for $Self<$S> {
+        impl<$S: Copy> Array1<$S> for $Self_<$S> {
             #[inline]
-            fn map<F>(&mut self, mut op: F) -> $Self<$S> where F: FnMut($S) -> $S {
+            fn map<F>(&mut self, mut op: F) -> $Self_<$S> where F: FnMut($S) -> $S {
                 $(self.$field = op(self.$field);)+ *self
             }
         }
 
-        impl<S: BaseNum> Vector<S> for $Self<S> {
-            #[inline] fn add_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field + s),+) }
-            #[inline] fn sub_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field - s),+) }
-            #[inline] fn mul_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field * s),+) }
-            #[inline] fn div_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field / s),+) }
-            #[inline] fn rem_s(&self, s: S) -> $Self<S> { $Self::new($(self.$field % s),+) }
+        impl<S: BaseNum> Vector<S> for $Self_<S> {
+            #[inline] fn add_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field + s),+) }
+            #[inline] fn sub_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field - s),+) }
+            #[inline] fn mul_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field * s),+) }
+            #[inline] fn div_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field / s),+) }
+            #[inline] fn rem_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field % s),+) }
 
-            #[inline] fn add_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field + v.$field),+) }
-            #[inline] fn sub_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field - v.$field),+) }
-            #[inline] fn mul_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field * v.$field),+) }
-            #[inline] fn div_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field / v.$field),+) }
-            #[inline] fn rem_v(&self, v: &$Self<S>) -> $Self<S> { $Self::new($(self.$field % v.$field),+) }
+            #[inline] fn add_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field + v.$field),+) }
+            #[inline] fn sub_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field - v.$field),+) }
+            #[inline] fn mul_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field * v.$field),+) }
+            #[inline] fn div_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field / v.$field),+) }
+            #[inline] fn rem_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field % v.$field),+) }
 
             #[inline] fn neg_self(&mut self) { $(self.$field = -self.$field;)+ }
 
@@ -302,11 +302,11 @@ macro_rules! vec(
             #[inline] fn div_self_s(&mut self, s: S) { $(self.$field = self.$field / s;)+ }
             #[inline] fn rem_self_s(&mut self, s: S) { $(self.$field = self.$field % s;)+ }
 
-            #[inline] fn add_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field + v.$field;)+ }
-            #[inline] fn sub_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field - v.$field;)+ }
-            #[inline] fn mul_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field * v.$field;)+ }
-            #[inline] fn div_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field / v.$field;)+ }
-            #[inline] fn rem_self_v(&mut self, v: &$Self<S>) { $(self.$field = self.$field % v.$field;)+ }
+            #[inline] fn add_self_v(&mut self, v: &$Self_<S>) { $(self.$field = self.$field + v.$field;)+ }
+            #[inline] fn sub_self_v(&mut self, v: &$Self_<S>) { $(self.$field = self.$field - v.$field;)+ }
+            #[inline] fn mul_self_v(&mut self, v: &$Self_<S>) { $(self.$field = self.$field * v.$field;)+ }
+            #[inline] fn div_self_v(&mut self, v: &$Self_<S>) { $(self.$field = self.$field / v.$field;)+ }
+            #[inline] fn rem_self_v(&mut self, v: &$Self_<S>) { $(self.$field = self.$field % v.$field;)+ }
 
             #[inline] fn comp_add(&self) -> S { fold!(add, { $(self.$field),+ }) }
             #[inline] fn comp_mul(&self) -> S { fold!(mul, { $(self.$field),+ }) }
@@ -314,51 +314,51 @@ macro_rules! vec(
             #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
         }
 
-        impl<S: BaseNum> Add for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Add for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn add(self, v: $Self<S>) -> $Self<S> { self.add_v(&v) }
+            fn add(self, v: $Self_<S>) -> $Self_<S> { self.add_v(&v) }
         }
 
-        impl<S: BaseNum> Sub for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Sub for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn sub(self, v: $Self<S>) -> $Self<S> { self.sub_v(&v) }
+            fn sub(self, v: $Self_<S>) -> $Self_<S> { self.sub_v(&v) }
         }
 
-        impl<S: BaseNum> Neg for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Neg for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn neg(self) -> $Self<S> { $Self::new($(-self.$field),+) }
+            fn neg(self) -> $Self_<S> { $Self_::new($(-self.$field),+) }
         }
 
-        impl<S: BaseNum> Mul for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Mul for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn mul(self, v: $Self<S>) -> $Self<S> { self.mul_v(&v) }
+            fn mul(self, v: $Self_<S>) -> $Self_<S> { self.mul_v(&v) }
         }
 
-        impl<S: BaseNum> Div for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Div for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn div(self, v: $Self<S>) -> $Self<S> { self.div_v(&v) }
+            fn div(self, v: $Self_<S>) -> $Self_<S> { self.div_v(&v) }
         }
 
-        impl<S: BaseNum> Rem for $Self<S> {
-            type Output = $Self<S>;
+        impl<S: BaseNum> Rem for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn rem(self, v: $Self<S>) -> $Self<S> { self.rem_v(&v) }
+            fn rem(self, v: $Self_<S>) -> $Self_<S> { self.rem_v(&v) }
         }
 
-        impl<S: BaseFloat> ApproxEq<S> for $Self<S> {
+        impl<S: BaseFloat> ApproxEq<S> for $Self_<S> {
             #[inline]
-            fn approx_eq_eps(&self, other: &$Self<S>, epsilon: &S) -> bool {
+            fn approx_eq_eps(&self, other: &$Self_<S>, epsilon: &S) -> bool {
                 $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
             }
         }
