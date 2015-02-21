@@ -21,12 +21,13 @@ use num::{BaseNum, BaseFloat, zero, one};
 use point::{Point, Point3};
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
+use std::marker::PhantomFn;
 use vector::{Vector, Vector3};
 
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>>: Sized {
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>>: Sized + PhantomFn<S> {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn identity() -> Self;
