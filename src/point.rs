@@ -73,13 +73,17 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
     fn to_vec(&self) -> V;
 
     /// Multiply each component by a scalar, returning the new point.
+    #[must_use]
     fn mul_s(&self, s: S) -> Self;
     /// Divide each component by a scalar, returning the new point.
+    #[must_use]
     fn div_s(&self, s: S) -> Self;
     /// Subtract a scalar from each component, returning the new point.
+    #[must_use]
     fn rem_s(&self, s: S) -> Self;
 
     /// Add a vector to this point, returning the new point.
+    #[must_use]
     fn add_v(&self, v: &V) -> Self;
     /// Subtract another point from this one, returning a new vector.
     fn sub_p(&self, p: &Self) -> V;
@@ -97,8 +101,10 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
     /// This is a weird one, but its useful for plane calculations.
     fn dot(&self, v: &V) -> S;
 
+    #[must_use]
     fn min(&self, p: &Self) -> Self;
 
+    #[must_use]
     fn max(&self, p: &Self) -> Self;
 }
 

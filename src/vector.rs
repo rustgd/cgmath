@@ -111,25 +111,35 @@ use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 /// for pragmatic reasons.
 pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
     /// Add a scalar to this vector, returning a new vector.
+    #[must_use]
     fn add_s(&self, s: S) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
+    #[must_use]
     fn sub_s(&self, s: S) -> Self;
     /// Multiply this vector by a scalar, returning a new vector.
+    #[must_use]
     fn mul_s(&self, s: S) -> Self;
     /// Divide this vector by a scalar, returning a new vector.
+    #[must_use]
     fn div_s(&self, s: S) -> Self;
     /// Take the remainder of this vector by a scalar, returning a new vector.
+    #[must_use]
     fn rem_s(&self, s: S) -> Self;
 
     /// Add this vector to another, returning a new vector.
+    #[must_use]
     fn add_v(&self, v: &Self) -> Self;
     /// Subtract another vector from this one, returning a new vector.
+    #[must_use]
     fn sub_v(&self, v: &Self) -> Self;
     /// Multiply this vector by another, returning a new vector.
+    #[must_use]
     fn mul_v(&self, v: &Self) -> Self;
     /// Divide this vector by another, returning a new vector.
+    #[must_use]
     fn div_v(&self, v: &Self) -> Self;
     /// Take the remainder of this vector by another, returning a new scalar.
+    #[must_use]
     fn rem_v(&self, v: &Self) -> Self;
 
     /// Negate this vector in-place.
@@ -410,6 +420,7 @@ impl<S: BaseNum> Vector3<S> {
 
     /// Returns the cross product of the vector and `other`.
     #[inline]
+    #[must_use]
     pub fn cross(&self, other: &Vector3<S>) -> Vector3<S> {
         Vector3::new((self.y * other.z) - (self.z * other.y),
                      (self.z * other.x) - (self.x * other.z),
@@ -498,12 +509,14 @@ pub trait EuclideanVector<S: BaseFloat>: Vector<S>
     /// Returns a vector with the same direction, but with a `length` (or
     /// `norm`) of `1`.
     #[inline]
+    #[must_use]
     fn normalize(&self) -> Self {
         self.normalize_to(one::<S>())
     }
 
     /// Returns a vector with the same direction and a given `length`.
     #[inline]
+    #[must_use]
     fn normalize_to(&self, length: S) -> Self {
         self.mul_s(length / self.length())
     }
@@ -511,6 +524,7 @@ pub trait EuclideanVector<S: BaseFloat>: Vector<S>
     /// Returns the result of linarly interpolating the length of the vector
     /// towards the length of `other` by the specified amount.
     #[inline]
+    #[must_use]
     fn lerp(&self, other: &Self, amount: S) -> Self {
         self.add_v(&other.sub_v(self).mul_s(amount))
     }

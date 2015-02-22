@@ -294,22 +294,28 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
                                                     + ApproxEq<S>
                                                     + Sized {
     /// Multiply this matrix by a scalar, returning the new matrix.
+    #[must_use]
     fn mul_s(&self, s: S) -> Self;
     /// Divide this matrix by a scalar, returning the new matrix.
+    #[must_use]
     fn div_s(&self, s: S) -> Self;
     /// Take the remainder of this matrix by a scalar, returning the new
     /// matrix.
+    #[must_use]
     fn rem_s(&self, s: S) -> Self;
 
     /// Add this matrix with another matrix, returning the new metrix.
+    #[must_use]
     fn add_m(&self, m: &Self) -> Self;
     /// Subtract another matrix from this matrix, returning the new matrix.
+    #[must_use]
     fn sub_m(&self, m: &Self) -> Self;
 
     /// Multiplay a vector by this matrix, returning a new vector.
     fn mul_v(&self, v: &V) -> V;
 
     /// Multiply this matrix by another matrix, returning the new matrix.
+    #[must_use]
     fn mul_m(&self, m: &Self) -> Self;
 
     /// Negate this matrix in-place (multiply by scalar -1).
@@ -332,6 +338,7 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
     fn mul_self_m(&mut self, m: &Self) { *self = self.mul_m(m); }
 
     /// Transpose this matrix, returning a new matrix.
+    #[must_use]
     fn transpose(&self) -> Self;
     /// Transpose this matrix in-place.
     fn transpose_self(&mut self);
@@ -348,6 +355,7 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
     /// (has a determinant of zero).
+    #[must_use]
     fn invert(&self) -> Option<Self>;
 
     /// Invert this matrix in-place.
