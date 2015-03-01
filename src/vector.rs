@@ -22,11 +22,11 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector2, Vector3, Vector4, one, zero, vec3};
+//! use cgmath::{Vector, Vector2, Vector3, Vector4, zero, vec2, vec3};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), zero());
-//! assert_eq!(Vector4::from_value(1.0f64), one());
+//! assert_eq!(Vector::from_value(1.0f64), vec2(1.0, 1.0));
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
@@ -76,7 +76,7 @@
 //!
 //! // Scalar multiplication can return a new object, or be done in place
 //! // to avoid an allocation:
-//! let mut c: Vector4<f64> = Vector4::from_value(3.0);
+//! let mut c: Vector4<f64> = Vector::from_value(3.0);
 //! let d: Vector4<f64> = c.mul_s(2.0);
 //! c.mul_self_s(2.0);
 //! assert_eq!(c, d);
@@ -110,6 +110,8 @@ use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
 pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
+    /// Construct a vector from a single value, replicating it.
+    fn from_value(s: S) -> Self;
     /// Add a scalar to this vector, returning a new vector.
     #[must_use]
     fn add_s(&self, s: S) -> Self;
@@ -206,14 +208,6 @@ macro_rules! vec(
             $Self_::new($($field),+)
         }
 
-        impl<$S: Copy> $Self_<$S> {
-            /// Construct a vector from a single value, replicating it.
-            #[inline]
-            pub fn from_value(value: $S) -> $Self_<$S> {
-                $Self_ { $($field: value),+ }
-            }
-        }
-
         impl<$S: Zero> Zero for $Self_<$S> {
             #[inline]
             fn zero() -> $Self_<S> { $Self_ { $($field: zero()),+ } }
@@ -292,6 +286,7 @@ macro_rules! vec(
         }
 
         impl<S: BaseNum> Vector<S> for $Self_<S> {
+            #[inline] fn from_value(s: S) -> $Self_<S> { $Self_ { $($field: s),+ } }
             #[inline] fn add_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field + s),+) }
             #[inline] fn sub_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field - s),+) }
             #[inline] fn mul_s(&self, s: S) -> $Self_<S> { $Self_::new($(self.$field * s),+) }
