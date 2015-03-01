@@ -15,7 +15,7 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![feature(old_impl_check, plugin, core, hash, std_misc)]
+#![feature(old_impl_check, plugin, core, std_misc)]
 #![plugin(rand_macros)]
 
 //! Computer graphics-centric math.
@@ -37,45 +37,30 @@ extern crate rand;
 
 // Re-exports
 
-pub use array::{Array1, Array2, FixedArray};
+pub use array::*;
+pub use matrix::*;
+pub use quaternion::*;
+pub use vector::*;
 
-pub use matrix::Matrix;
-pub use matrix::{Matrix2, Matrix3, Matrix4};
-pub use matrix::{ToMatrix2, ToMatrix3, ToMatrix4};
-pub use quaternion::{Quaternion, ToQuaternion};
-pub use vector::{Vector, EuclideanVector};
-pub use vector::{Vector2, Vector3, Vector4};
-pub use vector::{dot, vec2, vec3, vec4};
-
-pub use angle::{rad, deg};
-pub use angle::{Angle, Rad, Deg};
-pub use angle::{ToRad, ToDeg};
-pub use angle::bisect;
-pub use angle::{sin, cos, tan, sin_cos};
-pub use angle::{cot, sec, csc};
-pub use angle::{acos, asin, atan, atan2};
+pub use angle::*;
 pub use plane::Plane;
-pub use point::{Point, Point2, Point3};
-pub use line::{Line, Line2, Line3};
-pub use ray::{Ray, Ray2, Ray3};
-pub use rotation::{Rotation, Rotation2, Rotation3};
-pub use rotation::{Basis3, Basis2};
-pub use rotation::{ToBasis2, ToBasis3};
-pub use transform::{Transform, Transform3};
-pub use transform::{Decomposed, AffineMatrix3};
+pub use point::*;
+pub use line::*;
+pub use ray::*;
+pub use rotation::*;
+pub use transform::*;
 
-pub use projection::{perspective, frustum, ortho};
-pub use projection::{Projection, PerspectiveFov, Perspective, Ortho};
+pub use projection::*;
 
-pub use aabb::{Aabb, Aabb2, Aabb3};
+pub use aabb::*;
 pub use cylinder::Cylinder;
 pub use frustum::{Frustum, FrustumPoints};
 pub use intersect::Intersect;
-pub use obb::{Obb2, Obb3};
+pub use obb::*;
 pub use sphere::Sphere;
 
 pub use approx::ApproxEq;
-pub use num::{PartialOrd, BaseNum, BaseInt, BaseFloat, One, one, Zero, zero};
+pub use num::*;
 
 // Modules
 

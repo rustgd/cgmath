@@ -16,9 +16,10 @@
 use std::fmt;
 
 use approx::ApproxEq;
-use matrix::{Matrix, Matrix4, ToMatrix4};
+use matrix::*;
 use num::{BaseNum, BaseFloat, zero, one};
 use point::{Point, Point3};
+use quaternion::*;
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
 use std::marker::PhantomFn;
@@ -27,7 +28,7 @@ use vector::{Vector, Vector3};
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>>: Sized + PhantomFn<S> {
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized + PhantomFn<S> {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn identity() -> Self;
@@ -44,7 +45,7 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S,V>>: Sized + PhantomFn<
 
     /// Transform a ray using this transform.
     #[inline]
-    fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P,V> {
+    fn transform_ray(&self, ray: &Ray<P,V>) -> Ray<P, V> {
         Ray::new(self.transform_point(&ray.origin), self.transform_vector(&ray.direction))
     }
 
@@ -84,7 +85,12 @@ pub struct Decomposed<S, V, R> {
     pub disp: V,
 }
 
-impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform<S, V, P> for Decomposed<S, V, R> {
+impl<
+    S: BaseFloat,
+    V: Vector<S>,
+    P: Point<S, V>,
+    R: Rotation<S, V, P>
+> Transform<S, V, P> for Decomposed<S, V, R> {
     #[inline]
     fn identity() -> Decomposed<S, V, R> {
         Decomposed {
@@ -140,9 +146,12 @@ impl<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> Transform
     }
 }
 
-pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>>+ ToMatrix4<S> {}
+pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>> + ToMatrix4<S> {}
 
-impl<S: BaseFloat + 'static, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
+impl<
+    S: BaseFloat + 'static,
+    R: Rotation3<S>
+> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
     fn to_matrix4(&self) -> Matrix4<S> {
         let mut m = self.rot.to_matrix3().mul_s(self.scale.clone()).to_matrix4();
         m.w = self.disp.extend(one());
@@ -150,9 +159,15 @@ impl<S: BaseFloat + 'static, R: Rotation3<S>> ToMatrix4<S> for Decomposed<S, Vec
     }
 }
 
-impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S,Vector3<S>,R> where S: 'static {}
+impl<
+    S: BaseFloat + 'static,
+    R: Rotation3<S>
+> Transform3<S> for Decomposed<S, Vector3<S>, R> {}
 
-impl<S: BaseFloat, R: fmt::Debug + Rotation3<S>> fmt::Debug for Decomposed<S,Vector3<S>,R> {
+impl<
+    S: BaseFloat,
+    R: fmt::Debug + Rotation3<S>
+> fmt::Debug for Decomposed<S, Vector3<S>, R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "(scale({:?}), rot({:?}), disp{:?})",
             self.scale, self.rot, self.disp)
@@ -202,3 +217,71 @@ impl<S: BaseNum> ToMatrix4<S> for AffineMatrix3<S> {
 }
 
 impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> where S: 'static {}
+
+/// A trait that allows extracting components (rotation, translation, scale)
+/// from an arbitrary transformation/
+pub trait ToComponents<S, V: Vector<S>, P: Point<S, V>> {
+    /// Associated rotation type
+    type Rotation;
+    /// Extract translation component
+    fn to_translation(&self) -> V;
+    /// Extract rotation component
+    fn to_rotation(&self) -> Self::Rotation;
+    /// Extract scale component
+    fn to_scale(&self) -> V;
+}
+
+pub trait ToComponents3<S>: ToComponents<S, Vector3<S>, Point3<S>>
+    where Self::Rotation: ToMatrix3<S> {}
+
+impl<
+    S: BaseFloat,
+    V: Vector<S> + Clone,
+    P: Point<S, V>,
+    R: Rotation<S, V, P> + Clone,
+> ToComponents<S, V, P> for Decomposed<S, V, R> {
+    type Rotation = R;
+    
+    fn to_translation(&self) -> V {
+        self.disp.clone()
+    }
+
+    fn to_rotation(&self) -> R {
+        self.rot.clone()
+    }
+
+    fn to_scale(&self) -> V {
+        Vector::from_value(self.scale)
+    }
+}
+
+impl<
+    S: BaseFloat,
+    R: Rotation<S, Vector3<S>, Point3<S>> + Clone + ToMatrix3<S>,
+> ToComponents3<S> for Decomposed<S, Vector3<S>, R> {}
+
+impl<
+    S: BaseFloat + 'static,
+> ToComponents<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+    type Rotation = Quaternion<S>;
+
+    fn to_translation(&self) -> Vector3<S> {
+        Vector3::new(self.mat.w.x, self.mat.w.y, self.mat.w.z)
+    }
+
+    fn to_rotation(&self) -> Quaternion<S> {
+        Matrix3::new(
+            self.mat.x.x, self.mat.x.y, self.mat.x.z,
+            self.mat.y.x, self.mat.y.y, self.mat.y.z,
+            self.mat.z.x, self.mat.z.y, self.mat.z.z,
+        ).to_quaternion()
+    }
+
+    fn to_scale(&self) -> Vector3<S> {
+        Vector3::new(self.mat.x.x, self.mat.y.y, self.mat.z.z)
+    }
+}
+
+impl<
+    S: BaseFloat + 'static,
+> ToComponents3<S> for AffineMatrix3<S> {}
