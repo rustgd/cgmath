@@ -16,9 +16,10 @@
 use std::fmt;
 
 use approx::ApproxEq;
-use matrix::{Matrix, ToMatrix3, Matrix4, ToMatrix4};
+use matrix::*;
 use num::{BaseNum, BaseFloat, zero, one};
 use point::{Point, Point3};
+use quaternion::*;
 use ray::Ray;
 use rotation::{Rotation, Rotation3};
 use std::marker::PhantomFn;
@@ -230,6 +231,9 @@ pub trait ToComponents<S, V: Vector<S>, P: Point<S, V>> {
     fn to_scale(&self) -> V;
 }
 
+pub trait ToComponents3<S>: ToComponents<S, Vector3<S>, Point3<S>>
+    where Self::Rotation: ToMatrix3<S> {}
+
 impl<
     S: BaseFloat,
     V: Vector<S> + Clone,
@@ -251,5 +255,33 @@ impl<
     }
 }
 
-pub trait ToComponents3<S>: ToComponents<S, Vector3<S>, Point3<S>>
-    where Self::Rotation: ToMatrix3<S> {}
+impl<
+    S: BaseFloat,
+    R: Rotation<S, Vector3<S>, Point3<S>> + Clone + ToMatrix3<S>,
+> ToComponents3<S> for Decomposed<S, Vector3<S>, R> {}
+
+impl<
+    S: BaseFloat + 'static,
+> ToComponents<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+    type Rotation = Quaternion<S>;
+
+    fn to_translation(&self) -> Vector3<S> {
+        Vector3::new(self.mat.w.x, self.mat.w.y, self.mat.w.z)
+    }
+
+    fn to_rotation(&self) -> Quaternion<S> {
+        Matrix3::new(
+            self.mat.x.x, self.mat.x.y, self.mat.x.z,
+            self.mat.y.x, self.mat.y.y, self.mat.y.z,
+            self.mat.z.x, self.mat.z.y, self.mat.z.z,
+        ).to_quaternion()
+    }
+
+    fn to_scale(&self) -> Vector3<S> {
+        Vector3::new(self.mat.x.x, self.mat.y.y, self.mat.z.z)
+    }
+}
+
+impl<
+    S: BaseFloat + 'static,
+> ToComponents3<S> for AffineMatrix3<S> {}
