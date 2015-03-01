@@ -1193,7 +1193,7 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
             let one: S = one();
             let inv_det = one / det;
             let t = self.transpose();
-            let cf = |&: i, j| {
+            let cf = |i, j| {
                 let mat = match i {
                     0 => Matrix3::from_cols(t.y.truncate_n(j),
                                             t.z.truncate_n(j),
