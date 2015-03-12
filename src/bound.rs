@@ -19,6 +19,7 @@ use aabb::{Aabb, Aabb3};
 use num::BaseNum;
 use plane::Plane;
 use point::{Point, Point3};
+use sphere::Sphere;
 
 /// Spatial relation between two objects.
 pub enum Relation {
@@ -55,6 +56,19 @@ impl<S: BaseNum> Bound<S> for Aabb3<S> {
 			(Relation::In, Relation::In) => Relation::In,
 			(Relation::Out, Relation::Out) => Relation::Out,
 			(_, _) => Relation::Cross,
+		}
+	}
+}
+
+impl<S: BaseNum> Bound<S> for Sphere<S> {
+	fn relate(&self, plane: &Plane<S>) -> Relation {
+		let dist = self.center.dot(&plane.n) - plane.d;
+		if dist > self.radius {
+			Relation::In
+		}else if dist < - self.radius {
+			Relation::Out
+		}else {
+			Relation::Cross
 		}
 	}
 }
