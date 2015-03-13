@@ -103,6 +103,15 @@ impl<S: BaseNum> Aabb2<S> {
                              p1.y.partial_max(p2.y)),
         }
     }
+
+    /// Compute corners.
+    #[inline]
+    pub fn to_corners(&self) -> [Point2<S>; 4] {
+        [self.min,
+        Point2::new(self.max.x, self.min.y),
+        Point2::new(self.min.x, self.max.y),
+        self.max]
+    }
 }
 
 impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>> for Aabb2<S> {
@@ -149,6 +158,19 @@ impl<S: BaseNum> Aabb3<S> {
                              p1.y.partial_max(p2.y),
                              p1.z.partial_max(p2.z)),
         }
+    }
+
+    /// Compute corners.
+    #[inline]
+    pub fn to_corners(&self) -> [Point3<S>; 8] {
+        [self.min,
+        Point3::new(self.max.x, self.min.y, self.min.z),
+        Point3::new(self.min.x, self.max.y, self.min.z),
+        Point3::new(self.max.x, self.max.y, self.min.z),
+        Point3::new(self.min.x, self.min.y, self.max.z),
+        Point3::new(self.max.x, self.min.y, self.max.z),
+        Point3::new(self.min.x, self.max.y, self.max.z),
+        self.max]
     }
 }
 
@@ -222,11 +244,13 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Aabb2<S>) {
 
 impl<S: BaseNum> Bound<S> for Aabb3<S> {
     fn relate(&self, plane: &Plane<S>) -> Relation {
-        //TODO: match all 8 corners
-        match (self.min.relate(plane), self.max.relate(plane)) {
-            (Relation::In, Relation::In) => Relation::In,
-            (Relation::Out, Relation::Out) => Relation::Out,
-            (_, _) => Relation::Cross,
+        let corners = self.to_corners();
+        let first = corners[0].relate(plane);
+        for p in corners[1..].iter() {
+            if p.relate(plane) != first {
+                return Relation::Cross;
+            }
         }
+        first
     }
 }
