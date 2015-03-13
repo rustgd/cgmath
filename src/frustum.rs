@@ -16,14 +16,15 @@
 //! View frustum for visibility determination
 
 use array::Array2;
+use bound::*;
 use matrix::Matrix4;
 use num::BaseFloat;
 use plane::Plane;
 use point::Point3;
 use vector::{Vector, EuclideanVector};
 
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
-pub struct Frustum<S> {
+#[derive(Copy, Clone, Debug, PartialEq, RustcEncodable, RustcDecodable)]
+pub struct Frustum<S: BaseFloat> {
     pub left:   Plane<S>,
     pub right:  Plane<S>,
     pub bottom: Plane<S>,
@@ -34,7 +35,7 @@ pub struct Frustum<S> {
 
 impl<S: BaseFloat + 'static>
 Frustum<S> {
-    /// Constructs a frustum
+    /// Construct a frustum.
     pub fn new(left:   Plane<S>, right:  Plane<S>,
                bottom: Plane<S>, top:    Plane<S>,
                near:   Plane<S>, far:    Plane<S>) -> Frustum<S> {
@@ -48,14 +49,38 @@ Frustum<S> {
         }
     }
 
-    /// Extracts frustum planes from a projection matrix
-    pub fn from_matrix4(mat: Matrix4<S>) -> Frustum<S> {
-        Frustum::new(Plane::from_vector4(mat.row(3).add_v(&mat.row(0)).normalize()),
-                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(0)).normalize()),
-                     Plane::from_vector4(mat.row(3).add_v(&mat.row(1)).normalize()),
-                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(1)).normalize()),
-                     Plane::from_vector4(mat.row(3).add_v(&mat.row(2)).normalize()),
-                     Plane::from_vector4(mat.row(3).sub_v(&mat.row(2)).normalize()))
+    /// Extract frustum planes from a projection matrix.
+    pub fn from_matrix4(mat: Matrix4<S>) -> Option<Frustum<S>> {
+        Some(Frustum::new(
+            match Plane::from_vector4_alt(mat.row(3).add_v(&mat.row(0))).normalize()
+                { Some(p) => p, None => return None },
+            match Plane::from_vector4_alt(mat.row(3).sub_v(&mat.row(0))).normalize()
+                { Some(p) => p, None => return None },
+            match Plane::from_vector4_alt(mat.row(3).add_v(&mat.row(1))).normalize()
+                { Some(p) => p, None => return None },
+            match Plane::from_vector4_alt(mat.row(3).sub_v(&mat.row(1))).normalize()
+                { Some(p) => p, None => return None },
+            match Plane::from_vector4_alt(mat.row(3).add_v(&mat.row(2))).normalize()
+                { Some(p) => p, None => return None },
+            match Plane::from_vector4_alt(mat.row(3).sub_v(&mat.row(2))).normalize()
+                { Some(p) => p, None => return None }
+        ))
+    }
+
+    /// Find the spatial relation of a bound inside this frustum.
+    pub fn contains<B: Bound<S>>(&self, bound: &B) -> Relation {
+        [&self.left, &self.right, &self.top, &self.bottom, &self.near, &self.far]
+            .iter().fold(Relation::In, |cur, p| {
+            let r = bound.relate(p);
+            // if we see Cross, then the result is Cross
+            // if we see In, then we keep the old result
+            // otherwise, take the current result
+            if cur == Relation::Cross || r == Relation::In {
+                cur
+            }else {
+                r
+            }
+        })
     }
 }
 

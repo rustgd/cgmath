@@ -17,7 +17,7 @@ use std::fmt;
 
 use approx::ApproxEq;
 use intersect::Intersect;
-use num::{BaseFloat, Zero, zero};
+use num::{BaseFloat, one, Zero, zero};
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vector3, Vector4};
@@ -65,9 +65,13 @@ impl<S: BaseFloat> Plane<S> {
 
     /// Construct a plane from the components of a four-dimensional vector
     pub fn from_vector4(v: Vector4<S>) -> Plane<S> {
-        match v {
-            Vector4 { x, y, z, w } => Plane { n: Vector3::new(x, y, z), d: w },
-        }
+        Plane { n: Vector3::new(v.x, v.y, v.z), d: v.w }
+    }
+
+    /// Construct a plane from the components of a four-dimensional vector
+    /// Assuming alternative representation: `A*x + B*y + C*z + D = 0`
+    pub fn from_vector4_alt(v: Vector4<S>) -> Plane<S> {
+        Plane { n: Vector3::new(v.x, v.y, v.z), d: -v.w }
     }
 
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`
@@ -93,6 +97,15 @@ impl<S: BaseFloat> Plane<S> {
     /// The plane will contain the point `p` and be perpendicular to `n`.
     pub fn from_point_normal(p: Point3<S>, n: Vector3<S>) -> Plane<S> {
         Plane { n: n, d: p.dot(&n) }
+    }
+
+    /// Normalize a plane.
+    pub fn normalize(&self) -> Option<Plane<S>> {
+        if self.n.approx_eq(&zero()) { None }
+        else {
+            let denom = one::<S>() / self.n.length();
+            Some(Plane::new(self.n.mul_s(denom), self.d*denom))
+        }
     }
 }
 

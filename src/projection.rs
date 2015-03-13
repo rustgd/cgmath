@@ -97,7 +97,7 @@ impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
 impl<S: BaseFloat + 'static, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
-        Frustum::from_matrix4(self.to_matrix4())
+        Frustum::from_matrix4(self.to_matrix4()).unwrap()
     }
 }
 
@@ -153,7 +153,7 @@ pub struct Perspective<S> {
 impl<S: BaseFloat + 'static> Projection<S> for Perspective<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
-        Frustum::from_matrix4(self.to_matrix4())
+        Frustum::from_matrix4(self.to_matrix4()).unwrap()
     }
 }
 
