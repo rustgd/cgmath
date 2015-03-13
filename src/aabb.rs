@@ -20,11 +20,13 @@
 //! dimension) where the slope of every line is either 0 or undefined. These
 //! are useful for very cheap collision detection.
 
+use bound::*;
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use ray::{Ray2};
 use intersect::Intersect;
 use num::{zero, one, BaseNum, BaseFloat};
+use plane::Plane;
 use std::fmt;
 use std::num::Float;
 
@@ -214,6 +216,17 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Aabb2<S>) {
                     None
                 }
             }
+        }
+    }
+}
+
+impl<S: BaseNum> Bound<S> for Aabb3<S> {
+    fn relate(&self, plane: &Plane<S>) -> Relation {
+        //TODO: match all 8 corners
+        match (self.min.relate(plane), self.max.relate(plane)) {
+            (Relation::In, Relation::In) => Relation::In,
+            (Relation::Out, Relation::Out) => Relation::Out,
+            (_, _) => Relation::Cross,
         }
     }
 }

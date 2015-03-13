@@ -15,9 +15,11 @@
 
 //! Bounding sphere
 
+use bound::*;
 use intersect::Intersect;
-use num::{BaseFloat, zero};
+use num::{BaseNum, BaseFloat, zero};
 use point::{Point, Point3};
+use plane::Plane;
 use ray::Ray3;
 use vector::Vector;
 
@@ -39,6 +41,19 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
                 let thc = (s.radius*s.radius - d2).sqrt();
                 Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
             }
+        }
+    }
+}
+
+impl<S: BaseNum> Bound<S> for Sphere<S> {
+    fn relate(&self, plane: &Plane<S>) -> Relation {
+        let dist = self.center.dot(&plane.n) - plane.d;
+        if dist > self.radius {
+            Relation::In
+        }else if dist < - self.radius {
+            Relation::Out
+        }else {
+            Relation::Cross
         }
     }
 }

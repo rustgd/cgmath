@@ -15,60 +15,22 @@
 
 //! Generic spatial bounds.
 
-use aabb::{Aabb, Aabb3};
-use num::BaseNum;
 use plane::Plane;
-use point::{Point, Point3};
-use sphere::Sphere;
 
 /// Spatial relation between two objects.
+#[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
+#[repr(u8)]
 pub enum Relation {
-	/// Completely inside
-	In,
-	/// Crosses the boundary
-	Cross,
-	/// Completely outside
-	Out,
+    /// Completely inside
+    In,
+    /// Crosses the boundary
+    Cross,
+    /// Completely outside
+    Out,
 }
 
 /// Generic bound.
 pub trait Bound<S> {
-	/// Classify the spatial relation with a plane
-	fn relate(&self, &Plane<S>) -> Relation;
-}
-
-impl<S: BaseNum> Bound<S> for Point3<S> {
-	fn relate(&self, plane: &Plane<S>) -> Relation {
-		let dist = self.dot(&plane.n);
-		if dist > plane.d {
-			Relation::In
-		}else if dist < plane.d {
-			Relation::Out
-		}else {
-			Relation::Cross
-		}
-	}
-}
-
-impl<S: BaseNum> Bound<S> for Aabb3<S> {
-	fn relate(&self, plane: &Plane<S>) -> Relation {
-		match (self.min.relate(plane), self.max.relate(plane)) {
-			(Relation::In, Relation::In) => Relation::In,
-			(Relation::Out, Relation::Out) => Relation::Out,
-			(_, _) => Relation::Cross,
-		}
-	}
-}
-
-impl<S: BaseNum> Bound<S> for Sphere<S> {
-	fn relate(&self, plane: &Plane<S>) -> Relation {
-		let dist = self.center.dot(&plane.n) - plane.d;
-		if dist > self.radius {
-			Relation::In
-		}else if dist < - self.radius {
-			Relation::Out
-		}else {
-			Relation::Cross
-		}
-	}
+    /// Classify the spatial relation with a plane
+    fn relate(&self, &Plane<S>) -> Relation;
 }

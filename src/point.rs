@@ -23,7 +23,9 @@ use std::ops::*;
 
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
+use bound::*;
 use num::{BaseNum, BaseFloat, one, zero};
+use plane::Plane;
 use vector::*;
 
 /// A point in 2-dimensional space.
@@ -443,5 +445,18 @@ impl<S: BaseNum> fmt::Debug for Point2<S> {
 impl<S: BaseNum> fmt::Debug for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
+    }
+}
+
+impl<S: BaseNum> Bound<S> for Point3<S> {
+    fn relate(&self, plane: &Plane<S>) -> Relation {
+        let dist = self.dot(&plane.n);
+        if dist > plane.d {
+            Relation::In
+        }else if dist < plane.d {
+            Relation::Out
+        }else {
+            Relation::Cross
+        }
     }
 }
