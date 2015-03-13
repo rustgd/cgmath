@@ -19,9 +19,10 @@ use cgmath::{Aabb, Aabb2, Aabb3};
 use cgmath::{Point2, Point3};
 use cgmath::{Vector2, Vector3};
 use cgmath::{Ray, Intersect};
+use cgmath::{Plane, Bound, Relation};
 
 #[test]
-fn test_aabb() {
+fn test_general() {
     let aabb = Aabb2::new(Point2::new(-20is, 30is), Point2::new(10is, -10is));
     assert_eq!(aabb.min(), &Point2::new(-20is, -10is));
     assert_eq!(aabb.max(), &Point2::new(10is, 30is));
@@ -65,7 +66,7 @@ fn test_aabb() {
 }
 
 #[test]
-fn test_aabb_ray_intersect() {
+fn test_ray_intersect() {
     let aabb = Aabb2::new(Point2::new(-5.0f32, 5.0), Point2::new(5.0, 10.0));
     let ray1 = Ray::new(Point2::new(0.0f32, 0.0), Vector2::new(0.0, 1.0));
     let ray2 = Ray::new(Point2::new(-10.0f32, 0.0), Vector2::new(2.5, 1.0));
@@ -76,4 +77,15 @@ fn test_aabb_ray_intersect() {
     assert_eq!((ray2, aabb).intersection(), Some(Point2::new(2.5, 5.0)));
     assert_eq!((ray3, aabb).intersection(), None);
     assert_eq!((ray4, aabb).intersection(), Some(Point2::new(5.0, 9.0)));
+}
+
+#[test]
+fn test_bound() {
+    let aabb = Aabb3::new(Point3::new(-5.0f32, 5.0, 0.0), Point3::new(5.0, 10.0, 1.0));
+    let plane1 = Plane::from_point_normal(Point3::new(0f32, 0.0, 0.0), Vector3::new(0f32, 0.0, 1.0));
+    let plane2 = Plane::from_point_normal(Point3::new(-5.0f32, 4.0, 0.0), Vector3::new(0f32, 1.0, 0.0));
+    let plane3 = Plane::from_point_normal(Point3::new(6.0f32, 0.0, 0.0), Vector3::new(1f32, 0.0, 0.0));
+    assert_eq!(aabb.relate(&plane1), Relation::Cross);
+    assert_eq!(aabb.relate(&plane2), Relation::In);
+    assert_eq!(aabb.relate(&plane3), Relation::Out);
 }
