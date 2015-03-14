@@ -8,7 +8,7 @@
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASisize,
+// distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -99,7 +99,7 @@ fn test_bound() {
     let plane1 = Plane::from_point_normal(Point3::new(0f32, 0.0, 0.0), Vector3::new(0f32, 0.0, 1.0));
     let plane2 = Plane::from_point_normal(Point3::new(-5.0f32, 4.0, 0.0), Vector3::new(0f32, 1.0, 0.0));
     let plane3 = Plane::from_point_normal(Point3::new(6.0f32, 0.0, 0.0), Vector3::new(1f32, 0.0, 0.0));
-    assert_eq!(aabb.relate(&plane1), Relation::Cross);
-    assert_eq!(aabb.relate(&plane2), Relation::In);
-    assert_eq!(aabb.relate(&plane3), Relation::Out);
+    assert_eq!(aabb.relate_plane(&plane1), Relation::Cross);
+    assert_eq!(aabb.relate_plane(&plane2), Relation::In);
+    assert_eq!(aabb.relate_plane(&plane3), Relation::Out);
 }

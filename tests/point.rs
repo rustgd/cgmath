@@ -32,7 +32,7 @@ fn test_bound() {
     let normal = Vector3::new(0f32, -0.8, -0.36);
     let plane = Plane::from_point_normal(point, normal);
 
-    assert_eq!(point.relate(&plane), Relation::Cross);
-    assert_eq!(point.add_v(&normal).relate(&plane), Relation::In);
-    assert_eq!(point.add_v(&normal.mul_s(-1.0)).relate(&plane), Relation::Out);
+    assert_eq!(point.relate_plane(&plane), Relation::Cross);
+    assert_eq!(point.add_v(&normal).relate_plane(&plane), Relation::In);
+    assert_eq!(point.add_v(&normal.mul_s(-1.0)).relate_plane(&plane), Relation::Out);
 }

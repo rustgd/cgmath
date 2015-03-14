@@ -15,22 +15,32 @@
 
 //! Generic spatial bounds.
 
+use matrix::Matrix4;
+use num::BaseFloat;
 use plane::Plane;
 
 /// Spatial relation between two objects.
 #[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
 #[repr(u8)]
 pub enum Relation {
-    /// Completely inside
+    /// Completely inside.
     In,
-    /// Crosses the boundary
+    /// Crosses the boundary.
     Cross,
-    /// Completely outside
+    /// Completely outside.
     Out,
 }
 
 /// Generic bound.
-pub trait Bound<S> {
-    /// Classify the spatial relation with a plane
-    fn relate(&self, &Plane<S>) -> Relation;
+pub trait Bound<S: BaseFloat + 'static>: Sized {
+    /// Classify the spatial relation with a plane.
+    fn relate_plane(&self, &Plane<S>) -> Relation;
+    /// Classify the relation with a projection matrix.
+    fn relate_clip_space(&self, projection: &Matrix4<S>) -> Relation {
+        use frustum::Frustum;
+        match Frustum::from_matrix4(*projection) {
+            Some(f) => f.contains(self),
+            None => Relation::Cross,
+        }
+    }
 }

@@ -71,7 +71,7 @@ Frustum<S> {
     pub fn contains<B: Bound<S>>(&self, bound: &B) -> Relation {
         [&self.left, &self.right, &self.top, &self.bottom, &self.near, &self.far]
             .iter().fold(Relation::In, |cur, p| {
-            let r = bound.relate(p);
+            let r = bound.relate_plane(p);
             // if we see Cross, then the result is Cross
             // if we see In, then we keep the old result
             // otherwise, take the current result

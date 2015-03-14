@@ -242,12 +242,12 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Aabb2<S>) {
     }
 }
 
-impl<S: BaseNum> Bound<S> for Aabb3<S> {
-    fn relate(&self, plane: &Plane<S>) -> Relation {
+impl<S: BaseFloat + 'static> Bound<S> for Aabb3<S> {
+    fn relate_plane(&self, plane: &Plane<S>) -> Relation {
         let corners = self.to_corners();
-        let first = corners[0].relate(plane);
+        let first = corners[0].relate_plane(plane);
         for p in corners[1..].iter() {
-            if p.relate(plane) != first {
+            if p.relate_plane(plane) != first {
                 return Relation::Cross;
             }
         }
