@@ -132,7 +132,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// angle. We can accomplish this quite easily with a two-dimensional rotation
 /// matrix:
 ///
-/// ~~~ignore
+/// ```no_run
 /// use cgmath::rad;
 /// use cgmath::Vector2;
 /// use cgmath::{Matrix, ToMatrix2};
@@ -160,7 +160,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
-/// ~~~
+/// ```
 #[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct Basis2<S> {
     mat: Matrix2<S>
