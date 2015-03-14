@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the Cargo.toml file at the top-level directionectory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ impl<S: BaseNum, V: Vector<S>, P: Point<S, V>>  Line<P> {
 pub type Line2<S> = Line<Point2<S>>;
 pub type Line3<S> = Line<Point3<S>>;
 
-/// Determines if an intersection between a ray and a line segments is found.
+/// Determines if an intersection between a ray and a line segment is found.
 impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
     fn intersection(&self) -> Option<Point2<S>> {
         let (ref ray, ref line) = *self;
