@@ -16,7 +16,6 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 #![feature(old_impl_check, plugin, core, std_misc, custom_derive)]
-#![plugin(rand_macros)]
 
 //! Computer graphics-centric math.
 //!

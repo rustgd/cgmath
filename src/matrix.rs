@@ -20,6 +20,8 @@ use std::mem;
 use std::num::cast;
 use std::ops::*;
 
+use rand::{Rand, Rng};
+
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::{Array1, Array2, FixedArray};
@@ -30,17 +32,14 @@ use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
-#[derive_Rand]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix2<S> { pub x: Vector2<S>, pub y: Vector2<S> }
 
 /// A 3 x 3, column major matrix
-#[derive_Rand]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> }
 
 /// A 4 x 4, column major matrix
-#[derive_Rand]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
@@ -1410,5 +1409,26 @@ impl<S: BaseNum> fmt::Debug for Matrix4<S> {
                 self[1][0], self[1][1], self[1][2], self[1][3],
                 self[2][0], self[2][1], self[2][2], self[2][3],
                 self[3][0], self[3][1], self[3][2], self[3][3])
+    }
+}
+
+impl<S: BaseFloat + Rand> Rand for Matrix2<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Matrix2<S> {
+        Matrix2{ x: rng.gen(), y: rng.gen() }
+    }
+}
+
+impl<S: BaseFloat + Rand> Rand for Matrix3<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Matrix3<S> {
+        Matrix3{ x: rng.gen(), y: rng.gen(), z: rng.gen() }
+    }
+}
+
+impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Matrix4<S> {
+        Matrix4{ x: rng.gen(), y: rng.gen(), z: rng.gen(), w: rng.gen() }
     }
 }

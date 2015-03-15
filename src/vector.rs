@@ -101,6 +101,8 @@ use std::mem;
 use std::num::NumCast;
 use std::ops::*;
 
+use rand::{Rand, Rng};
+
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
@@ -190,7 +192,6 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec(
     ($Self_:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => (
-        #[derive_Rand]
         #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
         pub struct $Self_<S> { $(pub $field: S),+ }
 
@@ -365,6 +366,13 @@ macro_rules! vec(
             #[inline]
             fn approx_eq_eps(&self, other: &$Self_<S>, epsilon: &S) -> bool {
                 $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
+            }
+        }
+
+        impl<S: BaseFloat + Rand> Rand for $Self_<S> {
+            #[inline]
+            fn rand<R: Rng>(rng: &mut R) -> $Self_<S> {
+                $Self_ { $($field: rng.gen()),+ }
             }
         }
     )

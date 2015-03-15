@@ -19,6 +19,8 @@ use std::f64;
 use std::num::{cast, Float};
 use std::ops::*;
 
+use rand::{Rand, Rng};
+
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
 use array::Array1;
@@ -28,9 +30,9 @@ use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};
 
+
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
-#[derive_Rand]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
@@ -441,5 +443,12 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
                         s1 * s2 * c3 + c1 * c2 * s3,
                         s1 * c2 * c3 + c1 * s2 * s3,
                         c1 * s2 * c3 - s1 * c2 * s3)
+    }
+}
+
+impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Quaternion<S> {
+       Quaternion::from_sv(rng.gen(), rng.gen())
     }
 }
