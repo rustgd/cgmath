@@ -71,15 +71,12 @@ Frustum<S> {
     pub fn contains<B: Bound<S>>(&self, bound: &B) -> Relation {
         [&self.left, &self.right, &self.top, &self.bottom, &self.near, &self.far]
             .iter().fold(Relation::In, |cur, p| {
+            use std::cmp::max;
             let r = bound.relate_plane(p);
-            // if we see Cross, then the result is Cross
-            // if we see In, then we keep the old result
-            // otherwise, take the current result
-            if cur == Relation::Cross || r == Relation::In {
-                cur
-            }else {
-                r
-            }
+            // If any of the planes are `Out`, the bound is outside.
+            // Otherwise, if any are `Cross`, the bound is crossing.
+            // Otherwise, the bound is fully inside.
+            max(cur, r)
         })
     }
 }
