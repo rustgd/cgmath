@@ -20,6 +20,9 @@ use std::f64;
 use std::num::{cast, Float};
 use std::ops::*;
 
+use rand::{Rand, Rng};
+use rand::distributions::range::SampleRange;
+
 use approx::ApproxEq;
 use num::{BaseFloat, One, one, Zero, zero};
 
@@ -308,5 +311,21 @@ ApproxEq<S> for Deg<S> {
     #[inline]
     fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon)
+    }
+}
+
+impl<S: BaseFloat + PartialOrd + SampleRange + Rand> Rand for Rad<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Rad<S> {
+        let angle: S = rng.gen_range(cast(-f64::consts::PI).unwrap(), cast(f64::consts::PI).unwrap());
+        rad(angle)
+    }
+}
+
+impl<S: BaseFloat + PartialOrd + SampleRange + Rand> Rand for Deg<S> {
+    #[inline]
+    fn rand<R: Rng>(rng: &mut R) -> Deg<S> {
+        let angle: S = rng.gen_range(cast(-180f64).unwrap(), cast(180f64).unwrap());
+        deg(angle)
     }
 }

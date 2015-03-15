@@ -32,6 +32,7 @@
 //! These are provided for convenience.
 
 extern crate "rustc-serialize" as rustc_serialize;
+extern crate rand;
 
 // Re-exports
 

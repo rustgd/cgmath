@@ -101,6 +101,8 @@ use std::mem;
 use std::num::NumCast;
 use std::ops::*;
 
+use rand::{Rand, Rng};
+
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
@@ -364,6 +366,13 @@ macro_rules! vec(
             #[inline]
             fn approx_eq_eps(&self, other: &$Self_<S>, epsilon: &S) -> bool {
                 $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
+            }
+        }
+
+        impl<S: BaseFloat + Rand> Rand for $Self_<S> {
+            #[inline]
+            fn rand<R: Rng>(rng: &mut R) -> $Self_<S> {
+                $Self_ { $($field: rng.gen()),+ }
             }
         }
     )
