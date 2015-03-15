@@ -26,28 +26,28 @@ use std::num::Float;
 fn test_constructor() {
     assert_eq!(vec2(1f32, 2f32), Vector2::new(1f32, 2f32));
     assert_eq!(vec3(1f64, 2f64, 3f64), Vector3::new(1f64, 2f64, 3f64));
-    assert_eq!(vec4(1is, 2is, 3is, 4is), Vector4::new(1is, 2is, 3is, 4is));
+    assert_eq!(vec4(1isize, 2isize, 3isize, 4isize), Vector4::new(1isize, 2isize, 3isize, 4isize));
 }
 
 #[test]
 fn test_from_value() {
-    assert_eq!(Vector::from_value(102is), Vector2::new(102is, 102is));
-    assert_eq!(Vector::from_value(22is), Vector3::new(22is, 22is, 22is));
+    assert_eq!(Vector::from_value(102isize), Vector2::new(102isize, 102isize));
+    assert_eq!(Vector::from_value(22isize), Vector3::new(22isize, 22isize, 22isize));
     assert_eq!(Vector::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
 }
 
 #[test]
 fn test_dot() {
-    assert_eq!(Vector2::new(1is, 2is).dot(&Vector2::new(3is, 4is)), 11is);
-    assert_eq!(Vector3::new(1is, 2is, 3is).dot(&Vector3::new(4is, 5is, 6is)), 32is);
-    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).dot(&Vector4::new(5is, 6is, 7is, 8is)), 70is);
+    assert_eq!(Vector2::new(1isize, 2isize).dot(&Vector2::new(3isize, 4isize)), 11isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).dot(&Vector3::new(4isize, 5isize, 6isize)), 32isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).dot(&Vector4::new(5isize, 6isize, 7isize, 8isize)), 70isize);
 }
 
 #[test]
 fn test_comp_add() {
-    assert_eq!(Vector2::new(1is, 2is).comp_add(), 3is);
-    assert_eq!(Vector3::new(1is, 2is, 3is).comp_add(), 6is);
-    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_add(), 10is);
+    assert_eq!(Vector2::new(1isize, 2isize).comp_add(), 3isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_add(), 6isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_add(), 10isize);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_add(), 7.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_add(), 15.0f64);
@@ -56,9 +56,9 @@ fn test_comp_add() {
 
 #[test]
 fn test_comp_mul() {
-    assert_eq!(Vector2::new(1is, 2is).comp_mul(), 2is);
-    assert_eq!(Vector3::new(1is, 2is, 3is).comp_mul(), 6is);
-    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_mul(), 24is);
+    assert_eq!(Vector2::new(1isize, 2isize).comp_mul(), 2isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_mul(), 6isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_mul(), 24isize);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_mul(), 12.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_mul(), 120.0f64);
@@ -67,9 +67,9 @@ fn test_comp_mul() {
 
 #[test]
 fn test_comp_min() {
-    assert_eq!(Vector2::new(1is, 2is).comp_min(), 1is);
-    assert_eq!(Vector3::new(1is, 2is, 3is).comp_min(), 1is);
-    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_min(), 1is);
+    assert_eq!(Vector2::new(1isize, 2isize).comp_min(), 1isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_min(), 1isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_min(), 1isize);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_min(), 3.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_min(), 4.0f64);
@@ -78,9 +78,9 @@ fn test_comp_min() {
 
 #[test]
 fn test_comp_max() {
-    assert_eq!(Vector2::new(1is, 2is).comp_max(), 2is);
-    assert_eq!(Vector3::new(1is, 2is, 3is).comp_max(), 3is);
-    assert_eq!(Vector4::new(1is, 2is, 3is, 4is).comp_max(), 4is);
+    assert_eq!(Vector2::new(1isize, 2isize).comp_max(), 2isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_max(), 3isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_max(), 4isize);
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_max(), 4.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_max(), 6.0f64);
@@ -89,9 +89,9 @@ fn test_comp_max() {
 
 #[test]
 fn test_cross() {
-    let a = Vector3::new(1is, 2is, 3is);
-    let b = Vector3::new(4is, 5is, 6is);
-    let r = Vector3::new(-3is, 6is, -3is);
+    let a = Vector3::new(1isize, 2isize, 3isize);
+    let b = Vector3::new(4isize, 5isize, 6isize);
+    let r = Vector3::new(-3isize, 6isize, -3isize);
     assert_eq!(a.cross(&b), r);
 
     let mut a = a;
@@ -112,8 +112,8 @@ mod test_length {
 
     #[test]
     fn test_vector2(){
-        let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3is, 4is, 5is) Pythagorean triple
-        let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5is, 12is, 13is) Pythagorean triple
+        let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3, 4, 5) Pythagorean triple
+        let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5, 12, 13) Pythagorean triple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -124,8 +124,8 @@ mod test_length {
 
     #[test]
     fn test_vector3(){
-        let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2is, 3is, 6is, 7is) Pythagorean quadruple
-        let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1is, 4is, 8is, 9is) Pythagorean quadruple
+        let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2, 3, 6, 7) Pythagorean quadruple
+        let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1, 4, 8, 9) Pythagorean quadruple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
@@ -136,8 +136,8 @@ mod test_length {
 
     #[test]
     fn test_vector4(){
-        let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1is, 2is, 4is, 10is, 11is) Pythagorean quintuple
-        let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1is, 2is, 8is, 10is, 13is) Pythagorean quintuple
+        let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1, 2, 4, 10, 11) Pythagorean quintuple
+        let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1, 2, 8, 10, 13) Pythagorean quintuple
 
         assert_eq!(a.length2(), a_res * a_res);
         assert_eq!(b.length2(), b_res * b_res);
