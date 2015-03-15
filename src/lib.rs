@@ -52,6 +52,7 @@ pub use transform::*;
 pub use projection::*;
 
 pub use aabb::*;
+pub use bound::*;
 pub use cylinder::Cylinder;
 pub use frustum::{Frustum, FrustumPoints};
 pub use intersect::Intersect;
@@ -80,6 +81,7 @@ mod transform;
 mod projection;
 
 mod aabb;
+mod bound;
 mod cylinder;
 mod frustum;
 mod intersect;

@@ -31,3 +31,20 @@ fn test_intersection() {
     assert_eq!((sphere,r2).intersection(), Some(Point3::new(1f64, 0f64, 0f64)));
     assert_eq!((sphere,r3).intersection(), None);
 }
+
+#[test]
+fn test_bound() {
+    let point = Point3::new(1f32, 2.0, 3.0);
+    let sphere = Sphere { center: point, radius: 1.0 };
+    let normal = vec3(0f32, 0.0, 1.0);
+
+    assert_eq!(sphere.relate_plane(
+        &Plane::from_point_normal(point, normal)
+        ), Relation::Cross);
+    assert_eq!(sphere.relate_plane(
+        &Plane::from_point_normal(point.add_v(&normal.mul_s(-3.0)), normal),
+        ), Relation::In);
+    assert_eq!(sphere.relate_plane(
+        &Plane::from_point_normal(point.add_v(&normal.mul_s(3.0)), normal),
+        ), Relation::Out);
+}
