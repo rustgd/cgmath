@@ -145,9 +145,12 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
 /// A perspective projection with arbitrary left/right/bottom/top distances
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Perspective<S> {
-    pub left:   S,  right:  S,
-    pub bottom: S,  top:    S,
-    pub near:   S,  far:    S,
+    pub left:   S,
+    pub right:  S,
+    pub bottom: S,
+    pub top:    S,
+    pub near:   S,
+    pub far:    S,
 }
 
 impl<S: BaseFloat + 'static> Projection<S> for Perspective<S> {
