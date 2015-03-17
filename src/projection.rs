@@ -198,9 +198,12 @@ impl<S: BaseFloat + 'static> ToMatrix4<S> for Perspective<S> {
 /// An orthographic projection with arbitrary left/right/bottom/top distances
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Ortho<S> {
-    pub left:   S,  right:  S,
-    pub bottom: S,  top:    S,
-    pub near:   S,  far:    S,
+    pub left:   S,
+    pub right:  S,
+    pub bottom: S,
+    pub top:    S,
+    pub near:   S,
+    pub far:    S,
 }
 
 impl<S: BaseFloat> Projection<S> for Ortho<S> {
