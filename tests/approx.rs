@@ -24,7 +24,7 @@ fn macro_assert_approx_eq_eps() {
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn macro_assert_approx_eq_eps_fail() {
     assert_approx_eq_eps!(1.0f32, 1.02, 0.01);
 }
@@ -35,7 +35,7 @@ fn macro_assert_approx_eq() {
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn macro_assert_approx_eq_fail() {
     assert_approx_eq!(1.0f64 / 3.0, 0.333);
 }
