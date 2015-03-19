@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directionectory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ extern crate test;
 extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
-use std::iter;
 use test::Bencher;
 use cgmath::{Quaternion, Basis2, Basis3, Vector3, Rotation2, Rotation3, Rad};
 
@@ -32,8 +31,8 @@ fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
 
     let mut rng = IsaacRng::new_unseeded();
 
-    let axis: Vec<_> = iter::range(0, LEN).map(|_| rng.gen::<Vector3<f32>>()).collect();
-    let angle: Vec<_> = iter::range(0, LEN).map(|_| rng.gen::<Rad<f32>>()).collect();
+    let axis: Vec<_> = (0..LEN).map(|_| rng.gen::<Vector3<f32>>()).collect();
+    let angle: Vec<_> = (0..LEN).map(|_| rng.gen::<Rad<f32>>()).collect();
     let mut i = 0;
 
     bh.iter(|| {

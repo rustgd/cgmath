@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,17 +31,15 @@ pub struct Sphere<S> {
 
 impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
-        match *self {
-            (ref s, ref r) => {
-                let l = s.center.sub_p(&r.origin);
-                let tca = l.dot(&r.direction);
-                if tca < zero() { return None; }
-                let d2 = l.dot(&l) - tca*tca;
-                if d2 > s.radius*s.radius { return None; }
-                let thc = (s.radius*s.radius - d2).sqrt();
-                Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
-            }
-        }
+        let (ref s, ref r) = *self;
+
+        let l = s.center.sub_p(&r.origin);
+        let tca = l.dot(&r.direction);
+        if tca < zero() { return None; }
+        let d2 = l.dot(&l) - tca*tca;
+        if d2 > s.radius*s.radius { return None; }
+        let thc = (s.radius*s.radius - d2).sqrt();
+        Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
     }
 }
 

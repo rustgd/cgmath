@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directionectory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ macro_rules! bench_binop(
 
             let mut rng = IsaacRng::new_unseeded();
 
-            let elems1: Vec<$t1> = range(0, LEN).map(|_| rng.gen::<$t1>()).collect();
-            let elems2: Vec<$t2> = range(0, LEN).map(|_| rng.gen::<$t2>()).collect();
+            let elems1: Vec<$t1> = (0..LEN).map(|_| rng.gen::<$t1>()).collect();
+            let elems2: Vec<$t2> = (0..LEN).map(|_| rng.gen::<$t2>()).collect();
             let mut i = 0;
 
             bh.iter(|| {
@@ -44,8 +44,8 @@ macro_rules! bench_binop_deref(
 
             let mut rng = IsaacRng::new_unseeded();
 
-            let elems1: Vec<$t1> = range(0, LEN).map(|_| rng.gen::<$t1>()).collect();
-            let elems2: Vec<$t2> = range(0, LEN).map(|_| rng.gen::<$t2>()).collect();
+            let elems1: Vec<$t1> = (0..LEN).map(|_| rng.gen::<$t1>()).collect();
+            let elems2: Vec<$t2> = (0..LEN).map(|_| rng.gen::<$t2>()).collect();
             let mut i = 0;
 
             bh.iter(|| {
@@ -67,7 +67,7 @@ macro_rules! bench_unop(
 
             let mut rng = IsaacRng::new_unseeded();
 
-            let mut elems: Vec<$t> = range(0, LEN).map(|_| rng.gen::<$t>()).collect();
+            let mut elems: Vec<$t> = (0..LEN).map(|_| rng.gen::<$t>()).collect();
             let mut i = 0;
 
             bh.iter(|| {
@@ -89,7 +89,7 @@ macro_rules! bench_construction(
 
             let mut rng = IsaacRng::new_unseeded();
 
-            $(let $args: Vec<$types> = range(0, LEN).map(|_| rng.gen::<$types>()).collect();)*
+            $(let $args: Vec<$types> = (0..LEN).map(|_| rng.gen::<$types>()).collect();)*
             let mut i = 0;
 
             bh.iter(|| {

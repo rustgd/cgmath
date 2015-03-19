@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -111,13 +111,11 @@ impl<S: BaseFloat> Plane<S> {
 
 impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
-        match *self {
-            (ref p, ref r) => {
-                let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
-                if t < Zero::zero() { None }
-                else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
-            }
-        }
+        let (ref p, ref r) = *self;
+
+        let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
+        if t < Zero::zero() { None }
+        else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
     }
 }
 

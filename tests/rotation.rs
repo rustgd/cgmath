@@ -1,4 +1,4 @@
-// Copyright 2014 The CGMath Developers. For a full listing of the authors,
+// Copyright 2015 The CGMath Developers. For a full listing of the authors,
 // refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +13,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
 
-#[test]
-fn macro_assert_approx_eq_eps() {
-    assert_approx_eq_eps!(1.0f64, 1.001, 0.01);
+mod rotation {
+    use super::cgmath::*;
+
+    pub fn a2<R: Rotation2<f64>>() -> R {
+        Rotation2::from_angle(deg(30.0).to_rad())
+    }
+
+    pub fn a3<R: Rotation3<f64>>() -> R {
+        let axis = Vector3::new(1.0, 1.0, 0.0).normalize();
+        Rotation3::from_axis_angle(&axis, deg(30.0).to_rad())
+    }
 }
 
 #[test]
-#[should_panic]
-fn macro_assert_approx_eq_eps_fail() {
-    assert_approx_eq_eps!(1.0f32, 1.02, 0.01);
+fn test_invert_basis2() {
+    let a: Basis2<_> = rotation::a2();
+    assert!(a.concat(&a.invert()).as_matrix2().is_identity());
 }
 
 #[test]
-fn macro_assert_approx_eq() {
-    assert_approx_eq!(7.0f32 / 5.0, 1.4);
-}
-
-#[test]
-#[should_panic]
-fn macro_assert_approx_eq_fail() {
-    assert_approx_eq!(1.0f64 / 3.0, 0.333);
+fn test_invert_basis3() {
+    let a: Basis3<_> = rotation::a3();
+    assert!(a.concat(&a.invert()).as_matrix3().is_identity());
 }

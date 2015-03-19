@@ -1,5 +1,5 @@
 // Copyright 2013-2014 The CGMath Developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
+// refer to the Cargo.toml file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -201,43 +201,40 @@ impl<S: BaseNum> fmt::Debug for Aabb3<S> {
 
 impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Aabb2<S>) {
     fn intersection(&self) -> Option<Point2<S>> {
-        match *self {
-            (ref ray, ref aabb) => {
+        let (ref ray, ref aabb) = *self;
 
-                let mut tmin: S = Float::neg_infinity();
-                let mut tmax: S = Float::infinity();
+        let mut tmin: S = Float::neg_infinity();
+        let mut tmax: S = Float::infinity();
 
-                if ray.direction.x != zero() {
-                    let tx1 = (aabb.min.x - ray.origin.x) / ray.direction.x;
-                    let tx2 = (aabb.max.x - ray.origin.x) / ray.direction.x;
-                    tmin = tmin.max(tx1.min(tx2));
-                    tmax = tmax.min(tx1.max(tx2));
-                }
+        if ray.direction.x != zero() {
+            let tx1 = (aabb.min.x - ray.origin.x) / ray.direction.x;
+            let tx2 = (aabb.max.x - ray.origin.x) / ray.direction.x;
+            tmin = tmin.max(tx1.min(tx2));
+            tmax = tmax.min(tx1.max(tx2));
+        }
 
-                if ray.direction.y != zero() {
-                    let ty1 = (aabb.min.y - ray.origin.y) / ray.direction.y;
-                    let ty2 = (aabb.max.y - ray.origin.y) / ray.direction.y;
-                    tmin = tmin.max(ty1.min(ty2));
-                    tmax = tmax.min(ty1.max(ty2));
-                }
+        if ray.direction.y != zero() {
+            let ty1 = (aabb.min.y - ray.origin.y) / ray.direction.y;
+            let ty2 = (aabb.max.y - ray.origin.y) / ray.direction.y;
+            tmin = tmin.max(ty1.min(ty2));
+            tmax = tmax.min(ty1.max(ty2));
+        }
 
-                if tmin < zero() && tmax < zero() {
-                    None
-                }
-                else if tmax >= tmin {
-                    if tmin >= zero() {
-                        Some(Point2::new(ray.origin.x + ray.direction.x * tmin,
-                                         ray.origin.y + ray.direction.y * tmin))
-                    }
-                    else {
-                        Some(Point2::new(ray.origin.x + ray.direction.x * tmax,
-                                         ray.origin.y + ray.direction.y * tmax))
-                    }
-                }
-                else {
-                    None
-                }
+        if tmin < zero() && tmax < zero() {
+            None
+        }
+        else if tmax >= tmin {
+            if tmin >= zero() {
+                Some(Point2::new(ray.origin.x + ray.direction.x * tmin,
+                                 ray.origin.y + ray.direction.y * tmin))
             }
+            else {
+                Some(Point2::new(ray.origin.x + ray.direction.x * tmax,
+                                 ray.origin.y + ray.direction.y * tmax))
+            }
+        }
+        else {
+            None
         }
     }
 }
