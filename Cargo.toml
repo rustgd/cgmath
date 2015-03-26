@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -20,6 +20,8 @@ repository="https://github.com/bjz/cgmath-rs"
 [lib]
 name = "cgmath"
 
+[dependencies.rustc-serialize]
+rustc_serialize = "*"
+
 [dependencies]
-rustc-serialize="*"
-rand="*"
+rand = "*"

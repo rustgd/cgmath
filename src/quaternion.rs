@@ -57,17 +57,17 @@ impl<S: BaseFloat> Index<usize> for Quaternion<S> {
     type Output = S;
 
     #[inline]
-    fn index<'a>(&'a self, i: &usize) -> &'a S {
+    fn index<'a>(&'a self, i: usize) -> &'a S {
         let slice: &[S; 4] = unsafe { mem::transmute(self) };
-        &slice[*i]
+        &slice[i]
     }
 }
 
 impl<S: BaseFloat> IndexMut<usize> for Quaternion<S> {
     #[inline]
-    fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut S {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut S {
         let slice: &'a mut [S; 4] = unsafe { mem::transmute(self) };
-        &mut slice[*i]
+        &mut slice[i]
     }
 }
 

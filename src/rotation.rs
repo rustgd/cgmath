@@ -133,6 +133,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// matrix:
 ///
 /// ```no_run
+/// #![feature(core)]
 /// use cgmath::rad;
 /// use cgmath::Vector2;
 /// use cgmath::{Matrix, ToMatrix2};
