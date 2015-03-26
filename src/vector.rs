@@ -267,15 +267,15 @@ macro_rules! vec(
             type Output = S;
 
             #[inline]
-            fn index<'a>(&'a self, i: &usize) -> &'a $S {
-                &self.as_fixed()[*i]
+            fn index<'a>(&'a self, i: usize) -> &'a $S {
+                &self.as_fixed()[i]
             }
         }
 
         impl<$S: Copy> IndexMut<usize> for $Self_<$S> {
             #[inline]
-            fn index_mut<'a>(&'a mut self, i: &usize) -> &'a mut $S {
-                &mut self.as_mut_fixed()[*i]
+            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $S {
+                &mut self.as_mut_fixed()[i]
             }
         }
 
