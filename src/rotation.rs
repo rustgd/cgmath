@@ -49,7 +49,7 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
 
     /// Rotate a ray using this rotation.
     #[inline]
-    fn rotate_ray(&self, ray: &Ray<P, V>) -> Ray<P,V> {
+    fn rotate_ray(&self, ray: &Ray<S, P, V>) -> Ray<S, P,V> {
         Ray::new(ray.origin.clone(), self.rotate_vector(&ray.direction))
     }
 
