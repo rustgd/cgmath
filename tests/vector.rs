@@ -31,9 +31,9 @@ fn test_constructor() {
 
 #[test]
 fn test_from_value() {
-    assert_eq!(Vector::from_value(102isize), Vector2::new(102isize, 102isize));
-    assert_eq!(Vector::from_value(22isize), Vector3::new(22isize, 22isize, 22isize));
-    assert_eq!(Vector::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
+    assert_eq!(Vector2::from_value(102isize), Vector2::new(102isize, 102isize));
+    assert_eq!(Vector3::from_value(22isize), Vector3::new(22isize, 22isize, 22isize));
+    assert_eq!(Vector4::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
 }
 
 #[test]

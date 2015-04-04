@@ -26,7 +26,7 @@
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), zero());
-//! assert_eq!(Vector::from_value(1.0f64), vec2(1.0, 1.0));
+//! assert_eq!(Vector2::from_value(1.0f64), vec2(1.0, 1.0));
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
