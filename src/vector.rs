@@ -111,7 +111,7 @@ use num::{BaseNum, BaseFloat, Zero, One, zero, one};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
+pub trait Vector<S: BaseNum>: Array1<S> + Zero + One {
     /// Construct a vector from a single value, replicating it.
     fn from_value(s: S) -> Self;
     /// Add a scalar to this vector, returning a new vector.
@@ -145,9 +145,6 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One + Neg<Output=Self> {
     /// Take the remainder of this vector by another, returning a new scalar.
     #[must_use]
     fn rem_v(&self, v: &Self) -> Self;
-
-    /// Negate this vector in-place.
-    fn neg_self(&mut self);
 
     /// Add a scalar to this vector in-place.
     fn add_self_s(&mut self, s: S);
@@ -200,6 +197,14 @@ macro_rules! vec(
             #[inline]
             pub fn new($($field: $S),+) -> $Self_<$S> {
                 $Self_ { $($field: $field),+ }
+            }
+        }
+
+        impl<$S: Copy + Neg<Output = $S>> $Self_<$S> {
+            /// Negate this vector in-place (multiply by -1).
+            #[inline]
+            pub fn neg_self(&mut self) {
+                $(self.$field = -self.$field);+
             }
         }
 
@@ -300,8 +305,6 @@ macro_rules! vec(
             #[inline] fn div_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field / v.$field),+) }
             #[inline] fn rem_v(&self, v: &$Self_<S>) -> $Self_<S> { $Self_::new($(self.$field % v.$field),+) }
 
-            #[inline] fn neg_self(&mut self) { $(self.$field = -self.$field;)+ }
-
             #[inline] fn add_self_s(&mut self, s: S) { $(self.$field = self.$field + s;)+ }
             #[inline] fn sub_self_s(&mut self, s: S) { $(self.$field = self.$field - s;)+ }
             #[inline] fn mul_self_s(&mut self, s: S) { $(self.$field = self.$field * s;)+ }
@@ -334,11 +337,11 @@ macro_rules! vec(
             fn sub(self, v: $Self_<S>) -> $Self_<S> { self.sub_v(&v) }
         }
 
-        impl<S: BaseNum> Neg for $Self_<S> {
-            type Output = $Self_<S>;
+        impl<S: Neg> Neg for $Self_<S> {
+            type Output = $Self_<S::Output>;
 
             #[inline]
-            fn neg(self) -> $Self_<S> { $Self_::new($(-self.$field),+) }
+            fn neg(self) -> $Self_<S::Output> { $Self_::new($(-self.$field),+) }
         }
 
         impl<S: BaseNum> Mul for $Self_<S> {

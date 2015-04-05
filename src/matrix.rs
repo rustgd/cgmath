@@ -44,7 +44,7 @@ pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> 
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
-impl<S: BaseNum> Matrix2<S> {
+impl<S> Matrix2<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
@@ -58,7 +58,9 @@ impl<S: BaseNum> Matrix2<S> {
     pub fn from_cols(c0: Vector2<S>, c1: Vector2<S>) -> Matrix2<S> {
         Matrix2 { x: c0, y: c1 }
     }
+}
 
+impl<S: BaseNum> Matrix2<S> {
     /// Create a new diagonal matrix, providing a single value to use for each
     /// non-zero index.
     #[inline]
@@ -95,6 +97,15 @@ impl<S: BaseFloat + 'static> Matrix2<S> {
 
         Matrix2::new(cos_theta.clone(),  sin_theta.clone(),
                      -sin_theta.clone(), cos_theta.clone())
+    }
+}
+
+impl<S: Copy + Neg<Output = S>> Matrix2<S> {
+    /// Negate this `Matrix2` in-place.
+    #[inline]
+    pub fn neg_self(&mut self) {
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
     }
 }
 
@@ -137,8 +148,7 @@ impl<S: BaseNum> Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat + 'static>
-Matrix3<S> {
+impl<S: BaseFloat + 'static> Matrix3<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Matrix3<S> {
@@ -220,6 +230,16 @@ Matrix3<S> {
     }
 }
 
+impl<S: Copy + Neg<Output = S>> Matrix3<S> {
+    /// Negate this `Matrix3` in-place.
+    #[inline]
+    pub fn neg_self(&mut self) {
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
+        (&mut self[2]).neg_self();
+    }
+}
+
 impl<S: BaseNum> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
@@ -271,8 +291,7 @@ impl<S: BaseNum> Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat>
-Matrix4<S> {
+impl<S: BaseFloat> Matrix4<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> Matrix4<S> {
@@ -287,8 +306,18 @@ Matrix4<S> {
     }
 }
 
+impl<S: Copy + Neg<Output = S>> Matrix4<S> {
+    /// Negate this `Matrix4` in-place.
+    #[inline]
+    pub fn neg_self(&mut self) {
+        (&mut self[0]).neg_self();
+        (&mut self[1]).neg_self();
+        (&mut self[2]).neg_self();
+        (&mut self[3]).neg_self();
+    }
+}
+
 pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
-                                                    + Neg
                                                     + Zero + One
                                                     + ApproxEq<S>
                                                     + Sized {
@@ -316,9 +345,6 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
     /// Multiply this matrix by another matrix, returning the new matrix.
     #[must_use]
     fn mul_m(&self, m: &Self) -> Self;
-
-    /// Negate this matrix in-place (multiply by scalar -1).
-    fn neg_self(&mut self);
 
     /// Multiply this matrix by a scalar, in-place.
     fn mul_self_s(&mut self, s: S);
@@ -423,11 +449,13 @@ impl<S: BaseFloat + 'static> Sub for Matrix4<S> {
     fn sub(self, other: Matrix4<S>) -> Matrix4<S> { self.sub_m(&other) }
 }
 
-impl<S: BaseFloat> Neg for Matrix2<S> {
-    type Output = Matrix2<S>;
+impl<S: Neg> Neg for Matrix2<S> {
+    type Output = Matrix2<S::Output>;
 
     #[inline]
-    fn neg(self) -> Matrix2<S> { Matrix2::from_cols(self[0].neg(), self[1].neg()) }
+    fn neg(self) -> Matrix2<S::Output> {
+        Matrix2::from_cols(self.x.neg(), self.y.neg())
+    }
 }
 
 impl<S: BaseFloat> Neg for Matrix3<S> {
@@ -796,12 +824,6 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector2<S>> for Matrix2<S> {
     }
 
     #[inline]
-    fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
-    }
-
-    #[inline]
     fn mul_self_s(&mut self, s: S) {
         (&mut self[0]).mul_self_s(s);
         (&mut self[1]).mul_self_s(s);
@@ -924,13 +946,6 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector3<S>> for Matrix3<S> {
         Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
                      self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
                      self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
-    }
-
-    #[inline]
-    fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
-        (&mut self[2]).neg_self();
     }
 
     #[inline]
@@ -1092,14 +1107,6 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
                      dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
                      dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
                      dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
-    }
-
-    #[inline]
-    fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
-        (&mut self[2]).neg_self();
-        (&mut self[3]).neg_self();
     }
 
     #[inline]
