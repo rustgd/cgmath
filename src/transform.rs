@@ -261,7 +261,8 @@ impl<
     R: Rotation<S, V, P> + Clone,
 > ToComponents<S, V, P, R> for Decomposed<S, V, R> {
     fn decompose(&self) -> (V, R, V) {
-        (Vector::from_value(self.scale), self.rot.clone(), self.disp.clone())
+        let v: V = one();
+        (v.mul_s(self.scale), self.rot.clone(), self.disp.clone())
     }
 }
 

@@ -63,6 +63,8 @@ pub use sphere::Sphere;
 pub use approx::ApproxEq;
 pub use num::*;
 
+pub use rust_num::{One, Zero, one, zero};
+
 // Modules
 
 mod array;

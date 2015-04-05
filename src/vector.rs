@@ -26,7 +26,7 @@
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), zero());
-//! assert_eq!(Vector::from_value(1.0f64), vec2(1.0, 1.0));
+//! assert_eq!(Vector2::from_value(1.0f64), vec2(1.0, 1.0));
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
@@ -76,7 +76,7 @@
 //!
 //! // Scalar multiplication can return a new object, or be done in place
 //! // to avoid an allocation:
-//! let mut c: Vector4<f64> = Vector::from_value(3.0);
+//! let mut c = Vector4::from_value(3f64);
 //! let d: Vector4<f64> = c.mul_s(2.0);
 //! c.mul_self_s(2.0);
 //! assert_eq!(c, d);
@@ -339,11 +339,11 @@ macro_rules! vec(
             fn sub(self, v: $Self_<S>) -> $Self_<S> { self.sub_v(&v) }
         }
 
-        impl<S: Neg> Neg for $Self_<S> {
-            type Output = $Self_<S::Output>;
+        impl<S: Neg<Output = S>> Neg for $Self_<S> {
+            type Output = $Self_<S>;
 
             #[inline]
-            fn neg(self) -> $Self_<S::Output> { $Self_::new($(-self.$field),+) }
+            fn neg(self) -> $Self_<S> { $Self_::new($(-self.$field),+) }
         }
 
         impl<S: BaseNum> Mul for $Self_<S> {

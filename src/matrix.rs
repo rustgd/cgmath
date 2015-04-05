@@ -455,29 +455,29 @@ impl<S: BaseFloat> Sub for Matrix4<S> {
     fn sub(self, other: Matrix4<S>) -> Matrix4<S> { self.sub_m(&other) }
 }
 
-impl<S: Neg> Neg for Matrix2<S> {
-    type Output = Matrix2<S::Output>;
+impl<S: Neg<Output = S>> Neg for Matrix2<S> {
+    type Output = Matrix2<S>;
 
     #[inline]
-    fn neg(self) -> Matrix2<S::Output> {
+    fn neg(self) -> Matrix2<S> {
         Matrix2::from_cols(self.x.neg(), self.y.neg())
     }
 }
 
-impl<S: Neg> Neg for Matrix3<S> {
-    type Output = Matrix3<S::Output>;
+impl<S: Neg<Output = S>> Neg for Matrix3<S> {
+    type Output = Matrix3<S>;
 
     #[inline]
-    fn neg(self) -> Matrix3<S::Output> {
+    fn neg(self) -> Matrix3<S> {
         Matrix3::from_cols(self.x.neg(), self.y.neg(), self.z.neg())
     }
 }
 
-impl<S: Neg> Neg for Matrix4<S> {
-    type Output = Matrix4<S::Output>;
+impl<S: Neg<Output = S>> Neg for Matrix4<S> {
+    type Output = Matrix4<S>;
 
     #[inline]
-    fn neg(self) -> Matrix4<S::Output> {
+    fn neg(self) -> Matrix4<S> {
         Matrix4::from_cols(self.x.neg(), self.y.neg(), self.z.neg(), self.w.neg())
     }
 }
