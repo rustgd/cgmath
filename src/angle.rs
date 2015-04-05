@@ -23,7 +23,7 @@ use std::ops::*;
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
 
-use rust_num::{One, Zero, one, zero};
+use rust_num::{Float, One, Zero, one, zero};
 
 use approx::ApproxEq;
 use num::BaseFloat;
@@ -52,11 +52,27 @@ pub trait ToDeg<S: BaseFloat> {
     fn to_deg(&self) -> Deg<S>;
 }
 
-impl<S: BaseFloat> ToRad<S> for Rad<S> { #[inline] fn to_rad(&self) -> Rad<S> { self.clone() } }
-impl<S: BaseFloat> ToRad<S> for Deg<S> { #[inline] fn to_rad(&self) -> Rad<S> { rad(self.s.to_radians()) } }
+impl<S: BaseFloat> ToRad<S> for Rad<S> {
+    #[inline]
+    fn to_rad(&self) -> Rad<S> { self.clone() }
+}
+impl<S: BaseFloat> ToRad<S> for Deg<S> {
+    #[inline]
+    fn to_rad(&self) -> Rad<S> {
+        rad(self.s * cast(f64::consts::PI / 180.0).unwrap())
+    }
+}
 
-impl<S: BaseFloat> ToDeg<S> for Rad<S> { #[inline] fn to_deg(&self) -> Deg<S> { deg(self.s.to_degrees()) } }
-impl<S: BaseFloat> ToDeg<S> for Deg<S> { #[inline] fn to_deg(&self) -> Deg<S> { self.clone() } }
+impl<S: BaseFloat> ToDeg<S> for Rad<S> {
+    #[inline]
+    fn to_deg(&self) -> Deg<S> {
+        deg(self.s * cast(180.0 / f64::consts::PI).unwrap())
+    }
+}
+impl<S: BaseFloat> ToDeg<S> for Deg<S> {
+    #[inline]
+    fn to_deg(&self) -> Deg<S> { self.clone() }
+}
 
 /// Private utility functions for converting to/from scalars
 trait ScalarConv<S> {

@@ -98,11 +98,12 @@
 
 use std::fmt;
 use std::mem;
+use std::num::NumCast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 
-use rust_num::{NumCast, Zero, One, zero, one};
+use rust_num::{Zero, One, zero, one};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
