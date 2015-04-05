@@ -15,19 +15,20 @@
 
 use std::fmt;
 
+use rust_num::{zero, one};
+
 use approx::ApproxEq;
 use matrix::*;
 use num::*;
 use point::*;
 use ray::Ray;
 use rotation::*;
-use std::marker::PhantomFn;
 use vector::*;
 
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized + PhantomFn<S> {
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn identity() -> Self;
@@ -236,7 +237,7 @@ impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-pub trait ToComponents<S, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>>: PhantomFn<(S, P)> {
+pub trait ToComponents<S, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (V, R, V);
 }

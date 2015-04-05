@@ -17,14 +17,16 @@
 
 use std::fmt;
 use std::f64;
-use std::num::{cast, Float};
+use std::num::cast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
 
+use rust_num::{One, Zero, one, zero};
+
 use approx::ApproxEq;
-use num::{BaseFloat, One, one, Zero, zero};
+use num::BaseFloat;
 
 /// An angle, in radians
 #[derive(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable)]
