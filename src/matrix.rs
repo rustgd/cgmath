@@ -22,10 +22,12 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 
+use rust_num::{Zero, zero, One, one};
+
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::{Array1, Array2, FixedArray};
-use num::{BaseFloat, BaseNum, Zero, zero, One, one};
+use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
 use quaternion::{Quaternion, ToQuaternion};
 use vector::{Vector, EuclideanVector};
@@ -82,7 +84,7 @@ impl<S: BaseNum> Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat + 'static> Matrix2<S> {
+impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Matrix2<S> {
@@ -109,7 +111,7 @@ impl<S: Copy + Neg<Output = S>> Matrix2<S> {
     }
 }
 
-impl<S: BaseNum> Matrix3<S> {
+impl<S> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
@@ -125,7 +127,9 @@ impl<S: BaseNum> Matrix3<S> {
     pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
         Matrix3 { x: c0, y: c1, z: c2 }
     }
+}
 
+impl<S: BaseNum> Matrix3<S> {
     /// Create a new diagonal matrix, providing a single value to use for each
     /// non-zero index.
     #[inline]
@@ -148,7 +152,7 @@ impl<S: BaseNum> Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat + 'static> Matrix3<S> {
+impl<S: BaseFloat> Matrix3<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Matrix3<S> {
@@ -240,7 +244,7 @@ impl<S: Copy + Neg<Output = S>> Matrix3<S> {
     }
 }
 
-impl<S: BaseNum> Matrix4<S> {
+impl<S> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
@@ -258,7 +262,9 @@ impl<S: BaseNum> Matrix4<S> {
     pub fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
         Matrix4 { x: c0, y: c1, z: c2, w: c3 }
     }
+}
 
+impl<S: BaseNum> Matrix4<S> {
     /// Create a new diagonal matrix, providing a single value to use for each
     /// non-zero index.
     #[inline]
@@ -407,42 +413,42 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: BaseFloat + 'static> Add for Matrix2<S> {
+impl<S: BaseFloat> Add for Matrix2<S> {
     type Output = Matrix2<S>;
 
     #[inline]
     fn add(self, other: Matrix2<S>) -> Matrix2<S> { self.add_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Add for Matrix3<S> {
+impl<S: BaseFloat> Add for Matrix3<S> {
     type Output = Matrix3<S>;
 
     #[inline]
     fn add(self, other: Matrix3<S>) -> Matrix3<S> { self.add_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Add for Matrix4<S> {
+impl<S: BaseFloat> Add for Matrix4<S> {
     type Output = Matrix4<S>;
 
     #[inline]
     fn add(self, other: Matrix4<S>) -> Matrix4<S> { self.add_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Sub for Matrix2<S> {
+impl<S: BaseFloat> Sub for Matrix2<S> {
     type Output = Matrix2<S>;
 
     #[inline]
     fn sub(self, other: Matrix2<S>) -> Matrix2<S> { self.sub_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Sub for Matrix3<S> {
+impl<S: BaseFloat> Sub for Matrix3<S> {
     type Output = Matrix3<S>;
 
     #[inline]
     fn sub(self, other: Matrix3<S>) -> Matrix3<S> { self.sub_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Sub for Matrix4<S> {
+impl<S: BaseFloat> Sub for Matrix4<S> {
     type Output = Matrix4<S>;
 
     #[inline]
@@ -458,18 +464,22 @@ impl<S: Neg> Neg for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> Neg for Matrix3<S> {
-    type Output = Matrix3<S>;
+impl<S: Neg> Neg for Matrix3<S> {
+    type Output = Matrix3<S::Output>;
 
     #[inline]
-    fn neg(self) -> Matrix3<S> { Matrix3::from_cols(self[0].neg(), self[1].neg(), self[2].neg()) }
+    fn neg(self) -> Matrix3<S::Output> {
+        Matrix3::from_cols(self.x.neg(), self.y.neg(), self.z.neg())
+    }
 }
 
-impl<S: BaseFloat> Neg for Matrix4<S> {
-    type Output = Matrix4<S>;
+impl<S: Neg> Neg for Matrix4<S> {
+    type Output = Matrix4<S::Output>;
 
     #[inline]
-    fn neg(self) -> Matrix4<S> { Matrix4::from_cols(self[0].neg(), self[1].neg(), self[2].neg(), self[3].neg()) }
+    fn neg(self) -> Matrix4<S::Output> {
+        Matrix4::from_cols(self.x.neg(), self.y.neg(), self.z.neg(), self.w.neg())
+    }
 }
 
 impl<S: BaseFloat> Zero for Matrix2<S> {
@@ -493,21 +503,21 @@ impl<S: BaseFloat> Zero for Matrix4<S> {
     fn is_zero(&self) -> bool{ *self == zero() }
 }
 
-impl<S: BaseFloat + 'static> Mul for Matrix2<S> {
+impl<S: BaseFloat> Mul for Matrix2<S> {
     type Output = Matrix2<S>;
 
     #[inline]
     fn mul(self, other: Matrix2<S>) -> Matrix2<S> { self.mul_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Mul for Matrix3<S> {
+impl<S: BaseFloat> Mul for Matrix3<S> {
     type Output = Matrix3<S>;
 
     #[inline]
     fn mul(self, other: Matrix3<S>) -> Matrix3<S> { self.mul_m(&other) }
 }
 
-impl<S: BaseFloat + 'static> Mul for Matrix4<S> {
+impl<S: BaseFloat> Mul for Matrix4<S> {
     type Output = Matrix4<S>;
 
     #[inline]
@@ -781,7 +791,7 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat + 'static> Matrix<S, Vector2<S>> for Matrix2<S> {
+impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix2<S> {
         Matrix2::from_cols(self[0].mul_s(s),
@@ -899,7 +909,7 @@ impl<S: BaseFloat + 'static> Matrix<S, Vector2<S>> for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat + 'static> Matrix<S, Vector3<S>> for Matrix3<S> {
+impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix3<S> {
         Matrix3::from_cols(self[0].mul_s(s),
@@ -1053,7 +1063,7 @@ macro_rules! dot_matrix4(
         ($A[3][$I]) * ($B[$J][3])
 ));
 
-impl<S: BaseFloat + 'static> Matrix<S, Vector4<S>> for Matrix4<S> {
+impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]
     fn mul_s(&self, s: S) -> Matrix4<S> {
         Matrix4::from_cols(self[0].mul_s(s),
@@ -1345,7 +1355,7 @@ impl<S: BaseFloat> ToMatrix4<S> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat + 'static> ToQuaternion<S> for Matrix3<S> {
+impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
     /// Convert the matrix to a quaternion
     fn to_quaternion(&self) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf

@@ -17,8 +17,9 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
-use std::num::{Float, Int, NumCast};
 use std::ops::*;
+
+use rust_num::{Float, Num, NumCast};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
@@ -58,43 +59,18 @@ macro_rules! partial_ord_float (
 partial_ord_float!(f32);
 partial_ord_float!(f64);
 
-/// Additive neutral element
-pub trait Zero {
-    fn zero() -> Self;
-    fn is_zero(&self) -> bool;
-}
-
-/// Multiplicative neutral element
-pub trait One {
-    fn one() -> Self;
-}
 
 /// Base numeric types with partial ordering
 pub trait BaseNum:
-    Copy + NumCast + Clone + Add<Output=Self> + Sub<Output=Self> +
-    Mul<Output=Self> + Div<Output=Self> + Rem<Output=Self> + PartialEq
-    + PartialOrd + cmp::PartialOrd + fmt::Debug + Zero + One
+    Copy + NumCast + Clone + Num
+    + PartialOrd + cmp::PartialOrd + fmt::Debug
+    + 'static
 {}
 
 
 macro_rules! impl_basenum_int (
     ($T: ident) => (
         impl BaseNum for $T {}
-        impl Zero for $T {
-            fn zero() -> $T {
-                Int::zero()
-            }
-
-            fn is_zero(&self) -> bool {
-                *self == Int::zero()
-            }
-        }
-
-        impl One for $T {
-            fn one() -> $T {
-                Int::one()
-            }
-        }
     )
 );
 
@@ -113,38 +89,15 @@ impl_basenum_int!(usize);
 macro_rules! impl_basenum_float (
     ($T: ident) => (
         impl BaseNum for $T {}
-        impl Zero for $T {
-            fn zero() -> $T {
-                Float::zero()
-            }
-
-            fn is_zero(&self) -> bool {
-                *self == Float::zero()
-            }
-        }
-
-        impl One for $T {
-            fn one() -> $T {
-                Float::one()
-            }
-        }
     )
 );
 
 impl_basenum_float!(f32);
 impl_basenum_float!(f64);
 
-pub fn zero<T: Zero>() -> T {
-    Zero::zero()
-}
-
-pub fn one<T: One>() -> T {
-    One::one()
-}
-
 
 /// Base integer types
-pub trait BaseInt : BaseNum + Int {}
+pub trait BaseInt : BaseNum {}
 
 impl BaseInt for i8 {}
 impl BaseInt for i16 {}

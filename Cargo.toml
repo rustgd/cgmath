@@ -24,4 +24,5 @@ name = "cgmath"
 rustc_serialize = "*"
 
 [dependencies]
+num = "*"
 rand = "*"

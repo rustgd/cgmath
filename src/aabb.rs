@@ -20,15 +20,18 @@
 //! dimension) where the slope of every line is either 0 or undefined. These
 //! are useful for very cheap collision detection.
 
+use std::fmt;
+
+use rust_num::{Float, zero, one};
+
 use bound::*;
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use ray::{Ray2};
 use intersect::Intersect;
-use num::{zero, one, BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat};
 use plane::Plane;
-use std::fmt;
-use std::num::Float;
+
 
 pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     /// Create a new AABB using two points as opposing corners.

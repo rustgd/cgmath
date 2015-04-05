@@ -98,15 +98,16 @@
 
 use std::fmt;
 use std::mem;
-use std::num::NumCast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 
+use rust_num::{NumCast, Zero, One, zero, one};
+
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
-use num::{BaseNum, BaseFloat, Zero, One, zero, one};
+use num::{BaseNum, BaseFloat};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
@@ -214,7 +215,7 @@ macro_rules! vec(
             $Self_::new($($field),+)
         }
 
-        impl<$S: Zero> Zero for $Self_<$S> {
+        impl<$S: Zero + BaseNum> Zero for $Self_<$S> {
             #[inline]
             fn zero() -> $Self_<S> { $Self_ { $($field: zero()),+ } }
 
@@ -222,7 +223,7 @@ macro_rules! vec(
             fn is_zero(&self) -> bool { $((self.$field.is_zero()) )&&+ }
         }
 
-        impl<$S: One> One for $Self_<$S> {
+        impl<$S: One + BaseNum> One for $Self_<$S> {
             #[inline]
             fn one() -> $Self_<$S> { $Self_ { $($field: one()),+ } }
         }

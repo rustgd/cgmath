@@ -15,9 +15,11 @@
 
 //! Bounding sphere
 
+use rust_num::zero;
+
 use bound::*;
 use intersect::Intersect;
-use num::{BaseFloat, zero};
+use num::BaseFloat;
 use point::{Point, Point3};
 use plane::Plane;
 use ray::Ray3;

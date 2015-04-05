@@ -16,7 +16,10 @@
 //! Line segments
 
 use std::marker::PhantomData;
-use num::{BaseNum, BaseFloat, Zero, zero, One, one};
+
+use rust_num::{Zero, zero, One, one};
+
+use num::{BaseNum, BaseFloat};
 use point::{Point, Point2, Point3};
 use vector::{Vector, Vector2, Vector3};
 use ray::{Ray2};

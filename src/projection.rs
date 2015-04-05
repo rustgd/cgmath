@@ -15,10 +15,12 @@
 
 use std::num::cast;
 
+use rust_num::{zero, one};
+
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
 use matrix::{Matrix4, ToMatrix4};
-use num::{BaseFloat, zero, one};
+use num::BaseFloat;
 use plane::Plane;
 
 /// Create a perspective projection matrix.

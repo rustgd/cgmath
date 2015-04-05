@@ -15,9 +15,11 @@
 
 use std::fmt;
 
+use rust_num::{one, Zero, zero};
+
 use approx::ApproxEq;
 use intersect::Intersect;
-use num::{BaseFloat, one, Zero, zero};
+use num::{BaseFloat};
 use point::{Point, Point3};
 use ray::Ray3;
 use vector::{Vector3, Vector4};

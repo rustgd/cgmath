@@ -21,11 +21,13 @@ use std::fmt;
 use std::mem;
 use std::ops::*;
 
+use rust_num::{one, zero};
+
 use approx::ApproxEq;
 use array::{Array1, FixedArray};
 use bound::*;
 use matrix::{Matrix, Matrix4};
-use num::{BaseNum, BaseFloat, one, zero};
+use num::{BaseNum, BaseFloat};
 use plane::Plane;
 use vector::*;
 
