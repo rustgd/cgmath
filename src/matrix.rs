@@ -17,12 +17,12 @@
 
 use std::fmt;
 use std::mem;
-use std::num::cast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 
 use rust_num::{Zero, zero, One, one};
+use rust_num::traits::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
