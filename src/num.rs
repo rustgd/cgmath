@@ -17,7 +17,7 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
-use std::num::NumCast;
+use rust_num::traits::NumCast;
 
 use rust_num::{Float, Num};
 

@@ -98,7 +98,7 @@
 
 use std::fmt;
 use std::mem;
-use std::num::NumCast;
+use rust_num::traits::NumCast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
