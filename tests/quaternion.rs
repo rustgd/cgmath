@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(core)]
-
 extern crate cgmath;
 
 use cgmath::{ToMatrix4, ToMatrix3};

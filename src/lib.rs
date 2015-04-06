@@ -15,7 +15,7 @@
 
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![feature(plugin, core, std_misc, custom_derive)]
+#![feature(plugin, core, custom_derive)]
 
 //! Computer graphics-centric math.
 //!
@@ -31,6 +31,7 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
+extern crate num as rust_num;
 extern crate rustc_serialize;
 extern crate rand;
 
@@ -61,6 +62,8 @@ pub use sphere::Sphere;
 
 pub use approx::ApproxEq;
 pub use num::*;
+
+pub use rust_num::{One, Zero, one, zero};
 
 // Modules
 
