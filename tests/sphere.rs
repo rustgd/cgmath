@@ -17,7 +17,6 @@
 extern crate cgmath;
 
 use cgmath::*;
-use std::num::Float;
 
 #[test]
 fn test_intersection() {

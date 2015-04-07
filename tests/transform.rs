@@ -50,7 +50,7 @@ fn test_components() {
         disp: Vector3::new(6.0f64,-7.0,8.0)
     };
     let (scale, rot, disp) = t.decompose();
-    assert_eq!(scale, Vector::from_value(t.scale));
+    assert_eq!(scale, Vector3::from_value(t.scale));
     assert_eq!(rot, t.rot);
     assert_eq!(disp, t.disp);
 }

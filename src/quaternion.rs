@@ -13,19 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::f64;
 use std::fmt;
 use std::mem;
-use std::f64;
-use std::num::{cast, Float};
+use std::num::cast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
+use rust_num::{Float, one, zero};
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
 use array::Array1;
 use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
-use num::{BaseFloat, one, zero};
+use num::BaseFloat;
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
 use vector::{Vector3, Vector, EuclideanVector};

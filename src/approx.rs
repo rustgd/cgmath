@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num;
-use std::num::Float;
+use std::num::{NumCast, cast};
+use rust_num::Float;
 
-pub trait ApproxEq<T: Float>: Sized {
+pub trait ApproxEq<T: NumCast + Float>: Sized {
     fn approx_epsilon(_hack: Option<Self>) -> T {
-        num::cast(1.0e-5f64).unwrap()
+        cast(1.0e-5f64).unwrap()
     }
 
     fn approx_eq(&self, other: &Self) -> bool {
