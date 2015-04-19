@@ -510,6 +510,13 @@ impl<S: BaseFloat> Mul for Matrix2<S> {
     fn mul(self, other: Matrix2<S>) -> Matrix2<S> { self.mul_m(&other) }
 }
 
+impl<S: BaseFloat> Mul<S> for Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    #[inline]
+    fn mul(self, other: S) -> Matrix2<S> { self.mul_s(other) }
+}
+
 impl<S: BaseFloat> Mul for Matrix3<S> {
     type Output = Matrix3<S>;
 
@@ -517,11 +524,25 @@ impl<S: BaseFloat> Mul for Matrix3<S> {
     fn mul(self, other: Matrix3<S>) -> Matrix3<S> { self.mul_m(&other) }
 }
 
+impl<S: BaseFloat> Mul<S> for Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    #[inline]
+    fn mul(self, other: S) -> Matrix3<S> { self.mul_s(other) }
+}
+
 impl<S: BaseFloat> Mul for Matrix4<S> {
     type Output = Matrix4<S>;
 
     #[inline]
     fn mul(self, other: Matrix4<S>) -> Matrix4<S> { self.mul_m(&other) }
+}
+
+impl<S: BaseFloat> Mul<S> for Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    #[inline]
+    fn mul(self, other: S) -> Matrix4<S> { self.mul_s(other) }
 }
 
 impl<S: BaseFloat> One for Matrix2<S> {
