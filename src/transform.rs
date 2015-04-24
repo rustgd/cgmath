@@ -14,7 +14,6 @@
 // limitations under the License.
 
 use std::fmt;
-use std::marker::PhantomFn;
 
 use rust_num::{zero, one};
 
