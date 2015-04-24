@@ -14,7 +14,6 @@
 // limitations under the License.
 
 use std::fmt;
-use std::marker::PhantomFn;
 
 use rust_num::{zero, one};
 
@@ -238,10 +237,7 @@ impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-// PhantomFn works around a beta bug in deteriming the usage of S/P, and should be safely removed
-// when PhantomFn deprecation lands in stable.
-pub trait ToComponents<S: BaseNum, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> 
-    : PhantomFn<S> + PhantomFn<P> {
+pub trait ToComponents<S: BaseNum, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (V, R, V);
 }
