@@ -17,9 +17,8 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
-use std::num::NumCast;
 
-use rust_num::{Float, Num};
+use rust_num::{Float, Num, NumCast};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
