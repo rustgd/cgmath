@@ -16,11 +16,11 @@
 use std::f64;
 use std::fmt;
 use std::mem;
-use std::num::cast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 use rust_num::{Float, one, zero};
+use rust_num::traits::cast;
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
@@ -242,8 +242,6 @@ impl<S: BaseFloat> Quaternion<S> {
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
     pub fn slerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
-        use std::num::cast;
-
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995f64).unwrap();
 

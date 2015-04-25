@@ -17,13 +17,13 @@
 
 use std::fmt;
 use std::f64;
-use std::num::cast;
 use std::ops::*;
 
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
 
 use rust_num::{Float, One, Zero, one, zero};
+use rust_num::traits::cast;
 
 use approx::ApproxEq;
 use num::BaseFloat;

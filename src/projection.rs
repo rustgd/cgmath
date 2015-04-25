@@ -13,9 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::cast;
-
 use rust_num::{zero, one};
+use rust_num::traits::cast;
 
 use angle::{Angle, tan, cot};
 use frustum::Frustum;
