@@ -1326,53 +1326,35 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
 
 // Conversion traits
 
-/// Represents types which can be converted to a Matrix2
-pub trait ToMatrix2<S: BaseNum> {
-    /// Convert this value to a Matrix2
-    fn to_matrix2(&self) -> Matrix2<S>;
-}
-
-/// Represents types which can be converted to a Matrix3
-pub trait ToMatrix3<S: BaseNum> {
-    /// Convert this value to a Matrix3
-    fn to_matrix3(&self) -> Matrix3<S>;
-}
-
-/// Represents types which can be converted to a Matrix4
-pub trait ToMatrix4<S: BaseNum> {
-    /// Convert this value to a Matrix4
-    fn to_matrix4(&self) -> Matrix4<S>;
-}
-
-impl<S: BaseFloat> ToMatrix3<S> for Matrix2<S> {
+impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
-    fn to_matrix3(&self) -> Matrix3<S> {
-        Matrix3::new(self[0][0], self[0][1], zero(),
-                     self[1][0], self[1][1], zero(),
-                         zero(),     zero(),  one())
+    fn from(m: Matrix2<S>) -> Matrix3<S> {
+        Matrix3::new(m[0][0], m[0][1], zero(),
+                     m[1][0], m[1][1], zero(),
+                     zero(),  zero(),  one())
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Matrix2<S> {
+impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
-    fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self[0][0], self[0][1], zero(), zero(),
-                     self[1][0], self[1][1], zero(), zero(),
-                         zero(),     zero(),  one(), zero(),
-                         zero(),     zero(), zero(),  one())
+    fn from(m: Matrix2<S>) -> Matrix4<S> {
+        Matrix4::new(m[0][0], m[0][1], zero(), zero(),
+                     m[1][0], m[1][1], zero(), zero(),
+                     zero(),  zero(),  one(),  zero(),
+                     zero(),  zero(),  zero(), one())
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Matrix3<S> {
+impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
-    fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self[0][0], self[0][1], self[0][2], zero(),
-                     self[1][0], self[1][1], self[1][2], zero(),
-                     self[2][0], self[2][1], self[2][2], zero(),
-                         zero(),     zero(),     zero(),  one())
+    fn from(m: Matrix3<S>) -> Matrix4<S> {
+        Matrix4::new(m[0][0], m[0][1], m[0][2], zero(),
+                     m[1][0], m[1][1], m[1][2], zero(),
+                     m[2][0], m[2][1], m[2][2], zero(),
+                     zero(),  zero(),  zero(),  one())
     }
 }
 
