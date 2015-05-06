@@ -82,6 +82,12 @@ impl<S: BaseNum> Matrix2<S> {
     pub fn identity() -> Matrix2<S> {
         Matrix2::from_value(one())
     }
+
+    /// Creates a matrix suitable for rescaling a model.
+    pub fn from_rescale(x: S, y: S) -> Matrix2<S> {
+        Matrix2::new(x.clone(), zero(),
+                     zero(), y.clone())
+    }
 }
 
 impl<S: BaseFloat> Matrix2<S> {
@@ -149,6 +155,13 @@ impl<S: BaseNum> Matrix3<S> {
     #[inline]
     pub fn identity() -> Matrix3<S> {
         Matrix3::from_value(one())
+    }
+
+    /// Creates a matrix suitable for rescaling a model.
+    pub fn from_rescale(x: S, y: S, z: S) -> Matrix3<S> {
+        Matrix3::new(x.clone(), zero(), zero(),
+                     zero(), y.clone(), zero(),
+                     zero(), zero(), z.clone())
     }
 }
 
@@ -294,6 +307,14 @@ impl<S: BaseNum> Matrix4<S> {
                      zero(), one(),  zero(), zero(),
                      zero(), zero(), one(),  zero(),
                      v.x,    v.y,    v.z,    one())
+    }
+
+    /// Creates a matrix suitable for rescaling a model.
+    pub fn from_rescale(x: S, y: S, z: S) -> Matrix4<S> {
+        Matrix4::new(x.clone(), zero(), zero(), zero(),
+                     zero(), y.clone(), zero(), zero(),
+                     zero(), zero(), z.clone(), zero(),
+                     zero(), zero(), zero(),    one())
     }
 }
 
