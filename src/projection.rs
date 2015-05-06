@@ -16,7 +16,7 @@
 use rust_num::{zero, one};
 use rust_num::traits::cast;
 
-use angle::{Angle, tan, cot};
+use angle::{Angle, Rad, tan, cot};
 use frustum::Frustum;
 use matrix::{Matrix4, ToMatrix4};
 use num::BaseFloat;
@@ -81,7 +81,8 @@ pub struct PerspectiveFov<S, A> {
 impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let angle = self.fovy.div_s(cast(2i8).unwrap());
-        let ymax = self.near * tan(angle.to_rad());
+        let angle: Rad<_> = angle.into();
+        let ymax = self.near * tan(angle);
         let xmax = ymax * self.aspect;
 
         Perspective {
@@ -113,7 +114,8 @@ impl<S: BaseFloat, A: Angle<S>> ToMatrix4<S> for PerspectiveFov<S, A> {
         assert!(self.far    > zero(),    "The far plane distance cannot be below zero, found: {:?}", self.far);
         assert!(self.far    > self.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", self.far, self.near);
 
-        let f = cot(self.fovy.div_s(cast(2i8).unwrap()).to_rad());
+        let f: Rad<_> = self.fovy.div_s(cast(2i8).unwrap()).into();
+        let f = cot(f);
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = f / self.aspect;
