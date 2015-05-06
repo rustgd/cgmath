@@ -28,7 +28,7 @@ use array::Array1;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
-use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
+use rotation::{Rotation, Rotation3, Basis3};
 use vector::{Vector3, Vector, EuclideanVector};
 
 
@@ -382,9 +382,9 @@ impl<S: BaseFloat> fmt::Debug for Quaternion<S> {
 
 // Quaternion Rotation impls
 
-impl<S: BaseFloat> ToBasis3<S> for Quaternion<S> {
+impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     #[inline]
-    fn to_rot3(&self) -> Basis3<S> { Basis3::from_quaternion(self) }
+    fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
 }
 
 impl<S: BaseFloat> ToQuaternion<S> for Quaternion<S> {
