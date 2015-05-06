@@ -14,8 +14,11 @@
 # limitations under the License.
 
 language: rust
+
 rust:
-- 1.0.0-beta.2
+  - 1.0.0-beta.4
+  - nightly
+
 env:
   global:
     - secure: S0l5RmsFJgbDdzXjHsCluexb1R9RklpxZMJgr9RcieeqSqaJDPUht53yBZDyuk04/KzEbtM5yxogJd2tcv2E4EogPLL8oG77GItNc/i6jy4TLUjU28WKOMiBvYA/1rhb7f/DEQgj7DtIHP/rQGKH8goUdJfqGbk7EawP7FSxC2Y=
