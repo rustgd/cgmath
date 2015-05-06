@@ -40,38 +40,18 @@ pub struct Deg<S> { pub s: S }
 /// Create a new angle, in degrees
 #[inline] pub fn deg<S: BaseFloat>(s: S) -> Deg<S> { Deg { s: s } }
 
-/// Represents types that can be converted to radians.
-pub trait ToRad<S: BaseFloat> {
-    /// Convert this value to radians.
-    fn to_rad(&self) -> Rad<S>;
-}
-
-/// Represents types that can be converted to degrees.
-pub trait ToDeg<S: BaseFloat> {
-    /// Convert this value to degrees.
-    fn to_deg(&self) -> Deg<S>;
-}
-
-impl<S: BaseFloat> ToRad<S> for Rad<S> {
+impl<S> From<Rad<S>> for Deg<S> where S: BaseFloat {
     #[inline]
-    fn to_rad(&self) -> Rad<S> { self.clone() }
-}
-impl<S: BaseFloat> ToRad<S> for Deg<S> {
-    #[inline]
-    fn to_rad(&self) -> Rad<S> {
-        rad(self.s * cast(f64::consts::PI / 180.0).unwrap())
+    fn from(r: Rad<S>) -> Deg<S> {
+        deg(r.s * cast(180.0 / f64::consts::PI).unwrap())
     }
 }
 
-impl<S: BaseFloat> ToDeg<S> for Rad<S> {
+impl<S> From<Deg<S>> for Rad<S> where S: BaseFloat {
     #[inline]
-    fn to_deg(&self) -> Deg<S> {
-        deg(self.s * cast(180.0 / f64::consts::PI).unwrap())
+    fn from(d: Deg<S>) -> Rad<S> {
+        rad(d.s * cast(f64::consts::PI / 180.0).unwrap())
     }
-}
-impl<S: BaseFloat> ToDeg<S> for Deg<S> {
-    #[inline]
-    fn to_deg(&self) -> Deg<S> { self.clone() }
 }
 
 /// Private utility functions for converting to/from scalars
@@ -102,8 +82,8 @@ pub trait Angle
 +   PartialEq + PartialOrd
 +   ApproxEq<S>
 +   Neg<Output=Self>
-+   ToRad<S>
-+   ToDeg<S>
++   Into<Rad<S>>
++   Into<Deg<S>>
 +   ScalarConv<S>
 +   fmt::Debug
 {
@@ -279,13 +259,13 @@ impl<S: BaseFloat> One for Deg<S> {
 const PI_2: f64 = f64::consts::PI * 2f64;
 impl<S: BaseFloat>
 Angle<S> for Rad<S> {
-    #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
+    #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.into() }
     #[inline] fn full_turn() -> Rad<S> { rad(cast(PI_2).unwrap()) }
 }
 
 impl<S: BaseFloat>
 Angle<S> for Deg<S> {
-    #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.to_deg() }
+    #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.into() }
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360i32).unwrap()) }
 }
 

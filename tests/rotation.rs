@@ -21,12 +21,12 @@ mod rotation {
     use super::cgmath::*;
 
     pub fn a2<R: Rotation2<f64>>() -> R {
-        Rotation2::from_angle(deg(30.0).to_rad())
+        Rotation2::from_angle(deg(30.0).into())
     }
 
     pub fn a3<R: Rotation3<f64>>() -> R {
         let axis = Vector3::new(1.0, 1.0, 0.0).normalize();
-        Rotation3::from_axis_angle(&axis, deg(30.0).to_rad())
+        Rotation3::from_axis_angle(&axis, deg(30.0).into())
     }
 }
 
