@@ -20,7 +20,7 @@ use matrix::Matrix2;
 use matrix::Matrix3;
 use num::{BaseNum, BaseFloat};
 use point::{Point, Point2, Point3};
-use quaternion::{Quaternion, ToQuaternion};
+use quaternion::Quaternion;
 use ray::Ray;
 use vector::{Vector, Vector2, Vector3};
 
@@ -86,7 +86,7 @@ pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
 pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
                                + Into<Matrix3<S>>
                                + Into<Basis3<S>>
-                               + ToQuaternion<S>{
+                               + Into<Quaternion<S>> {
     /// Create a rotation using an angle around a given axis.
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
 
@@ -255,9 +255,9 @@ impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
     fn from(b: Basis3<S>) -> Matrix3<S> { b.mat }
 }
 
-impl<S: BaseFloat + 'static> ToQuaternion<S> for Basis3<S> {
+impl<S: BaseFloat + 'static> From<Basis3<S>> for Quaternion<S> {
     #[inline]
-    fn to_quaternion(&self) -> Quaternion<S> { self.mat.to_quaternion() }
+    fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
 }
 
 impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {

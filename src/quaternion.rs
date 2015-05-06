@@ -37,12 +37,6 @@ use vector::{Vector3, Vector, EuclideanVector};
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
 
-/// Represents types which can be expressed as a quaternion.
-pub trait ToQuaternion<S: BaseFloat> {
-    /// Convert this value to a quaternion.
-    fn to_quaternion(&self) -> Quaternion<S>;
-}
-
 impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
     #[inline]
     fn map<F>(&mut self, mut op: F) -> Quaternion<S> where F: FnMut(S) -> S {
@@ -387,18 +381,13 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
 }
 
-impl<S: BaseFloat> ToQuaternion<S> for Quaternion<S> {
-    #[inline]
-    fn to_quaternion(&self) -> Quaternion<S> { self.clone() }
-}
-
 impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
     fn identity() -> Quaternion<S> { Quaternion::identity() }
 
     #[inline]
     fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Quaternion<S> {
-        Matrix3::look_at(dir, up).to_quaternion()
+        Matrix3::look_at(dir, up).into()
     }
 
     #[inline]
