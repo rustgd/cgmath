@@ -276,10 +276,11 @@ impl<S: BaseFloat> One for Deg<S> {
     fn one() -> Deg<S> { deg(one()) }
 }
 
+const PI_2: f64 = f64::consts::PI * 2f64;
 impl<S: BaseFloat>
 Angle<S> for Rad<S> {
     #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.to_rad() }
-    #[inline] fn full_turn() -> Rad<S> { rad(cast(f64::consts::PI_2).unwrap()) }
+    #[inline] fn full_turn() -> Rad<S> { rad(cast(PI_2).unwrap()) }
 }
 
 impl<S: BaseFloat>

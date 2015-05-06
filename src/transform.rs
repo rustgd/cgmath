@@ -237,7 +237,7 @@ impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-pub trait ToComponents<S, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
+pub trait ToComponents<S: BaseNum, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (V, R, V);
 }
