@@ -167,10 +167,11 @@ pub struct Basis2<S> {
     mat: Matrix2<S>
 }
 
-impl<S: BaseFloat> Basis2<S> {
-    /// Coerce to a `Matrix2`
+impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
     #[inline]
-    pub fn as_matrix2<'a>(&'a self) -> &'a Matrix2<S> { &self.mat }
+    fn as_ref(&self) -> &Matrix2<S> {
+        &self.mat
+    }
 }
 
 /// Represents types which can be converted to a rotation matrix.
@@ -251,10 +252,13 @@ impl<S: BaseFloat> Basis3<S> {
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
         Basis3 { mat: quaternion.clone().into() }
     }
+}
 
-    /// Coerce to a `Matrix3`
+impl<S> AsRef<Matrix3<S>> for Basis3<S> {
     #[inline]
-    pub fn as_matrix3<'a>(&'a self) -> &'a Matrix3<S> { &self.mat }
+    fn as_ref(&self) -> &Matrix3<S> {
+        &self.mat
+    }
 }
 
 /// Represents types which can be converted to a rotation matrix.
