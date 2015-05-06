@@ -15,7 +15,7 @@
 
 extern crate cgmath;
 
-use cgmath::{ToMatrix4, ToMatrix3};
+use cgmath::{Matrix4, Matrix3};
 use cgmath::Quaternion;
 
 use cgmath::{Rad, rad, ApproxEq};
@@ -28,8 +28,10 @@ fn to_matrix4()
 {
     let quaternion = Quaternion::new(2f32, 3f32, 4f32, 5f32);
 
-    let matrix_short = quaternion.to_matrix4();
-    let matrix_long = quaternion.to_matrix3().to_matrix4();
+    let matrix_short: Matrix4<_> = quaternion.into();
+
+    let matrix_long: Matrix3<_> = quaternion.into();
+    let matrix_long: Matrix4<_> = matrix_long.into();
 
     assert!(matrix_short == matrix_long);
 }

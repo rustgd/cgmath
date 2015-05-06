@@ -16,8 +16,8 @@
 use angle::{Rad, acos};
 use approx::ApproxEq;
 use matrix::Matrix;
-use matrix::{Matrix2, ToMatrix2};
-use matrix::{Matrix3, ToMatrix3};
+use matrix::Matrix2;
+use matrix::Matrix3;
 use num::{BaseNum, BaseFloat};
 use point::{Point, Point2, Point3};
 use quaternion::{Quaternion, ToQuaternion};
@@ -75,7 +75,7 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
 
 /// A two-dimensional rotation.
 pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
-                      + ToMatrix2<S>
+                      + Into<Matrix2<S>>
                       + ToBasis2<S> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
@@ -84,7 +84,7 @@ pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
 
 /// A three-dimensional rotation.
 pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
-                               + ToMatrix3<S>
+                               + Into<Matrix3<S>>
                                + ToBasis3<S>
                                + ToQuaternion<S>{
     /// Create a rotation using an angle around a given axis.
@@ -135,7 +135,7 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// ```no_run
 /// use cgmath::rad;
 /// use cgmath::Vector2;
-/// use cgmath::{Matrix, ToMatrix2};
+/// use cgmath::{Matrix, Matrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
 /// use cgmath::ApproxEq;
 /// use std::f64;
@@ -153,7 +153,8 @@ pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
 /// assert!(unit_y.approx_eq(&Vector2::unit_y()));
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
-/// let unit_y2 = rot.to_matrix2().mul_v(&unit_x);
+/// let unit_y2: Matrix2<_> = rot.into();
+/// let unit_y2 = unit_y2.mul_v(&unit_x);
 /// assert_eq!(unit_y2, unit_y);
 ///
 /// // Note that we can also concatenate rotations:
@@ -183,9 +184,9 @@ impl<S: BaseFloat> ToBasis2<S> for Basis2<S> {
     fn to_rot2(&self) -> Basis2<S> { self.clone() }
 }
 
-impl<S: BaseFloat> ToMatrix2<S> for Basis2<S> {
+impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     #[inline]
-    fn to_matrix2(&self) -> Matrix2<S> { self.mat.clone() }
+    fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
 }
 
 impl<S: BaseFloat + 'static> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
@@ -248,7 +249,7 @@ impl<S: BaseFloat> Basis3<S> {
     /// Create a new rotation matrix from a quaternion.
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
-        Basis3 { mat: quaternion.to_matrix3() }
+        Basis3 { mat: quaternion.clone().into() }
     }
 
     /// Coerce to a `Matrix3`
@@ -267,9 +268,9 @@ impl<S: BaseFloat> ToBasis3<S> for Basis3<S> {
     fn to_rot3(&self) -> Basis3<S> { self.clone() }
 }
 
-impl<S: BaseFloat> ToMatrix3<S> for Basis3<S> {
+impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
     #[inline]
-    fn to_matrix3(&self) -> Matrix3<S> { self.mat.clone() }
+    fn from(b: Basis3<S>) -> Matrix3<S> { b.mat }
 }
 
 impl<S: BaseFloat + 'static> ToQuaternion<S> for Basis3<S> {

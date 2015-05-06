@@ -25,7 +25,7 @@ use rust_num::traits::cast;
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
 use array::Array1;
-use matrix::{Matrix3, ToMatrix3, ToMatrix4, Matrix4};
+use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3, ToBasis3};
@@ -312,24 +312,24 @@ impl<S: BaseFloat> Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> ToMatrix3<S> for Quaternion<S> {
+impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix
-    fn to_matrix3(&self) -> Matrix3<S> {
-        let x2 = self.v.x + self.v.x;
-        let y2 = self.v.y + self.v.y;
-        let z2 = self.v.z + self.v.z;
+    fn from(quat: Quaternion<S>) -> Matrix3<S> {
+        let x2 = quat.v.x + quat.v.x;
+        let y2 = quat.v.y + quat.v.y;
+        let z2 = quat.v.z + quat.v.z;
 
-        let xx2 = x2 * self.v.x;
-        let xy2 = x2 * self.v.y;
-        let xz2 = x2 * self.v.z;
+        let xx2 = x2 * quat.v.x;
+        let xy2 = x2 * quat.v.y;
+        let xz2 = x2 * quat.v.z;
 
-        let yy2 = y2 * self.v.y;
-        let yz2 = y2 * self.v.z;
-        let zz2 = z2 * self.v.z;
+        let yy2 = y2 * quat.v.y;
+        let yz2 = y2 * quat.v.z;
+        let zz2 = z2 * quat.v.z;
 
-        let sy2 = y2 * self.s;
-        let sz2 = z2 * self.s;
-        let sx2 = x2 * self.s;
+        let sy2 = y2 * quat.s;
+        let sz2 = z2 * quat.s;
+        let sx2 = x2 * quat.s;
 
         Matrix3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
                      xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
@@ -337,24 +337,24 @@ impl<S: BaseFloat> ToMatrix3<S> for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Quaternion<S> {
+impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
     /// Convert the quaternion to a 4 x 4 rotation matrix
-    fn to_matrix4(&self) -> Matrix4<S> {
-        let x2 = self.v.x + self.v.x;
-        let y2 = self.v.y + self.v.y;
-        let z2 = self.v.z + self.v.z;
+    fn from(quat: Quaternion<S>) -> Matrix4<S> {
+        let x2 = quat.v.x + quat.v.x;
+        let y2 = quat.v.y + quat.v.y;
+        let z2 = quat.v.z + quat.v.z;
 
-        let xx2 = x2 * self.v.x;
-        let xy2 = x2 * self.v.y;
-        let xz2 = x2 * self.v.z;
+        let xx2 = x2 * quat.v.x;
+        let xy2 = x2 * quat.v.y;
+        let xz2 = x2 * quat.v.z;
 
-        let yy2 = y2 * self.v.y;
-        let yz2 = y2 * self.v.z;
-        let zz2 = z2 * self.v.z;
+        let yy2 = y2 * quat.v.y;
+        let yz2 = y2 * quat.v.z;
+        let zz2 = z2 * quat.v.z;
 
-        let sy2 = y2 * self.s;
-        let sz2 = z2 * self.s;
-        let sx2 = x2 * self.s;
+        let sy2 = y2 * quat.s;
+        let sz2 = z2 * quat.s;
+        let sx2 = x2 * quat.s;
 
         Matrix4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
                      xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),

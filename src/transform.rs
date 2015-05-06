@@ -146,16 +146,17 @@ impl<
     }
 }
 
-pub trait Transform2<S>: Transform<S, Vector2<S>, Point2<S>> + ToMatrix3<S> {}
-pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>> + ToMatrix4<S> {}
+pub trait Transform2<S>: Transform<S, Vector2<S>, Point2<S>> + Into<Matrix3<S>> {}
+pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>> + Into<Matrix4<S>> {}
 
 impl<
     S: BaseFloat + 'static,
     R: Rotation2<S>,
-> ToMatrix3<S> for Decomposed<S, Vector2<S>, R> {
-    fn to_matrix3(&self) -> Matrix3<S> {
-        let mut m = self.rot.to_matrix2().mul_s(self.scale.clone()).to_matrix3();
-        m.z = self.disp.extend(one());
+> From<Decomposed<S, Vector2<S>, R>> for Matrix3<S> {
+    fn from(dec: Decomposed<S, Vector2<S>, R>) -> Matrix3<S> {
+        let m: Matrix2<_> = dec.rot.into();
+        let mut m: Matrix3<_> = m.mul_s(dec.scale).into();
+        m.z = dec.disp.extend(one());
         m
     }
 }
@@ -163,10 +164,11 @@ impl<
 impl<
     S: BaseFloat + 'static,
     R: Rotation3<S>,
-> ToMatrix4<S> for Decomposed<S, Vector3<S>, R> {
-    fn to_matrix4(&self) -> Matrix4<S> {
-        let mut m = self.rot.to_matrix3().mul_s(self.scale.clone()).to_matrix4();
-        m.w = self.disp.extend(one());
+> From<Decomposed<S, Vector3<S>, R>> for Matrix4<S> {
+    fn from(dec: Decomposed<S, Vector3<S>, R>) -> Matrix4<S> {
+        let m: Matrix3<_> = dec.rot.into();
+        let mut m: Matrix4<_> = m.mul_s(dec.scale).into();
+        m.w = dec.disp.extend(one());
         m
     }
 }
@@ -229,8 +231,8 @@ impl<S: BaseFloat + 'static> Transform<S, Vector3<S>, Point3<S>> for AffineMatri
     }
 }
 
-impl<S: BaseNum> ToMatrix4<S> for AffineMatrix3<S> {
-    #[inline] fn to_matrix4(&self) -> Matrix4<S> { self.mat.clone() }
+impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
+    #[inline] fn from(aff: AffineMatrix3<S>) -> Matrix4<S> { aff.mat }
 }
 
 impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
