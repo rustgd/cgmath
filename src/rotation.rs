@@ -76,7 +76,7 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
 /// A two-dimensional rotation.
 pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
                       + Into<Matrix2<S>>
-                      + ToBasis2<S> {
+                      + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle(theta: Rad<S>) -> Self;
@@ -85,7 +85,7 @@ pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
 /// A three-dimensional rotation.
 pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
                                + Into<Matrix3<S>>
-                               + ToBasis3<S>
+                               + Into<Basis3<S>>
                                + ToQuaternion<S>{
     /// Create a rotation using an angle around a given axis.
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
@@ -174,17 +174,6 @@ impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
     }
 }
 
-/// Represents types which can be converted to a rotation matrix.
-pub trait ToBasis2<S: BaseFloat> {
-    /// Convert this type to a rotation matrix.
-    fn to_rot2(&self) -> Basis2<S>;
-}
-
-impl<S: BaseFloat> ToBasis2<S> for Basis2<S> {
-    #[inline]
-    fn to_rot2(&self) -> Basis2<S> { self.clone() }
-}
-
 impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     #[inline]
     fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
@@ -261,17 +250,6 @@ impl<S> AsRef<Matrix3<S>> for Basis3<S> {
     }
 }
 
-/// Represents types which can be converted to a rotation matrix.
-pub trait ToBasis3<S: BaseFloat> {
-    /// Convert this type to a rotation matrix.
-    fn to_rot3(&self) -> Basis3<S>;
-}
-
-impl<S: BaseFloat> ToBasis3<S> for Basis3<S> {
-    #[inline]
-    fn to_rot3(&self) -> Basis3<S> { self.clone() }
-}
-
 impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
     #[inline]
     fn from(b: Basis3<S>) -> Matrix3<S> { b.mat }
@@ -294,7 +272,7 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {
     #[inline]
     fn between_vectors(a: &Vector3<S>, b: &Vector3<S>) -> Basis3<S> {
         let q: Quaternion<S> = Rotation::between_vectors(a, b);
-        q.to_rot3()
+        q.into()
     }
 
     #[inline]
