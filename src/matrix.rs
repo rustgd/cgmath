@@ -29,7 +29,7 @@ use approx::ApproxEq;
 use array::{Array1, Array2, FixedArray};
 use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
-use quaternion::{Quaternion, ToQuaternion};
+use quaternion::Quaternion;
 use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
 
@@ -1358,44 +1358,44 @@ impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
+impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
     /// Convert the matrix to a quaternion
-    fn to_quaternion(&self) -> Quaternion<S> {
+    fn from(mat: Matrix3<S>) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
-        let trace = self.trace();
+        let trace = mat.trace();
         let half: S = cast(0.5f64).unwrap();
 
         if trace >= zero::<S>() {
             let s = (one::<S>() + trace).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[1][2] - self[2][1]) * s;
-            let y = (self[2][0] - self[0][2]) * s;
-            let z = (self[0][1] - self[1][0]) * s;
+            let x = (mat[1][2] - mat[2][1]) * s;
+            let y = (mat[2][0] - mat[0][2]) * s;
+            let z = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
-        } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            let s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
+        } else if (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2]) {
+            let s = (half + (mat[0][0] - mat[1][1] - mat[2][2])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[0][1] - self[1][0]) * s;
-            let y = (self[2][0] - self[0][2]) * s;
-            let z = (self[1][2] - self[2][1]) * s;
+            let x = (mat[0][1] - mat[1][0]) * s;
+            let y = (mat[2][0] - mat[0][2]) * s;
+            let z = (mat[1][2] - mat[2][1]) * s;
             Quaternion::new(w, x, y, z)
-        } else if self[1][1] > self[2][2] {
-            let s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
+        } else if mat[1][1] > mat[2][2] {
+            let s = (half + (mat[1][1] - mat[0][0] - mat[2][2])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[0][1] - self[1][0]) * s;
-            let y = (self[1][2] - self[2][1]) * s;
-            let z = (self[2][0] - self[0][2]) * s;
+            let x = (mat[0][1] - mat[1][0]) * s;
+            let y = (mat[1][2] - mat[2][1]) * s;
+            let z = (mat[2][0] - mat[0][2]) * s;
             Quaternion::new(w, x, y, z)
         } else {
-            let s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
+            let s = (half + (mat[2][2] - mat[0][0] - mat[1][1])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[2][0] - self[0][2]) * s;
-            let y = (self[1][2] - self[2][1]) * s;
-            let z = (self[0][1] - self[1][0]) * s;
+            let x = (mat[2][0] - mat[0][2]) * s;
+            let y = (mat[1][2] - mat[2][1]) * s;
+            let z = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
         }
     }
