@@ -29,7 +29,7 @@ use approx::ApproxEq;
 use array::{Array1, Array2, FixedArray};
 use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
-use quaternion::{Quaternion, ToQuaternion};
+use quaternion::Quaternion;
 use vector::{Vector, EuclideanVector};
 use vector::{Vector2, Vector3, Vector4};
 
@@ -1305,94 +1305,76 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
 
 // Conversion traits
 
-/// Represents types which can be converted to a Matrix2
-pub trait ToMatrix2<S: BaseNum> {
-    /// Convert this value to a Matrix2
-    fn to_matrix2(&self) -> Matrix2<S>;
-}
-
-/// Represents types which can be converted to a Matrix3
-pub trait ToMatrix3<S: BaseNum> {
-    /// Convert this value to a Matrix3
-    fn to_matrix3(&self) -> Matrix3<S>;
-}
-
-/// Represents types which can be converted to a Matrix4
-pub trait ToMatrix4<S: BaseNum> {
-    /// Convert this value to a Matrix4
-    fn to_matrix4(&self) -> Matrix4<S>;
-}
-
-impl<S: BaseFloat> ToMatrix3<S> for Matrix2<S> {
+impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
-    fn to_matrix3(&self) -> Matrix3<S> {
-        Matrix3::new(self[0][0], self[0][1], zero(),
-                     self[1][0], self[1][1], zero(),
-                         zero(),     zero(),  one())
+    fn from(m: Matrix2<S>) -> Matrix3<S> {
+        Matrix3::new(m[0][0], m[0][1], zero(),
+                     m[1][0], m[1][1], zero(),
+                     zero(),  zero(),  one())
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Matrix2<S> {
+impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
-    fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self[0][0], self[0][1], zero(), zero(),
-                     self[1][0], self[1][1], zero(), zero(),
-                         zero(),     zero(),  one(), zero(),
-                         zero(),     zero(), zero(),  one())
+    fn from(m: Matrix2<S>) -> Matrix4<S> {
+        Matrix4::new(m[0][0], m[0][1], zero(), zero(),
+                     m[1][0], m[1][1], zero(), zero(),
+                     zero(),  zero(),  one(),  zero(),
+                     zero(),  zero(),  zero(), one())
     }
 }
 
-impl<S: BaseFloat> ToMatrix4<S> for Matrix3<S> {
+impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
-    fn to_matrix4(&self) -> Matrix4<S> {
-        Matrix4::new(self[0][0], self[0][1], self[0][2], zero(),
-                     self[1][0], self[1][1], self[1][2], zero(),
-                     self[2][0], self[2][1], self[2][2], zero(),
-                         zero(),     zero(),     zero(),  one())
+    fn from(m: Matrix3<S>) -> Matrix4<S> {
+        Matrix4::new(m[0][0], m[0][1], m[0][2], zero(),
+                     m[1][0], m[1][1], m[1][2], zero(),
+                     m[2][0], m[2][1], m[2][2], zero(),
+                     zero(),  zero(),  zero(),  one())
     }
 }
 
-impl<S: BaseFloat> ToQuaternion<S> for Matrix3<S> {
+impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
     /// Convert the matrix to a quaternion
-    fn to_quaternion(&self) -> Quaternion<S> {
+    fn from(mat: Matrix3<S>) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
-        let trace = self.trace();
+        let trace = mat.trace();
         let half: S = cast(0.5f64).unwrap();
 
         if trace >= zero::<S>() {
             let s = (one::<S>() + trace).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[1][2] - self[2][1]) * s;
-            let y = (self[2][0] - self[0][2]) * s;
-            let z = (self[0][1] - self[1][0]) * s;
+            let x = (mat[1][2] - mat[2][1]) * s;
+            let y = (mat[2][0] - mat[0][2]) * s;
+            let z = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
-        } else if (self[0][0] > self[1][1]) && (self[0][0] > self[2][2]) {
-            let s = (half + (self[0][0] - self[1][1] - self[2][2])).sqrt();
+        } else if (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2]) {
+            let s = (half + (mat[0][0] - mat[1][1] - mat[2][2])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[0][1] - self[1][0]) * s;
-            let y = (self[2][0] - self[0][2]) * s;
-            let z = (self[1][2] - self[2][1]) * s;
+            let x = (mat[0][1] - mat[1][0]) * s;
+            let y = (mat[2][0] - mat[0][2]) * s;
+            let z = (mat[1][2] - mat[2][1]) * s;
             Quaternion::new(w, x, y, z)
-        } else if self[1][1] > self[2][2] {
-            let s = (half + (self[1][1] - self[0][0] - self[2][2])).sqrt();
+        } else if mat[1][1] > mat[2][2] {
+            let s = (half + (mat[1][1] - mat[0][0] - mat[2][2])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[0][1] - self[1][0]) * s;
-            let y = (self[1][2] - self[2][1]) * s;
-            let z = (self[2][0] - self[0][2]) * s;
+            let x = (mat[0][1] - mat[1][0]) * s;
+            let y = (mat[1][2] - mat[2][1]) * s;
+            let z = (mat[2][0] - mat[0][2]) * s;
             Quaternion::new(w, x, y, z)
         } else {
-            let s = (half + (self[2][2] - self[0][0] - self[1][1])).sqrt();
+            let s = (half + (mat[2][2] - mat[0][0] - mat[1][1])).sqrt();
             let w = half * s;
             let s = half / s;
-            let x = (self[2][0] - self[0][2]) * s;
-            let y = (self[1][2] - self[2][1]) * s;
-            let z = (self[0][1] - self[1][0]) * s;
+            let x = (mat[2][0] - mat[0][2]) * s;
+            let y = (mat[1][2] - mat[2][1]) * s;
+            let z = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
         }
     }

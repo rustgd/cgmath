@@ -21,23 +21,27 @@ mod rotation {
     use super::cgmath::*;
 
     pub fn a2<R: Rotation2<f64>>() -> R {
-        Rotation2::from_angle(deg(30.0).to_rad())
+        Rotation2::from_angle(deg(30.0).into())
     }
 
     pub fn a3<R: Rotation3<f64>>() -> R {
         let axis = Vector3::new(1.0, 1.0, 0.0).normalize();
-        Rotation3::from_axis_angle(&axis, deg(30.0).to_rad())
+        Rotation3::from_axis_angle(&axis, deg(30.0).into())
     }
 }
 
 #[test]
 fn test_invert_basis2() {
     let a: Basis2<_> = rotation::a2();
-    assert!(a.concat(&a.invert()).as_matrix2().is_identity());
+    let a = a.concat(&a.invert());
+    let a: &Matrix2<_> = a.as_ref();
+    assert!(a.is_identity());
 }
 
 #[test]
 fn test_invert_basis3() {
     let a: Basis3<_> = rotation::a3();
-    assert!(a.concat(&a.invert()).as_matrix3().is_identity());
+    let a = a.concat(&a.invert());
+    let a: &Matrix3<_> = a.as_ref();
+    assert!(a.is_identity());
 }
