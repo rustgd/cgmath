@@ -182,30 +182,32 @@ Deg<S> {
 }
 
 
-impl<S: BaseFloat> Add for Rad<S> {
+impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Rad<S> {
     type Output = Rad<S>;
 
     #[inline]
-    fn add(self, other: Rad<S>) -> Rad<S> { rad(self.s + other.s) }
+    fn add(self, other: R) -> Rad<S> { rad(self.s + other.into().s) }
 }
-impl<S: BaseFloat> Add for Deg<S> {
+
+impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Deg<S> {
     type Output = Deg<S>;
 
     #[inline]
-    fn add(self, other: Deg<S>) -> Deg<S> { deg(self.s + other.s) }
+    fn add(self, other: R) -> Deg<S> { deg(self.s + other.into().s) }
 }
 
-impl<S: BaseFloat> Sub for Rad<S> {
+impl<R: Into<Rad<S>>, S: BaseFloat> Sub<R> for Rad<S> {
     type Output = Rad<S>;
 
     #[inline]
-    fn sub(self, other: Rad<S>) -> Rad<S> { rad(self.s - other.s) }
+    fn sub(self, other: R) -> Rad<S> { rad(self.s - other.into().s) }
 }
-impl<S: BaseFloat> Sub for Deg<S> {
+
+impl<R: Into<Rad<S>>, S: BaseFloat> Sub<R> for Deg<S> {
     type Output = Deg<S>;
 
     #[inline]
-    fn sub(self, other: Deg<S>) -> Deg<S> { deg(self.s - other.s) }
+    fn sub(self, other: R) -> Deg<S> { deg(self.s - other.into().s) }
 }
 
 impl<S: BaseFloat> Neg for Rad<S> {
@@ -234,17 +236,18 @@ impl<S: BaseFloat> Zero for Deg<S> {
     fn is_zero(&self) -> bool { *self == zero() }
 }
 
-impl<S: BaseFloat> Mul for Rad<S> {
+impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Rad<S> {
     type Output = Rad<S>;
 
     #[inline]
-    fn mul(self, other: Rad<S>) -> Rad<S> { rad(self.s * other.s) }
+    fn mul(self, other: R) -> Rad<S> { rad(self.s * other.into().s) }
 }
-impl<S: BaseFloat> Mul for Deg<S> {
+
+impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Deg<S> {
     type Output = Deg<S>;
 
     #[inline]
-    fn mul(self, other: Deg<S>) -> Deg<S> { deg(self.s * other.s) }
+    fn mul(self, other: R) -> Deg<S> { deg(self.s * other.into().s) }
 }
 
 impl<S: BaseFloat> One for Rad<S> {
@@ -269,19 +272,19 @@ Angle<S> for Deg<S> {
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360i32).unwrap()) }
 }
 
-#[inline] pub fn sin<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.sin() }
-#[inline] pub fn cos<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.cos() }
-#[inline] pub fn tan<S: BaseFloat>(theta: Rad<S>) -> S { theta.s.tan() }
-#[inline] pub fn sin_cos<S: BaseFloat>(theta: Rad<S>) -> (S, S) { theta.s.sin_cos() }
+#[inline] pub fn sin<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.sin() }
+#[inline] pub fn cos<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.cos() }
+#[inline] pub fn tan<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.tan() }
+#[inline] pub fn sin_cos<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> (S, S) { theta.into().s.sin_cos() }
 
-#[inline] pub fn cot<S: BaseFloat>(theta: Rad<S>) -> S { tan(theta).recip() }
-#[inline] pub fn sec<S: BaseFloat>(theta: Rad<S>) -> S { cos(theta).recip() }
-#[inline] pub fn csc<S: BaseFloat>(theta: Rad<S>) -> S { sin(theta).recip() }
+#[inline] pub fn cot<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { tan(theta.into()).recip() }
+#[inline] pub fn sec<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { cos(theta.into()).recip() }
+#[inline] pub fn csc<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { sin(theta.into()).recip() }
 
-#[inline] pub fn asin<S: BaseFloat>(s: S) -> Rad<S> { rad(s.asin()) }
-#[inline] pub fn acos<S: BaseFloat>(s: S) -> Rad<S> { rad(s.acos()) }
-#[inline] pub fn atan<S: BaseFloat>(s: S) -> Rad<S> { rad(s.atan()) }
-#[inline] pub fn atan2<S: BaseFloat>(a: S, b: S) -> Rad<S> { rad(a.atan2(b)) }
+#[inline] pub fn asin<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.asin()).into() }
+#[inline] pub fn acos<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.acos()).into() }
+#[inline] pub fn atan<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.atan()).into() }
+#[inline] pub fn atan2<S: BaseFloat, R: From<Rad<S>>>(a: S, b: S) -> R { rad(a.atan2(b)).into() }
 
 impl<S: BaseFloat + fmt::Debug>
 fmt::Debug for Rad<S> {
