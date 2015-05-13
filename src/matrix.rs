@@ -102,7 +102,7 @@ impl<S: BaseFloat> Matrix2<S> {
     }
 }
 
-impl<S: Copy + Neg<Output = S>> Matrix2<S> {
+impl<S: BaseFloat + Neg<Output = S>> Matrix2<S> {
     /// Negate this `Matrix2` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
@@ -234,7 +234,7 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 }
 
-impl<S: Copy + Neg<Output = S>> Matrix3<S> {
+impl<S: BaseFloat + Neg<Output = S>> Matrix3<S> {
     /// Negate this `Matrix3` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
@@ -312,7 +312,7 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 }
 
-impl<S: Copy + Neg<Output = S>> Matrix4<S> {
+impl<S: BaseFloat + Neg<Output = S>> Matrix4<S> {
     /// Negate this `Matrix4` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
@@ -557,7 +557,7 @@ impl<S: BaseFloat> One for Matrix4<S> {
     #[inline] fn one() -> Matrix4<S> { Matrix4::identity() }
 }
 
-impl<S: Copy> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
+impl<S: BaseFloat> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 2]; 2] {
         match self {
@@ -597,7 +597,7 @@ impl<S: Copy> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     }
 }
 
-impl<S: Copy> Index<usize> for Matrix2<S> {
+impl<S: BaseFloat> Index<usize> for Matrix2<S> {
     type Output =  Vector2<S>;
 
     #[inline]
@@ -606,14 +606,14 @@ impl<S: Copy> Index<usize> for Matrix2<S> {
     }
 }
 
-impl<S: Copy> IndexMut<usize> for Matrix2<S> {
+impl<S: BaseFloat> IndexMut<usize> for Matrix2<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector2<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
     }
 }
 
-impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
+impl<S: BaseFloat + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
     fn row(&self, r: usize) -> Vector2<S> {
         Vector2::new(self[0][r],
@@ -634,7 +634,7 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
-impl<S: Copy> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
+impl<S: BaseFloat> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 3]; 3] {
         match self {
@@ -676,7 +676,7 @@ impl<S: Copy> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     }
 }
 
-impl<S: Copy> Index<usize> for Matrix3<S> {
+impl<S: BaseFloat> Index<usize> for Matrix3<S> {
     type Output = Vector3<S>;
 
     #[inline]
@@ -685,14 +685,14 @@ impl<S: Copy> Index<usize> for Matrix3<S> {
     }
 }
 
-impl<S: Copy> IndexMut<usize> for Matrix3<S> {
+impl<S: BaseFloat> IndexMut<usize> for Matrix3<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector3<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
     }
 }
 
-impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
+impl<S: BaseFloat + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     #[inline]
     fn row(&self, r: usize) -> Vector3<S> {
         Vector3::new(self[0][r],
@@ -716,7 +716,7 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
-impl<S: Copy> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
+impl<S: BaseFloat> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 4]; 4] {
         match self {
@@ -760,7 +760,7 @@ impl<S: Copy> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     }
 }
 
-impl<S: Copy> Index<usize> for Matrix4<S> {
+impl<S: BaseFloat> Index<usize> for Matrix4<S> {
     type Output = Vector4<S>;
 
     #[inline]
@@ -769,14 +769,14 @@ impl<S: Copy> Index<usize> for Matrix4<S> {
     }
 }
 
-impl<S: Copy> IndexMut<usize> for Matrix4<S> {
+impl<S: BaseFloat> IndexMut<usize> for Matrix4<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector4<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
     }
 }
 
-impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
+impl<S: BaseFloat + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
     #[inline]
     fn row(&self, r: usize) -> Vector4<S> {
         Vector4::new(self[0][r],
@@ -1392,7 +1392,7 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix2<S> {
+impl<S: BaseNum + BaseFloat> fmt::Debug for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}], [{:?}, {:?}]]",
                 self[0][0], self[0][1],
@@ -1400,7 +1400,7 @@ impl<S: BaseNum> fmt::Debug for Matrix2<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix3<S> {
+impl<S: BaseNum + BaseFloat> fmt::Debug for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2],
@@ -1409,7 +1409,7 @@ impl<S: BaseNum> fmt::Debug for Matrix3<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix4<S> {
+impl<S: BaseNum + BaseFloat> fmt::Debug for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2], self[0][3],
