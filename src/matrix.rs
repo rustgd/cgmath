@@ -557,7 +557,7 @@ impl<S: BaseFloat> One for Matrix4<S> {
     #[inline] fn one() -> Matrix4<S> { Matrix4::identity() }
 }
 
-impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
+impl<S: Copy> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 2]; 2] {
         match self {
@@ -580,13 +580,10 @@ impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
 
     #[inline]
     fn from_fixed(_v: [[S; 2]; 2]) -> Matrix2<S> {
-        // match v {
-        //     [x, y] => Matrix2 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
+        Matrix2 {
+            x: FixedArray::from_fixed(_v[0]),
+            y: FixedArray::from_fixed(_v[1]),
+        }
     }
 
     #[inline]
@@ -600,7 +597,7 @@ impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
     }
 }
 
-impl<S> Index<usize> for Matrix2<S> {
+impl<S: Copy> Index<usize> for Matrix2<S> {
     type Output =  Vector2<S>;
 
     #[inline]
@@ -609,7 +606,7 @@ impl<S> Index<usize> for Matrix2<S> {
     }
 }
 
-impl<S> IndexMut<usize> for Matrix2<S> {
+impl<S: Copy> IndexMut<usize> for Matrix2<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector2<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
@@ -637,7 +634,7 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
-impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
+impl<S: Copy> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 3]; 3] {
         match self {
@@ -661,14 +658,11 @@ impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
 
     #[inline]
     fn from_fixed(_v: [[S; 3]; 3]) -> Matrix3<S> {
-        // match v {
-        //     [x, y, z] => Matrix3 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //         z: FixedArray::from_fixed(z),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        Matrix3 {
+            x: FixedArray::from_fixed(_v[0]),
+            y: FixedArray::from_fixed(_v[1]),
+            z: FixedArray::from_fixed(_v[2]),
+        }
     }
 
     #[inline]
@@ -682,7 +676,7 @@ impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
     }
 }
 
-impl<S> Index<usize> for Matrix3<S> {
+impl<S: Copy> Index<usize> for Matrix3<S> {
     type Output = Vector3<S>;
 
     #[inline]
@@ -691,7 +685,7 @@ impl<S> Index<usize> for Matrix3<S> {
     }
 }
 
-impl<S> IndexMut<usize> for Matrix3<S> {
+impl<S: Copy> IndexMut<usize> for Matrix3<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector3<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
@@ -722,7 +716,7 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
-impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
+impl<S: Copy> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     #[inline]
     fn into_fixed(self) -> [[S; 4]; 4] {
         match self {
@@ -747,15 +741,12 @@ impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
 
     #[inline]
     fn from_fixed(_v: [[S; 4]; 4]) -> Matrix4<S> {
-        // match v {
-        //     [x, y, z, w] => Matrix4 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //         z: FixedArray::from_fixed(z),
-        //         w: FixedArray::from_fixed(w),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
+        Matrix4 {
+            x: FixedArray::from_fixed(_v[0]),
+            y: FixedArray::from_fixed(_v[1]),
+            z: FixedArray::from_fixed(_v[2]),
+            w: FixedArray::from_fixed(_v[3]),
+        }
     }
 
     #[inline]
@@ -769,7 +760,7 @@ impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
     }
 }
 
-impl<S> Index<usize> for Matrix4<S> {
+impl<S: Copy> Index<usize> for Matrix4<S> {
     type Output = Vector4<S>;
 
     #[inline]
@@ -778,7 +769,7 @@ impl<S> Index<usize> for Matrix4<S> {
     }
 }
 
-impl<S> IndexMut<usize> for Matrix4<S> {
+impl<S: Copy> IndexMut<usize> for Matrix4<S> {
     #[inline]
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector4<S> {
         FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
