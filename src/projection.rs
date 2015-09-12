@@ -65,7 +65,7 @@ pub fn ortho<S: BaseFloat + 'static>(left: S, right: S, bottom: S, top: S, near:
     }.into()
 }
 
-pub trait Projection<S>: Into<Matrix4<S>> {
+pub trait Projection<S: BaseFloat>: Into<Matrix4<S>> {
     fn to_frustum(&self) -> Frustum<S>;
 }
 
