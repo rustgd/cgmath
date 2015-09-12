@@ -18,7 +18,7 @@ use approx::ApproxEq;
 use matrix::Matrix;
 use matrix::Matrix2;
 use matrix::Matrix3;
-use num::{BaseNum, BaseFloat};
+use num::BaseFloat;
 use point::{Point, Point2, Point3};
 use quaternion::Quaternion;
 use ray::Ray;
@@ -26,7 +26,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> + Sized {
+pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> + Sized {
     /// Create the identity transform (causes no transformation).
     fn identity() -> Self;
 
@@ -74,19 +74,19 @@ pub trait Rotation<S: BaseNum, V: Vector<S>, P: Point<S, V>>: PartialEq + Approx
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S>: Rotation<S, Vector2<S>, Point2<S>>
-                      + Into<Matrix2<S>>
-                      + Into<Basis2<S>> {
+pub trait Rotation2<S: BaseFloat>: Rotation<S, Vector2<S>, Point2<S>>
+                                 + Into<Matrix2<S>>
+                                 + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle(theta: Rad<S>) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseNum>: Rotation<S, Vector3<S>, Point3<S>>
-                               + Into<Matrix3<S>>
-                               + Into<Basis3<S>>
-                               + Into<Quaternion<S>> {
+pub trait Rotation3<S: BaseFloat>: Rotation<S, Vector3<S>, Point3<S>>
+                                 + Into<Matrix3<S>>
+                                 + Into<Basis3<S>>
+                                 + Into<Quaternion<S>> {
     /// Create a rotation using an angle around a given axis.
     fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
 

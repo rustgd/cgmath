@@ -323,10 +323,10 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Clone + Vector<S>>: Array2<V, V, S>
-                                                    + Zero + One
-                                                    + ApproxEq<S>
-                                                    + Sized {
+pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
+                                                              + Zero + One
+                                                              + ApproxEq<S>
+                                                              + Sized {
     /// Multiply this matrix by a scalar, returning the new matrix.
     #[must_use]
     fn mul_s(&self, s: S) -> Self;

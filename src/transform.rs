@@ -146,8 +146,8 @@ impl<
     }
 }
 
-pub trait Transform2<S>: Transform<S, Vector2<S>, Point2<S>> + Into<Matrix3<S>> {}
-pub trait Transform3<S>: Transform<S, Vector3<S>, Point3<S>> + Into<Matrix4<S>> {}
+pub trait Transform2<S: BaseNum>: Transform<S, Vector2<S>, Point2<S>> + Into<Matrix3<S>> {}
+pub trait Transform3<S: BaseNum>: Transform<S, Vector3<S>, Point3<S>> + Into<Matrix4<S>> {}
 
 impl<
     S: BaseFloat + 'static,
@@ -239,21 +239,21 @@ impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-pub trait ToComponents<S: BaseNum, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
+pub trait ToComponents<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (V, R, V);
 }
 
-pub trait ToComponents2<S, R: Rotation2<S>>:
+pub trait ToComponents2<S: BaseFloat, R: Rotation2<S>>:
     ToComponents<S, Vector2<S>, Point2<S>, R> {}
-pub trait ToComponents3<S, R: Rotation3<S>>:
+pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>:
     ToComponents<S, Vector3<S>, Point3<S>, R> {}
 
-pub trait CompositeTransform<S, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>>:
+pub trait CompositeTransform<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>>:
     Transform<S, V, P> + ToComponents<S, V, P, R> {}
-pub trait CompositeTransform2<S, R: Rotation2<S>>:
+pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>:
     Transform2<S> + ToComponents2<S, R> {}
-pub trait CompositeTransform3<S, R: Rotation3<S>>:
+pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>:
     Transform3<S> + ToComponents3<S, R> {}
 
 impl<
