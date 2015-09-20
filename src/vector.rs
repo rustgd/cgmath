@@ -449,28 +449,40 @@ tuple_conversions!(Vector3<S> { x, y, z }, (S, S, S));
 tuple_conversions!(Vector4<S> { x, y, z, w }, (S, S, S, S));
 
 macro_rules! index_operators {
-    ($Self_:ident <$S:ident>, $n:expr) => {
-        impl<$S> Index<usize> for $Self_<$S> {
-            type Output = $S;
+    ($VectorN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
+        impl<$S> Index<$I> for $VectorN<$S> {
+            type Output = $Output;
 
             #[inline]
-            fn index<'a>(&'a self, i: usize) -> &'a $S {
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
                 let v: &[$S; $n] = self.as_ref(); &v[i]
             }
         }
 
-        impl<$S> IndexMut<usize> for $Self_<$S> {
+        impl<$S> IndexMut<$I> for $VectorN<$S> {
             #[inline]
-            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $S {
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
                 let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
             }
         }
     }
 }
 
-index_operators!(Vector2<S>, 2);
-index_operators!(Vector3<S>, 3);
-index_operators!(Vector4<S>, 4);
+index_operators!(Vector2<S>, 2, S, usize);
+index_operators!(Vector3<S>, 3, S, usize);
+index_operators!(Vector4<S>, 4, S, usize);
+index_operators!(Vector2<S>, 2, [S], Range<usize>);
+index_operators!(Vector3<S>, 3, [S], Range<usize>);
+index_operators!(Vector4<S>, 4, [S], Range<usize>);
+index_operators!(Vector2<S>, 2, [S], RangeTo<usize>);
+index_operators!(Vector3<S>, 3, [S], RangeTo<usize>);
+index_operators!(Vector4<S>, 4, [S], RangeTo<usize>);
+index_operators!(Vector2<S>, 2, [S], RangeFrom<usize>);
+index_operators!(Vector3<S>, 3, [S], RangeFrom<usize>);
+index_operators!(Vector4<S>, 4, [S], RangeFrom<usize>);
+index_operators!(Vector2<S>, 2, [S], RangeFull);
+index_operators!(Vector3<S>, 3, [S], RangeFull);
+index_operators!(Vector4<S>, 4, [S], RangeFull);
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {

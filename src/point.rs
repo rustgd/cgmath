@@ -443,27 +443,35 @@ tuple_conversions!(Point2<S> { x, y }, (S, S));
 tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
 
 macro_rules! index_operators {
-    ($PointN:ident <$S:ident>, $n:expr) => {
-        impl<$S> Index<usize> for $PointN<$S> {
-            type Output = $S;
+    ($PointN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
+        impl<$S> Index<$I> for $PointN<$S> {
+            type Output = $Output;
 
             #[inline]
-            fn index<'a>(&'a self, i: usize) -> &'a $S {
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
                 let v: &[$S; $n] = self.as_ref(); &v[i]
             }
         }
 
-        impl<$S> IndexMut<usize> for $PointN<$S> {
+        impl<$S> IndexMut<$I> for $PointN<$S> {
             #[inline]
-            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $S {
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
                 let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
             }
         }
     }
 }
 
-index_operators!(Point2<S>, 2);
-index_operators!(Point3<S>, 3);
+index_operators!(Point2<S>, 2, S, usize);
+index_operators!(Point3<S>, 3, S, usize);
+index_operators!(Point2<S>, 2, [S], Range<usize>);
+index_operators!(Point3<S>, 3, [S], Range<usize>);
+index_operators!(Point2<S>, 2, [S], RangeTo<usize>);
+index_operators!(Point3<S>, 3, [S], RangeTo<usize>);
+index_operators!(Point2<S>, 2, [S], RangeFrom<usize>);
+index_operators!(Point3<S>, 3, [S], RangeFrom<usize>);
+index_operators!(Point2<S>, 2, [S], RangeFull);
+index_operators!(Point3<S>, 3, [S], RangeFull);
 
 impl<S: BaseNum> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

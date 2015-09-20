@@ -1142,30 +1142,42 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
 }
 
 macro_rules! index_operators {
-    ($MatrixN:ident <$S:ident>, $VectorN: ident, $n:expr) => {
-        impl<$S> Index<usize> for $MatrixN<$S> {
-            type Output = $VectorN<$S>;
+    ($MatrixN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
+        impl<$S> Index<$I> for $MatrixN<$S> {
+            type Output = $Output;
 
             #[inline]
-            fn index<'a>(&'a self, i: usize) -> &'a $VectorN<$S> {
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
                 let v: &[[$S; $n]; $n] = self.as_ref();
                 From::from(&v[i])
             }
         }
 
-        impl<$S> IndexMut<usize> for $MatrixN<$S> {
+        impl<$S> IndexMut<$I> for $MatrixN<$S> {
             #[inline]
-            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $VectorN<$S> {
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
                 let v: &mut [[$S; $n]; $n] = self.as_mut();
                 From::from(&mut v[i])
             }
         }
-    };
+    }
 }
 
-index_operators!(Matrix2<S>, Vector2, 2);
-index_operators!(Matrix3<S>, Vector3, 3);
-index_operators!(Matrix4<S>, Vector4, 4);
+index_operators!(Matrix2<S>, 2, Vector2<S>, usize);
+index_operators!(Matrix3<S>, 3, Vector3<S>, usize);
+index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
+// index_operators!(Matrix2<S>, 2, [Vector2<S>], Range<usize>);
+// index_operators!(Matrix3<S>, 3, [Vector3<S>], Range<usize>);
+// index_operators!(Matrix4<S>, 4, [Vector4<S>], Range<usize>);
+// index_operators!(Matrix2<S>, 2, [Vector2<S>], RangeTo<usize>);
+// index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeTo<usize>);
+// index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeTo<usize>);
+// index_operators!(Matrix2<S>, 2, [Vector2<S>], RangeFrom<usize>);
+// index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFrom<usize>);
+// index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFrom<usize>);
+// index_operators!(Matrix2<S>, 2, [Vector2<S>], RangeFull);
+// index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
+// index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
 
 macro_rules! fixed_array_conversions {
     ($MatrixN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {

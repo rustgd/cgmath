@@ -503,21 +503,31 @@ impl<'a, S: BaseFloat> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Index<usize> for Quaternion<S> {
-    type Output = S;
+macro_rules! index_operators {
+    ($S:ident, $Output:ty, $I:ty) => {
+        impl<$S: BaseFloat> Index<$I> for Quaternion<$S> {
+            type Output = $Output;
 
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a S {
-        let v: &[S; 4] = self.as_ref(); &v[i]
+            #[inline]
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
+                let v: &[$S; 4] = self.as_ref(); &v[i]
+            }
+        }
+
+        impl<$S: BaseFloat> IndexMut<$I> for Quaternion<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
+                let v: &mut [$S; 4] = self.as_mut(); &mut v[i]
+            }
+        }
     }
 }
 
-impl<S: BaseFloat> IndexMut<usize> for Quaternion<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut S {
-        let v: &mut [S; 4] = self.as_mut(); &mut v[i]
-    }
-}
+index_operators!(S, S, usize);
+index_operators!(S, [S], Range<usize>);
+index_operators!(S, [S], RangeTo<usize>);
+index_operators!(S, [S], RangeFrom<usize>);
+index_operators!(S, [S], RangeFull);
 
 impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
     #[inline]
