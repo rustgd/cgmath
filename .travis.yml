@@ -1,35 +1,28 @@
-# Copyright 2014 The CGMath Developers. For a full listing of the authors,
-# refer to the AUTHORS file at the top-level directory of this distribution.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+sudo: false
 
 language: rust
 
 rust:
-  - 1.0.0-beta.4
-  - nightly
+  # - nightly
+  - beta
+  - stable
 
 env:
   global:
-    - secure: S0l5RmsFJgbDdzXjHsCluexb1R9RklpxZMJgr9RcieeqSqaJDPUht53yBZDyuk04/KzEbtM5yxogJd2tcv2E4EogPLL8oG77GItNc/i6jy4TLUjU28WKOMiBvYA/1rhb7f/DEQgj7DtIHP/rQGKH8goUdJfqGbk7EawP7FSxC2Y=
-script:
-  - cargo build
-  - cargo test
-  - cargo doc
-after_script:
-  # the doc directory needs to be in the root for rust-ci
-  - mv target/doc doc
-  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+    secure: afYeHpC8BJeyajd3vd84xRBYJKxQorKfh4lGvesu/hqh0bHc6lxrqGt0Pthb2m2YDODZiGSbx9yr9UetelZIJUSA3LoiG5PdDrtH/Kwdn5xGcBWSZl3v/sH+oB3AeR7Eji6mj0mrydQxn8PQbEACvR6lpGCYE2R48KrftYmD6Js=
 
-# http://docs.travis-ci.com/user/workers/container-based-infrastructure/
-sudo: false
+before_script:
+  - |
+      pip install 'travis-cargo<0.2' --user &&
+      export PATH=$HOME/.local/bin:$PATH
+
+script:
+  - |
+      travis-cargo build &&
+      travis-cargo test &&
+      travis-cargo bench &&
+      travis-cargo --only stable doc
+
+after_success:
+  - |
+      travis-cargo --only stable doc-upload
