@@ -1,6 +1,9 @@
 # cgmath-rs
 
-[![Build Status](https://travis-ci.org/bjz/cgmath-rs.png?branch=master)](https://travis-ci.org/bjz/cgmath-rs)
+[![Build Status](https://img.shields.io/travis/bjz/cgmath-rs.svg)](https://travis-ci.org/bjz/cgmath-rs)
+[![Crates.io](http://meritbadge.herokuapp.com/cgmath)](https://crates.io/crates/cgmath)
+
+[Documentation](http://bjz.github.io/cgmath-rs)
 
 A linear algebra and mathematics library for computer graphics.
 
@@ -25,10 +28,6 @@ Not all of the functionality has been implemented yet, and the existing code
 is not fully covered by the testsuite. If you encounter any mistakes or
 omissions please let me know by posting an issue, or even better: send me a
 pull request with a fix.
-
-## Documentation
-
-[View](http://rust-ci.org/bjz/cgmath-rs/doc/cgmath/index.html)
 
 ## Limitations
 
