@@ -26,7 +26,7 @@ use rust_num::traits::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
-use array::{Array1, Array2, FixedArray};
+use array::{Array1, Array2};
 use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
 use quaternion::Quaternion;
@@ -557,65 +557,6 @@ impl<S: BaseFloat> One for Matrix4<S> {
     #[inline] fn one() -> Matrix4<S> { Matrix4::identity() }
 }
 
-impl<S> FixedArray<[[S; 2]; 2]> for Matrix2<S> {
-    #[inline]
-    fn into_fixed(self) -> [[S; 2]; 2] {
-        match self {
-            Matrix2 { x, y } => [
-                x.into_fixed(),
-                y.into_fixed(),
-            ],
-        }
-    }
-
-    #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S; 2]; 2] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 2]; 2] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn from_fixed(_v: [[S; 2]; 2]) -> Matrix2<S> {
-        // match v {
-        //     [x, y] => Matrix2 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
-    }
-
-    #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S; 2]; 2]) -> &'a Matrix2<S> {
-        unsafe { mem::transmute(v) }
-    }
-
-    #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S; 2]; 2]) -> &'a mut Matrix2<S> {
-        unsafe { mem::transmute(v) }
-    }
-}
-
-impl<S> Index<usize> for Matrix2<S> {
-    type Output =  Vector2<S>;
-
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a Vector2<S> {
-        FixedArray::from_fixed_ref(&self.as_fixed()[i])
-    }
-}
-
-impl<S> IndexMut<usize> for Matrix2<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector2<S> {
-        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
-    }
-}
-
 impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
     fn row(&self, r: usize) -> Vector2<S> {
@@ -634,67 +575,6 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
         self.x = op(&self.x);
         self.y = op(&self.y);
         *self
-    }
-}
-
-impl<S> FixedArray<[[S; 3]; 3]> for Matrix3<S> {
-    #[inline]
-    fn into_fixed(self) -> [[S; 3]; 3] {
-        match self {
-            Matrix3 { x, y, z } => [
-                x.into_fixed(),
-                y.into_fixed(),
-                z.into_fixed(),
-            ],
-        }
-    }
-
-    #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S; 3]; 3] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 3]; 3] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn from_fixed(_v: [[S; 3]; 3]) -> Matrix3<S> {
-        // match v {
-        //     [x, y, z] => Matrix3 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //         z: FixedArray::from_fixed(z),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
-    }
-
-    #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S; 3]; 3]) -> &'a Matrix3<S> {
-        unsafe { mem::transmute(v) }
-    }
-
-    #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S; 3]; 3]) -> &'a mut Matrix3<S> {
-        unsafe { mem::transmute(v) }
-    }
-}
-
-impl<S> Index<usize> for Matrix3<S> {
-    type Output = Vector3<S>;
-
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a Vector3<S> {
-        FixedArray::from_fixed_ref(&self.as_fixed()[i])
-    }
-}
-
-impl<S> IndexMut<usize> for Matrix3<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector3<S> {
-        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
     }
 }
 
@@ -719,69 +599,6 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
         self.y = op(&self.y);
         self.z = op(&self.z);
         *self
-    }
-}
-
-impl<S> FixedArray<[[S; 4]; 4]> for Matrix4<S> {
-    #[inline]
-    fn into_fixed(self) -> [[S; 4]; 4] {
-        match self {
-            Matrix4 { x, y, z, w } => [
-                x.into_fixed(),
-                y.into_fixed(),
-                z.into_fixed(),
-                w.into_fixed(),
-            ],
-        }
-    }
-
-    #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [[S; 4]; 4] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [[S; 4]; 4] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn from_fixed(_v: [[S; 4]; 4]) -> Matrix4<S> {
-        // match v {
-        //     [x, y, z, w] => Matrix4 {
-        //         x: FixedArray::from_fixed(x),
-        //         y: FixedArray::from_fixed(y),
-        //         z: FixedArray::from_fixed(z),
-        //         w: FixedArray::from_fixed(w),
-        //     },
-        // }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
-    }
-
-    #[inline]
-    fn from_fixed_ref<'a>(v: &'a [[S; 4]; 4]) -> &'a Matrix4<S> {
-        unsafe { mem::transmute(v) }
-    }
-
-    #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [[S; 4]; 4]) -> &'a mut Matrix4<S> {
-        unsafe { mem::transmute(v) }
-    }
-}
-
-impl<S> Index<usize> for Matrix4<S> {
-    type Output = Vector4<S>;
-
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a Vector4<S> {
-        FixedArray::from_fixed_ref(&self.as_fixed()[i])
-    }
-}
-
-impl<S> IndexMut<usize> for Matrix4<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut Vector4<S> {
-        FixedArray::from_fixed_mut(&mut self.as_mut_fixed()[i])
     }
 }
 
@@ -1324,7 +1141,126 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
     }
 }
 
-// Conversion traits
+macro_rules! index_operators {
+    ($MatrixN:ident <$S:ident>, $VectorN: ident, $n:expr) => {
+        impl<$S> Index<usize> for $MatrixN<$S> {
+            type Output = $VectorN<$S>;
+
+            #[inline]
+            fn index<'a>(&'a self, i: usize) -> &'a $VectorN<$S> {
+                let v: &[[$S; $n]; $n] = self.as_ref();
+                From::from(&v[i])
+            }
+        }
+
+        impl<$S> IndexMut<usize> for $MatrixN<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $VectorN<$S> {
+                let v: &mut [[$S; $n]; $n] = self.as_mut();
+                From::from(&mut v[i])
+            }
+        }
+    };
+}
+
+index_operators!(Matrix2<S>, Vector2, 2);
+index_operators!(Matrix3<S>, Vector3, 3);
+index_operators!(Matrix4<S>, Vector4, 4);
+
+macro_rules! fixed_array_conversions {
+    ($MatrixN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
+        impl<$S> Into<[[$S; $n]; $n]> for $MatrixN<$S> {
+            #[inline]
+            fn into(self) -> [[$S; $n]; $n] {
+                match self { $MatrixN { $($field),+ } => [$($field.into()),+] }
+            }
+        }
+
+        impl<$S> AsRef<[[$S; $n]; $n]> for $MatrixN<$S> {
+            #[inline]
+            fn as_ref(&self) -> &[[$S; $n]; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<[[$S; $n]; $n]> for $MatrixN<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut [[$S; $n]; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S: Copy> From<[[$S; $n]; $n]> for $MatrixN<$S> {
+            #[inline]
+            fn from(m: [[$S; $n]; $n]) -> $MatrixN<$S> {
+                // We need to use a copy here because we can't pattern match on arrays yet
+                $MatrixN { $($field: From::from(m[$index])),+ }
+            }
+        }
+
+        impl<'a, $S> From<&'a [[$S; $n]; $n]> for &'a $MatrixN<$S> {
+            #[inline]
+            fn from(m: &'a [[$S; $n]; $n]) -> &'a $MatrixN<$S> {
+                unsafe { mem::transmute(m) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut [[$S; $n]; $n]> for &'a mut $MatrixN<$S> {
+            #[inline]
+            fn from(m: &'a mut [[$S; $n]; $n]) -> &'a mut $MatrixN<$S> {
+                unsafe { mem::transmute(m) }
+            }
+        }
+
+        // impl<$S> Into<[$S; ($n * $n)]> for $MatrixN<$S> {
+        //     #[inline]
+        //     fn into(self) -> [[$S; $n]; $n] {
+        //         // TODO: Not sure how to implement this...
+        //         unimplemented!()
+        //     }
+        // }
+
+        impl<$S> AsRef<[$S; ($n * $n)]> for $MatrixN<$S> {
+            #[inline]
+            fn as_ref(&self) -> &[$S; ($n * $n)] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<[$S; ($n * $n)]> for $MatrixN<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut [$S; ($n * $n)] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        // impl<$S> From<[$S; ($n * $n)]> for $MatrixN<$S> {
+        //     #[inline]
+        //     fn from(m: [$S; ($n * $n)]) -> $MatrixN<$S> {
+        //         // TODO: Not sure how to implement this...
+        //         unimplemented!()
+        //     }
+        // }
+
+        impl<'a, $S> From<&'a [$S; ($n * $n)]> for &'a $MatrixN<$S> {
+            #[inline]
+            fn from(m: &'a [$S; ($n * $n)]) -> &'a $MatrixN<$S> {
+                unsafe { mem::transmute(m) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut [$S; ($n * $n)]> for &'a mut $MatrixN<$S> {
+            #[inline]
+            fn from(m: &'a mut [$S; ($n * $n)]) -> &'a mut $MatrixN<$S> {
+                unsafe { mem::transmute(m) }
+            }
+        }
+    }
+}
+
+fixed_array_conversions!(Matrix2<S> { x:0, y:1 }, 2);
+fixed_array_conversions!(Matrix3<S> { x:0, y:1, z:2 }, 3);
+fixed_array_conversions!(Matrix4<S> { x:0, y:1, z:2, w:3 }, 4);
 
 impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner

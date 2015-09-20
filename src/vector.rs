@@ -106,7 +106,7 @@ use rust_num::{NumCast, Zero, One, zero, one};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
-use array::{Array1, FixedArray};
+use array::Array1;
 use num::{BaseNum, BaseFloat};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
@@ -188,8 +188,8 @@ pub trait Vector<S: BaseNum>: Array1<S> + Zero + One {
 #[inline] pub fn dot<S: BaseNum, V: Vector<S>>(a: V, b: V) -> S { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
-macro_rules! vec(
-    ($Self_:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => (
+macro_rules! vec {
+    ($Self_:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => {
         #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
         pub struct $Self_<S> { $(pub $field: S),+ }
 
@@ -233,55 +233,6 @@ macro_rules! vec(
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $Self_<T> {
                 $Self_ { $($field: NumCast::from(self.$field).unwrap()),+ }
-            }
-        }
-
-        impl<$S> FixedArray<[$S; $n]> for $Self_<$S> {
-            #[inline]
-            fn into_fixed(self) -> [$S; $n] {
-                match self { $Self_ { $($field),+ } => [$($field),+] }
-            }
-
-            #[inline]
-            fn as_fixed<'a>(&'a self) -> &'a [$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-
-            #[inline]
-            fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-
-            #[inline]
-            fn from_fixed(_v: [$S; $n]) -> $Self_<$S> {
-                // match v { [$($field),+] => $Self { $($field: $field),+ } }
-                panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
-            }
-
-            #[inline]
-            fn from_fixed_ref<'a>(v: &'a [$S; $n]) -> &'a $Self_<$S> {
-                unsafe { mem::transmute(v) }
-            }
-
-            #[inline]
-            fn from_fixed_mut<'a>(v: &'a mut [$S; $n]) -> &'a mut $Self_<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-
-        impl<$S: Copy> Index<usize> for $Self_<$S> {
-            type Output = S;
-
-            #[inline]
-            fn index<'a>(&'a self, i: usize) -> &'a $S {
-                &self.as_fixed()[i]
-            }
-        }
-
-        impl<$S: Copy> IndexMut<usize> for $Self_<$S> {
-            #[inline]
-            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $S {
-                &mut self.as_mut_fixed()[i]
             }
         }
 
@@ -379,8 +330,8 @@ macro_rules! vec(
                 $Self_ { $($field: rng.gen()),+ }
             }
         }
-    )
-);
+    }
+}
 
 macro_rules! fold {
     (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
@@ -394,6 +345,132 @@ macro_rules! fold {
 vec!(Vector2<S> { x, y }, 2, vec2);
 vec!(Vector3<S> { x, y, z }, 3, vec3);
 vec!(Vector4<S> { x, y, z, w }, 4, vec4);
+
+macro_rules! fixed_array_conversions {
+    ($Self_:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
+
+        impl<$S> Into<[$S; $n]> for $Self_<$S> {
+            #[inline]
+            fn into(self) -> [$S; $n] {
+                match self { $Self_ { $($field),+ } => [$($field),+] }
+            }
+        }
+
+        impl<$S> AsRef<[$S; $n]> for $Self_<$S> {
+            #[inline]
+            fn as_ref(&self) -> &[$S; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<[$S; $n]> for $Self_<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut [$S; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S: Clone> From<[$S; $n]> for $Self_<$S> {
+            #[inline]
+            fn from(v: [$S; $n]) -> $Self_<$S> {
+                // We need to use a clone here because we can't pattern match on arrays yet
+                $Self_ { $($field: v[$index].clone()),+ }
+            }
+        }
+
+        impl<'a, $S> From<&'a [$S; $n]> for &'a $Self_<$S> {
+            #[inline]
+            fn from(v: &'a [$S; $n]) -> &'a $Self_<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $Self_<$S> {
+            #[inline]
+            fn from(v: &'a mut [$S; $n]) -> &'a mut $Self_<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+    }
+}
+
+fixed_array_conversions!(Vector2<S> { x:0, y:1 }, 2);
+fixed_array_conversions!(Vector3<S> { x:0, y:1, z:2 }, 3);
+fixed_array_conversions!(Vector4<S> { x:0, y:1, z:2, w:3 }, 4);
+
+macro_rules! tuple_conversions {
+    ($Self_:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
+        impl<$S> Into<$Tuple> for $Self_<$S> {
+            #[inline]
+            fn into(self) -> $Tuple {
+                match self { $Self_ { $($field),+ } => ($($field),+) }
+            }
+        }
+
+        impl<$S> AsRef<$Tuple> for $Self_<$S> {
+            #[inline]
+            fn as_ref(&self) -> &$Tuple {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<$Tuple> for $Self_<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut $Tuple {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> From<$Tuple> for $Self_<$S> {
+            #[inline]
+            fn from(v: $Tuple) -> $Self_<$S> {
+                match v { ($($field),+) => $Self_ { $($field: $field),+ } }
+            }
+        }
+
+        impl<'a, $S> From<&'a $Tuple> for &'a $Self_<$S> {
+            #[inline]
+            fn from(v: &'a $Tuple) -> &'a $Self_<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $Self_<$S> {
+            #[inline]
+            fn from(v: &'a mut $Tuple) -> &'a mut $Self_<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+    }
+}
+
+tuple_conversions!(Vector2<S> { x, y }, (S, S));
+tuple_conversions!(Vector3<S> { x, y, z }, (S, S, S));
+tuple_conversions!(Vector4<S> { x, y, z, w }, (S, S, S, S));
+
+macro_rules! index_operators {
+    ($Self_:ident <$S:ident>, $n:expr) => {
+        impl<$S> Index<usize> for $Self_<$S> {
+            type Output = $S;
+
+            #[inline]
+            fn index<'a>(&'a self, i: usize) -> &'a $S {
+                let v: &[$S; $n] = self.as_ref(); &v[i]
+            }
+        }
+
+        impl<$S> IndexMut<usize> for $Self_<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut $S {
+                let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
+            }
+        }
+    }
+}
+
+index_operators!(Vector2<S>, 2);
+index_operators!(Vector3<S>, 3);
+index_operators!(Vector4<S>, 4);
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {

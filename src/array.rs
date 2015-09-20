@@ -90,14 +90,3 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
     fn map<F>(&mut self, op: F) -> Self
         where F: FnMut(&Column) -> Column;
 }
-
-/// Homogeneous arrays of elements that can be converted to and from `[T, ..N]`
-/// arrays.
-pub trait FixedArray<V> {
-    fn into_fixed(self) -> V;
-    fn as_fixed<'a>(&'a self) -> &'a V;
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut V;
-    fn from_fixed(v: V) -> Self;
-    fn from_fixed_ref<'a>(v: &'a V) -> &'a Self;
-    fn from_fixed_mut<'a>(v: &'a mut V) -> &'a mut Self;
-}
