@@ -3,7 +3,8 @@ sudo: false
 language: rust
 
 rust:
-  - nightly
+  # - nightly
+  - beta
   - stable
 
 env:
