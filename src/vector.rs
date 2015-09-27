@@ -725,6 +725,71 @@ mod tests {
             assert_eq!(&VECTOR2[..], &[1, 2]);
             assert_eq!(VECTOR2[..].len(), 2);
         }
+
+        #[test]
+        fn test_into() {
+            let v = VECTOR2;
+            {
+                let v: [i32; 2] = v.into();
+                assert_eq!(v, [1, 2]);
+            }
+            {
+                let v: (i32, i32) = v.into();
+                assert_eq!(v, (1, 2));
+            }
+        }
+
+        #[test]
+        fn test_as_ref() {
+            let v = VECTOR2;
+            {
+                let v: &[i32; 2] = v.as_ref();
+                assert_eq!(v, &[1, 2]);
+            }
+            {
+                let v: &(i32, i32) = v.as_ref();
+                assert_eq!(v, &(1, 2));
+            }
+        }
+
+        #[test]
+        fn test_as_mut() {
+            let mut v = VECTOR2;
+            {
+                let v: &mut [i32; 2] = v.as_mut();
+                assert_eq!(v, &mut [1, 2]);
+            }
+            {
+                let v: &mut (i32, i32) = v.as_mut();
+                assert_eq!(v, &mut (1, 2));
+            }
+        }
+
+        #[test]
+        fn test_from() {
+            assert_eq!(Vector2::from([1, 2]), VECTOR2);
+            {
+                let v = &[1, 2];
+                let v: &Vector2<_> = From::from(v);
+                assert_eq!(v, &VECTOR2);
+            }
+            {
+                let v = &mut [1, 2];
+                let v: &mut Vector2<_> = From::from(v);
+                assert_eq!(v, &VECTOR2);
+            }
+            assert_eq!(Vector2::from((1, 2)), VECTOR2);
+            {
+                let v = &(1, 2);
+                let v: &Vector2<_> = From::from(v);
+                assert_eq!(v, &VECTOR2);
+            }
+            {
+                let v = &mut (1, 2);
+                let v: &mut Vector2<_> = From::from(v);
+                assert_eq!(v, &VECTOR2);
+            }
+        }
     }
 
     mod vector3 {
@@ -764,6 +829,71 @@ mod tests {
             assert_eq!(VECTOR3[1..].len(), 2);
             assert_eq!(&VECTOR3[..], &[1, 2, 3]);
             assert_eq!(VECTOR3[..].len(), 3);
+        }
+
+        #[test]
+        fn test_into() {
+            let v = VECTOR3;
+            {
+                let v: [i32; 3] = v.into();
+                assert_eq!(v, [1, 2, 3]);
+            }
+            {
+                let v: (i32, i32, i32) = v.into();
+                assert_eq!(v, (1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_as_ref() {
+            let v = VECTOR3;
+            {
+                let v: &[i32; 3] = v.as_ref();
+                assert_eq!(v, &[1, 2, 3]);
+            }
+            {
+                let v: &(i32, i32, i32) = v.as_ref();
+                assert_eq!(v, &(1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_as_mut() {
+            let mut v = VECTOR3;
+            {
+                let v: &mut [i32; 3] = v.as_mut();
+                assert_eq!(v, &mut [1, 2, 3]);
+            }
+            {
+                let v: &mut (i32, i32, i32) = v.as_mut();
+                assert_eq!(v, &mut (1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_from() {
+            assert_eq!(Vector3::from([1, 2, 3]), VECTOR3);
+            {
+                let v = &[1, 2, 3];
+                let v: &Vector3<_> = From::from(v);
+                assert_eq!(v, &VECTOR3);
+            }
+            {
+                let v = &mut [1, 2, 3];
+                let v: &mut Vector3<_> = From::from(v);
+                assert_eq!(v, &VECTOR3);
+            }
+            assert_eq!(Vector3::from((1, 2, 3)), VECTOR3);
+            {
+                let v = &(1, 2, 3);
+                let v: &Vector3<_> = From::from(v);
+                assert_eq!(v, &VECTOR3);
+            }
+            {
+                let v = &mut (1, 2, 3);
+                let v: &mut Vector3<_> = From::from(v);
+                assert_eq!(v, &VECTOR3);
+            }
         }
     }
 
@@ -805,6 +935,71 @@ mod tests {
             assert_eq!(VECTOR4[1..].len(), 3);
             assert_eq!(&VECTOR4[..], &[1, 2, 3, 4]);
             assert_eq!(VECTOR4[..].len(), 4);
+        }
+
+        #[test]
+        fn test_into() {
+            let v = VECTOR4;
+            {
+                let v: [i32; 4] = v.into();
+                assert_eq!(v, [1, 2, 3, 4]);
+            }
+            {
+                let v: (i32, i32, i32, i32) = v.into();
+                assert_eq!(v, (1, 2, 3, 4));
+            }
+        }
+
+        #[test]
+        fn test_as_ref() {
+            let v = VECTOR4;
+            {
+                let v: &[i32; 4] = v.as_ref();
+                assert_eq!(v, &[1, 2, 3, 4]);
+            }
+            {
+                let v: &(i32, i32, i32, i32) = v.as_ref();
+                assert_eq!(v, &(1, 2, 3, 4));
+            }
+        }
+
+        #[test]
+        fn test_as_mut() {
+            let mut v = VECTOR4;
+            {
+                let v: &mut[i32; 4] = v.as_mut();
+                assert_eq!(v, &mut [1, 2, 3, 4]);
+            }
+            {
+                let v: &mut(i32, i32, i32, i32) = v.as_mut();
+                assert_eq!(v, &mut (1, 2, 3, 4));
+            }
+        }
+
+        #[test]
+        fn test_from() {
+            assert_eq!(Vector4::from([1, 2, 3, 4]), VECTOR4);
+            {
+                let v = &[1, 2, 3, 4];
+                let v: &Vector4<_> = From::from(v);
+                assert_eq!(v, &VECTOR4);
+            }
+            {
+                let v = &mut [1, 2, 3, 4];
+                let v: &mut Vector4<_> = From::from(v);
+                assert_eq!(v, &VECTOR4);
+            }
+            assert_eq!(Vector4::from((1, 2, 3, 4)), VECTOR4);
+            {
+                let v = &(1, 2, 3, 4);
+                let v: &Vector4<_> = From::from(v);
+                assert_eq!(v, &VECTOR4);
+            }
+            {
+                let v = &mut (1, 2, 3, 4);
+                let v: &mut Vector4<_> = From::from(v);
+                assert_eq!(v, &VECTOR4);
+            }
         }
     }
 }
