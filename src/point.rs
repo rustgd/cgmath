@@ -507,3 +507,85 @@ impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    mod point2 {
+        use point::*;
+
+        const POINT2: Point2<i32> = Point2 { x: 1, y: 2 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(POINT2[0], POINT2.x);
+            assert_eq!(POINT2[1], POINT2.y);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut p = POINT2;
+            *&mut p[0] = 0;
+            assert_eq!(p, [0, 2].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            POINT2[2];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&POINT2[..0], &[]);
+            assert_eq!(&POINT2[..1], &[1]);
+            assert_eq!(POINT2[..0].len(), 0);
+            assert_eq!(POINT2[..1].len(), 1);
+            assert_eq!(&POINT2[2..], &[]);
+            assert_eq!(&POINT2[1..], &[2]);
+            assert_eq!(POINT2[2..].len(), 0);
+            assert_eq!(POINT2[1..].len(), 1);
+            assert_eq!(&POINT2[..], &[1, 2]);
+            assert_eq!(POINT2[..].len(), 2);
+        }
+    }
+
+    mod point3 {
+        use point::*;
+
+        const POINT3: Point3<i32> = Point3 { x: 1, y: 2, z: 3 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(POINT3[0], POINT3.x);
+            assert_eq!(POINT3[1], POINT3.y);
+            assert_eq!(POINT3[2], POINT3.z);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut p = POINT3;
+            *&mut p[1] = 0;
+            assert_eq!(p, [1, 0, 3].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            POINT3[3];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&POINT3[..1], &[1]);
+            assert_eq!(&POINT3[..2], &[1, 2]);
+            assert_eq!(POINT3[..1].len(), 1);
+            assert_eq!(POINT3[..2].len(), 2);
+            assert_eq!(&POINT3[2..], &[3]);
+            assert_eq!(&POINT3[1..], &[2, 3]);
+            assert_eq!(POINT3[2..].len(), 1);
+            assert_eq!(POINT3[1..].len(), 2);
+            assert_eq!(&POINT3[..], &[1, 2, 3]);
+            assert_eq!(POINT3[..].len(), 3);
+        }
+    }
+}

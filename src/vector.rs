@@ -347,47 +347,47 @@ vec!(Vector3<S> { x, y, z }, 3, vec3);
 vec!(Vector4<S> { x, y, z, w }, 4, vec4);
 
 macro_rules! fixed_array_conversions {
-    ($Self_:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
+    ($VectorN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
 
-        impl<$S> Into<[$S; $n]> for $Self_<$S> {
+        impl<$S> Into<[$S; $n]> for $VectorN<$S> {
             #[inline]
             fn into(self) -> [$S; $n] {
-                match self { $Self_ { $($field),+ } => [$($field),+] }
+                match self { $VectorN { $($field),+ } => [$($field),+] }
             }
         }
 
-        impl<$S> AsRef<[$S; $n]> for $Self_<$S> {
+        impl<$S> AsRef<[$S; $n]> for $VectorN<$S> {
             #[inline]
             fn as_ref(&self) -> &[$S; $n] {
                 unsafe { mem::transmute(self) }
             }
         }
 
-        impl<$S> AsMut<[$S; $n]> for $Self_<$S> {
+        impl<$S> AsMut<[$S; $n]> for $VectorN<$S> {
             #[inline]
             fn as_mut(&mut self) -> &mut [$S; $n] {
                 unsafe { mem::transmute(self) }
             }
         }
 
-        impl<$S: Clone> From<[$S; $n]> for $Self_<$S> {
+        impl<$S: Clone> From<[$S; $n]> for $VectorN<$S> {
             #[inline]
-            fn from(v: [$S; $n]) -> $Self_<$S> {
+            fn from(v: [$S; $n]) -> $VectorN<$S> {
                 // We need to use a clone here because we can't pattern match on arrays yet
-                $Self_ { $($field: v[$index].clone()),+ }
+                $VectorN { $($field: v[$index].clone()),+ }
             }
         }
 
-        impl<'a, $S> From<&'a [$S; $n]> for &'a $Self_<$S> {
+        impl<'a, $S> From<&'a [$S; $n]> for &'a $VectorN<$S> {
             #[inline]
-            fn from(v: &'a [$S; $n]) -> &'a $Self_<$S> {
+            fn from(v: &'a [$S; $n]) -> &'a $VectorN<$S> {
                 unsafe { mem::transmute(v) }
             }
         }
 
-        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $Self_<$S> {
+        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $VectorN<$S> {
             #[inline]
-            fn from(v: &'a mut [$S; $n]) -> &'a mut $Self_<$S> {
+            fn from(v: &'a mut [$S; $n]) -> &'a mut $VectorN<$S> {
                 unsafe { mem::transmute(v) }
             }
         }
@@ -399,45 +399,45 @@ fixed_array_conversions!(Vector3<S> { x:0, y:1, z:2 }, 3);
 fixed_array_conversions!(Vector4<S> { x:0, y:1, z:2, w:3 }, 4);
 
 macro_rules! tuple_conversions {
-    ($Self_:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
-        impl<$S> Into<$Tuple> for $Self_<$S> {
+    ($VectorN:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
+        impl<$S> Into<$Tuple> for $VectorN<$S> {
             #[inline]
             fn into(self) -> $Tuple {
-                match self { $Self_ { $($field),+ } => ($($field),+) }
+                match self { $VectorN { $($field),+ } => ($($field),+) }
             }
         }
 
-        impl<$S> AsRef<$Tuple> for $Self_<$S> {
+        impl<$S> AsRef<$Tuple> for $VectorN<$S> {
             #[inline]
             fn as_ref(&self) -> &$Tuple {
                 unsafe { mem::transmute(self) }
             }
         }
 
-        impl<$S> AsMut<$Tuple> for $Self_<$S> {
+        impl<$S> AsMut<$Tuple> for $VectorN<$S> {
             #[inline]
             fn as_mut(&mut self) -> &mut $Tuple {
                 unsafe { mem::transmute(self) }
             }
         }
 
-        impl<$S> From<$Tuple> for $Self_<$S> {
+        impl<$S> From<$Tuple> for $VectorN<$S> {
             #[inline]
-            fn from(v: $Tuple) -> $Self_<$S> {
-                match v { ($($field),+) => $Self_ { $($field: $field),+ } }
+            fn from(v: $Tuple) -> $VectorN<$S> {
+                match v { ($($field),+) => $VectorN { $($field: $field),+ } }
             }
         }
 
-        impl<'a, $S> From<&'a $Tuple> for &'a $Self_<$S> {
+        impl<'a, $S> From<&'a $Tuple> for &'a $VectorN<$S> {
             #[inline]
-            fn from(v: &'a $Tuple) -> &'a $Self_<$S> {
+            fn from(v: &'a $Tuple) -> &'a $VectorN<$S> {
                 unsafe { mem::transmute(v) }
             }
         }
 
-        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $Self_<$S> {
+        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $VectorN<$S> {
             #[inline]
-            fn from(v: &'a mut $Tuple) -> &'a mut $Self_<$S> {
+            fn from(v: &'a mut $Tuple) -> &'a mut $VectorN<$S> {
                 unsafe { mem::transmute(v) }
             }
         }
@@ -683,5 +683,128 @@ impl<S: BaseNum> fmt::Debug for Vector3<S> {
 impl<S: BaseNum> fmt::Debug for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}, {:?}]", self.x, self.y, self.z, self.w)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod vector2 {
+        use vector::*;
+
+        const VECTOR2: Vector2<i32> = Vector2 { x: 1, y: 2 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(VECTOR2[0], VECTOR2.x);
+            assert_eq!(VECTOR2[1], VECTOR2.y);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut v = VECTOR2;
+            *&mut v[0] = 0;
+            assert_eq!(v, [0, 2].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            VECTOR2[2];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&VECTOR2[..0], &[]);
+            assert_eq!(&VECTOR2[..1], &[1]);
+            assert_eq!(VECTOR2[..0].len(), 0);
+            assert_eq!(VECTOR2[..1].len(), 1);
+            assert_eq!(&VECTOR2[2..], &[]);
+            assert_eq!(&VECTOR2[1..], &[2]);
+            assert_eq!(VECTOR2[2..].len(), 0);
+            assert_eq!(VECTOR2[1..].len(), 1);
+            assert_eq!(&VECTOR2[..], &[1, 2]);
+            assert_eq!(VECTOR2[..].len(), 2);
+        }
+    }
+
+    mod vector3 {
+        use vector::*;
+
+        const VECTOR3: Vector3<i32> = Vector3 { x: 1, y: 2, z: 3 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(VECTOR3[0], VECTOR3.x);
+            assert_eq!(VECTOR3[1], VECTOR3.y);
+            assert_eq!(VECTOR3[2], VECTOR3.z);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut v = VECTOR3;
+            *&mut v[1] = 0;
+            assert_eq!(v, [1, 0, 3].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            VECTOR3[3];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&VECTOR3[..1], &[1]);
+            assert_eq!(&VECTOR3[..2], &[1, 2]);
+            assert_eq!(VECTOR3[..1].len(), 1);
+            assert_eq!(VECTOR3[..2].len(), 2);
+            assert_eq!(&VECTOR3[2..], &[3]);
+            assert_eq!(&VECTOR3[1..], &[2, 3]);
+            assert_eq!(VECTOR3[2..].len(), 1);
+            assert_eq!(VECTOR3[1..].len(), 2);
+            assert_eq!(&VECTOR3[..], &[1, 2, 3]);
+            assert_eq!(VECTOR3[..].len(), 3);
+        }
+    }
+
+    mod vector4 {
+        use vector::*;
+
+        const VECTOR4: Vector4<i32> = Vector4 { x: 1, y: 2, z: 3, w: 4 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(VECTOR4[0], VECTOR4.x);
+            assert_eq!(VECTOR4[1], VECTOR4.y);
+            assert_eq!(VECTOR4[2], VECTOR4.z);
+            assert_eq!(VECTOR4[3], VECTOR4.w);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut v = VECTOR4;
+            *&mut v[2] = 0;
+            assert_eq!(v, [1, 2, 0, 4].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            VECTOR4[4];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&VECTOR4[..2], &[1, 2]);
+            assert_eq!(&VECTOR4[..3], &[1, 2, 3]);
+            assert_eq!(VECTOR4[..2].len(), 2);
+            assert_eq!(VECTOR4[..3].len(), 3);
+            assert_eq!(&VECTOR4[2..], &[3, 4]);
+            assert_eq!(&VECTOR4[1..], &[2, 3, 4]);
+            assert_eq!(VECTOR4[2..].len(), 2);
+            assert_eq!(VECTOR4[1..].len(), 3);
+            assert_eq!(&VECTOR4[..], &[1, 2, 3, 4]);
+            assert_eq!(VECTOR4[..].len(), 4);
+        }
     }
 }
