@@ -24,7 +24,7 @@ use std::ops::*;
 use rust_num::{one, zero};
 
 use approx::ApproxEq;
-use array::{Array1, FixedArray};
+use array::Array1;
 use bound::*;
 use matrix::{Matrix, Matrix4};
 use num::{BaseNum, BaseFloat};
@@ -111,54 +111,6 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
 
     #[must_use]
     fn max(&self, p: &Self) -> Self;
-}
-
-impl<S> FixedArray<[S; 2]> for Point2<S> {
-    #[inline]
-    fn into_fixed(self) -> [S; 2] {
-        match self { Point2 { x, y } => [x, y] }
-    }
-
-    #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [S; 2] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [S; 2] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn from_fixed(_v: [S; 2]) -> Point2<S> {
-        // match v { [x, y] => Point2 { x: x, y: y } }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418");
-    }
-
-    #[inline]
-    fn from_fixed_ref<'a>(v: &'a [S; 2]) -> &'a Point2<S> {
-        unsafe { mem::transmute(v) }
-    }
-
-    #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [S; 2]) -> &'a mut Point2<S> {
-        unsafe { mem::transmute(v) }
-    }
-}
-
-impl<S: BaseNum> Index<usize> for Point2<S> {
-    type Output = S;
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a S {
-        &self.as_fixed()[i]
-    }
-}
-
-impl<S: BaseNum> IndexMut<usize> for Point2<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut S {
-        &mut self.as_mut_fixed()[i]
-    }
 }
 
 impl<S: BaseNum> Array1<S> for Point2<S> {
@@ -265,55 +217,6 @@ impl<S: BaseFloat> ApproxEq<S> for Point2<S> {
     fn approx_eq_eps(&self, other: &Point2<S>, epsilon: &S) -> bool {
         self.x.approx_eq_eps(&other.x, epsilon) &&
         self.y.approx_eq_eps(&other.y, epsilon)
-    }
-}
-
-impl<S> FixedArray<[S; 3]> for Point3<S> {
-    #[inline]
-    fn into_fixed(self) -> [S; 3] {
-        match self { Point3 { x, y, z } => [x, y, z] }
-    }
-
-    #[inline]
-    fn as_fixed<'a>(&'a self) -> &'a [S; 3] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn as_mut_fixed<'a>(&'a mut self) -> &'a mut [S; 3] {
-        unsafe { mem::transmute(self) }
-    }
-
-    #[inline]
-    fn from_fixed(_v: [S; 3]) -> Point3<S> {
-        // match v { [x, y, z] => Point3 { x: x, y: y, z: z } }
-        panic!("Unimplemented, pending a fix for rust-lang/rust#16418")
-    }
-
-    #[inline]
-    fn from_fixed_ref<'a>(v: &'a [S; 3]) -> &'a Point3<S> {
-        unsafe { mem::transmute(v) }
-    }
-
-    #[inline]
-    fn from_fixed_mut<'a>(v: &'a mut [S; 3]) -> &'a mut Point3<S> {
-        unsafe { mem::transmute(v) }
-    }
-}
-
-impl<S: BaseNum> Index<usize> for Point3<S> {
-    type Output = S;
-
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a S {
-        &self.as_fixed()[i]
-    }
-}
-
-impl<S: BaseNum> IndexMut<usize> for Point3<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut S {
-        &mut self.as_mut_fixed()[i]
     }
 }
 
@@ -439,6 +342,137 @@ impl<S: BaseFloat> ApproxEq<S> for Point3<S> {
     }
 }
 
+macro_rules! fixed_array_conversions {
+    ($PointN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
+        impl<$S> Into<[$S; $n]> for $PointN<$S> {
+            #[inline]
+            fn into(self) -> [$S; $n] {
+                match self { $PointN { $($field),+ } => [$($field),+] }
+            }
+        }
+
+        impl<$S> AsRef<[$S; $n]> for $PointN<$S> {
+            #[inline]
+            fn as_ref(&self) -> &[$S; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<[$S; $n]> for $PointN<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut [$S; $n] {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S: Clone> From<[$S; $n]> for $PointN<$S> {
+            #[inline]
+            fn from(v: [$S; $n]) -> $PointN<$S> {
+                // We need to use a clone here because we can't pattern match on arrays yet
+                $PointN { $($field: v[$index].clone()),+ }
+            }
+        }
+
+        impl<'a, $S> From<&'a [$S; $n]> for &'a $PointN<$S> {
+            #[inline]
+            fn from(v: &'a [$S; $n]) -> &'a $PointN<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $PointN<$S> {
+            #[inline]
+            fn from(v: &'a mut [$S; $n]) -> &'a mut $PointN<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+    }
+}
+
+fixed_array_conversions!(Point2<S> { x:0, y:1 }, 2);
+fixed_array_conversions!(Point3<S> { x:0, y:1, z:2 }, 3);
+
+macro_rules! tuple_conversions {
+    ($PointN:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
+        impl<$S> Into<$Tuple> for $PointN<$S> {
+            #[inline]
+            fn into(self) -> $Tuple {
+                match self { $PointN { $($field),+ } => ($($field),+) }
+            }
+        }
+
+        impl<$S> AsRef<$Tuple> for $PointN<$S> {
+            #[inline]
+            fn as_ref(&self) -> &$Tuple {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> AsMut<$Tuple> for $PointN<$S> {
+            #[inline]
+            fn as_mut(&mut self) -> &mut $Tuple {
+                unsafe { mem::transmute(self) }
+            }
+        }
+
+        impl<$S> From<$Tuple> for $PointN<$S> {
+            #[inline]
+            fn from(v: $Tuple) -> $PointN<$S> {
+                // We need to use a clone here because we can't pattern match on arrays yet
+                match v { ($($field),+) => $PointN { $($field: $field),+ } }
+            }
+        }
+
+        impl<'a, $S> From<&'a $Tuple> for &'a $PointN<$S> {
+            #[inline]
+            fn from(v: &'a $Tuple) -> &'a $PointN<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+
+        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $PointN<$S> {
+            #[inline]
+            fn from(v: &'a mut $Tuple) -> &'a mut $PointN<$S> {
+                unsafe { mem::transmute(v) }
+            }
+        }
+    }
+}
+
+tuple_conversions!(Point2<S> { x, y }, (S, S));
+tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
+
+macro_rules! index_operators {
+    ($PointN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
+        impl<$S> Index<$I> for $PointN<$S> {
+            type Output = $Output;
+
+            #[inline]
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
+                let v: &[$S; $n] = self.as_ref(); &v[i]
+            }
+        }
+
+        impl<$S> IndexMut<$I> for $PointN<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
+                let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
+            }
+        }
+    }
+}
+
+index_operators!(Point2<S>, 2, S, usize);
+index_operators!(Point3<S>, 3, S, usize);
+index_operators!(Point2<S>, 2, [S], Range<usize>);
+index_operators!(Point3<S>, 3, [S], Range<usize>);
+index_operators!(Point2<S>, 2, [S], RangeTo<usize>);
+index_operators!(Point3<S>, 3, [S], RangeTo<usize>);
+index_operators!(Point2<S>, 2, [S], RangeFrom<usize>);
+index_operators!(Point3<S>, 3, [S], RangeFrom<usize>);
+index_operators!(Point2<S>, 2, [S], RangeFull);
+index_operators!(Point3<S>, 3, [S], RangeFull);
+
 impl<S: BaseNum> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}]", self.x, self.y)
@@ -470,6 +504,88 @@ impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
             (Some(Less), Some(Less), Some(Less)) => Relation::In,
             (Some(Greater), _, _) | (_, Some(Greater), _) | (_, _, Some(Greater)) => Relation::Out,
             _ => Relation::Cross,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod point2 {
+        use point::*;
+
+        const POINT2: Point2<i32> = Point2 { x: 1, y: 2 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(POINT2[0], POINT2.x);
+            assert_eq!(POINT2[1], POINT2.y);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut p = POINT2;
+            *&mut p[0] = 0;
+            assert_eq!(p, [0, 2].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            POINT2[2];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&POINT2[..0], &[]);
+            assert_eq!(&POINT2[..1], &[1]);
+            assert_eq!(POINT2[..0].len(), 0);
+            assert_eq!(POINT2[..1].len(), 1);
+            assert_eq!(&POINT2[2..], &[]);
+            assert_eq!(&POINT2[1..], &[2]);
+            assert_eq!(POINT2[2..].len(), 0);
+            assert_eq!(POINT2[1..].len(), 1);
+            assert_eq!(&POINT2[..], &[1, 2]);
+            assert_eq!(POINT2[..].len(), 2);
+        }
+    }
+
+    mod point3 {
+        use point::*;
+
+        const POINT3: Point3<i32> = Point3 { x: 1, y: 2, z: 3 };
+
+        #[test]
+        fn test_index() {
+            assert_eq!(POINT3[0], POINT3.x);
+            assert_eq!(POINT3[1], POINT3.y);
+            assert_eq!(POINT3[2], POINT3.z);
+        }
+
+        #[test]
+        fn test_index_mut() {
+            let mut p = POINT3;
+            *&mut p[1] = 0;
+            assert_eq!(p, [1, 0, 3].into());
+        }
+
+        #[test]
+        #[should_panic]
+        fn test_index_out_of_bounds() {
+            POINT3[3];
+        }
+
+        #[test]
+        fn test_index_range() {
+            assert_eq!(&POINT3[..1], &[1]);
+            assert_eq!(&POINT3[..2], &[1, 2]);
+            assert_eq!(POINT3[..1].len(), 1);
+            assert_eq!(POINT3[..2].len(), 2);
+            assert_eq!(&POINT3[2..], &[3]);
+            assert_eq!(&POINT3[1..], &[2, 3]);
+            assert_eq!(POINT3[2..].len(), 1);
+            assert_eq!(POINT3[1..].len(), 2);
+            assert_eq!(&POINT3[..], &[1, 2, 3]);
+            assert_eq!(POINT3[..].len(), 3);
         }
     }
 }

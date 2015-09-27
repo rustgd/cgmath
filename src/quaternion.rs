@@ -35,7 +35,10 @@ use vector::{Vector3, Vector, EuclideanVector};
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
-pub struct Quaternion<S> { pub s: S, pub v: Vector3<S> }
+pub struct Quaternion<S> {
+    pub s: S,
+    pub v: Vector3<S>,
+}
 
 impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
     #[inline]
@@ -45,24 +48,6 @@ impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
         self.v.y = op(self.v.y);
         self.v.z = op(self.v.z);
         *self
-    }
-}
-
-impl<S: BaseFloat> Index<usize> for Quaternion<S> {
-    type Output = S;
-
-    #[inline]
-    fn index<'a>(&'a self, i: usize) -> &'a S {
-        let slice: &[S; 4] = unsafe { mem::transmute(self) };
-        &slice[i]
-    }
-}
-
-impl<S: BaseFloat> IndexMut<usize> for Quaternion<S> {
-    #[inline]
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut S {
-        let slice: &'a mut [S; 4] = unsafe { mem::transmute(self) };
-        &mut slice[i]
     }
 }
 
@@ -433,6 +418,116 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
                         c1 * s2 * c3 - s1 * c2 * s3)
     }
 }
+
+impl<S: BaseFloat> Into<[S; 4]> for Quaternion<S> {
+    #[inline]
+    fn into(self) -> [S; 4] {
+        match self.into() { (w, xi, yj, zk) => [w, xi, yj, zk] }
+    }
+}
+
+impl<S: BaseFloat> AsRef<[S; 4]> for Quaternion<S> {
+    #[inline]
+    fn as_ref(&self) -> &[S; 4] {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<S: BaseFloat> AsMut<[S; 4]> for Quaternion<S> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [S; 4] {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<S: BaseFloat> From<[S; 4]> for Quaternion<S> {
+    #[inline]
+    fn from(v: [S; 4]) -> Quaternion<S> {
+        Quaternion::new(v[0], v[1], v[2], v[3])
+    }
+}
+
+impl<'a, S: BaseFloat> From<&'a [S; 4]> for &'a Quaternion<S> {
+    #[inline]
+    fn from(v: &'a [S; 4]) -> &'a Quaternion<S> {
+        unsafe { mem::transmute(v) }
+    }
+}
+
+impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
+    #[inline]
+    fn from(v: &'a mut [S; 4]) -> &'a mut Quaternion<S> {
+        unsafe { mem::transmute(v) }
+    }
+}
+
+impl<S: BaseFloat> Into<(S, S, S, S)> for Quaternion<S> {
+    #[inline]
+    fn into(self) -> (S, S, S, S) {
+        match self { Quaternion { s, v: Vector3 { x, y, z } } => (s, x, y, z) }
+    }
+}
+
+impl<S: BaseFloat> AsRef<(S, S, S, S)> for Quaternion<S> {
+    #[inline]
+    fn as_ref(&self) -> &(S, S, S, S) {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<S: BaseFloat> AsMut<(S, S, S, S)> for Quaternion<S> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut (S, S, S, S) {
+        unsafe { mem::transmute(self) }
+    }
+}
+
+impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
+    #[inline]
+    fn from(v: (S, S, S, S)) -> Quaternion<S> {
+        match v { (w, xi, yj, zk) => Quaternion::new(w, xi, yj, zk) }
+    }
+}
+
+impl<'a, S: BaseFloat> From<&'a (S, S, S, S)> for &'a Quaternion<S> {
+    #[inline]
+    fn from(v: &'a (S, S, S, S)) -> &'a Quaternion<S> {
+        unsafe { mem::transmute(v) }
+    }
+}
+
+impl<'a, S: BaseFloat> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
+    #[inline]
+    fn from(v: &'a mut (S, S, S, S)) -> &'a mut Quaternion<S> {
+        unsafe { mem::transmute(v) }
+    }
+}
+
+macro_rules! index_operators {
+    ($S:ident, $Output:ty, $I:ty) => {
+        impl<$S: BaseFloat> Index<$I> for Quaternion<$S> {
+            type Output = $Output;
+
+            #[inline]
+            fn index<'a>(&'a self, i: $I) -> &'a $Output {
+                let v: &[$S; 4] = self.as_ref(); &v[i]
+            }
+        }
+
+        impl<$S: BaseFloat> IndexMut<$I> for Quaternion<$S> {
+            #[inline]
+            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
+                let v: &mut [$S; 4] = self.as_mut(); &mut v[i]
+            }
+        }
+    }
+}
+
+index_operators!(S, S, usize);
+index_operators!(S, [S], Range<usize>);
+index_operators!(S, [S], RangeTo<usize>);
+index_operators!(S, [S], RangeFrom<usize>);
+index_operators!(S, [S], RangeFull);
 
 impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
     #[inline]
