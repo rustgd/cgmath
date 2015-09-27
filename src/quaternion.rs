@@ -535,3 +535,79 @@ impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
        Quaternion::from_sv(rng.gen(), rng.gen())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use quaternion::*;
+    use vector::*;
+
+    const QUATERNION: Quaternion<f32> = Quaternion {
+        s: 1.0,
+        v: Vector3 { x: 2.0, y: 3.0, z: 4.0 },
+    };
+
+    #[test]
+    fn test_into() {
+        let v = QUATERNION;
+        {
+            let v: [f32; 4] = v.into();
+            assert_eq!(v, [1.0, 2.0, 3.0, 4.0]);
+        }
+        {
+            let v: (f32, f32, f32, f32) = v.into();
+            assert_eq!(v, (1.0, 2.0, 3.0, 4.0));
+        }
+    }
+
+    #[test]
+    fn test_as_ref() {
+        let v = QUATERNION;
+        {
+            let v: &[f32; 4] = v.as_ref();
+            assert_eq!(v, &[1.0, 2.0, 3.0, 4.0]);
+        }
+        {
+            let v: &(f32, f32, f32, f32) = v.as_ref();
+            assert_eq!(v, &(1.0, 2.0, 3.0, 4.0));
+        }
+    }
+
+    #[test]
+    fn test_as_mut() {
+        let mut v = QUATERNION;
+        {
+            let v: &mut[f32; 4] = v.as_mut();
+            assert_eq!(v, &mut [1.0, 2.0, 3.0, 4.0]);
+        }
+        {
+            let v: &mut(f32, f32, f32, f32) = v.as_mut();
+            assert_eq!(v, &mut (1.0, 2.0, 3.0, 4.0));
+        }
+    }
+
+    #[test]
+    fn test_from() {
+        assert_eq!(Quaternion::from([1.0, 2.0, 3.0, 4.0]), QUATERNION);
+        {
+            let v = &[1.0, 2.0, 3.0, 4.0];
+            let v: &Quaternion<_> = From::from(v);
+            assert_eq!(v, &QUATERNION);
+        }
+        {
+            let v = &mut [1.0, 2.0, 3.0, 4.0];
+            let v: &mut Quaternion<_> = From::from(v);
+            assert_eq!(v, &QUATERNION);
+        }
+        assert_eq!(Quaternion::from((1.0, 2.0, 3.0, 4.0)), QUATERNION);
+        {
+            let v = &(1.0, 2.0, 3.0, 4.0);
+            let v: &Quaternion<_> = From::from(v);
+            assert_eq!(v, &QUATERNION);
+        }
+        {
+            let v = &mut (1.0, 2.0, 3.0, 4.0);
+            let v: &mut Quaternion<_> = From::from(v);
+            assert_eq!(v, &QUATERNION);
+        }
+    }
+}

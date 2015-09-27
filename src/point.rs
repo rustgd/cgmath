@@ -547,6 +547,71 @@ mod tests {
             assert_eq!(&POINT2[..], &[1, 2]);
             assert_eq!(POINT2[..].len(), 2);
         }
+
+        #[test]
+        fn test_into() {
+            let p = POINT2;
+            {
+                let p: [i32; 2] = p.into();
+                assert_eq!(p, [1, 2]);
+            }
+            {
+                let p: (i32, i32) = p.into();
+                assert_eq!(p, (1, 2));
+            }
+        }
+
+        #[test]
+        fn test_as_ref() {
+            let p = POINT2;
+            {
+                let p: &[i32; 2] = p.as_ref();
+                assert_eq!(p, &[1, 2]);
+            }
+            {
+                let p: &(i32, i32) = p.as_ref();
+                assert_eq!(p, &(1, 2));
+            }
+        }
+
+        #[test]
+        fn test_as_mut() {
+            let mut p = POINT2;
+            {
+                let p: &mut [i32; 2] = p.as_mut();
+                assert_eq!(p, &mut [1, 2]);
+            }
+            {
+                let p: &mut (i32, i32) = p.as_mut();
+                assert_eq!(p, &mut (1, 2));
+            }
+        }
+
+        #[test]
+        fn test_from() {
+            assert_eq!(Point2::from([1, 2]), POINT2);
+            {
+                let p = &[1, 2];
+                let p: &Point2<_> = From::from(p);
+                assert_eq!(p, &POINT2);
+            }
+            {
+                let p = &mut [1, 2];
+                let p: &mut Point2<_> = From::from(p);
+                assert_eq!(p, &POINT2);
+            }
+            assert_eq!(Point2::from((1, 2)), POINT2);
+            {
+                let p = &(1, 2);
+                let p: &Point2<_> = From::from(p);
+                assert_eq!(p, &POINT2);
+            }
+            {
+                let p = &mut (1, 2);
+                let p: &mut Point2<_> = From::from(p);
+                assert_eq!(p, &POINT2);
+            }
+        }
     }
 
     mod point3 {
@@ -586,6 +651,71 @@ mod tests {
             assert_eq!(POINT3[1..].len(), 2);
             assert_eq!(&POINT3[..], &[1, 2, 3]);
             assert_eq!(POINT3[..].len(), 3);
+        }
+
+        #[test]
+        fn test_into() {
+            let p = POINT3;
+            {
+                let p: [i32; 3] = p.into();
+                assert_eq!(p, [1, 2, 3]);
+            }
+            {
+                let p: (i32, i32, i32) = p.into();
+                assert_eq!(p, (1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_as_ref() {
+            let p = POINT3;
+            {
+                let p: &[i32; 3] = p.as_ref();
+                assert_eq!(p, &[1, 2, 3]);
+            }
+            {
+                let p: &(i32, i32, i32) = p.as_ref();
+                assert_eq!(p, &(1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_as_mut() {
+            let mut p = POINT3;
+            {
+                let p: &mut [i32; 3] = p.as_mut();
+                assert_eq!(p, &mut [1, 2, 3]);
+            }
+            {
+                let p: &mut (i32, i32, i32) = p.as_mut();
+                assert_eq!(p, &mut (1, 2, 3));
+            }
+        }
+
+        #[test]
+        fn test_from() {
+            assert_eq!(Point3::from([1, 2, 3]), POINT3);
+            {
+                let p = &[1, 2, 3];
+                let p: &Point3<_> = From::from(p);
+                assert_eq!(p, &POINT3);
+            }
+            {
+                let p = &mut [1, 2, 3];
+                let p: &mut Point3<_> = From::from(p);
+                assert_eq!(p, &POINT3);
+            }
+            assert_eq!(Point3::from((1, 2, 3)), POINT3);
+            {
+                let p = &(1, 2, 3);
+                let p: &Point3<_> = From::from(p);
+                assert_eq!(p, &POINT3);
+            }
+            {
+                let p = &mut (1, 2, 3);
+                let p: &mut Point3<_> = From::from(p);
+                assert_eq!(p, &POINT3);
+            }
         }
     }
 }
