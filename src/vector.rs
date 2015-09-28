@@ -236,12 +236,7 @@ macro_rules! vec {
             }
         }
 
-        impl<$S: Copy> Array1<$S> for $Self_<$S> {
-            #[inline]
-            fn map<F>(&mut self, mut op: F) -> $Self_<$S> where F: FnMut($S) -> $S {
-                $(self.$field = op(self.$field);)+ *self
-            }
-        }
+        impl<$S: Copy> Array1<$S> for $Self_<$S> {}
 
         impl<S: BaseNum> Vector<S> for $Self_<S> {
             #[inline] fn from_value(s: S) -> $Self_<S> { $Self_ { $($field: s),+ } }

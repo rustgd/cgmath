@@ -41,10 +41,6 @@ pub trait Array1<Element: Copy>: Index<usize, Output=Element> + IndexMut<usize, 
     fn replace_elem(&mut self, i: usize, src: Element) -> Element {
         mem::replace(&mut (*self)[i], src)
     }
-
-    /// Apply a function to each element.
-    fn map<F>(&mut self, op: F) -> Self
-        where F:  FnMut(Element) -> Element;
 }
 
 /// A column-major array
@@ -85,8 +81,4 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
         let (bc, br) = b;
         unsafe { ptr::swap(&mut (*self)[ac][ar], &mut (*self)[bc][br]) };
     }
-
-    /// Apply a function to each column.
-    fn map<F>(&mut self, op: F) -> Self
-        where F: FnMut(&Column) -> Column;
 }
