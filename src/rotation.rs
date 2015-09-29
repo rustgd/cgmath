@@ -102,19 +102,19 @@ pub trait Rotation3<S: BaseFloat>: Rotation<S, Vector3<S>, Point3<S>>
     /// Create a rotation from an angle around the `x` axis (pitch).
     #[inline]
     fn from_angle_x(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle( &Vector3::unit_x(), theta )
+        Rotation3::from_axis_angle(&Vector3::unit_x(), theta)
     }
 
     /// Create a rotation from an angle around the `y` axis (yaw).
     #[inline]
     fn from_angle_y(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle( &Vector3::unit_y(), theta )
+        Rotation3::from_axis_angle(&Vector3::unit_y(), theta)
     }
 
     /// Create a rotation from an angle around the `z` axis (roll).
     #[inline]
     fn from_angle_z(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle( &Vector3::unit_z(), theta )
+        Rotation3::from_axis_angle(&Vector3::unit_z(), theta)
     }
 }
 
@@ -190,7 +190,7 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
 
     #[inline]
     fn between_vectors(a: &Vector2<S>, b: &Vector2<S>) -> Basis2<S> {
-        Rotation2::from_angle( acos(a.dot(b)) )
+        Rotation2::from_angle(acos(a.dot(b)) )
     }
 
     #[inline]
