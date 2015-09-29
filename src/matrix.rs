@@ -21,7 +21,7 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 
-use rust_num::{Zero, zero, One, one};
+use rust_num::{zero, one};
 use rust_num::traits::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
@@ -59,28 +59,6 @@ impl<S> Matrix2<S> {
     #[inline]
     pub fn from_cols(c0: Vector2<S>, c1: Vector2<S>) -> Matrix2<S> {
         Matrix2 { x: c0, y: c1 }
-    }
-}
-
-impl<S: BaseNum> Matrix2<S> {
-    /// Create a new diagonal matrix, providing a single value to use for each
-    /// non-zero index.
-    #[inline]
-    pub fn from_value(value: S) -> Matrix2<S> {
-        Matrix2::new(value.clone(), zero(),
-                     zero(), value.clone())
-    }
-
-    /// Create a zero matrix (all zeros).
-    #[inline]
-    pub fn zero() -> Matrix2<S> {
-        Matrix2::from_value(zero())
-    }
-
-    /// Create an identity matrix (diagonal matrix of ones).
-    #[inline]
-    pub fn identity() -> Matrix2<S> {
-        Matrix2::from_value(one())
     }
 }
 
@@ -126,29 +104,6 @@ impl<S> Matrix3<S> {
     #[inline]
     pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
         Matrix3 { x: c0, y: c1, z: c2 }
-    }
-}
-
-impl<S: BaseNum> Matrix3<S> {
-    /// Create a new diagonal matrix, providing a single value to use for each
-    /// non-zero index.
-    #[inline]
-    pub fn from_value(value: S) -> Matrix3<S> {
-        Matrix3::new(value.clone(), zero(), zero(),
-                     zero(), value.clone(), zero(),
-                     zero(), zero(), value.clone())
-    }
-
-    /// Create a zero matrix (all zeros).
-    #[inline]
-    pub fn zero() -> Matrix3<S> {
-        Matrix3::from_value(zero())
-    }
-
-    /// Create an identity matrix (diagonal matrix of ones).
-    #[inline]
-    pub fn identity() -> Matrix3<S> {
-        Matrix3::from_value(one())
     }
 }
 
@@ -225,13 +180,6 @@ impl<S: BaseFloat> Matrix3<S> {
                      _1subc * axis.y * axis.z - s * axis.x,
                      _1subc * axis.z * axis.z + c)
     }
-
-    /// Create a matrix from a non-uniform scale
-    pub fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
-        Matrix3::new(value.x, zero(),  zero(),
-                     zero(),  value.y, zero(),
-                     zero(),  zero(),  value.z)
-    }
 }
 
 impl<S: Copy + Neg<Output = S>> Matrix3<S> {
@@ -265,28 +213,6 @@ impl<S> Matrix4<S> {
 }
 
 impl<S: BaseNum> Matrix4<S> {
-    /// Create a new diagonal matrix, providing a single value to use for each
-    /// non-zero index.
-    #[inline]
-    pub fn from_value(value: S) -> Matrix4<S> {
-        Matrix4::new(value.clone(),        zero(),        zero(),        zero(),
-                            zero(), value.clone(),        zero(),        zero(),
-                            zero(),        zero(), value.clone(),        zero(),
-                            zero(),        zero(),        zero(), value.clone())
-    }
-
-    /// Create a zero matrix (all zeros).
-    #[inline]
-    pub fn zero() -> Matrix4<S> {
-        Matrix4::from_value(zero())
-    }
-
-    /// Create an identity matrix (diagonal matrix of ones).
-    #[inline]
-    pub fn identity() -> Matrix4<S> {
-        Matrix4::from_value(one())
-    }
-
     /// Create a translation matrix from a Vector3
     #[inline]
     pub fn from_translation(v: &Vector3<S>) -> Matrix4<S> {
@@ -324,9 +250,20 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
 }
 
 pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
-                                                              + Zero + One
                                                               + ApproxEq<S>
                                                               + Sized {
+    /// Create a new diagonal matrix using the supplied value.
+    fn from_value(value: S) -> Self;
+    /// Create a matrix from a non-uniform scale
+    fn from_diagonal(value: &V) -> Self;
+
+    /// Create a matrix with all elements equal to zero.
+    #[inline]
+    fn zero() -> Self { Self::from_value(zero()) }
+    /// Create a matrix where the each element of the diagonal is equal to one.
+    #[inline]
+    fn identity() -> Self { Self::from_value(one()) }
+
     /// Multiply this matrix by a scalar, returning the new matrix.
     #[must_use]
     fn mul_s(&self, s: S) -> Self;
@@ -402,7 +339,7 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool { self.approx_eq(&one()) }
+    fn is_identity(&self) -> bool { self.approx_eq(&Self::identity()) }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.
@@ -482,27 +419,6 @@ impl<S: Neg<Output = S>> Neg for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Zero for Matrix2<S> {
-    #[inline]
-    fn zero() -> Matrix2<S> { Matrix2::zero() }
-    #[inline]
-    fn is_zero(&self) -> bool{ *self == zero() }
-}
-
-impl<S: BaseFloat> Zero for Matrix3<S> {
-    #[inline]
-    fn zero() -> Matrix3<S> { Matrix3::zero() }
-    #[inline]
-    fn is_zero(&self) -> bool{ *self == zero() }
-}
-
-impl<S: BaseFloat> Zero for Matrix4<S> {
-    #[inline]
-    fn zero() -> Matrix4<S> { Matrix4::zero() }
-    #[inline]
-    fn is_zero(&self) -> bool{ *self == zero() }
-}
-
 impl<S: BaseFloat> Mul for Matrix2<S> {
     type Output = Matrix2<S>;
 
@@ -543,18 +459,6 @@ impl<S: BaseFloat> Mul<S> for Matrix4<S> {
 
     #[inline]
     fn mul(self, other: S) -> Matrix4<S> { self.mul_s(other) }
-}
-
-impl<S: BaseFloat> One for Matrix2<S> {
-    #[inline]
-    fn one() -> Matrix2<S> { Matrix2::identity() }
-}
-impl<S: BaseFloat> One for Matrix3<S> {
-    #[inline]
-    fn one() -> Matrix3<S> { Matrix3::identity() }
-}
-impl<S: BaseFloat> One for Matrix4<S> {
-    #[inline] fn one() -> Matrix4<S> { Matrix4::identity() }
 }
 
 impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
@@ -630,6 +534,18 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
 }
 
 impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
+    #[inline]
+    fn from_value(value: S) -> Matrix2<S> {
+        Matrix2::new(value, zero(),
+                     zero(), value)
+    }
+
+    #[inline]
+    fn from_diagonal(value: &Vector2<S>) -> Matrix2<S> {
+        Matrix2::new(value.x, zero(),
+                     zero(), value.y)
+    }
+
     #[inline]
     fn mul_s(&self, s: S) -> Matrix2<S> {
         Matrix2::from_cols(self[0].mul_s(s),
@@ -748,6 +664,20 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 }
 
 impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
+    #[inline]
+    fn from_value(value: S) -> Matrix3<S> {
+        Matrix3::new(value, zero(), zero(),
+                     zero(), value, zero(),
+                     zero(), zero(), value)
+    }
+
+    #[inline]
+    fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
+        Matrix3::new(value.x, zero(), zero(),
+                     zero(), value.y, zero(),
+                     zero(), zero(), value.z)
+    }
+
     #[inline]
     fn mul_s(&self, s: S) -> Matrix3<S> {
         Matrix3::from_cols(self[0].mul_s(s),
@@ -902,6 +832,22 @@ macro_rules! dot_matrix4(
 ));
 
 impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
+    #[inline]
+    fn from_value(value: S) -> Matrix4<S> {
+        Matrix4::new(value, zero(), zero(), zero(),
+                     zero(), value, zero(), zero(),
+                     zero(), zero(), value, zero(),
+                     zero(), zero(), zero(), value)
+    }
+
+    #[inline]
+    fn from_diagonal(value: &Vector4<S>) -> Matrix4<S> {
+        Matrix4::new(value.x, zero(), zero(), zero(),
+                     zero(), value.y, zero(), zero(),
+                     zero(), zero(), value.z, zero(),
+                     zero(), zero(), zero(), value.w)
+    }
+
     #[inline]
     fn mul_s(&self, s: S) -> Matrix4<S> {
         Matrix4::from_cols(self[0].mul_s(s),
