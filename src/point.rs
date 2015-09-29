@@ -21,7 +21,7 @@ use std::fmt;
 use std::mem;
 use std::ops::*;
 
-use rust_num::{one, zero};
+use rust_num::{One, Zero};
 
 use approx::ApproxEq;
 use array::Array1;
@@ -57,13 +57,13 @@ impl<S: BaseNum> Point3<S> {
 impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
-        let e = v.truncate().mul_s(one::<S>() / v.w);
+        let e = v.truncate().mul_s(S::one() / v.w);
         Point3::new(e.x, e.y, e.z)  //FIXME
     }
 
     #[inline]
     pub fn to_homogeneous(&self) -> Vector4<S> {
-        Vector4::new(self.x, self.y, self.z, one())
+        Vector4::new(self.x, self.y, self.z, S::one())
     }
 }
 
@@ -118,7 +118,7 @@ impl<S: BaseNum> Array1<S> for Point2<S> {}
 impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
     #[inline]
     fn origin() -> Point2<S> {
-        Point2::new(zero(), zero())
+        Point2::new(S::zero(), S::zero())
     }
 
     #[inline]
@@ -218,7 +218,7 @@ impl<S: BaseNum> Array1<S> for Point3<S> {}
 impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
     #[inline]
     fn origin() -> Point3<S> {
-        Point3::new(zero(), zero(), zero())
+        Point3::new(S::zero(), S::zero(), S::zero())
     }
 
     #[inline]

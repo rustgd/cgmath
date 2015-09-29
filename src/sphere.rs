@@ -15,7 +15,7 @@
 
 //! Bounding sphere
 
-use rust_num::zero;
+use rust_num::Zero;
 
 use bound::*;
 use intersect::Intersect;
@@ -37,7 +37,7 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
 
         let l = s.center.sub_p(&r.origin);
         let tca = l.dot(&r.direction);
-        if tca < zero() { return None; }
+        if tca < S::zero() { return None; }
         let d2 = l.dot(&l) - tca*tca;
         if d2 > s.radius*s.radius { return None; }
         let thc = (s.radius*s.radius - d2).sqrt();

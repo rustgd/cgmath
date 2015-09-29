@@ -22,7 +22,7 @@
 
 use std::fmt;
 
-use rust_num::{Float, zero, one};
+use rust_num::{Float, Zero, One};
 
 use bound::*;
 use point::{Point, Point2, Point3};
@@ -54,7 +54,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     /// Return the center point of this AABB.
     #[inline]
     fn center(&self) -> P {
-        let two = one::<S>() + one::<S>();
+        let two = S::one() + S::one();
         self.min().add_v(&self.dim().div_s(two))
     }
 
@@ -131,8 +131,8 @@ impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>> for Aabb2<S> {
     fn contains(&self, p: &Point2<S>) -> bool {
         let v_min = p.sub_p(self.min());
         let v_max = self.max().sub_p(p);
-        v_min.x >= zero() && v_min.y >= zero() &&
-        v_max.x >  zero() && v_max.y >  zero()
+        v_min.x >= S::zero() && v_min.y >= S::zero() &&
+        v_max.x >  S::zero() && v_max.y >  S::zero()
     }
 }
 
@@ -191,8 +191,8 @@ impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>> for Aabb3<S> {
     fn contains(&self, p: &Point3<S>) -> bool {
         let v_min = p.sub_p(self.min());
         let v_max = self.max().sub_p(p);
-        v_min.x >= zero() && v_min.y >= zero() && v_min.z >= zero() &&
-        v_max.x >  zero() && v_max.y >  zero() && v_max.z >  zero()
+        v_min.x >= S::zero() && v_min.y >= S::zero() && v_min.z >= S::zero() &&
+        v_max.x >  S::zero() && v_max.y >  S::zero() && v_max.z >  S::zero()
     }
 }
 
@@ -206,28 +206,28 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Aabb2<S>) {
     fn intersection(&self) -> Option<Point2<S>> {
         let (ref ray, ref aabb) = *self;
 
-        let mut tmin: S = Float::neg_infinity();
-        let mut tmax: S = Float::infinity();
+        let mut tmin = S::neg_infinity();
+        let mut tmax = S::infinity();
 
-        if ray.direction.x != zero() {
+        if ray.direction.x != S::zero() {
             let tx1 = (aabb.min.x - ray.origin.x) / ray.direction.x;
             let tx2 = (aabb.max.x - ray.origin.x) / ray.direction.x;
             tmin = tmin.max(tx1.min(tx2));
             tmax = tmax.min(tx1.max(tx2));
         }
 
-        if ray.direction.y != zero() {
+        if ray.direction.y != S::zero() {
             let ty1 = (aabb.min.y - ray.origin.y) / ray.direction.y;
             let ty2 = (aabb.max.y - ray.origin.y) / ray.direction.y;
             tmin = tmin.max(ty1.min(ty2));
             tmax = tmax.min(ty1.max(ty2));
         }
 
-        if tmin < zero() && tmax < zero() {
+        if tmin < S::zero() && tmax < S::zero() {
             None
         }
         else if tmax >= tmin {
-            if tmin >= zero() {
+            if tmin >= S::zero() {
                 Some(Point2::new(ray.origin.x + ray.direction.x * tmin,
                                  ray.origin.y + ray.direction.y * tmin))
             }

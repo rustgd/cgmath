@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rust_num::{zero, one};
+use rust_num::{Zero, One};
 use rust_num::traits::cast;
 
 use angle::{Angle, Rad, tan, cot};
@@ -107,11 +107,11 @@ impl<S: BaseFloat, A: Angle<S>> From<PerspectiveFov<S, A>> for Matrix4<S> {
     fn from(persp: PerspectiveFov<S, A>) -> Matrix4<S> {
         let half_turn: A = Angle::turn_div_2();
 
-        assert!(persp.fovy   > zero(),    "The vertical field of view cannot be below zero, found: {:?}", persp.fovy);
+        assert!(persp.fovy   > A::zero(), "The vertical field of view cannot be below zero, found: {:?}", persp.fovy);
         assert!(persp.fovy   < half_turn, "The vertical field of view cannot be greater than a half turn, found: {:?}", persp.fovy);
-        assert!(persp.aspect > zero(),    "The aspect ratio cannot be below zero, found: {:?}", persp.aspect);
-        assert!(persp.near   > zero(),    "The near plane distance cannot be below zero, found: {:?}", persp.near);
-        assert!(persp.far    > zero(),    "The far plane distance cannot be below zero, found: {:?}", persp.far);
+        assert!(persp.aspect > S::zero(), "The aspect ratio cannot be below zero, found: {:?}", persp.aspect);
+        assert!(persp.near   > S::zero(), "The near plane distance cannot be below zero, found: {:?}", persp.near);
+        assert!(persp.far    > S::zero(), "The far plane distance cannot be below zero, found: {:?}", persp.far);
         assert!(persp.far    > persp.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", persp.far, persp.near);
 
         let f: Rad<_> = persp.fovy.div_s(cast(2i8).unwrap()).into();
@@ -119,24 +119,24 @@ impl<S: BaseFloat, A: Angle<S>> From<PerspectiveFov<S, A>> for Matrix4<S> {
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = f / persp.aspect;
-        let c0r1 = zero();
-        let c0r2 = zero();
-        let c0r3 = zero();
+        let c0r1 = S::zero();
+        let c0r2 = S::zero();
+        let c0r3 = S::zero();
 
-        let c1r0 = zero();
+        let c1r0 = S::zero();
         let c1r1 = f;
-        let c1r2 = zero();
-        let c1r3 = zero();
+        let c1r2 = S::zero();
+        let c1r3 = S::zero();
 
-        let c2r0 = zero();
-        let c2r1 = zero();
+        let c2r0 = S::zero();
+        let c2r1 = S::zero();
         let c2r2 = (persp.far + persp.near) / (persp.near - persp.far);
-        let c2r3 = -one::<S>();
+        let c2r3 = -S::one();
 
-        let c3r0 = zero();
-        let c3r1 = zero();
+        let c3r0 = S::zero();
+        let c3r1 = S::zero();
         let c3r2 = (two * persp.far * persp.near) / (persp.near - persp.far);
-        let c3r3 = zero();
+        let c3r3 = S::zero();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                      c1r0, c1r1, c1r2, c1r3,
@@ -172,24 +172,24 @@ impl<S: BaseFloat + 'static> From<Perspective<S>> for Matrix4<S> {
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = (two * persp.near) / (persp.right - persp.left);
-        let c0r1 = zero();
-        let c0r2 = zero();
-        let c0r3 = zero();
+        let c0r1 = S::zero();
+        let c0r2 = S::zero();
+        let c0r3 = S::zero();
 
-        let c1r0 = zero();
+        let c1r0 = S::zero();
         let c1r1 = (two * persp.near) / (persp.top - persp.bottom);
-        let c1r2 = zero();
-        let c1r3 = zero();
+        let c1r2 = S::zero();
+        let c1r3 = S::zero();
 
         let c2r0 = (persp.right + persp.left) / (persp.right - persp.left);
         let c2r1 = (persp.top + persp.bottom) / (persp.top - persp.bottom);
         let c2r2 = -(persp.far + persp.near) / (persp.far - persp.near);
-        let c2r3 = -one::<S>();
+        let c2r3 = -S::one();
 
-        let c3r0 = zero();
-        let c3r1 = zero();
+        let c3r0 = S::zero();
+        let c3r1 = S::zero();
         let c3r2 = -(two * persp.far * persp.near) / (persp.far - persp.near);
-        let c3r3 = zero();
+        let c3r3 = S::zero();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                      c1r0, c1r1, c1r2, c1r3,
@@ -212,12 +212,12 @@ pub struct Ortho<S> {
 impl<S: BaseFloat> Projection<S> for Ortho<S> {
     fn to_frustum(&self) -> Frustum<S> {
         Frustum {
-            left:   Plane::from_abcd( one::<S>(), zero::<S>(), zero::<S>(), self.left.clone()),
-            right:  Plane::from_abcd(-one::<S>(), zero::<S>(), zero::<S>(), self.right.clone()),
-            bottom: Plane::from_abcd(zero::<S>(),  one::<S>(), zero::<S>(), self.bottom.clone()),
-            top:    Plane::from_abcd(zero::<S>(), -one::<S>(), zero::<S>(), self.top.clone()),
-            near:   Plane::from_abcd(zero::<S>(), zero::<S>(), -one::<S>(), self.near.clone()),
-            far:    Plane::from_abcd(zero::<S>(), zero::<S>(),  one::<S>(), self.far.clone()),
+            left:   Plane::from_abcd( S::one(), S::zero(), S::zero(), self.left.clone()),
+            right:  Plane::from_abcd(-S::one(), S::zero(), S::zero(), self.right.clone()),
+            bottom: Plane::from_abcd(S::zero(), S::one(), S::zero(), self.bottom.clone()),
+            top:    Plane::from_abcd(S::zero(), -S::one(), S::zero(), self.top.clone()),
+            near:   Plane::from_abcd(S::zero(), S::zero(), -S::one(), self.near.clone()),
+            far:    Plane::from_abcd(S::zero(), S::zero(), S::one(), self.far.clone()),
         }
     }
 }
@@ -227,24 +227,24 @@ impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = two / (ortho.right - ortho.left);
-        let c0r1 = zero();
-        let c0r2 = zero();
-        let c0r3 = zero();
+        let c0r1 = S::zero();
+        let c0r2 = S::zero();
+        let c0r3 = S::zero();
 
-        let c1r0 = zero();
+        let c1r0 = S::zero();
         let c1r1 = two / (ortho.top - ortho.bottom);
-        let c1r2 = zero();
-        let c1r3 = zero();
+        let c1r2 = S::zero();
+        let c1r3 = S::zero();
 
-        let c2r0 = zero();
-        let c2r1 = zero();
+        let c2r0 = S::zero();
+        let c2r1 = S::zero();
         let c2r2 = -two / (ortho.far - ortho.near);
-        let c2r3 = zero();
+        let c2r3 = S::zero();
 
         let c3r0 = -(ortho.right + ortho.left) / (ortho.right - ortho.left);
         let c3r1 = -(ortho.top + ortho.bottom) / (ortho.top - ortho.bottom);
         let c3r2 = -(ortho.far + ortho.near) / (ortho.far - ortho.near);
-        let c3r3 = one::<S>();
+        let c3r3 = S::one();
 
         Matrix4::new(c0r0, c0r1, c0r2, c0r3,
                      c1r0, c1r1, c1r2, c1r3,

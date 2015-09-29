@@ -21,7 +21,7 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 
-use rust_num::{zero, one};
+use rust_num::{Zero, One};
 use rust_num::traits::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
@@ -122,27 +122,27 @@ impl<S: BaseFloat> Matrix3<S> {
     pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Matrix3::new( one(),     zero(),    zero(),
-                     zero(),  c.clone(), s.clone(),
-                     zero(), -s.clone(), c.clone())
+        Matrix3::new(S::one(), S::zero(), S::zero(),
+                     S::zero(), c.clone(), s.clone(),
+                     S::zero(), -s.clone(), c.clone())
     }
 
     /// Create a matrix from a rotation around the `y` axis (yaw).
     pub fn from_angle_y(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Matrix3::new(c.clone(), zero(), -s.clone(),
-                        zero(),  one(),     zero(),
-                     s.clone(), zero(),  c.clone())
+        Matrix3::new(c.clone(), S::zero(), -s.clone(),
+                     S::zero(), S::one(), S::zero(),
+                     s.clone(), S::zero(), c.clone())
     }
 
     /// Create a matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
-        Matrix3::new( c.clone(), s.clone(), zero(),
-                     -s.clone(), c.clone(), zero(),
-                         zero(),    zero(),  one())
+        Matrix3::new( c.clone(), s.clone(), S::zero(),
+                     -s.clone(), c.clone(), S::zero(),
+                     S::zero(), S::zero(), S::one())
     }
 
     /// Create a matrix from a set of euler angles.
@@ -166,7 +166,7 @@ impl<S: BaseFloat> Matrix3<S> {
     /// Create a matrix from a rotation around an arbitrary axis
     pub fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = sin_cos(angle);
-        let _1subc = one::<S>() - c;
+        let _1subc = S::one() - c;
 
         Matrix3::new(_1subc * axis.x * axis.x + c,
                      _1subc * axis.x * axis.y + s * axis.z,
@@ -216,10 +216,10 @@ impl<S: BaseNum> Matrix4<S> {
     /// Create a translation matrix from a Vector3
     #[inline]
     pub fn from_translation(v: &Vector3<S>) -> Matrix4<S> {
-        Matrix4::new(one(),  zero(), zero(), zero(),
-                     zero(), one(),  zero(), zero(),
-                     zero(), zero(), one(),  zero(),
-                     v.x,    v.y,    v.z,    one())
+        Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::one(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::one(), S::zero(),
+                     v.x, v.y, v.z, S::one())
     }
 }
 
@@ -231,10 +231,10 @@ impl<S: BaseFloat> Matrix4<S> {
         let s = f.cross(up).normalize();
         let u = s.cross(&f);
 
-        Matrix4::new( s.x.clone(),  u.x.clone(), -f.x.clone(), zero(),
-                      s.y.clone(),  u.y.clone(), -f.y.clone(), zero(),
-                      s.z.clone(),  u.z.clone(), -f.z.clone(), zero(),
-                     -eye.dot(&s), -eye.dot(&u),  eye.dot(&f),  one())
+        Matrix4::new(s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
+                     s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
+                     s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
+                     -eye.dot(&s), -eye.dot(&u), eye.dot(&f), S::one())
     }
 }
 
@@ -259,10 +259,10 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
 
     /// Create a matrix with all elements equal to zero.
     #[inline]
-    fn zero() -> Self { Self::from_value(zero()) }
+    fn zero() -> Self { Self::from_value(S::zero()) }
     /// Create a matrix where the each element of the diagonal is equal to one.
     #[inline]
-    fn identity() -> Self { Self::from_value(one()) }
+    fn identity() -> Self { Self::from_value(S::one()) }
 
     /// Multiply this matrix by a scalar, returning the new matrix.
     #[must_use]
@@ -334,7 +334,7 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&zero()) }
+    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&S::zero()) }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
@@ -512,14 +512,14 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
 impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     #[inline]
     fn from_value(value: S) -> Matrix2<S> {
-        Matrix2::new(value, zero(),
-                     zero(), value)
+        Matrix2::new(value, S::zero(),
+                     S::zero(), value)
     }
 
     #[inline]
     fn from_diagonal(value: &Vector2<S>) -> Matrix2<S> {
-        Matrix2::new(value.x, zero(),
-                     zero(), value.y)
+        Matrix2::new(value.x, S::zero(),
+                     S::zero(), value.y)
     }
 
     #[inline]
@@ -617,7 +617,7 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     #[inline]
     fn invert(&self) -> Option<Matrix2<S>> {
         let det = self.determinant();
-        if det.approx_eq(&zero()) {
+        if det.approx_eq(&S::zero()) {
             None
         } else {
             Some(Matrix2::new( self[1][1] / det, -self[0][1] / det,
@@ -627,8 +627,8 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&zero()) &&
-        (&self[1][0]).approx_eq(&zero())
+        (&self[0][1]).approx_eq(&S::zero()) &&
+        (&self[1][0]).approx_eq(&S::zero())
     }
 
 
@@ -642,16 +642,16 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     #[inline]
     fn from_value(value: S) -> Matrix3<S> {
-        Matrix3::new(value, zero(), zero(),
-                     zero(), value, zero(),
-                     zero(), zero(), value)
+        Matrix3::new(value, S::zero(), S::zero(),
+                     S::zero(), value, S::zero(),
+                     S::zero(), S::zero(), value)
     }
 
     #[inline]
     fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
-        Matrix3::new(value.x, zero(), zero(),
-                     zero(), value.y, zero(),
-                     zero(), zero(), value.z)
+        Matrix3::new(value.x, S::zero(), S::zero(),
+                     S::zero(), value.y, S::zero(),
+                     S::zero(), S::zero(), value.z)
     }
 
     #[inline]
@@ -765,7 +765,7 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
-        if det.approx_eq(&zero()) { None } else {
+        if det.approx_eq(&S::zero()) { None } else {
             Some(Matrix3::from_cols(self[1].cross(&self[2]).div_s(det),
                                     self[2].cross(&self[0]).div_s(det),
                                     self[0].cross(&self[1]).div_s(det)).transpose())
@@ -773,14 +773,14 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&zero()) &&
-        (&self[0][2]).approx_eq(&zero()) &&
+        (&self[0][1]).approx_eq(&S::zero()) &&
+        (&self[0][2]).approx_eq(&S::zero()) &&
 
-        (&self[1][0]).approx_eq(&zero()) &&
-        (&self[1][2]).approx_eq(&zero()) &&
+        (&self[1][0]).approx_eq(&S::zero()) &&
+        (&self[1][2]).approx_eq(&S::zero()) &&
 
-        (&self[2][0]).approx_eq(&zero()) &&
-        (&self[2][1]).approx_eq(&zero())
+        (&self[2][0]).approx_eq(&S::zero()) &&
+        (&self[2][1]).approx_eq(&S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
@@ -810,18 +810,18 @@ macro_rules! dot_matrix4(
 impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]
     fn from_value(value: S) -> Matrix4<S> {
-        Matrix4::new(value, zero(), zero(), zero(),
-                     zero(), value, zero(), zero(),
-                     zero(), zero(), value, zero(),
-                     zero(), zero(), zero(), value)
+        Matrix4::new(value, S::zero(), S::zero(), S::zero(),
+                     S::zero(), value, S::zero(), S::zero(),
+                     S::zero(), S::zero(), value, S::zero(),
+                     S::zero(), S::zero(), S::zero(), value)
     }
 
     #[inline]
     fn from_diagonal(value: &Vector4<S>) -> Matrix4<S> {
-        Matrix4::new(value.x, zero(), zero(), zero(),
-                     zero(), value.y, zero(), zero(),
-                     zero(), zero(), value.z, zero(),
-                     zero(), zero(), zero(), value.w)
+        Matrix4::new(value.x, S::zero(), S::zero(), S::zero(),
+                     S::zero(), value.y, S::zero(), S::zero(),
+                     S::zero(), S::zero(), value.z, S::zero(),
+                     S::zero(), S::zero(), S::zero(), value.w)
     }
 
     #[inline]
@@ -965,9 +965,8 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
-        if !det.approx_eq(&zero()) {
-            let one: S = one();
-            let inv_det = one / det;
+        if !det.approx_eq(&S::zero()) {
+            let inv_det = S::one() / det;
             let t = self.transpose();
             let cf = |i, j| {
                 let mat = match i {
@@ -985,7 +984,7 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
                                             t.z.truncate_n(j)),
                     _ => panic!("out of range")
                 };
-                let sign = if (i+j) & 1 == 1 {-one} else {one};
+                let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
                 mat.determinant() * sign * inv_det
             };
 
@@ -1000,21 +999,21 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&zero()) &&
-        (&self[0][2]).approx_eq(&zero()) &&
-        (&self[0][3]).approx_eq(&zero()) &&
+        (&self[0][1]).approx_eq(&S::zero()) &&
+        (&self[0][2]).approx_eq(&S::zero()) &&
+        (&self[0][3]).approx_eq(&S::zero()) &&
 
-        (&self[1][0]).approx_eq(&zero()) &&
-        (&self[1][2]).approx_eq(&zero()) &&
-        (&self[1][3]).approx_eq(&zero()) &&
+        (&self[1][0]).approx_eq(&S::zero()) &&
+        (&self[1][2]).approx_eq(&S::zero()) &&
+        (&self[1][3]).approx_eq(&S::zero()) &&
 
-        (&self[2][0]).approx_eq(&zero()) &&
-        (&self[2][1]).approx_eq(&zero()) &&
-        (&self[2][3]).approx_eq(&zero()) &&
+        (&self[2][0]).approx_eq(&S::zero()) &&
+        (&self[2][1]).approx_eq(&S::zero()) &&
+        (&self[2][3]).approx_eq(&S::zero()) &&
 
-        (&self[3][0]).approx_eq(&zero()) &&
-        (&self[3][1]).approx_eq(&zero()) &&
-        (&self[3][2]).approx_eq(&zero())
+        (&self[3][0]).approx_eq(&S::zero()) &&
+        (&self[3][1]).approx_eq(&S::zero()) &&
+        (&self[3][2]).approx_eq(&S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
@@ -1200,9 +1199,9 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix3<S> {
-        Matrix3::new(m[0][0], m[0][1], zero(),
-                     m[1][0], m[1][1], zero(),
-                     zero(),  zero(),  one())
+        Matrix3::new(m[0][0], m[0][1], S::zero(),
+                     m[1][0], m[1][1], S::zero(),
+                     S::zero(), S::zero(), S::one())
     }
 }
 
@@ -1210,10 +1209,10 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix4<S> {
-        Matrix4::new(m[0][0], m[0][1], zero(), zero(),
-                     m[1][0], m[1][1], zero(), zero(),
-                     zero(),  zero(),  one(),  zero(),
-                     zero(),  zero(),  zero(), one())
+        Matrix4::new(m[0][0], m[0][1], S::zero(), S::zero(),
+                     m[1][0], m[1][1], S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::one(), S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
     }
 }
 
@@ -1221,10 +1220,10 @@ impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix3<S>) -> Matrix4<S> {
-        Matrix4::new(m[0][0], m[0][1], m[0][2], zero(),
-                     m[1][0], m[1][1], m[1][2], zero(),
-                     m[2][0], m[2][1], m[2][2], zero(),
-                     zero(),  zero(),  zero(),  one())
+        Matrix4::new(m[0][0], m[0][1], m[0][2], S::zero(),
+                     m[1][0], m[1][1], m[1][2], S::zero(),
+                     m[2][0], m[2][1], m[2][2], S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
     }
 }
 
@@ -1235,8 +1234,8 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
         let trace = mat.trace();
         let half: S = cast(0.5f64).unwrap();
 
-        if trace >= zero::<S>() {
-            let s = (one::<S>() + trace).sqrt();
+        if trace >= S::zero() {
+            let s = (S::one() + trace).sqrt();
             let w = half * s;
             let s = half / s;
             let x = (mat[1][2] - mat[2][1]) * s;

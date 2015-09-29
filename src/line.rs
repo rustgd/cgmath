@@ -17,7 +17,7 @@
 
 use std::marker::PhantomData;
 
-use rust_num::{Zero, zero, One, one};
+use rust_num::{Zero, One};
 
 use num::{BaseNum, BaseFloat};
 use point::{Point, Point2, Point3};
@@ -57,14 +57,13 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
         let q = line.origin;
         let r = ray.direction;
         let s = Vector2::new(line.dest.x - line.origin.x, line.dest.y - line.origin.y);
-        let zero: S = Zero::zero();
 
         let cross_1 = r.perp_dot(&s);
         let qmp = Vector2::new(q.x - p.x, q.y - p.y);
         let cross_2 = qmp.perp_dot(&r);
 
-        if cross_1 == zero {
-            if cross_2 != zero {
+        if cross_1 == S::zero() {
+            if cross_2 != S::zero() {
                 // parallel
                 return None;
             }
@@ -73,10 +72,10 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
             let q2mp = Vector2::new(line.dest.x - p.x, line.dest.y - p.y);
             let dot_1 = qmp.dot(&r);
             let dot_2 = q2mp.dot(&r);
-            if (dot_1 <= zero && dot_2 >= zero) || (dot_1 >= zero && dot_2 <= zero) {
+            if (dot_1 <= S::zero() && dot_2 >= S::zero()) || (dot_1 >= S::zero() && dot_2 <= S::zero()) {
                 return Some(p);
             }
-            else if dot_1 >= zero && dot_2 >= zero {
+            else if dot_1 >= S::zero() && dot_2 >= S::zero() {
                 if dot_1 <= dot_2 {
                     return Some(q);
                 }
@@ -92,7 +91,7 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
         let t = qmp.perp_dot(&s) / cross_1;
         let u = cross_2 / cross_1;
 
-        if zero <= t && u >= zero && u <= One::one() {
+        if S::zero() <= t && u >= S::zero() && u <= S::one() {
             return Some(Point2::new(p.x + t*r.x, p.y + t*r.y));
         }
 

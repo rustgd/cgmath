@@ -22,7 +22,7 @@ use std::ops::*;
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
 
-use rust_num::{Float, One, Zero, one, zero};
+use rust_num::{Float, One, Zero};
 use rust_num::traits::cast;
 
 use approx::ApproxEq;
@@ -132,15 +132,15 @@ pub trait Angle
     /// Normalize the angle to the range `[0, full_turn)`.
     #[inline]
     fn normalize_self(&mut self) {
-        let full_turn: Self = Angle::full_turn();
+        let full_turn = Self::full_turn();
         self.rem_self_s(full_turn.s().clone());
-        if *self < zero() { self.add_self_a(full_turn) };
+        if *self < Self::zero() { self.add_self_a(full_turn) };
     }
 
     /// Return the angle rotated by half a turn
     #[inline]
     fn opposite(&self) -> Self {
-        self.add_a(Angle::turn_div_2()).normalize()
+        self.add_a(Self::turn_div_2()).normalize()
     }
 
     /// Returns the interior bisector of the two angles
@@ -151,36 +151,15 @@ pub trait Angle
 
     fn full_turn() -> Self;
 
-    #[inline] fn turn_div_2() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(2i8).unwrap()) }
-    #[inline] fn turn_div_3() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(3i8).unwrap()) }
-    #[inline] fn turn_div_4() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(4i8).unwrap()) }
-    #[inline] fn turn_div_6() -> Self { let full_turn: Self = Angle::full_turn(); full_turn.div_s(cast(6i8).unwrap()) }
+    #[inline] fn turn_div_2() -> Self { Self::full_turn().div_s(cast(2i8).unwrap()) }
+    #[inline] fn turn_div_3() -> Self { Self::full_turn().div_s(cast(3i8).unwrap()) }
+    #[inline] fn turn_div_4() -> Self { Self::full_turn().div_s(cast(4i8).unwrap()) }
+    #[inline] fn turn_div_6() -> Self { Self::full_turn().div_s(cast(6i8).unwrap()) }
 
     #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
 
 #[inline] pub fn bisect<S: BaseFloat, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
-
-impl<S: BaseFloat>
-Rad<S> {
-    #[inline] pub fn zero() -> Rad<S> { zero() }
-    #[inline] pub fn full_turn() -> Rad<S> { Angle::full_turn() }
-    #[inline] pub fn turn_div_2() -> Rad<S> { Angle::turn_div_2() }
-    #[inline] pub fn turn_div_3() -> Rad<S> { Angle::turn_div_3() }
-    #[inline] pub fn turn_div_4() -> Rad<S> { Angle::turn_div_4() }
-    #[inline] pub fn turn_div_6() -> Rad<S> { Angle::turn_div_6() }
-}
-
-impl<S: BaseFloat>
-Deg<S> {
-    #[inline] pub fn zero() -> Deg<S> { zero() }
-    #[inline] pub fn full_turn() -> Deg<S> { Angle::full_turn() }
-    #[inline] pub fn turn_div_2() -> Deg<S> { Angle::turn_div_2() }
-    #[inline] pub fn turn_div_3() -> Deg<S> { Angle::turn_div_3() }
-    #[inline] pub fn turn_div_4() -> Deg<S> { Angle::turn_div_4() }
-    #[inline] pub fn turn_div_6() -> Deg<S> { Angle::turn_div_6() }
-}
-
 
 impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Rad<S> {
     type Output = Rad<S>;
@@ -225,15 +204,15 @@ impl<S: BaseFloat> Neg for Deg<S> {
 
 impl<S: BaseFloat> Zero for Rad<S> {
     #[inline]
-    fn zero() -> Rad<S> { rad(zero()) }
+    fn zero() -> Rad<S> { rad(S::zero()) }
     #[inline]
-    fn is_zero(&self) -> bool { *self == zero() }
+    fn is_zero(&self) -> bool { *self == Self::zero() }
 }
 impl<S: BaseFloat> Zero for Deg<S> {
     #[inline]
-    fn zero() -> Deg<S> { deg(zero()) }
+    fn zero() -> Deg<S> { deg(S::zero()) }
     #[inline]
-    fn is_zero(&self) -> bool { *self == zero() }
+    fn is_zero(&self) -> bool { *self == Self::zero() }
 }
 
 impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Rad<S> {
@@ -252,11 +231,11 @@ impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Deg<S> {
 
 impl<S: BaseFloat> One for Rad<S> {
     #[inline]
-    fn one() -> Rad<S> { rad(one()) }
+    fn one() -> Rad<S> { rad(S::one()) }
 }
 impl<S: BaseFloat> One for Deg<S> {
     #[inline]
-    fn one() -> Deg<S> { deg(one()) }
+    fn one() -> Deg<S> { deg(S::one()) }
 }
 
 const PI_2: f64 = f64::consts::PI * 2f64;

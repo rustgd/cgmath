@@ -44,7 +44,7 @@ pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + Appr
     /// representation as a vector.
     #[inline]
     fn rotate_point(&self, point: &P) -> P {
-        Point::from_vec( &self.rotate_vector( &point.to_vec() ) )
+        P::from_vec(&self.rotate_vector(&point.to_vec()))
     }
 
     /// Rotate a ray using this rotation.
@@ -63,7 +63,7 @@ pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + Appr
     /// Modify this rotation in-place by combining it with another.
     #[inline]
     fn concat_self(&mut self, other: &Self) {
-        *self = Rotation::concat(self, other);
+        *self = Self::concat(self, other);
     }
 
     /// Invert this rotation in-place.
