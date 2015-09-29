@@ -138,8 +138,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// Multiply this quaternion by another, in-place.
     #[inline]
     pub fn mul_self_q(&mut self, q: &Quaternion<S>) {
-        self.s = self.s * q.s;
-        self.v.mul_self_v(&q.v);
+        *self = self.mul_q(q);
     }
 
     /// The dot product of the quaternion and `q`.
