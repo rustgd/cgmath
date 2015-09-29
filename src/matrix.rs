@@ -473,13 +473,6 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
         (&mut self[0]).swap_elems(a, b);
         (&mut self[1]).swap_elems(a, b);
     }
-
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Matrix2<S> where F: FnMut(&Vector2<S>) -> Vector2<S> {
-        self.x = op(&self.x);
-        self.y = op(&self.y);
-        *self
-    }
 }
 
 impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
@@ -495,14 +488,6 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
         (&mut self[0]).swap_elems(a, b);
         (&mut self[1]).swap_elems(a, b);
         (&mut self[2]).swap_elems(a, b);
-    }
-
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Matrix3<S> where F: FnMut(&Vector3<S>) -> Vector3<S> {
-        self.x = op(&self.x);
-        self.y = op(&self.y);
-        self.z = op(&self.z);
-        *self
     }
 }
 
@@ -521,15 +506,6 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
         (&mut self[1]).swap_elems(a, b);
         (&mut self[2]).swap_elems(a, b);
         (&mut self[3]).swap_elems(a, b);
-    }
-
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Matrix4<S> where F: FnMut(&Vector4<S>) -> Vector4<S> {
-        self.x = op(&self.x);
-        self.y = op(&self.y);
-        self.z = op(&self.z);
-        self.w = op(&self.w);
-        *self
     }
 }
 

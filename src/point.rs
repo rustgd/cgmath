@@ -113,14 +113,7 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
     fn max(&self, p: &Self) -> Self;
 }
 
-impl<S: BaseNum> Array1<S> for Point2<S> {
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Point2<S> where F: FnMut(S) -> S {
-        self.x = op(self.x);
-        self.y = op(self.y);
-        *self
-    }
-}
+impl<S: BaseNum> Array1<S> for Point2<S> {}
 
 impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
     #[inline]
@@ -220,15 +213,7 @@ impl<S: BaseFloat> ApproxEq<S> for Point2<S> {
     }
 }
 
-impl<S: BaseNum> Array1<S> for Point3<S> {
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Point3<S> where F: FnMut(S) -> S {
-        self.x = op(self.x);
-        self.y = op(self.y);
-        self.z = op(self.z);
-        *self
-    }
-}
+impl<S: BaseNum> Array1<S> for Point3<S> {}
 
 impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
     #[inline]

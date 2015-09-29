@@ -168,12 +168,6 @@ fn test_normalize() {
 }
 
 #[test]
-fn test_map() {
-    assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.floor()), Vector3::new(7.0f64, 3.0f64, -7.0f64));
-    assert_eq!(Vector3::new(7.12f64, 3.8f64, -6.98f64).map(|x| x.max(0.0f64)), Vector3::new(7.12f64, 3.8f64, 0.0f64));
-}
-
-#[test]
 fn test_cast() {
     assert_approx_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
     assert_approx_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));

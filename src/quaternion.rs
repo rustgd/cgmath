@@ -40,16 +40,7 @@ pub struct Quaternion<S> {
     pub v: Vector3<S>,
 }
 
-impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {
-    #[inline]
-    fn map<F>(&mut self, mut op: F) -> Quaternion<S> where F: FnMut(S) -> S {
-        self.s = op(self.s);
-        self.v.x = op(self.v.x);
-        self.v.y = op(self.v.y);
-        self.v.z = op(self.v.z);
-        *self
-    }
-}
+impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {}
 
 impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
