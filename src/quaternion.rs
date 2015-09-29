@@ -19,7 +19,7 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use rust_num::{Float, one, zero};
+use rust_num::{Float, One, Zero};
 use rust_num::traits::cast;
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
@@ -59,13 +59,13 @@ impl<S: BaseFloat> Quaternion<S> {
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
     #[inline]
     pub fn zero() -> Quaternion<S> {
-        Quaternion::new(zero(), zero(), zero(), zero())
+        Quaternion::new(S::zero(), S::zero(), S::zero(), S::zero())
     }
 
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
     pub fn identity() -> Quaternion<S> {
-        Quaternion::from_sv(one::<S>(), zero())
+        Quaternion::from_sv(S::one(), Vector3::zero())
     }
 
     /// The result of multiplying the quaternion a scalar
@@ -176,12 +176,12 @@ impl<S: BaseFloat> Quaternion<S> {
     /// Normalize this quaternion, returning the new quaternion.
     #[inline]
     pub fn normalize(&self) -> Quaternion<S> {
-        self.mul_s(one::<S>() / self.magnitude())
+        self.mul_s(S::one() / self.magnitude())
     }
 
     /// Do a normalized linear interpolation with `other`, by `amount`.
     pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
-        self.mul_s(one::<S>() - amount).add_q(&other.mul_s(amount)).normalize()
+        self.mul_s(S::one() - amount).add_q(&other.mul_s(amount)).normalize()
     }
 }
 
@@ -220,17 +220,17 @@ impl<S: BaseFloat> Quaternion<S> {
         } else {
             // stay within the domain of acos()
             // TODO REMOVE WHEN https://github.com/mozilla/rust/issues/12068 IS RESOLVED
-            let robust_dot = if dot > one::<S>() {
-                one::<S>()
-            } else if dot < -one::<S>() {
-                -one::<S>()
+            let robust_dot = if dot > S::one() {
+                S::one()
+            } else if dot < -S::one() {
+                -S::one()
             } else {
                 dot
             };
 
             let theta: Rad<S> = acos(robust_dot.clone());
 
-            let scale1 = sin(theta.mul_s(one::<S>() - amount));
+            let scale1 = sin(theta.mul_s(S::one() - amount));
             let scale2 = sin(theta.mul_s(amount));
 
             self.mul_s(scale1)
@@ -258,14 +258,14 @@ impl<S: BaseFloat> Quaternion<S> {
 
         if test > sig * unit {
             (
-                rad(zero::<S>()),
+                rad(S::zero()),
                 rad(cast(f64::consts::FRAC_PI_2).unwrap()),
                 rad(two * qx.atan2(qw)),
             )
         } else if test < -sig * unit {
             let y: S = cast(f64::consts::FRAC_PI_2).unwrap();
             (
-                rad(zero::<S>()),
+                rad(S::zero()),
                 rad(-y),
                 rad(two * qx.atan2(qw)),
             )
@@ -298,9 +298,9 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
         let sz2 = z2 * quat.s;
         let sx2 = x2 * quat.s;
 
-        Matrix3::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
-                     xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2,
-                     xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2)
+        Matrix3::new(S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
+                     xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2,
+                     xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2)
     }
 }
 
@@ -323,10 +323,10 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
         let sz2 = z2 * quat.s;
         let sx2 = x2 * quat.s;
 
-        Matrix4::new(one::<S>() - yy2 - zz2, xy2 + sz2, xz2 - sy2, zero::<S>(),
-                     xy2 - sz2, one::<S>() - xx2 - zz2, yz2 + sx2, zero::<S>(),
-                     xz2 + sy2, yz2 - sx2, one::<S>() - xx2 - yy2, zero::<S>(),
-                     zero::<S>(), zero::<S>(), zero::<S>(), one::<S>())
+        Matrix4::new(S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2, S::zero(),
+                     xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2, S::zero(),
+                     xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2, S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
     }
 }
 
@@ -369,7 +369,7 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S
     fn between_vectors(a: &Vector3<S>, b: &Vector3<S>) -> Quaternion<S> {
         //http://stackoverflow.com/questions/1171849/
         //finding-quaternion-representing-the-rotation-from-one-vector-to-another
-        Quaternion::from_sv(one::<S>() + a.dot(b), a.cross(b)).normalize()
+        Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
     }
 
     #[inline]

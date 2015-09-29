@@ -102,7 +102,7 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 
-use rust_num::{NumCast, Zero, One, zero, one};
+use rust_num::{NumCast, Zero, One};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
@@ -217,7 +217,7 @@ macro_rules! vec {
 
         impl<$S: Zero + BaseNum> Zero for $Self_<$S> {
             #[inline]
-            fn zero() -> $Self_<S> { $Self_ { $($field: zero()),+ } }
+            fn zero() -> $Self_<S> { $Self_ { $($field: $S::zero()),+ } }
 
             #[inline]
             fn is_zero(&self) -> bool { $((self.$field.is_zero()) )&&+ }
@@ -225,7 +225,7 @@ macro_rules! vec {
 
         impl<$S: One + BaseNum> One for $Self_<$S> {
             #[inline]
-            fn one() -> $Self_<$S> { $Self_ { $($field: one()),+ } }
+            fn one() -> $Self_<$S> { $Self_ { $($field: S::one()),+ } }
         }
 
         impl<$S: NumCast + Copy> $Self_<$S> {
@@ -482,9 +482,16 @@ index_operators!(Vector4<S>, 4, [S], RangeFull);
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {
     /// A unit vector in the `x` direction.
-    #[inline] pub fn unit_x() -> Vector2<S> { Vector2::new(one(), zero()) }
+    #[inline]
+    pub fn unit_x() -> Vector2<S> {
+        Vector2::new(S::one(), S::zero())
+    }
+
     /// A unit vector in the `y` direction.
-    #[inline] pub fn unit_y() -> Vector2<S> { Vector2::new(zero(), one()) }
+    #[inline]
+    pub fn unit_y() -> Vector2<S> {
+        Vector2::new(S::zero(), S::one())
+    }
 
     /// The perpendicular dot product of the vector and `other`.
     #[inline]
@@ -503,11 +510,22 @@ impl<S: BaseNum> Vector2<S> {
 /// Operations specific to numeric three-dimensional vectors.
 impl<S: BaseNum> Vector3<S> {
     /// A unit vector in the `x` direction.
-    #[inline] pub fn unit_x() -> Vector3<S> { Vector3::new(one(), zero(), zero()) }
+    #[inline]
+    pub fn unit_x() -> Vector3<S> {
+        Vector3::new(S::one(), S::zero(), S::zero())
+    }
+
     /// A unit vector in the `y` direction.
-    #[inline] pub fn unit_y() -> Vector3<S> { Vector3::new(zero(), one(), zero()) }
+    #[inline]
+    pub fn unit_y() -> Vector3<S> {
+        Vector3::new(S::zero(), S::one(), S::zero())
+    }
+
     /// A unit vector in the `w` direction.
-    #[inline] pub fn unit_z() -> Vector3<S> { Vector3::new(zero(), zero(), one()) }
+    #[inline]
+    pub fn unit_z() -> Vector3<S> {
+        Vector3::new(S::zero(), S::zero(), S::one())
+    }
 
     /// Returns the cross product of the vector and `other`.
     #[inline]
@@ -542,13 +560,28 @@ impl<S: BaseNum> Vector3<S> {
 /// Operations specific to numeric four-dimensional vectors.
 impl<S: BaseNum> Vector4<S> {
     /// A unit vector in the `x` direction.
-    #[inline] pub fn unit_x() -> Vector4<S> { Vector4::new(one(), zero(), zero(), zero()) }
+    #[inline]
+    pub fn unit_x() -> Vector4<S> {
+        Vector4::new(S::one(), S::zero(), S::zero(), S::zero())
+    }
+
     /// A unit vector in the `y` direction.
-    #[inline] pub fn unit_y() -> Vector4<S> { Vector4::new(zero(), one(), zero(), zero()) }
+    #[inline]
+    pub fn unit_y() -> Vector4<S> {
+        Vector4::new(S::zero(), S::one(), S::zero(), S::zero())
+    }
+
     /// A unit vector in the `z` direction.
-    #[inline] pub fn unit_z() -> Vector4<S> { Vector4::new(zero(), zero(), one(), zero()) }
+    #[inline]
+    pub fn unit_z() -> Vector4<S> {
+        Vector4::new(S::zero(), S::zero(), S::one(), S::zero())
+    }
+
     /// A unit vector in the `w` direction.
-    #[inline] pub fn unit_w() -> Vector4<S> { Vector4::new(zero(), zero(), zero(), one()) }
+    #[inline]
+    pub fn unit_w() -> Vector4<S> {
+        Vector4::new(S::zero(), S::zero(), S::zero(), S::one())
+    }
 
     /// Create a `Vector3`, dropping the `w` value.
     #[inline]
@@ -577,7 +610,7 @@ pub trait EuclideanVector<S: BaseFloat>: Vector<S>
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(&self, other: &Self) -> bool {
-        self.dot(other).approx_eq(&zero())
+        self.dot(other).approx_eq(&S::zero())
     }
 
     /// Returns the squared length of the vector. This does not perform an
@@ -602,7 +635,7 @@ pub trait EuclideanVector<S: BaseFloat>: Vector<S>
     #[inline]
     #[must_use]
     fn normalize(&self) -> Self {
-        self.normalize_to(one::<S>())
+        self.normalize_to(S::one())
     }
 
     /// Returns a vector with the same direction and a given `length`.

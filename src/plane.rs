@@ -15,7 +15,7 @@
 
 use std::fmt;
 
-use rust_num::{one, Zero, zero};
+use rust_num::{One, Zero};
 
 use approx::ApproxEq;
 use intersect::Intersect;
@@ -85,7 +85,7 @@ impl<S: BaseFloat> Plane<S> {
         // find the normal vector that is perpendicular to v1 and v2
         let mut n = v0.cross(&v1);
 
-        if n.approx_eq(&zero()) { None }
+        if n.approx_eq(&Vector3::zero()) { None }
         else {
             // compute the normal and the distance to the plane
             n.normalize_self();
@@ -103,9 +103,9 @@ impl<S: BaseFloat> Plane<S> {
 
     /// Normalize a plane.
     pub fn normalize(&self) -> Option<Plane<S>> {
-        if self.n.approx_eq(&zero()) { None }
+        if self.n.approx_eq(&Vector3::zero()) { None }
         else {
-            let denom = one::<S>() / self.n.length();
+            let denom = S::one() / self.n.length();
             Some(Plane::new(self.n.mul_s(denom), self.d*denom))
         }
     }
