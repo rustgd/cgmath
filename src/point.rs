@@ -128,38 +128,32 @@ impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
 
     #[inline]
     fn to_vec(&self) -> Vector2<S> {
-        Vector2::new(self.x,
-                     self.y)
+        Vector2::new(self.x, self.y)
     }
 
     #[inline]
     fn mul_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x * s,
-                    self.y * s)
+        Point2::new(self.x * s, self.y * s)
     }
 
     #[inline]
     fn div_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x / s,
-                    self.y / s)
+        Point2::new(self.x / s, self.y / s)
     }
 
     #[inline]
     fn rem_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x % s,
-                    self.y % s)
+        Point2::new(self.x % s, self.y % s)
     }
 
     #[inline]
     fn add_v(&self, v: &Vector2<S>) -> Point2<S> {
-        Point2::new(self.x + v.x,
-                    self.y + v.y)
+        Point2::new(self.x + v.x, self.y + v.y)
     }
 
     #[inline]
     fn sub_p(&self, p: &Point2<S>) -> Vector2<S> {
-        Vector2::new(self.x - p.x,
-                     self.y - p.y)
+        Vector2::new(self.x - p.x, self.y - p.y)
     }
 
     #[inline]
@@ -194,14 +188,12 @@ impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
 
     #[inline]
     fn min(&self, p: &Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_min(p.x),
-                    self.y.partial_min(p.y))
+        Point2::new(self.x.partial_min(p.x), self.y.partial_min(p.y))
     }
 
     #[inline]
     fn max(&self, p: &Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_max(p.x),
-                    self.y.partial_max(p.y))
+        Point2::new(self.x.partial_max(p.x), self.y.partial_max(p.y))
     }
 }
 
@@ -228,44 +220,32 @@ impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
 
     #[inline]
     fn to_vec(&self) -> Vector3<S> {
-        Vector3::new(self.x,
-                     self.y,
-                     self.z)
+        Vector3::new(self.x, self.y, self.z)
     }
 
     #[inline]
     fn mul_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x * s,
-                    self.y * s,
-                    self.z * s)
+        Point3::new(self.x * s, self.y * s, self.z * s)
     }
 
     #[inline]
     fn div_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x / s,
-                    self.y / s,
-                    self.z / s)
+        Point3::new(self.x / s, self.y / s, self.z / s)
     }
 
     #[inline]
     fn rem_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x % s,
-                    self.y % s,
-                    self.z % s)
+        Point3::new(self.x % s, self.y % s, self.z % s)
     }
 
     #[inline]
     fn add_v(&self, v: &Vector3<S>) -> Point3<S> {
-        Point3::new(self.x + v.x,
-                    self.y + v.y,
-                    self.z + v.z)
+        Point3::new(self.x + v.x, self.y + v.y, self.z + v.z)
     }
 
     #[inline]
     fn sub_p(&self, p: &Point3<S>) -> Vector3<S> {
-        Vector3::new(self.x - p.x,
-                     self.y - p.y,
-                     self.z - p.z)
+        Vector3::new(self.x - p.x, self.y - p.y, self.z - p.z)
     }
 
     #[inline]
@@ -305,16 +285,12 @@ impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
 
     #[inline]
     fn min(&self, p: &Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_min(p.x),
-                    self.y.partial_min(p.y),
-                    self.z.partial_min(p.z))
+        Point3::new(self.x.partial_min(p.x), self.y.partial_min(p.y), self.z.partial_min(p.z))
     }
 
     #[inline]
     fn max(&self, p: &Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_max(p.x),
-                    self.y.partial_max(p.y),
-                    self.z.partial_max(p.z))
+        Point3::new(self.x.partial_max(p.x), self.y.partial_max(p.y), self.z.partial_max(p.z))
     }
 }
 
