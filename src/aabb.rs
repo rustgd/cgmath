@@ -82,8 +82,8 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
 
     /// Multiply every point in the AABB by a vector, returning a new AABB.
     fn mul_v(&self, v: &V) -> Self {
-        let min : P = Point::from_vec(&self.min().to_vec().mul_v(v));
-        let max : P = Point::from_vec(&self.max().to_vec().mul_v(v));
+        let min = P::from_vec(&self.min().to_vec().mul_v(v));
+        let max = P::from_vec(&self.max().to_vec().mul_v(v));
         Aabb::new(min, max)
     }
 }

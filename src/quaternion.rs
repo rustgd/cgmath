@@ -90,13 +90,13 @@ impl<S: BaseFloat> Quaternion<S> {
     /// The sum of this quaternion and `other`
     #[inline]
     pub fn add_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s + other.s, self.v + other.v)
+        Quaternion::from_sv(self.s + other.s, &self.v + &other.v)
     }
 
     /// The difference between this quaternion and `other`
     #[inline]
     pub fn sub_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s - other.s, self.v - other.v)
+        Quaternion::from_sv(self.s - other.s, &self.v - &other.v)
     }
 
     /// The result of multipliplying the quaternion by `other`
