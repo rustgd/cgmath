@@ -68,79 +68,6 @@ impl<S: BaseFloat> Quaternion<S> {
         Quaternion::from_sv(S::one(), Vector3::zero())
     }
 
-    /// The result of multiplying the quaternion a scalar
-    #[inline]
-    pub fn mul_s(&self, value: S) -> Quaternion<S> {
-        Quaternion::from_sv(self.s * value, self.v.mul_s(value))
-    }
-
-    /// The result of dividing the quaternion a scalar
-    #[inline]
-    pub fn div_s(&self, value: S) -> Quaternion<S> {
-        Quaternion::from_sv(self.s / value, self.v.div_s(value))
-    }
-
-    /// The result of multiplying the quaternion by a vector
-    #[inline]
-    pub fn mul_v(&self, vec: &Vector3<S>) -> Vector3<S>  {
-        let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2i8).unwrap()).add_v(vec)
-    }
-
-    /// The sum of this quaternion and `other`
-    #[inline]
-    pub fn add_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s + other.s, &self.v + &other.v)
-    }
-
-    /// The difference between this quaternion and `other`
-    #[inline]
-    pub fn sub_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s - other.s, &self.v - &other.v)
-    }
-
-    /// The result of multipliplying the quaternion by `other`
-    pub fn mul_q(&self, other: &Quaternion<S>) -> Quaternion<S> {
-        Quaternion::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
-                        self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
-                        self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
-                        self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
-    }
-
-    /// Multiply this quaternion by a scalar, in-place.
-    #[inline]
-    pub fn mul_self_s(&mut self, s: S) {
-        self.s = self.s * s;
-        self.v.mul_self_s(s);
-    }
-
-    /// Divide this quaternion by a scalar, in-place.
-    #[inline]
-    pub fn div_self_s(&mut self, s: S) {
-        self.s = self.s / s;
-        self.v.div_self_s(s);
-    }
-
-    /// Add this quaternion by another, in-place.
-    #[inline]
-    pub fn add_self_q(&mut self, q: &Quaternion<S>) {
-        self.s = self.s + q.s;
-        self.v.add_self_v(&q.v);
-    }
-
-    /// Subtract another quaternion from this one, in-place.
-    #[inline]
-    pub fn sub_self_q(&mut self, q: &Quaternion<S>) {
-        self.s = self.s - q.s;
-        self.v.sub_self_v(&q.v);
-    }
-
-    /// Multiply this quaternion by another, in-place.
-    #[inline]
-    pub fn mul_self_q(&mut self, q: &Quaternion<S>) {
-        *self = self.mul_q(q);
-    }
-
     /// The dot product of the quaternion and `q`.
     #[inline]
     pub fn dot(&self, q: &Quaternion<S>) -> S {
@@ -176,12 +103,70 @@ impl<S: BaseFloat> Quaternion<S> {
     /// Normalize this quaternion, returning the new quaternion.
     #[inline]
     pub fn normalize(&self) -> Quaternion<S> {
-        self.mul_s(S::one() / self.magnitude())
+        self * (S::one() / self.magnitude())
     }
 
     /// Do a normalized linear interpolation with `other`, by `amount`.
     pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
-        self.mul_s(S::one() - amount).add_q(&other.mul_s(amount)).normalize()
+        (&(self * (S::one() - amount)) + &(other * amount)).normalize()
+    }
+}
+
+impl<'a, S: BaseFloat> Mul<S> for &'a Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn mul(self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s * value, &self.v * value)
+    }
+}
+
+impl<'a, S: BaseFloat> Div<S> for &'a Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn div(self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s / value, &self.v / value)
+    }
+}
+
+impl<'a, 'b, S: BaseFloat> Mul<&'b Vector3<S>> for &'a Quaternion<S> {
+    type Output = Vector3<S>;
+
+    #[inline]
+    fn mul(self, vec: &'b Vector3<S>) -> Vector3<S>  {
+        let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
+        self.v.cross(&tmp).mul_s(cast(2i8).unwrap()).add_v(vec)
+    }
+}
+
+impl<'a, 'b, S: BaseFloat> Add<&'b Quaternion<S>> for &'a Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn add(self, other: &'b Quaternion<S>) -> Quaternion<S> {
+        Quaternion::from_sv(self.s + other.s, &self.v + &other.v)
+    }
+}
+
+impl<'a, 'b, S: BaseFloat> Sub<&'b Quaternion<S>> for &'a Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn sub(self, other: &'b Quaternion<S>) -> Quaternion<S> {
+        Quaternion::from_sv(self.s - other.s, &self.v - &other.v)
+    }
+}
+
+impl<'a, 'b, S: BaseFloat> Mul<&'b Quaternion<S>> for &'a Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn mul(self, other: &'b Quaternion<S>) -> Quaternion<S>  {
+        Quaternion::new(self.s * other.s - self.v.x * other.v.x - self.v.y * other.v.y - self.v.z * other.v.z,
+                        self.s * other.v.x + self.v.x * other.s + self.v.y * other.v.z - self.v.z * other.v.y,
+                        self.s * other.v.y + self.v.y * other.s + self.v.z * other.v.x - self.v.x * other.v.z,
+                        self.s * other.v.z + self.v.z * other.s + self.v.x * other.v.y - self.v.y * other.v.x)
     }
 }
 
@@ -233,9 +218,7 @@ impl<S: BaseFloat> Quaternion<S> {
             let scale1 = sin(theta.mul_s(S::one() - amount));
             let scale2 = sin(theta.mul_s(amount));
 
-            self.mul_s(scale1)
-                .add_q(&other.mul_s(scale2))
-                .mul_s(sin(theta).recip())
+            &(&(self * scale1) + &(other * scale2)) * sin(theta).recip()
         }
     }
 
@@ -251,10 +234,10 @@ impl<S: BaseFloat> Quaternion<S> {
         let one: S = cast(1f64).unwrap();
 
         let (qw, qx, qy, qz) = (self.s, self.v.x, self.v.y, self.v.z);
-        let (sqw, sqx, sqy, sqz) = (qw*qw, qx*qx, qy*qy, qz*qz);
+        let (sqw, sqx, sqy, sqz) = (qw * qw, qx * qx, qy * qy, qz * qz);
 
         let unit = sqx + sqy + sqz + sqw;
-        let test = qx*qy + qz*qw;
+        let test = qx * qy + qz * qw;
 
         if test > sig * unit {
             (
@@ -271,9 +254,9 @@ impl<S: BaseFloat> Quaternion<S> {
             )
         } else {
             (
-                rad((two * (qy*qw - qx*qz)).atan2(one - two*(sqy + sqz))),
-                rad((two * (qx*qy + qz*qw)).asin()),
-                rad((two * (qx*qw - qy*qz)).atan2(one - two*(sqx + sqz))),
+                rad((two * (qy * qw - qx * qz)).atan2(one - two * (sqy + sqz))),
+                rad((two * (qx * qy + qz * qw)).asin()),
+                rad((two * (qx * qw - qy * qz)).atan2(one - two * (sqx + sqz))),
             )
         }
     }
@@ -373,16 +356,16 @@ impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self.mul_v(vec) }
+    fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self * vec }
 
     #[inline]
-    fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self.mul_q(other) }
+    fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self * other }
 
     #[inline]
-    fn concat_self(&mut self, other: &Quaternion<S>) { self.mul_self_q(other); }
+    fn concat_self(&mut self, other: &Quaternion<S>) { *self = &*self * other; }
 
     #[inline]
-    fn invert(&self) -> Quaternion<S> { self.conjugate().div_s(self.magnitude2()) }
+    fn invert(&self) -> Quaternion<S> { &self.conjugate() / self.magnitude2() }
 
     #[inline]
     fn invert_self(&mut self) { *self = self.invert() }
