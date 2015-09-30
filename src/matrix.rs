@@ -249,9 +249,7 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
-                                                              + ApproxEq<S>
-                                                              + Sized // where
+pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + ApproxEq<S> + Sized // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -733,24 +731,16 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
-        if !det.approx_eq(&S::zero()) {
+        if det.approx_eq(&S::zero()) { None } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
             let cf = |i, j| {
                 let mat = match i {
-                    0 => Matrix3::from_cols(t.y.truncate_n(j),
-                                            t.z.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    1 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.z.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    2 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.y.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    3 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.y.truncate_n(j),
-                                            t.z.truncate_n(j)),
-                    _ => panic!("out of range")
+                    0 => Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+                    1 => Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+                    2 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j)),
+                    3 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j)),
+                    _ => panic!("out of range"),
                 };
                 let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
                 mat.determinant() * sign * inv_det
@@ -760,9 +750,6 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
-
-        } else {
-            None
         }
     }
 
