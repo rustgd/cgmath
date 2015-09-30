@@ -622,18 +622,6 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 }
 
-// Using self.row(0).dot(other[0]) like the other matrix multiplies
-// causes the LLVM to miss identical loads and multiplies. This optimization
-// causes the code to be auto vectorized properly increasing the performance
-// around ~4 times.
-macro_rules! dot_matrix4(
-    ($A:expr, $B:expr, $I:expr, $J:expr) => (
-        ($A[0][$I]) * ($B[$J][0]) +
-        ($A[1][$I]) * ($B[$J][1]) +
-        ($A[2][$I]) * ($B[$J][2]) +
-        ($A[3][$I]) * ($B[$J][3])
-));
-
 impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]
     fn from_value(value: S) -> Matrix4<S> {
@@ -965,6 +953,19 @@ impl<'a, 'b, S: BaseNum> Mul<&'a Matrix4<S>> for &'b Matrix4<S> {
     type Output = Matrix4<S>;
 
     fn mul(self, other: &'a Matrix4<S>) -> Matrix4<S> {
+        // Using self.row(0).dot(other[0]) like the other matrix multiplies
+        // causes the LLVM to miss identical loads and multiplies. This optimization
+        // causes the code to be auto vectorized properly increasing the performance
+        // around ~4 times.
+        macro_rules! dot_matrix4 {
+            ($A:expr, $B:expr, $I:expr, $J:expr) => {
+                ($A[0][$I]) * ($B[$J][0]) +
+                ($A[1][$I]) * ($B[$J][1]) +
+                ($A[2][$I]) * ($B[$J][2]) +
+                ($A[3][$I]) * ($B[$J][3])
+            };
+        };
+
         Matrix4::new(dot_matrix4!(self, other, 0, 0), dot_matrix4!(self, other, 1, 0), dot_matrix4!(self, other, 2, 0), dot_matrix4!(self, other, 3, 0),
                      dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
                      dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
