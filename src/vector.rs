@@ -18,7 +18,7 @@
 //! ## Working with Vectors
 //!
 //! Vectors can be created in several different ways. There is, of course, the
-//! traditional `new()` method, but unit vectors, zero vectors, and an identity
+//! traditional `new()` method, but unit vectors, zero vectors, and an one
 //! vector are also provided:
 //!
 //! ```rust
@@ -41,7 +41,7 @@
 //!
 //! assert_eq!(&a + &b, Vector2::zero());
 //! assert_eq!(-(&a * &b), Vector2::new(9.0f64, 16.0f64));
-//! assert_eq!(&a / &Vector2::identity(), a);
+//! assert_eq!(&a / &Vector2::one(), a);
 //!
 //! // As with Rust's `int` and `f32` types, Vectors of different types cannot
 //! // be added and so on with impunity. The following will fail to compile:
@@ -135,7 +135,7 @@ pub trait Vector<S: BaseNum>: Array1<S> + Clone // where
     fn zero() -> Self { Self::from_value(S::zero()) }
     /// The identity vector (with all components set to one)
     #[inline]
-    fn identity() -> Self { Self::from_value(S::one()) }
+    fn one() -> Self { Self::from_value(S::one()) }
 
     /// Add a scalar to this vector, returning a new vector.
     #[must_use]

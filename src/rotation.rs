@@ -28,7 +28,7 @@ use vector::{Vector, Vector2, Vector3};
 /// creates a circular motion, and preserves at least one point in the space.
 pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> + Sized {
     /// Create the identity transform (causes no transformation).
-    fn identity() -> Self;
+    fn one() -> Self;
 
     /// Create a rotation to a given direction with an 'up' vector
     fn look_at(dir: &V, up: &V) -> Self;
@@ -181,7 +181,7 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
 
 impl<S: BaseFloat + 'static> Rotation<S, Vector2<S>, Point2<S>> for Basis2<S> {
     #[inline]
-    fn identity() -> Basis2<S> { Basis2{ mat: Matrix2::identity() } }
+    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
 
     #[inline]
     fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Basis2<S> {
@@ -262,7 +262,7 @@ impl<S: BaseFloat + 'static> From<Basis3<S>> for Quaternion<S> {
 
 impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Basis3<S> {
     #[inline]
-    fn identity() -> Basis3<S> { Basis3{ mat: Matrix3::identity() } }
+    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
 
     #[inline]
     fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Basis3<S> {

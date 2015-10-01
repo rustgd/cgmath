@@ -31,7 +31,7 @@ use vector::*;
 pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
-    fn identity() -> Self;
+    fn one() -> Self;
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
@@ -92,10 +92,10 @@ impl<
     R: Rotation<S, V, P>,
 > Transform<S, V, P> for Decomposed<S, V, R> {
     #[inline]
-    fn identity() -> Decomposed<S, V, R> {
+    fn one() -> Decomposed<S, V, R> {
         Decomposed {
             scale: S::one(),
-            rot: R::identity(),
+            rot: R::one(),
             disp: V::zero(),
         }
     }
@@ -200,8 +200,8 @@ pub struct AffineMatrix3<S> {
 
 impl<S: BaseFloat + 'static> Transform<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
     #[inline]
-    fn identity() -> AffineMatrix3<S> {
-       AffineMatrix3 { mat: Matrix4::identity() }
+    fn one() -> AffineMatrix3<S> {
+       AffineMatrix3 { mat: Matrix4::one() }
     }
 
     #[inline]
@@ -262,7 +262,7 @@ impl<
     R: Rotation<S, V, P> + Clone,
 > ToComponents<S, V, P, R> for Decomposed<S, V, R> {
     fn decompose(&self) -> (V, R, V) {
-        (V::identity().mul_s(self.scale), self.rot.clone(), self.disp.clone())
+        (V::one().mul_s(self.scale), self.rot.clone(), self.disp.clone())
     }
 }
 

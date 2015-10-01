@@ -64,7 +64,7 @@ impl<S: BaseFloat> Quaternion<S> {
 
     /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
     #[inline]
-    pub fn identity() -> Quaternion<S> {
+    pub fn one() -> Quaternion<S> {
         Quaternion::from_sv(S::one(), Vector3::zero())
     }
 
@@ -341,7 +341,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
 
 impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
     #[inline]
-    fn identity() -> Quaternion<S> { Quaternion::identity() }
+    fn one() -> Quaternion<S> { Quaternion::one() }
 
     #[inline]
     fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Quaternion<S> {
