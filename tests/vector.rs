@@ -41,25 +41,25 @@ fn test_dot() {
 }
 
 #[test]
-fn test_comp_add() {
-    assert_eq!(Vector2::new(1isize, 2isize).comp_add(), 3isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_add(), 6isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_add(), 10isize);
+fn test_sum() {
+    assert_eq!(Vector2::new(1isize, 2isize).sum(), 3isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).sum(), 6isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).sum(), 10isize);
 
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_add(), 7.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_add(), 15.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).comp_add(), 26.0f64);
+    assert_eq!(Vector2::new(3.0f64, 4.0f64).sum(), 7.0f64);
+    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).sum(), 15.0f64);
+    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).sum(), 26.0f64);
 }
 
 #[test]
-fn test_comp_mul() {
-    assert_eq!(Vector2::new(1isize, 2isize).comp_mul(), 2isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_mul(), 6isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_mul(), 24isize);
+fn test_product() {
+    assert_eq!(Vector2::new(1isize, 2isize).product(), 2isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).product(), 6isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).product(), 24isize);
 
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_mul(), 12.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_mul(), 120.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).comp_mul(), 1680.0f64);
+    assert_eq!(Vector2::new(3.0f64, 4.0f64).product(), 12.0f64);
+    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).product(), 120.0f64);
+    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).product(), 1680.0f64);
 }
 
 #[test]

@@ -49,7 +49,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
 
     /// Return the volume this AABB encloses.
     #[inline]
-    fn volume(&self) -> S { self.dim().comp_mul() }
+    fn volume(&self) -> S { self.dim().product() }
 
     /// Return the center point of this AABB.
     #[inline]

@@ -327,7 +327,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + Approx
 
     /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
-    fn trace(&self) -> S { self.diagonal().comp_add() }
+    fn trace(&self) -> S { self.diagonal().sum() }
 
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible

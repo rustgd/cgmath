@@ -191,14 +191,14 @@ pub trait Vector<S: BaseNum>: Array1<S> + Clone // where
     /// Take the remainder of this vector by another, in-place.
     fn rem_self_v(&mut self, v: &Self);
 
-    /// The sum of each component of the vector.
-    fn comp_add(&self) -> S;
-    /// The product of each component of the vector.
-    fn comp_mul(&self) -> S;
+    /// The sum of the components of the vector.
+    fn sum(&self) -> S;
+    /// The product of the components of the vector.
+    fn product(&self) -> S;
 
     /// Vector dot product.
     #[inline]
-    fn dot(&self, v: &Self) -> S { self.mul_v(v).comp_add() }
+    fn dot(&self, v: &Self) -> S { self.mul_v(v).sum() }
 
     /// The minimum component of the vector.
     fn comp_min(&self) -> S;
@@ -274,8 +274,8 @@ macro_rules! vec {
             #[inline] fn div_self_v(&mut self, v: &$Self_<S>) { *self = &*self / v; }
             #[inline] fn rem_self_v(&mut self, v: &$Self_<S>) { *self = &*self % v; }
 
-            #[inline] fn comp_add(&self) -> S { fold!(add, { $(self.$field),+ }) }
-            #[inline] fn comp_mul(&self) -> S { fold!(mul, { $(self.$field),+ }) }
+            #[inline] fn sum(&self) -> S { fold!(add, { $(self.$field),+ }) }
+            #[inline] fn product(&self) -> S { fold!(mul, { $(self.$field),+ }) }
             #[inline] fn comp_min(&self) -> S { fold!(partial_min, { $(self.$field),+ }) }
             #[inline] fn comp_max(&self) -> S { fold!(partial_max, { $(self.$field),+ }) }
         }
