@@ -68,7 +68,16 @@ impl<S: BaseNum> Point3<S> {
 }
 
 /// Specifies the numeric operations for point types.
-pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone {
+pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
+    // FIXME: blocked by rust-lang/rust#20671
+    //
+    // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
+    // for<'a, 'b> &'a Self: Sub<&'b Self, Output = V>,
+    //
+    // for<'a> &'a Self: Mul<S, Output = Self>,
+    // for<'a> &'a Self: Div<S, Output = Self>,
+    // for<'a> &'a Self: Rem<S, Output = Self>,
+{
     /// Create a point at the origin.
     fn origin() -> Self;
 
@@ -128,39 +137,14 @@ impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
 
     #[inline]
     fn to_vec(&self) -> Vector2<S> {
-        Vector2::new(self.x,
-                     self.y)
+        Vector2::new(self.x, self.y)
     }
 
-    #[inline]
-    fn mul_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x * s,
-                    self.y * s)
-    }
-
-    #[inline]
-    fn div_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x / s,
-                    self.y / s)
-    }
-
-    #[inline]
-    fn rem_s(&self, s: S) -> Point2<S> {
-        Point2::new(self.x % s,
-                    self.y % s)
-    }
-
-    #[inline]
-    fn add_v(&self, v: &Vector2<S>) -> Point2<S> {
-        Point2::new(self.x + v.x,
-                    self.y + v.y)
-    }
-
-    #[inline]
-    fn sub_p(&self, p: &Point2<S>) -> Vector2<S> {
-        Vector2::new(self.x - p.x,
-                     self.y - p.y)
-    }
+    #[inline] fn mul_s(&self, s: S) -> Point2<S> { self * s }
+    #[inline] fn div_s(&self, s: S) -> Point2<S> { self / s }
+    #[inline] fn rem_s(&self, s: S) -> Point2<S> { self % s }
+    #[inline] fn add_v(&self, v: &Vector2<S>) -> Point2<S> { self + v }
+    #[inline] fn sub_p(&self, p: &Point2<S>) -> Vector2<S> { self - p }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -194,14 +178,12 @@ impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
 
     #[inline]
     fn min(&self, p: &Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_min(p.x),
-                    self.y.partial_min(p.y))
+        Point2::new(self.x.partial_min(p.x), self.y.partial_min(p.y))
     }
 
     #[inline]
     fn max(&self, p: &Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_max(p.x),
-                    self.y.partial_max(p.y))
+        Point2::new(self.x.partial_max(p.x), self.y.partial_max(p.y))
     }
 }
 
@@ -228,45 +210,14 @@ impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
 
     #[inline]
     fn to_vec(&self) -> Vector3<S> {
-        Vector3::new(self.x,
-                     self.y,
-                     self.z)
+        Vector3::new(self.x, self.y, self.z)
     }
 
-    #[inline]
-    fn mul_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x * s,
-                    self.y * s,
-                    self.z * s)
-    }
-
-    #[inline]
-    fn div_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x / s,
-                    self.y / s,
-                    self.z / s)
-    }
-
-    #[inline]
-    fn rem_s(&self, s: S) -> Point3<S> {
-        Point3::new(self.x % s,
-                    self.y % s,
-                    self.z % s)
-    }
-
-    #[inline]
-    fn add_v(&self, v: &Vector3<S>) -> Point3<S> {
-        Point3::new(self.x + v.x,
-                    self.y + v.y,
-                    self.z + v.z)
-    }
-
-    #[inline]
-    fn sub_p(&self, p: &Point3<S>) -> Vector3<S> {
-        Vector3::new(self.x - p.x,
-                     self.y - p.y,
-                     self.z - p.z)
-    }
+    #[inline] fn mul_s(&self, s: S) -> Point3<S> { self * s }
+    #[inline] fn div_s(&self, s: S) -> Point3<S> { self / s }
+    #[inline] fn rem_s(&self, s: S) -> Point3<S> { self % s }
+    #[inline] fn add_v(&self, v: &Vector3<S>) -> Point3<S> { self + v }
+    #[inline] fn sub_p(&self, p: &Point3<S>) -> Vector3<S> { self - p }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -305,16 +256,12 @@ impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
 
     #[inline]
     fn min(&self, p: &Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_min(p.x),
-                    self.y.partial_min(p.y),
-                    self.z.partial_min(p.z))
+        Point3::new(self.x.partial_min(p.x), self.y.partial_min(p.y), self.z.partial_min(p.z))
     }
 
     #[inline]
     fn max(&self, p: &Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_max(p.x),
-                    self.y.partial_max(p.y),
-                    self.z.partial_max(p.z))
+        Point3::new(self.x.partial_max(p.x), self.y.partial_max(p.y), self.z.partial_max(p.z))
     }
 }
 
@@ -326,6 +273,59 @@ impl<S: BaseFloat> ApproxEq<S> for Point3<S> {
         self.z.approx_eq_eps(&other.z, epsilon)
     }
 }
+
+
+macro_rules! impl_operators {
+    ($PointN:ident { $($field:ident),+ }, $VectorN:ident) => {
+        impl<'a, S: BaseNum> Mul<S> for &'a $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn mul(self, s: S) -> $PointN<S> {
+                $PointN::new($(self.$field * s),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Div<S> for &'a $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn div(self, s: S) -> $PointN<S> {
+                $PointN::new($(self.$field / s),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Rem<S> for &'a $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn rem(self, s: S) -> $PointN<S> {
+                $PointN::new($(self.$field % s),+)
+            }
+        }
+
+        impl<'a, 'b, S: BaseNum> Add<&'a $VectorN<S>> for &'b $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn add(self, v: &'a $VectorN<S>) -> $PointN<S> {
+                $PointN::new($(self.$field + v.$field),+)
+            }
+        }
+
+        impl<'a, 'b, S: BaseNum> Sub<&'a $PointN<S>> for &'b $PointN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn sub(self, p: &'a $PointN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field - p.$field),+)
+            }
+        }
+    }
+}
+
+impl_operators!(Point2 { x, y }, Vector2);
+impl_operators!(Point3 { x, y, z }, Vector3);
 
 macro_rules! fixed_array_conversions {
     ($PointN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {

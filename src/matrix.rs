@@ -227,7 +227,7 @@ impl<S: BaseFloat> Matrix4<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> Matrix4<S> {
-        let f = center.sub_p(eye).normalize();
+        let f = (center - eye).normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(&f);
 
@@ -249,9 +249,18 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
-                                                              + ApproxEq<S>
-                                                              + Sized {
+pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + ApproxEq<S> + Sized // where
+    // FIXME: blocked by rust-lang/rust#20671
+    //
+    // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
+    // for<'a, 'b> &'a Self: Sub<&'b Self, Output = Self>,
+    // for<'a, 'b> &'a Self: Mul<&'b Self, Output = Self>,
+    // for<'a, 'b> &'a Self: Mul<&'b V, Output = V>,
+    //
+    // for<'a> &'a Self: Mul<S, Output = Self>,
+    // for<'a> &'a Self: Div<S, Output = Self>,
+    // for<'a> &'a Self: Rem<S, Output = Self>,
+{
     /// Create a new diagonal matrix using the supplied value.
     fn from_value(value: S) -> Self;
     /// Create a matrix from a non-uniform scale
@@ -350,117 +359,6 @@ pub trait Matrix<S: BaseFloat, V: Clone + Vector<S> + 'static>: Array2<V, V, S>
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: BaseFloat> Add for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn add(self, other: Matrix2<S>) -> Matrix2<S> { self.add_m(&other) }
-}
-
-impl<S: BaseFloat> Add for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn add(self, other: Matrix3<S>) -> Matrix3<S> { self.add_m(&other) }
-}
-
-impl<S: BaseFloat> Add for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn add(self, other: Matrix4<S>) -> Matrix4<S> { self.add_m(&other) }
-}
-
-impl<S: BaseFloat> Sub for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn sub(self, other: Matrix2<S>) -> Matrix2<S> { self.sub_m(&other) }
-}
-
-impl<S: BaseFloat> Sub for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn sub(self, other: Matrix3<S>) -> Matrix3<S> { self.sub_m(&other) }
-}
-
-impl<S: BaseFloat> Sub for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn sub(self, other: Matrix4<S>) -> Matrix4<S> { self.sub_m(&other) }
-}
-
-impl<S: Neg<Output = S>> Neg for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix2<S> {
-        Matrix2::from_cols(self.x.neg(), self.y.neg())
-    }
-}
-
-impl<S: Neg<Output = S>> Neg for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix3<S> {
-        Matrix3::from_cols(self.x.neg(), self.y.neg(), self.z.neg())
-    }
-}
-
-impl<S: Neg<Output = S>> Neg for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix4<S> {
-        Matrix4::from_cols(self.x.neg(), self.y.neg(), self.z.neg(), self.w.neg())
-    }
-}
-
-impl<S: BaseFloat> Mul for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn mul(self, other: Matrix2<S>) -> Matrix2<S> { self.mul_m(&other) }
-}
-
-impl<S: BaseFloat> Mul<S> for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn mul(self, other: S) -> Matrix2<S> { self.mul_s(other) }
-}
-
-impl<S: BaseFloat> Mul for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn mul(self, other: Matrix3<S>) -> Matrix3<S> { self.mul_m(&other) }
-}
-
-impl<S: BaseFloat> Mul<S> for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn mul(self, other: S) -> Matrix3<S> { self.mul_s(other) }
-}
-
-impl<S: BaseFloat> Mul for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn mul(self, other: Matrix4<S>) -> Matrix4<S> { self.mul_m(&other) }
-}
-
-impl<S: BaseFloat> Mul<S> for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn mul(self, other: S) -> Matrix4<S> { self.mul_s(other) }
-}
-
 impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     #[inline]
     fn row(&self, r: usize) -> Vector2<S> {
@@ -522,46 +420,13 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
                      S::zero(), value.y)
     }
 
-    #[inline]
-    fn mul_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self[0].mul_s(s),
-                           self[1].mul_s(s))
-    }
-
-    #[inline]
-    fn div_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self[0].div_s(s),
-                           self[1].div_s(s))
-    }
-
-    #[inline]
-    fn rem_s(&self, s: S) -> Matrix2<S> {
-        Matrix2::from_cols(self[0].rem_s(s),
-                           self[1].rem_s(s))
-    }
-
-    #[inline]
-    fn add_m(&self, m: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::from_cols(self[0].add_v(&m[0]),
-                           self[1].add_v(&m[1]))
-    }
-
-    #[inline]
-    fn sub_m(&self, m: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::from_cols(self[0].sub_v(&m[0]),
-                           self[1].sub_v(&m[1]))
-    }
-
-    #[inline]
-    fn mul_v(&self, v: &Vector2<S>) -> Vector2<S> {
-        Vector2::new(self.row(0).dot(v),
-                     self.row(1).dot(v))
-    }
-
-    fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> {
-        Matrix2::new(self.row(0).dot(&other[0]), self.row(1).dot(&other[0]),
-                     self.row(0).dot(&other[1]), self.row(1).dot(&other[1]))
-    }
+    #[inline] fn mul_s(&self, s: S) -> Matrix2<S> { self * s }
+    #[inline] fn div_s(&self, s: S) -> Matrix2<S> { self / s }
+    #[inline] fn rem_s(&self, s: S) -> Matrix2<S> { self % s }
+    #[inline] fn add_m(&self, m: &Matrix2<S>) -> Matrix2<S> { self + m }
+    #[inline] fn sub_m(&self, m: &Matrix2<S>) -> Matrix2<S> { self - m }
+    fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> { self * other }
+    #[inline] fn mul_v(&self, v: &Vector2<S>) -> Vector2<S> { self * v }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -654,53 +519,13 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
                      S::zero(), S::zero(), value.z)
     }
 
-    #[inline]
-    fn mul_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self[0].mul_s(s),
-                           self[1].mul_s(s),
-                           self[2].mul_s(s))
-    }
-
-    #[inline]
-    fn div_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self[0].div_s(s),
-                           self[1].div_s(s),
-                           self[2].div_s(s))
-    }
-
-    #[inline]
-    fn rem_s(&self, s: S) -> Matrix3<S> {
-        Matrix3::from_cols(self[0].rem_s(s),
-                           self[1].rem_s(s),
-                           self[2].rem_s(s))
-    }
-
-    #[inline]
-    fn add_m(&self, m: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::from_cols(self[0].add_v(&m[0]),
-                           self[1].add_v(&m[1]),
-                           self[2].add_v(&m[2]))
-    }
-
-    #[inline]
-    fn sub_m(&self, m: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::from_cols(self[0].sub_v(&m[0]),
-                           self[1].sub_v(&m[1]),
-                           self[2].sub_v(&m[2]))
-    }
-
-    #[inline]
-    fn mul_v(&self, v: &Vector3<S>) -> Vector3<S> {
-        Vector3::new(self.row(0).dot(v),
-                     self.row(1).dot(v),
-                     self.row(2).dot(v))
-    }
-
-    fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> {
-        Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
-                     self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
-                     self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
-    }
+    #[inline] fn mul_s(&self, s: S) -> Matrix3<S> { self * s }
+    #[inline] fn div_s(&self, s: S) -> Matrix3<S> { self / s }
+    #[inline] fn rem_s(&self, s: S) -> Matrix3<S> { self % s }
+    #[inline] fn add_m(&self, m: &Matrix3<S>) -> Matrix3<S> { self + m }
+    #[inline] fn sub_m(&self, m: &Matrix3<S>) -> Matrix3<S> { self - m }
+    fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> { self * other }
+    #[inline] fn mul_v(&self, v: &Vector3<S>) -> Vector3<S> { self * v}
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -766,9 +591,9 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
         if det.approx_eq(&S::zero()) { None } else {
-            Some(Matrix3::from_cols(self[1].cross(&self[2]).div_s(det),
-                                    self[2].cross(&self[0]).div_s(det),
-                                    self[0].cross(&self[1]).div_s(det)).transpose())
+            Some(Matrix3::from_cols(&self[1].cross(&self[2]) / det,
+                                    &self[2].cross(&self[0]) / det,
+                                    &self[0].cross(&self[1]) / det).transpose())
         }
     }
 
@@ -795,18 +620,6 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 }
 
-// Using self.row(0).dot(other[0]) like the other matrix multiplies
-// causes the LLVM to miss identical loads and multiplies. This optimization
-// causes the code to be auto vectorized properly increasing the performance
-// around ~4 times.
-macro_rules! dot_matrix4(
-    ($A:expr, $B:expr, $I:expr, $J:expr) => (
-        ($A[0][$I]) * ($B[$J][0]) +
-        ($A[1][$I]) * ($B[$J][1]) +
-        ($A[2][$I]) * ($B[$J][2]) +
-        ($A[3][$I]) * ($B[$J][3])
-));
-
 impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     #[inline]
     fn from_value(value: S) -> Matrix4<S> {
@@ -824,60 +637,13 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
                      S::zero(), S::zero(), S::zero(), value.w)
     }
 
-    #[inline]
-    fn mul_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self[0].mul_s(s),
-                           self[1].mul_s(s),
-                           self[2].mul_s(s),
-                           self[3].mul_s(s))
-    }
-
-    #[inline]
-    fn div_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self[0].div_s(s),
-                           self[1].div_s(s),
-                           self[2].div_s(s),
-                           self[3].div_s(s))
-    }
-
-    #[inline]
-    fn rem_s(&self, s: S) -> Matrix4<S> {
-        Matrix4::from_cols(self[0].rem_s(s),
-                           self[1].rem_s(s),
-                           self[2].rem_s(s),
-                           self[3].rem_s(s))
-    }
-
-    #[inline]
-    fn add_m(&self, m: &Matrix4<S>) -> Matrix4<S> {
-        Matrix4::from_cols(self[0].add_v(&m[0]),
-                           self[1].add_v(&m[1]),
-                           self[2].add_v(&m[2]),
-                           self[3].add_v(&m[3]))
-    }
-
-    #[inline]
-    fn sub_m(&self, m: &Matrix4<S>) -> Matrix4<S> {
-        Matrix4::from_cols(self[0].sub_v(&m[0]),
-                           self[1].sub_v(&m[1]),
-                           self[2].sub_v(&m[2]),
-                           self[3].sub_v(&m[3]))
-    }
-
-    #[inline]
-    fn mul_v(&self, v: &Vector4<S>) -> Vector4<S> {
-        Vector4::new(self.row(0).dot(v),
-                     self.row(1).dot(v),
-                     self.row(2).dot(v),
-                     self.row(3).dot(v))
-    }
-
-    fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> {
-        Matrix4::new(dot_matrix4!(self, other, 0, 0), dot_matrix4!(self, other, 1, 0), dot_matrix4!(self, other, 2, 0), dot_matrix4!(self, other, 3, 0),
-                     dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
-                     dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
-                     dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
-    }
+    #[inline] fn mul_s(&self, s: S) -> Matrix4<S> { self * s }
+    #[inline] fn div_s(&self, s: S) -> Matrix4<S> { self / s }
+    #[inline] fn rem_s(&self, s: S) -> Matrix4<S> { self % s }
+    #[inline] fn add_m(&self, m: &Matrix4<S>) -> Matrix4<S> { self + m }
+    #[inline] fn sub_m(&self, m: &Matrix4<S>) -> Matrix4<S> { self - m }
+    fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> { self * other }
+    #[inline] fn mul_v(&self, v: &Vector4<S>) -> Vector4<S> { self * v }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -965,24 +731,16 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
-        if !det.approx_eq(&S::zero()) {
+        if det.approx_eq(&S::zero()) { None } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
             let cf = |i, j| {
                 let mat = match i {
-                    0 => Matrix3::from_cols(t.y.truncate_n(j),
-                                            t.z.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    1 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.z.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    2 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.y.truncate_n(j),
-                                            t.w.truncate_n(j)),
-                    3 => Matrix3::from_cols(t.x.truncate_n(j),
-                                            t.y.truncate_n(j),
-                                            t.z.truncate_n(j)),
-                    _ => panic!("out of range")
+                    0 => Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+                    1 => Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+                    2 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j)),
+                    3 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j)),
+                    _ => panic!("out of range"),
                 };
                 let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
                 mat.determinant() * sign * inv_det
@@ -992,9 +750,6 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
-
-        } else {
-            None
         }
     }
 
@@ -1059,6 +814,150 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
         self[1].approx_eq_eps(&other[1], epsilon) &&
         self[2].approx_eq_eps(&other[2], epsilon) &&
         self[3].approx_eq_eps(&other[3], epsilon)
+    }
+}
+
+impl<S: Neg<Output = S>> Neg for Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix2<S> {
+        Matrix2::from_cols(-self.x, -self.y)
+    }
+}
+
+impl<S: Neg<Output = S>> Neg for Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix3<S> {
+        Matrix3::from_cols(-self.x, -self.y, -self.z)
+    }
+}
+
+impl<S: Neg<Output = S>> Neg for Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    #[inline]
+    fn neg(self) -> Matrix4<S> {
+        Matrix4::from_cols(-self.x, -self.y, -self.z, -self.w)
+    }
+}
+
+macro_rules! impl_scalar_binary_operator {
+    ($Binop:ident :: $binop:ident, $MatrixN:ident { $($field:ident),+ }) => {
+        impl<'a, S: BaseNum> $Binop<S> for &'a $MatrixN<S> {
+            type Output = $MatrixN<S>;
+
+            #[inline]
+            fn $binop(self, s: S) -> $MatrixN<S> {
+                $MatrixN { $($field: self.$field.$binop(s)),+ }
+            }
+        }
+    }
+}
+
+impl_scalar_binary_operator!(Mul::mul, Matrix2 { x, y });
+impl_scalar_binary_operator!(Mul::mul, Matrix3 { x, y, z });
+impl_scalar_binary_operator!(Mul::mul, Matrix4 { x, y, z, w });
+impl_scalar_binary_operator!(Div::div, Matrix2 { x, y });
+impl_scalar_binary_operator!(Div::div, Matrix3 { x, y, z });
+impl_scalar_binary_operator!(Div::div, Matrix4 { x, y, z, w });
+impl_scalar_binary_operator!(Rem::rem, Matrix2 { x, y });
+impl_scalar_binary_operator!(Rem::rem, Matrix3 { x, y, z });
+impl_scalar_binary_operator!(Rem::rem, Matrix4 { x, y, z, w });
+
+macro_rules! impl_binary_operator {
+    ($Binop:ident :: $binop:ident, $MatrixN:ident { $($field:ident),+ }) => {
+        impl<'a, 'b, S: BaseNum> $Binop<&'a $MatrixN<S>> for &'b $MatrixN<S> {
+            type Output = $MatrixN<S>;
+
+            #[inline]
+            fn $binop(self, other: &'a $MatrixN<S>) -> $MatrixN<S> {
+                $MatrixN { $($field: self.$field.$binop(&other.$field)),+ }
+            }
+        }
+    }
+}
+
+impl_binary_operator!(Add::add, Matrix2 { x, y });
+impl_binary_operator!(Add::add, Matrix3 { x, y, z });
+impl_binary_operator!(Add::add, Matrix4 { x, y, z, w });
+impl_binary_operator!(Sub::sub, Matrix2 { x, y });
+impl_binary_operator!(Sub::sub, Matrix3 { x, y, z });
+impl_binary_operator!(Sub::sub, Matrix4 { x, y, z, w });
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Vector2<S>> for &'b Matrix2<S> {
+    type Output = Vector2<S>;
+
+    fn mul(self, v: &'a Vector2<S>) -> Vector2<S> {
+        Vector2::new(self.row(0).dot(v),
+                     self.row(1).dot(v))
+    }
+}
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Vector3<S>> for &'b Matrix3<S> {
+    type Output = Vector3<S>;
+
+    fn mul(self, v: &'a Vector3<S>) -> Vector3<S> {
+        Vector3::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v))
+    }
+}
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Vector4<S>> for &'b Matrix4<S> {
+    type Output = Vector4<S>;
+
+    fn mul(self, v: &'a Vector4<S>) -> Vector4<S> {
+        Vector4::new(self.row(0).dot(v),
+                     self.row(1).dot(v),
+                     self.row(2).dot(v),
+                     self.row(3).dot(v))
+    }
+}
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Matrix2<S>> for &'b Matrix2<S> {
+    type Output = Matrix2<S>;
+
+    fn mul(self, other: &'a Matrix2<S>) -> Matrix2<S> {
+        Matrix2::new(self.row(0).dot(&other[0]), self.row(1).dot(&other[0]),
+                     self.row(0).dot(&other[1]), self.row(1).dot(&other[1]))
+    }
+}
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Matrix3<S>> for &'b Matrix3<S> {
+    type Output = Matrix3<S>;
+
+    fn mul(self, other: &'a Matrix3<S>) -> Matrix3<S> {
+        Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
+                     self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
+                     self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
+    }
+}
+
+impl<'a, 'b, S: BaseNum> Mul<&'a Matrix4<S>> for &'b Matrix4<S> {
+    type Output = Matrix4<S>;
+
+    fn mul(self, other: &'a Matrix4<S>) -> Matrix4<S> {
+        // Using self.row(0).dot(other[0]) like the other matrix multiplies
+        // causes the LLVM to miss identical loads and multiplies. This optimization
+        // causes the code to be auto vectorized properly increasing the performance
+        // around ~4 times.
+        macro_rules! dot_matrix4 {
+            ($A:expr, $B:expr, $I:expr, $J:expr) => {
+                ($A[0][$I]) * ($B[$J][0]) +
+                ($A[1][$I]) * ($B[$J][1]) +
+                ($A[2][$I]) * ($B[$J][2]) +
+                ($A[3][$I]) * ($B[$J][3])
+            };
+        };
+
+        Matrix4::new(dot_matrix4!(self, other, 0, 0), dot_matrix4!(self, other, 1, 0), dot_matrix4!(self, other, 2, 0), dot_matrix4!(self, other, 3, 0),
+                     dot_matrix4!(self, other, 0, 1), dot_matrix4!(self, other, 1, 1), dot_matrix4!(self, other, 2, 1), dot_matrix4!(self, other, 3, 1),
+                     dot_matrix4!(self, other, 0, 2), dot_matrix4!(self, other, 1, 2), dot_matrix4!(self, other, 2, 2), dot_matrix4!(self, other, 3, 2),
+                     dot_matrix4!(self, other, 0, 3), dot_matrix4!(self, other, 1, 3), dot_matrix4!(self, other, 2, 3), dot_matrix4!(self, other, 3, 3))
+
     }
 }
 
