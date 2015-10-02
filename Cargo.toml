@@ -19,6 +19,7 @@ description = "A linear algebra and mathematics library for computer graphics."
 documentation = "http://bjz.github.io/cgmath-rs"
 homepage = "https://github.com/bjz/cgmath-rs"
 repository = "https://github.com/bjz/cgmath-rs"
+readme = "README.md"
 
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 
