@@ -13,29 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::marker::PhantomData;
 use num::BaseNum;
 use point::{Point, Point2, Point3};
-use vector::{Vector, Vector2, Vector3};
 
 /// A generic ray starting at `origin` and extending infinitely in
 /// `direction`.
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
-pub struct Ray<S, P, V> {
+pub struct Ray<S, P: Point<S>> {
     pub origin: P,
-    pub direction: V,
-    phantom_s: PhantomData<S>
+    pub direction: P::Vector,
 }
 
-impl<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>> Ray<S, P, V> {
-    pub fn new(origin: P, direction: V) -> Ray<S, P, V> {
+impl<S: BaseNum, P: Point<S>> Ray<S, P> {
+    pub fn new(origin: P, direction: P::Vector) -> Ray<S, P> {
         Ray {
         	origin: origin,
         	direction: direction,
-        	phantom_s: PhantomData
         }
     }
 }
 
-pub type Ray2<S> = Ray<S, Point2<S>, Vector2<S>>;
-pub type Ray3<S> = Ray<S, Point3<S>, Vector3<S>>;
+pub type Ray2<S> = Ray<S, Point2<S>>;
+pub type Ray3<S> = Ray<S, Point3<S>>;

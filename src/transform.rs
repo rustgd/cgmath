@@ -45,7 +45,7 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>>: Sized {
 
     /// Transform a ray using this transform.
     #[inline]
-    fn transform_ray(&self, ray: &Ray<S, P,V>) -> Ray<S, P, V> {
+    fn transform_ray(&self, ray: &Ray<S, P>) -> Ray<S, P> {
         Ray::new(self.transform_point(&ray.origin), self.transform_vector(&ray.direction))
     }
 
