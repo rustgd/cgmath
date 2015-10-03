@@ -339,7 +339,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
 }
 
-impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat + 'static> Rotation<S, Point3<S>> for Quaternion<S> {
     #[inline]
     fn one() -> Quaternion<S> { Quaternion::one() }
 

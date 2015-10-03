@@ -27,24 +27,24 @@ use vector::*;
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
+pub trait Transform<S: BaseNum, P: Point<S>>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn one() -> Self;
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
-    fn look_at(eye: &P, center: &P, up: &V) -> Self;
+    fn look_at(eye: &P, center: &P, up: &P::Vector) -> Self;
 
     /// Transform a vector using this transform.
-    fn transform_vector(&self, vec: &V) -> V;
+    fn transform_vector(&self, vec: &P::Vector) -> P::Vector;
 
     /// Transform a point using this transform.
     fn transform_point(&self, point: &P) -> P;
 
     /// Transform a vector as a point using this transform.
     #[inline]
-    fn transform_as_point(&self, vec: &V) -> V {
+    fn transform_as_point(&self, vec: &P::Vector) -> P::Vector {
         self.transform_point(&P::from_vec(vec)).to_vec()
     }
 
@@ -78,23 +78,18 @@ pub struct Decomposed<S, V, R> {
     pub disp: V,
 }
 
-impl<
-    S: BaseFloat,
-    V: Vector<S>,
-    P: Point<S, V>,
-    R: Rotation<S, V, P>,
-> Transform<S, V, P> for Decomposed<S, V, R> {
+impl<S: BaseFloat, P: Point<S>, R: Rotation<S, P>> Transform<S, P> for Decomposed<S, P::Vector, R> {
     #[inline]
-    fn one() -> Decomposed<S, V, R> {
+    fn one() -> Decomposed<S, P::Vector, R> {
         Decomposed {
             scale: S::one(),
             rot: R::one(),
-            disp: V::zero(),
+            disp: P::Vector::zero(),
         }
     }
 
     #[inline]
-    fn look_at(eye: &P, center: &P, up: &V) -> Decomposed<S, V, R> {
+    fn look_at(eye: &P, center: &P, up: &P::Vector) -> Decomposed<S, P::Vector, R> {
         let rot = R::look_at(&center.sub_p(eye), up);
         let disp = rot.rotate_vector(&P::origin().sub_p(eye));
         Decomposed {
@@ -105,7 +100,7 @@ impl<
     }
 
     #[inline]
-    fn transform_vector(&self, vec: &V) -> V {
+    fn transform_vector(&self, vec: &P::Vector) -> P::Vector {
         self.rot.rotate_vector(&vec.mul_s(self.scale.clone()))
     }
 
@@ -114,7 +109,7 @@ impl<
         self.rot.rotate_point(&point.mul_s(self.scale.clone())).add_v(&self.disp)
     }
 
-    fn concat(&self, other: &Decomposed<S, V, R>) -> Decomposed<S, V, R> {
+    fn concat(&self, other: &Decomposed<S, P::Vector, R>) -> Decomposed<S, P::Vector, R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat(&other.rot),
@@ -122,7 +117,7 @@ impl<
         }
     }
 
-    fn invert(&self) -> Option<Decomposed<S, V, R>> {
+    fn invert(&self) -> Option<Decomposed<S, P::Vector, R>> {
         if self.scale.approx_eq(&S::zero()) {
             None
         } else {
@@ -138,13 +133,10 @@ impl<
     }
 }
 
-pub trait Transform2<S: BaseNum>: Transform<S, Vector2<S>, Point2<S>> + Into<Matrix3<S>> {}
-pub trait Transform3<S: BaseNum>: Transform<S, Vector3<S>, Point3<S>> + Into<Matrix4<S>> {}
+pub trait Transform2<S: BaseNum>: Transform<S, Point2<S>> + Into<Matrix3<S>> {}
+pub trait Transform3<S: BaseNum>: Transform<S, Point3<S>> + Into<Matrix4<S>> {}
 
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation2<S>,
-> From<Decomposed<S, Vector2<S>, R>> for Matrix3<S> {
+impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<S, Vector2<S>, R>> for Matrix3<S> {
     fn from(dec: Decomposed<S, Vector2<S>, R>) -> Matrix3<S> {
         let m: Matrix2<_> = dec.rot.into();
         let mut m: Matrix3<_> = m.mul_s(dec.scale).into();
@@ -153,10 +145,7 @@ impl<
     }
 }
 
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation3<S>,
-> From<Decomposed<S, Vector3<S>, R>> for Matrix4<S> {
+impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<S, Vector3<S>, R>> for Matrix4<S> {
     fn from(dec: Decomposed<S, Vector3<S>, R>) -> Matrix4<S> {
         let m: Matrix3<_> = dec.rot.into();
         let mut m: Matrix4<_> = m.mul_s(dec.scale).into();
@@ -165,20 +154,11 @@ impl<
     }
 }
 
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation2<S>,
-> Transform2<S> for Decomposed<S, Vector2<S>, R> {}
+impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<S, Vector2<S>, R> {}
 
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation3<S>,
-> Transform3<S> for Decomposed<S, Vector3<S>, R> {}
+impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<S, Vector3<S>, R> {}
 
-impl<
-    S: BaseFloat,
-    R: fmt::Debug + Rotation3<S>,
-> fmt::Debug for Decomposed<S, Vector3<S>, R> {
+impl<S: BaseFloat, R: fmt::Debug + Rotation3<S>> fmt::Debug for Decomposed<S, Vector3<S>, R> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "(scale({:?}), rot({:?}), disp{:?})",
             self.scale, self.rot, self.disp)
@@ -191,7 +171,7 @@ pub struct AffineMatrix3<S> {
     pub mat: Matrix4<S>,
 }
 
-impl<S: BaseFloat + 'static> Transform<S, Vector3<S>, Point3<S>> for AffineMatrix3<S> {
+impl<S: BaseFloat> Transform<S, Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn one() -> AffineMatrix3<S> {
        AffineMatrix3 { mat: Matrix4::one() }
@@ -227,22 +207,22 @@ impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
     #[inline] fn from(aff: AffineMatrix3<S>) -> Matrix4<S> { aff.mat }
 }
 
-impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
+impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-pub trait ToComponents<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
+pub trait ToComponents<S: BaseFloat, P: Point<S>, R: Rotation<S, P>> {
     /// Extract the (scale, rotation, translation) triple
-    fn decompose(&self) -> (V, R, V);
+    fn decompose(&self) -> (P::Vector, R, P::Vector);
 }
 
 pub trait ToComponents2<S: BaseFloat, R: Rotation2<S>>:
-    ToComponents<S, Vector2<S>, Point2<S>, R> {}
+    ToComponents<S, Point2<S>, R> {}
 pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>:
-    ToComponents<S, Vector3<S>, Point3<S>, R> {}
+    ToComponents<S, Point3<S>, R> {}
 
-pub trait CompositeTransform<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>>:
-    Transform<S, V, P> + ToComponents<S, V, P, R> {}
+pub trait CompositeTransform<S: BaseFloat, P: Point<S>, R: Rotation<S, P>>:
+    Transform<S, P> + ToComponents<S, P, R> {}
 pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>:
     Transform2<S> + ToComponents2<S, R> {}
 pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>:
@@ -250,31 +230,16 @@ pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>:
 
 impl<
     S: BaseFloat,
-    V: Vector<S> + Clone,
-    P: Point<S, V>,
-    R: Rotation<S, V, P> + Clone,
-> ToComponents<S, V, P, R> for Decomposed<S, V, R> {
-    fn decompose(&self) -> (V, R, V) {
-        (V::one().mul_s(self.scale), self.rot.clone(), self.disp.clone())
+    P: Point<S>,
+    R: Rotation<S, P> + Clone,
+> ToComponents<S, P, R> for Decomposed<S, P::Vector, R> {
+    fn decompose(&self) -> (P::Vector, R, P::Vector) {
+        (P::Vector::one().mul_s(self.scale), self.rot.clone(), self.disp.clone())
     }
 }
 
-impl<
-    S: BaseFloat,
-    R: Rotation2<S> + Clone,
-> ToComponents2<S, R> for Decomposed<S, Vector2<S>, R> {}
+impl<S: BaseFloat, R: Rotation2<S> + Clone> ToComponents2<S, R> for Decomposed<S, Vector2<S>, R> {}
+impl<S: BaseFloat, R: Rotation3<S> + Clone> ToComponents3<S, R> for Decomposed<S, Vector3<S>, R> {}
 
-impl<
-    S: BaseFloat,
-    R: Rotation3<S> + Clone,
-> ToComponents3<S, R> for Decomposed<S, Vector3<S>, R> {}
-
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation2<S> + Clone,
-> CompositeTransform2<S, R> for Decomposed<S, Vector2<S>, R> {}
-
-impl<
-    S: BaseFloat + 'static,
-    R: Rotation3<S> + Clone,
-> CompositeTransform3<S, R> for Decomposed<S, Vector3<S>, R> {}
+impl<S: BaseFloat, R: Rotation2<S> + Clone> CompositeTransform2<S, R> for Decomposed<S, Vector2<S>, R> {}
+impl<S: BaseFloat, R: Rotation3<S> + Clone> CompositeTransform3<S, R> for Decomposed<S, Vector3<S>, R> {}

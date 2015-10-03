@@ -66,7 +66,7 @@ impl<S: BaseNum> Point3<S> {
 }
 
 /// Specifies the numeric operations for point types.
-pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
+pub trait Point<S: BaseNum>: Array1<S> + Clone // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
@@ -76,13 +76,16 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
+    /// The associated displacement vector.
+    type Vector: Vector<S>;
+
     /// Create a point at the origin.
     fn origin() -> Self;
 
     /// Create a point from a vector.
-    fn from_vec(v: &V) -> Self;
+    fn from_vec(v: &Self::Vector) -> Self;
     /// Convert a point to a vector.
-    fn to_vec(&self) -> V;
+    fn to_vec(&self) -> Self::Vector;
 
     /// Multiply each component by a scalar, returning the new point.
     #[must_use]
@@ -96,9 +99,9 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
 
     /// Add a vector to this point, returning the new point.
     #[must_use]
-    fn add_v(&self, v: &V) -> Self;
+    fn add_v(&self, v: &Self::Vector) -> Self;
     /// Subtract another point from this one, returning a new vector.
-    fn sub_p(&self, p: &Self) -> V;
+    fn sub_p(&self, p: &Self) -> Self::Vector;
 
     /// Multiply each component by a scalar, in-place.
     fn mul_self_s(&mut self, s: S);
@@ -108,10 +111,10 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
     fn rem_self_s(&mut self, s: S);
 
     /// Add a vector to this point, in-place.
-    fn add_self_v(&mut self, v: &V);
+    fn add_self_v(&mut self, v: &Self::Vector);
 
     /// This is a weird one, but its useful for plane calculations.
-    fn dot(&self, v: &V) -> S;
+    fn dot(&self, v: &Self::Vector) -> S;
 
     #[must_use]
     fn min(&self, p: &Self) -> Self;
@@ -122,7 +125,9 @@ pub trait Point<S: BaseNum, V: Vector<S>>: Array1<S> + Clone // where
 
 impl<S: BaseNum> Array1<S> for Point2<S> {}
 
-impl<S: BaseNum> Point<S, Vector2<S>> for Point2<S> {
+impl<S: BaseNum> Point<S> for Point2<S> {
+    type Vector = Vector2<S>;
+
     #[inline]
     fn origin() -> Point2<S> {
         Point2::new(S::zero(), S::zero())
@@ -195,7 +200,9 @@ impl<S: BaseFloat> ApproxEq<S> for Point2<S> {
 
 impl<S: BaseNum> Array1<S> for Point3<S> {}
 
-impl<S: BaseNum> Point<S, Vector3<S>> for Point3<S> {
+impl<S: BaseNum> Point<S> for Point3<S> {
+    type Vector = Vector3<S>;
+
     #[inline]
     fn origin() -> Point3<S> {
         Point3::new(S::zero(), S::zero(), S::zero())
