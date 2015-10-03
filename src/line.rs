@@ -34,7 +34,7 @@ pub struct Line<S, V, P> {
     phantom_v: PhantomData<V>
 }
 
-impl<S: BaseNum, V: Vector<S>, P: Point<S, V>>  Line<S, V, P> {
+impl<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>>  Line<S, V, P> {
     pub fn new(origin: P, dest: P) -> Line<S, V, P> {
         Line {
             origin: origin,

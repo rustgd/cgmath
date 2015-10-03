@@ -28,7 +28,7 @@ use vector::*;
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
+pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn one() -> Self;
@@ -88,7 +88,7 @@ pub struct Decomposed<S, V, R> {
 impl<
     S: BaseFloat,
     V: Vector<S>,
-    P: Point<S, V>,
+    P: Point<S, Vector = V>,
     R: Rotation<S, V, P>,
 > Transform<S, V, P> for Decomposed<S, V, R> {
     #[inline]
@@ -238,7 +238,7 @@ impl<S: BaseFloat + 'static> Transform3<S> for AffineMatrix3<S> {}
 
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
-pub trait ToComponents<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>> {
+pub trait ToComponents<S: BaseFloat, V: Vector<S>, P: Point<S, Vector = V>, R: Rotation<S, V, P>> {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (V, R, V);
 }
@@ -248,7 +248,7 @@ pub trait ToComponents2<S: BaseFloat, R: Rotation2<S>>:
 pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>:
     ToComponents<S, Vector3<S>, Point3<S>, R> {}
 
-pub trait CompositeTransform<S: BaseFloat, V: Vector<S>, P: Point<S, V>, R: Rotation<S, V, P>>:
+pub trait CompositeTransform<S: BaseFloat, V: Vector<S>, P: Point<S, Vector = V>, R: Rotation<S, V, P>>:
     Transform<S, V, P> + ToComponents<S, V, P, R> {}
 pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>:
     Transform2<S> + ToComponents2<S, R> {}
@@ -258,7 +258,7 @@ pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>:
 impl<
     S: BaseFloat,
     V: Vector<S> + Clone,
-    P: Point<S, V>,
+    P: Point<S, Vector = V>,
     R: Rotation<S, V, P> + Clone,
 > ToComponents<S, V, P, R> for Decomposed<S, V, R> {
     fn decompose(&self) -> (V, R, V) {

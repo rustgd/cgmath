@@ -27,7 +27,7 @@ pub struct Ray<S, P, V> {
     phantom_s: PhantomData<S>
 }
 
-impl<S: BaseNum, V: Vector<S>, P: Point<S, V>> Ray<S, P, V> {
+impl<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>> Ray<S, P, V> {
     pub fn new(origin: P, direction: V) -> Ray<S, P, V> {
         Ray {
         	origin: origin,

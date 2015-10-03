@@ -33,7 +33,7 @@ use num::{BaseNum, BaseFloat};
 use plane::Plane;
 
 
-pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
+pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>>: Sized {
     /// Create a new AABB using two points as opposing corners.
     fn new(p1: P, p2: P) -> Self;
 
