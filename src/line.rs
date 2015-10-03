@@ -15,38 +15,32 @@
 
 //! Line segments
 
-use std::marker::PhantomData;
-
 use rust_num::{Zero, One};
 
-use num::{BaseNum, BaseFloat};
+use num::BaseFloat;
 use point::{Point, Point2, Point3};
-use vector::{Vector, Vector2, Vector3};
+use vector::{Vector, Vector2};
 use ray::{Ray2};
 use intersect::Intersect;
 
 /// A generic directed line segment from `origin` to `dest`.
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
-pub struct Line<S, V, P> {
+pub struct Line<P> {
     pub origin: P,
     pub dest: P,
-    phantom_s: PhantomData<S>,
-    phantom_v: PhantomData<V>
 }
 
-impl<S: BaseNum, V: Vector<S>, P: Point<S, Vector = V>>  Line<S, V, P> {
-    pub fn new(origin: P, dest: P) -> Line<S, V, P> {
+impl<P> Line<P> {
+    pub fn new(origin: P, dest: P) -> Line<P> {
         Line {
             origin: origin,
             dest: dest,
-            phantom_v: PhantomData,
-            phantom_s: PhantomData
         }
     }
 }
 
-pub type Line2<S> = Line<S, Vector2<S>, Point2<S>>;
-pub type Line3<S> = Line<S, Vector3<S>, Point3<S>>;
+pub type Line2<S> = Line<Point2<S>>;
+pub type Line3<S> = Line<Point3<S>>;
 
 /// Determines if an intersection between a ray and a line segment is found.
 impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
