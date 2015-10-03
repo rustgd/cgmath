@@ -271,7 +271,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + Approx
     fn zero() -> Self { Self::from_value(S::zero()) }
     /// Create a matrix where the each element of the diagonal is equal to one.
     #[inline]
-    fn identity() -> Self { Self::from_value(S::one()) }
+    fn one() -> Self { Self::from_value(S::one()) }
 
     /// Multiply this matrix by a scalar, returning the new matrix.
     #[must_use]
@@ -327,7 +327,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + Approx
 
     /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
-    fn trace(&self) -> S { self.diagonal().comp_add() }
+    fn trace(&self) -> S { self.diagonal().sum() }
 
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
@@ -348,7 +348,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + Approx
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool { self.approx_eq(&Self::identity()) }
+    fn is_one(&self) -> bool { self.approx_eq(&Self::one()) }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.
