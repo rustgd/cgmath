@@ -84,8 +84,8 @@ impl<S: Copy + Neg<Output = S>> Matrix2<S> {
     /// Negate this `Matrix2` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
+        self[0].neg_self();
+        self[1].neg_self();
     }
 }
 
@@ -186,9 +186,9 @@ impl<S: Copy + Neg<Output = S>> Matrix3<S> {
     /// Negate this `Matrix3` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
-        (&mut self[2]).neg_self();
+        self[0].neg_self();
+        self[1].neg_self();
+        self[2].neg_self();
     }
 }
 
@@ -242,10 +242,10 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     /// Negate this `Matrix4` in-place.
     #[inline]
     pub fn neg_self(&mut self) {
-        (&mut self[0]).neg_self();
-        (&mut self[1]).neg_self();
-        (&mut self[2]).neg_self();
-        (&mut self[3]).neg_self();
+        self[0].neg_self();
+        self[1].neg_self();
+        self[2].neg_self();
+        self[3].neg_self();
     }
 }
 
@@ -368,8 +368,8 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        (&mut self[0]).swap_elems(a, b);
-        (&mut self[1]).swap_elems(a, b);
+        self[0].swap_elems(a, b);
+        self[1].swap_elems(a, b);
     }
 }
 
@@ -383,9 +383,9 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        (&mut self[0]).swap_elems(a, b);
-        (&mut self[1]).swap_elems(a, b);
-        (&mut self[2]).swap_elems(a, b);
+        self[0].swap_elems(a, b);
+        self[1].swap_elems(a, b);
+        self[2].swap_elems(a, b);
     }
 }
 
@@ -400,10 +400,10 @@ impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        (&mut self[0]).swap_elems(a, b);
-        (&mut self[1]).swap_elems(a, b);
-        (&mut self[2]).swap_elems(a, b);
-        (&mut self[3]).swap_elems(a, b);
+        self[0].swap_elems(a, b);
+        self[1].swap_elems(a, b);
+        self[2].swap_elems(a, b);
+        self[3].swap_elems(a, b);
     }
 }
 
@@ -430,32 +430,32 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        (&mut self[0]).mul_self_s(s);
-        (&mut self[1]).mul_self_s(s);
+        self[0].mul_self_s(s);
+        self[1].mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        (&mut self[0]).div_self_s(s);
-        (&mut self[1]).div_self_s(s);
+        self[0].div_self_s(s);
+        self[1].div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        (&mut self[0]).rem_self_s(s);
-        (&mut self[1]).rem_self_s(s);
+        self[0].rem_self_s(s);
+        self[1].rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix2<S>) {
-        (&mut self[0]).add_self_v(&m[0]);
-        (&mut self[1]).add_self_v(&m[1]);
+        self[0].add_self_v(&m[0]);
+        self[1].add_self_v(&m[1]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix2<S>) {
-        (&mut self[0]).sub_self_v(&m[0]);
-        (&mut self[1]).sub_self_v(&m[1]);
+        self[0].sub_self_v(&m[0]);
+        self[1].sub_self_v(&m[1]);
     }
 
     fn transpose(&self) -> Matrix2<S> {
@@ -492,15 +492,15 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
 
     #[inline]
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&S::zero()) &&
-        (&self[1][0]).approx_eq(&S::zero())
+        self[0][1].approx_eq(&S::zero()) &&
+        self[1][0].approx_eq(&S::zero())
     }
 
 
     #[inline]
     fn is_symmetric(&self) -> bool {
-        (&self[0][1]).approx_eq(&self[1][0]) &&
-        (&self[1][0]).approx_eq(&self[0][1])
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[1][0].approx_eq(&self[0][1])
     }
 }
 
@@ -529,37 +529,37 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        (&mut self[0]).mul_self_s(s);
-        (&mut self[1]).mul_self_s(s);
-        (&mut self[2]).mul_self_s(s);
+        self[0].mul_self_s(s);
+        self[1].mul_self_s(s);
+        self[2].mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        (&mut self[0]).div_self_s(s);
-        (&mut self[1]).div_self_s(s);
-        (&mut self[2]).div_self_s(s);
+        self[0].div_self_s(s);
+        self[1].div_self_s(s);
+        self[2].div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        (&mut self[0]).rem_self_s(s);
-        (&mut self[1]).rem_self_s(s);
-        (&mut self[2]).rem_self_s(s);
+        self[0].rem_self_s(s);
+        self[1].rem_self_s(s);
+        self[2].rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix3<S>) {
-        (&mut self[0]).add_self_v(&m[0]);
-        (&mut self[1]).add_self_v(&m[1]);
-        (&mut self[2]).add_self_v(&m[2]);
+        self[0].add_self_v(&m[0]);
+        self[1].add_self_v(&m[1]);
+        self[2].add_self_v(&m[2]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix3<S>) {
-        (&mut self[0]).sub_self_v(&m[0]);
-        (&mut self[1]).sub_self_v(&m[1]);
-        (&mut self[2]).sub_self_v(&m[2]);
+        self[0].sub_self_v(&m[0]);
+        self[1].sub_self_v(&m[1]);
+        self[2].sub_self_v(&m[2]);
     }
 
     fn transpose(&self) -> Matrix3<S> {
@@ -598,25 +598,25 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&S::zero()) &&
-        (&self[0][2]).approx_eq(&S::zero()) &&
+        self[0][1].approx_eq(&S::zero()) &&
+        self[0][2].approx_eq(&S::zero()) &&
 
-        (&self[1][0]).approx_eq(&S::zero()) &&
-        (&self[1][2]).approx_eq(&S::zero()) &&
+        self[1][0].approx_eq(&S::zero()) &&
+        self[1][2].approx_eq(&S::zero()) &&
 
-        (&self[2][0]).approx_eq(&S::zero()) &&
-        (&self[2][1]).approx_eq(&S::zero())
+        self[2][0].approx_eq(&S::zero()) &&
+        self[2][1].approx_eq(&S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        (&self[0][1]).approx_eq(&self[1][0]) &&
-        (&self[0][2]).approx_eq(&self[2][0]) &&
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[0][2].approx_eq(&self[2][0]) &&
 
-        (&self[1][0]).approx_eq(&self[0][1]) &&
-        (&self[1][2]).approx_eq(&self[2][1]) &&
+        self[1][0].approx_eq(&self[0][1]) &&
+        self[1][2].approx_eq(&self[2][1]) &&
 
-        (&self[2][0]).approx_eq(&self[0][2]) &&
-        (&self[2][1]).approx_eq(&self[1][2])
+        self[2][0].approx_eq(&self[0][2]) &&
+        self[2][1].approx_eq(&self[1][2])
     }
 }
 
@@ -647,42 +647,42 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        (&mut self[0]).mul_self_s(s);
-        (&mut self[1]).mul_self_s(s);
-        (&mut self[2]).mul_self_s(s);
-        (&mut self[3]).mul_self_s(s);
+        self[0].mul_self_s(s);
+        self[1].mul_self_s(s);
+        self[2].mul_self_s(s);
+        self[3].mul_self_s(s);
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        (&mut self[0]).div_self_s(s);
-        (&mut self[1]).div_self_s(s);
-        (&mut self[2]).div_self_s(s);
-        (&mut self[3]).div_self_s(s);
+        self[0].div_self_s(s);
+        self[1].div_self_s(s);
+        self[2].div_self_s(s);
+        self[3].div_self_s(s);
     }
 
     #[inline]
     fn rem_self_s(&mut self, s: S) {
-        (&mut self[0]).rem_self_s(s);
-        (&mut self[1]).rem_self_s(s);
-        (&mut self[2]).rem_self_s(s);
-        (&mut self[3]).rem_self_s(s);
+        self[0].rem_self_s(s);
+        self[1].rem_self_s(s);
+        self[2].rem_self_s(s);
+        self[3].rem_self_s(s);
     }
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix4<S>) {
-        (&mut self[0]).add_self_v(&m[0]);
-        (&mut self[1]).add_self_v(&m[1]);
-        (&mut self[2]).add_self_v(&m[2]);
-        (&mut self[3]).add_self_v(&m[3]);
+        self[0].add_self_v(&m[0]);
+        self[1].add_self_v(&m[1]);
+        self[2].add_self_v(&m[2]);
+        self[3].add_self_v(&m[3]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix4<S>) {
-        (&mut self[0]).sub_self_v(&m[0]);
-        (&mut self[1]).sub_self_v(&m[1]);
-        (&mut self[2]).sub_self_v(&m[2]);
-        (&mut self[3]).sub_self_v(&m[3]);
+        self[0].sub_self_v(&m[0]);
+        self[1].sub_self_v(&m[1]);
+        self[2].sub_self_v(&m[2]);
+        self[3].sub_self_v(&m[3]);
     }
 
     fn transpose(&self) -> Matrix4<S> {
@@ -754,39 +754,39 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        (&self[0][1]).approx_eq(&S::zero()) &&
-        (&self[0][2]).approx_eq(&S::zero()) &&
-        (&self[0][3]).approx_eq(&S::zero()) &&
+        self[0][1].approx_eq(&S::zero()) &&
+        self[0][2].approx_eq(&S::zero()) &&
+        self[0][3].approx_eq(&S::zero()) &&
 
-        (&self[1][0]).approx_eq(&S::zero()) &&
-        (&self[1][2]).approx_eq(&S::zero()) &&
-        (&self[1][3]).approx_eq(&S::zero()) &&
+        self[1][0].approx_eq(&S::zero()) &&
+        self[1][2].approx_eq(&S::zero()) &&
+        self[1][3].approx_eq(&S::zero()) &&
 
-        (&self[2][0]).approx_eq(&S::zero()) &&
-        (&self[2][1]).approx_eq(&S::zero()) &&
-        (&self[2][3]).approx_eq(&S::zero()) &&
+        self[2][0].approx_eq(&S::zero()) &&
+        self[2][1].approx_eq(&S::zero()) &&
+        self[2][3].approx_eq(&S::zero()) &&
 
-        (&self[3][0]).approx_eq(&S::zero()) &&
-        (&self[3][1]).approx_eq(&S::zero()) &&
-        (&self[3][2]).approx_eq(&S::zero())
+        self[3][0].approx_eq(&S::zero()) &&
+        self[3][1].approx_eq(&S::zero()) &&
+        self[3][2].approx_eq(&S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        (&self[0][1]).approx_eq(&self[1][0]) &&
-        (&self[0][2]).approx_eq(&self[2][0]) &&
-        (&self[0][3]).approx_eq(&self[3][0]) &&
+        self[0][1].approx_eq(&self[1][0]) &&
+        self[0][2].approx_eq(&self[2][0]) &&
+        self[0][3].approx_eq(&self[3][0]) &&
 
-        (&self[1][0]).approx_eq(&self[0][1]) &&
-        (&self[1][2]).approx_eq(&self[2][1]) &&
-        (&self[1][3]).approx_eq(&self[3][1]) &&
+        self[1][0].approx_eq(&self[0][1]) &&
+        self[1][2].approx_eq(&self[2][1]) &&
+        self[1][3].approx_eq(&self[3][1]) &&
 
-        (&self[2][0]).approx_eq(&self[0][2]) &&
-        (&self[2][1]).approx_eq(&self[1][2]) &&
-        (&self[2][3]).approx_eq(&self[3][2]) &&
+        self[2][0].approx_eq(&self[0][2]) &&
+        self[2][1].approx_eq(&self[1][2]) &&
+        self[2][3].approx_eq(&self[3][2]) &&
 
-        (&self[3][0]).approx_eq(&self[0][3]) &&
-        (&self[3][1]).approx_eq(&self[1][3]) &&
-        (&self[3][2]).approx_eq(&self[2][3])
+        self[3][0].approx_eq(&self[0][3]) &&
+        self[3][1].approx_eq(&self[1][3]) &&
+        self[3][2].approx_eq(&self[2][3])
     }
 }
 
