@@ -21,25 +21,25 @@ use std::ops::*;
 pub trait Array1<Element: Copy>: Index<usize, Output=Element> + IndexMut<usize, Output=Element> {
     /// Get the pointer to the first element of the array.
     fn ptr<'a>(&'a self) -> &'a Element {
-        &(*self)[0]
+        &self[0]
     }
 
     /// Get a mutable pointer to the first element of the array.
     fn mut_ptr<'a>(&'a mut self) -> &'a mut Element {
-        &mut (*self)[0]
+        &mut self[0]
     }
 
     /// Swap the elements at indices `i` and `j` in-place.
     #[inline]
     fn swap_elems(&mut self, i: usize, j: usize) {
         // Yeah, ok borrow checker – I know what I'm doing here
-        unsafe { ptr::swap(&mut (*self)[i], &mut (*self)[j]) };
+        unsafe { ptr::swap(&mut self[i], &mut self[j]) };
     }
 
     /// Replace an element in the array.
     #[inline]
     fn replace_elem(&mut self, i: usize, src: Element) -> Element {
-        mem::replace(&mut (*self)[i], src)
+        mem::replace(&mut self[i], src)
     }
 }
 
@@ -48,24 +48,24 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
         Index<usize, Output=Column> + IndexMut<usize, Output=Column> {
     /// Get the pointer to the first element of the array.
     fn ptr<'a>(&'a self) -> &'a Element {
-        &(*self)[0][0]
+        &self[0][0]
     }
 
     /// Get a mutable pointer to the first element of the array.
     fn mut_ptr<'a>(&'a mut self) -> &'a mut Element {
-        &mut (*self)[0][0]
+        &mut self[0][0]
     }
 
     /// Swap two columns of this array.
     #[inline]
     fn swap_cols(&mut self, a: usize, b: usize) {
-        unsafe { ptr::swap(&mut (*self)[a], &mut (*self)[b]) };
+        unsafe { ptr::swap(&mut self[a], &mut self[b]) };
     }
 
     /// Replace a column in the array.
     #[inline]
     fn replace_col(&mut self, c: usize, src: Column) -> Column {
-        mem::replace(&mut (*self)[c], src)
+        mem::replace(&mut self[c], src)
     }
 
     /// Get a row from this array by-value.
@@ -79,6 +79,6 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
     fn swap_elems(&mut self, a: (usize, usize), b: (usize, usize)) {
         let (ac, ar) = a;
         let (bc, br) = b;
-        unsafe { ptr::swap(&mut (*self)[ac][ar], &mut (*self)[bc][br]) };
+        unsafe { ptr::swap(&mut self[ac][ar], &mut self[bc][br]) };
     }
 }
