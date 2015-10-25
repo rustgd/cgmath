@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -27,8 +27,8 @@ keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 name = "cgmath"
 
 [dependencies.rustc-serialize]
-rustc_serialize = "*"
+rustc_serialize = "0.3"
 
 [dependencies]
-num = "*"
-rand = "*"
+num = "0.1"
+rand = "0.3"
