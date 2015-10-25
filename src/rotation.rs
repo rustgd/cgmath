@@ -26,7 +26,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + ApproxEq<S> + Sized {
+pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, Vector = V>>: PartialEq + ApproxEq<S> + Sized {
     /// Create the identity transform (causes no transformation).
     fn one() -> Self;
 
@@ -49,7 +49,7 @@ pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + Appr
 
     /// Rotate a ray using this rotation.
     #[inline]
-    fn rotate_ray(&self, ray: &Ray<S, P, V>) -> Ray<S, P,V> {
+    fn rotate_ray(&self, ray: &Ray<S, P>) -> Ray<S, P> {
         Ray::new(ray.origin.clone(), self.rotate_vector(&ray.direction))
     }
 

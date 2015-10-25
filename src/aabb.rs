@@ -26,14 +26,14 @@ use rust_num::{Float, Zero, One};
 
 use bound::*;
 use point::{Point, Point2, Point3};
-use vector::{Vector, Vector2, Vector3};
-use ray::{Ray2};
+use vector::Vector;
+use ray::Ray2;
 use intersect::Intersect;
 use num::{BaseNum, BaseFloat};
 use plane::Plane;
 
 
-pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
+pub trait Aabb<S: BaseNum, P: Point<S>>: Sized {
     /// Create a new AABB using two points as opposing corners.
     fn new(p1: P, p2: P) -> Self;
 
@@ -45,7 +45,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
 
     /// Return the dimensions of this AABB.
     #[inline]
-    fn dim(&self) -> V { self.max().sub_p(self.min()) }
+    fn dim(&self) -> P::Vector { self.max().sub_p(self.min()) }
 
     /// Return the volume this AABB encloses.
     #[inline]
@@ -71,7 +71,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     }
 
     /// Add a vector to every point in the AABB, returning a new AABB.
-    fn add_v(&self, v: &V) -> Self {
+    fn add_v(&self, v: &P::Vector) -> Self {
         Aabb::new(self.min().add_v(v), self.max().add_v(v))
     }
 
@@ -81,7 +81,7 @@ pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
     }
 
     /// Multiply every point in the AABB by a vector, returning a new AABB.
-    fn mul_v(&self, v: &V) -> Self {
+    fn mul_v(&self, v: &P::Vector) -> Self {
         let min = P::from_vec(&self.min().to_vec().mul_v(v));
         let max = P::from_vec(&self.max().to_vec().mul_v(v));
         Aabb::new(min, max)
@@ -117,7 +117,7 @@ impl<S: BaseNum> Aabb2<S> {
     }
 }
 
-impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>> for Aabb2<S> {
+impl<S: BaseNum> Aabb<S, Point2<S>> for Aabb2<S> {
     #[inline]
     fn new(p1: Point2<S>, p2: Point2<S>) -> Aabb2<S> { Aabb2::new(p1, p2) }
 
@@ -177,7 +177,7 @@ impl<S: BaseNum> Aabb3<S> {
     }
 }
 
-impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>> for Aabb3<S> {
+impl<S: BaseNum> Aabb<S, Point3<S>> for Aabb3<S> {
     #[inline]
     fn new(p1: Point3<S>, p2: Point3<S>) -> Aabb3<S> { Aabb3::new(p1, p2) }
 
