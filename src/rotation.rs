@@ -21,7 +21,6 @@ use matrix::Matrix3;
 use num::BaseFloat;
 use point::{Point, Point2, Point3};
 use quaternion::Quaternion;
-use ray::Ray;
 use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
@@ -45,12 +44,6 @@ pub trait Rotation<S: BaseFloat, V: Vector<S>, P: Point<S, V>>: PartialEq + Appr
     #[inline]
     fn rotate_point(&self, point: &P) -> P {
         P::from_vec(&self.rotate_vector(&point.to_vec()))
-    }
-
-    /// Rotate a ray using this rotation.
-    #[inline]
-    fn rotate_ray(&self, ray: &Ray<S, P, V>) -> Ray<S, P,V> {
-        Ray::new(ray.origin.clone(), self.rotate_vector(&ray.direction))
     }
 
     /// Create a new rotation which combines both this rotation, and another.

@@ -42,22 +42,11 @@ pub use quaternion::*;
 pub use vector::*;
 
 pub use angle::*;
-pub use plane::Plane;
 pub use point::*;
-pub use line::*;
-pub use ray::*;
 pub use rotation::*;
 pub use transform::*;
 
 pub use projection::*;
-
-pub use aabb::*;
-pub use bound::*;
-pub use cylinder::Cylinder;
-pub use frustum::{Frustum, FrustumPoints};
-pub use intersect::Intersect;
-pub use obb::*;
-pub use sphere::Sphere;
 
 pub use approx::ApproxEq;
 pub use num::*;
@@ -73,22 +62,11 @@ mod quaternion;
 mod vector;
 
 mod angle;
-mod plane;
 mod point;
-mod line;
-mod ray;
 mod rotation;
 mod transform;
 
 mod projection;
-
-mod aabb;
-mod bound;
-mod cylinder;
-mod frustum;
-mod intersect;
-mod obb;
-mod sphere;
 
 mod approx;
 mod num;

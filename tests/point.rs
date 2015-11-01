@@ -16,23 +16,11 @@
 
 extern crate cgmath;
 
-use cgmath::{Point, Point3, Vector, Vector3};
-use cgmath::{Bound, Relation, Plane};
-use cgmath::{ApproxEq};
+use cgmath::Point3;
+use cgmath::ApproxEq;
 
 #[test]
 fn test_homogeneous() {
 	let p = Point3::new(1.0f64, 2.0f64, 3.0f64);
-    assert!(p.approx_eq( &Point3::from_homogeneous( &p.to_homogeneous() ) ));
-}
-
-#[test]
-fn test_bound() {
-    let point = Point3::new(1f32, 2.0, 3.0);
-    let normal = Vector3::new(0f32, -0.8, -0.36);
-    let plane = Plane::from_point_normal(point, normal);
-
-    assert_eq!(point.relate_plane(&plane), Relation::Cross);
-    assert_eq!(point.add_v(&normal).relate_plane(&plane), Relation::In);
-    assert_eq!(point.add_v(&normal.mul_s(-1.0)).relate_plane(&plane), Relation::Out);
+    assert!(p.approx_eq(&Point3::from_homogeneous(&p.to_homogeneous())));
 }
