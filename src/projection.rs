@@ -17,10 +17,8 @@ use rust_num::{Zero, One};
 use rust_num::traits::cast;
 
 use angle::{Angle, Rad, tan, cot};
-use frustum::Frustum;
 use matrix::Matrix4;
 use num::BaseFloat;
-use plane::Plane;
 
 /// Create a perspective projection matrix.
 ///
@@ -65,10 +63,6 @@ pub fn ortho<S: BaseFloat + 'static>(left: S, right: S, bottom: S, top: S, near:
     }.into()
 }
 
-pub trait Projection<S: BaseFloat>: Into<Matrix4<S>> {
-    fn to_frustum(&self) -> Frustum<S>;
-}
-
 /// A perspective projection based on a vertical field-of-view angle.
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct PerspectiveFov<S, A> {
@@ -93,13 +87,6 @@ impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
             near:    self.near.clone(),
             far:     self.far.clone(),
         }
-    }
-}
-
-impl<S: BaseFloat + 'static, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
-    fn to_frustum(&self) -> Frustum<S> {
-        // TODO: Could this be faster?
-        Frustum::from_matrix4(self.clone().into()).unwrap()
     }
 }
 
@@ -156,13 +143,6 @@ pub struct Perspective<S> {
     pub far:    S,
 }
 
-impl<S: BaseFloat + 'static> Projection<S> for Perspective<S> {
-    fn to_frustum(&self) -> Frustum<S> {
-        // TODO: Could this be faster?
-        Frustum::from_matrix4(self.clone().into()).unwrap()
-    }
-}
-
 impl<S: BaseFloat + 'static> From<Perspective<S>> for Matrix4<S> {
     fn from(persp: Perspective<S>) -> Matrix4<S> {
         assert!(persp.left   <= persp.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", persp.left, persp.right);
@@ -207,19 +187,6 @@ pub struct Ortho<S> {
     pub top:    S,
     pub near:   S,
     pub far:    S,
-}
-
-impl<S: BaseFloat> Projection<S> for Ortho<S> {
-    fn to_frustum(&self) -> Frustum<S> {
-        Frustum {
-            left:   Plane::from_abcd( S::one(), S::zero(), S::zero(), self.left.clone()),
-            right:  Plane::from_abcd(-S::one(), S::zero(), S::zero(), self.right.clone()),
-            bottom: Plane::from_abcd(S::zero(), S::one(), S::zero(), self.bottom.clone()),
-            top:    Plane::from_abcd(S::zero(), -S::one(), S::zero(), self.top.clone()),
-            near:   Plane::from_abcd(S::zero(), S::zero(), -S::one(), self.near.clone()),
-            far:    Plane::from_abcd(S::zero(), S::zero(), S::one(), self.far.clone()),
-        }
-    }
 }
 
 impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {

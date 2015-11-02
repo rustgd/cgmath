@@ -25,10 +25,8 @@ use rust_num::{One, Zero};
 
 use approx::ApproxEq;
 use array::Array1;
-use bound::*;
-use matrix::{Matrix, Matrix4};
+use matrix::Matrix;
 use num::{BaseNum, BaseFloat};
-use plane::Plane;
 use vector::*;
 
 /// A point in 2-dimensional space.
@@ -467,29 +465,6 @@ impl<S: BaseNum> fmt::Debug for Point2<S> {
 impl<S: BaseNum> fmt::Debug for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
-    }
-}
-
-impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
-    fn relate_plane(&self, plane: &Plane<S>) -> Relation {
-        let dist = self.dot(&plane.n);
-        if dist > plane.d {
-            Relation::In
-        }else if dist < plane.d {
-            Relation::Out
-        }else {
-            Relation::Cross
-        }
-    }
-
-    fn relate_clip_space(&self, projection: &Matrix4<S>) -> Relation {
-        use std::cmp::Ordering::*;
-        let p = projection.mul_v(&self.to_homogeneous());
-        match (p.x.abs().partial_cmp(&p.w), p.y.abs().partial_cmp(&p.w), p.z.abs().partial_cmp(&p.w)) {
-            (Some(Less), Some(Less), Some(Less)) => Relation::In,
-            (Some(Greater), _, _) | (_, Some(Greater), _) | (_, _, Some(Greater)) => Relation::Out,
-            _ => Relation::Cross,
-        }
     }
 }
 

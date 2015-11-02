@@ -21,7 +21,6 @@ use approx::ApproxEq;
 use matrix::*;
 use num::*;
 use point::*;
-use ray::Ray;
 use rotation::*;
 use vector::*;
 
@@ -42,12 +41,6 @@ pub trait Transform<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {
 
     /// Transform a point using this transform.
     fn transform_point(&self, point: &P) -> P;
-
-    /// Transform a ray using this transform.
-    #[inline]
-    fn transform_ray(&self, ray: &Ray<S, P,V>) -> Ray<S, P, V> {
-        Ray::new(self.transform_point(&ray.origin), self.transform_vector(&ray.direction))
-    }
 
     /// Transform a vector as a point using this transform.
     #[inline]

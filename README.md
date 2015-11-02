@@ -17,14 +17,8 @@ The library provides:
 - rotation matrices: `Basis2`, `Basis3`
 - angle units: `Rad`, `Deg`
 - points: `Point2`, `Point3`
-- a generic ray: `Ray`
-- a plane type: `Plane`
 - perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
-- a view frustum: `Frustum`
 - spatial transformations: `AffineMatrix3`, `Transform3`
-- axis-aligned bounding boxes: `Aabb2`, `Aabb3`
-- oriented bounding boxes: `Obb2`, `Obb3`
-- collision primitives: `Sphere`, `Cylinder`
 
 Not all of the functionality has been implemented yet, and the existing code
 is not fully covered by the testsuite. If you encounter any mistakes or
