@@ -68,7 +68,7 @@ impl<S: BaseNum> Point3<S> {
 /// Specifies the numeric operations for point types.
 pub trait Point: Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array1<Element = <<Self as Point>::Vector as Vector>::Scalar>,
+    Self: Array1<Element = <Self as Point>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
@@ -78,8 +78,13 @@ pub trait Point: Clone where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
+    /// The associated scalar.
+    ///
+    /// Due to the equality constraints demanded by `Self::Vector`, this is effectively just an
+    /// alias to `Self::Vector::Scalar`.
+    type Scalar: BaseNum;
     /// The associated displacement vector.
-    type Vector: Vector;
+    type Vector: Vector<Scalar = Self::Scalar>;
 
     /// Create a point at the origin.
     fn origin() -> Self;
@@ -91,13 +96,13 @@ pub trait Point: Clone where
 
     /// Multiply each component by a scalar, returning the new point.
     #[must_use]
-    fn mul_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Self;
+    fn mul_s(&self, scalar: Self::Scalar) -> Self;
     /// Divide each component by a scalar, returning the new point.
     #[must_use]
-    fn div_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Self;
+    fn div_s(&self, scalar: Self::Scalar) -> Self;
     /// Subtract a scalar from each component, returning the new point.
     #[must_use]
-    fn rem_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Self;
+    fn rem_s(&self, scalar: Self::Scalar) -> Self;
 
     /// Add a vector to this point, returning the new point.
     #[must_use]
@@ -106,17 +111,17 @@ pub trait Point: Clone where
     fn sub_p(&self, p: &Self) -> Self::Vector;
 
     /// Multiply each component by a scalar, in-place.
-    fn mul_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar);
+    fn mul_self_s(&mut self, scalar: Self::Scalar);
     /// Divide each component by a scalar, in-place.
-    fn div_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar);
+    fn div_self_s(&mut self, scalar: Self::Scalar);
     /// Take the remainder of each component by a scalar, in-place.
-    fn rem_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar);
+    fn rem_self_s(&mut self, scalar: Self::Scalar);
 
     /// Add a vector to this point, in-place.
     fn add_self_v(&mut self, v: &Self::Vector);
 
     /// This is a weird one, but its useful for plane calculations.
-    fn dot(&self, v: &Self::Vector) -> <<Self as Point>::Vector as Vector>::Scalar;
+    fn dot(&self, v: &Self::Vector) -> Self::Scalar;
 
     #[must_use]
     fn min(&self, p: &Self) -> Self;
@@ -130,6 +135,7 @@ impl<S: BaseNum> Array1 for Point2<S> {
 }
 
 impl<S: BaseNum> Point for Point2<S> {
+    type Scalar = S;
     type Vector = Vector2<S>;
 
     #[inline]
@@ -147,26 +153,26 @@ impl<S: BaseNum> Point for Point2<S> {
         Vector2::new(self.x, self.y)
     }
 
-    #[inline] fn mul_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point2<S> { self * scalar }
-    #[inline] fn div_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point2<S> { self / scalar }
-    #[inline] fn rem_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point2<S> { self % scalar }
+    #[inline] fn mul_s(&self, scalar: S) -> Point2<S> { self * scalar }
+    #[inline] fn div_s(&self, scalar: S) -> Point2<S> { self / scalar }
+    #[inline] fn rem_s(&self, scalar: S) -> Point2<S> { self % scalar }
     #[inline] fn add_v(&self, v: &Vector2<S>) -> Point2<S> { self + v }
     #[inline] fn sub_p(&self, p: &Point2<S>) -> Vector2<S> { self - p }
 
     #[inline]
-    fn mul_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn mul_self_s(&mut self, scalar: S) {
         self.x = self.x * scalar;
         self.y = self.y * scalar;
     }
 
     #[inline]
-    fn div_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn div_self_s(&mut self, scalar: S) {
         self.x = self.x / scalar;
         self.y = self.y / scalar;
     }
 
     #[inline]
-    fn rem_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn rem_self_s(&mut self, scalar: S) {
         self.x = self.x % scalar;
         self.y = self.y % scalar;
     }
@@ -209,6 +215,7 @@ impl<S: BaseNum> Array1 for Point3<S> {
 }
 
 impl<S: BaseNum> Point for Point3<S> {
+    type Scalar = S;
     type Vector = Vector3<S>;
 
     #[inline]
@@ -226,28 +233,28 @@ impl<S: BaseNum> Point for Point3<S> {
         Vector3::new(self.x, self.y, self.z)
     }
 
-    #[inline] fn mul_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point3<S> { self * scalar }
-    #[inline] fn div_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point3<S> { self / scalar }
-    #[inline] fn rem_s(&self, scalar: <<Self as Point>::Vector as Vector>::Scalar) -> Point3<S> { self % scalar }
+    #[inline] fn mul_s(&self, scalar: S) -> Point3<S> { self * scalar }
+    #[inline] fn div_s(&self, scalar: S) -> Point3<S> { self / scalar }
+    #[inline] fn rem_s(&self, scalar: S) -> Point3<S> { self % scalar }
     #[inline] fn add_v(&self, v: &Vector3<S>) -> Point3<S> { self + v }
     #[inline] fn sub_p(&self, p: &Point3<S>) -> Vector3<S> { self - p }
 
     #[inline]
-    fn mul_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn mul_self_s(&mut self, scalar: S) {
         self.x = self.x * scalar;
         self.y = self.y * scalar;
         self.z = self.z * scalar;
     }
 
     #[inline]
-    fn div_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn div_self_s(&mut self, scalar: S) {
         self.x = self.x / scalar;
         self.y = self.y / scalar;
         self.z = self.z / scalar;
     }
 
     #[inline]
-    fn rem_self_s(&mut self, scalar: <<Self as Point>::Vector as Vector>::Scalar) {
+    fn rem_self_s(&mut self, scalar: S) {
         self.x = self.x % scalar;
         self.y = self.y % scalar;
         self.z = self.z % scalar;

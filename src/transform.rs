@@ -80,12 +80,12 @@ pub struct Decomposed<V: Vector, R> {
 
 impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
+    <P as Point>::Scalar: BaseFloat,
 {
     #[inline]
     fn one() -> Decomposed<P::Vector, R> {
         Decomposed {
-            scale: <<P as Point>::Vector as Vector>::Scalar::one(),
+            scale: <P as Point>::Scalar::one(),
             rot: R::one(),
             disp: P::Vector::zero(),
         }
@@ -96,7 +96,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         let rot = R::look_at(&center.sub_p(eye), up);
         let disp = rot.rotate_vector(&P::origin().sub_p(eye));
         Decomposed {
-            scale: <<P as Point>::Vector as Vector>::Scalar::one(),
+            scale: <P as Point>::Scalar::one(),
             rot: rot,
             disp: disp,
         }
@@ -121,10 +121,10 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     }
 
     fn invert(&self) -> Option<Decomposed<P::Vector, R>> {
-        if self.scale.approx_eq(&<<P as Point>::Vector as Vector>::Scalar::zero()) {
+        if self.scale.approx_eq(&<P as Point>::Scalar::zero()) {
             None
         } else {
-            let s = <<P as Point>::Vector as Vector>::Scalar::one() / self.scale;
+            let s = <P as Point>::Scalar::one() / self.scale;
             let r = self.rot.invert();
             let d = r.rotate_vector(&self.disp).mul_s(-s);
             Some(Decomposed {
@@ -215,7 +215,8 @@ impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
 /// A trait that allows extracting components (rotation, translation, scale)
 /// from an arbitrary transformations
 pub trait ToComponents<P: Point, R: Rotation<P>> where
-    <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    <P as Point>::Scalar: BaseFloat,
 {
     /// Extract the (scale, rotation, translation) triple
     fn decompose(&self) -> (P::Vector, R, P::Vector);
@@ -226,7 +227,7 @@ pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>: ToComponents<Point3<S>, 
 
 pub trait CompositeTransform<P: Point, R: Rotation<P>>: Transform<P> + ToComponents<P, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
+    <P as Point>::Scalar: BaseFloat,
 {}
 
 pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>: Transform2<S> + ToComponents2<S, R> {}
@@ -234,7 +235,7 @@ pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>: Transform3<S> + To
 
 impl<P: Point, R: Rotation<P> + Clone> ToComponents<P, R> for Decomposed<P::Vector, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
+    <P as Point>::Scalar: BaseFloat,
 {
     fn decompose(&self) -> (P::Vector, R, P::Vector) {
         (P::Vector::one().mul_s(self.scale), self.rot.clone(), self.disp.clone())
