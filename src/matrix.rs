@@ -249,9 +249,14 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
-    Self: Array2<Element = S, Column = V, Row = V>,
-    Self: ApproxEq<Epsilon = S> + Sized,
+pub trait Matrix where
+    Self: Array2<
+        Element = <<Self as Matrix>::ColumnRow as Vector>::Scalar,
+        Column = <Self as Matrix>::ColumnRow,
+        Row = <Self as Matrix>::ColumnRow,
+    >,
+    Self: ApproxEq<Epsilon = <<Self as Matrix>::ColumnRow as Vector>::Scalar> + Sized,
+    Self::Element: BaseFloat,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -263,28 +268,30 @@ pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
+    type ColumnRow: Vector;
+
     /// Create a new diagonal matrix using the supplied value.
-    fn from_value(value: S) -> Self;
+    fn from_value(value: Self::Element) -> Self;
     /// Create a matrix from a non-uniform scale
-    fn from_diagonal(value: &V) -> Self;
+    fn from_diagonal(diagonal: &Self::Column) -> Self;
 
     /// Create a matrix with all elements equal to zero.
     #[inline]
-    fn zero() -> Self { Self::from_value(S::zero()) }
+    fn zero() -> Self { Self::from_value(Self::Element::zero()) }
     /// Create a matrix where the each element of the diagonal is equal to one.
     #[inline]
-    fn one() -> Self { Self::from_value(S::one()) }
+    fn one() -> Self { Self::from_value(Self::Element::one()) }
 
     /// Multiply this matrix by a scalar, returning the new matrix.
     #[must_use]
-    fn mul_s(&self, s: S) -> Self;
+    fn mul_s(&self, s: Self::Element) -> Self;
     /// Divide this matrix by a scalar, returning the new matrix.
     #[must_use]
-    fn div_s(&self, s: S) -> Self;
+    fn div_s(&self, s: Self::Element) -> Self;
     /// Take the remainder of this matrix by a scalar, returning the new
     /// matrix.
     #[must_use]
-    fn rem_s(&self, s: S) -> Self;
+    fn rem_s(&self, s: Self::Element) -> Self;
 
     /// Add this matrix with another matrix, returning the new metrix.
     #[must_use]
@@ -294,18 +301,18 @@ pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
     fn sub_m(&self, m: &Self) -> Self;
 
     /// Multiplay a vector by this matrix, returning a new vector.
-    fn mul_v(&self, v: &V) -> V;
+    fn mul_v(&self, v: &Self::Column) -> Self::Column;
 
     /// Multiply this matrix by another matrix, returning the new matrix.
     #[must_use]
     fn mul_m(&self, m: &Self) -> Self;
 
     /// Multiply this matrix by a scalar, in-place.
-    fn mul_self_s(&mut self, s: S);
+    fn mul_self_s(&mut self, s: Self::Element);
     /// Divide this matrix by a scalar, in-place.
-    fn div_self_s(&mut self, s: S);
+    fn div_self_s(&mut self, s: Self::Element);
     /// Take the remainder of this matrix, in-place.
-    fn rem_self_s(&mut self, s: S);
+    fn rem_self_s(&mut self, s: Self::Element);
 
     /// Add this matrix with another matrix, in-place.
     fn add_self_m(&mut self, m: &Self);
@@ -322,14 +329,14 @@ pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
     /// Transpose this matrix in-place.
     fn transpose_self(&mut self);
     /// Take the determinant of this matrix.
-    fn determinant(&self) -> S;
+    fn determinant(&self) -> Self::Element;
 
     /// Return a vector containing the diagonal of this matrix.
-    fn diagonal(&self) -> V;
+    fn diagonal(&self) -> Self::Column;
 
     /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
-    fn trace(&self) -> S { self.diagonal().sum() }
+    fn trace(&self) -> Self::Element { self.diagonal().sum() }
 
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
@@ -345,7 +352,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&S::zero()) }
+    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Element::zero()) }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
@@ -361,7 +368,7 @@ pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Copy + 'static> Array2 for Matrix2<S> {
+impl<S: Copy> Array2 for Matrix2<S> {
     type Element = S;
     type Column = Vector2<S>;
     type Row = Vector2<S>;
@@ -379,7 +386,7 @@ impl<S: Copy + 'static> Array2 for Matrix2<S> {
     }
 }
 
-impl<S: Copy + 'static> Array2 for Matrix3<S> {
+impl<S: Copy> Array2 for Matrix3<S> {
     type Element = S;
     type Column = Vector3<S>;
     type Row = Vector3<S>;
@@ -399,7 +406,7 @@ impl<S: Copy + 'static> Array2 for Matrix3<S> {
     }
 }
 
-impl<S: Copy + 'static> Array2 for Matrix4<S> {
+impl<S: Copy> Array2 for Matrix4<S> {
     type Element = S;
     type Column = Vector4<S>;
     type Row = Vector4<S>;
@@ -421,7 +428,9 @@ impl<S: Copy + 'static> Array2 for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
+impl<S: BaseFloat> Matrix for Matrix2<S> {
+    type ColumnRow = Vector2<S>;
+
     #[inline]
     fn from_value(value: S) -> Matrix2<S> {
         Matrix2::new(value, S::zero(),
@@ -518,7 +527,9 @@ impl<S: BaseFloat> Matrix<S, Vector2<S>> for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
+impl<S: BaseFloat> Matrix for Matrix3<S> {
+    type ColumnRow = Vector3<S>;
+
     #[inline]
     fn from_value(value: S) -> Matrix3<S> {
         Matrix3::new(value, S::zero(), S::zero(),
@@ -634,7 +645,9 @@ impl<S: BaseFloat> Matrix<S, Vector3<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
+impl<S: BaseFloat> Matrix for Matrix4<S> {
+    type ColumnRow = Vector4<S>;
+
     #[inline]
     fn from_value(value: S) -> Matrix4<S> {
         Matrix4::new(value, S::zero(), S::zero(), S::zero(),
