@@ -190,7 +190,9 @@ impl<S: BaseNum> Point<S> for Point2<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Point2<S> {
+impl<S: BaseFloat> ApproxEq for Point2<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Point2<S>, epsilon: &S) -> bool {
         self.x.approx_eq_eps(&other.x, epsilon) &&
@@ -270,7 +272,9 @@ impl<S: BaseNum> Point<S> for Point3<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Point3<S> {
+impl<S: BaseFloat> ApproxEq for Point3<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Point3<S>, epsilon: &S) -> bool {
         self.x.approx_eq_eps(&other.x, epsilon) &&

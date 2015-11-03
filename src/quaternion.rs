@@ -170,7 +170,9 @@ impl<'a, 'b, S: BaseFloat> Mul<&'b Quaternion<S>> for &'a Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Quaternion<S> {
+impl<S: BaseFloat> ApproxEq for Quaternion<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon) &&

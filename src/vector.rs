@@ -287,7 +287,9 @@ macro_rules! vec {
             fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
         }
 
-        impl<S: BaseFloat> ApproxEq<S> for $VectorN<S> {
+        impl<S: BaseFloat> ApproxEq for $VectorN<S> {
+            type Epsilon = S;
+
             #[inline]
             fn approx_eq_eps(&self, other: &$VectorN<S>, epsilon: &S) -> bool {
                 $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
@@ -618,7 +620,7 @@ impl<S: BaseNum> Vector4<S> {
 /// Specifies geometric operations for vectors. This is only implemented for
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector<S: BaseFloat>: Vector<S>
-                                       + ApproxEq<S>
+                                       + ApproxEq<Epsilon = S>
                                        + Sized {
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.

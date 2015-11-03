@@ -25,7 +25,7 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<S: BaseFloat, P: Point<S>>: PartialEq + ApproxEq<S> + Sized {
+pub trait Rotation<S: BaseFloat, P: Point<S>>: PartialEq + ApproxEq<Epsilon = S> + Sized {
     /// Create the identity transform (causes no transformation).
     fn one() -> Self;
 
@@ -206,7 +206,9 @@ impl<S: BaseFloat> Rotation<S, Point2<S>> for Basis2<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Basis2<S> {
+impl<S: BaseFloat> ApproxEq for Basis2<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Basis2<S>, epsilon: &S) -> bool {
         self.mat.approx_eq_eps(&other.mat, epsilon)
@@ -288,7 +290,9 @@ impl<S: BaseFloat> Rotation<S, Point3<S>> for Basis3<S> {
     fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Basis3<S> {
+impl<S: BaseFloat> ApproxEq for Basis3<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Basis3<S>, epsilon: &S) -> bool {
         self.mat.approx_eq_eps(&other.mat, epsilon)

@@ -80,7 +80,7 @@ pub trait Angle
 >
 :   Clone + Zero
 +   PartialEq + PartialOrd
-+   ApproxEq<S>
++   ApproxEq<Epsilon = S>
 +   Neg<Output=Self>
 +   Into<Rad<S>>
 +   Into<Deg<S>>
@@ -279,16 +279,18 @@ fmt::Debug for Deg<S> {
     }
 }
 
-impl<S: BaseFloat>
-ApproxEq<S> for Rad<S> {
+impl<S: BaseFloat> ApproxEq for Rad<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Rad<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon)
     }
 }
 
-impl<S: BaseFloat>
-ApproxEq<S> for Deg<S> {
+impl<S: BaseFloat> ApproxEq for Deg<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon)

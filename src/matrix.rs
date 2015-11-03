@@ -249,7 +249,7 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + ApproxEq<S> + Sized // where
+pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + ApproxEq<Epsilon = S> + Sized // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -790,7 +790,9 @@ impl<S: BaseFloat> Matrix<S, Vector4<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Matrix2<S> {
+impl<S: BaseFloat> ApproxEq for Matrix2<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix2<S>, epsilon: &S) -> bool {
         self[0].approx_eq_eps(&other[0], epsilon) &&
@@ -798,7 +800,9 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Matrix3<S> {
+impl<S: BaseFloat> ApproxEq for Matrix3<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix3<S>, epsilon: &S) -> bool {
         self[0].approx_eq_eps(&other[0], epsilon) &&
@@ -807,7 +811,9 @@ impl<S: BaseFloat> ApproxEq<S> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Matrix4<S> {
+impl<S: BaseFloat> ApproxEq for Matrix4<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Matrix4<S>, epsilon: &S) -> bool {
         self[0].approx_eq_eps(&other[0], epsilon) &&
