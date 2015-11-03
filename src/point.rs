@@ -77,7 +77,7 @@ pub trait Point<S: BaseNum>: Array1<Element = S> + Clone // where
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
     /// The associated displacement vector.
-    type Vector: Vector<S>;
+    type Vector: Vector<Scalar = S>;
 
     /// Create a point at the origin.
     fn origin() -> Self;

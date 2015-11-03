@@ -111,7 +111,7 @@ use num::{BaseNum, BaseFloat};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<Element = S> + Clone // where
+pub trait Vector: Array1<Element = <Self as Vector>::Scalar> + Clone // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -127,31 +127,34 @@ pub trait Vector<S: BaseNum>: Array1<Element = S> + Clone // where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
+    // The associated scalar
+    type Scalar: BaseNum;
+
     /// Construct a vector from a single value, replicating it.
-    fn from_value(s: S) -> Self;
+    fn from_value(scalar: Self::Scalar) -> Self;
 
     /// The zero vector (with all components set to zero)
     #[inline]
-    fn zero() -> Self { Self::from_value(S::zero()) }
+    fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
     /// The identity vector (with all components set to one)
     #[inline]
-    fn one() -> Self { Self::from_value(S::one()) }
+    fn one() -> Self { Self::from_value(Self::Scalar::one()) }
 
     /// Add a scalar to this vector, returning a new vector.
     #[must_use]
-    fn add_s(&self, s: S) -> Self;
+    fn add_s(&self, scalar: Self::Scalar) -> Self;
     /// Subtract a scalar from this vector, returning a new vector.
     #[must_use]
-    fn sub_s(&self, s: S) -> Self;
+    fn sub_s(&self, scalar: Self::Scalar) -> Self;
     /// Multiply this vector by a scalar, returning a new vector.
     #[must_use]
-    fn mul_s(&self, s: S) -> Self;
+    fn mul_s(&self, scalar: Self::Scalar) -> Self;
     /// Divide this vector by a scalar, returning a new vector.
     #[must_use]
-    fn div_s(&self, s: S) -> Self;
+    fn div_s(&self, scalar: Self::Scalar) -> Self;
     /// Take the remainder of this vector by a scalar, returning a new vector.
     #[must_use]
-    fn rem_s(&self, s: S) -> Self;
+    fn rem_s(&self, scalar: Self::Scalar) -> Self;
 
     /// Add this vector to another, returning a new vector.
     #[must_use]
@@ -170,15 +173,15 @@ pub trait Vector<S: BaseNum>: Array1<Element = S> + Clone // where
     fn rem_v(&self, v: &Self) -> Self;
 
     /// Add a scalar to this vector in-place.
-    fn add_self_s(&mut self, s: S);
+    fn add_self_s(&mut self, scalar: Self::Scalar);
     /// Subtract a scalar from this vector, in-place.
-    fn sub_self_s(&mut self, s: S);
+    fn sub_self_s(&mut self, scalar: Self::Scalar);
     /// Multiply this vector by a scalar, in-place.
-    fn mul_self_s(&mut self, s: S);
+    fn mul_self_s(&mut self, scalar: Self::Scalar);
     /// Divide this vector by a scalar, in-place.
-    fn div_self_s(&mut self, s: S);
+    fn div_self_s(&mut self, scalar: Self::Scalar);
     /// Take the remainder of this vector by a scalar, in-place.
-    fn rem_self_s(&mut self, s: S);
+    fn rem_self_s(&mut self, scalar: Self::Scalar);
 
     /// Add another vector to this one, in-place.
     fn add_self_v(&mut self, v: &Self);
@@ -192,22 +195,22 @@ pub trait Vector<S: BaseNum>: Array1<Element = S> + Clone // where
     fn rem_self_v(&mut self, v: &Self);
 
     /// The sum of the components of the vector.
-    fn sum(&self) -> S;
+    fn sum(&self) -> Self::Scalar;
     /// The product of the components of the vector.
-    fn product(&self) -> S;
+    fn product(&self) -> Self::Scalar;
 
     /// Vector dot product.
     #[inline]
-    fn dot(&self, v: &Self) -> S { self.mul_v(v).sum() }
+    fn dot(&self, v: &Self) -> Self::Scalar { self.mul_v(v).sum() }
 
     /// The minimum component of the vector.
-    fn comp_min(&self) -> S;
+    fn comp_min(&self) -> Self::Scalar;
     /// The maximum component of the vector.
-    fn comp_max(&self) -> S;
+    fn comp_max(&self) -> Self::Scalar;
 }
 
 /// Dot product of two vectors.
-#[inline] pub fn dot<S: BaseNum, V: Vector<S>>(a: V, b: V) -> S { a.dot(&b) }
+#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { a.dot(&b) }
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! vec {
@@ -249,14 +252,16 @@ macro_rules! vec {
             type Element = S;
         }
 
-        impl<S: BaseNum> Vector<S> for $VectorN<S> {
-            #[inline] fn from_value(s: S) -> $VectorN<S> { $VectorN { $($field: s),+ } }
+        impl<S: BaseNum> Vector for $VectorN<S> {
+            type Scalar = S;
 
-            #[inline] fn add_s(&self, s: S) -> $VectorN<S> { self + s }
-            #[inline] fn sub_s(&self, s: S) -> $VectorN<S> { self - s }
-            #[inline] fn mul_s(&self, s: S) -> $VectorN<S> { self * s }
-            #[inline] fn div_s(&self, s: S) -> $VectorN<S> { self / s }
-            #[inline] fn rem_s(&self, s: S) -> $VectorN<S> { self % s }
+            #[inline] fn from_value(scalar: S) -> $VectorN<S> { $VectorN { $($field: scalar),+ } }
+
+            #[inline] fn add_s(&self, scalar: S) -> $VectorN<S> { self + scalar }
+            #[inline] fn sub_s(&self, scalar: S) -> $VectorN<S> { self - scalar }
+            #[inline] fn mul_s(&self, scalar: S) -> $VectorN<S> { self * scalar }
+            #[inline] fn div_s(&self, scalar: S) -> $VectorN<S> { self / scalar }
+            #[inline] fn rem_s(&self, scalar: S) -> $VectorN<S> { self % scalar }
 
             #[inline] fn add_v(&self, v: &$VectorN<S>) -> $VectorN<S> { self + v }
             #[inline] fn sub_v(&self, v: &$VectorN<S>) -> $VectorN<S> { self - v }
@@ -264,11 +269,11 @@ macro_rules! vec {
             #[inline] fn div_v(&self, v: &$VectorN<S>) -> $VectorN<S> { self / v }
             #[inline] fn rem_v(&self, v: &$VectorN<S>) -> $VectorN<S> { self % v }
 
-            #[inline] fn add_self_s(&mut self, s: S) { *self = &*self + s; }
-            #[inline] fn sub_self_s(&mut self, s: S) { *self = &*self - s; }
-            #[inline] fn mul_self_s(&mut self, s: S) { *self = &*self * s; }
-            #[inline] fn div_self_s(&mut self, s: S) { *self = &*self / s; }
-            #[inline] fn rem_self_s(&mut self, s: S) { *self = &*self % s; }
+            #[inline] fn add_self_s(&mut self, scalar: S) { *self = &*self + scalar; }
+            #[inline] fn sub_self_s(&mut self, scalar: S) { *self = &*self - scalar; }
+            #[inline] fn mul_self_s(&mut self, scalar: S) { *self = &*self * scalar; }
+            #[inline] fn div_self_s(&mut self, scalar: S) { *self = &*self / scalar; }
+            #[inline] fn rem_self_s(&mut self, scalar: S) { *self = &*self % scalar; }
 
             #[inline] fn add_self_v(&mut self, v: &$VectorN<S>) { *self = &*self + v; }
             #[inline] fn sub_self_v(&mut self, v: &$VectorN<S>) { *self = &*self - v; }
@@ -621,9 +626,7 @@ impl<S: BaseNum> Vector4<S> {
 
 /// Specifies geometric operations for vectors. This is only implemented for
 /// 2-dimensional and 3-dimensional vectors.
-pub trait EuclideanVector<S: BaseFloat>: Vector<S>
-                                       + ApproxEq<Epsilon = S>
-                                       + Sized {
+pub trait EuclideanVector<S: BaseFloat>: Vector<Scalar = S> + ApproxEq<Epsilon = <Self as Vector>::Scalar> + Sized {
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(&self, other: &Self) -> bool {

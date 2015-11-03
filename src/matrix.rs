@@ -249,7 +249,7 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Vector<S>> where
+pub trait Matrix<S: BaseFloat, V: Vector<Scalar = S>> where
     Self: Array2<Element = S, Column = V, Row = V>,
     Self: ApproxEq<Epsilon = S> + Sized,
     // FIXME: blocked by rust-lang/rust#20671
