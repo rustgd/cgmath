@@ -19,6 +19,7 @@ use std::ops::*;
 
 /// An array containing elements of type `Element`
 pub trait Array1 where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Array1>::Element>,
     Self: IndexMut<usize, Output = <Self as Array1>::Element>,
 {
@@ -50,6 +51,7 @@ pub trait Array1 where
 
 /// A column-major array
 pub trait Array2 where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Array2>::Column>,
     Self: IndexMut<usize, Output = <Self as Array2>::Column>,
 {

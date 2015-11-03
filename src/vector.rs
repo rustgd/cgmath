@@ -111,7 +111,9 @@ use num::{BaseNum, BaseFloat};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector: Array1<Element = <Self as Vector>::Scalar> + Clone // where
+pub trait Vector: Clone where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: Array1<Element = <Self as Vector>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -627,6 +629,7 @@ impl<S: BaseNum> Vector4<S> {
 /// Specifies geometric operations for vectors. This is only implemented for
 /// 2-dimensional and 3-dimensional vectors.
 pub trait EuclideanVector: Vector + Sized where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as Vector>::Scalar: BaseFloat,
     Self: ApproxEq<Epsilon = <Self as Vector>::Scalar>,
 {
@@ -647,6 +650,7 @@ pub trait EuclideanVector: Vector + Sized where
     /// The norm of the vector.
     #[inline]
     fn length(&self) -> Self::Scalar {
+        // Not sure why these annotations are needed
         <<Self as Vector>::Scalar as ::rust_num::Float>::sqrt(self.dot(self))
     }
 
@@ -679,6 +683,7 @@ pub trait EuclideanVector: Vector + Sized where
     /// Normalises the vector to a length of `1`.
     #[inline]
     fn normalize_self(&mut self) {
+        // Not sure why these annotations are needed
         let rlen = <<Self as Vector>::Scalar as ::rust_num::Float>::recip(self.length());
         self.mul_self_s(rlen);
     }

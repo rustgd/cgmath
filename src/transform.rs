@@ -79,6 +79,7 @@ pub struct Decomposed<V: Vector, R> {
 }
 
 impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
 {
     #[inline]
@@ -224,6 +225,7 @@ pub trait ToComponents2<S: BaseFloat, R: Rotation2<S>>: ToComponents<Point2<S>, 
 pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>: ToComponents<Point3<S>, R> {}
 
 pub trait CompositeTransform<P: Point, R: Rotation<P>>: Transform<P> + ToComponents<P, R> where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
 {}
 
@@ -231,6 +233,7 @@ pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>: Transform2<S> + To
 pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>: Transform3<S> + ToComponents3<S, R> {}
 
 impl<P: Point, R: Rotation<P> + Clone> ToComponents<P, R> for Decomposed<P::Vector, R> where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
 {
     fn decompose(&self) -> (P::Vector, R, P::Vector) {

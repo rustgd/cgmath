@@ -66,7 +66,9 @@ impl<S: BaseNum> Point3<S> {
 }
 
 /// Specifies the numeric operations for point types.
-pub trait Point: Array1<Element = <<Self as Point>::Vector as Vector>::Scalar> + Clone // where
+pub trait Point: Clone where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: Array1<Element = <<Self as Point>::Vector as Vector>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,

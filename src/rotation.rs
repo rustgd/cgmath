@@ -25,7 +25,9 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: Point>: PartialEq + ApproxEq<Epsilon = <<P as Point>::Vector as Vector>::Scalar> + Sized where
+pub trait Rotation<P: Point>: PartialEq + Sized where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: ApproxEq<Epsilon = <<P as Point>::Vector as Vector>::Scalar>,
     <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
 {
     /// Create the identity transform (causes no transformation).

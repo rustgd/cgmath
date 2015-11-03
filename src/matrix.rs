@@ -250,6 +250,7 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
 }
 
 pub trait Matrix where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array2<
         Element = <<Self as Matrix>::ColumnRow as Vector>::Scalar,
         Column = <Self as Matrix>::ColumnRow,
@@ -268,6 +269,7 @@ pub trait Matrix where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
+    // FIXME: Will not be needed once equality constraints in where clauses is implemented
     type ColumnRow: Vector;
 
     /// Create a new diagonal matrix using the supplied value.
