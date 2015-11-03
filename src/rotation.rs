@@ -25,7 +25,9 @@ use vector::{Vector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<S: BaseFloat, P: Point<S>>: PartialEq + ApproxEq<Epsilon = S> + Sized {
+pub trait Rotation<P: Point>: PartialEq + ApproxEq<Epsilon = <<P as Point>::Vector as Vector>::Scalar> + Sized where
+    <<P as Point>::Vector as Vector>::Scalar: BaseFloat,
+{
     /// Create the identity transform (causes no transformation).
     fn one() -> Self;
 
@@ -67,7 +69,7 @@ pub trait Rotation<S: BaseFloat, P: Point<S>>: PartialEq + ApproxEq<Epsilon = S>
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S: BaseFloat>: Rotation<S, Point2<S>>
+pub trait Rotation2<S: BaseFloat>: Rotation<Point2<S>>
                                  + Into<Matrix2<S>>
                                  + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
@@ -76,7 +78,7 @@ pub trait Rotation2<S: BaseFloat>: Rotation<S, Point2<S>>
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseFloat>: Rotation<S, Point3<S>>
+pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
                                  + Into<Matrix3<S>>
                                  + Into<Basis3<S>>
                                  + Into<Quaternion<S>> {
@@ -172,7 +174,7 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
 }
 
-impl<S: BaseFloat> Rotation<S, Point2<S>> for Basis2<S> {
+impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
 
@@ -255,7 +257,7 @@ impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
     fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
 }
 
-impl<S: BaseFloat> Rotation<S, Point3<S>> for Basis3<S> {
+impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
     fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
 

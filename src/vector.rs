@@ -127,7 +127,7 @@ pub trait Vector: Array1<Element = <Self as Vector>::Scalar> + Clone // where
     // for<'a> &'a Self: Div<S, Output = Self>,
     // for<'a> &'a Self: Rem<S, Output = Self>,
 {
-    // The associated scalar
+    /// The associated scalar.
     type Scalar: BaseNum;
 
     /// Construct a vector from a single value, replicating it.
@@ -626,42 +626,45 @@ impl<S: BaseNum> Vector4<S> {
 
 /// Specifies geometric operations for vectors. This is only implemented for
 /// 2-dimensional and 3-dimensional vectors.
-pub trait EuclideanVector<S: BaseFloat>: Vector<Scalar = S> + ApproxEq<Epsilon = <Self as Vector>::Scalar> + Sized {
+pub trait EuclideanVector: Vector + Sized where
+    <Self as Vector>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = <Self as Vector>::Scalar>,
+{
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(&self, other: &Self) -> bool {
-        self.dot(other).approx_eq(&S::zero())
+        self.dot(other).approx_eq(&Self::Scalar::zero())
     }
 
     /// Returns the squared length of the vector. This does not perform an
     /// expensive square root operation like in the `length` method and can
     /// therefore be more efficient for comparing the lengths of two vectors.
     #[inline]
-    fn length2(&self) -> S {
+    fn length2(&self) -> Self::Scalar {
         self.dot(self)
     }
 
     /// The norm of the vector.
     #[inline]
-    fn length(&self) -> S {
-        self.dot(self).sqrt()
+    fn length(&self) -> Self::Scalar {
+        <<Self as Vector>::Scalar as ::rust_num::Float>::sqrt(self.dot(self))
     }
 
     /// The angle between the vector and `other`, in radians.
-    fn angle(&self, other: &Self) -> Rad<S>;
+    fn angle(&self, other: &Self) -> Rad<Self::Scalar>;
 
     /// Returns a vector with the same direction, but with a `length` (or
     /// `norm`) of `1`.
     #[inline]
     #[must_use]
     fn normalize(&self) -> Self {
-        self.normalize_to(S::one())
+        self.normalize_to(Self::Scalar::one())
     }
 
     /// Returns a vector with the same direction and a given `length`.
     #[inline]
     #[must_use]
-    fn normalize_to(&self, length: S) -> Self {
+    fn normalize_to(&self, length: Self::Scalar) -> Self {
         self.mul_s(length / self.length())
     }
 
@@ -669,47 +672,47 @@ pub trait EuclideanVector<S: BaseFloat>: Vector<Scalar = S> + ApproxEq<Epsilon =
     /// towards the length of `other` by the specified amount.
     #[inline]
     #[must_use]
-    fn lerp(&self, other: &Self, amount: S) -> Self {
+    fn lerp(&self, other: &Self, amount: Self::Scalar) -> Self {
         self.add_v(&other.sub_v(self).mul_s(amount))
     }
 
     /// Normalises the vector to a length of `1`.
     #[inline]
     fn normalize_self(&mut self) {
-        let rlen = self.length().recip();
+        let rlen = <<Self as Vector>::Scalar as ::rust_num::Float>::recip(self.length());
         self.mul_self_s(rlen);
     }
 
     /// Normalizes the vector to `length`.
     #[inline]
-    fn normalize_self_to(&mut self, length: S) {
+    fn normalize_self_to(&mut self, length: Self::Scalar) {
         let n = length / self.length();
         self.mul_self_s(n);
     }
 
     /// Linearly interpolates the length of the vector towards the length of
     /// `other` by the specified amount.
-    fn lerp_self(&mut self, other: &Self, amount: S) {
+    fn lerp_self(&mut self, other: &Self, amount: Self::Scalar) {
         let v = other.sub_v(self).mul_s(amount);
         self.add_self_v(&v);
     }
 }
 
-impl<S: BaseFloat> EuclideanVector<S> for Vector2<S> {
+impl<S: BaseFloat> EuclideanVector for Vector2<S> {
     #[inline]
     fn angle(&self, other: &Vector2<S>) -> Rad<S> {
         atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
-impl<S: BaseFloat> EuclideanVector<S> for Vector3<S> {
+impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
     fn angle(&self, other: &Vector3<S>) -> Rad<S> {
         atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
-impl<S: BaseFloat> EuclideanVector<S> for Vector4<S> {
+impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
     fn angle(&self, other: &Vector4<S>) -> Rad<S> {
         acos(self.dot(other) / (self.length() * other.length()))
