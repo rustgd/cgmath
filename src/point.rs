@@ -66,7 +66,7 @@ impl<S: BaseNum> Point3<S> {
 }
 
 /// Specifies the numeric operations for point types.
-pub trait Point<S: BaseNum>: Array1<S> + Clone // where
+pub trait Point<S: BaseNum>: Array1<Element = S> + Clone // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
@@ -123,7 +123,9 @@ pub trait Point<S: BaseNum>: Array1<S> + Clone // where
     fn max(&self, p: &Self) -> Self;
 }
 
-impl<S: BaseNum> Array1<S> for Point2<S> {}
+impl<S: BaseNum> Array1 for Point2<S> {
+    type Element = S;
+}
 
 impl<S: BaseNum> Point<S> for Point2<S> {
     type Vector = Vector2<S>;
@@ -200,7 +202,9 @@ impl<S: BaseFloat> ApproxEq for Point2<S> {
     }
 }
 
-impl<S: BaseNum> Array1<S> for Point3<S> {}
+impl<S: BaseNum> Array1 for Point3<S> {
+    type Element = S;
+}
 
 impl<S: BaseNum> Point<S> for Point3<S> {
     type Vector = Vector3<S>;

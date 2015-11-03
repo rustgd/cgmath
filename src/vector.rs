@@ -111,7 +111,7 @@ use num::{BaseNum, BaseFloat};
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
-pub trait Vector<S: BaseNum>: Array1<S> + Clone // where
+pub trait Vector<S: BaseNum>: Array1<Element = S> + Clone // where
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -245,7 +245,9 @@ macro_rules! vec {
             }
         }
 
-        impl<$S: Copy> Array1<$S> for $VectorN<$S> {}
+        impl<S: Copy> Array1 for $VectorN<S> {
+            type Element = S;
+        }
 
         impl<S: BaseNum> Vector<S> for $VectorN<S> {
             #[inline] fn from_value(s: S) -> $VectorN<S> { $VectorN { $($field: s),+ } }

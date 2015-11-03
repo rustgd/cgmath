@@ -40,7 +40,9 @@ pub struct Quaternion<S> {
     pub v: Vector3<S>,
 }
 
-impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {}
+impl<S: Copy + BaseFloat> Array1 for Quaternion<S> {
+    type Element = S;
+}
 
 impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three

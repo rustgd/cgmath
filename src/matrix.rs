@@ -249,7 +249,9 @@ impl<S: Copy + Neg<Output = S>> Matrix4<S> {
     }
 }
 
-pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + ApproxEq<Epsilon = S> + Sized // where
+pub trait Matrix<S: BaseFloat, V: Vector<S>> where
+    Self: Array2<Element = S, Column = V, Row = V>,
+    Self: ApproxEq<Epsilon = S> + Sized,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -359,7 +361,11 @@ pub trait Matrix<S: BaseFloat, V: Vector<S> + 'static>: Array2<V, V, S> + Approx
     fn is_symmetric(&self) -> bool;
 }
 
-impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
+impl<S: Copy + 'static> Array2 for Matrix2<S> {
+    type Element = S;
+    type Column = Vector2<S>;
+    type Row = Vector2<S>;
+
     #[inline]
     fn row(&self, r: usize) -> Vector2<S> {
         Vector2::new(self[0][r],
@@ -373,7 +379,11 @@ impl<S: Copy + 'static> Array2<Vector2<S>, Vector2<S>, S> for Matrix2<S> {
     }
 }
 
-impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
+impl<S: Copy + 'static> Array2 for Matrix3<S> {
+    type Element = S;
+    type Column = Vector3<S>;
+    type Row = Vector3<S>;
+
     #[inline]
     fn row(&self, r: usize) -> Vector3<S> {
         Vector3::new(self[0][r],
@@ -389,7 +399,11 @@ impl<S: Copy + 'static> Array2<Vector3<S>, Vector3<S>, S> for Matrix3<S> {
     }
 }
 
-impl<S: Copy + 'static> Array2<Vector4<S>, Vector4<S>, S> for Matrix4<S> {
+impl<S: Copy + 'static> Array2 for Matrix4<S> {
+    type Element = S;
+    type Column = Vector4<S>;
+    type Row = Vector4<S>;
+
     #[inline]
     fn row(&self, r: usize) -> Vector4<S> {
         Vector4::new(self[0][r],
