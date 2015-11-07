@@ -36,7 +36,7 @@ fn test_look_at() {
 	let eye = Point3::new(0.0f64, 0.0, -5.0);
 	let center = Point3::new(0.0f64, 0.0, 0.0);
 	let up = Vector3::new(1.0f64, 0.0, 0.0);
-	let t: Decomposed<f64,Vector3<f64>,Quaternion<f64>> = Transform::look_at(&eye, &center, &up);
+	let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(&eye, &center, &up);
 	let point = Point3::new(1.0f64, 0.0, 0.0);
 	let view_point = Point3::new(0.0f64, 1.0, 5.0);
 	assert!( t.transform_point(&point).approx_eq(&view_point) );

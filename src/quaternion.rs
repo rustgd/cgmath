@@ -40,7 +40,9 @@ pub struct Quaternion<S> {
     pub v: Vector3<S>,
 }
 
-impl<S: Copy + BaseFloat> Array1<S> for Quaternion<S> {}
+impl<S: Copy + BaseFloat> Array1 for Quaternion<S> {
+    type Element = S;
+}
 
 impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
@@ -170,7 +172,9 @@ impl<'a, 'b, S: BaseFloat> Mul<&'b Quaternion<S>> for &'a Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq<S> for Quaternion<S> {
+impl<S: BaseFloat> ApproxEq for Quaternion<S> {
+    type Epsilon = S;
+
     #[inline]
     fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon) &&
@@ -339,7 +343,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
 }
 
-impl<S: BaseFloat + 'static> Rotation<S, Vector3<S>, Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     #[inline]
     fn one() -> Quaternion<S> { Quaternion::one() }
 

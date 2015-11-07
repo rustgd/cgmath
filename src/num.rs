@@ -110,7 +110,7 @@ impl BaseInt for u64 {}
 impl BaseInt for usize {}
 
 /// Base floating point types
-pub trait BaseFloat : BaseNum + Float + ApproxEq<Self> {}
+pub trait BaseFloat : BaseNum + Float + ApproxEq<Epsilon = Self> {}
 
 impl BaseFloat for f32 {}
 impl BaseFloat for f64 {}

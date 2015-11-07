@@ -16,23 +16,26 @@
 use rust_num::{Float, NumCast};
 use rust_num::traits::cast;
 
-pub trait ApproxEq<T: NumCast + Float>: Sized {
-    fn approx_epsilon(_hack: Option<Self>) -> T {
+pub trait ApproxEq: Sized {
+    type Epsilon: NumCast + Float;
+
+    fn approx_epsilon() -> Self::Epsilon {
         cast(1.0e-5f64).unwrap()
     }
 
     fn approx_eq(&self, other: &Self) -> bool {
-        let eps: T = ApproxEq::approx_epsilon(None::<Self>);
-        self.approx_eq_eps(other, &eps)
+        self.approx_eq_eps(other, &Self::approx_epsilon())
     }
 
-    fn approx_eq_eps(&self, other: &Self, epsilon: &T) -> bool;
+    fn approx_eq_eps(&self, other: &Self, epsilon: &Self::Epsilon) -> bool;
 }
 
 
 macro_rules! approx_float(
     ($S:ident) => (
-        impl ApproxEq<$S> for $S {
+        impl ApproxEq for $S {
+            type Epsilon = $S;
+
              #[inline]
             fn approx_eq_eps(&self, other: &$S, epsilon: &$S) -> bool {
                  (*self - *other).abs() < *epsilon
@@ -62,9 +65,8 @@ macro_rules! assert_approx_eq(
     ($given: expr, $expected: expr) => ({
         let (given_val, expected_val) = (&($given), &($expected));
         if !given_val.approx_eq(expected_val) {
-            panic!("assertion failed: `left ≈ right` (left: `{:?}`, right: `{:?}`, tolerance: `{:?}`)",
-                *given_val, *expected_val,
-                ApproxEq::approx_epsilon(Some(*given_val))
+            panic!("assertion failed: `left ≈ right` (left: `{:?}`, right: `{:?}`)",
+                *given_val, *expected_val
             );
         }
     })

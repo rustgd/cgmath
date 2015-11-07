@@ -18,14 +18,20 @@ use std::ptr;
 use std::ops::*;
 
 /// An array containing elements of type `Element`
-pub trait Array1<Element: Copy>: Index<usize, Output=Element> + IndexMut<usize, Output=Element> {
+pub trait Array1 where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: Index<usize, Output = <Self as Array1>::Element>,
+    Self: IndexMut<usize, Output = <Self as Array1>::Element>,
+{
+    type Element: Copy;
+
     /// Get the pointer to the first element of the array.
-    fn ptr<'a>(&'a self) -> &'a Element {
+    fn ptr<'a>(&'a self) -> &'a Self::Element {
         &self[0]
     }
 
     /// Get a mutable pointer to the first element of the array.
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut Element {
+    fn mut_ptr<'a>(&'a mut self) -> &'a mut Self::Element {
         &mut self[0]
     }
 
@@ -38,21 +44,28 @@ pub trait Array1<Element: Copy>: Index<usize, Output=Element> + IndexMut<usize, 
 
     /// Replace an element in the array.
     #[inline]
-    fn replace_elem(&mut self, i: usize, src: Element) -> Element {
+    fn replace_elem(&mut self, i: usize, src: Self::Element) -> Self::Element {
         mem::replace(&mut self[i], src)
     }
 }
 
 /// A column-major array
-pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element: Copy>:
-        Index<usize, Output=Column> + IndexMut<usize, Output=Column> {
+pub trait Array2 where
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: Index<usize, Output = <Self as Array2>::Column>,
+    Self: IndexMut<usize, Output = <Self as Array2>::Column>,
+{
+    type Element: Copy;
+    type Column: Array1<Element = Self::Element>;
+    type Row: Array1<Element = Self::Element>;
+
     /// Get the pointer to the first element of the array.
-    fn ptr<'a>(&'a self) -> &'a Element {
+    fn ptr<'a>(&'a self) -> &'a Self::Element {
         &self[0][0]
     }
 
     /// Get a mutable pointer to the first element of the array.
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut Element {
+    fn mut_ptr<'a>(&'a mut self) -> &'a mut Self::Element {
         &mut self[0][0]
     }
 
@@ -64,12 +77,12 @@ pub trait Array2<Column: Array1<Element>+'static, Row: Array1<Element>, Element:
 
     /// Replace a column in the array.
     #[inline]
-    fn replace_col(&mut self, c: usize, src: Column) -> Column {
+    fn replace_col(&mut self, c: usize, src: Self::Column) -> Self::Column {
         mem::replace(&mut self[c], src)
     }
 
     /// Get a row from this array by-value.
-    fn row(&self, r: usize) -> Row;
+    fn row(&self, r: usize) -> Self::Row;
 
     /// Swap two rows of this array.
     fn swap_rows(&mut self, a: usize, b: usize);
