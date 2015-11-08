@@ -909,7 +909,7 @@ macro_rules! impl_binary_operator {
 
             #[inline]
             fn $binop(self, other: &'a $MatrixN<S>) -> $MatrixN<S> {
-                $MatrixN { $($field: self.$field.$binop(&other.$field)),+ }
+                $MatrixN { $($field: self.$field.$binop(other.$field)),+ }
             }
         }
     }
@@ -922,35 +922,29 @@ impl_binary_operator!(Sub::sub, Matrix2 { x, y });
 impl_binary_operator!(Sub::sub, Matrix3 { x, y, z });
 impl_binary_operator!(Sub::sub, Matrix4 { x, y, z, w });
 
-impl<'a, 'b, S: BaseNum> Mul<&'a Vector2<S>> for &'b Matrix2<S> {
-    type Output = Vector2<S>;
+macro_rules! impl_vector_mul_operators {
+    ($MatrixN:ident, $VectorN:ident { $($row_index:expr),+ }) => {
+        impl<'a, S: BaseNum> Mul<$VectorN<S>> for &'a $MatrixN<S> {
+            type Output = $VectorN<S>;
 
-    fn mul(self, v: &'a Vector2<S>) -> Vector2<S> {
-        Vector2::new(self.row(0).dot(v),
-                     self.row(1).dot(v))
+            fn mul(self, v: $VectorN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.row($row_index).dot(&v)),+)
+            }
+        }
+
+        impl<'a, 'b, S: BaseNum> Mul<&'a $VectorN<S>> for &'b $MatrixN<S> {
+            type Output = $VectorN<S>;
+
+            fn mul(self, v: &'a $VectorN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.row($row_index).dot(v)),+)
+            }
+        }
     }
 }
 
-impl<'a, 'b, S: BaseNum> Mul<&'a Vector3<S>> for &'b Matrix3<S> {
-    type Output = Vector3<S>;
-
-    fn mul(self, v: &'a Vector3<S>) -> Vector3<S> {
-        Vector3::new(self.row(0).dot(v),
-                     self.row(1).dot(v),
-                     self.row(2).dot(v))
-    }
-}
-
-impl<'a, 'b, S: BaseNum> Mul<&'a Vector4<S>> for &'b Matrix4<S> {
-    type Output = Vector4<S>;
-
-    fn mul(self, v: &'a Vector4<S>) -> Vector4<S> {
-        Vector4::new(self.row(0).dot(v),
-                     self.row(1).dot(v),
-                     self.row(2).dot(v),
-                     self.row(3).dot(v))
-    }
-}
+impl_vector_mul_operators!(Matrix2, Vector2 { 0, 1 });
+impl_vector_mul_operators!(Matrix3, Vector3 { 0, 1, 2 });
+impl_vector_mul_operators!(Matrix4, Vector4 { 0, 1, 2, 3 });
 
 impl<'a, 'b, S: BaseNum> Mul<&'a Matrix2<S>> for &'b Matrix2<S> {
     type Output = Matrix2<S>;

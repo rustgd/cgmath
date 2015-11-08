@@ -114,12 +114,30 @@ impl<S: BaseFloat> Quaternion<S> {
     }
 }
 
+impl<S: BaseFloat> Mul<S> for Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn mul(self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s * value, self.v * value)
+    }
+}
+
 impl<'a, S: BaseFloat> Mul<S> for &'a Quaternion<S> {
     type Output = Quaternion<S>;
 
     #[inline]
     fn mul(self, value: S) -> Quaternion<S> {
-        Quaternion::from_sv(self.s * value, &self.v * value)
+        Quaternion::from_sv(self.s * value, self.v * value)
+    }
+}
+
+impl<S: BaseFloat> Div<S> for Quaternion<S> {
+    type Output = Quaternion<S>;
+
+    #[inline]
+    fn div(self, value: S) -> Quaternion<S> {
+        Quaternion::from_sv(self.s / value, self.v / value)
     }
 }
 
@@ -128,7 +146,7 @@ impl<'a, S: BaseFloat> Div<S> for &'a Quaternion<S> {
 
     #[inline]
     fn div(self, value: S) -> Quaternion<S> {
-        Quaternion::from_sv(self.s / value, &self.v / value)
+        Quaternion::from_sv(self.s / value, self.v / value)
     }
 }
 
@@ -137,8 +155,9 @@ impl<'a, 'b, S: BaseFloat> Mul<&'b Vector3<S>> for &'a Quaternion<S> {
 
     #[inline]
     fn mul(self, vec: &'b Vector3<S>) -> Vector3<S>  {
-        let tmp = self.v.cross(vec).add_v(&vec.mul_s(self.s.clone()));
-        self.v.cross(&tmp).mul_s(cast(2i8).unwrap()).add_v(vec)
+        let two: S = cast(2i8).unwrap();
+        let tmp = self.v.cross(vec) + (vec * self.s);
+        (self.v.cross(&tmp) * two) + vec
     }
 }
 
@@ -147,7 +166,7 @@ impl<'a, 'b, S: BaseFloat> Add<&'b Quaternion<S>> for &'a Quaternion<S> {
 
     #[inline]
     fn add(self, other: &'b Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s + other.s, &self.v + &other.v)
+        Quaternion::from_sv(self.s + other.s, self.v + &other.v)
     }
 }
 
@@ -156,7 +175,7 @@ impl<'a, 'b, S: BaseFloat> Sub<&'b Quaternion<S>> for &'a Quaternion<S> {
 
     #[inline]
     fn sub(self, other: &'b Quaternion<S>) -> Quaternion<S> {
-        Quaternion::from_sv(self.s - other.s, &self.v - &other.v)
+        Quaternion::from_sv(self.s - other.s, self.v - &other.v)
     }
 }
 

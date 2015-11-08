@@ -55,7 +55,7 @@ impl<S: BaseNum> Point3<S> {
 impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
-        let e = v.truncate().mul_s(S::one() / v.w);
+        let e = v.truncate() * (S::one() / v.w);
         Point3::new(e.x, e.y, e.z)  //FIXME
     }
 
@@ -299,6 +299,33 @@ impl<S: BaseFloat> ApproxEq for Point3<S> {
 
 macro_rules! impl_operators {
     ($PointN:ident { $($field:ident),+ }, $VectorN:ident) => {
+        impl<S: BaseNum> Mul<S> for $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn mul(self, scalar: S) -> $PointN<S> {
+                $PointN::new($(self.$field * scalar),+)
+            }
+        }
+
+        impl<S: BaseNum> Div<S> for $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn div(self, scalar: S) -> $PointN<S> {
+                $PointN::new($(self.$field / scalar),+)
+            }
+        }
+
+        impl<S: BaseNum> Rem<S> for $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn rem(self, scalar: S) -> $PointN<S> {
+                $PointN::new($(self.$field % scalar),+)
+            }
+        }
+
         impl<'a, S: BaseNum> Mul<S> for &'a $PointN<S> {
             type Output = $PointN<S>;
 
@@ -323,6 +350,60 @@ macro_rules! impl_operators {
             #[inline]
             fn rem(self, scalar: S) -> $PointN<S> {
                 $PointN::new($(self.$field % scalar),+)
+            }
+        }
+
+        impl<S: BaseNum> Add<$VectorN<S>> for $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn add(self, v: $VectorN<S>) -> $PointN<S> {
+                $PointN::new($(self.$field + v.$field),+)
+            }
+        }
+
+        impl<S: BaseNum> Sub<$PointN<S>> for $PointN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn sub(self, p: $PointN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field - p.$field),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Add<&'a $VectorN<S>> for $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn add(self, v: &'a $VectorN<S>) -> $PointN<S> {
+                $PointN::new($(self.$field + v.$field),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Sub<&'a $PointN<S>> for $PointN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn sub(self, p: &'a $PointN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field - p.$field),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Add<$VectorN<S>> for &'a $PointN<S> {
+            type Output = $PointN<S>;
+
+            #[inline]
+            fn add(self, v: $VectorN<S>) -> $PointN<S> {
+                $PointN::new($(self.$field + v.$field),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> Sub<$PointN<S>> for &'a $PointN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn sub(self, p: $PointN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field - p.$field),+)
             }
         }
 
