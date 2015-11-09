@@ -54,19 +54,19 @@ impl<S: BaseNum> Point3<S> {
 
 impl<S: BaseNum> Point3<S> {
     #[inline]
-    pub fn from_homogeneous(v: &Vector4<S>) -> Point3<S> {
+    pub fn from_homogeneous(v: Vector4<S>) -> Point3<S> {
         let e = v.truncate() * (S::one() / v.w);
         Point3::new(e.x, e.y, e.z)  //FIXME
     }
 
     #[inline]
-    pub fn to_homogeneous(&self) -> Vector4<S> {
+    pub fn to_homogeneous(self) -> Vector4<S> {
         Vector4::new(self.x, self.y, self.z, S::one())
     }
 }
 
 /// Specifies the numeric operations for point types.
-pub trait Point: Clone where
+pub trait Point: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array1<Element = <Self as Point>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
@@ -90,25 +90,25 @@ pub trait Point: Clone where
     fn origin() -> Self;
 
     /// Create a point from a vector.
-    fn from_vec(v: &Self::Vector) -> Self;
+    fn from_vec(v: Self::Vector) -> Self;
     /// Convert a point to a vector.
-    fn to_vec(&self) -> Self::Vector;
+    fn to_vec(self) -> Self::Vector;
 
     /// Multiply each component by a scalar, returning the new point.
     #[must_use]
-    fn mul_s(&self, scalar: Self::Scalar) -> Self;
+    fn mul_s(self, scalar: Self::Scalar) -> Self;
     /// Divide each component by a scalar, returning the new point.
     #[must_use]
-    fn div_s(&self, scalar: Self::Scalar) -> Self;
+    fn div_s(self, scalar: Self::Scalar) -> Self;
     /// Subtract a scalar from each component, returning the new point.
     #[must_use]
-    fn rem_s(&self, scalar: Self::Scalar) -> Self;
+    fn rem_s(self, scalar: Self::Scalar) -> Self;
 
     /// Add a vector to this point, returning the new point.
     #[must_use]
-    fn add_v(&self, v: &Self::Vector) -> Self;
+    fn add_v(self, v: Self::Vector) -> Self;
     /// Subtract another point from this one, returning a new vector.
-    fn sub_p(&self, p: &Self) -> Self::Vector;
+    fn sub_p(self, p: Self) -> Self::Vector;
 
     /// Multiply each component by a scalar, in-place.
     fn mul_self_s(&mut self, scalar: Self::Scalar);
@@ -118,16 +118,16 @@ pub trait Point: Clone where
     fn rem_self_s(&mut self, scalar: Self::Scalar);
 
     /// Add a vector to this point, in-place.
-    fn add_self_v(&mut self, v: &Self::Vector);
+    fn add_self_v(&mut self, v: Self::Vector);
 
     /// This is a weird one, but its useful for plane calculations.
-    fn dot(&self, v: &Self::Vector) -> Self::Scalar;
+    fn dot(self, v: Self::Vector) -> Self::Scalar;
 
     #[must_use]
-    fn min(&self, p: &Self) -> Self;
+    fn min(self, p: Self) -> Self;
 
     #[must_use]
-    fn max(&self, p: &Self) -> Self;
+    fn max(self, p: Self) -> Self;
 }
 
 impl<S: BaseNum> Array1 for Point2<S> {
@@ -144,20 +144,20 @@ impl<S: BaseNum> Point for Point2<S> {
     }
 
     #[inline]
-    fn from_vec(v: &Vector2<S>) -> Point2<S> {
+    fn from_vec(v: Vector2<S>) -> Point2<S> {
         Point2::new(v.x, v.y)
     }
 
     #[inline]
-    fn to_vec(&self) -> Vector2<S> {
+    fn to_vec(self) -> Vector2<S> {
         Vector2::new(self.x, self.y)
     }
 
-    #[inline] fn mul_s(&self, scalar: S) -> Point2<S> { self * scalar }
-    #[inline] fn div_s(&self, scalar: S) -> Point2<S> { self / scalar }
-    #[inline] fn rem_s(&self, scalar: S) -> Point2<S> { self % scalar }
-    #[inline] fn add_v(&self, v: &Vector2<S>) -> Point2<S> { self + v }
-    #[inline] fn sub_p(&self, p: &Point2<S>) -> Vector2<S> { self - p }
+    #[inline] fn mul_s(self, scalar: S) -> Point2<S> { self * scalar }
+    #[inline] fn div_s(self, scalar: S) -> Point2<S> { self / scalar }
+    #[inline] fn rem_s(self, scalar: S) -> Point2<S> { self % scalar }
+    #[inline] fn add_v(self, v: Vector2<S>) -> Point2<S> { self + v }
+    #[inline] fn sub_p(self, p: Point2<S>) -> Vector2<S> { self - p }
 
     #[inline]
     fn mul_self_s(&mut self, scalar: S) {
@@ -178,24 +178,24 @@ impl<S: BaseNum> Point for Point2<S> {
     }
 
     #[inline]
-    fn add_self_v(&mut self, v: &Vector2<S>) {
+    fn add_self_v(&mut self, v: Vector2<S>) {
         self.x = self.x + v.x;
         self.y = self.y + v.y;
     }
 
     #[inline]
-    fn dot(&self, v: &Vector2<S>) -> S {
+    fn dot(self, v: Vector2<S>) -> S {
         self.x * v.x +
         self.y * v.y
     }
 
     #[inline]
-    fn min(&self, p: &Point2<S>) -> Point2<S> {
+    fn min(self, p: Point2<S>) -> Point2<S> {
         Point2::new(self.x.partial_min(p.x), self.y.partial_min(p.y))
     }
 
     #[inline]
-    fn max(&self, p: &Point2<S>) -> Point2<S> {
+    fn max(self, p: Point2<S>) -> Point2<S> {
         Point2::new(self.x.partial_max(p.x), self.y.partial_max(p.y))
     }
 }
@@ -224,20 +224,20 @@ impl<S: BaseNum> Point for Point3<S> {
     }
 
     #[inline]
-    fn from_vec(v: &Vector3<S>) -> Point3<S> {
+    fn from_vec(v: Vector3<S>) -> Point3<S> {
         Point3::new(v.x, v.y, v.z)
     }
 
     #[inline]
-    fn to_vec(&self) -> Vector3<S> {
+    fn to_vec(self) -> Vector3<S> {
         Vector3::new(self.x, self.y, self.z)
     }
 
-    #[inline] fn mul_s(&self, scalar: S) -> Point3<S> { self * scalar }
-    #[inline] fn div_s(&self, scalar: S) -> Point3<S> { self / scalar }
-    #[inline] fn rem_s(&self, scalar: S) -> Point3<S> { self % scalar }
-    #[inline] fn add_v(&self, v: &Vector3<S>) -> Point3<S> { self + v }
-    #[inline] fn sub_p(&self, p: &Point3<S>) -> Vector3<S> { self - p }
+    #[inline] fn mul_s(self, scalar: S) -> Point3<S> { self * scalar }
+    #[inline] fn div_s(self, scalar: S) -> Point3<S> { self / scalar }
+    #[inline] fn rem_s(self, scalar: S) -> Point3<S> { self % scalar }
+    #[inline] fn add_v(self, v: Vector3<S>) -> Point3<S> { self + v }
+    #[inline] fn sub_p(self, p: Point3<S>) -> Vector3<S> { self - p }
 
     #[inline]
     fn mul_self_s(&mut self, scalar: S) {
@@ -261,26 +261,26 @@ impl<S: BaseNum> Point for Point3<S> {
     }
 
     #[inline]
-    fn add_self_v(&mut self, v: &Vector3<S>) {
+    fn add_self_v(&mut self, v: Vector3<S>) {
         self.x = self.x + v.x;
         self.y = self.y + v.y;
         self.z = self.z + v.z;
     }
 
     #[inline]
-    fn dot(&self, v: &Vector3<S>) -> S {
+    fn dot(self, v: Vector3<S>) -> S {
         self.x * v.x +
         self.y * v.y +
         self.z * v.z
     }
 
     #[inline]
-    fn min(&self, p: &Point3<S>) -> Point3<S> {
+    fn min(self, p: Point3<S>) -> Point3<S> {
         Point3::new(self.x.partial_min(p.x), self.y.partial_min(p.y), self.z.partial_min(p.z))
     }
 
     #[inline]
-    fn max(&self, p: &Point3<S>) -> Point3<S> {
+    fn max(self, p: Point3<S>) -> Point3<S> {
         Point3::new(self.x.partial_max(p.x), self.y.partial_max(p.y), self.z.partial_max(p.z))
     }
 }

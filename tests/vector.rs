@@ -35,9 +35,9 @@ fn test_from_value() {
 
 #[test]
 fn test_dot() {
-    assert_eq!(Vector2::new(1isize, 2isize).dot(&Vector2::new(3isize, 4isize)), 11isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).dot(&Vector3::new(4isize, 5isize, 6isize)), 32isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).dot(&Vector4::new(5isize, 6isize, 7isize, 8isize)), 70isize);
+    assert_eq!(Vector2::new(1isize, 2isize).dot(Vector2::new(3isize, 4isize)), 11isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).dot(Vector3::new(4isize, 5isize, 6isize)), 32isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).dot(Vector4::new(5isize, 6isize, 7isize, 8isize)), 70isize);
 }
 
 #[test]
@@ -89,18 +89,18 @@ fn test_cross() {
     let a = Vector3::new(1isize, 2isize, 3isize);
     let b = Vector3::new(4isize, 5isize, 6isize);
     let r = Vector3::new(-3isize, 6isize, -3isize);
-    assert_eq!(a.cross(&b), r);
+    assert_eq!(a.cross(b), r);
 
     let mut a = a;
-    a.cross_self(&b);
+    a.cross_self(b);
     assert_eq!(a, r);
 }
 
 #[test]
 fn test_is_perpendicular() {
-    assert!(Vector2::new(1.0f64, 0.0f64).is_perpendicular(&Vector2::new(0.0f64, 1.0f64)));
-    assert!(Vector3::new(0.0f64, 1.0f64, 0.0f64).is_perpendicular(&Vector3::new(0.0f64, 0.0f64, 1.0f64)));
-    assert!(Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64).is_perpendicular(&Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64)));
+    assert!(Vector2::new(1.0f64, 0.0f64).is_perpendicular(Vector2::new(0.0f64, 1.0f64)));
+    assert!(Vector3::new(0.0f64, 1.0f64, 0.0f64).is_perpendicular(Vector3::new(0.0f64, 0.0f64, 1.0f64)));
+    assert!(Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64).is_perpendicular(Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64)));
 }
 
 #[cfg(test)]
@@ -146,17 +146,17 @@ mod test_length {
 
 #[test]
 fn test_angle() {
-    assert!(Vector2::new(1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(10.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(-1.0f64, 0.0f64).angle(&Vector2::new(0.0f64, 1.0f64)).approx_eq( &-rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &-rad(f64::consts::FRAC_PI_2) ));
 
-    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(&Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(&Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(&Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &rad(2.0f64 * f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &rad(2.0f64 * f64::consts::FRAC_PI_3) ));
 
-    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(&Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
 }
 
 #[test]

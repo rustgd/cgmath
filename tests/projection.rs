@@ -28,9 +28,9 @@ fn test_ortho_scale() {
     let vec_far: Vector4<f32> = Vector4::new(1., 1., 1., 1.);
 
     let o: Matrix4<f32> = ortho(-1., 1., -1., 1., -1., 1.);
-    let near = o.mul_v(&vec_near);
-    let orig = o.mul_v(&vec_orig);
-    let far = o.mul_v(&vec_far);
+    let near = o.mul_v(vec_near);
+    let orig = o.mul_v(vec_orig);
+    let far = o.mul_v(vec_far);
 
     assert_eq!(near, Vector4::new(-1f32, -1., 1., 1.));
     assert_eq!(orig, Vector4::new(0f32, 0., 0., 1.));
@@ -38,9 +38,9 @@ fn test_ortho_scale() {
 
 
     let o: Matrix4<f32> = ortho(-2., 2., -2., 2., -2., 2.);
-    let near = o.mul_v(&vec_near);
-    let orig = o.mul_v(&vec_orig);
-    let far = o.mul_v(&vec_far);
+    let near = o.mul_v(vec_near);
+    let orig = o.mul_v(vec_orig);
+    let far = o.mul_v(vec_far);
 
     assert_eq!(near, Vector4::new(-0.5f32, -0.5, 0.5, 1.));
     assert_eq!(orig, Vector4::new(0f32, 0., 0., 1.));
@@ -56,14 +56,14 @@ fn test_ortho_translate() {
     let vec_orig: Vector4<f32> = Vector4::new(0., 0., 0., 1.);
 
     let o: Matrix4<f32> = ortho(-1., 1., -1., 1., -1., 1.);
-    let orig = o.mul_v(&vec_orig);
+    let orig = o.mul_v(vec_orig);
     assert_eq!(orig, Vector4::new(0., 0., 0., 1.));
 
     let o: Matrix4<f32> = ortho(0., 2., 0., 2., 0., 2.);
-    let orig = o.mul_v(&vec_orig);
+    let orig = o.mul_v(vec_orig);
     assert_eq!(orig, Vector4::new(-1., -1., -1., 1.));
 
     let o: Matrix4<f32> = ortho(-2., 0., -2., 0., -2., 0.);
-    let orig = o.mul_v(&vec_orig);
+    let orig = o.mul_v(vec_orig);
     assert_eq!(orig, Vector4::new(1., 1., 1., 1.));
 }

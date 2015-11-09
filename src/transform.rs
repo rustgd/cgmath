@@ -34,18 +34,18 @@ pub trait Transform<P: Point>: Sized {
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
-    fn look_at(eye: &P, center: &P, up: &P::Vector) -> Self;
+    fn look_at(eye: P, center: P, up: P::Vector) -> Self;
 
     /// Transform a vector using this transform.
-    fn transform_vector(&self, vec: &P::Vector) -> P::Vector;
+    fn transform_vector(&self, vec: P::Vector) -> P::Vector;
 
     /// Transform a point using this transform.
-    fn transform_point(&self, point: &P) -> P;
+    fn transform_point(&self, point: P) -> P;
 
     /// Transform a vector as a point using this transform.
     #[inline]
-    fn transform_as_point(&self, vec: &P::Vector) -> P::Vector {
-        self.transform_point(&P::from_vec(vec)).to_vec()
+    fn transform_as_point(&self, vec: P::Vector) -> P::Vector {
+        self.transform_point(P::from_vec(vec)).to_vec()
     }
 
     /// Combine this transform with another, yielding a new transformation
@@ -92,9 +92,9 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     }
 
     #[inline]
-    fn look_at(eye: &P, center: &P, up: &P::Vector) -> Decomposed<P::Vector, R> {
-        let rot = R::look_at(&center.sub_p(eye), up);
-        let disp = rot.rotate_vector(&P::origin().sub_p(eye));
+    fn look_at(eye: P, center: P, up: P::Vector) -> Decomposed<P::Vector, R> {
+        let rot = R::look_at(center.sub_p(eye.clone()), up);
+        let disp = rot.rotate_vector(P::origin().sub_p(eye));
         Decomposed {
             scale: <P as Point>::Scalar::one(),
             rot: rot,
@@ -103,20 +103,20 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     }
 
     #[inline]
-    fn transform_vector(&self, vec: &P::Vector) -> P::Vector {
-        self.rot.rotate_vector(&vec.mul_s(self.scale.clone()))
+    fn transform_vector(&self, vec: P::Vector) -> P::Vector {
+        self.rot.rotate_vector(vec.mul_s(self.scale))
     }
 
     #[inline]
-    fn transform_point(&self, point: &P) -> P {
-        self.rot.rotate_point(&point.mul_s(self.scale.clone())).add_v(&self.disp)
+    fn transform_point(&self, point: P) -> P {
+        self.rot.rotate_point(point.mul_s(self.scale)).add_v(self.disp.clone())
     }
 
     fn concat(&self, other: &Decomposed<P::Vector, R>) -> Decomposed<P::Vector, R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat(&other.rot),
-            disp: self.transform_as_point(&other.disp),
+            disp: self.transform_as_point(other.disp.clone()),
         }
     }
 
@@ -126,7 +126,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         } else {
             let s = <P as Point>::Scalar::one() / self.scale;
             let r = self.rot.invert();
-            let d = r.rotate_vector(&self.disp).mul_s(-s);
+            let d = r.rotate_vector(self.disp.clone()).mul_s(-s);
             Some(Decomposed {
                 scale: s,
                 rot: r,
@@ -181,18 +181,18 @@ impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
     }
 
     #[inline]
-    fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> AffineMatrix3<S> {
+    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> AffineMatrix3<S> {
         AffineMatrix3 { mat: Matrix4::look_at(eye, center, up) }
     }
 
     #[inline]
-    fn transform_vector(&self, vec: &Vector3<S>) -> Vector3<S> {
-        self.mat.mul_v(&vec.extend(S::zero())).truncate()
+    fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+        self.mat.mul_v(vec.extend(S::zero())).truncate()
     }
 
     #[inline]
-    fn transform_point(&self, point: &Point3<S>) -> Point3<S> {
-        Point3::from_homogeneous(&self.mat.mul_v(&point.to_homogeneous()))
+    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+        Point3::from_homogeneous(self.mat.mul_v(point.to_homogeneous()))
     }
 
     #[inline]

@@ -193,9 +193,9 @@ fn test_sub_m() {
 
 #[test]
 fn test_mul_v() {
-    assert_eq!(matrix2::A.mul_v(&matrix2::V), Vector2::new(5.0f64, 11.0f64));
-    assert_eq!(matrix3::A.mul_v(&matrix3::V), Vector3::new(14.0f64, 32.0f64, 50.0f64));
-    assert_eq!(matrix4::A.mul_v(&matrix4::V), Vector4::new(30.0f64, 70.0f64, 110.0f64, 150.0f64));
+    assert_eq!(matrix2::A.mul_v(matrix2::V), Vector2::new(5.0f64, 11.0f64));
+    assert_eq!(matrix3::A.mul_v(matrix3::V), Vector3::new(14.0f64, 32.0f64, 50.0f64));
+    assert_eq!(matrix4::A.mul_v(matrix4::V), Vector4::new(30.0f64, 70.0f64, 110.0f64, 150.0f64));
 }
 
 #[test]
@@ -328,9 +328,9 @@ fn test_invert() {
 
 #[test]
 fn test_from_translation() {
-    let mat = Matrix4::from_translation(&Vector3::new(1.0f64, 2.0f64, 3.0f64));
+    let mat = Matrix4::from_translation(Vector3::new(1.0f64, 2.0f64, 3.0f64));
     let vertex = Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64);
-    let res = mat.mul_v(&vertex);
+    let res = mat.mul_v(vertex);
     assert_eq!(res, Vector4::new(1., 2., 3., 1.));
 }
 
@@ -398,13 +398,13 @@ fn test_predicates() {
 fn test_from_angle() {
     // Rotate the vector (1, 0) by π/2 radians to the vector (0, 1)
     let rot1 = Matrix2::from_angle(rad(0.5f64 * f64::consts::PI));
-    assert!(rot1.mul_v(&Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert!(rot1.mul_v(Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
 
     // Rotate the vector (-1, 0) by -π/2 radians to the vector (0, 1)
     let rot2 = -rot1;
-    assert!(rot2.mul_v(&-Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert!(rot2.mul_v(-Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
 
     // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
     let rot3: Matrix2<f64> = Matrix2::from_angle(rad(f64::consts::PI));
-    assert!(rot3.mul_v(&Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
+    assert!(rot3.mul_v(Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
 }

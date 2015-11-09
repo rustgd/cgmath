@@ -65,9 +65,9 @@ impl<S> Matrix2<S> {
 impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    pub fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Matrix2<S> {
+    pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
         //TODO: verify look_at 2D
-        Matrix2::from_cols(up.clone(), dir.clone()).transpose()
+        Matrix2::from_cols(up, dir).transpose()
     }
 
     #[inline]
@@ -110,10 +110,10 @@ impl<S> Matrix3<S> {
 impl<S: BaseFloat> Matrix3<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    pub fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Matrix3<S> {
+    pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
-        let side = up.cross(&dir).normalize();
-        let up = dir.cross(&side).normalize();
+        let side = up.cross(dir).normalize();
+        let up = dir.cross(side).normalize();
 
         Matrix3::from_cols(side, up, dir).transpose()
     }
@@ -164,7 +164,7 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 
     /// Create a matrix from a rotation around an arbitrary axis
-    pub fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
+    pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = sin_cos(angle);
         let _1subc = S::one() - c;
 
@@ -215,7 +215,7 @@ impl<S> Matrix4<S> {
 impl<S: BaseNum> Matrix4<S> {
     /// Create a translation matrix from a Vector3
     #[inline]
-    pub fn from_translation(v: &Vector3<S>) -> Matrix4<S> {
+    pub fn from_translation(v: Vector3<S>) -> Matrix4<S> {
         Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
                      S::zero(), S::one(), S::zero(), S::zero(),
                      S::zero(), S::zero(), S::one(), S::zero(),
@@ -226,15 +226,15 @@ impl<S: BaseNum> Matrix4<S> {
 impl<S: BaseFloat> Matrix4<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    pub fn look_at(eye: &Point3<S>, center: &Point3<S>, up: &Vector3<S>) -> Matrix4<S> {
+    pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = (center - eye).normalize();
         let s = f.cross(up).normalize();
-        let u = s.cross(&f);
+        let u = s.cross(f);
 
         Matrix4::new(s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
                      s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
                      s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
-                     -eye.dot(&s), -eye.dot(&u), eye.dot(&f), S::one())
+                     -eye.dot(s), -eye.dot(u), eye.dot(f), S::one())
     }
 }
 
@@ -275,7 +275,7 @@ pub trait Matrix where
     /// Create a new diagonal matrix using the supplied value.
     fn from_value(value: Self::Element) -> Self;
     /// Create a matrix from a non-uniform scale
-    fn from_diagonal(diagonal: &Self::Column) -> Self;
+    fn from_diagonal(diagonal: Self::Column) -> Self;
 
     /// Create a matrix with all elements equal to zero.
     #[inline]
@@ -303,7 +303,7 @@ pub trait Matrix where
     fn sub_m(&self, m: &Self) -> Self;
 
     /// Multiplay a vector by this matrix, returning a new vector.
-    fn mul_v(&self, v: &Self::Column) -> Self::Column;
+    fn mul_v(&self, v: Self::Column) -> Self::Column;
 
     /// Multiply this matrix by another matrix, returning the new matrix.
     #[must_use]
@@ -440,7 +440,7 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
     }
 
     #[inline]
-    fn from_diagonal(value: &Vector2<S>) -> Matrix2<S> {
+    fn from_diagonal(value: Vector2<S>) -> Matrix2<S> {
         Matrix2::new(value.x, S::zero(),
                      S::zero(), value.y)
     }
@@ -451,7 +451,7 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
     #[inline] fn add_m(&self, m: &Matrix2<S>) -> Matrix2<S> { self + m }
     #[inline] fn sub_m(&self, m: &Matrix2<S>) -> Matrix2<S> { self - m }
     fn mul_m(&self, other: &Matrix2<S>) -> Matrix2<S> { self * other }
-    #[inline] fn mul_v(&self, v: &Vector2<S>) -> Vector2<S> { self * v }
+    #[inline] fn mul_v(&self, v: Vector2<S>) -> Vector2<S> { self * v }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -473,14 +473,14 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix2<S>) {
-        self[0].add_self_v(&m[0]);
-        self[1].add_self_v(&m[1]);
+        self[0].add_self_v(m[0]);
+        self[1].add_self_v(m[1]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix2<S>) {
-        self[0].sub_self_v(&m[0]);
-        self[1].sub_self_v(&m[1]);
+        self[0].sub_self_v(m[0]);
+        self[1].sub_self_v(m[1]);
     }
 
     fn transpose(&self) -> Matrix2<S> {
@@ -540,7 +540,7 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
     }
 
     #[inline]
-    fn from_diagonal(value: &Vector3<S>) -> Matrix3<S> {
+    fn from_diagonal(value: Vector3<S>) -> Matrix3<S> {
         Matrix3::new(value.x, S::zero(), S::zero(),
                      S::zero(), value.y, S::zero(),
                      S::zero(), S::zero(), value.z)
@@ -552,7 +552,7 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
     #[inline] fn add_m(&self, m: &Matrix3<S>) -> Matrix3<S> { self + m }
     #[inline] fn sub_m(&self, m: &Matrix3<S>) -> Matrix3<S> { self - m }
     fn mul_m(&self, other: &Matrix3<S>) -> Matrix3<S> { self * other }
-    #[inline] fn mul_v(&self, v: &Vector3<S>) -> Vector3<S> { self * v}
+    #[inline] fn mul_v(&self, v: Vector3<S>) -> Vector3<S> { self * v}
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -577,16 +577,16 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix3<S>) {
-        self[0].add_self_v(&m[0]);
-        self[1].add_self_v(&m[1]);
-        self[2].add_self_v(&m[2]);
+        self[0].add_self_v(m[0]);
+        self[1].add_self_v(m[1]);
+        self[2].add_self_v(m[2]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix3<S>) {
-        self[0].sub_self_v(&m[0]);
-        self[1].sub_self_v(&m[1]);
-        self[2].sub_self_v(&m[2]);
+        self[0].sub_self_v(m[0]);
+        self[1].sub_self_v(m[1]);
+        self[2].sub_self_v(m[2]);
     }
 
     fn transpose(&self) -> Matrix3<S> {
@@ -618,9 +618,9 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
         if det.approx_eq(&S::zero()) { None } else {
-            Some(Matrix3::from_cols(&self[1].cross(&self[2]) / det,
-                                    &self[2].cross(&self[0]) / det,
-                                    &self[0].cross(&self[1]) / det).transpose())
+            Some(Matrix3::from_cols(self[1].cross(self[2]) / det,
+                                    self[2].cross(self[0]) / det,
+                                    self[0].cross(self[1]) / det).transpose())
         }
     }
 
@@ -659,7 +659,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 
     #[inline]
-    fn from_diagonal(value: &Vector4<S>) -> Matrix4<S> {
+    fn from_diagonal(value: Vector4<S>) -> Matrix4<S> {
         Matrix4::new(value.x, S::zero(), S::zero(), S::zero(),
                      S::zero(), value.y, S::zero(), S::zero(),
                      S::zero(), S::zero(), value.z, S::zero(),
@@ -672,7 +672,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     #[inline] fn add_m(&self, m: &Matrix4<S>) -> Matrix4<S> { self + m }
     #[inline] fn sub_m(&self, m: &Matrix4<S>) -> Matrix4<S> { self - m }
     fn mul_m(&self, other: &Matrix4<S>) -> Matrix4<S> { self * other }
-    #[inline] fn mul_v(&self, v: &Vector4<S>) -> Vector4<S> { self * v }
+    #[inline] fn mul_v(&self, v: Vector4<S>) -> Vector4<S> { self * v }
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
@@ -700,18 +700,18 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix4<S>) {
-        self[0].add_self_v(&m[0]);
-        self[1].add_self_v(&m[1]);
-        self[2].add_self_v(&m[2]);
-        self[3].add_self_v(&m[3]);
+        self[0].add_self_v(m[0]);
+        self[1].add_self_v(m[1]);
+        self[2].add_self_v(m[2]);
+        self[3].add_self_v(m[3]);
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix4<S>) {
-        self[0].sub_self_v(&m[0]);
-        self[1].sub_self_v(&m[1]);
-        self[2].sub_self_v(&m[2]);
-        self[3].sub_self_v(&m[3]);
+        self[0].sub_self_v(m[0]);
+        self[1].sub_self_v(m[1]);
+        self[2].sub_self_v(m[2]);
+        self[3].sub_self_v(m[3]);
     }
 
     fn transpose(&self) -> Matrix4<S> {
@@ -928,7 +928,7 @@ macro_rules! impl_vector_mul_operators {
             type Output = $VectorN<S>;
 
             fn mul(self, v: $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.row($row_index).dot(&v)),+)
+                $VectorN::new($(self.row($row_index).dot(v)),+)
             }
         }
 
@@ -936,7 +936,7 @@ macro_rules! impl_vector_mul_operators {
             type Output = $VectorN<S>;
 
             fn mul(self, v: &'a $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.row($row_index).dot(v)),+)
+                $VectorN::new($(self.row($row_index).dot(*v)),+)
             }
         }
     }
@@ -950,8 +950,8 @@ impl<'a, 'b, S: BaseNum> Mul<&'a Matrix2<S>> for &'b Matrix2<S> {
     type Output = Matrix2<S>;
 
     fn mul(self, other: &'a Matrix2<S>) -> Matrix2<S> {
-        Matrix2::new(self.row(0).dot(&other[0]), self.row(1).dot(&other[0]),
-                     self.row(0).dot(&other[1]), self.row(1).dot(&other[1]))
+        Matrix2::new(self.row(0).dot(other[0]), self.row(1).dot(other[0]),
+                     self.row(0).dot(other[1]), self.row(1).dot(other[1]))
     }
 }
 
@@ -959,9 +959,9 @@ impl<'a, 'b, S: BaseNum> Mul<&'a Matrix3<S>> for &'b Matrix3<S> {
     type Output = Matrix3<S>;
 
     fn mul(self, other: &'a Matrix3<S>) -> Matrix3<S> {
-        Matrix3::new(self.row(0).dot(&other[0]),self.row(1).dot(&other[0]),self.row(2).dot(&other[0]),
-                     self.row(0).dot(&other[1]),self.row(1).dot(&other[1]),self.row(2).dot(&other[1]),
-                     self.row(0).dot(&other[2]),self.row(1).dot(&other[2]),self.row(2).dot(&other[2]))
+        Matrix3::new(self.row(0).dot(other[0]),self.row(1).dot(other[0]),self.row(2).dot(other[0]),
+                     self.row(0).dot(other[1]),self.row(1).dot(other[1]),self.row(2).dot(other[1]),
+                     self.row(0).dot(other[2]),self.row(1).dot(other[2]),self.row(2).dot(other[2]))
     }
 }
 
