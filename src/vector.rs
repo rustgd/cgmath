@@ -316,12 +316,48 @@ macro_rules! vec {
 
 macro_rules! impl_binary_operator {
     ($Binop:ident :: $binop:ident, $VectorN:ident { $($field:ident),+ }) => {
+        impl<S: BaseNum> $Binop<S> for $VectorN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn $binop(self, scalar: S) -> $VectorN<S> {
+                $VectorN::new($(self.$field.$binop(scalar)),+)
+            }
+        }
+
         impl<'a, S: BaseNum> $Binop<S> for &'a $VectorN<S> {
             type Output = $VectorN<S>;
 
             #[inline]
-            fn $binop(self, s: S) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(s)),+)
+            fn $binop(self, scalar: S) -> $VectorN<S> {
+                $VectorN::new($(self.$field.$binop(scalar)),+)
+            }
+        }
+
+        impl<S: BaseNum> $Binop<$VectorN<S>> for $VectorN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn $binop(self, other: $VectorN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field.$binop(other.$field)),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> $Binop<&'a $VectorN<S>> for $VectorN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn $binop(self, other: &'a $VectorN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field.$binop(other.$field)),+)
+            }
+        }
+
+        impl<'a, S: BaseNum> $Binop<$VectorN<S>> for &'a $VectorN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            fn $binop(self, other: $VectorN<S>) -> $VectorN<S> {
+                $VectorN::new($(self.$field.$binop(other.$field)),+)
             }
         }
 
