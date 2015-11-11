@@ -34,20 +34,20 @@ pub trait Rotation<P: Point>: PartialEq + Sized where
     fn one() -> Self;
 
     /// Create a rotation to a given direction with an 'up' vector
-    fn look_at(dir: &P::Vector, up: &P::Vector) -> Self;
+    fn look_at(dir: P::Vector, up: P::Vector) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: &P::Vector, b: &P::Vector) -> Self;
+    fn between_vectors(a: P::Vector, b: P::Vector) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: &P::Vector) -> P::Vector;
+    fn rotate_vector(&self, vec: P::Vector) -> P::Vector;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.
     #[inline]
-    fn rotate_point(&self, point: &P) -> P {
-        P::from_vec(&self.rotate_vector(&point.to_vec()))
+    fn rotate_point(&self, point: P) -> P {
+        P::from_vec(self.rotate_vector(point.to_vec()))
     }
 
     /// Create a new rotation which combines both this rotation, and another.
@@ -85,7 +85,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
                                  + Into<Basis3<S>>
                                  + Into<Quaternion<S>> {
     /// Create a rotation using an angle around a given axis.
-    fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Self;
+    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Self;
 
     /// Create a rotation from a set of euler angles.
     ///
@@ -99,19 +99,19 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
     /// Create a rotation from an angle around the `x` axis (pitch).
     #[inline]
     fn from_angle_x(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle(&Vector3::unit_x(), theta)
+        Rotation3::from_axis_angle(Vector3::unit_x(), theta)
     }
 
     /// Create a rotation from an angle around the `y` axis (yaw).
     #[inline]
     fn from_angle_y(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle(&Vector3::unit_y(), theta)
+        Rotation3::from_axis_angle(Vector3::unit_y(), theta)
     }
 
     /// Create a rotation from an angle around the `z` axis (roll).
     #[inline]
     fn from_angle_z(theta: Rad<S>) -> Self {
-        Rotation3::from_axis_angle(&Vector3::unit_z(), theta)
+        Rotation3::from_axis_angle(Vector3::unit_z(), theta)
     }
 }
 
@@ -143,7 +143,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// let rot: Basis2<f64> = Rotation2::from_angle(rad(0.5f64 * f64::consts::PI));
 ///
 /// // Rotate the vector using the two-dimensional rotation matrix:
-/// let unit_y = rot.rotate_vector(&unit_x);
+/// let unit_y = rot.rotate_vector(unit_x);
 ///
 /// // Since sin(π/2) may not be exactly zero due to rounding errors, we can
 /// // use cgmath's approx_eq() feature to show that it is close enough.
@@ -151,12 +151,12 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
 /// let unit_y2: Matrix2<_> = rot.into();
-/// let unit_y2 = unit_y2.mul_v(&unit_x);
+/// let unit_y2 = unit_y2.mul_v(unit_x);
 /// assert_eq!(unit_y2, unit_y);
 ///
 /// // Note that we can also concatenate rotations:
 /// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
-/// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(&unit_x);
+/// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
 #[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
@@ -181,17 +181,17 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
 
     #[inline]
-    fn look_at(dir: &Vector2<S>, up: &Vector2<S>) -> Basis2<S> {
+    fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 { mat: Matrix2::look_at(dir, up) }
     }
 
     #[inline]
-    fn between_vectors(a: &Vector2<S>, b: &Vector2<S>) -> Basis2<S> {
+    fn between_vectors(a: Vector2<S>, b: Vector2<S>) -> Basis2<S> {
         Rotation2::from_angle(acos(a.dot(b)) )
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: &Vector2<S>) -> Vector2<S> { self.mat.mul_v(vec) }
+    fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> { self.mat.mul_v(vec) }
 
     #[inline]
     fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat.mul_m(&other.mat) } }
@@ -264,18 +264,18 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
 
     #[inline]
-    fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Basis3<S> {
+    fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::look_at(dir, up) }
     }
 
     #[inline]
-    fn between_vectors(a: &Vector3<S>, b: &Vector3<S>) -> Basis3<S> {
+    fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Basis3<S> {
         let q: Quaternion<S> = Rotation::between_vectors(a, b);
         q.into()
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self.mat.mul_v(vec) }
+    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self.mat.mul_v(vec) }
 
     #[inline]
     fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat.mul_m(&other.mat) } }
@@ -304,7 +304,7 @@ impl<S: BaseFloat> ApproxEq for Basis3<S> {
 }
 
 impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
-    fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Basis3<S> {
+    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_axis_angle(axis, angle) }
     }
 

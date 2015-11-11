@@ -72,21 +72,21 @@ impl<S: BaseFloat> Quaternion<S> {
 
     /// The dot product of the quaternion and `q`.
     #[inline]
-    pub fn dot(&self, q: &Quaternion<S>) -> S {
-        self.s * q.s + self.v.dot(&q.v)
+    pub fn dot(self, q: Quaternion<S>) -> S {
+        self.s * q.s + self.v.dot(q.v)
     }
 
     /// The conjugate of the quaternion.
     #[inline]
-    pub fn conjugate(&self) -> Quaternion<S> {
-        Quaternion::from_sv(self.s.clone(), -self.v.clone())
+    pub fn conjugate(self) -> Quaternion<S> {
+        Quaternion::from_sv(self.s, -self.v)
     }
 
     /// The squared magnitude of the quaternion. This is useful for
     /// magnitude comparisons where the exact magnitude does not need to be
     /// calculated.
     #[inline]
-    pub fn magnitude2(&self) -> S {
+    pub fn magnitude2(self) -> S {
         self.s * self.s + self.v.length2()
     }
 
@@ -104,12 +104,12 @@ impl<S: BaseFloat> Quaternion<S> {
 
     /// Normalize this quaternion, returning the new quaternion.
     #[inline]
-    pub fn normalize(&self) -> Quaternion<S> {
+    pub fn normalize(self) -> Quaternion<S> {
         self * (S::one() / self.magnitude())
     }
 
     /// Do a normalized linear interpolation with `other`, by `amount`.
-    pub fn nlerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
+    pub fn nlerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
         (&(self * (S::one() - amount)) + &(other * amount)).normalize()
     }
 }
@@ -156,8 +156,8 @@ impl<'a, 'b, S: BaseFloat> Mul<&'b Vector3<S>> for &'a Quaternion<S> {
     #[inline]
     fn mul(self, vec: &'b Vector3<S>) -> Vector3<S>  {
         let two: S = cast(2i8).unwrap();
-        let tmp = self.v.cross(vec) + (vec * self.s);
-        (self.v.cross(&tmp) * two) + vec
+        let tmp = self.v.cross(*vec) + (vec * self.s);
+        (self.v.cross(tmp) * two) + vec
     }
 }
 
@@ -218,7 +218,7 @@ impl<S: BaseFloat> Quaternion<S> {
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-    pub fn slerp(&self, other: &Quaternion<S>, amount: S) -> Quaternion<S> {
+    pub fn slerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995f64).unwrap();
 
@@ -251,7 +251,7 @@ impl<S: BaseFloat> Quaternion<S> {
     ///  Based on:
     /// - [Maths - Conversion Quaternion to Euler]
     ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
-    pub fn to_euler(&self) -> (Rad<S>, Rad<S>, Rad<S>) {
+    pub fn to_euler(self) -> (Rad<S>, Rad<S>, Rad<S>) {
         let sig: S = cast(0.499f64).unwrap();
         let two: S = cast(2f64).unwrap();
         let one: S = cast(1f64).unwrap();
@@ -367,19 +367,19 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     fn one() -> Quaternion<S> { Quaternion::one() }
 
     #[inline]
-    fn look_at(dir: &Vector3<S>, up: &Vector3<S>) -> Quaternion<S> {
+    fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
         Matrix3::look_at(dir, up).into()
     }
 
     #[inline]
-    fn between_vectors(a: &Vector3<S>, b: &Vector3<S>) -> Quaternion<S> {
+    fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Quaternion<S> {
         //http://stackoverflow.com/questions/1171849/
         //finding-quaternion-representing-the-rotation-from-one-vector-to-another
         Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: &Vector3<S>) -> Vector3<S> { self * vec }
+    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self * &vec }
 
     #[inline]
     fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self * other }
@@ -396,7 +396,7 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
     #[inline]
-    fn from_axis_angle(axis: &Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
+    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));
         Quaternion::from_sv(c, axis.mul_s(s))
     }

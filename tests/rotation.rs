@@ -26,7 +26,7 @@ mod rotation {
 
     pub fn a3<R: Rotation3<f64>>() -> R {
         let axis = Vector3::new(1.0, 1.0, 0.0).normalize();
-        Rotation3::from_axis_angle(&axis, deg(30.0).into())
+        Rotation3::from_axis_angle(axis, deg(30.0).into())
     }
 }
 
