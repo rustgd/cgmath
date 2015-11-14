@@ -40,7 +40,7 @@ pub trait Array where
 
     /// Swap the elements at indices `i` and `j` in-place.
     #[inline]
-    fn swap_elems(&mut self, i: usize, j: usize) {
+    fn swap_elements(&mut self, i: usize, j: usize) {
         // Yeah, ok borrow checker – I know what I'm doing here
         unsafe { ptr::swap(&mut self[i], &mut self[j]) };
     }

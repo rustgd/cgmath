@@ -423,8 +423,8 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        self[0].swap_elems(a, b);
-        self[1].swap_elems(a, b);
+        self[0].swap_elements(a, b);
+        self[1].swap_elements(a, b);
     }
 
     #[inline]
@@ -570,9 +570,9 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        self[0].swap_elems(a, b);
-        self[1].swap_elems(a, b);
-        self[2].swap_elems(a, b);
+        self[0].swap_elements(a, b);
+        self[1].swap_elements(a, b);
+        self[2].swap_elements(a, b);
     }
 
     #[inline]
@@ -739,10 +739,10 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
 
     #[inline]
     fn swap_rows(&mut self, a: usize, b: usize) {
-        self[0].swap_elems(a, b);
-        self[1].swap_elems(a, b);
-        self[2].swap_elems(a, b);
-        self[3].swap_elems(a, b);
+        self[0].swap_elements(a, b);
+        self[1].swap_elements(a, b);
+        self[2].swap_elements(a, b);
+        self[3].swap_elements(a, b);
     }
 
     #[inline]
