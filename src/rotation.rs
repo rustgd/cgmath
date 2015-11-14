@@ -15,9 +15,8 @@
 
 use angle::{Rad, acos};
 use approx::ApproxEq;
-use matrix::Matrix;
-use matrix::Matrix2;
-use matrix::Matrix3;
+use matrix::{Matrix, SquareMatrix};
+use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
 use point::{Point, Point2, Point3};
 use quaternion::Quaternion;
