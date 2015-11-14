@@ -63,25 +63,25 @@ fn test_product() {
 }
 
 #[test]
-fn test_comp_min() {
-    assert_eq!(Vector2::new(1isize, 2isize).comp_min(), 1isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_min(), 1isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_min(), 1isize);
+fn test_min() {
+    assert_eq!(Vector2::new(1isize, 2isize).min(), 1isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).min(), 1isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).min(), 1isize);
 
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_min(), 3.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_min(), 4.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).comp_min(), 5.0f64);
+    assert_eq!(Vector2::new(3.0f64, 4.0f64).min(), 3.0f64);
+    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).min(), 4.0f64);
+    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).min(), 5.0f64);
 }
 
 #[test]
-fn test_comp_max() {
-    assert_eq!(Vector2::new(1isize, 2isize).comp_max(), 2isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).comp_max(), 3isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).comp_max(), 4isize);
+fn test_max() {
+    assert_eq!(Vector2::new(1isize, 2isize).max(), 2isize);
+    assert_eq!(Vector3::new(1isize, 2isize, 3isize).max(), 3isize);
+    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).max(), 4isize);
 
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).comp_max(), 4.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).comp_max(), 6.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).comp_max(), 8.0f64);
+    assert_eq!(Vector2::new(3.0f64, 4.0f64).max(), 4.0f64);
+    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).max(), 6.0f64);
+    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).max(), 8.0f64);
 }
 
 #[test]

@@ -132,6 +132,22 @@ pub trait Point: Copy + Clone where
 
 impl<S: BaseNum> Array1 for Point2<S> {
     type Element = S;
+
+    fn sum(self) -> S {
+        self.x + self.y
+    }
+
+    fn product(self) -> S {
+        self.x * self.y
+    }
+
+    fn min(self) -> S {
+        self.x.partial_min(self.y)
+    }
+
+    fn max(self) -> S {
+        self.x.partial_max(self.y)
+    }
 }
 
 impl<S: BaseNum> Point for Point2<S> {
@@ -212,6 +228,22 @@ impl<S: BaseFloat> ApproxEq for Point2<S> {
 
 impl<S: BaseNum> Array1 for Point3<S> {
     type Element = S;
+
+    fn sum(self) -> S {
+        self.x + self.y + self.z
+    }
+
+    fn product(self) -> S {
+        self.x * self.y * self.z
+    }
+
+    fn min(self) -> S {
+        self.x.partial_min(self.y).partial_min(self.z)
+    }
+
+    fn max(self) -> S {
+        self.x.partial_max(self.y).partial_max(self.z)
+    }
 }
 
 impl<S: BaseNum> Point for Point3<S> {

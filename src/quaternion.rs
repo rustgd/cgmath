@@ -24,7 +24,6 @@ use rust_num::traits::cast;
 
 use angle::{Angle, Rad, acos, sin, sin_cos, rad};
 use approx::ApproxEq;
-use array::Array1;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
@@ -38,10 +37,6 @@ use vector::{Vector3, Vector, EuclideanVector};
 pub struct Quaternion<S> {
     pub s: S,
     pub v: Vector3<S>,
-}
-
-impl<S: Copy + BaseFloat> Array1 for Quaternion<S> {
-    type Element = S;
 }
 
 impl<S: BaseFloat> Quaternion<S> {

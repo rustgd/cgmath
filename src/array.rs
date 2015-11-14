@@ -17,6 +17,8 @@ use std::mem;
 use std::ptr;
 use std::ops::*;
 
+use num::PartialOrd;
+
 /// An array containing elements of type `Element`
 pub trait Array1 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
@@ -47,6 +49,18 @@ pub trait Array1 where
     fn replace_elem(&mut self, i: usize, src: Self::Element) -> Self::Element {
         mem::replace(&mut self[i], src)
     }
+
+    /// The sum of the elements of the array.
+    fn sum(self) -> Self::Element where Self::Element: Add<Output = <Self as Array1>::Element>;
+
+    /// The product of the elements of the array.
+    fn product(self) -> Self::Element where Self::Element: Mul<Output = <Self as Array1>::Element>;
+
+    /// The minimum element of the array.
+    fn min(self) -> Self::Element where Self::Element: PartialOrd;
+
+    /// The maximum element of the array.
+    fn max(self) -> Self::Element where Self::Element: PartialOrd;
 }
 
 /// A column-major array
