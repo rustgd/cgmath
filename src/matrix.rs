@@ -27,7 +27,7 @@ use rust_num::traits::cast;
 
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
-use array::Array1;
+use array::Array;
 use num::{BaseFloat, BaseNum};
 use point::{Point, Point3};
 use quaternion::Quaternion;
@@ -271,9 +271,9 @@ pub trait Matrix  where
     type Element: BaseFloat;
 
     /// The row vector of the matrix.
-    type Row: Array1<Element = Self::Element>;
+    type Row: Array<Element = Self::Element>;
     /// The column vector of the matrix.
-    type Column: Array1<Element = Self::Element>;
+    type Column: Array<Element = Self::Element>;
 
     /// The type of the transposed matrix
     type Transpose: Matrix<Element = Self::Element, Row = Self::Column, Column = Self::Row>;
@@ -344,7 +344,7 @@ pub trait SquareMatrix where
     /// This is used to constrain the column and rows to be of the same type in lieu of equality
     /// constraints being implemented for `where` clauses. Once those are added, this type will
     /// likely go away.
-    type ColumnRow: Array1<Element = Self::Element>;
+    type ColumnRow: Array<Element = Self::Element>;
 
     /// Create a new diagonal matrix using the supplied value.
     fn from_value(value: Self::Element) -> Self;

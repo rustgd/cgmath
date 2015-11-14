@@ -88,7 +88,7 @@
 //!
 //! Several other useful methods are provided as well. Vector fields can be
 //! accessed using array syntax (i.e. `vector[0] == vector.x`), or by using
-//! the methods provided by the [`Array1`](../array/trait.Array1.html) trait.
+//! the methods provided by the [`Array`](../array/trait.Array.html) trait.
 //! This trait also provides a `map()` method for applying arbitrary functions.
 //!
 //! The [`Vector`](../trait.Vector.html) trait presents the most general
@@ -105,7 +105,7 @@ use rust_num::{NumCast, Zero, One};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
-use array::Array1;
+use array::Array;
 use num::{BaseNum, BaseFloat, PartialOrd};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
@@ -113,7 +113,7 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 /// for pragmatic reasons.
 pub trait Vector: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array1<Element = <Self as Vector>::Scalar>,
+    Self: Array<Element = <Self as Vector>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -239,7 +239,7 @@ macro_rules! vec {
             }
         }
 
-        impl<S: Copy> Array1 for $VectorN<S> {
+        impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
 
             #[inline] fn sum(self) -> S where S: Add<Output = S> { fold!(add, { $(self.$field),+ }) }

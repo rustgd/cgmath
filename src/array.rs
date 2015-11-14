@@ -20,10 +20,10 @@ use std::ops::*;
 use num::PartialOrd;
 
 /// An array containing elements of type `Element`
-pub trait Array1 where
+pub trait Array where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Index<usize, Output = <Self as Array1>::Element>,
-    Self: IndexMut<usize, Output = <Self as Array1>::Element>,
+    Self: Index<usize, Output = <Self as Array>::Element>,
+    Self: IndexMut<usize, Output = <Self as Array>::Element>,
 {
     type Element: Copy;
 
@@ -53,10 +53,10 @@ pub trait Array1 where
     }
 
     /// The sum of the elements of the array.
-    fn sum(self) -> Self::Element where Self::Element: Add<Output = <Self as Array1>::Element>;
+    fn sum(self) -> Self::Element where Self::Element: Add<Output = <Self as Array>::Element>;
 
     /// The product of the elements of the array.
-    fn product(self) -> Self::Element where Self::Element: Mul<Output = <Self as Array1>::Element>;
+    fn product(self) -> Self::Element where Self::Element: Mul<Output = <Self as Array>::Element>;
 
     /// The minimum element of the array.
     fn min(self) -> Self::Element where Self::Element: PartialOrd;
