@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::mem;
 use std::ptr;
 use std::ops::*;
 
@@ -44,12 +43,6 @@ pub trait Array where
     fn swap_elems(&mut self, i: usize, j: usize) {
         // Yeah, ok borrow checker – I know what I'm doing here
         unsafe { ptr::swap(&mut self[i], &mut self[j]) };
-    }
-
-    /// Replace an element in the array.
-    #[inline]
-    fn replace_elem(&mut self, i: usize, src: Self::Element) -> Self::Element {
-        mem::replace(&mut self[i], src)
     }
 
     /// The sum of the elements of the array.
