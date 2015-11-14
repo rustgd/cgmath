@@ -28,12 +28,14 @@ pub trait Array1 where
     type Element: Copy;
 
     /// Get the pointer to the first element of the array.
-    fn ptr<'a>(&'a self) -> &'a Self::Element {
+    #[inline]
+    fn as_ptr(&self) -> *const Self::Element {
         &self[0]
     }
 
     /// Get a mutable pointer to the first element of the array.
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut Self::Element {
+    #[inline]
+    fn as_mut_ptr(&mut self) -> *mut Self::Element {
         &mut self[0]
     }
 
@@ -74,12 +76,14 @@ pub trait Array2 where
     type Row: Array1<Element = Self::Element>;
 
     /// Get the pointer to the first element of the array.
-    fn ptr<'a>(&'a self) -> &'a Self::Element {
+    #[inline]
+    fn as_ptr(&self) -> *const Self::Element {
         &self[0][0]
     }
 
     /// Get a mutable pointer to the first element of the array.
-    fn mut_ptr<'a>(&'a mut self) -> &'a mut Self::Element {
+    #[inline]
+    fn as_mut_ptr(&mut self) -> *mut Self::Element {
         &mut self[0][0]
     }
 
