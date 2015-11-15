@@ -279,21 +279,49 @@ fmt::Debug for Deg<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Rad<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Rad<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon)
-    }
-}
-
 impl<S: BaseFloat> ApproxEq for Deg<S> {
     type Epsilon = S;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon)
+    fn default_epsilon() -> S { S::default_epsilon() }
+
+    #[inline]
+    fn default_max_relative() -> S { S::default_max_relative() }
+
+    #[inline]
+    fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+    #[inline]
+    fn relative_eq(&self, other: &Deg<S>, epsilon: S, max_relative: S) -> bool {
+        S::relative_eq(&self.s, &other.s, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Deg<S>, epsilon: S, max_ulps: u32) -> bool {
+        S::ulps_eq(&self.s, &other.s, epsilon, max_ulps)
+    }
+}
+
+impl<S: BaseFloat> ApproxEq for Rad<S> {
+    type Epsilon = S;
+
+    #[inline]
+    fn default_epsilon() -> S { S::default_epsilon() }
+
+    #[inline]
+    fn default_max_relative() -> S { S::default_max_relative() }
+
+    #[inline]
+    fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+    #[inline]
+    fn relative_eq(&self, other: &Rad<S>, epsilon: S, max_relative: S) -> bool {
+        S::relative_eq(&self.s, &other.s, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Rad<S>, epsilon: S, max_ulps: u32) -> bool {
+        S::ulps_eq(&self.s, &other.s, epsilon, max_ulps)
     }
 }
 

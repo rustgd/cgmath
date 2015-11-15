@@ -393,12 +393,12 @@ pub trait SquareMatrix where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Element::zero()) }
+    fn is_invertible(&self) -> bool { ulps_ne!(self.determinant(), Self::Element::zero()) }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_one(&self) -> bool { self.approx_eq(&Self::one()) }
+    fn is_one(&self) -> bool { ulps_eq!(self, &Self::one()) }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.
@@ -533,7 +533,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
     #[inline]
     fn invert(&self) -> Option<Matrix2<S>> {
         let det = self.determinant();
-        if det.approx_eq(&S::zero()) {
+        if ulps_eq!(det, S::zero()) {
             None
         } else {
             Some(Matrix2::new( self[1][1] / det, -self[0][1] / det,
@@ -543,15 +543,15 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 
     #[inline]
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&S::zero()) &&
-        self[1][0].approx_eq(&S::zero())
+        ulps_eq!(self[0][1], S::zero()) &&
+        ulps_eq!(self[1][0], S::zero())
     }
 
 
     #[inline]
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[1][0].approx_eq(&self[0][1])
+        ulps_eq!(self[0][1], self[1][0]) &&
+        ulps_eq!(self[1][0], self[0][1])
     }
 }
 
@@ -693,7 +693,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
-        if det.approx_eq(&S::zero()) { None } else {
+        if ulps_eq!(det, S::zero()) { None } else {
             Some(Matrix3::from_cols(self[1].cross(self[2]) / det,
                                     self[2].cross(self[0]) / det,
                                     self[0].cross(self[1]) / det).transpose())
@@ -701,25 +701,25 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&S::zero()) &&
-        self[0][2].approx_eq(&S::zero()) &&
+        ulps_eq!(self[0][1], S::zero()) &&
+        ulps_eq!(self[0][2], S::zero()) &&
 
-        self[1][0].approx_eq(&S::zero()) &&
-        self[1][2].approx_eq(&S::zero()) &&
+        ulps_eq!(self[1][0], S::zero()) &&
+        ulps_eq!(self[1][2], S::zero()) &&
 
-        self[2][0].approx_eq(&S::zero()) &&
-        self[2][1].approx_eq(&S::zero())
+        ulps_eq!(self[2][0], S::zero()) &&
+        ulps_eq!(self[2][1], S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[0][2].approx_eq(&self[2][0]) &&
+        ulps_eq!(self[0][1], self[1][0]) &&
+        ulps_eq!(self[0][2], self[2][0]) &&
 
-        self[1][0].approx_eq(&self[0][1]) &&
-        self[1][2].approx_eq(&self[2][1]) &&
+        ulps_eq!(self[1][0], self[0][1]) &&
+        ulps_eq!(self[1][2], self[2][1]) &&
 
-        self[2][0].approx_eq(&self[0][2]) &&
-        self[2][1].approx_eq(&self[1][2])
+        ulps_eq!(self[2][0], self[0][2]) &&
+        ulps_eq!(self[2][1], self[1][2])
     }
 }
 
@@ -889,7 +889,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
 
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
-        if det.approx_eq(&S::zero()) { None } else {
+        if ulps_eq!(det, S::zero()) { None } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
             let cf = |i, j| {
@@ -912,74 +912,72 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        self[0][1].approx_eq(&S::zero()) &&
-        self[0][2].approx_eq(&S::zero()) &&
-        self[0][3].approx_eq(&S::zero()) &&
+        ulps_eq!(self[0][1], S::zero()) &&
+        ulps_eq!(self[0][2], S::zero()) &&
+        ulps_eq!(self[0][3], S::zero()) &&
 
-        self[1][0].approx_eq(&S::zero()) &&
-        self[1][2].approx_eq(&S::zero()) &&
-        self[1][3].approx_eq(&S::zero()) &&
+        ulps_eq!(self[1][0], S::zero()) &&
+        ulps_eq!(self[1][2], S::zero()) &&
+        ulps_eq!(self[1][3], S::zero()) &&
 
-        self[2][0].approx_eq(&S::zero()) &&
-        self[2][1].approx_eq(&S::zero()) &&
-        self[2][3].approx_eq(&S::zero()) &&
+        ulps_eq!(self[2][0], S::zero()) &&
+        ulps_eq!(self[2][1], S::zero()) &&
+        ulps_eq!(self[2][3], S::zero()) &&
 
-        self[3][0].approx_eq(&S::zero()) &&
-        self[3][1].approx_eq(&S::zero()) &&
-        self[3][2].approx_eq(&S::zero())
+        ulps_eq!(self[3][0], S::zero()) &&
+        ulps_eq!(self[3][1], S::zero()) &&
+        ulps_eq!(self[3][2], S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        self[0][1].approx_eq(&self[1][0]) &&
-        self[0][2].approx_eq(&self[2][0]) &&
-        self[0][3].approx_eq(&self[3][0]) &&
+        ulps_eq!(self[0][1], self[1][0]) &&
+        ulps_eq!(self[0][2], self[2][0]) &&
+        ulps_eq!(self[0][3], self[3][0]) &&
 
-        self[1][0].approx_eq(&self[0][1]) &&
-        self[1][2].approx_eq(&self[2][1]) &&
-        self[1][3].approx_eq(&self[3][1]) &&
+        ulps_eq!(self[1][0], self[0][1]) &&
+        ulps_eq!(self[1][2], self[2][1]) &&
+        ulps_eq!(self[1][3], self[3][1]) &&
 
-        self[2][0].approx_eq(&self[0][2]) &&
-        self[2][1].approx_eq(&self[1][2]) &&
-        self[2][3].approx_eq(&self[3][2]) &&
+        ulps_eq!(self[2][0], self[0][2]) &&
+        ulps_eq!(self[2][1], self[1][2]) &&
+        ulps_eq!(self[2][3], self[3][2]) &&
 
-        self[3][0].approx_eq(&self[0][3]) &&
-        self[3][1].approx_eq(&self[1][3]) &&
-        self[3][2].approx_eq(&self[2][3])
+        ulps_eq!(self[3][0], self[0][3]) &&
+        ulps_eq!(self[3][1], self[1][3]) &&
+        ulps_eq!(self[3][2], self[2][3])
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Matrix2<S> {
-    type Epsilon = S;
+macro_rules! impl_approx_eq {
+    ($MatrixN:ident { $($field:ident),+ }) => {
+        impl<S: BaseFloat> ApproxEq for $MatrixN<S> {
+            type Epsilon = S;
 
-    #[inline]
-    fn approx_eq_eps(&self, other: &Matrix2<S>, epsilon: &S) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon)
+            #[inline]
+            fn default_epsilon() -> S { S::default_epsilon() }
+
+            #[inline]
+            fn default_max_relative() -> S { S::default_max_relative() }
+
+            #[inline]
+            fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+            #[inline]
+            fn relative_eq(&self, other: &$MatrixN<S>, epsilon: S, max_relative: S) -> bool {
+                $(relative_eq!(&self.$field, &other.$field, epsilon = epsilon, max_relative = max_relative))&&+
+            }
+
+            #[inline]
+            fn ulps_eq(&self, other: &$MatrixN<S>, epsilon: S, max_ulps: u32) -> bool {
+                $(ulps_eq!(&self.$field, &other.$field, epsilon = epsilon, max_ulps = max_ulps))&&+
+            }
+        }
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Matrix3<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Matrix3<S>, epsilon: &S) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon)
-    }
-}
-
-impl<S: BaseFloat> ApproxEq for Matrix4<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Matrix4<S>, epsilon: &S) -> bool {
-        self[0].approx_eq_eps(&other[0], epsilon) &&
-        self[1].approx_eq_eps(&other[1], epsilon) &&
-        self[2].approx_eq_eps(&other[2], epsilon) &&
-        self[3].approx_eq_eps(&other[3], epsilon)
-    }
-}
+impl_approx_eq!(Matrix2 { x, y });
+impl_approx_eq!(Matrix3 { x, y, z });
+impl_approx_eq!(Matrix4 { x, y, z, w });
 
 impl<S: BaseFloat> Neg for Matrix2<S> {
     type Output = Matrix2<S>;

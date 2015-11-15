@@ -216,16 +216,6 @@ impl<S: BaseNum> Point for Point2<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Point2<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Point2<S>, epsilon: &S) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon)
-    }
-}
-
 impl<S: BaseNum> Array for Point3<S> {
     type Element = S;
 
@@ -317,17 +307,36 @@ impl<S: BaseNum> Point for Point3<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Point3<S> {
-    type Epsilon = S;
 
-    #[inline]
-    fn approx_eq_eps(&self, other: &Point3<S>, epsilon: &S) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon) &&
-        self.z.approx_eq_eps(&other.z, epsilon)
+macro_rules! impl_approx_eq {
+    ($PointN:ident { $($field:ident),+ }) => {
+        impl<S: BaseFloat> ApproxEq for $PointN<S> {
+            type Epsilon = S;
+
+            #[inline]
+            fn default_epsilon() -> S { S::default_epsilon() }
+
+            #[inline]
+            fn default_max_relative() -> S { S::default_max_relative() }
+
+            #[inline]
+            fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+            #[inline]
+            fn relative_eq(&self, other: &$PointN<S>, epsilon: S, max_relative: S) -> bool {
+                $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+
+            #[inline]
+            fn ulps_eq(&self, other: &$PointN<S>, epsilon: S, max_ulps: u32) -> bool {
+                $(S::ulps_eq(&self.$field, &other.$field, epsilon, max_ulps))&&+
+            }
+        }
     }
 }
 
+impl_approx_eq!(Point2 { x, y });
+impl_approx_eq!(Point3 { x, y, z });
 
 macro_rules! impl_operators {
     ($PointN:ident { $($field:ident),+ }, $VectorN:ident) => {

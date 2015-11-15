@@ -190,9 +190,24 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
     type Epsilon = S;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon) &&
-        self.v.approx_eq_eps(&other.v, epsilon)
+    fn default_epsilon() -> S { S::default_epsilon() }
+
+    #[inline]
+    fn default_max_relative() -> S { S::default_max_relative() }
+
+    #[inline]
+    fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+    #[inline]
+    fn relative_eq(&self, other: &Quaternion<S>, epsilon: S, max_relative: S) -> bool {
+        relative_eq!(&self.s, &other.s, epsilon = epsilon, max_relative = max_relative) &&
+        relative_eq!(&self.v, &other.v, epsilon = epsilon, max_relative = max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Quaternion<S>, epsilon: S, max_ulps: u32) -> bool {
+        ulps_eq!(&self.s, &other.s, epsilon = epsilon, max_ulps = max_ulps) &&
+        ulps_eq!(&self.v, &other.v, epsilon = epsilon, max_ulps = max_ulps)
     }
 }
 

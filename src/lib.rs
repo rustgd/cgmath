@@ -30,6 +30,8 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
+#[macro_use]
+extern crate approx;
 extern crate num as rust_num;
 extern crate rustc_serialize;
 extern crate rand;
@@ -48,7 +50,6 @@ pub use transform::*;
 
 pub use projection::*;
 
-pub use approx::ApproxEq;
 pub use num::*;
 
 pub use rust_num::{One, Zero, one, zero};
@@ -68,5 +69,4 @@ mod transform;
 
 mod projection;
 
-mod approx;
 mod num;
