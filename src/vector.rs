@@ -88,7 +88,7 @@
 //!
 //! Several other useful methods are provided as well. Vector fields can be
 //! accessed using array syntax (i.e. `vector[0] == vector.x`), or by using
-//! the methods provided by the [`Array1`](../array/trait.Array1.html) trait.
+//! the methods provided by the [`Array`](../array/trait.Array.html) trait.
 //! This trait also provides a `map()` method for applying arbitrary functions.
 //!
 //! The [`Vector`](../trait.Vector.html) trait presents the most general
@@ -105,15 +105,15 @@ use rust_num::{NumCast, Zero, One};
 
 use angle::{Rad, atan2, acos};
 use approx::ApproxEq;
-use array::Array1;
-use num::{BaseNum, BaseFloat};
+use array::Array;
+use num::{BaseNum, BaseFloat, PartialOrd};
 
 /// A trait that specifies a range of numeric operations for vectors. Not all
 /// of these make sense from a linear algebra point of view, but are included
 /// for pragmatic reasons.
 pub trait Vector: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array1<Element = <Self as Vector>::Scalar>,
+    Self: Array<Element = <Self as Vector>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b Self, Output = Self>,
@@ -196,19 +196,8 @@ pub trait Vector: Copy + Clone where
     /// Take the remainder of this vector by another, in-place.
     fn rem_self_v(&mut self, v: Self);
 
-    /// The sum of the components of the vector.
-    fn sum(self) -> Self::Scalar;
-    /// The product of the components of the vector.
-    fn product(self) -> Self::Scalar;
-
-    /// Vector dot product.
-    #[inline]
-    fn dot(self, v: Self) -> Self::Scalar { self.mul_v(v).sum() }
-
-    /// The minimum component of the vector.
-    fn comp_min(self) -> Self::Scalar;
-    /// The maximum component of the vector.
-    fn comp_max(self) -> Self::Scalar;
+    /// Vector dot product
+    fn dot(self, other: Self) -> Self::Scalar;
 }
 
 /// Dot product of two vectors.
@@ -250,8 +239,13 @@ macro_rules! vec {
             }
         }
 
-        impl<S: Copy> Array1 for $VectorN<S> {
+        impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
+
+            #[inline] fn sum(self) -> S where S: Add<Output = S> { fold!(add, { $(self.$field),+ }) }
+            #[inline] fn product(self) -> S where S: Mul<Output = S> { fold!(mul, { $(self.$field),+ }) }
+            #[inline] fn min(self) -> S where S: PartialOrd { fold!(partial_min, { $(self.$field),+ }) }
+            #[inline] fn max(self) -> S where S: PartialOrd { fold!(partial_max, { $(self.$field),+ }) }
         }
 
         impl<S: BaseNum> Vector for $VectorN<S> {
@@ -283,10 +277,7 @@ macro_rules! vec {
             #[inline] fn div_self_v(&mut self, v: $VectorN<S>) { *self = &*self / v; }
             #[inline] fn rem_self_v(&mut self, v: $VectorN<S>) { *self = &*self % v; }
 
-            #[inline] fn sum(self) -> S { fold!(add, { $(self.$field),+ }) }
-            #[inline] fn product(self) -> S { fold!(mul, { $(self.$field),+ }) }
-            #[inline] fn comp_min(self) -> S { fold!(partial_min, { $(self.$field),+ }) }
-            #[inline] fn comp_max(self) -> S { fold!(partial_max, { $(self.$field),+ }) }
+            #[inline] fn dot(self, other: $VectorN<S>) -> S { (self * other).sum() }
         }
 
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {

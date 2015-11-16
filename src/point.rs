@@ -24,7 +24,7 @@ use std::ops::*;
 use rust_num::{One, Zero};
 
 use approx::ApproxEq;
-use array::Array1;
+use array::Array;
 use matrix::Matrix;
 use num::{BaseNum, BaseFloat};
 use vector::*;
@@ -68,7 +68,7 @@ impl<S: BaseNum> Point3<S> {
 /// Specifies the numeric operations for point types.
 pub trait Point: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array1<Element = <Self as Point>::Scalar>,
+    Self: Array<Element = <Self as Point>::Scalar>,
     // FIXME: blocked by rust-lang/rust#20671
     //
     // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
@@ -130,8 +130,24 @@ pub trait Point: Copy + Clone where
     fn max(self, p: Self) -> Self;
 }
 
-impl<S: BaseNum> Array1 for Point2<S> {
+impl<S: BaseNum> Array for Point2<S> {
     type Element = S;
+
+    fn sum(self) -> S {
+        self.x + self.y
+    }
+
+    fn product(self) -> S {
+        self.x * self.y
+    }
+
+    fn min(self) -> S {
+        self.x.partial_min(self.y)
+    }
+
+    fn max(self) -> S {
+        self.x.partial_max(self.y)
+    }
 }
 
 impl<S: BaseNum> Point for Point2<S> {
@@ -210,8 +226,24 @@ impl<S: BaseFloat> ApproxEq for Point2<S> {
     }
 }
 
-impl<S: BaseNum> Array1 for Point3<S> {
+impl<S: BaseNum> Array for Point3<S> {
     type Element = S;
+
+    fn sum(self) -> S {
+        self.x + self.y + self.z
+    }
+
+    fn product(self) -> S {
+        self.x * self.y * self.z
+    }
+
+    fn min(self) -> S {
+        self.x.partial_min(self.y).partial_min(self.z)
+    }
+
+    fn max(self) -> S {
+        self.x.partial_max(self.y).partial_max(self.z)
+    }
 }
 
 impl<S: BaseNum> Point for Point3<S> {
