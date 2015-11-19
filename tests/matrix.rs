@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
+extern crate approx;
 extern crate cgmath;
 
 use cgmath::*;
@@ -292,11 +294,11 @@ fn test_invert() {
     // Matrix4
     assert!(Matrix4::<f64>::one().invert().unwrap().is_one());
 
-    assert!(matrix4::C.invert().unwrap().approx_eq(&
-            Matrix4::new( 5.0f64, -4.0f64,  1.0f64,  0.0f64,
-                         -4.0f64,  8.0f64, -4.0f64,  0.0f64,
-                          4.0f64, -8.0f64,  4.0f64,  8.0f64,
-                         -3.0f64,  4.0f64,  1.0f64, -8.0f64).mul_s(0.125f64)));
+    assert_ulps_eq!(matrix4::C.invert().unwrap(),
+                    Matrix4::new( 5.0f64, -4.0f64,  1.0f64,  0.0f64,
+                                 -4.0f64,  8.0f64, -4.0f64,  0.0f64,
+                                  4.0f64, -8.0f64,  4.0f64,  8.0f64,
+                                 -3.0f64,  4.0f64,  1.0f64, -8.0f64).mul_s(0.125f64));
     let mut mut_c = matrix4::C;
     mut_c.invert_self();
     assert_eq!(mut_c, matrix4::C.invert().unwrap());
@@ -398,13 +400,13 @@ fn test_predicates() {
 fn test_from_angle() {
     // Rotate the vector (1, 0) by π/2 radians to the vector (0, 1)
     let rot1 = Matrix2::from_angle(rad(0.5f64 * f64::consts::PI));
-    assert!(rot1.mul_v(Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert_ulps_eq!(rot1.mul_v(Vector2::unit_x()), Vector2::unit_y());
 
     // Rotate the vector (-1, 0) by -π/2 radians to the vector (0, 1)
     let rot2 = -rot1;
-    assert!(rot2.mul_v(-Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert_ulps_eq!(rot2.mul_v(-Vector2::unit_x()), Vector2::unit_y());
 
     // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
     let rot3: Matrix2<f64> = Matrix2::from_angle(rad(f64::consts::PI));
-    assert!(rot3.mul_v(Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
+    assert_ulps_eq!(rot3.mul_v(Vector2::new(1.0, 1.0)), Vector2::new(-1.0, -1.0));
 }

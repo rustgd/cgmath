@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
+extern crate approx;
 extern crate cgmath;
 
 use cgmath::{Matrix4, Matrix3};
 use cgmath::Quaternion;
-
-use cgmath::{Rad, rad, ApproxEq};
+use cgmath::{Rad, rad};
 use cgmath::Rotation3;
 
 use std::f32;
@@ -33,7 +34,7 @@ fn to_matrix4()
     let matrix_long: Matrix3<_> = quaternion.into();
     let matrix_long: Matrix4<_> = matrix_long.into();
 
-    assert!(matrix_short == matrix_long);
+    assert_eq!(matrix_short, matrix_long);
 }
 
 #[test]
@@ -42,9 +43,9 @@ fn to_and_from_quaternion()
     fn eq(a: (Rad<f32>, Rad<f32>, Rad<f32>), b: (Rad<f32>, Rad<f32>, Rad<f32>)) {
         let (ax, ay, az) = a;
         let (bx, by, bz) = b;
-        if !(ax.approx_eq_eps(&bx, &0.001) &&
-             ay.approx_eq_eps(&by, &0.001) &&
-             az.approx_eq_eps(&bz, &0.001)) {
+        if !(relative_eq!(ax, bx, epsilon = 0.001) &&
+             relative_eq!(ay, by, epsilon = 0.001) &&
+             relative_eq!(az, bz, epsilon = 0.001)) {
             panic!("{:?} != {:?}", a, b)
         }
     }

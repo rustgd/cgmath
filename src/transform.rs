@@ -17,7 +17,6 @@ use std::fmt;
 
 use rust_num::{Zero, One};
 
-use approx::ApproxEq;
 use matrix::*;
 use num::*;
 use point::*;
@@ -121,7 +120,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     }
 
     fn invert(&self) -> Option<Decomposed<P::Vector, R>> {
-        if self.scale.approx_eq(&<P as Point>::Scalar::zero()) {
+        if ulps_eq!(self.scale, <P as Point>::Scalar::zero()) {
             None
         } else {
             let s = <P as Point>::Scalar::one() / self.scale;

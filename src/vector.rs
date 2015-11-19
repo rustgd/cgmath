@@ -291,8 +291,22 @@ macro_rules! vec {
             type Epsilon = S;
 
             #[inline]
-            fn approx_eq_eps(&self, other: &$VectorN<S>, epsilon: &S) -> bool {
-                $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
+            fn default_epsilon() -> S { S::default_epsilon() }
+
+            #[inline]
+            fn default_max_relative() -> S { S::default_max_relative() }
+
+            #[inline]
+            fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+            #[inline]
+            fn relative_eq(&self, other: &$VectorN<S>, epsilon: S, max_relative: S) -> bool {
+                $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+
+            #[inline]
+            fn ulps_eq(&self, other: &$VectorN<S>, epsilon: S, max_ulps: u32) -> bool {
+                $(S::ulps_eq(&self.$field, &other.$field, epsilon, max_ulps))&&+
             }
         }
 
@@ -663,7 +677,7 @@ pub trait EuclideanVector: Vector + Sized where
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
-        self.dot(other).approx_eq(&Self::Scalar::zero())
+        ulps_eq!(self.dot(other), Self::Scalar::zero())
     }
 
     /// Returns the squared length of the vector. This does not perform an

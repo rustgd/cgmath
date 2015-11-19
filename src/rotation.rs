@@ -129,11 +129,14 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// matrix:
 ///
 /// ```no_run
+/// # #[macro_use]
+/// # extern crate approx;
+/// # extern crate cgmath;
+/// # fn main() {
 /// use cgmath::rad;
 /// use cgmath::Vector2;
 /// use cgmath::{Matrix, Matrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
-/// use cgmath::ApproxEq;
 /// use std::f64;
 ///
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
@@ -146,7 +149,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 ///
 /// // Since sin(π/2) may not be exactly zero due to rounding errors, we can
 /// // use cgmath's approx_eq() feature to show that it is close enough.
-/// assert!(unit_y.approx_eq(&Vector2::unit_y()));
+/// assert_ulps_eq!(unit_y, Vector2::unit_y());
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
 /// let unit_y2: Matrix2<_> = rot.into();
@@ -156,7 +159,8 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// // Note that we can also concatenate rotations:
 /// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(unit_x);
-/// assert!(unit_y3.approx_eq(&unit_y2));
+/// assert_ulps_eq!(unit_y3, unit_y2);
+/// # }
 /// ```
 #[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct Basis2<S> {
@@ -213,8 +217,22 @@ impl<S: BaseFloat> ApproxEq for Basis2<S> {
     type Epsilon = S;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Basis2<S>, epsilon: &S) -> bool {
-        self.mat.approx_eq_eps(&other.mat, epsilon)
+    fn default_epsilon() -> S { S::default_epsilon() }
+
+    #[inline]
+    fn default_max_relative() -> S { S::default_max_relative() }
+
+    #[inline]
+    fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+    #[inline]
+    fn relative_eq(&self, other: &Basis2<S>, epsilon: S, max_relative: S) -> bool {
+        Matrix2::<S>::relative_eq(&self.mat, &other.mat, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Basis2<S>, epsilon: S, max_ulps: u32) -> bool {
+        Matrix2::<S>::ulps_eq(&self.mat, &other.mat, epsilon, max_ulps)
     }
 }
 
@@ -297,8 +315,22 @@ impl<S: BaseFloat> ApproxEq for Basis3<S> {
     type Epsilon = S;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Basis3<S>, epsilon: &S) -> bool {
-        self.mat.approx_eq_eps(&other.mat, epsilon)
+    fn default_epsilon() -> S { S::default_epsilon() }
+
+    #[inline]
+    fn default_max_relative() -> S { S::default_max_relative() }
+
+    #[inline]
+    fn default_max_ulps() -> u32 { S::default_max_ulps() }
+
+    #[inline]
+    fn relative_eq(&self, other: &Basis3<S>, epsilon: S, max_relative: S) -> bool {
+        Matrix3::<S>::relative_eq(&self.mat, &other.mat, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Basis3<S>, epsilon: S, max_ulps: u32) -> bool {
+        Matrix3::<S>::ulps_eq(&self.mat, &other.mat, epsilon, max_ulps)
     }
 }
 

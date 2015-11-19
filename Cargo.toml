@@ -30,5 +30,6 @@ name = "cgmath"
 rustc_serialize = "0.3"
 
 [dependencies]
+approx = "0.0"
 num = "0.1"
 rand = "0.3"
