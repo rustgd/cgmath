@@ -28,7 +28,7 @@ use rust_num::traits::cast;
 use angle::{Rad, sin, cos, sin_cos};
 use approx::ApproxEq;
 use array::Array;
-use num::{BaseFloat, BaseNum};
+use num::BaseFloat;
 use point::{Point, Point3};
 use quaternion::Quaternion;
 use vector::{Vector, EuclideanVector};
@@ -47,7 +47,7 @@ pub struct Matrix3<S> { pub x: Vector3<S>, pub y: Vector3<S>, pub z: Vector3<S> 
 pub struct Matrix4<S> { pub x: Vector4<S>, pub y: Vector4<S>, pub z: Vector4<S>, pub w: Vector4<S> }
 
 
-impl<S> Matrix2<S> {
+impl<S: BaseFloat> Matrix2<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S,
@@ -61,9 +61,7 @@ impl<S> Matrix2<S> {
     pub fn from_cols(c0: Vector2<S>, c1: Vector2<S>) -> Matrix2<S> {
         Matrix2 { x: c0, y: c1 }
     }
-}
 
-impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
@@ -90,7 +88,7 @@ impl<S: Copy + Neg<Output = S>> Matrix2<S> {
     }
 }
 
-impl<S> Matrix3<S> {
+impl<S: BaseFloat> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0:S, c0r1:S, c0r2:S,
@@ -106,10 +104,8 @@ impl<S> Matrix3<S> {
     pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
         Matrix3 { x: c0, y: c1, z: c2 }
     }
-}
 
-impl<S: BaseFloat> Matrix3<S> {
-    /// Create a transformation matrix that will cause a vector to point at
+    /// Create a rotation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
@@ -119,7 +115,7 @@ impl<S: BaseFloat> Matrix3<S> {
         Matrix3::from_cols(side, up, dir).transpose()
     }
 
-    /// Create a matrix from a rotation around the `x` axis (pitch).
+    /// Create a rotation matrix from a rotation around the `x` axis (pitch).
     pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
@@ -128,7 +124,7 @@ impl<S: BaseFloat> Matrix3<S> {
                      S::zero(), -s.clone(), c.clone())
     }
 
-    /// Create a matrix from a rotation around the `y` axis (yaw).
+    /// Create a rotation matrix from a rotation around the `y` axis (yaw).
     pub fn from_angle_y(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
@@ -137,7 +133,7 @@ impl<S: BaseFloat> Matrix3<S> {
                      s.clone(), S::zero(), c.clone())
     }
 
-    /// Create a matrix from a rotation around the `z` axis (roll).
+    /// Create a rotation matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = sin_cos(theta);
@@ -146,7 +142,7 @@ impl<S: BaseFloat> Matrix3<S> {
                      S::zero(), S::zero(), S::one())
     }
 
-    /// Create a matrix from a set of euler angles.
+    /// Create a rotation matrix from a set of euler angles.
     ///
     /// # Parameters
     ///
@@ -164,7 +160,7 @@ impl<S: BaseFloat> Matrix3<S> {
                       sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
     }
 
-    /// Create a matrix from a rotation around an arbitrary axis
+    /// Create a rotation matrix from an angle around an arbitrary axis.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = sin_cos(angle);
         let _1subc = S::one() - c;
@@ -193,7 +189,7 @@ impl<S: Copy + Neg<Output = S>> Matrix3<S> {
     }
 }
 
-impl<S> Matrix4<S> {
+impl<S: BaseFloat> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
@@ -211,10 +207,8 @@ impl<S> Matrix4<S> {
     pub fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
         Matrix4 { x: c0, y: c1, z: c2, w: c3 }
     }
-}
 
-impl<S: BaseNum> Matrix4<S> {
-    /// Create a translation matrix from a Vector3
+    /// Create a homogeneous transformation matrix from a translation vector.
     #[inline]
     pub fn from_translation(v: Vector3<S>) -> Matrix4<S> {
         Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
@@ -222,10 +216,23 @@ impl<S: BaseNum> Matrix4<S> {
                      S::zero(), S::zero(), S::one(), S::zero(),
                      v.x, v.y, v.z, S::one())
     }
-}
 
-impl<S: BaseFloat> Matrix4<S> {
-    /// Create a transformation matrix that will cause a vector to point at
+    /// Create a homogeneous transformation matrix from a set of scale values.
+    #[inline]
+    pub fn from_scale(x: S, y: S, z: S) -> Matrix4<S> {
+        Matrix4::new(x, S::zero(), S::zero(), S::zero(),
+                     S::zero(), y, S::zero(), S::zero(),
+                     S::zero(), S::zero(), z, S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix from a scale value.
+    #[inline]
+    pub fn from_uniform_scale(value: S) -> Matrix4<S> {
+        Matrix4::from_scale(value, value, value)
+    }
+
+    /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = (center - eye).normalize();
@@ -1322,7 +1329,7 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix2<S> {
+impl<S: BaseFloat> fmt::Debug for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}], [{:?}, {:?}]]",
                 self[0][0], self[0][1],
@@ -1330,7 +1337,7 @@ impl<S: BaseNum> fmt::Debug for Matrix2<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix3<S> {
+impl<S: BaseFloat> fmt::Debug for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2],
@@ -1339,7 +1346,7 @@ impl<S: BaseNum> fmt::Debug for Matrix3<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Matrix4<S> {
+impl<S: BaseFloat> fmt::Debug for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "[[{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}]]",
                 self[0][0], self[0][1], self[0][2], self[0][3],
