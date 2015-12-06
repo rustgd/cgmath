@@ -177,7 +177,7 @@ pub struct AffineMatrix3<S> {
 impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
     #[inline]
     fn one() -> AffineMatrix3<S> {
-       AffineMatrix3 { mat: Matrix4::one() }
+       AffineMatrix3 { mat: Matrix4::identity() }
     }
 
     #[inline]
