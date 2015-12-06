@@ -351,8 +351,9 @@ pub trait SquareMatrix where
     /// Create a matrix from a non-uniform scale
     fn from_diagonal(diagonal: Self::Column) -> Self;
 
-    /// Create a matrix where the each element of the diagonal is equal to one.
-    fn one() -> Self;
+    /// The [identity matrix](https://en.wikipedia.org/wiki/Identity_matrix). Multiplying this
+    /// matrix with another has no effect.
+    fn identity() -> Self;
 
     /// Add this matrix with another matrix, returning the new metrix.
     fn add_m(&self, m: &Self) -> Self;
@@ -398,7 +399,7 @@ pub trait SquareMatrix where
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_one(&self) -> bool { self.approx_eq(&Self::one()) }
+    fn is_identity(&self) -> bool { self.approx_eq(&Self::identity()) }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.
@@ -491,9 +492,8 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
     }
 
     #[inline]
-    fn one() -> Matrix2<S> {
-        Matrix2::new(S::one(), S::zero(),
-                     S::zero(), S::one())
+    fn identity() -> Matrix2<S> {
+        Matrix2::from_value(S::one())
     }
 
     #[inline]
@@ -645,10 +645,8 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
     }
 
     #[inline]
-    fn one() -> Matrix3<S> {
-        Matrix3::new(S::one(), S::zero(), S::zero(),
-                     S::zero(), S::one(), S::zero(),
-                     S::zero(), S::zero(), S::one())
+    fn identity() -> Matrix3<S> {
+        Matrix3::from_value(S::one())
     }
 
     #[inline]
@@ -821,11 +819,8 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     #[inline]
-    fn one() -> Matrix4<S> {
-        Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::one(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::one(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+    fn identity() -> Matrix4<S> {
+        Matrix4::from_value(S::one())
     }
 
     #[inline]

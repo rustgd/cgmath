@@ -265,7 +265,7 @@ fn test_transpose() {
 #[test]
 fn test_invert() {
     // Matrix2
-    assert!(Matrix2::<f64>::one().invert().unwrap().is_one());
+    assert!(Matrix2::<f64>::identity().invert().unwrap().is_identity());
 
     assert_eq!(matrix2::A.invert().unwrap(),
                Matrix2::new(-2.0f64,  1.5f64,
@@ -277,7 +277,7 @@ fn test_invert() {
     assert_eq!(mut_a, matrix2::A.invert().unwrap());
 
     // Matrix3
-    assert!(Matrix3::<f64>::one().invert().unwrap().is_one());
+    assert!(Matrix3::<f64>::identity().invert().unwrap().is_identity());
 
     assert_eq!(matrix3::A.invert(), None);
 
@@ -290,7 +290,7 @@ fn test_invert() {
     assert_eq!(mut_c, matrix3::C.invert().unwrap());
 
     // Matrix4
-    assert!(Matrix4::<f64>::one().invert().unwrap().is_one());
+    assert!(Matrix4::<f64>::identity().invert().unwrap().is_identity());
 
     assert!(matrix4::C.invert().unwrap().approx_eq(&
             Matrix4::new( 5.0f64, -4.0f64,  1.0f64,  0.0f64,
@@ -305,25 +305,25 @@ fn test_invert() {
                              -0.,        0.631364f64,  0.775487f64, 0.0f64,
                              -0.991261f64,  0.1023f64,   -0.083287f64, 0.0f64,
                               0.,       -1.262728f64, -1.550973f64, 1.0f64);
-    assert!(mat_c.invert().unwrap().mul_m(&mat_c).is_one());
+    assert!(mat_c.invert().unwrap().mul_m(&mat_c).is_identity());
 
     let mat_d = Matrix4::new( 0.065455f64, -0.720002f64,  0.690879f64, 0.0f64,
                              -0.,        0.692364f64,  0.721549f64, 0.0f64,
                              -0.997856f64, -0.047229f64,  0.045318f64, 0.0f64,
                               0.,       -1.384727f64, -1.443098f64, 1.0f64);
-    assert!(mat_d.invert().unwrap().mul_m(&mat_d).is_one());
+    assert!(mat_d.invert().unwrap().mul_m(&mat_d).is_identity());
 
     let mat_e = Matrix4::new( 0.409936f64,  0.683812f64, -0.603617f64, 0.0f64,
                               0.,        0.661778f64,  0.7497f64,   0.0f64,
                               0.912114f64, -0.307329f64,  0.271286f64, 0.0f64,
                              -0.,       -1.323555f64, -1.499401f64, 1.0f64);
-    assert!(mat_e.invert().unwrap().mul_m(&mat_e).is_one());
+    assert!(mat_e.invert().unwrap().mul_m(&mat_e).is_identity());
 
     let mat_f = Matrix4::new(-0.160691f64, -0.772608f64,  0.614211f64, 0.0f64,
                              -0.,        0.622298f64,  0.78278f64,  0.0f64,
                              -0.987005f64,  0.125786f64, -0.099998f64, 0.0f64,
                               0.,       -1.244597f64, -1.565561f64, 1.0f64);
-    assert!(mat_f.invert().unwrap().mul_m(&mat_f).is_one());
+    assert!(mat_f.invert().unwrap().mul_m(&mat_f).is_identity());
 }
 
 #[test]
@@ -338,17 +338,17 @@ fn test_from_translation() {
 fn test_predicates() {
     // Matrix2
 
-    assert!(Matrix2::<f64>::one().is_one());
-    assert!(Matrix2::<f64>::one().is_symmetric());
-    assert!(Matrix2::<f64>::one().is_diagonal());
-    assert!(Matrix2::<f64>::one().is_invertible());
+    assert!(Matrix2::<f64>::identity().is_identity());
+    assert!(Matrix2::<f64>::identity().is_symmetric());
+    assert!(Matrix2::<f64>::identity().is_diagonal());
+    assert!(Matrix2::<f64>::identity().is_invertible());
 
-    assert!(!matrix2::A.is_one());
+    assert!(!matrix2::A.is_identity());
     assert!(!matrix2::A.is_symmetric());
     assert!(!matrix2::A.is_diagonal());
     assert!(matrix2::A.is_invertible());
 
-    assert!(!matrix2::C.is_one());
+    assert!(!matrix2::C.is_identity());
     assert!(matrix2::C.is_symmetric());
     assert!(!matrix2::C.is_diagonal());
     assert!(matrix2::C.is_invertible());
@@ -357,17 +357,17 @@ fn test_predicates() {
 
     // Matrix3
 
-    assert!(Matrix3::<f64>::one().is_one());
-    assert!(Matrix3::<f64>::one().is_symmetric());
-    assert!(Matrix3::<f64>::one().is_diagonal());
-    assert!(Matrix3::<f64>::one().is_invertible());
+    assert!(Matrix3::<f64>::identity().is_identity());
+    assert!(Matrix3::<f64>::identity().is_symmetric());
+    assert!(Matrix3::<f64>::identity().is_diagonal());
+    assert!(Matrix3::<f64>::identity().is_invertible());
 
-    assert!(!matrix3::A.is_one());
+    assert!(!matrix3::A.is_identity());
     assert!(!matrix3::A.is_symmetric());
     assert!(!matrix3::A.is_diagonal());
     assert!(!matrix3::A.is_invertible());
 
-    assert!(!matrix3::D.is_one());
+    assert!(!matrix3::D.is_identity());
     assert!(matrix3::D.is_symmetric());
     assert!(!matrix3::D.is_diagonal());
     assert!(matrix3::D.is_invertible());
@@ -376,17 +376,17 @@ fn test_predicates() {
 
     // Matrix4
 
-    assert!(Matrix4::<f64>::one().is_one());
-    assert!(Matrix4::<f64>::one().is_symmetric());
-    assert!(Matrix4::<f64>::one().is_diagonal());
-    assert!(Matrix4::<f64>::one().is_invertible());
+    assert!(Matrix4::<f64>::identity().is_identity());
+    assert!(Matrix4::<f64>::identity().is_symmetric());
+    assert!(Matrix4::<f64>::identity().is_diagonal());
+    assert!(Matrix4::<f64>::identity().is_invertible());
 
-    assert!(!matrix4::A.is_one());
+    assert!(!matrix4::A.is_identity());
     assert!(!matrix4::A.is_symmetric());
     assert!(!matrix4::A.is_diagonal());
     assert!(!matrix4::A.is_invertible());
 
-    assert!(!matrix4::D.is_one());
+    assert!(!matrix4::D.is_identity());
     assert!(matrix4::D.is_symmetric());
     assert!(!matrix4::D.is_diagonal());
     assert!(matrix4::D.is_invertible());

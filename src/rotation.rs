@@ -177,7 +177,7 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
 
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
-    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
+    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::identity() } }
 
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
@@ -260,7 +260,7 @@ impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
-    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
+    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::identity() } }
 
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
