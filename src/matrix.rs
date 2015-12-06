@@ -214,7 +214,7 @@ impl<S> Matrix4<S> {
 }
 
 impl<S: BaseNum> Matrix4<S> {
-    /// Create a translation matrix from a Vector3
+    /// Create a homogeneous transformation matrix from a translation vector.
     #[inline]
     pub fn from_translation(v: Vector3<S>) -> Matrix4<S> {
         Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
@@ -225,7 +225,22 @@ impl<S: BaseNum> Matrix4<S> {
 }
 
 impl<S: BaseFloat> Matrix4<S> {
-    /// Create a transformation matrix that will cause a vector to point at
+    /// Create a homogeneous transformation matrix from a set of scale values.
+    #[inline]
+    pub fn from_scale(x: S, y: S, z: S) -> Matrix4<S> {
+        Matrix4::new(x, S::zero(), S::zero(), S::zero(),
+                     S::zero(), y, S::zero(), S::zero(),
+                     S::zero(), S::zero(), z, S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix from a scale value.
+    #[inline]
+    pub fn from_uniform_scale(value: S) -> Matrix4<S> {
+        Matrix4::from_scale(value, value, value)
+    }
+
+    /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = (center - eye).normalize();
