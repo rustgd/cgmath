@@ -217,19 +217,19 @@ impl<S: BaseFloat> Matrix4<S> {
                      v.x, v.y, v.z, S::one())
     }
 
+    /// Create a homogeneous transformation matrix from a scale value.
+    #[inline]
+    pub fn from_scale(value: S) -> Matrix4<S> {
+        Matrix4::from_nonuniform_scale(value, value, value)
+    }
+
     /// Create a homogeneous transformation matrix from a set of scale values.
     #[inline]
-    pub fn from_scale(x: S, y: S, z: S) -> Matrix4<S> {
+    pub fn from_nonuniform_scale(x: S, y: S, z: S) -> Matrix4<S> {
         Matrix4::new(x, S::zero(), S::zero(), S::zero(),
                      S::zero(), y, S::zero(), S::zero(),
                      S::zero(), S::zero(), z, S::zero(),
                      S::zero(), S::zero(), S::zero(), S::one())
-    }
-
-    /// Create a homogeneous transformation matrix from a scale value.
-    #[inline]
-    pub fn from_uniform_scale(value: S) -> Matrix4<S> {
-        Matrix4::from_scale(value, value, value)
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
