@@ -15,7 +15,7 @@
 
 extern crate cgmath;
 
-use cgmath::{Vector4, ortho, Matrix, Matrix4, Vector};
+use cgmath::{Vector4, ortho, Matrix, Matrix4};
 
 #[test]
 fn test_ortho_scale() {

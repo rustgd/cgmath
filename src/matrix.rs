@@ -467,14 +467,14 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self[0].mul_self_s(s);
-        self[1].mul_self_s(s);
+        self[0] = self[0] * s;
+        self[1] = self[1] * s;
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self[0].div_self_s(s);
-        self[1].div_self_s(s);
+        self[0] = self[0] / s;
+        self[1] = self[1] / s;
     }
 
     fn transpose(&self) -> Matrix2<S> {
@@ -511,14 +511,14 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix2<S>) {
-        self[0].add_self_v(m[0]);
-        self[1].add_self_v(m[1]);
+        self[0] = self[0] + m[0];
+        self[1] = self[1] + m[1];
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix2<S>) {
-        self[0].sub_self_v(m[0]);
-        self[1].sub_self_v(m[1]);
+        self[0] = self[0] - m[0];
+        self[1] = self[1] - m[1];
     }
 
     #[inline]
@@ -615,16 +615,16 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self[0].mul_self_s(s);
-        self[1].mul_self_s(s);
-        self[2].mul_self_s(s);
+        self[0] = self[0] * s;
+        self[1] = self[1] * s;
+        self[2] = self[2] * s;
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self[0].div_self_s(s);
-        self[1].div_self_s(s);
-        self[2].div_self_s(s);
+        self[0] = self[0] / s;
+        self[1] = self[1] / s;
+        self[2] = self[2] / s;
     }
 
     fn transpose(&self) -> Matrix3<S> {
@@ -664,16 +664,16 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix3<S>) {
-        self[0].add_self_v(m[0]);
-        self[1].add_self_v(m[1]);
-        self[2].add_self_v(m[2]);
+        self[0] = self[0] + m[0];
+        self[1] = self[1] + m[1];
+        self[2] = self[2] + m[2];
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix3<S>) {
-        self[0].sub_self_v(m[0]);
-        self[1].sub_self_v(m[1]);
-        self[2].sub_self_v(m[2]);
+        self[0] = self[0] - m[0];
+        self[1] = self[1] - m[1];
+        self[2] = self[2] - m[2];
     }
 
     #[inline]
@@ -784,18 +784,18 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
 
     #[inline]
     fn mul_self_s(&mut self, s: S) {
-        self[0].mul_self_s(s);
-        self[1].mul_self_s(s);
-        self[2].mul_self_s(s);
-        self[3].mul_self_s(s);
+        self[0] = self[0] * s;
+        self[1] = self[1] * s;
+        self[2] = self[2] * s;
+        self[3] = self[3] * s;
     }
 
     #[inline]
     fn div_self_s(&mut self, s: S) {
-        self[0].div_self_s(s);
-        self[1].div_self_s(s);
-        self[2].div_self_s(s);
-        self[3].div_self_s(s);
+        self[0] = self[0] / s;
+        self[1] = self[1] / s;
+        self[2] = self[2] / s;
+        self[3] = self[3] / s;
     }
 
     fn transpose(&self) -> Matrix4<S> {
@@ -838,18 +838,18 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
 
     #[inline]
     fn add_self_m(&mut self, m: &Matrix4<S>) {
-        self[0].add_self_v(m[0]);
-        self[1].add_self_v(m[1]);
-        self[2].add_self_v(m[2]);
-        self[3].add_self_v(m[3]);
+        self[0] = self[0] + m[0];
+        self[1] = self[1] + m[1];
+        self[2] = self[2] + m[2];
+        self[3] = self[3] + m[3];
     }
 
     #[inline]
     fn sub_self_m(&mut self, m: &Matrix4<S>) {
-        self[0].sub_self_v(m[0]);
-        self[1].sub_self_v(m[1]);
-        self[2].sub_self_v(m[2]);
-        self[3].sub_self_v(m[3]);
+        self[0] = self[0] - m[0];
+        self[1] = self[1] - m[1];
+        self[2] = self[2] - m[2];
+        self[3] = self[3] - m[3];
     }
 
     fn transpose_self(&mut self) {

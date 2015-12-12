@@ -363,7 +363,7 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> where S: 'static {
     #[inline]
     fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));
-        Quaternion::from_sv(c, axis.mul_s(s))
+        Quaternion::from_sv(c, axis * s)
     }
 
     /// - [Maths - Conversion Euler to Quaternion]

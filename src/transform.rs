@@ -81,6 +81,8 @@ pub struct Decomposed<V: Vector, R> {
 impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <P as Point>::Scalar: BaseFloat,
+    // FIXME: Investigate why this is needed!
+    <P as Point>::Vector: Vector,
 {
     #[inline]
     fn one() -> Decomposed<P::Vector, R> {
@@ -104,7 +106,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
 
     #[inline]
     fn transform_vector(&self, vec: P::Vector) -> P::Vector {
-        self.rot.rotate_vector(vec.mul_s(self.scale))
+        self.rot.rotate_vector(vec * self.scale)
     }
 
     #[inline]
@@ -126,7 +128,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         } else {
             let s = <P as Point>::Scalar::one() / self.scale;
             let r = self.rot.invert();
-            let d = r.rotate_vector(self.disp.clone()).mul_s(-s);
+            let d = r.rotate_vector(self.disp.clone()) * -s;
             Some(Decomposed {
                 scale: s,
                 rot: r,
