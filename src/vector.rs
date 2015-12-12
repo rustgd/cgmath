@@ -324,13 +324,6 @@ impl<S: BaseNum> Vector3<S> {
                      (self.x * other.y) - (self.y * other.x))
     }
 
-    /// Calculates the cross product of the vector and `other`, then stores the
-    /// result in `self`.
-    #[inline]
-    pub fn cross_self(&mut self, other: Vector3<S>) {
-        *self = self.cross(other)
-    }
-
     /// Create a `Vector4`, using the `x`, `y` and `z` values from this vector, and the
     /// provided `w`.
     #[inline]
@@ -414,7 +407,7 @@ pub trait EuclideanVector: Vector + Sized where
     /// The norm of the vector.
     #[inline]
     fn length(self) -> Self::Scalar {
-        // Not sure why these annotations are needed
+        // FIXME: Not sure why this annotation is needed
         <<Self as Vector>::Scalar as ::rust_num::Float>::sqrt(self.dot(self))
     }
 
@@ -442,28 +435,6 @@ pub trait EuclideanVector: Vector + Sized where
     #[must_use]
     fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
         self + ((other - self) * amount)
-    }
-
-    /// Normalises the vector to a length of `1`.
-    #[inline]
-    fn normalize_self(&mut self) {
-        // Not sure why these annotations are needed
-        let rlen = <<Self as Vector>::Scalar as ::rust_num::Float>::recip(self.length());
-        *self = *self * rlen;
-    }
-
-    /// Normalizes the vector to `length`.
-    #[inline]
-    fn normalize_self_to(&mut self, length: Self::Scalar) {
-        let n = length / self.length();
-        *self = *self * n;
-    }
-
-    /// Linearly interpolates the length of the vector towards the length of
-    /// `other` by the specified amount.
-    fn lerp_self(&mut self, other: Self, amount: Self::Scalar) {
-        let v = (other - *self) * amount;
-        *self = *self * v;
     }
 }
 

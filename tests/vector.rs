@@ -90,10 +90,6 @@ fn test_cross() {
     let b = Vector3::new(4isize, 5isize, 6isize);
     let r = Vector3::new(-3isize, 6isize, -3isize);
     assert_eq!(a.cross(b), r);
-
-    let mut a = a;
-    a.cross_self(b);
-    assert_eq!(a, r);
 }
 
 #[test]
