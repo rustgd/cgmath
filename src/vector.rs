@@ -204,7 +204,7 @@ pub trait Vector: Copy + Clone where
 #[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { a.dot(b) }
 
 // Utility macro for generating associated functions for the vectors
-macro_rules! vec {
+macro_rules! impl_vector {
     ($VectorN:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => {
         #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
         pub struct $VectorN<S> { $(pub $field: S),+ }
@@ -242,10 +242,10 @@ macro_rules! vec {
         impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
 
-            #[inline] fn sum(self) -> S where S: Add<Output = S> { fold!(add, { $(self.$field),+ }) }
-            #[inline] fn product(self) -> S where S: Mul<Output = S> { fold!(mul, { $(self.$field),+ }) }
-            #[inline] fn min(self) -> S where S: PartialOrd { fold!(partial_min, { $(self.$field),+ }) }
-            #[inline] fn max(self) -> S where S: PartialOrd { fold!(partial_max, { $(self.$field),+ }) }
+            #[inline] fn sum(self) -> S where S: Add<Output = S> { fold_array!(add, { $(self.$field),+ }) }
+            #[inline] fn product(self) -> S where S: Mul<Output = S> { fold_array!(mul, { $(self.$field),+ }) }
+            #[inline] fn min(self) -> S where S: PartialOrd { fold_array!(partial_min, { $(self.$field),+ }) }
+            #[inline] fn max(self) -> S where S: PartialOrd { fold_array!(partial_max, { $(self.$field),+ }) }
         }
 
         impl<S: BaseNum> Vector for $VectorN<S> {
@@ -302,233 +302,61 @@ macro_rules! vec {
                 $VectorN { $($field: rng.gen()),+ }
             }
         }
+
+        impl_binary_operator!(<S: BaseNum> Add<S> for $VectorN<S> {
+            fn add(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field + scalar),+) }
+        });
+        impl_binary_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
+            fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
+        });
+
+        impl_binary_operator!(<S: BaseNum> Sub<S> for $VectorN<S> {
+            fn sub(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field - scalar),+) }
+        });
+        impl_binary_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
+            fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
+        });
+
+        impl_binary_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
+            fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
+        });
+        impl_binary_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
+            fn mul(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) }
+        });
+
+        impl_binary_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
+            fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
+        });
+        impl_binary_operator!(<S: BaseNum> Div<$VectorN<S> > for $VectorN<S> {
+            fn div(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field / rhs.$field),+) }
+        });
+
+        impl_binary_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
+            fn rem(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field % scalar),+) }
+        });
+        impl_binary_operator!(<S: BaseNum> Rem<$VectorN<S> > for $VectorN<S> {
+            fn rem(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field % rhs.$field),+) }
+        });
+
+        impl_index_operators!($VectorN<S>, $n, S, usize);
+        impl_index_operators!($VectorN<S>, $n, [S], Range<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeTo<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeFrom<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeFull);
     }
 }
 
-macro_rules! impl_binary_operator {
-    ($Binop:ident :: $binop:ident, $VectorN:ident { $($field:ident),+ }) => {
-        impl<S: BaseNum> $Binop<S> for $VectorN<S> {
-            type Output = $VectorN<S>;
+impl_vector!(Vector2<S> { x, y }, 2, vec2);
+impl_vector!(Vector3<S> { x, y, z }, 3, vec3);
+impl_vector!(Vector4<S> { x, y, z, w }, 4, vec4);
 
-            #[inline]
-            fn $binop(self, scalar: S) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(scalar)),+)
-            }
-        }
+impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
+impl_fixed_array_conversions!(Vector3<S> { x: 0, y: 1, z: 2 }, 3);
+impl_fixed_array_conversions!(Vector4<S> { x: 0, y: 1, z: 2, w: 3 }, 4);
 
-        impl<'a, S: BaseNum> $Binop<S> for &'a $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn $binop(self, scalar: S) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(scalar)),+)
-            }
-        }
-
-        impl<S: BaseNum> $Binop<$VectorN<S>> for $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn $binop(self, other: $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(other.$field)),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> $Binop<&'a $VectorN<S>> for $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn $binop(self, other: &'a $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(other.$field)),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> $Binop<$VectorN<S>> for &'a $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn $binop(self, other: $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(other.$field)),+)
-            }
-        }
-
-        impl<'a, 'b, S: BaseNum> $Binop<&'a $VectorN<S>> for &'b $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn $binop(self, other: &'a $VectorN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field.$binop(other.$field)),+)
-            }
-        }
-    }
-}
-
-impl_binary_operator!(Add::add, Vector2 { x, y });
-impl_binary_operator!(Add::add, Vector3 { x, y, z });
-impl_binary_operator!(Add::add, Vector4 { x, y, z, w });
-impl_binary_operator!(Sub::sub, Vector2 { x, y });
-impl_binary_operator!(Sub::sub, Vector3 { x, y, z });
-impl_binary_operator!(Sub::sub, Vector4 { x, y, z, w });
-impl_binary_operator!(Mul::mul, Vector2 { x, y });
-impl_binary_operator!(Mul::mul, Vector3 { x, y, z });
-impl_binary_operator!(Mul::mul, Vector4 { x, y, z, w });
-impl_binary_operator!(Div::div, Vector2 { x, y });
-impl_binary_operator!(Div::div, Vector3 { x, y, z });
-impl_binary_operator!(Div::div, Vector4 { x, y, z, w });
-impl_binary_operator!(Rem::rem, Vector2 { x, y });
-impl_binary_operator!(Rem::rem, Vector3 { x, y, z });
-impl_binary_operator!(Rem::rem, Vector4 { x, y, z, w });
-
-macro_rules! fold {
-    (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr })          => { $x.$method(&$y).$method(&$z) };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => { $x.$method(&$y).$method(&$z).$method(&$w) };
-    ($method:ident, { $x:expr, $y:expr })                    => { $x.$method($y) };
-    ($method:ident, { $x:expr, $y:expr, $z:expr })           => { $x.$method($y).$method($z) };
-    ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
-}
-
-vec!(Vector2<S> { x, y }, 2, vec2);
-vec!(Vector3<S> { x, y, z }, 3, vec3);
-vec!(Vector4<S> { x, y, z, w }, 4, vec4);
-
-macro_rules! fixed_array_conversions {
-    ($VectorN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-
-        impl<$S> Into<[$S; $n]> for $VectorN<$S> {
-            #[inline]
-            fn into(self) -> [$S; $n] {
-                match self { $VectorN { $($field),+ } => [$($field),+] }
-            }
-        }
-
-        impl<$S> AsRef<[$S; $n]> for $VectorN<$S> {
-            #[inline]
-            fn as_ref(&self) -> &[$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> AsMut<[$S; $n]> for $VectorN<$S> {
-            #[inline]
-            fn as_mut(&mut self) -> &mut [$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S: Clone> From<[$S; $n]> for $VectorN<$S> {
-            #[inline]
-            fn from(v: [$S; $n]) -> $VectorN<$S> {
-                // We need to use a clone here because we can't pattern match on arrays yet
-                $VectorN { $($field: v[$index].clone()),+ }
-            }
-        }
-
-        impl<'a, $S> From<&'a [$S; $n]> for &'a $VectorN<$S> {
-            #[inline]
-            fn from(v: &'a [$S; $n]) -> &'a $VectorN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-
-        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $VectorN<$S> {
-            #[inline]
-            fn from(v: &'a mut [$S; $n]) -> &'a mut $VectorN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-    }
-}
-
-fixed_array_conversions!(Vector2<S> { x:0, y:1 }, 2);
-fixed_array_conversions!(Vector3<S> { x:0, y:1, z:2 }, 3);
-fixed_array_conversions!(Vector4<S> { x:0, y:1, z:2, w:3 }, 4);
-
-macro_rules! tuple_conversions {
-    ($VectorN:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
-        impl<$S> Into<$Tuple> for $VectorN<$S> {
-            #[inline]
-            fn into(self) -> $Tuple {
-                match self { $VectorN { $($field),+ } => ($($field),+) }
-            }
-        }
-
-        impl<$S> AsRef<$Tuple> for $VectorN<$S> {
-            #[inline]
-            fn as_ref(&self) -> &$Tuple {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> AsMut<$Tuple> for $VectorN<$S> {
-            #[inline]
-            fn as_mut(&mut self) -> &mut $Tuple {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> From<$Tuple> for $VectorN<$S> {
-            #[inline]
-            fn from(v: $Tuple) -> $VectorN<$S> {
-                match v { ($($field),+) => $VectorN { $($field: $field),+ } }
-            }
-        }
-
-        impl<'a, $S> From<&'a $Tuple> for &'a $VectorN<$S> {
-            #[inline]
-            fn from(v: &'a $Tuple) -> &'a $VectorN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-
-        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $VectorN<$S> {
-            #[inline]
-            fn from(v: &'a mut $Tuple) -> &'a mut $VectorN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-    }
-}
-
-tuple_conversions!(Vector2<S> { x, y }, (S, S));
-tuple_conversions!(Vector3<S> { x, y, z }, (S, S, S));
-tuple_conversions!(Vector4<S> { x, y, z, w }, (S, S, S, S));
-
-macro_rules! index_operators {
-    ($VectorN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
-        impl<$S> Index<$I> for $VectorN<$S> {
-            type Output = $Output;
-
-            #[inline]
-            fn index<'a>(&'a self, i: $I) -> &'a $Output {
-                let v: &[$S; $n] = self.as_ref(); &v[i]
-            }
-        }
-
-        impl<$S> IndexMut<$I> for $VectorN<$S> {
-            #[inline]
-            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
-                let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
-            }
-        }
-    }
-}
-
-index_operators!(Vector2<S>, 2, S, usize);
-index_operators!(Vector3<S>, 3, S, usize);
-index_operators!(Vector4<S>, 4, S, usize);
-index_operators!(Vector2<S>, 2, [S], Range<usize>);
-index_operators!(Vector3<S>, 3, [S], Range<usize>);
-index_operators!(Vector4<S>, 4, [S], Range<usize>);
-index_operators!(Vector2<S>, 2, [S], RangeTo<usize>);
-index_operators!(Vector3<S>, 3, [S], RangeTo<usize>);
-index_operators!(Vector4<S>, 4, [S], RangeTo<usize>);
-index_operators!(Vector2<S>, 2, [S], RangeFrom<usize>);
-index_operators!(Vector3<S>, 3, [S], RangeFrom<usize>);
-index_operators!(Vector4<S>, 4, [S], RangeFrom<usize>);
-index_operators!(Vector2<S>, 2, [S], RangeFull);
-index_operators!(Vector3<S>, 3, [S], RangeFull);
-index_operators!(Vector4<S>, 4, [S], RangeFull);
+impl_tuple_conversions!(Vector2<S> { x, y }, (S, S));
+impl_tuple_conversions!(Vector3<S> { x, y, z }, (S, S, S));
+impl_tuple_conversions!(Vector4<S> { x, y, z, w }, (S, S, S, S));
 
 /// Operations specific to numeric two-dimensional vectors.
 impl<S: BaseNum> Vector2<S> {

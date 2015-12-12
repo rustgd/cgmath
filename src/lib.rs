@@ -55,6 +55,8 @@ pub use rust_num::{One, Zero, one, zero};
 
 // Modules
 
+mod macros;
+
 mod array;
 
 mod matrix;
