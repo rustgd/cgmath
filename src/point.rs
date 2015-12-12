@@ -69,14 +69,13 @@ impl<S: BaseNum> Point3<S> {
 pub trait Point: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Point>::Scalar>,
-    // FIXME: blocked by rust-lang/rust#20671
-    //
-    // for<'a, 'b> &'a Self: Add<&'b V, Output = Self>,
-    // for<'a, 'b> &'a Self: Sub<&'b Self, Output = V>,
-    //
-    // for<'a> &'a Self: Mul<S, Output = Self>,
-    // for<'a> &'a Self: Div<S, Output = Self>,
-    // for<'a> &'a Self: Rem<S, Output = Self>,
+
+    Self: Add<<Self as Point>::Vector, Output = Self>,
+    Self: Sub<Self, Output = <Self as Point>::Vector>,
+
+    Self: Mul<<Self as Point>::Scalar, Output = Self>,
+    Self: Div<<Self as Point>::Scalar, Output = Self>,
+    Self: Rem<<Self as Point>::Scalar, Output = Self>,
 {
     /// The associated scalar.
     ///
@@ -93,32 +92,6 @@ pub trait Point: Copy + Clone where
     fn from_vec(v: Self::Vector) -> Self;
     /// Convert a point to a vector.
     fn to_vec(self) -> Self::Vector;
-
-    /// Multiply each component by a scalar, returning the new point.
-    #[must_use]
-    fn mul_s(self, scalar: Self::Scalar) -> Self;
-    /// Divide each component by a scalar, returning the new point.
-    #[must_use]
-    fn div_s(self, scalar: Self::Scalar) -> Self;
-    /// Subtract a scalar from each component, returning the new point.
-    #[must_use]
-    fn rem_s(self, scalar: Self::Scalar) -> Self;
-
-    /// Add a vector to this point, returning the new point.
-    #[must_use]
-    fn add_v(self, v: Self::Vector) -> Self;
-    /// Subtract another point from this one, returning a new vector.
-    fn sub_p(self, p: Self) -> Self::Vector;
-
-    /// Multiply each component by a scalar, in-place.
-    fn mul_self_s(&mut self, scalar: Self::Scalar);
-    /// Divide each component by a scalar, in-place.
-    fn div_self_s(&mut self, scalar: Self::Scalar);
-    /// Take the remainder of each component by a scalar, in-place.
-    fn rem_self_s(&mut self, scalar: Self::Scalar);
-
-    /// Add a vector to this point, in-place.
-    fn add_self_v(&mut self, v: Self::Vector);
 
     /// This is a weird one, but its useful for plane calculations.
     fn dot(self, v: Self::Vector) -> Self::Scalar;
@@ -153,16 +126,6 @@ macro_rules! impl_point {
             fn to_vec(self) -> $VectorN<S> {
                 $VectorN::new($(self.$field),+)
             }
-
-            #[inline] fn mul_s(self, scalar: S) -> $PointN<S> { self * scalar }
-            #[inline] fn div_s(self, scalar: S) -> $PointN<S> { self / scalar }
-            #[inline] fn rem_s(self, scalar: S) -> $PointN<S> { self % scalar }
-            #[inline] fn add_v(self, v: $VectorN<S>) -> $PointN<S> { self + v }
-            #[inline] fn sub_p(self, p: $PointN<S>) -> $VectorN<S> { self - p }
-            #[inline] fn mul_self_s(&mut self, scalar: S) { *self = *self * scalar; }
-            #[inline] fn div_self_s(&mut self, scalar: S) { *self = *self / scalar; }
-            #[inline] fn rem_self_s(&mut self, scalar: S) { *self = *self % scalar; }
-            #[inline] fn add_self_v(&mut self, vector: $VectorN<S>) { *self = *self + vector; }
 
             #[inline]
             fn dot(self, v: $VectorN<S>) -> S {

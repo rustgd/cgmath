@@ -93,8 +93,8 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
 
     #[inline]
     fn look_at(eye: P, center: P, up: P::Vector) -> Decomposed<P::Vector, R> {
-        let rot = R::look_at(center.sub_p(eye.clone()), up);
-        let disp = rot.rotate_vector(P::origin().sub_p(eye));
+        let rot = R::look_at(center - eye, up);
+        let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: <P as Point>::Scalar::one(),
             rot: rot,
@@ -109,7 +109,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
 
     #[inline]
     fn transform_point(&self, point: P) -> P {
-        self.rot.rotate_point(point.mul_s(self.scale)).add_v(self.disp.clone())
+        self.rot.rotate_point(point * self.scale) + self.disp
     }
 
     fn concat(&self, other: &Decomposed<P::Vector, R>) -> Decomposed<P::Vector, R> {
