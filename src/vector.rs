@@ -41,7 +41,6 @@
 //!
 //! assert_eq!(a + b, Vector2::zero());
 //! assert_eq!(-(a * b), Vector2::new(9.0f64, 16.0f64));
-//! assert_eq!(a / Vector2::one(), a);
 //!
 //! // As with Rust's `int` and `f32` types, Vectors of different types cannot
 //! // be added and so on with impunity. The following will fail to compile:
@@ -126,12 +125,9 @@ pub trait Vector: Copy + Clone where
     /// Construct a vector from a single value, replicating it.
     fn from_value(scalar: Self::Scalar) -> Self;
 
-    /// The zero vector (with all components set to zero)
+    /// The additive identity vector. Adding this vector with another has no effect.
     #[inline]
     fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
-    /// The identity vector (with all components set to one)
-    #[inline]
-    fn one() -> Self { Self::from_value(Self::Scalar::one()) }
 
     /// Vector dot product
     fn dot(self, other: Self) -> Self::Scalar;
