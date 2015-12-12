@@ -12,6 +12,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Remove redundant `Point::{min, max}` methods - these are now covered by the
   `Array::{min, max}` methods that were introduced in 0.5.0.
+- Removed `ToComponents`, `ToComponents2`, and `ToComponents3`. If you were
+  relying on `ToComponents::decompose`, you can produce the same effect by
+  accessing the fields on `Decomposed` directly. To create the scale vector,
+  use: `Vector::from_value(transform.scale)`.
+- Removed `CompositeTransform`, `CompositeTransform2`, and `CompositeTransform3`.
 
 ## [v0.6.0] - 2015-12-12
 
