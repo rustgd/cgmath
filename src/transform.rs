@@ -211,39 +211,3 @@ impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
 }
 
 impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
-
-/// A trait that allows extracting components (rotation, translation, scale)
-/// from an arbitrary transformations
-pub trait ToComponents<P: Point, R: Rotation<P>> where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <P as Point>::Scalar: BaseFloat,
-{
-    /// Extract the (scale, rotation, translation) triple
-    fn decompose(&self) -> (P::Vector, R, P::Vector);
-}
-
-pub trait ToComponents2<S: BaseFloat, R: Rotation2<S>>: ToComponents<Point2<S>, R> {}
-pub trait ToComponents3<S: BaseFloat, R: Rotation3<S>>: ToComponents<Point3<S>, R> {}
-
-pub trait CompositeTransform<P: Point, R: Rotation<P>>: Transform<P> + ToComponents<P, R> where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <P as Point>::Scalar: BaseFloat,
-{}
-
-pub trait CompositeTransform2<S: BaseFloat, R: Rotation2<S>>: Transform2<S> + ToComponents2<S, R> {}
-pub trait CompositeTransform3<S: BaseFloat, R: Rotation3<S>>: Transform3<S> + ToComponents3<S, R> {}
-
-impl<P: Point, R: Rotation<P> + Clone> ToComponents<P, R> for Decomposed<P::Vector, R> where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <P as Point>::Scalar: BaseFloat,
-{
-    fn decompose(&self) -> (P::Vector, R, P::Vector) {
-        (P::Vector::one().mul_s(self.scale), self.rot.clone(), self.disp.clone())
-    }
-}
-
-impl<S: BaseFloat, R: Rotation2<S> + Clone> ToComponents2<S, R> for Decomposed<Vector2<S>, R> {}
-impl<S: BaseFloat, R: Rotation3<S> + Clone> ToComponents3<S, R> for Decomposed<Vector3<S>, R> {}
-
-impl<S: BaseFloat, R: Rotation2<S> + Clone> CompositeTransform2<S, R> for Decomposed<Vector2<S>, R> {}
-impl<S: BaseFloat, R: Rotation3<S> + Clone> CompositeTransform3<S, R> for Decomposed<Vector3<S>, R> {}
