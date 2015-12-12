@@ -13,9 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![crate_type = "rlib"]
-#![crate_type = "dylib"]
-
 //! Computer graphics-centric math.
 //!
 //! This crate provides useful mathematical primitives and operations on them.
