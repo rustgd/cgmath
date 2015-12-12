@@ -122,476 +122,99 @@ pub trait Point: Copy + Clone where
 
     /// This is a weird one, but its useful for plane calculations.
     fn dot(self, v: Self::Vector) -> Self::Scalar;
-
-    #[must_use]
-    fn min(self, p: Self) -> Self;
-
-    #[must_use]
-    fn max(self, p: Self) -> Self;
 }
 
-impl<S: BaseNum> Array for Point2<S> {
-    type Element = S;
+macro_rules! impl_point {
+    ($PointN:ident { $($field:ident),+ }, $VectorN:ident, $n:expr) => {
+        impl<S: BaseNum> Array for $PointN<S> {
+            type Element = S;
 
-    fn sum(self) -> S {
-        self.x + self.y
-    }
+            #[inline] fn sum(self) -> S { fold_array!(add, { $(self.$field),+ }) }
+            #[inline] fn product(self) -> S { fold_array!(mul, { $(self.$field),+ }) }
+            #[inline] fn min(self) -> S { fold_array!(partial_min, { $(self.$field),+ }) }
+            #[inline] fn max(self) -> S { fold_array!(partial_max, { $(self.$field),+ }) }
+        }
 
-    fn product(self) -> S {
-        self.x * self.y
-    }
+        impl<S: BaseNum> Point for $PointN<S> {
+            type Scalar = S;
+            type Vector = $VectorN<S>;
 
-    fn min(self) -> S {
-        self.x.partial_min(self.y)
-    }
+            #[inline]
+            fn origin() -> $PointN<S> {
+                $PointN { $($field: S::zero()),+ }
+            }
 
-    fn max(self) -> S {
-        self.x.partial_max(self.y)
-    }
-}
+            #[inline]
+            fn from_vec(v: $VectorN<S>) -> $PointN<S> {
+                $PointN::new($(v.$field),+)
+            }
 
-impl<S: BaseNum> Point for Point2<S> {
-    type Scalar = S;
-    type Vector = Vector2<S>;
+            #[inline]
+            fn to_vec(self) -> $VectorN<S> {
+                $VectorN::new($(self.$field),+)
+            }
 
-    #[inline]
-    fn origin() -> Point2<S> {
-        Point2::new(S::zero(), S::zero())
-    }
+            #[inline] fn mul_s(self, scalar: S) -> $PointN<S> { self * scalar }
+            #[inline] fn div_s(self, scalar: S) -> $PointN<S> { self / scalar }
+            #[inline] fn rem_s(self, scalar: S) -> $PointN<S> { self % scalar }
+            #[inline] fn add_v(self, v: $VectorN<S>) -> $PointN<S> { self + v }
+            #[inline] fn sub_p(self, p: $PointN<S>) -> $VectorN<S> { self - p }
+            #[inline] fn mul_self_s(&mut self, scalar: S) { *self = *self * scalar; }
+            #[inline] fn div_self_s(&mut self, scalar: S) { *self = *self / scalar; }
+            #[inline] fn rem_self_s(&mut self, scalar: S) { *self = *self % scalar; }
+            #[inline] fn add_self_v(&mut self, vector: $VectorN<S>) { *self = *self + vector; }
 
-    #[inline]
-    fn from_vec(v: Vector2<S>) -> Point2<S> {
-        Point2::new(v.x, v.y)
-    }
+            #[inline]
+            fn dot(self, v: $VectorN<S>) -> S {
+                $VectorN::new($(self.$field * v.$field),+).sum()
+            }
+        }
 
-    #[inline]
-    fn to_vec(self) -> Vector2<S> {
-        Vector2::new(self.x, self.y)
-    }
+        impl<S: BaseFloat> ApproxEq for $PointN<S> {
+            type Epsilon = S;
 
-    #[inline] fn mul_s(self, scalar: S) -> Point2<S> { self * scalar }
-    #[inline] fn div_s(self, scalar: S) -> Point2<S> { self / scalar }
-    #[inline] fn rem_s(self, scalar: S) -> Point2<S> { self % scalar }
-    #[inline] fn add_v(self, v: Vector2<S>) -> Point2<S> { self + v }
-    #[inline] fn sub_p(self, p: Point2<S>) -> Vector2<S> { self - p }
+            #[inline]
+            fn approx_eq_eps(&self, other: &$PointN<S>, epsilon: &S) -> bool {
+                $(self.$field.approx_eq_eps(&other.$field, epsilon))&&+
+            }
+        }
 
-    #[inline]
-    fn mul_self_s(&mut self, scalar: S) {
-        self.x = self.x * scalar;
-        self.y = self.y * scalar;
-    }
+        impl_binary_operator!(<S: BaseNum> Add<$VectorN<S> > for $PointN<S> {
+            fn add(lhs, rhs) -> $PointN<S> { $PointN::new($(lhs.$field + rhs.$field),+) }
+        });
 
-    #[inline]
-    fn div_self_s(&mut self, scalar: S) {
-        self.x = self.x / scalar;
-        self.y = self.y / scalar;
-    }
+        impl_binary_operator!(<S: BaseNum> Sub<$PointN<S> > for $PointN<S> {
+            fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
+        });
 
-    #[inline]
-    fn rem_self_s(&mut self, scalar: S) {
-        self.x = self.x % scalar;
-        self.y = self.y % scalar;
-    }
+        impl_binary_operator!(<S: BaseNum> Mul<S> for $PointN<S> {
+            fn mul(point, scalar) -> $PointN<S> { $PointN::new($(point.$field * scalar),+) }
+        });
 
-    #[inline]
-    fn add_self_v(&mut self, v: Vector2<S>) {
-        self.x = self.x + v.x;
-        self.y = self.y + v.y;
-    }
+        impl_binary_operator!(<S: BaseNum> Div<S> for $PointN<S> {
+            fn div(point, scalar) -> $PointN<S> { $PointN::new($(point.$field / scalar),+) }
+        });
 
-    #[inline]
-    fn dot(self, v: Vector2<S>) -> S {
-        self.x * v.x +
-        self.y * v.y
-    }
+        impl_binary_operator!(<S: BaseNum> Rem<S> for $PointN<S> {
+            fn rem(point, scalar) -> $PointN<S> { $PointN::new($(point.$field % scalar),+) }
+        });
 
-    #[inline]
-    fn min(self, p: Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_min(p.x), self.y.partial_min(p.y))
-    }
-
-    #[inline]
-    fn max(self, p: Point2<S>) -> Point2<S> {
-        Point2::new(self.x.partial_max(p.x), self.y.partial_max(p.y))
+        impl_index_operators!($PointN<S>, $n, S, usize);
+        impl_index_operators!($PointN<S>, $n, [S], Range<usize>);
+        impl_index_operators!($PointN<S>, $n, [S], RangeTo<usize>);
+        impl_index_operators!($PointN<S>, $n, [S], RangeFrom<usize>);
+        impl_index_operators!($PointN<S>, $n, [S], RangeFull);
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Point2<S> {
-    type Epsilon = S;
+impl_point!(Point2 { x, y }, Vector2, 2);
+impl_point!(Point3 { x, y, z }, Vector3, 3);
 
-    #[inline]
-    fn approx_eq_eps(&self, other: &Point2<S>, epsilon: &S) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon)
-    }
-}
+impl_fixed_array_conversions!(Point2<S> { x: 0, y: 1 }, 2);
+impl_fixed_array_conversions!(Point3<S> { x: 0, y: 1, z: 2 }, 3);
 
-impl<S: BaseNum> Array for Point3<S> {
-    type Element = S;
-
-    fn sum(self) -> S {
-        self.x + self.y + self.z
-    }
-
-    fn product(self) -> S {
-        self.x * self.y * self.z
-    }
-
-    fn min(self) -> S {
-        self.x.partial_min(self.y).partial_min(self.z)
-    }
-
-    fn max(self) -> S {
-        self.x.partial_max(self.y).partial_max(self.z)
-    }
-}
-
-impl<S: BaseNum> Point for Point3<S> {
-    type Scalar = S;
-    type Vector = Vector3<S>;
-
-    #[inline]
-    fn origin() -> Point3<S> {
-        Point3::new(S::zero(), S::zero(), S::zero())
-    }
-
-    #[inline]
-    fn from_vec(v: Vector3<S>) -> Point3<S> {
-        Point3::new(v.x, v.y, v.z)
-    }
-
-    #[inline]
-    fn to_vec(self) -> Vector3<S> {
-        Vector3::new(self.x, self.y, self.z)
-    }
-
-    #[inline] fn mul_s(self, scalar: S) -> Point3<S> { self * scalar }
-    #[inline] fn div_s(self, scalar: S) -> Point3<S> { self / scalar }
-    #[inline] fn rem_s(self, scalar: S) -> Point3<S> { self % scalar }
-    #[inline] fn add_v(self, v: Vector3<S>) -> Point3<S> { self + v }
-    #[inline] fn sub_p(self, p: Point3<S>) -> Vector3<S> { self - p }
-
-    #[inline]
-    fn mul_self_s(&mut self, scalar: S) {
-        self.x = self.x * scalar;
-        self.y = self.y * scalar;
-        self.z = self.z * scalar;
-    }
-
-    #[inline]
-    fn div_self_s(&mut self, scalar: S) {
-        self.x = self.x / scalar;
-        self.y = self.y / scalar;
-        self.z = self.z / scalar;
-    }
-
-    #[inline]
-    fn rem_self_s(&mut self, scalar: S) {
-        self.x = self.x % scalar;
-        self.y = self.y % scalar;
-        self.z = self.z % scalar;
-    }
-
-    #[inline]
-    fn add_self_v(&mut self, v: Vector3<S>) {
-        self.x = self.x + v.x;
-        self.y = self.y + v.y;
-        self.z = self.z + v.z;
-    }
-
-    #[inline]
-    fn dot(self, v: Vector3<S>) -> S {
-        self.x * v.x +
-        self.y * v.y +
-        self.z * v.z
-    }
-
-    #[inline]
-    fn min(self, p: Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_min(p.x), self.y.partial_min(p.y), self.z.partial_min(p.z))
-    }
-
-    #[inline]
-    fn max(self, p: Point3<S>) -> Point3<S> {
-        Point3::new(self.x.partial_max(p.x), self.y.partial_max(p.y), self.z.partial_max(p.z))
-    }
-}
-
-impl<S: BaseFloat> ApproxEq for Point3<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Point3<S>, epsilon: &S) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon) &&
-        self.z.approx_eq_eps(&other.z, epsilon)
-    }
-}
-
-
-macro_rules! impl_operators {
-    ($PointN:ident { $($field:ident),+ }, $VectorN:ident) => {
-        impl<S: BaseNum> Mul<S> for $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn mul(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field * scalar),+)
-            }
-        }
-
-        impl<S: BaseNum> Div<S> for $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn div(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field / scalar),+)
-            }
-        }
-
-        impl<S: BaseNum> Rem<S> for $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn rem(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field % scalar),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Mul<S> for &'a $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn mul(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field * scalar),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Div<S> for &'a $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn div(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field / scalar),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Rem<S> for &'a $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn rem(self, scalar: S) -> $PointN<S> {
-                $PointN::new($(self.$field % scalar),+)
-            }
-        }
-
-        impl<S: BaseNum> Add<$VectorN<S>> for $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn add(self, v: $VectorN<S>) -> $PointN<S> {
-                $PointN::new($(self.$field + v.$field),+)
-            }
-        }
-
-        impl<S: BaseNum> Sub<$PointN<S>> for $PointN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn sub(self, p: $PointN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field - p.$field),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Add<&'a $VectorN<S>> for $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn add(self, v: &'a $VectorN<S>) -> $PointN<S> {
-                $PointN::new($(self.$field + v.$field),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Sub<&'a $PointN<S>> for $PointN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn sub(self, p: &'a $PointN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field - p.$field),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Add<$VectorN<S>> for &'a $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn add(self, v: $VectorN<S>) -> $PointN<S> {
-                $PointN::new($(self.$field + v.$field),+)
-            }
-        }
-
-        impl<'a, S: BaseNum> Sub<$PointN<S>> for &'a $PointN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn sub(self, p: $PointN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field - p.$field),+)
-            }
-        }
-
-        impl<'a, 'b, S: BaseNum> Add<&'a $VectorN<S>> for &'b $PointN<S> {
-            type Output = $PointN<S>;
-
-            #[inline]
-            fn add(self, v: &'a $VectorN<S>) -> $PointN<S> {
-                $PointN::new($(self.$field + v.$field),+)
-            }
-        }
-
-        impl<'a, 'b, S: BaseNum> Sub<&'a $PointN<S>> for &'b $PointN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn sub(self, p: &'a $PointN<S>) -> $VectorN<S> {
-                $VectorN::new($(self.$field - p.$field),+)
-            }
-        }
-    }
-}
-
-impl_operators!(Point2 { x, y }, Vector2);
-impl_operators!(Point3 { x, y, z }, Vector3);
-
-macro_rules! fixed_array_conversions {
-    ($PointN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-        impl<$S> Into<[$S; $n]> for $PointN<$S> {
-            #[inline]
-            fn into(self) -> [$S; $n] {
-                match self { $PointN { $($field),+ } => [$($field),+] }
-            }
-        }
-
-        impl<$S> AsRef<[$S; $n]> for $PointN<$S> {
-            #[inline]
-            fn as_ref(&self) -> &[$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> AsMut<[$S; $n]> for $PointN<$S> {
-            #[inline]
-            fn as_mut(&mut self) -> &mut [$S; $n] {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S: Clone> From<[$S; $n]> for $PointN<$S> {
-            #[inline]
-            fn from(v: [$S; $n]) -> $PointN<$S> {
-                // We need to use a clone here because we can't pattern match on arrays yet
-                $PointN { $($field: v[$index].clone()),+ }
-            }
-        }
-
-        impl<'a, $S> From<&'a [$S; $n]> for &'a $PointN<$S> {
-            #[inline]
-            fn from(v: &'a [$S; $n]) -> &'a $PointN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-
-        impl<'a, $S> From<&'a mut [$S; $n]> for &'a mut $PointN<$S> {
-            #[inline]
-            fn from(v: &'a mut [$S; $n]) -> &'a mut $PointN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-    }
-}
-
-fixed_array_conversions!(Point2<S> { x:0, y:1 }, 2);
-fixed_array_conversions!(Point3<S> { x:0, y:1, z:2 }, 3);
-
-macro_rules! tuple_conversions {
-    ($PointN:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
-        impl<$S> Into<$Tuple> for $PointN<$S> {
-            #[inline]
-            fn into(self) -> $Tuple {
-                match self { $PointN { $($field),+ } => ($($field),+) }
-            }
-        }
-
-        impl<$S> AsRef<$Tuple> for $PointN<$S> {
-            #[inline]
-            fn as_ref(&self) -> &$Tuple {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> AsMut<$Tuple> for $PointN<$S> {
-            #[inline]
-            fn as_mut(&mut self) -> &mut $Tuple {
-                unsafe { mem::transmute(self) }
-            }
-        }
-
-        impl<$S> From<$Tuple> for $PointN<$S> {
-            #[inline]
-            fn from(v: $Tuple) -> $PointN<$S> {
-                // We need to use a clone here because we can't pattern match on arrays yet
-                match v { ($($field),+) => $PointN { $($field: $field),+ } }
-            }
-        }
-
-        impl<'a, $S> From<&'a $Tuple> for &'a $PointN<$S> {
-            #[inline]
-            fn from(v: &'a $Tuple) -> &'a $PointN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-
-        impl<'a, $S> From<&'a mut $Tuple> for &'a mut $PointN<$S> {
-            #[inline]
-            fn from(v: &'a mut $Tuple) -> &'a mut $PointN<$S> {
-                unsafe { mem::transmute(v) }
-            }
-        }
-    }
-}
-
-tuple_conversions!(Point2<S> { x, y }, (S, S));
-tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
-
-macro_rules! index_operators {
-    ($PointN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
-        impl<$S> Index<$I> for $PointN<$S> {
-            type Output = $Output;
-
-            #[inline]
-            fn index<'a>(&'a self, i: $I) -> &'a $Output {
-                let v: &[$S; $n] = self.as_ref(); &v[i]
-            }
-        }
-
-        impl<$S> IndexMut<$I> for $PointN<$S> {
-            #[inline]
-            fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
-                let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
-            }
-        }
-    }
-}
-
-index_operators!(Point2<S>, 2, S, usize);
-index_operators!(Point3<S>, 3, S, usize);
-index_operators!(Point2<S>, 2, [S], Range<usize>);
-index_operators!(Point3<S>, 3, [S], Range<usize>);
-index_operators!(Point2<S>, 2, [S], RangeTo<usize>);
-index_operators!(Point3<S>, 3, [S], RangeTo<usize>);
-index_operators!(Point2<S>, 2, [S], RangeFrom<usize>);
-index_operators!(Point3<S>, 3, [S], RangeFrom<usize>);
-index_operators!(Point2<S>, 2, [S], RangeFull);
-index_operators!(Point3<S>, 3, [S], RangeFull);
+impl_tuple_conversions!(Point2<S> { x, y }, (S, S));
+impl_tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
 
 impl<S: BaseNum> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

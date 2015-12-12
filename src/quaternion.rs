@@ -123,75 +123,19 @@ impl<'a, S: BaseFloat> Neg for &'a Quaternion<S> {
     fn neg(self) -> Quaternion<S> { Quaternion::from_sv(-self.s, -self.v) }
 }
 
-/// Generates a binary operator implementation for the permutations of by-ref and by-val
-macro_rules! impl_binary_operator {
-    // When the right operand is a scalar
-    (<$S:ident> $Binop:ident<$Rhs:ident> for $Lhs:ty { fn $binop:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr } }) => {
-        impl<$S: BaseFloat> $Binop<$Rhs> for $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
-        impl<'a, $S: BaseFloat> $Binop<$Rhs> for &'a $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-    };
-    // When the right operand is a compound type
-    (<$S:ident> $Binop:ident<$Rhs:ty> for $Lhs:ty { fn $binop:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr } }) => {
-        impl<$S: BaseFloat> $Binop<$Rhs> for $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
-        impl<'a, $S: BaseFloat> $Binop<&'a $Rhs> for $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
-        impl<'a, $S: BaseFloat> $Binop<$Rhs> for &'a $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
-        impl<'a, 'b, $S: BaseFloat> $Binop<&'a $Rhs> for &'b $Lhs {
-            type Output = $Output;
-            #[inline]
-            fn $binop(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-    };
-}
-
-impl_binary_operator!(<S> Mul<S> for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Mul<S> for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s * rhs, lhs.v * rhs)
     }
 });
 
-impl_binary_operator!(<S> Div<S> for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
     fn div(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s / rhs, lhs.v / rhs)
     }
 });
 
-impl_binary_operator!(<S> Mul<Vector3<S> > for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Mul<Vector3<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Vector3<S> {{
         let rhs = rhs.clone();
         let two: S = cast(2i8).unwrap();
@@ -200,19 +144,19 @@ impl_binary_operator!(<S> Mul<Vector3<S> > for Quaternion<S> {
     }}
 });
 
-impl_binary_operator!(<S> Add<Quaternion<S> > for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Add<Quaternion<S> > for Quaternion<S> {
     fn add(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s + rhs.s, lhs.v + rhs.v)
     }
 });
 
-impl_binary_operator!(<S> Sub<Quaternion<S> > for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
     fn sub(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s - rhs.s, lhs.v - rhs.v)
     }
 });
 
-impl_binary_operator!(<S> Mul<Quaternion<S> > for Quaternion<S> {
+impl_binary_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
         Quaternion::new(lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
                         lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,

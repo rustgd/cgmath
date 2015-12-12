@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add missing by-ref and by-val permutations of `Quaternion` operators.
 
+### Removed
+- Remove redundant `Point::{min, max}` methods - these are now covered by the
+  `Array::{min, max}` methods that were introduced in 0.5.0.
+
 ## [v0.6.0] - 2015-12-12
 
 ### Added
