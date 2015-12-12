@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Add missing by-ref and by-val permutations of `Quaternion` operators.
+
 ## [v0.6.0] - 2015-12-12
 
 ### Added
