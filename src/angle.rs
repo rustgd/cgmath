@@ -104,23 +104,21 @@ pub trait Angle where
     fn equiv(&self, other: &Self) -> bool {
         self.normalize() == other.normalize()
     }
+
+    fn sin(self) -> Self::Unitless;
+    fn cos(self) -> Self::Unitless;
+    fn tan(self) -> Self::Unitless;
+    fn sin_cos(self) -> (Self::Unitless, Self::Unitless);
+
+    #[inline] fn cot(self) -> Self::Unitless { Self::tan(self).recip() }
+    #[inline] fn sec(self) -> Self::Unitless { Self::cos(self).recip() }
+    #[inline] fn csc(self) -> Self::Unitless { Self::sin(self).recip() }
+
+    fn asin(a: Self::Unitless) -> Self;
+    fn acos(a: Self::Unitless) -> Self;
+    fn atan(a: Self::Unitless) -> Self;
+    fn atan2(a: Self::Unitless, b: Self::Unitless) -> Self;
 }
-
-#[inline] pub fn bisect<A: Angle>(a: A, b: A) -> A { a.bisect(b) }
-
-#[inline] pub fn sin<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.sin() }
-#[inline] pub fn cos<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.cos() }
-#[inline] pub fn tan<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.tan() }
-#[inline] pub fn sin_cos<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> (S, S) { theta.into().s.sin_cos() }
-
-#[inline] pub fn cot<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { tan(theta.into()).recip() }
-#[inline] pub fn sec<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { cos(theta.into()).recip() }
-#[inline] pub fn csc<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { sin(theta.into()).recip() }
-
-#[inline] pub fn asin<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.asin()).into() }
-#[inline] pub fn acos<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.acos()).into() }
-#[inline] pub fn atan<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.atan()).into() }
-#[inline] pub fn atan2<S: BaseFloat, R: From<Rad<S>>>(a: S, b: S) -> R { rad(a.atan2(b)).into() }
 
 macro_rules! impl_angle {
     ($Angle:ident, $fmt:expr, $full_turn:expr, $hi:expr) => {
@@ -148,6 +146,16 @@ macro_rules! impl_angle {
             #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_6() -> $Angle<S> { let factor: S = cast(6).unwrap(); $Angle::full_turn() / factor }
+
+            #[inline] fn sin(self) -> S { let rad: Rad<S> = self.into(); rad.s.sin() }
+            #[inline] fn cos(self) -> S { let rad: Rad<S> = self.into(); rad.s.cos() }
+            #[inline] fn tan(self) -> S { let rad: Rad<S> = self.into(); rad.s.tan() }
+            #[inline] fn sin_cos(self) -> (S, S) { let rad: Rad<S> = self.into(); rad.s.sin_cos() }
+
+            #[inline] fn asin(a: S) -> $Angle<S> { Rad::new(a.asin()).into() }
+            #[inline] fn acos(a: S) -> $Angle<S> { Rad::new(a.acos()).into() }
+            #[inline] fn atan(a: S) -> $Angle<S> { Rad::new(a.atan()).into() }
+            #[inline] fn atan2(a: S, b: S) -> $Angle<S> { Rad::new(a.atan2(b)).into() }
         }
 
         impl<S: BaseFloat> Neg for $Angle<S> {
