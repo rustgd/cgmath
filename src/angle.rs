@@ -147,10 +147,10 @@ macro_rules! impl_angle {
             #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_6() -> $Angle<S> { let factor: S = cast(6).unwrap(); $Angle::full_turn() / factor }
 
-            #[inline] fn sin(self) -> S { let rad: Rad<S> = self.into(); rad.s.sin() }
-            #[inline] fn cos(self) -> S { let rad: Rad<S> = self.into(); rad.s.cos() }
-            #[inline] fn tan(self) -> S { let rad: Rad<S> = self.into(); rad.s.tan() }
-            #[inline] fn sin_cos(self) -> (S, S) { let rad: Rad<S> = self.into(); rad.s.sin_cos() }
+            #[inline] fn sin(self) -> S { Rad::from(self).s.sin() }
+            #[inline] fn cos(self) -> S { Rad::from(self).s.cos() }
+            #[inline] fn tan(self) -> S { Rad::from(self).s.tan() }
+            #[inline] fn sin_cos(self) -> (S, S) { Rad::from(self).s.sin_cos() }
 
             #[inline] fn asin(a: S) -> $Angle<S> { Rad::new(a.asin()).into() }
             #[inline] fn acos(a: S) -> $Angle<S> { Rad::new(a.acos()).into() }
