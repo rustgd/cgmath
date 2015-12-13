@@ -95,7 +95,7 @@ use rand::{Rand, Rng};
 
 use rust_num::{NumCast, Zero, One};
 
-use angle::{Rad, atan2, acos};
+use angle::{Angle, Rad};
 use approx::ApproxEq;
 use array::Array;
 use num::{BaseNum, BaseFloat, PartialOrd};
@@ -441,21 +441,21 @@ pub trait EuclideanVector: Vector + Sized where
 impl<S: BaseFloat> EuclideanVector for Vector2<S> {
     #[inline]
     fn angle(self, other: Vector2<S>) -> Rad<S> {
-        atan2(self.perp_dot(other), self.dot(other))
+        Rad::atan2(self.perp_dot(other), self.dot(other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
     fn angle(self, other: Vector3<S>) -> Rad<S> {
-        atan2(self.cross(other).length(), self.dot(other))
+        Rad::atan2(self.cross(other).length(), self.dot(other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
     fn angle(self, other: Vector4<S>) -> Rad<S> {
-        acos(self.dot(other) / (self.length() * other.length()))
+        Rad::acos(self.dot(other) / (self.length() * other.length()))
     }
 }
 

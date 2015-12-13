@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use angle::{Rad, acos};
+use angle::{Angle, Rad};
 use approx::ApproxEq;
 use matrix::{Matrix, SquareMatrix};
 use matrix::{Matrix2, Matrix3};
@@ -186,7 +186,7 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
 
     #[inline]
     fn between_vectors(a: Vector2<S>, b: Vector2<S>) -> Basis2<S> {
-        Rotation2::from_angle(acos(a.dot(b)) )
+        Rotation2::from_angle(Rad::acos(a.dot(b)) )
     }
 
     #[inline]

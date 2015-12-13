@@ -25,7 +25,7 @@ use rand::{Rand, Rng};
 use rust_num::{Zero, One};
 use rust_num::traits::cast;
 
-use angle::{Rad, sin, cos, sin_cos};
+use angle::{Angle, Rad};
 use approx::ApproxEq;
 use array::Array;
 use num::BaseFloat;
@@ -71,11 +71,11 @@ impl<S: BaseFloat> Matrix2<S> {
 
     #[inline]
     pub fn from_angle(theta: Rad<S>) -> Matrix2<S> {
-        let cos_theta = cos(theta.clone());
-        let sin_theta = sin(theta.clone());
+        let cos_theta = Rad::cos(theta);
+        let sin_theta = Rad::sin(theta);
 
-        Matrix2::new(cos_theta.clone(),  sin_theta.clone(),
-                     -sin_theta.clone(), cos_theta.clone())
+        Matrix2::new(cos_theta,  sin_theta,
+                     -sin_theta, cos_theta)
     }
 }
 
@@ -118,27 +118,27 @@ impl<S: BaseFloat> Matrix3<S> {
     /// Create a rotation matrix from a rotation around the `x` axis (pitch).
     pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta);
         Matrix3::new(S::one(), S::zero(), S::zero(),
-                     S::zero(), c.clone(), s.clone(),
-                     S::zero(), -s.clone(), c.clone())
+                     S::zero(), c, s,
+                     S::zero(), -s, c)
     }
 
     /// Create a rotation matrix from a rotation around the `y` axis (yaw).
     pub fn from_angle_y(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = sin_cos(theta);
-        Matrix3::new(c.clone(), S::zero(), -s.clone(),
+        let (s, c) = Rad::sin_cos(theta);
+        Matrix3::new(c, S::zero(), -s,
                      S::zero(), S::one(), S::zero(),
-                     s.clone(), S::zero(), c.clone())
+                     s, S::zero(), c)
     }
 
     /// Create a rotation matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = sin_cos(theta);
-        Matrix3::new( c.clone(), s.clone(), S::zero(),
-                     -s.clone(), c.clone(), S::zero(),
+        let (s, c) = Rad::sin_cos(theta);
+        Matrix3::new( c, s, S::zero(),
+                     -s, c, S::zero(),
                      S::zero(), S::zero(), S::one())
     }
 
@@ -151,18 +151,18 @@ impl<S: BaseFloat> Matrix3<S> {
     /// - `z`: the angular rotation around the `z` axis (roll).
     pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = sin_cos(x);
-        let (sy, cy) = sin_cos(y);
-        let (sz, cz) = sin_cos(z);
+        let (sx, cx) = Rad::sin_cos(x);
+        let (sy, cy) = Rad::sin_cos(y);
+        let (sz, cz) = Rad::sin_cos(z);
 
-        Matrix3::new(                cy * cz,                 cy * sz,     -sy,
-                     -cx * sz + sx * sy * cz,  cx * cz + sx * sy * sz, sx * cy,
-                      sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+        Matrix3::new(cy * cz, cy * sz, -sy,
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
     }
 
     /// Create a rotation matrix from an angle around an arbitrary axis.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
-        let (s, c) = sin_cos(angle);
+        let (s, c) = Rad::sin_cos(angle);
         let _1subc = S::one() - c;
 
         Matrix3::new(_1subc * axis.x * axis.x + c,
