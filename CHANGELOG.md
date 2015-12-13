@@ -27,6 +27,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   from `Deg` and `Rad`. This is because angles do not close over multiplication,
   and therefore cannot have a multiplicative identity. If we were truly accurate,
   `Angle * Angle` would return an `Angle^2` (not supported by the current api).
+- Make remainder operators on `Angle`s make sense from the perspective of
+  dimensional analysis.
 - Moved free trigonometric functions onto `Angle`.
 
 ### Removed
