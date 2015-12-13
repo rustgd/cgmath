@@ -41,16 +41,3 @@ fn test_look_at() {
 	let view_point = Point3::new(0.0f64, 1.0, 5.0);
 	assert!(t.transform_point(point).approx_eq(&view_point));
 }
-
-#[test]
-fn test_components() {
-	let t = Decomposed {
-        scale: 1.5f64,
-        rot: Quaternion::new(0.5f64,0.5,0.5,0.5),
-        disp: Vector3::new(6.0f64,-7.0,8.0)
-    };
-    let (scale, rot, disp) = t.decompose();
-    assert_eq!(scale, Vector3::from_value(t.scale));
-    assert_eq!(rot, t.rot);
-    assert_eq!(disp, t.disp);
-}
