@@ -29,10 +29,10 @@ use approx::ApproxEq;
 use num::BaseFloat;
 
 /// An angle, in radians
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
 pub struct Rad<S> { pub s: S }
 /// An angle, in degrees
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
 pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians
