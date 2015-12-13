@@ -62,13 +62,11 @@ pub trait Angle where
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
 
     Self: Neg<Output = Self>,
-
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
-    Self: Div<Self, Output = <Self as Angle>::Unitless>,
-    Self: Rem<Self, Output = <Self as Angle>::Unitless>,
-
+    Self: Rem<Self, Output = Self>,
     Self: Mul<<Self as Angle>::Unitless, Output = Self>,
+    Self: Div<Self, Output = <Self as Angle>::Unitless>,
     Self: Div<<Self as Angle>::Unitless, Output = Self>,
     Self: Rem<<Self as Angle>::Unitless, Output = Self>,
 {
@@ -78,7 +76,11 @@ pub trait Angle where
     fn new(value: Self::Unitless) -> Self;
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
-    fn normalize(self) -> Self;
+    #[inline]
+    fn normalize(self) -> Self {
+        let rem = self % Self::full_turn();
+        if rem < Self::zero() { rem + Self::full_turn() } else { rem }
+    }
 
     /// Return the angle rotated by half a turn
     #[inline]
@@ -135,12 +137,6 @@ macro_rules! impl_angle {
                 $Angle::new(S::zero())
             }
 
-            #[inline]
-            fn normalize(self) -> Self {
-                let tmp = self % Self::full_turn().s;
-                if tmp < Self::zero() { tmp + Self::full_turn() } else { tmp }
-            }
-
             #[inline] fn full_turn() -> $Angle<S> { $Angle::new(cast($full_turn).unwrap()) }
             #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
@@ -182,7 +178,7 @@ macro_rules! impl_angle {
             fn div(lhs, rhs) -> S { lhs.s / rhs.s }
         });
         impl_binary_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
-            fn rem(lhs, rhs) -> S { lhs.s % rhs.s }
+            fn rem(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s % rhs.s) }
         });
 
         impl_binary_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
