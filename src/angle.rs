@@ -22,7 +22,7 @@ use std::ops::*;
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
 
-use rust_num::{Float, One, Zero};
+use rust_num::{Float, Zero};
 use rust_num::traits::cast;
 
 use approx::ApproxEq;
@@ -75,7 +75,7 @@ impl<S: BaseFloat> ScalarConv<S> for Deg<S> {
 
 /// Operations on angles.
 pub trait Angle where
-    Self: Clone + Zero,
+    Self: Copy + Clone,
     Self: PartialEq + PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
@@ -91,7 +91,7 @@ pub trait Angle where
     fn from<A: Angle<Unitless = Self::Unitless>>(theta: A) -> Self;
 
     /// Negate this angle, in-place.
-    #[inline] fn neg_self(&mut self) { *self = -(*self).clone() }
+    #[inline] fn neg_self(&mut self) { *self = -*self }
 
     /// Add this angle with another, returning the new angle.
     #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
@@ -149,6 +149,7 @@ pub trait Angle where
         self.add_a(self.sub_a(other).mul_s(cast(0.5f64).unwrap())).normalize()
     }
 
+    fn zero() -> Self;
     fn full_turn() -> Self;
 
     #[inline] fn turn_div_2() -> Self { Self::full_turn().div_s(cast(2i8).unwrap()) }
@@ -160,97 +161,6 @@ pub trait Angle where
 }
 
 #[inline] pub fn bisect<A: Angle>(a: A, b: A) -> A { a.bisect(b) }
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Rad<S> {
-    type Output = Rad<S>;
-
-    #[inline]
-    fn add(self, other: R) -> Rad<S> { rad(self.s + other.into().s) }
-}
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Deg<S> {
-    type Output = Deg<S>;
-
-    #[inline]
-    fn add(self, other: R) -> Deg<S> { deg(self.s + other.into().s) }
-}
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Sub<R> for Rad<S> {
-    type Output = Rad<S>;
-
-    #[inline]
-    fn sub(self, other: R) -> Rad<S> { rad(self.s - other.into().s) }
-}
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Sub<R> for Deg<S> {
-    type Output = Deg<S>;
-
-    #[inline]
-    fn sub(self, other: R) -> Deg<S> { deg(self.s - other.into().s) }
-}
-
-impl<S: BaseFloat> Neg for Rad<S> {
-    type Output = Rad<S>;
-
-    #[inline]
-    fn neg(self) -> Rad<S> { rad(-self.s) }
-}
-impl<S: BaseFloat> Neg for Deg<S> {
-    type Output = Deg<S>;
-
-    #[inline]
-    fn neg(self) -> Deg<S> { deg(-self.s) }
-}
-
-impl<S: BaseFloat> Zero for Rad<S> {
-    #[inline]
-    fn zero() -> Rad<S> { rad(S::zero()) }
-    #[inline]
-    fn is_zero(&self) -> bool { *self == Self::zero() }
-}
-impl<S: BaseFloat> Zero for Deg<S> {
-    #[inline]
-    fn zero() -> Deg<S> { deg(S::zero()) }
-    #[inline]
-    fn is_zero(&self) -> bool { *self == Self::zero() }
-}
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Rad<S> {
-    type Output = Rad<S>;
-
-    #[inline]
-    fn mul(self, other: R) -> Rad<S> { rad(self.s * other.into().s) }
-}
-
-impl<R: Into<Rad<S>>, S: BaseFloat> Mul<R> for Deg<S> {
-    type Output = Deg<S>;
-
-    #[inline]
-    fn mul(self, other: R) -> Deg<S> { deg(self.s * other.into().s) }
-}
-
-impl<S: BaseFloat> One for Rad<S> {
-    #[inline]
-    fn one() -> Rad<S> { rad(S::one()) }
-}
-impl<S: BaseFloat> One for Deg<S> {
-    #[inline]
-    fn one() -> Deg<S> { deg(S::one()) }
-}
-
-const PI_2: f64 = f64::consts::PI * 2f64;
-
-impl<S: BaseFloat> Angle for Rad<S> {
-    type Unitless = S;
-    #[inline] fn from<A: Angle<Unitless = S>>(theta: A) -> Rad<S> { theta.into() }
-    #[inline] fn full_turn() -> Rad<S> { rad(cast(PI_2).unwrap()) }
-}
-
-impl<S: BaseFloat> Angle for Deg<S> {
-    type Unitless = S;
-    #[inline] fn from<A: Angle<Unitless = S>>(theta: A) -> Deg<S> { theta.into() }
-    #[inline] fn full_turn() -> Deg<S> { deg(cast(360i32).unwrap()) }
-}
 
 #[inline] pub fn sin<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.sin() }
 #[inline] pub fn cos<S: BaseFloat, R: Into<Rad<S>>>(theta: R) -> S { theta.into().s.cos() }
@@ -266,49 +176,82 @@ impl<S: BaseFloat> Angle for Deg<S> {
 #[inline] pub fn atan<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.atan()).into() }
 #[inline] pub fn atan2<S: BaseFloat, R: From<Rad<S>>>(a: S, b: S) -> R { rad(a.atan2(b)).into() }
 
-impl<S: BaseFloat + fmt::Debug> fmt::Debug for Rad<S> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?} rad", self.s)
+macro_rules! impl_angle {
+    ($Angle:ident, $fmt:expr, $full_turn:expr, $hi:expr) => {
+        impl<S: BaseFloat> Angle for $Angle<S> {
+            type Unitless = S;
+
+            #[inline]
+            fn zero() -> $Angle<S> { ScalarConv::from(S::zero()) }
+
+            #[inline]
+            fn from<A: Angle<Unitless = S>>(theta: A) -> $Angle<S> { theta.into() }
+
+            #[inline]
+            fn full_turn() -> $Angle<S> { ScalarConv::from(cast($full_turn).unwrap()) }
+        }
+
+        impl<S: BaseFloat> Neg for $Angle<S> {
+            type Output = $Angle<S>;
+
+            #[inline]
+            fn neg(self) -> $Angle<S> { ScalarConv::from(-self.s) }
+        }
+
+        impl<'a, S: BaseFloat> Neg for &'a $Angle<S> {
+            type Output = $Angle<S>;
+
+            #[inline]
+            fn neg(self) -> $Angle<S> { ScalarConv::from(-self.s) }
+        }
+
+        impl_binary_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
+            fn add(lhs, rhs) -> $Angle<S> { ScalarConv::from(lhs.s + rhs.s) }
+        });
+        impl_binary_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
+            fn sub(lhs, rhs) -> $Angle<S> { ScalarConv::from(lhs.s - rhs.s) }
+        });
+        impl_binary_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
+            fn div(lhs, rhs) -> S { lhs.s / rhs.s }
+        });
+        impl_binary_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
+            fn rem(lhs, rhs) -> S { lhs.s % rhs.s }
+        });
+
+        impl_binary_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
+            fn mul(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s * scalar) }
+        });
+        impl_binary_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
+            fn div(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s / scalar) }
+        });
+        impl_binary_operator!(<S: BaseFloat> Rem<S> for $Angle<S> {
+            fn rem(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s % scalar) }
+        });
+
+        impl<S: BaseFloat> ApproxEq for $Angle<S> {
+            type Epsilon = S;
+
+            #[inline]
+            fn approx_eq_eps(&self, other: &$Angle<S>, epsilon: &S) -> bool {
+                self.s.approx_eq_eps(&other.s, epsilon)
+            }
+        }
+
+        impl<S: BaseFloat + SampleRange> Rand for $Angle<S> {
+            #[inline]
+            fn rand<R: Rng>(rng: &mut R) -> $Angle<S> {
+                let angle: S = rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap());
+                ScalarConv::from(angle)
+            }
+        }
+
+        impl<S: BaseFloat> fmt::Debug for $Angle<S> {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                write!(f, $fmt, self.s)
+            }
+        }
     }
 }
 
-impl<S: BaseFloat + fmt::Debug>
-fmt::Debug for Deg<S> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}°", self.s)
-    }
-}
-
-impl<S: BaseFloat> ApproxEq for Rad<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Rad<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon)
-    }
-}
-
-impl<S: BaseFloat> ApproxEq for Deg<S> {
-    type Epsilon = S;
-
-    #[inline]
-    fn approx_eq_eps(&self, other: &Deg<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon)
-    }
-}
-
-impl<S: BaseFloat + PartialOrd + SampleRange + Rand> Rand for Rad<S> {
-    #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Rad<S> {
-        let angle: S = rng.gen_range(cast(-f64::consts::PI).unwrap(), cast(f64::consts::PI).unwrap());
-        rad(angle)
-    }
-}
-
-impl<S: BaseFloat + PartialOrd + SampleRange + Rand> Rand for Deg<S> {
-    #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Deg<S> {
-        let angle: S = rng.gen_range(cast(-180f64).unwrap(), cast(180f64).unwrap());
-        deg(angle)
-    }
-}
+impl_angle!(Rad, "{:?} rad", f64::consts::PI * 2.0, f64::consts::PI);
+impl_angle!(Deg, "{:?}°", 360, 180);
