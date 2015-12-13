@@ -60,7 +60,6 @@ pub trait Angle where
     Self: PartialEq + PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
-    Self: fmt::Debug,
 
     Self: Neg<Output = Self>,
 
