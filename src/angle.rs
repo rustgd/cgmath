@@ -68,7 +68,6 @@ pub trait Angle where
     Self: Mul<<Self as Angle>::Unitless, Output = Self>,
     Self: Div<Self, Output = <Self as Angle>::Unitless>,
     Self: Div<<Self as Angle>::Unitless, Output = Self>,
-    Self: Rem<<Self as Angle>::Unitless, Output = Self>,
 {
     type Unitless: BaseFloat;
 
@@ -186,9 +185,6 @@ macro_rules! impl_angle {
         });
         impl_binary_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
             fn div(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s / scalar) }
-        });
-        impl_binary_operator!(<S: BaseFloat> Rem<S> for $Angle<S> {
-            fn rem(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s % scalar) }
         });
 
         impl<S: BaseFloat> ApproxEq for $Angle<S> {
