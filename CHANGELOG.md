@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Add missing by-ref and by-val permutations of `Quaternion` operators.
+- Ease lifetime constraints by removing `'static` from some scalar type
+  parameters.
 
 ### Removed
 - Remove redundant `Point::{min, max}` methods - these are now covered by the

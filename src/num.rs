@@ -63,7 +63,6 @@ partial_ord_float!(f64);
 pub trait BaseNum:
     Copy + NumCast + Clone + Num
     + PartialOrd + cmp::PartialOrd + fmt::Debug
-    + 'static
 {}
 
 
