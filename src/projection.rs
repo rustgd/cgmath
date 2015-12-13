@@ -24,9 +24,9 @@ use num::BaseFloat;
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: BaseFloat, A: Angle<S>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PerspectiveFov {
-        fovy:   fovy,
+        fovy:   fovy.into(),
         aspect: aspect,
         near:   near,
         far:    far,
@@ -65,17 +65,16 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
 
 /// A perspective projection based on a vertical field-of-view angle.
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
-pub struct PerspectiveFov<S, A> {
-    pub fovy:   A,
+pub struct PerspectiveFov<S> {
+    pub fovy:   Rad<S>,
     pub aspect: S,
     pub near:   S,
     pub far:    S,
 }
 
-impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
+impl<S: BaseFloat> PerspectiveFov<S> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let angle = self.fovy.div_s(cast(2i8).unwrap());
-        let angle: Rad<_> = angle.into();
         let ymax = self.near * tan(angle);
         let xmax = ymax * self.aspect;
 
@@ -90,19 +89,16 @@ impl<S: BaseFloat, A: Angle<S>> PerspectiveFov<S, A> {
     }
 }
 
-impl<S: BaseFloat, A: Angle<S>> From<PerspectiveFov<S, A>> for Matrix4<S> {
-    fn from(persp: PerspectiveFov<S, A>) -> Matrix4<S> {
-        let half_turn: A = Angle::turn_div_2();
-
-        assert!(persp.fovy   > A::zero(), "The vertical field of view cannot be below zero, found: {:?}", persp.fovy);
-        assert!(persp.fovy   < half_turn, "The vertical field of view cannot be greater than a half turn, found: {:?}", persp.fovy);
+impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
+    fn from(persp: PerspectiveFov<S>) -> Matrix4<S> {
+        assert!(persp.fovy   > Rad::zero(), "The vertical field of view cannot be below zero, found: {:?}", persp.fovy);
+        assert!(persp.fovy   < Rad::turn_div_2(), "The vertical field of view cannot be greater than a half turn, found: {:?}", persp.fovy);
         assert!(persp.aspect > S::zero(), "The aspect ratio cannot be below zero, found: {:?}", persp.aspect);
         assert!(persp.near   > S::zero(), "The near plane distance cannot be below zero, found: {:?}", persp.near);
         assert!(persp.far    > S::zero(), "The far plane distance cannot be below zero, found: {:?}", persp.far);
         assert!(persp.far    > persp.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", persp.far, persp.near);
 
-        let f: Rad<_> = persp.fovy.div_s(cast(2i8).unwrap()).into();
-        let f = cot(f);
+        let f = cot(persp.fovy.div_s(cast(2i8).unwrap()));
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = f / persp.aspect;

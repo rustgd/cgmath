@@ -10,6 +10,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add missing by-ref and by-val permutations of `Quaternion` operators.
 - Ease lifetime constraints by removing `'static` from some scalar type
   parameters.
+- Weaken type constraints on `perspective` function to take an `Into<Rad<S>>`.
+
+### Changed
+- Take a `Rad` for `ProjectionFov::fovy`, rather than arbitrary `Angle`s. This
+  simplifies the signature of `PerspectiveFov` from `PerspectiveFov<S, A>` to
+  `PerspectiveFov<S>`.
 
 ### Removed
 - Remove redundant `Point::{min, max}` methods - these are now covered by the
