@@ -17,6 +17,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   simplifies the signature of `PerspectiveFov` from `PerspectiveFov<S, A>` to
   `PerspectiveFov<S>`.
 
+### Changed
+- `Vector` and `Point` are now constrained to require specific operators to be
+  overloaded. This means that generic code can now use operators, instead of
+  the operator methods.
+
 ### Removed
 - Remove redundant `Point::{min, max}` methods - these are now covered by the
   `Array::{min, max}` methods that were introduced in 0.5.0.
@@ -25,6 +30,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   accessing the fields on `Decomposed` directly. To create the scale vector,
   use: `Vector::from_value(transform.scale)`.
 - Removed `CompositeTransform`, `CompositeTransform2`, and `CompositeTransform3`.
+- Remove `Vector::one`. Vectors don't really have a multiplicative identity.
+  If you really want a `one` vector, you can do something like:
+  `Vector::from_value(1.0)`.
+- Remove operator methods from `Vector` and `Point` traits in favor of operator
+  overloading.
+- Remove `*_self` methods from `Vector` and `Point`. These were of little
+  performance benefit, and assignment operator overloading will be coming soon!
 
 ## [v0.6.0] - 2015-12-12
 
