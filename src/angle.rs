@@ -74,21 +74,21 @@ impl<S: BaseFloat> ScalarConv<S> for Deg<S> {
 }
 
 /// Operations on angles.
-pub trait Angle
-<
-    S: BaseFloat
->
-:   Clone + Zero
-+   PartialEq + PartialOrd
-+   ApproxEq<Epsilon = S>
-+   Neg<Output=Self>
-+   Into<Rad<S>>
-+   Into<Deg<S>>
-+   ScalarConv<S>
-+   fmt::Debug
+pub trait Angle where
+    Self: Clone + Zero,
+    Self: PartialEq + PartialOrd,
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
+    Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
+    Self: Neg<Output = Self>,
+    Self: Into<Rad<<Self as Angle>::Unitless>>,
+    Self: Into<Deg<<Self as Angle>::Unitless>>,
+    Self: ScalarConv<<Self as Angle>::Unitless>,
+    Self: fmt::Debug,
 {
+    type Unitless: BaseFloat;
+
     /// Create a new angle from any other valid angle.
-    fn from<A: Angle<S>>(theta: A) -> Self;
+    fn from<A: Angle<Unitless = Self::Unitless>>(theta: A) -> Self;
 
     /// Negate this angle, in-place.
     #[inline] fn neg_self(&mut self) { *self = -(*self).clone() }
@@ -98,16 +98,16 @@ pub trait Angle
     /// Subtract another angle from this one, returning the new angle.
     #[inline] fn sub_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() - *other.s()) }
     /// Divide this angle by another, returning the ratio.
-    #[inline] fn div_a(&self, other: Self) -> S { *self.s() / *other.s() }
+    #[inline] fn div_a(&self, other: Self) -> Self::Unitless { *self.s() / *other.s() }
     /// Take the remainder of this angle with another.
-    #[inline] fn rem_a(&self, other: Self) -> S { *self.s() % *other.s() }
+    #[inline] fn rem_a(&self, other: Self) -> Self::Unitless { *self.s() % *other.s() }
 
     /// Multiply this angle by a scalar, returning the new angle.
-    #[inline] fn mul_s(&self, s: S) -> Self { ScalarConv::from(*self.s() * s) }
+    #[inline] fn mul_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() * scalar) }
     /// Divide this angle by a scalar, returing the new angle.
-    #[inline] fn div_s(&self, s: S) -> Self { ScalarConv::from(*self.s() / s) }
+    #[inline] fn div_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() / scalar) }
     /// Take the remainder of this angle by a scalar, returning the new angle.
-    #[inline] fn rem_s(&self, s: S) -> Self { ScalarConv::from(*self.s() % s) }
+    #[inline] fn rem_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() % scalar) }
 
     /// Add this angle with another, in-place.
     #[inline] fn add_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() + *other.s() }
@@ -115,11 +115,11 @@ pub trait Angle
     #[inline] fn sub_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() - *other.s() }
 
     /// Multiply this angle by a scalar, in-place.
-    #[inline] fn mul_self_s(&mut self, s: S) { *self.mut_s() = *self.s() * s }
+    #[inline] fn mul_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() * scalar }
     /// Divide this angle by a scalar, in-place.
-    #[inline] fn div_self_s(&mut self, s: S) { *self.mut_s() = *self.s() / s }
+    #[inline] fn div_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() / scalar }
     /// Take the remainder of this angle by a scalar, in-place.
-    #[inline] fn rem_self_s(&mut self, s: S) { *self.mut_s() = *self.s() % s }
+    #[inline] fn rem_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() % scalar }
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
     #[inline]
@@ -159,7 +159,7 @@ pub trait Angle
     #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
 }
 
-#[inline] pub fn bisect<S: BaseFloat, A: Angle<S>>(a: A, b: A) -> A { a.bisect(b) }
+#[inline] pub fn bisect<A: Angle>(a: A, b: A) -> A { a.bisect(b) }
 
 impl<R: Into<Rad<S>>, S: BaseFloat> Add<R> for Rad<S> {
     type Output = Rad<S>;
@@ -239,15 +239,16 @@ impl<S: BaseFloat> One for Deg<S> {
 }
 
 const PI_2: f64 = f64::consts::PI * 2f64;
-impl<S: BaseFloat>
-Angle<S> for Rad<S> {
-    #[inline] fn from<A: Angle<S>>(theta: A) -> Rad<S> { theta.into() }
+
+impl<S: BaseFloat> Angle for Rad<S> {
+    type Unitless = S;
+    #[inline] fn from<A: Angle<Unitless = S>>(theta: A) -> Rad<S> { theta.into() }
     #[inline] fn full_turn() -> Rad<S> { rad(cast(PI_2).unwrap()) }
 }
 
-impl<S: BaseFloat>
-Angle<S> for Deg<S> {
-    #[inline] fn from<A: Angle<S>>(theta: A) -> Deg<S> { theta.into() }
+impl<S: BaseFloat> Angle for Deg<S> {
+    type Unitless = S;
+    #[inline] fn from<A: Angle<Unitless = S>>(theta: A) -> Deg<S> { theta.into() }
     #[inline] fn full_turn() -> Deg<S> { deg(cast(360i32).unwrap()) }
 }
 
@@ -265,8 +266,7 @@ Angle<S> for Deg<S> {
 #[inline] pub fn atan<S: BaseFloat, R: From<Rad<S>>>(s: S) -> R { rad(s.atan()).into() }
 #[inline] pub fn atan2<S: BaseFloat, R: From<Rad<S>>>(a: S, b: S) -> R { rad(a.atan2(b)).into() }
 
-impl<S: BaseFloat + fmt::Debug>
-fmt::Debug for Rad<S> {
+impl<S: BaseFloat + fmt::Debug> fmt::Debug for Rad<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?} rad", self.s)
     }
