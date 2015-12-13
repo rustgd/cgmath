@@ -212,8 +212,8 @@ impl<S: BaseFloat> Quaternion<S> {
 
             let theta: Rad<S> = acos(robust_dot.clone());
 
-            let scale1 = sin(theta.mul_s(S::one() - amount));
-            let scale2 = sin(theta.mul_s(amount));
+            let scale1 = sin(theta * (S::one() - amount));
+            let scale2 = sin(theta * amount);
 
             (self * scale1 + other * scale2) * sin(theta).recip()
         }
@@ -362,16 +362,16 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     #[inline]
     fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
-        let (s, c) = sin_cos(angle.mul_s(cast(0.5f64).unwrap()));
+        let (s, c) = sin_cos(angle * cast(0.5f64).unwrap());
         Quaternion::from_sv(c, axis * s)
     }
 
     /// - [Maths - Conversion Euler to Quaternion]
     ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm)
     fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
-        let (s1, c1) = sin_cos(x.mul_s(cast(0.5f64).unwrap()));
-        let (s2, c2) = sin_cos(y.mul_s(cast(0.5f64).unwrap()));
-        let (s3, c3) = sin_cos(z.mul_s(cast(0.5f64).unwrap()));
+        let (s1, c1) = sin_cos(x * cast(0.5f64).unwrap());
+        let (s2, c2) = sin_cos(y * cast(0.5f64).unwrap());
+        let (s3, c3) = sin_cos(z * cast(0.5f64).unwrap());
 
         Quaternion::new(c1 * c2 * c3 - s1 * s2 * s3,
                         s1 * s2 * c3 + c1 * c2 * s3,

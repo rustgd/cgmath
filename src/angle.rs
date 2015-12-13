@@ -79,11 +79,21 @@ pub trait Angle where
     Self: PartialEq + PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
-    Self: Neg<Output = Self>,
     Self: Into<Rad<<Self as Angle>::Unitless>>,
     Self: Into<Deg<<Self as Angle>::Unitless>>,
     Self: ScalarConv<<Self as Angle>::Unitless>,
     Self: fmt::Debug,
+
+    Self: Neg<Output = Self>,
+
+    Self: Add<Self, Output = Self>,
+    Self: Sub<Self, Output = Self>,
+    Self: Div<Self, Output = <Self as Angle>::Unitless>,
+    Self: Rem<Self, Output = <Self as Angle>::Unitless>,
+
+    Self: Mul<<Self as Angle>::Unitless, Output = Self>,
+    Self: Div<<Self as Angle>::Unitless, Output = Self>,
+    Self: Rem<<Self as Angle>::Unitless, Output = Self>,
 {
     type Unitless: BaseFloat;
 
@@ -93,40 +103,23 @@ pub trait Angle where
     /// Negate this angle, in-place.
     #[inline] fn neg_self(&mut self) { *self = -*self }
 
-    /// Add this angle with another, returning the new angle.
-    #[inline] fn add_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() + *other.s()) }
-    /// Subtract another angle from this one, returning the new angle.
-    #[inline] fn sub_a(&self, other: Self) -> Self { ScalarConv::from(*self.s() - *other.s()) }
-    /// Divide this angle by another, returning the ratio.
-    #[inline] fn div_a(&self, other: Self) -> Self::Unitless { *self.s() / *other.s() }
-    /// Take the remainder of this angle with another.
-    #[inline] fn rem_a(&self, other: Self) -> Self::Unitless { *self.s() % *other.s() }
-
-    /// Multiply this angle by a scalar, returning the new angle.
-    #[inline] fn mul_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() * scalar) }
-    /// Divide this angle by a scalar, returing the new angle.
-    #[inline] fn div_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() / scalar) }
-    /// Take the remainder of this angle by a scalar, returning the new angle.
-    #[inline] fn rem_s(&self, scalar: Self::Unitless) -> Self { ScalarConv::from(*self.s() % scalar) }
-
     /// Add this angle with another, in-place.
-    #[inline] fn add_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() + *other.s() }
+    #[inline] fn add_self_a(&mut self, other: Self) { *self = *self + other }
     /// Subtract another angle from this one, in-place.
-    #[inline] fn sub_self_a(&mut self, other: Self) { *self.mut_s() = *self.s() - *other.s() }
+    #[inline] fn sub_self_a(&mut self, other: Self) { *self = *self - other }
 
     /// Multiply this angle by a scalar, in-place.
-    #[inline] fn mul_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() * scalar }
+    #[inline] fn mul_self_s(&mut self, scalar: Self::Unitless) { *self = *self * scalar }
     /// Divide this angle by a scalar, in-place.
-    #[inline] fn div_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() / scalar }
+    #[inline] fn div_self_s(&mut self, scalar: Self::Unitless) { *self = *self / scalar }
     /// Take the remainder of this angle by a scalar, in-place.
-    #[inline] fn rem_self_s(&mut self, scalar: Self::Unitless) { *self.mut_s() = *self.s() % scalar }
+    #[inline] fn rem_self_s(&mut self, scalar: Self::Unitless) { *self = *self % scalar }
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
     #[inline]
-    fn normalize(&self) -> Self {
-        let mut a = self.clone();
-        a.normalize_self();
-        a
+    fn normalize(mut self) -> Self {
+        self.normalize_self();
+        self
     }
 
     /// Normalize the angle to the range `[0, full_turn)`.
@@ -139,25 +132,28 @@ pub trait Angle where
 
     /// Return the angle rotated by half a turn
     #[inline]
-    fn opposite(&self) -> Self {
-        self.add_a(Self::turn_div_2()).normalize()
+    fn opposite(self) -> Self {
+        Self::normalize(self + Self::turn_div_2())
     }
 
     /// Returns the interior bisector of the two angles
     #[inline]
-    fn bisect(&self, other: Self) -> Self {
-        self.add_a(self.sub_a(other).mul_s(cast(0.5f64).unwrap())).normalize()
+    fn bisect(self, other: Self) -> Self {
+        let half = cast(0.5f64).unwrap();
+        Self::normalize((self - other) * half + self)
     }
 
     fn zero() -> Self;
     fn full_turn() -> Self;
+    fn turn_div_2() -> Self;
+    fn turn_div_3() -> Self;
+    fn turn_div_4() -> Self;
+    fn turn_div_6() -> Self;
 
-    #[inline] fn turn_div_2() -> Self { Self::full_turn().div_s(cast(2i8).unwrap()) }
-    #[inline] fn turn_div_3() -> Self { Self::full_turn().div_s(cast(3i8).unwrap()) }
-    #[inline] fn turn_div_4() -> Self { Self::full_turn().div_s(cast(4i8).unwrap()) }
-    #[inline] fn turn_div_6() -> Self { Self::full_turn().div_s(cast(6i8).unwrap()) }
-
-    #[inline] fn equiv(&self, other: &Self) -> bool { self.normalize() == other.normalize() }
+    #[inline]
+    fn equiv(&self, other: &Self) -> bool {
+        self.normalize() == other.normalize()
+    }
 }
 
 #[inline] pub fn bisect<A: Angle>(a: A, b: A) -> A { a.bisect(b) }
@@ -187,8 +183,11 @@ macro_rules! impl_angle {
             #[inline]
             fn from<A: Angle<Unitless = S>>(theta: A) -> $Angle<S> { theta.into() }
 
-            #[inline]
-            fn full_turn() -> $Angle<S> { ScalarConv::from(cast($full_turn).unwrap()) }
+            #[inline] fn full_turn() -> $Angle<S> { ScalarConv::from(cast($full_turn).unwrap()) }
+            #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
+            #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
+            #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
+            #[inline] fn turn_div_6() -> $Angle<S> { let factor: S = cast(6).unwrap(); $Angle::full_turn() / factor }
         }
 
         impl<S: BaseFloat> Neg for $Angle<S> {

@@ -74,7 +74,8 @@ pub struct PerspectiveFov<S> {
 
 impl<S: BaseFloat> PerspectiveFov<S> {
     pub fn to_perspective(&self) -> Perspective<S> {
-        let angle = self.fovy.div_s(cast(2i8).unwrap());
+        let two: S = cast(2).unwrap();
+        let angle = self.fovy / two;
         let ymax = self.near * tan(angle);
         let xmax = ymax * self.aspect;
 
@@ -98,8 +99,8 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
         assert!(persp.far    > S::zero(), "The far plane distance cannot be below zero, found: {:?}", persp.far);
         assert!(persp.far    > persp.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", persp.far, persp.near);
 
-        let f = cot(persp.fovy.div_s(cast(2i8).unwrap()));
-        let two: S = cast(2i8).unwrap();
+        let two: S = cast(2).unwrap();
+        let f = cot(persp.fovy / two);
 
         let c0r0 = f / persp.aspect;
         let c0r1 = S::zero();
@@ -187,7 +188,7 @@ pub struct Ortho<S> {
 
 impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
     fn from(ortho: Ortho<S>) -> Matrix4<S> {
-        let two: S = cast(2i8).unwrap();
+        let two: S = cast(2).unwrap();
 
         let c0r0 = two / (ortho.right - ortho.left);
         let c0r1 = S::zero();
