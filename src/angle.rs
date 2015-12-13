@@ -43,34 +43,15 @@ pub struct Deg<S> { pub s: S }
 impl<S> From<Rad<S>> for Deg<S> where S: BaseFloat {
     #[inline]
     fn from(r: Rad<S>) -> Deg<S> {
-        deg(r.s * cast(180.0 / f64::consts::PI).unwrap())
+        Deg::new(r.s * cast(180.0 / f64::consts::PI).unwrap())
     }
 }
 
 impl<S> From<Deg<S>> for Rad<S> where S: BaseFloat {
     #[inline]
     fn from(d: Deg<S>) -> Rad<S> {
-        rad(d.s * cast(f64::consts::PI / 180.0).unwrap())
+        Rad::new(d.s * cast(f64::consts::PI / 180.0).unwrap())
     }
-}
-
-/// Private utility functions for converting to/from scalars
-trait ScalarConv<S> {
-    fn from(s: S) -> Self;
-    fn s<'a>(&'a self) -> &'a S;
-    fn mut_s<'a>(&'a mut self) -> &'a mut S;
-}
-
-impl<S: BaseFloat> ScalarConv<S> for Rad<S> {
-    #[inline] fn from(s: S) -> Rad<S> { rad(s) }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &mut self.s }
-}
-
-impl<S: BaseFloat> ScalarConv<S> for Deg<S> {
-    #[inline] fn from(s: S) -> Deg<S> { deg(s) }
-    #[inline] fn s<'a>(&'a self) -> &'a S { &self.s }
-    #[inline] fn mut_s<'a>(&'a mut self) -> &'a mut S { &mut self.s }
 }
 
 /// Operations on angles.
@@ -79,9 +60,6 @@ pub trait Angle where
     Self: PartialEq + PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
-    Self: Into<Rad<<Self as Angle>::Unitless>>,
-    Self: Into<Deg<<Self as Angle>::Unitless>>,
-    Self: ScalarConv<<Self as Angle>::Unitless>,
     Self: fmt::Debug,
 
     Self: Neg<Output = Self>,
@@ -97,8 +75,8 @@ pub trait Angle where
 {
     type Unitless: BaseFloat;
 
-    /// Create a new angle from any other valid angle.
-    fn from<A: Angle<Unitless = Self::Unitless>>(theta: A) -> Self;
+    /// Create an angle from a unitless value.
+    fn new(value: Self::Unitless) -> Self;
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
     fn normalize(self) -> Self;
@@ -151,10 +129,14 @@ macro_rules! impl_angle {
             type Unitless = S;
 
             #[inline]
-            fn zero() -> $Angle<S> { ScalarConv::from(S::zero()) }
+            fn new(value: S) -> $Angle<S> {
+                $Angle { s: value }
+            }
 
             #[inline]
-            fn from<A: Angle<Unitless = S>>(theta: A) -> $Angle<S> { theta.into() }
+            fn zero() -> $Angle<S> {
+                $Angle::new(S::zero())
+            }
 
             #[inline]
             fn normalize(self) -> Self {
@@ -162,7 +144,7 @@ macro_rules! impl_angle {
                 if tmp < Self::zero() { tmp + Self::full_turn() } else { tmp }
             }
 
-            #[inline] fn full_turn() -> $Angle<S> { ScalarConv::from(cast($full_turn).unwrap()) }
+            #[inline] fn full_turn() -> $Angle<S> { $Angle::new(cast($full_turn).unwrap()) }
             #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
@@ -173,21 +155,21 @@ macro_rules! impl_angle {
             type Output = $Angle<S>;
 
             #[inline]
-            fn neg(self) -> $Angle<S> { ScalarConv::from(-self.s) }
+            fn neg(self) -> $Angle<S> { $Angle::new(-self.s) }
         }
 
         impl<'a, S: BaseFloat> Neg for &'a $Angle<S> {
             type Output = $Angle<S>;
 
             #[inline]
-            fn neg(self) -> $Angle<S> { ScalarConv::from(-self.s) }
+            fn neg(self) -> $Angle<S> { $Angle::new(-self.s) }
         }
 
         impl_binary_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
-            fn add(lhs, rhs) -> $Angle<S> { ScalarConv::from(lhs.s + rhs.s) }
+            fn add(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s + rhs.s) }
         });
         impl_binary_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
-            fn sub(lhs, rhs) -> $Angle<S> { ScalarConv::from(lhs.s - rhs.s) }
+            fn sub(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s - rhs.s) }
         });
         impl_binary_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
             fn div(lhs, rhs) -> S { lhs.s / rhs.s }
@@ -197,13 +179,13 @@ macro_rules! impl_angle {
         });
 
         impl_binary_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
-            fn mul(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s * scalar) }
+            fn mul(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s * scalar) }
         });
         impl_binary_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
-            fn div(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s / scalar) }
+            fn div(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s / scalar) }
         });
         impl_binary_operator!(<S: BaseFloat> Rem<S> for $Angle<S> {
-            fn rem(lhs, scalar) -> $Angle<S> { ScalarConv::from(lhs.s % scalar) }
+            fn rem(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s % scalar) }
         });
 
         impl<S: BaseFloat> ApproxEq for $Angle<S> {
@@ -218,7 +200,7 @@ macro_rules! impl_angle {
         impl<S: BaseFloat + SampleRange> Rand for $Angle<S> {
             #[inline]
             fn rand<R: Rng>(rng: &mut R) -> $Angle<S> {
-                ScalarConv::from(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
+                $Angle::new(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
             }
         }
 
