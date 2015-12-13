@@ -100,35 +100,8 @@ pub trait Angle where
     /// Create a new angle from any other valid angle.
     fn from<A: Angle<Unitless = Self::Unitless>>(theta: A) -> Self;
 
-    /// Negate this angle, in-place.
-    #[inline] fn neg_self(&mut self) { *self = -*self }
-
-    /// Add this angle with another, in-place.
-    #[inline] fn add_self_a(&mut self, other: Self) { *self = *self + other }
-    /// Subtract another angle from this one, in-place.
-    #[inline] fn sub_self_a(&mut self, other: Self) { *self = *self - other }
-
-    /// Multiply this angle by a scalar, in-place.
-    #[inline] fn mul_self_s(&mut self, scalar: Self::Unitless) { *self = *self * scalar }
-    /// Divide this angle by a scalar, in-place.
-    #[inline] fn div_self_s(&mut self, scalar: Self::Unitless) { *self = *self / scalar }
-    /// Take the remainder of this angle by a scalar, in-place.
-    #[inline] fn rem_self_s(&mut self, scalar: Self::Unitless) { *self = *self % scalar }
-
     /// Return the angle, normalized to the range `[0, full_turn)`.
-    #[inline]
-    fn normalize(mut self) -> Self {
-        self.normalize_self();
-        self
-    }
-
-    /// Normalize the angle to the range `[0, full_turn)`.
-    #[inline]
-    fn normalize_self(&mut self) {
-        let full_turn = Self::full_turn();
-        self.rem_self_s(full_turn.s().clone());
-        if *self < Self::zero() { self.add_self_a(full_turn) };
-    }
+    fn normalize(self) -> Self;
 
     /// Return the angle rotated by half a turn
     #[inline]
@@ -182,6 +155,12 @@ macro_rules! impl_angle {
 
             #[inline]
             fn from<A: Angle<Unitless = S>>(theta: A) -> $Angle<S> { theta.into() }
+
+            #[inline]
+            fn normalize(self) -> Self {
+                let tmp = self % Self::full_turn().s;
+                if tmp < Self::zero() { tmp + Self::full_turn() } else { tmp }
+            }
 
             #[inline] fn full_turn() -> $Angle<S> { ScalarConv::from(cast($full_turn).unwrap()) }
             #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
@@ -239,8 +218,7 @@ macro_rules! impl_angle {
         impl<S: BaseFloat + SampleRange> Rand for $Angle<S> {
             #[inline]
             fn rand<R: Rng>(rng: &mut R) -> $Angle<S> {
-                let angle: S = rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap());
-                ScalarConv::from(angle)
+                ScalarConv::from(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
             }
         }
 
