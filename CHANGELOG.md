@@ -7,20 +7,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
-- Add missing by-ref and by-val permutations of `Quaternion` operators.
+- Add missing by-ref and by-val permutations of `Quaternion` and `Angle`
+  operators.
 - Ease lifetime constraints by removing `'static` from some scalar type
   parameters.
 - Weaken type constraints on `perspective` function to take an `Into<Rad<S>>`.
+- Add `Angle::new` for constructing angles from a unitless scalar.
 
 ### Changed
+- `Vector`, `Point`, and `Angle` are now constrained to require specific
+  operators to be overloaded. This means that generic code can now use
+  operators, instead of the operator methods.
 - Take a `Rad` for `ProjectionFov::fovy`, rather than arbitrary `Angle`s. This
   simplifies the signature of `PerspectiveFov` from `PerspectiveFov<S, A>` to
   `PerspectiveFov<S>`.
-
-### Changed
-- `Vector` and `Point` are now constrained to require specific operators to be
-  overloaded. This means that generic code can now use operators, instead of
-  the operator methods.
+- The following trait constraints were removed from `Angle`: `Debug`,
+  `ScalarConv`, `Into<Rad<S>>`, `Into<Deg<S>>`.
+- `Angle` no longer requires `One`, and the implementations have been removed
+  from `Deg` and `Rad`. This is because angles do not close over multiplication,
+  and therefore cannot have a multiplicative identity. If we were truly accurate,
+  `Angle * Angle` would return an `Angle^2` (not supported by the current api).
+- Moved free trigonometric functions onto `Angle`.
 
 ### Removed
 - Remove redundant `Point::{min, max}` methods - these are now covered by the
@@ -33,10 +40,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Remove `Vector::one`. Vectors don't really have a multiplicative identity.
   If you really want a `one` vector, you can do something like:
   `Vector::from_value(1.0)`.
-- Remove operator methods from `Vector` and `Point` traits in favor of operator
-  overloading.
-- Remove `*_self` methods from `Vector` and `Point`. These were of little
-  performance benefit, and assignment operator overloading will be coming soon!
+- Remove operator methods from `Vector`, `Point`, and `Angle` traits in favor of
+  operator overloading.
+- Remove `*_self` methods from `Vector`, `Point`, and `Angle`. These were of
+  little performance benefit, and assignment operator overloading will be
+  coming soon!
+- Remove `#[derive(Hash)]` from `Deg` and `Rad`. This could never really be used
+  these types, because they expect to be given a `BaseFloat` under normal
+  circumstances.
 
 ## [v0.6.0] - 2015-12-12
 
