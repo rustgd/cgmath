@@ -26,6 +26,9 @@ keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 [lib]
 name = "cgmath"
 
+[features]
+unstable = []
+
 [dependencies.rustc-serialize]
 rustc_serialize = "0.3"
 

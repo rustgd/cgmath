@@ -145,6 +145,9 @@ macro_rules! impl_point {
         impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $PointN<S> {
             fn add(lhs, rhs) -> $PointN<S> { $PointN::new($(lhs.$field + rhs.$field),+) }
         });
+        impl_assignment_operator!(<S: BaseNum> AddAssign<$VectorN<S> > for $PointN<S> {
+            fn add_assign(&mut self, vector) { $(self.$field += vector.$field);+ }
+        });
 
         impl_operator!(<S: BaseNum> Sub<$PointN<S> > for $PointN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
@@ -153,13 +156,20 @@ macro_rules! impl_point {
         impl_operator!(<S: BaseNum> Mul<S> for $PointN<S> {
             fn mul(point, scalar) -> $PointN<S> { $PointN::new($(point.$field * scalar),+) }
         });
-
         impl_operator!(<S: BaseNum> Div<S> for $PointN<S> {
             fn div(point, scalar) -> $PointN<S> { $PointN::new($(point.$field / scalar),+) }
         });
-
         impl_operator!(<S: BaseNum> Rem<S> for $PointN<S> {
             fn rem(point, scalar) -> $PointN<S> { $PointN::new($(point.$field % scalar),+) }
+        });
+        impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $PointN<S> {
+            fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
+        });
+        impl_assignment_operator!(<S: BaseNum> DivAssign<S> for $PointN<S> {
+            fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
+        });
+        impl_assignment_operator!(<S: BaseNum> RemAssign<S> for $PointN<S> {
+            fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
         });
 
         impl_index_operators!($PointN<S>, $n, S, usize);
