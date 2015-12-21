@@ -78,16 +78,15 @@ pub mod matrix4 {
 
 #[test]
 fn test_neg() {
-    // Matrix2
     assert_eq!(-matrix2::A,
                Matrix2::new(-1.0f64, -3.0f64,
                             -2.0f64, -4.0f64));
-    // Matrix3
+
     assert_eq!(-matrix3::A,
                Matrix3::new(-1.0f64, -4.0f64, -7.0f64,
                             -2.0f64, -5.0f64, -8.0f64,
                             -3.0f64, -6.0f64, -9.0f64));
-    // Matrix4
+
     assert_eq!(-matrix4::A,
                Matrix4::new(-1.0f64, -5.0f64,  -9.0f64, -13.0f64,
                             -2.0f64, -6.0f64, -10.0f64, -14.0f64,
@@ -96,126 +95,84 @@ fn test_neg() {
 }
 
 #[test]
-fn test_mul_s() {
-    // Matrix2
-    assert_eq!(matrix2::A.mul_s(matrix2::F),
+fn test_mul_scalar() {
+    assert_eq!(matrix2::A * matrix2::F,
                Matrix2::new(0.5f64, 1.5f64,
                             1.0f64, 2.0f64));
-    let mut mut_a = matrix2::A;
-    mut_a.mul_self_s(matrix2::F);
-    assert_eq!(mut_a, matrix2::A.mul_s(matrix2::F));
 
-    // Matrix3
-    assert_eq!(matrix3::A.mul_s(matrix3::F),
+    assert_eq!(matrix3::A * matrix3::F,
                Matrix3::new(0.5f64, 2.0f64, 3.5f64,
                             1.0f64, 2.5f64, 4.0f64,
                             1.5f64, 3.0f64, 4.5f64));
-    let mut mut_a = matrix3::A;
-    mut_a.mul_self_s(matrix3::F);
-    assert_eq!(mut_a, matrix3::A.mul_s(matrix3::F));
 
-    // Matrix4
-    assert_eq!(matrix4::A.mul_s(matrix4::F),
+    assert_eq!(matrix4::A * matrix4::F,
                Matrix4::new(0.5f64, 2.5f64, 4.5f64, 6.5f64,
                             1.0f64, 3.0f64, 5.0f64, 7.0f64,
                             1.5f64, 3.5f64, 5.5f64, 7.5f64,
                             2.0f64, 4.0f64, 6.0f64, 8.0f64));
-    let mut mut_a = matrix4::A;
-    mut_a.mul_self_s(matrix4::F);
-    assert_eq!(mut_a, matrix4::A.mul_s(matrix4::F));
 }
 
 #[test]
-fn test_add_m() {
-    // Matrix2
-    assert_eq!(matrix2::A.add_m(&matrix2::B),
+fn test_add_matrix() {
+    assert_eq!(matrix2::A + matrix2::B,
                Matrix2::new(3.0f64, 7.0f64,
                             5.0f64, 9.0f64));
-    let mut mut_a = matrix2::A;
-    mut_a.add_self_m(&matrix2::B);
-    assert_eq!(mut_a, matrix2::A.add_m(&matrix2::B));
-    assert_eq!(mut_a, &matrix2::A + &matrix2::B);
 
-    // Matrix3
-    assert_eq!(matrix3::A.add_m(&matrix3::B),
+    assert_eq!(matrix3::A + matrix3::B,
                Matrix3::new(3.0f64,  9.0f64, 15.0f64,
                             5.0f64, 11.0f64, 17.0f64,
                             7.0f64, 13.0f64, 19.0f64));
-    let mut mut_a = matrix3::A;
-    mut_a.add_self_m(&matrix3::B);
-    assert_eq!(mut_a, matrix3::A.add_m(&matrix3::B));
-    assert_eq!(mut_a, &matrix3::A + &matrix3::B);
 
-    // Matrix4
-    assert_eq!(matrix4::A.add_m(&matrix4::B),
+    assert_eq!(matrix4::A + matrix4::B,
                Matrix4::new(3.0f64, 11.0f64, 19.0f64, 27.0f64,
                             5.0f64, 13.0f64, 21.0f64, 29.0f64,
                             7.0f64, 15.0f64, 23.0f64, 31.0f64,
                             9.0f64, 17.0f64, 25.0f64, 33.0f64));
-    let mut mut_a = matrix4::A;
-    mut_a.add_self_m(&matrix4::B);
-    assert_eq!(mut_a, matrix4::A.add_m(&matrix4::B));
-    assert_eq!(mut_a, &matrix4::A + &matrix4::B);
 }
 
 #[test]
-fn test_sub_m() {
-    // Matrix2
-    assert_eq!(matrix2::A.sub_m(&matrix2::B),
+fn test_sub_matrix() {
+    assert_eq!(matrix2::A - matrix2::B,
                Matrix2::new(-1.0f64, -1.0f64,
                             -1.0f64, -1.0f64));
-    let mut mut_a = matrix2::A;
-    mut_a.sub_self_m(&matrix2::B);
-    assert_eq!(mut_a, matrix2::A.sub_m(&matrix2::B));
-    assert_eq!(matrix2::A.sub_m(&matrix2::B), &matrix2::A - &matrix2::B);
 
-    // Matrix3
-    assert_eq!(matrix3::A.sub_m(&matrix3::B),
+    assert_eq!(matrix3::A - matrix3::B,
                Matrix3::new(-1.0f64, -1.0f64, -1.0f64,
                             -1.0f64, -1.0f64, -1.0f64,
                             -1.0f64, -1.0f64, -1.0f64));
-    let mut mut_a = matrix3::A;
-    mut_a.sub_self_m(&matrix3::B);
-    assert_eq!(mut_a, matrix3::A.sub_m(&matrix3::B));
-    assert_eq!(matrix3::A.sub_m(&matrix3::B), &matrix3::A - &matrix3::B);
 
-    // Matrix4
-    assert_eq!(matrix4::A.sub_m(&matrix4::B),
+    assert_eq!(matrix4::A - matrix4::B,
                Matrix4::new(-1.0f64, -1.0f64, -1.0f64, -1.0f64,
                             -1.0f64, -1.0f64, -1.0f64, -1.0f64,
                             -1.0f64, -1.0f64, -1.0f64, -1.0f64,
                             -1.0f64, -1.0f64, -1.0f64, -1.0f64));
-    let mut mut_a = matrix4::A;
-    mut_a.sub_self_m(&matrix4::B);
-    assert_eq!(mut_a, matrix4::A.sub_m(&matrix4::B));
-    assert_eq!(matrix4::A.sub_m(&matrix4::B), &matrix4::A - &matrix4::B);
 }
 
 #[test]
-fn test_mul_v() {
-    assert_eq!(matrix2::A.mul_v(matrix2::V), Vector2::new(5.0f64, 11.0f64));
-    assert_eq!(matrix3::A.mul_v(matrix3::V), Vector3::new(14.0f64, 32.0f64, 50.0f64));
-    assert_eq!(matrix4::A.mul_v(matrix4::V), Vector4::new(30.0f64, 70.0f64, 110.0f64, 150.0f64));
+fn test_mul_vector() {
+    assert_eq!(matrix2::A * matrix2::V, Vector2::new(5.0f64, 11.0f64));
+    assert_eq!(matrix3::A * matrix3::V, Vector3::new(14.0f64, 32.0f64, 50.0f64));
+    assert_eq!(matrix4::A * matrix4::V, Vector4::new(30.0f64, 70.0f64, 110.0f64, 150.0f64));
 }
 
 #[test]
-fn test_mul_m() {
-    assert_eq!(matrix2::A.mul_m(&matrix2::B),
+fn test_mul_matrix() {
+    assert_eq!(matrix2::A * matrix2::B,
                Matrix2::new(10.0f64, 22.0f64,
                             13.0f64, 29.0f64));
-    assert_eq!(matrix3::A.mul_m(&matrix3::B),
+    assert_eq!(matrix3::A * matrix3::B,
                Matrix3::new(36.0f64,  81.0f64, 126.0f64,
                             42.0f64,  96.0f64, 150.0f64,
                             48.0f64, 111.0f64, 174.0f64));
-    assert_eq!(matrix4::A.mul_m(&matrix4::B),
+    assert_eq!(matrix4::A * matrix4::B,
                Matrix4::new(100.0f64, 228.0f64, 356.0f64, 484.0f64,
                             110.0f64, 254.0f64, 398.0f64, 542.0f64,
                             120.0f64, 280.0f64, 440.0f64, 600.0f64,
                             130.0f64, 306.0f64, 482.0f64, 658.0f64));
 
-    assert_eq!(matrix2::A.mul_m(&matrix2::B), &matrix2::A * &matrix2::B);
-    assert_eq!(matrix3::A.mul_m(&matrix3::B), &matrix3::A * &matrix3::B);
-    assert_eq!(matrix4::A.mul_m(&matrix4::B), &matrix4::A * &matrix4::B);
+    assert_eq!(matrix2::A * matrix2::B, &matrix2::A * &matrix2::B);
+    assert_eq!(matrix3::A * matrix3::B, &matrix3::A * &matrix3::B);
+    assert_eq!(matrix4::A * matrix4::B, &matrix4::A * &matrix4::B);
 }
 
 #[test]
@@ -292,11 +249,11 @@ fn test_invert() {
     // Matrix4
     assert!(Matrix4::<f64>::identity().invert().unwrap().is_identity());
 
-    assert!(matrix4::C.invert().unwrap().approx_eq(&
+    assert!(matrix4::C.invert().unwrap().approx_eq(&(
             Matrix4::new( 5.0f64, -4.0f64,  1.0f64,  0.0f64,
                          -4.0f64,  8.0f64, -4.0f64,  0.0f64,
                           4.0f64, -8.0f64,  4.0f64,  8.0f64,
-                         -3.0f64,  4.0f64,  1.0f64, -8.0f64).mul_s(0.125f64)));
+                         -3.0f64,  4.0f64,  1.0f64, -8.0f64) * 0.125f64)));
     let mut mut_c = matrix4::C;
     mut_c.invert_self();
     assert_eq!(mut_c, matrix4::C.invert().unwrap());
@@ -305,32 +262,32 @@ fn test_invert() {
                              -0.,        0.631364f64,  0.775487f64, 0.0f64,
                              -0.991261f64,  0.1023f64,   -0.083287f64, 0.0f64,
                               0.,       -1.262728f64, -1.550973f64, 1.0f64);
-    assert!(mat_c.invert().unwrap().mul_m(&mat_c).is_identity());
+    assert!((mat_c.invert().unwrap() * mat_c).is_identity());
 
     let mat_d = Matrix4::new( 0.065455f64, -0.720002f64,  0.690879f64, 0.0f64,
                              -0.,        0.692364f64,  0.721549f64, 0.0f64,
                              -0.997856f64, -0.047229f64,  0.045318f64, 0.0f64,
                               0.,       -1.384727f64, -1.443098f64, 1.0f64);
-    assert!(mat_d.invert().unwrap().mul_m(&mat_d).is_identity());
+    assert!((mat_d.invert().unwrap() * mat_d).is_identity());
 
     let mat_e = Matrix4::new( 0.409936f64,  0.683812f64, -0.603617f64, 0.0f64,
                               0.,        0.661778f64,  0.7497f64,   0.0f64,
                               0.912114f64, -0.307329f64,  0.271286f64, 0.0f64,
                              -0.,       -1.323555f64, -1.499401f64, 1.0f64);
-    assert!(mat_e.invert().unwrap().mul_m(&mat_e).is_identity());
+    assert!((mat_e.invert().unwrap() * mat_e).is_identity());
 
     let mat_f = Matrix4::new(-0.160691f64, -0.772608f64,  0.614211f64, 0.0f64,
                              -0.,        0.622298f64,  0.78278f64,  0.0f64,
                              -0.987005f64,  0.125786f64, -0.099998f64, 0.0f64,
                               0.,       -1.244597f64, -1.565561f64, 1.0f64);
-    assert!(mat_f.invert().unwrap().mul_m(&mat_f).is_identity());
+    assert!((mat_f.invert().unwrap() * mat_f).is_identity());
 }
 
 #[test]
 fn test_from_translation() {
     let mat = Matrix4::from_translation(Vector3::new(1.0f64, 2.0f64, 3.0f64));
     let vertex = Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64);
-    let res = mat.mul_v(vertex);
+    let res = mat * vertex;
     assert_eq!(res, Vector4::new(1., 2., 3., 1.));
 }
 
@@ -398,13 +355,13 @@ fn test_predicates() {
 fn test_from_angle() {
     // Rotate the vector (1, 0) by π/2 radians to the vector (0, 1)
     let rot1 = Matrix2::from_angle(rad(0.5f64 * f64::consts::PI));
-    assert!(rot1.mul_v(Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert!((rot1 * Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
 
     // Rotate the vector (-1, 0) by -π/2 radians to the vector (0, 1)
     let rot2 = -rot1;
-    assert!(rot2.mul_v(-Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
+    assert!((rot2 * -Vector2::unit_x()).approx_eq(&Vector2::unit_y()));
 
     // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
     let rot3: Matrix2<f64> = Matrix2::from_angle(rad(f64::consts::PI));
-    assert!(rot3.mul_v(Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
+    assert!((rot3 * Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
 }

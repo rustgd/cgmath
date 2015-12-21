@@ -189,17 +189,17 @@ impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
 
     #[inline]
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
-        self.mat.mul_v(vec.extend(S::zero())).truncate()
+        (self.mat * vec.extend(S::zero())).truncate()
     }
 
     #[inline]
     fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-        Point3::from_homogeneous(self.mat.mul_v(point.to_homogeneous()))
+        Point3::from_homogeneous(self.mat * point.to_homogeneous())
     }
 
     #[inline]
     fn concat(&self, other: &AffineMatrix3<S>) -> AffineMatrix3<S> {
-        AffineMatrix3 { mat: self.mat.mul_m(&other.mat) }
+        AffineMatrix3 { mat: self.mat * other.mat }
     }
 
     #[inline]
