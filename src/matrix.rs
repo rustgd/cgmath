@@ -325,7 +325,7 @@ pub trait SquareMatrix where
         Row = <Self as SquareMatrix>::ColumnRow,
         Transpose = Self,
     >,
-    Self: Mul<<Self as Matrix>::Column, Output = <Self as Matrix>::Column>,
+    Self: Mul<<Self as SquareMatrix>::ColumnRow, Output = <Self as SquareMatrix>::ColumnRow>,
     Self: Mul<Self, Output = Self>,
 {
     // FIXME: Will not be needed once equality constraints in where clauses are implemented
