@@ -815,70 +815,47 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Neg for Matrix2<S> {
-    type Output = Matrix2<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix2<S> {
-        Matrix2::from_cols(-self.x, -self.y)
-    }
-}
-
-impl<S: BaseFloat> Neg for Matrix3<S> {
-    type Output = Matrix3<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix3<S> {
-        Matrix3::from_cols(-self.x, -self.y, -self.z)
-    }
-}
-
-impl<S: BaseFloat> Neg for Matrix4<S> {
-    type Output = Matrix4<S>;
-
-    #[inline]
-    fn neg(self) -> Matrix4<S> {
-        Matrix4::from_cols(-self.x, -self.y, -self.z, -self.w)
-    }
-}
-
-macro_rules! impl_binary_operators {
+macro_rules! impl_operators {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
-        impl_binary_operator!(<S: BaseFloat> Mul<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseFloat> Neg for $MatrixN<S> {
+            fn neg(matrix) -> $MatrixN<S> { $MatrixN { $($field: -matrix.$field),+ } }
+        });
+
+        impl_operator!(<S: BaseFloat> Mul<S> for $MatrixN<S> {
             fn mul(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field * scalar),+ } }
         });
-        impl_binary_operator!(<S: BaseFloat> Div<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseFloat> Div<S> for $MatrixN<S> {
             fn div(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field / scalar),+ } }
         });
-        impl_binary_operator!(<S: BaseFloat> Rem<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseFloat> Rem<S> for $MatrixN<S> {
             fn rem(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field % scalar),+ } }
         });
 
-        impl_binary_operator!(<S: BaseFloat> Add<$MatrixN<S> > for $MatrixN<S> {
-            fn add(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field + rhs.$field ),+ } }
+        impl_operator!(<S: BaseFloat> Add<$MatrixN<S> > for $MatrixN<S> {
+            fn add(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field + rhs.$field),+ } }
         });
-        impl_binary_operator!(<S: BaseFloat> Sub<$MatrixN<S> > for $MatrixN<S> {
-            fn sub(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field - rhs.$field ),+ } }
+        impl_operator!(<S: BaseFloat> Sub<$MatrixN<S> > for $MatrixN<S> {
+            fn sub(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field - rhs.$field),+ } }
         });
 
-        impl_binary_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
+        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
             fn mul(matrix, vector) -> $VectorN<S> { $VectorN::new($(matrix.row($row_index).dot(vector.clone())),+) }
         });
     }
 }
 
-impl_binary_operators!(Matrix2, Vector2 { x: 0, y: 1 });
-impl_binary_operators!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
-impl_binary_operators!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
+impl_operators!(Matrix2, Vector2 { x: 0, y: 1 });
+impl_operators!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
+impl_operators!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
-impl_binary_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
+impl_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
     fn mul(lhs, rhs) -> Matrix2<S> {
         Matrix2::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]),
                      lhs.row(0).dot(rhs[1]), lhs.row(1).dot(rhs[1]))
     }
 });
 
-impl_binary_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
+impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
     fn mul(lhs, rhs) -> Matrix3<S> {
         Matrix3::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]), lhs.row(2).dot(rhs[0]),
                      lhs.row(0).dot(rhs[1]), lhs.row(1).dot(rhs[1]), lhs.row(2).dot(rhs[1]),
@@ -899,7 +876,7 @@ macro_rules! dot_matrix4 {
     };
 }
 
-impl_binary_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
+impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
     fn mul(lhs, rhs) -> Matrix4<S> {
         Matrix4::new(dot_matrix4!(lhs, rhs, 0, 0), dot_matrix4!(lhs, rhs, 1, 0), dot_matrix4!(lhs, rhs, 2, 0), dot_matrix4!(lhs, rhs, 3, 0),
                      dot_matrix4!(lhs, rhs, 0, 1), dot_matrix4!(lhs, rhs, 1, 1), dot_matrix4!(lhs, rhs, 2, 1), dot_matrix4!(lhs, rhs, 3, 1),

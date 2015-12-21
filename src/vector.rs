@@ -212,38 +212,38 @@ macro_rules! impl_vector {
             }
         }
 
-        impl_binary_operator!(<S: BaseNum> Add<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Add<S> for $VectorN<S> {
             fn add(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field + scalar),+) }
         });
-        impl_binary_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
             fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Sub<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Sub<S> for $VectorN<S> {
             fn sub(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field - scalar),+) }
         });
-        impl_binary_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
             fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
         });
-        impl_binary_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
             fn mul(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
             fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
         });
-        impl_binary_operator!(<S: BaseNum> Div<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Div<$VectorN<S> > for $VectorN<S> {
             fn div(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field / rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
             fn rem(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field % scalar),+) }
         });
-        impl_binary_operator!(<S: BaseNum> Rem<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Rem<$VectorN<S> > for $VectorN<S> {
             fn rem(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field % rhs.$field),+) }
         });
 
