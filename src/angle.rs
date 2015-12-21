@@ -167,23 +167,23 @@ macro_rules! impl_angle {
             fn neg(self) -> $Angle<S> { $Angle::new(-self.s) }
         }
 
-        impl_binary_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
             fn add(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s + rhs.s) }
         });
-        impl_binary_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
             fn sub(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s - rhs.s) }
         });
-        impl_binary_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
             fn div(lhs, rhs) -> S { lhs.s / rhs.s }
         });
-        impl_binary_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
             fn rem(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s % rhs.s) }
         });
 
-        impl_binary_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
             fn mul(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s * scalar) }
         });
-        impl_binary_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
+        impl_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
             fn div(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s / scalar) }
         });
 

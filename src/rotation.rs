@@ -15,7 +15,7 @@
 
 use angle::{Angle, Rad};
 use approx::ApproxEq;
-use matrix::{Matrix, SquareMatrix};
+use matrix::SquareMatrix;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
 use point::{Point, Point2, Point3};
@@ -150,7 +150,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
 /// let unit_y2: Matrix2<_> = rot.into();
-/// let unit_y2 = unit_y2.mul_v(unit_x);
+/// let unit_y2 = unit_y2 * unit_x;
 /// assert_eq!(unit_y2, unit_y);
 ///
 /// // Note that we can also concatenate rotations:
@@ -190,13 +190,13 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> { self.mat.mul_v(vec) }
+    fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> { self.mat * vec }
 
     #[inline]
-    fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat.mul_m(&other.mat) } }
+    fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat * other.mat } }
 
     #[inline]
-    fn concat_self(&mut self, other: &Basis2<S>) { self.mat.mul_self_m(&other.mat); }
+    fn concat_self(&mut self, other: &Basis2<S>) { self.mat = self.mat * other.mat; }
 
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster
@@ -274,13 +274,13 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self.mat.mul_v(vec) }
+    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self.mat * vec }
 
     #[inline]
-    fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat.mul_m(&other.mat) } }
+    fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat * other.mat } }
 
     #[inline]
-    fn concat_self(&mut self, other: &Basis3<S>) { self.mat.mul_self_m(&other.mat); }
+    fn concat_self(&mut self, other: &Basis3<S>) { self.mat = self.mat * other.mat; }
 
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster

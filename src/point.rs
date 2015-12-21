@@ -142,23 +142,23 @@ macro_rules! impl_point {
             }
         }
 
-        impl_binary_operator!(<S: BaseNum> Add<$VectorN<S> > for $PointN<S> {
+        impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $PointN<S> {
             fn add(lhs, rhs) -> $PointN<S> { $PointN::new($(lhs.$field + rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Sub<$PointN<S> > for $PointN<S> {
+        impl_operator!(<S: BaseNum> Sub<$PointN<S> > for $PointN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Mul<S> for $PointN<S> {
+        impl_operator!(<S: BaseNum> Mul<S> for $PointN<S> {
             fn mul(point, scalar) -> $PointN<S> { $PointN::new($(point.$field * scalar),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Div<S> for $PointN<S> {
+        impl_operator!(<S: BaseNum> Div<S> for $PointN<S> {
             fn div(point, scalar) -> $PointN<S> { $PointN::new($(point.$field / scalar),+) }
         });
 
-        impl_binary_operator!(<S: BaseNum> Rem<S> for $PointN<S> {
+        impl_operator!(<S: BaseNum> Rem<S> for $PointN<S> {
             fn rem(point, scalar) -> $PointN<S> { $PointN::new($(point.$field % scalar),+) }
         });
 
