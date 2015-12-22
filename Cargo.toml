@@ -16,9 +16,9 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
-documentation = "http://bjz.github.io/cgmath-rs"
-homepage = "https://github.com/bjz/cgmath-rs"
-repository = "https://github.com/bjz/cgmath-rs"
+documentation = "http://bjz.github.io/cgmath"
+homepage = "https://github.com/bjz/cgmath"
+repository = "https://github.com/bjz/cgmath"
 readme = "README.md"
 
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
