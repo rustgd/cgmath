@@ -39,7 +39,7 @@ fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
         i = (i + 1) & (LEN - 1);
 
         unsafe {
-            let res: T = Rotation3::from_axis_angle(axis.get_unchecked(i), *angle.get_unchecked(i));
+            let res: T = Rotation3::from_axis_angle(*axis.get_unchecked(i), *angle.get_unchecked(i));
             test::black_box(res)
         }
     })
