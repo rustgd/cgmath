@@ -119,11 +119,17 @@ impl_operator!(<S: BaseFloat> Mul<S> for Quaternion<S> {
         Quaternion::from_sv(lhs.s * rhs, lhs.v * rhs)
     }
 });
+impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for Quaternion<S> {
+    fn mul_assign(&mut self, scalar) { self.s *= scalar; self.v *= scalar; }
+});
 
 impl_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
     fn div(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s / rhs, lhs.v / rhs)
     }
+});
+impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for Quaternion<S> {
+    fn div_assign(&mut self, scalar) { self.s /= scalar; self.v /= scalar; }
 });
 
 impl_operator!(<S: BaseFloat> Mul<Vector3<S> > for Quaternion<S> {
@@ -140,11 +146,17 @@ impl_operator!(<S: BaseFloat> Add<Quaternion<S> > for Quaternion<S> {
         Quaternion::from_sv(lhs.s + rhs.s, lhs.v + rhs.v)
     }
 });
+impl_assignment_operator!(<S: BaseFloat> AddAssign<Quaternion<S> > for Quaternion<S> {
+    fn add_assign(&mut self, other) { self.s += other.s; self.v += other.v; }
+});
 
 impl_operator!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
     fn sub(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s - rhs.s, lhs.v - rhs.v)
     }
+});
+impl_assignment_operator!(<S: BaseFloat> SubAssign<Quaternion<S> > for Quaternion<S> {
+    fn sub_assign(&mut self, other) { self.s -= other.s; self.v -= other.v; }
 });
 
 impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {

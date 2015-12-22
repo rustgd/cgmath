@@ -13,30 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-macro_rules! bench_binop(
-    ($name: ident, $t1: ty, $t2: ty, $binop: ident) => {
-        #[bench]
-        fn $name(bh: &mut Bencher) {
-            const LEN: usize = 1 << 13;
-
-            let mut rng = IsaacRng::new_unseeded();
-
-            let elems1: Vec<$t1> = (0..LEN).map(|_| rng.gen::<$t1>()).collect();
-            let elems2: Vec<$t2> = (0..LEN).map(|_| rng.gen::<$t2>()).collect();
-            let mut i = 0;
-
-            bh.iter(|| {
-                i = (i + 1) & (LEN - 1);
-
-                unsafe {
-                    test::black_box(elems1.get_unchecked(i).$binop(elems2.get_unchecked(i)))
-                }
-            })
-        }
-    }
-);
-
-macro_rules! bench_binop_deref(
+macro_rules! bench_binop {
     ($name: ident, $t1: ty, $t2: ty, $binop: ident) => {
         #[bench]
         fn $name(bh: &mut Bencher) {
@@ -56,10 +33,10 @@ macro_rules! bench_binop_deref(
                 }
             })
         }
-    }
-);
+    };
+}
 
-macro_rules! bench_unop(
+macro_rules! bench_unop {
     ($name: ident, $t: ty, $unop: ident) => {
         #[bench]
         fn $name(bh: &mut Bencher) {
@@ -78,10 +55,10 @@ macro_rules! bench_unop(
                 }
             })
         }
-    }
-);
+    };
+}
 
-macro_rules! bench_construction(
+macro_rules! bench_construction {
     ($name: ident, $t: ty, $constructor: path [ $($args: ident: $types: ty),+ ]) => {
         #[bench]
         fn $name(bh: &mut Bencher) {
@@ -101,5 +78,5 @@ macro_rules! bench_construction(
                 }
             })
         }
-    }
-);
+    };
+}

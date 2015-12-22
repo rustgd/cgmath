@@ -266,6 +266,7 @@ pub trait Matrix  where
 
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
+    Self: Neg<Output = Self>,
 
     Self: Mul<<Self as Matrix>::Element, Output = Self>,
     Self: Div<<Self as Matrix>::Element, Output = Self>,
@@ -830,6 +831,15 @@ macro_rules! impl_operators {
         impl_operator!(<S: BaseFloat> Rem<S> for $MatrixN<S> {
             fn rem(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field % scalar),+ } }
         });
+        impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for $MatrixN<S> {
+            fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
+        });
+        impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for $MatrixN<S> {
+            fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
+        });
+        impl_assignment_operator!(<S: BaseFloat> RemAssign<S> for $MatrixN<S> {
+            fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
+        });
 
         impl_operator!(<S: BaseFloat> Add<$MatrixN<S> > for $MatrixN<S> {
             fn add(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field + rhs.$field),+ } }
@@ -837,6 +847,14 @@ macro_rules! impl_operators {
         impl_operator!(<S: BaseFloat> Sub<$MatrixN<S> > for $MatrixN<S> {
             fn sub(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field - rhs.$field),+ } }
         });
+        #[cfg(feature = "unstable")]
+        impl<S: BaseFloat + AddAssign<S>> AddAssign<$MatrixN<S>> for $MatrixN<S> {
+            fn add_assign(&mut self, other: $MatrixN<S>) { $(self.$field += other.$field);+ }
+        }
+        #[cfg(feature = "unstable")]
+        impl<S: BaseFloat + SubAssign<S>> SubAssign<$MatrixN<S>> for $MatrixN<S> {
+            fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
+        }
 
         impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
             fn mul(matrix, vector) -> $VectorN<S> { $VectorN::new($(matrix.row($row_index).dot(vector.clone())),+) }

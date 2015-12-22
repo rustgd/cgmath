@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   parameters.
 - Weaken type constraints on `perspective` function to take an `Into<Rad<S>>`.
 - Add `Angle::new` for constructing angles from a unitless scalar.
+- Implement assignment operators for nightly builds, enabled by the `"unstable"`
+  feature.
 
 ### Changed
 - `Vector`, `Matrix`, `Point`, and `Angle` are now constrained to require
@@ -44,9 +46,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   `Vector::from_value(1.0)`.
 - Remove operator methods from `Vector`, `Matrix`, `Point`, and `Angle` traits
   in favor of operator overloading.
-- Remove `*_self` methods from `Vector`, `Matrix`, `Point`, and `Angle`. These
-  were of little performance benefit, and assignment operator overloading will
-  be coming soon!
+- Remove `*_self` methods from `Vector`, `Matrix`, `Point`, and `Angle`. The
+  operator methods can be used via the unstable assignment operators.
 - Remove `#[derive(Hash)]` from `Deg` and `Rad`. This could never really be used
   these types, because they expect to be given a `BaseFloat` under normal
   circumstances.

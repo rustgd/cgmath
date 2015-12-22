@@ -20,43 +20,45 @@ extern crate test;
 extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
+use std::ops::*;
 use test::Bencher;
+
 use cgmath::*;
 
 #[path="common/macros.rs"]
 #[macro_use] mod macros;
 
-bench_binop!(_bench_vector2_add_v, Vector2<f32>, Vector2<f32>, add_v);
-bench_binop!(_bench_vector3_add_v, Vector3<f32>, Vector3<f32>, add_v);
-bench_binop!(_bench_vector4_add_v, Vector4<f32>, Vector4<f32>, add_v);
+bench_binop!(_bench_vector2_add_v, Vector2<f32>, Vector2<f32>, add);
+bench_binop!(_bench_vector3_add_v, Vector3<f32>, Vector3<f32>, add);
+bench_binop!(_bench_vector4_add_v, Vector4<f32>, Vector4<f32>, add);
 
-bench_binop!(_bench_vector2_sub_v, Vector2<f32>, Vector2<f32>, sub_v);
-bench_binop!(_bench_vector3_sub_v, Vector3<f32>, Vector3<f32>, sub_v);
-bench_binop!(_bench_vector4_sub_v, Vector4<f32>, Vector4<f32>, sub_v);
+bench_binop!(_bench_vector2_sub_v, Vector2<f32>, Vector2<f32>, sub);
+bench_binop!(_bench_vector3_sub_v, Vector3<f32>, Vector3<f32>, sub);
+bench_binop!(_bench_vector4_sub_v, Vector4<f32>, Vector4<f32>, sub);
 
-bench_binop!(_bench_vector2_mul_v, Vector2<f32>, Vector2<f32>, mul_v);
-bench_binop!(_bench_vector3_mul_v, Vector3<f32>, Vector3<f32>, mul_v);
-bench_binop!(_bench_vector4_mul_v, Vector4<f32>, Vector4<f32>, mul_v);
+bench_binop!(_bench_vector2_mul_v, Vector2<f32>, Vector2<f32>, mul);
+bench_binop!(_bench_vector3_mul_v, Vector3<f32>, Vector3<f32>, mul);
+bench_binop!(_bench_vector4_mul_v, Vector4<f32>, Vector4<f32>, mul);
 
-bench_binop!(_bench_vector2_div_v, Vector2<f32>, Vector2<f32>, div_v);
-bench_binop!(_bench_vector3_div_v, Vector3<f32>, Vector3<f32>, div_v);
-bench_binop!(_bench_vector4_div_v, Vector4<f32>, Vector4<f32>, div_v);
+bench_binop!(_bench_vector2_div_v, Vector2<f32>, Vector2<f32>, div);
+bench_binop!(_bench_vector3_div_v, Vector3<f32>, Vector3<f32>, div);
+bench_binop!(_bench_vector4_div_v, Vector4<f32>, Vector4<f32>, div);
 
-bench_binop_deref!(_bench_vector2_add_s, Vector2<f32>, f32, add_s);
-bench_binop_deref!(_bench_vector3_add_s, Vector3<f32>, f32, add_s);
-bench_binop_deref!(_bench_vector4_add_s, Vector4<f32>, f32, add_s);
+bench_binop!(_bench_vector2_add_s, Vector2<f32>, f32, add);
+bench_binop!(_bench_vector3_add_s, Vector3<f32>, f32, add);
+bench_binop!(_bench_vector4_add_s, Vector4<f32>, f32, add);
 
-bench_binop_deref!(_bench_vector2_sub_s, Vector2<f32>, f32, sub_s);
-bench_binop_deref!(_bench_vector3_sub_s, Vector3<f32>, f32, sub_s);
-bench_binop_deref!(_bench_vector4_sub_s, Vector4<f32>, f32, sub_s);
+bench_binop!(_bench_vector2_sub_s, Vector2<f32>, f32, sub);
+bench_binop!(_bench_vector3_sub_s, Vector3<f32>, f32, sub);
+bench_binop!(_bench_vector4_sub_s, Vector4<f32>, f32, sub);
 
-bench_binop_deref!(_bench_vector2_mul_s, Vector2<f32>, f32, mul_s);
-bench_binop_deref!(_bench_vector3_mul_s, Vector3<f32>, f32, mul_s);
-bench_binop_deref!(_bench_vector4_mul_s, Vector4<f32>, f32, mul_s);
+bench_binop!(_bench_vector2_mul_s, Vector2<f32>, f32, mul);
+bench_binop!(_bench_vector3_mul_s, Vector3<f32>, f32, mul);
+bench_binop!(_bench_vector4_mul_s, Vector4<f32>, f32, mul);
 
-bench_binop_deref!(_bench_vector2_div_s, Vector2<f32>, f32, div_s);
-bench_binop_deref!(_bench_vector3_div_s, Vector3<f32>, f32, div_s);
-bench_binop_deref!(_bench_vector4_div_s, Vector4<f32>, f32, div_s);
+bench_binop!(_bench_vector2_div_s, Vector2<f32>, f32, div);
+bench_binop!(_bench_vector3_div_s, Vector3<f32>, f32, div);
+bench_binop!(_bench_vector4_div_s, Vector4<f32>, f32, div);
 
 
 bench_binop!(_bench_vector2_dot, Vector2<f32>, Vector2<f32>, dot);
