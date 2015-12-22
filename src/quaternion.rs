@@ -92,7 +92,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// to be known, for example for quaternion-quaternion magnitude comparisons,
     /// it is advisable to use the `magnitude2` method instead.
     #[inline]
-    pub fn magnitude(&self) -> S {
+    pub fn magnitude(self) -> S {
         self.magnitude2().sqrt()
     }
 
