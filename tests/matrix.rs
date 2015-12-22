@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
@@ -364,4 +365,41 @@ fn test_from_angle() {
     // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
     let rot3: Matrix2<f64> = Matrix2::from_angle(rad(f64::consts::PI));
     assert!((rot3 * Vector2::new(1.0, 1.0)).approx_eq(&Vector2::new(-1.0, -1.0)));
+}
+
+fn test_matrix3_into_quaternion_for_angles(x: Rad<f32>, y: Rad<f32>, z: Rad<f32>) {
+    let matrix3: Matrix3<f32> = Matrix3::from_euler(x, y, z);
+    let quaternion: Quaternion<f32> = matrix3.into();
+    let quaternion_matrix3: Matrix3<f32> = quaternion.into();
+    assert_approx_eq!(matrix3, quaternion_matrix3);
+}
+
+// The next 4 tests trigger each of the cases in the impl for
+// conversion from Matrix3 to Quaternion
+#[test]
+fn test_matrix3_into_quaternion_positive_trace()
+{
+    // trigger the case: trace >= S::zero()
+    test_matrix3_into_quaternion_for_angles(rad(0.0f32), rad(0.0), rad(0.0f32));
+}
+
+#[test]
+fn test_matrix3_into_quaternion_xx_maximum()
+{
+    // trigger the case: (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])
+    test_matrix3_into_quaternion_for_angles(rad(2.0f32), rad(1.0), rad(-1.2f32));
+}
+
+#[test]
+fn test_matrix3_into_quaternion_yy_maximum()
+{
+    // trigger the case: mat[1][1] > mat[2][2]
+    test_matrix3_into_quaternion_for_angles(rad(2.0f32), rad(1.0), rad(3.0f32));
+}
+
+#[test]
+fn test_matrix3_into_quaternion_zz_maximum()
+{
+    // trigger the else case
+    test_matrix3_into_quaternion_for_angles(rad(1.0f32), rad(1.0), rad(3.0f32));
 }
