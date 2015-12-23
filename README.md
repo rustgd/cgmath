@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/bjz/cgmath-rs/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/cgmath)
 
-[Documentation](http://bjz.github.io/cgmath-rs)
+[Documentation](http://bjz.github.io/cgmath)
 
 A linear algebra and mathematics library for computer graphics.
 
@@ -45,4 +45,4 @@ appreciated.
 
 Contact `bjz` on irc.mozilla.org [#rust](http://mibbit.com/?server=irc.mozilla.org&channel=%23rust)
 and [#rust-gamedev](http://mibbit.com/?server=irc.mozilla.org&channel=%23rust-gamedev),
-or [post an issue](https://github.com/bjz/cgmath-rs/issues/new) on Github.
+or [post an issue](https://github.com/bjz/cgmath/issues/new) on Github.
