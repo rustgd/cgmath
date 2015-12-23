@@ -1084,28 +1084,28 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
             let z = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
         } else if (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2]) {
-            let s = (half + (mat[0][0] - mat[1][1] - mat[2][2])).sqrt();
-            let w = half * s;
+            let s = ((mat[0][0] - mat[1][1] - mat[2][2]) + S::one()).sqrt();
+            let x = half * s;
             let s = half / s;
-            let x = (mat[0][1] - mat[1][0]) * s;
-            let y = (mat[2][0] - mat[0][2]) * s;
-            let z = (mat[1][2] - mat[2][1]) * s;
+            let y = (mat[1][0] + mat[0][1]) * s;
+            let z = (mat[0][2] + mat[2][0]) * s;
+            let w = (mat[1][2] - mat[2][1]) * s;
             Quaternion::new(w, x, y, z)
         } else if mat[1][1] > mat[2][2] {
-            let s = (half + (mat[1][1] - mat[0][0] - mat[2][2])).sqrt();
-            let w = half * s;
+            let s = ((mat[1][1] - mat[0][0] - mat[2][2]) + S::one()).sqrt();
+            let y = half * s;
             let s = half / s;
-            let x = (mat[0][1] - mat[1][0]) * s;
-            let y = (mat[1][2] - mat[2][1]) * s;
-            let z = (mat[2][0] - mat[0][2]) * s;
+            let z = (mat[2][1] + mat[1][2]) * s;
+            let x = (mat[1][0] + mat[0][1]) * s;
+            let w = (mat[2][0] - mat[0][2]) * s;
             Quaternion::new(w, x, y, z)
         } else {
-            let s = (half + (mat[2][2] - mat[0][0] - mat[1][1])).sqrt();
-            let w = half * s;
+            let s = ((mat[2][2] - mat[0][0] - mat[1][1]) + S::one()).sqrt();
+            let z = half * s;
             let s = half / s;
-            let x = (mat[2][0] - mat[0][2]) * s;
-            let y = (mat[1][2] - mat[2][1]) * s;
-            let z = (mat[0][1] - mat[1][0]) * s;
+            let x = (mat[0][2] + mat[2][0]) * s;
+            let y = (mat[2][1] + mat[1][2]) * s;
+            let w = (mat[0][1] - mat[1][0]) * s;
             Quaternion::new(w, x, y, z)
         }
     }
