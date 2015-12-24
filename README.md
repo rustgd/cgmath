@@ -1,8 +1,8 @@
 # cgmath-rs
 
-[![Build Status](https://travis-ci.org/bjz/cgmath-rs.svg?branch=master)](https://travis-ci.org/bjz/cgmath-rs)
+[![Build Status](https://travis-ci.org/bjz/cgmath.svg?branch=master)](https://travis-ci.org/bjz/cgmath)
 [![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/cgmath)
-[![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/bjz/cgmath-rs/blob/master/LICENSE)
+[![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/bjz/cgmath/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/cgmath)
 
 [Documentation](http://bjz.github.io/cgmath)
