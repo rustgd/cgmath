@@ -45,6 +45,53 @@ mod to_from_euler {
     #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(rad(0.0), rad(-HPI), rad(1.0)); }
 }
 
+mod from_axis_angle {
+    mod axis_x {
+        use cgmath::*;
+
+        fn check_from_axis_angle(pitch: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_x(), pitch);
+            let expected = Quaternion::from_euler(pitch, rad(0.0), rad(0.0));
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+
+    mod axis_y {
+        use cgmath::*;
+
+        fn check_from_axis_angle(yaw: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_y(), yaw);
+            let expected = Quaternion::from_euler(rad(0.0), yaw, rad(0.0));
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+
+    mod axis_z {
+        use cgmath::*;
+
+        fn check_from_axis_angle(roll: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_z(), roll);
+            let expected = Quaternion::from_euler(rad(0.0), rad(0.0), roll);
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+}
+
 mod from_angle_x {
     use cgmath::*;
 
