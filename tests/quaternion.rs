@@ -13,75 +13,71 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
 extern crate cgmath;
 
-use cgmath::{Matrix4, Matrix3};
-use cgmath::Quaternion;
+mod to_from_euler {
+    use std::f32;
 
-use cgmath::{Rad, rad, ApproxEq};
-use cgmath::Rotation3;
+    use cgmath::*;
 
-use std::f32;
+    fn check_euler(pitch: Rad<f32>, yaw: Rad<f32>, roll: Rad<f32>) {
+        let quat = Quaternion::from_euler(pitch, yaw, roll);
+        let (found_pitch, found_yaw, found_roll) = quat.to_euler();
 
-#[test]
-fn to_matrix4()
-{
-    let quaternion = Quaternion::new(2f32, 3f32, 4f32, 5f32);
-
-    let matrix_short: Matrix4<_> = quaternion.into();
-
-    let matrix_long: Matrix3<_> = quaternion.into();
-    let matrix_long: Matrix4<_> = matrix_long.into();
-
-    assert!(matrix_short == matrix_long);
-}
-
-#[test]
-fn to_and_from_quaternion()
-{
-    fn eq(a: (Rad<f32>, Rad<f32>, Rad<f32>), b: (Rad<f32>, Rad<f32>, Rad<f32>)) {
-        let (ax, ay, az) = a;
-        let (bx, by, bz) = b;
-        if !(ax.approx_eq_eps(&bx, &0.001) &&
-             ay.approx_eq_eps(&by, &0.001) &&
-             az.approx_eq_eps(&bz, &0.001)) {
-            panic!("{:?} != {:?}", a, b)
-        }
+        assert_approx_eq_eps!(pitch, found_pitch, 0.001);
+        assert_approx_eq_eps!(yaw, found_yaw, 0.001);
+        assert_approx_eq_eps!(roll, found_roll, 0.001);
     }
 
-    let hpi = f32::consts::FRAC_PI_2;
+    const HPI: f32 = f32::consts::FRAC_PI_2;
 
-    let zero: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(0f32));
-    eq((rad(0f32), rad(0f32), rad(0f32)), zero.to_euler());
+    #[test] fn test_zero()                  { check_euler(rad(0f32), rad(0f32), rad(0f32)); }
+    #[test] fn test_yaw_pos_1()             { check_euler(rad(0f32), rad(1f32), rad(0f32)); }
+    #[test] fn test_yaw_neg_1()             { check_euler(rad(0f32), rad(-1f32), rad(0f32)); }
+    #[test] fn test_pitch_pos_1()           { check_euler(rad(1f32), rad(0f32), rad(0f32)); }
+    #[test] fn test_pitch_neg_1()           { check_euler(rad(-1f32), rad(0f32), rad(0f32)); }
+    #[test] fn test_roll_pos_1()            { check_euler(rad(0f32), rad(0f32), rad(1f32)); }
+    #[test] fn test_roll_neg_1()            { check_euler(rad(0f32), rad(0f32), rad(-1f32)); }
+    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(rad(1f32), rad(1f32), rad(1f32)); }
+    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(rad(-1f32), rad(-1f32), rad(-1f32)); }
+    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(rad(0f32), rad(HPI), rad(1f32)); }
+    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(rad(0f32), rad(-HPI), rad(1f32)); }
+}
 
-    let x_1: Quaternion<f32> = Rotation3::from_euler(rad(1f32), rad(0f32), rad(0f32));
-    eq((rad(1f32), rad(0f32), rad(0f32)), x_1.to_euler());
+mod from {
+    mod matrix3 {
+        use cgmath::*;
 
-    let y_1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(1f32), rad(0f32));
-    eq((rad(0f32), rad(1f32), rad(0f32)), y_1.to_euler());
+        fn check_with_euler(x: Rad<f32>, y: Rad<f32>, z: Rad<f32>) {
+            let matrix3 = Matrix3::from_euler(x, y, z);
+            let quaternion = Quaternion::from(matrix3);
+            let quaternion_matrix3 = Matrix3::from(quaternion);
+            assert_approx_eq!(matrix3, quaternion_matrix3);
+        }
 
-    let z_1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(1f32));
-    eq((rad(0f32), rad(0f32), rad(1f32)), z_1.to_euler());
+        // triggers: trace >= S::zero()
+        #[test]
+        fn test_positive_trace() {
+            check_with_euler(rad(0.0f32), rad(0.0), rad(0.0f32));
+        }
 
-    let x_n1: Quaternion<f32> = Rotation3::from_euler(rad(-1f32), rad(0f32), rad(0f32));
-    eq((rad(-1f32), rad(0f32), rad(0f32)), x_n1.to_euler());
+        // triggers: (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])
+        #[test]
+        fn test_xx_maximum() {
+            check_with_euler(rad(2.0f32), rad(1.0), rad(-1.2f32));
+        }
 
-    let y_n1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(-1f32), rad(0f32));
-    eq((rad(0f32), rad(-1f32), rad(0f32)), y_n1.to_euler());
+        // triggers: mat[1][1] > mat[2][2]
+        #[test]
+        fn test_yy_maximum() {
+            check_with_euler(rad(2.0f32), rad(1.0), rad(3.0f32));
+        }
 
-    let z_n1: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(0f32), rad(-1f32));
-    eq((rad(0f32), rad(0f32), rad(-1f32)), z_n1.to_euler());
-
-    let xzy_1: Quaternion<f32> = Rotation3::from_euler(rad(1f32), rad(1f32), rad(1f32));
-    eq((rad(1f32), rad(1f32), rad(1f32)), xzy_1.to_euler());
-
-    let xzy_n1: Quaternion<f32> = Rotation3::from_euler(rad(-1f32), rad(-1f32), rad(-1f32));
-    eq((rad(-1f32), rad(-1f32), rad(-1f32)), xzy_n1.to_euler());
-
-    let xzy_hp: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(hpi), rad(1f32));
-    eq((rad(0f32), rad(hpi), rad(1f32)), xzy_hp.to_euler());
-
-    let xzy_nhp: Quaternion<f32> = Rotation3::from_euler(rad(0f32), rad(-hpi), rad(1f32));
-    eq((rad(0f32), rad(-hpi), rad(1f32)), xzy_nhp.to_euler());
-
+        // base case
+        #[test]
+        fn test_zz_maximum() {
+            check_with_euler(rad(1.0f32), rad(1.0), rad(3.0f32));
+        }
+    }
 }
