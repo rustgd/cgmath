@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
+
 use angle::{Angle, Rad};
 use approx::ApproxEq;
 use matrix::SquareMatrix;
@@ -222,6 +224,13 @@ impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
     fn from_angle(theta: Rad<S>) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
 }
 
+impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "Basis2 "));
+        <[[S; 2]; 2] as fmt::Debug>::fmt(self.mat.as_ref(), f)
+    }
+}
+
 /// A three-dimensional rotation matrix.
 ///
 /// The matrix is guaranteed to be orthogonal, so some operations, specifically
@@ -321,5 +330,12 @@ impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
 
     fn from_angle_z(theta: Rad<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_angle_z(theta) }
+    }
+}
+
+impl<S: fmt::Debug> fmt::Debug for Basis3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "Basis3 "));
+        <[[S; 3]; 3] as fmt::Debug>::fmt(self.mat.as_ref(), f)
     }
 }

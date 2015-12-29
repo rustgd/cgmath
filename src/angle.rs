@@ -218,7 +218,7 @@ macro_rules! impl_angle {
             }
         }
 
-        impl<S: BaseFloat> fmt::Debug for $Angle<S> {
+        impl<S: fmt::Debug> fmt::Debug for $Angle<S> {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 write!(f, $fmt, self.s)
             }

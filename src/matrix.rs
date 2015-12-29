@@ -1111,30 +1111,24 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> fmt::Debug for Matrix2<S> {
+impl<S: fmt::Debug> fmt::Debug for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[[{:?}, {:?}], [{:?}, {:?}]]",
-                self[0][0], self[0][1],
-                self[1][0], self[1][1])
+        try!(write!(f, "Matrix2 "));
+        <[[S; 2]; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
-impl<S: BaseFloat> fmt::Debug for Matrix3<S> {
+impl<S: fmt::Debug> fmt::Debug for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[[{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}], [{:?}, {:?}, {:?}]]",
-                self[0][0], self[0][1], self[0][2],
-                self[1][0], self[1][1], self[1][2],
-                self[2][0], self[2][1], self[2][2])
+        try!(write!(f, "Matrix3 "));
+        <[[S; 3]; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
-impl<S: BaseFloat> fmt::Debug for Matrix4<S> {
+impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[[{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}], [{:?}, {:?}, {:?}, {:?}]]",
-                self[0][0], self[0][1], self[0][2], self[0][3],
-                self[1][0], self[1][1], self[1][2], self[1][3],
-                self[2][0], self[2][1], self[2][2], self[2][3],
-                self[3][0], self[3][1], self[3][2], self[3][3])
+        try!(write!(f, "Matrix4 "));
+        <[[S; 4]; 4] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 

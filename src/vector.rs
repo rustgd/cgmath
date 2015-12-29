@@ -489,21 +489,24 @@ impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Vector2<S> {
+impl<S: fmt::Debug> fmt::Debug for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}, {:?}]", self.x, self.y)
+        try!(write!(f, "Vector2 "));
+        <[S; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Vector3<S> {
+impl<S: fmt::Debug> fmt::Debug for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
+        try!(write!(f, "Vector3 "));
+        <[S; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Vector4<S> {
+impl<S: fmt::Debug> fmt::Debug for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}, {:?}, {:?}, {:?}]", self.x, self.y, self.z, self.w)
+        try!(write!(f, "Vector4 "));
+        <[S; 4] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
