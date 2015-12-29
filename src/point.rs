@@ -189,15 +189,17 @@ impl_fixed_array_conversions!(Point3<S> { x: 0, y: 1, z: 2 }, 3);
 impl_tuple_conversions!(Point2<S> { x, y }, (S, S));
 impl_tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
 
-impl<S: BaseNum> fmt::Debug for Point2<S> {
+impl<S: fmt::Debug> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}, {:?}]", self.x, self.y)
+        try!(write!(f, "Point2 "));
+        <[S; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
-impl<S: BaseNum> fmt::Debug for Point3<S> {
+impl<S: fmt::Debug> fmt::Debug for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}, {:?}, {:?}]", self.x, self.y, self.z)
+        try!(write!(f, "Point3 "));
+        <[S; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fmt;
 use std::mem;
 use std::ops::*;
 
@@ -32,7 +31,7 @@ use vector::{Vector3, Vector, EuclideanVector};
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, Debug, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Quaternion<S> {
     pub s: S,
     pub v: Vector3<S>,
@@ -309,16 +308,6 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
                      xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2, S::zero(),
                      xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2, S::zero(),
                      S::zero(), S::zero(), S::zero(), S::one())
-    }
-}
-
-impl<S: BaseFloat> fmt::Debug for Quaternion<S> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?} + {:?}i + {:?}j + {:?}k",
-                self.s,
-                self.v.x,
-                self.v.y,
-                self.v.z)
     }
 }
 

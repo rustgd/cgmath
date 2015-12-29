@@ -71,7 +71,7 @@ pub trait Transform<P: Point>: Sized {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[derive(Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
 pub struct Decomposed<V: Vector, R> {
     pub scale: V::Scalar,
     pub rot: R,
@@ -163,13 +163,6 @@ impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> 
 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
-impl<S: BaseFloat, R: fmt::Debug + Rotation3<S>> fmt::Debug for Decomposed<Vector3<S>, R> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "(scale({:?}), rot({:?}), disp{:?})",
-            self.scale, self.rot, self.disp)
-    }
-}
-
 /// A homogeneous transformation matrix.
 #[derive(Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct AffineMatrix3<S> {
@@ -213,3 +206,10 @@ impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
 }
 
 impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
+
+impl<S: fmt::Debug> fmt::Debug for AffineMatrix3<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "AffineMatrix3 "));
+        <[[S; 4]; 4] as fmt::Debug>::fmt(self.mat.as_ref(), f)
+    }
+}
