@@ -32,17 +32,109 @@ mod to_from_euler {
 
     const HPI: f32 = f32::consts::FRAC_PI_2;
 
-    #[test] fn test_zero()                  { check_euler(rad(0f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_yaw_pos_1()             { check_euler(rad(0f32), rad(1f32), rad(0f32)); }
-    #[test] fn test_yaw_neg_1()             { check_euler(rad(0f32), rad(-1f32), rad(0f32)); }
-    #[test] fn test_pitch_pos_1()           { check_euler(rad(1f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_pitch_neg_1()           { check_euler(rad(-1f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_roll_pos_1()            { check_euler(rad(0f32), rad(0f32), rad(1f32)); }
-    #[test] fn test_roll_neg_1()            { check_euler(rad(0f32), rad(0f32), rad(-1f32)); }
-    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(rad(1f32), rad(1f32), rad(1f32)); }
-    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(rad(-1f32), rad(-1f32), rad(-1f32)); }
-    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(rad(0f32), rad(HPI), rad(1f32)); }
-    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(rad(0f32), rad(-HPI), rad(1f32)); }
+    #[test] fn test_zero()                  { check_euler(rad(0.0), rad(0.0), rad(0.0)); }
+    #[test] fn test_yaw_pos_1()             { check_euler(rad(0.0), rad(1.0), rad(0.0)); }
+    #[test] fn test_yaw_neg_1()             { check_euler(rad(0.0), rad(-1.0), rad(0.0)); }
+    #[test] fn test_pitch_pos_1()           { check_euler(rad(1.0), rad(0.0), rad(0.0)); }
+    #[test] fn test_pitch_neg_1()           { check_euler(rad(-1.0), rad(0.0), rad(0.0)); }
+    #[test] fn test_roll_pos_1()            { check_euler(rad(0.0), rad(0.0), rad(1.0)); }
+    #[test] fn test_roll_neg_1()            { check_euler(rad(0.0), rad(0.0), rad(-1.0)); }
+    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(rad(1.0), rad(1.0), rad(1.0)); }
+    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(rad(-1.0), rad(-1.0), rad(-1.0)); }
+    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(rad(0.0), rad(HPI), rad(1.0)); }
+    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(rad(0.0), rad(-HPI), rad(1.0)); }
+}
+
+mod from_axis_angle {
+    mod axis_x {
+        use cgmath::*;
+
+        fn check_from_axis_angle(pitch: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_x(), pitch);
+            let expected = Quaternion::from_euler(pitch, rad(0.0), rad(0.0));
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+
+    mod axis_y {
+        use cgmath::*;
+
+        fn check_from_axis_angle(yaw: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_y(), yaw);
+            let expected = Quaternion::from_euler(rad(0.0), yaw, rad(0.0));
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+
+    mod axis_z {
+        use cgmath::*;
+
+        fn check_from_axis_angle(roll: Rad<f32>) {
+            let found = Quaternion::from_axis_angle(Vector3::unit_z(), roll);
+            let expected = Quaternion::from_euler(rad(0.0), rad(0.0), roll);
+
+            assert_approx_eq_eps!(found, expected, 0.001);
+        }
+
+        #[test] fn test_zero()      { check_from_axis_angle(rad(0.0)); }
+        #[test] fn test_pos_1()     { check_from_axis_angle(rad(1.0)); }
+        #[test] fn test_neg_1()     { check_from_axis_angle(rad(-1.0)); }
+    }
+}
+
+mod from_angle_x {
+    use cgmath::*;
+
+    fn check_from_angle_x(pitch: Rad<f32>) {
+        let found = Quaternion::from_angle_x(pitch);
+        let expected = Quaternion::from_euler(pitch, rad(0.0), rad(0.0));
+
+        assert_approx_eq_eps!(found, expected, 0.001);
+    }
+
+    #[test] fn test_zero()      { check_from_angle_x(rad(0.0)); }
+    #[test] fn test_pos_1()     { check_from_angle_x(rad(1.0)); }
+    #[test] fn test_neg_1()     { check_from_angle_x(rad(-1.0)); }
+}
+
+mod from_angle_y {
+    use cgmath::*;
+
+    fn check_from_angle_y(yaw: Rad<f32>) {
+        let found = Quaternion::from_angle_y(yaw);
+        let expected = Quaternion::from_euler(rad(0.0), yaw, rad(0.0));
+
+        assert_approx_eq_eps!(found, expected, 0.001);
+    }
+
+    #[test] fn test_zero()      { check_from_angle_y(rad(0.0)); }
+    #[test] fn test_pos_1()     { check_from_angle_y(rad(1.0)); }
+    #[test] fn test_neg_1()     { check_from_angle_y(rad(-1.0)); }
+}
+
+mod from_angle_z {
+    use cgmath::*;
+
+    fn check_from_angle_z(roll: Rad<f32>) {
+        let found = Quaternion::from_angle_z(roll);
+        let expected = Quaternion::from_euler(rad(0.0), rad(0.0), roll);
+
+        assert_approx_eq_eps!(found, expected, 0.001);
+    }
+
+    #[test] fn test_zero()      { check_from_angle_z(rad(0.0)); }
+    #[test] fn test_pos_1()     { check_from_angle_z(rad(1.0)); }
+    #[test] fn test_neg_1()     { check_from_angle_z(rad(-1.0)); }
 }
 
 mod from {
@@ -59,25 +151,25 @@ mod from {
         // triggers: trace >= S::zero()
         #[test]
         fn test_positive_trace() {
-            check_with_euler(rad(0.0f32), rad(0.0), rad(0.0f32));
+            check_with_euler(rad(0.0), rad(0.0), rad(0.0));
         }
 
         // triggers: (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])
         #[test]
         fn test_xx_maximum() {
-            check_with_euler(rad(2.0f32), rad(1.0), rad(-1.2f32));
+            check_with_euler(rad(2.0), rad(1.0), rad(-1.2));
         }
 
         // triggers: mat[1][1] > mat[2][2]
         #[test]
         fn test_yy_maximum() {
-            check_with_euler(rad(2.0f32), rad(1.0), rad(3.0f32));
+            check_with_euler(rad(2.0), rad(1.0), rad(3.0));
         }
 
         // base case
         #[test]
         fn test_zz_maximum() {
-            check_with_euler(rad(1.0f32), rad(1.0), rad(3.0f32));
+            check_with_euler(rad(1.0), rad(1.0), rad(3.0));
         }
     }
 }

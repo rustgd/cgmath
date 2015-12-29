@@ -241,20 +241,20 @@ impl<S: BaseFloat> Quaternion<S> {
 
         if test > sig * unit {
             (
-                Rad::zero(),
                 Rad::turn_div_4(),
+                Rad::zero(),
                 Rad::atan2(qx, qw) * two,
             )
         } else if test < -sig * unit {
             (
-                Rad::zero(),
                 -Rad::turn_div_4(),
+                Rad::zero(),
                 Rad::atan2(qx, qw) * two,
             )
         } else {
             (
-                Rad::atan2(two * (qy * qw - qx * qz), one - two * (sqy + sqz)),
                 Rad::asin(two * (qx * qy + qz * qw)),
+                Rad::atan2(two * (qy * qw - qx * qz), one - two * (sqy + sqz)),
                 Rad::atan2(two * (qx * qw - qy * qz), one - two * (sqx + sqz)),
             )
         }
@@ -365,20 +365,31 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     #[inline]
     fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = Rad::sin_cos(angle * cast(0.5f64).unwrap());
+        let axis = Vector3::new(axis.z, axis.y, axis.x); // Fix ordering to match pitch, yaw, roll
         Quaternion::from_sv(c, axis * s)
     }
 
+    /// Create a quaternion from a set of euler angles.
+    ///
+    /// # Parameters
+    ///
+    /// - `x`: the angular rotation around the `x` axis (pitch).
+    /// - `y`: the angular rotation around the `y` axis (yaw).
+    /// - `z`: the angular rotation around the `z` axis (roll).
+    ///
+    /// # References
+    ///
     /// - [Maths - Conversion Euler to Quaternion]
     ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm)
     fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
-        let (s1, c1) = Rad::sin_cos(x * cast(0.5f64).unwrap());
-        let (s2, c2) = Rad::sin_cos(y * cast(0.5f64).unwrap());
-        let (s3, c3) = Rad::sin_cos(z * cast(0.5f64).unwrap());
+        let (s_x, c_x) = Rad::sin_cos(x * cast(0.5f64).unwrap());
+        let (s_y, c_y) = Rad::sin_cos(y * cast(0.5f64).unwrap());
+        let (s_z, c_z) = Rad::sin_cos(z * cast(0.5f64).unwrap());
 
-        Quaternion::new(c1 * c2 * c3 - s1 * s2 * s3,
-                        s1 * s2 * c3 + c1 * c2 * s3,
-                        s1 * c2 * c3 + c1 * s2 * s3,
-                        c1 * s2 * c3 - s1 * c2 * s3)
+        Quaternion::new(c_y * c_x * c_z - s_y * s_x * s_z,
+                        s_y * s_x * c_z + c_y * c_x * s_z,
+                        s_y * c_x * c_z + c_y * s_x * s_z,
+                        c_y * s_x * c_z - s_y * c_x * s_z)
     }
 }
 

@@ -6,6 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Reorder euler angles in quaternion conversions from `(yaw, pitch, roll)` to
+  `(pitch, yaw, roll)` to be consistent with the ordering in matrix conversions.
+- Base the `Rotation::from_angle_{x, y, z}` default implementations off
+  `Rotation::from_euler` as opposed to `Rotation::from_axis_angle`.
+- Fix implementation of `Quaternion::from_axis_angle`
+
 ## [v0.7.0] - 2015-12-23
 
 ### Added
