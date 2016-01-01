@@ -95,6 +95,38 @@ macro_rules! impl_operator {
             }
         }
     };
+    // When the left operand is a scalar
+    ($Op:ident<$Rhs:ident<$S:ident>> for $Lhs:ty {
+        fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
+    }) => {
+        impl $Op<$Rhs<$S>> for $Lhs {
+            type Output = $Output;
+            #[inline]
+            fn $op(self, other: $Rhs<$S>) -> $Output {
+                let ($lhs, $rhs) = (self, other); $body
+            }
+        }
+    };
+}
+
+macro_rules! impl_scalar_ops {
+    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator!(Add<$VectorN<$S>> for $S {
+            fn add(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar + vector.$field),+) }
+        });
+        impl_operator!(Sub<$VectorN<$S>> for $S {
+            fn sub(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar - vector.$field),+) }
+        });
+        impl_operator!(Mul<$VectorN<$S>> for $S {
+            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
+        });
+        impl_operator!(Div<$VectorN<$S>> for $S {
+            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
+        });
+        impl_operator!(Rem<$VectorN<$S>> for $S {
+            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
+        });
+    };
 }
 
 macro_rules! impl_assignment_operator {

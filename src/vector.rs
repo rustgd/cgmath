@@ -244,6 +244,7 @@ macro_rules! impl_vector {
         impl_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
             fn mul(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) }
         });
+
         impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
         });
@@ -285,9 +286,19 @@ macro_rules! impl_vector {
     }
 }
 
+macro_rules! impl_vector_scalar_ops {
+    ($($S:ident)*) => ($(
+        impl_scalar_ops!(Vector2<$S> { x, y });
+        impl_scalar_ops!(Vector3<$S> { x, y, z });
+        impl_scalar_ops!(Vector4<$S> { x, y, z, w });
+    )*)
+}
+
 impl_vector!(Vector2<S> { x, y }, 2, vec2);
 impl_vector!(Vector3<S> { x, y, z }, 3, vec3);
 impl_vector!(Vector4<S> { x, y, z, w }, 4, vec4);
+
+impl_vector_scalar_ops!(usize u8 u16 u32 u64 isize i8 i16 i32 i64 f32 f64);
 
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
 impl_fixed_array_conversions!(Vector3<S> { x: 0, y: 1, z: 2 }, 3);

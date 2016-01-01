@@ -33,6 +33,44 @@ fn test_from_value() {
     assert_eq!(Vector4::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
 }
 
+macro_rules! test_ops {
+    ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
+        // add
+        assert_eq!($v + $s, $VectorN::new($($v.$field + $s),+));
+        assert_eq!($s + $v, $VectorN::new($($s + $v.$field),+));
+        assert_eq!($v + $s, $s + $v);
+        // sub
+        assert_eq!($v - $s, $VectorN::new($($v.$field - $s),+));
+        assert_eq!($s - $v, $VectorN::new($($s - $v.$field),+));
+        assert_eq!($v - $s, -($s - $v));
+        // mul
+        assert_eq!($v * $s, $VectorN::new($($v.$field * $s),+));
+        assert_eq!($s * $v, $VectorN::new($($s * $v.$field),+));
+        assert_eq!($v * $s, $s * $v);
+        // div
+        assert_eq!($v / $s, $VectorN::new($($v.$field / $s),+));
+        assert_eq!($s / $v, $VectorN::new($($s / $v.$field),+));
+        // rem
+        assert_eq!($v % $s, $VectorN::new($($v.$field % $s),+));
+        assert_eq!($s % $v, $VectorN::new($($s % $v.$field),+));
+    )
+}
+
+#[test]
+fn test_ops() {
+    let a = [3.0f32, 4.0f32, 5.0f32, 6.0f32];
+    let s = 2.0f32;
+
+    let v4 = Vector4::from(a);
+    test_ops!(Vector4 { x, y, z, w }, s, v4);
+
+    let v3 = v4.truncate();
+    test_ops!(Vector3 { x, y, z }, s, v3);
+
+    let v2 = v3.truncate();
+    test_ops!(Vector2 { x, y }, s, v2);
+}
+
 #[test]
 fn test_dot() {
     assert_eq!(Vector2::new(1isize, 2isize).dot(Vector2::new(3isize, 4isize)), 11isize);
