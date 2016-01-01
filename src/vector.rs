@@ -278,6 +278,19 @@ macro_rules! impl_vector {
             fn rem_assign(&mut self, other) { $(self.$field %= other.$field);+ }
         });
 
+        impl_scalar_ops!($VectorN<usize> { $($field),+ });
+        impl_scalar_ops!($VectorN<u8> { $($field),+ });
+        impl_scalar_ops!($VectorN<u16> { $($field),+ });
+        impl_scalar_ops!($VectorN<u32> { $($field),+ });
+        impl_scalar_ops!($VectorN<u64> { $($field),+ });
+        impl_scalar_ops!($VectorN<isize> { $($field),+ });
+        impl_scalar_ops!($VectorN<i8> { $($field),+ });
+        impl_scalar_ops!($VectorN<i16> { $($field),+ });
+        impl_scalar_ops!($VectorN<i32> { $($field),+ });
+        impl_scalar_ops!($VectorN<i64> { $($field),+ });
+        impl_scalar_ops!($VectorN<f32> { $($field),+ });
+        impl_scalar_ops!($VectorN<f64> { $($field),+ });
+
         impl_index_operators!($VectorN<S>, $n, S, usize);
         impl_index_operators!($VectorN<S>, $n, [S], Range<usize>);
         impl_index_operators!($VectorN<S>, $n, [S], RangeTo<usize>);
@@ -286,19 +299,29 @@ macro_rules! impl_vector {
     }
 }
 
-macro_rules! impl_vector_scalar_ops {
-    ($($S:ident)*) => ($(
-        impl_scalar_ops!(Vector2<$S> { x, y });
-        impl_scalar_ops!(Vector3<$S> { x, y, z });
-        impl_scalar_ops!(Vector4<$S> { x, y, z, w });
-    )*)
+macro_rules! impl_scalar_ops {
+    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator!(Add<$VectorN<$S>> for $S {
+            fn add(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar + vector.$field),+) }
+        });
+        impl_operator!(Sub<$VectorN<$S>> for $S {
+            fn sub(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar - vector.$field),+) }
+        });
+        impl_operator!(Mul<$VectorN<$S>> for $S {
+            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
+        });
+        impl_operator!(Div<$VectorN<$S>> for $S {
+            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
+        });
+        impl_operator!(Rem<$VectorN<$S>> for $S {
+            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
+        });
+    };
 }
 
 impl_vector!(Vector2<S> { x, y }, 2, vec2);
 impl_vector!(Vector3<S> { x, y, z }, 3, vec3);
 impl_vector!(Vector4<S> { x, y, z, w }, 4, vec4);
-
-impl_vector_scalar_ops!(usize u8 u16 u32 u64 isize i8 i16 i32 i64 f32 f64);
 
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
 impl_fixed_array_conversions!(Vector3<S> { x: 0, y: 1, z: 2 }, 3);
