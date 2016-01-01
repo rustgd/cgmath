@@ -37,14 +37,15 @@ macro_rules! test_op_add {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector + vector ops
         assert_eq!($v + $v, $VectorN::new($($v.$field + $v.$field),+));
-        assert_eq!(&$v + &$v, $VectorN::new($($v.$field + $v.$field),+));
-        assert_eq!(&$v + $v, $VectorN::new($($v.$field + $v.$field),+));
-        assert_eq!($v + &$v, $VectorN::new($($v.$field + $v.$field),+));
+        assert_eq!(&$v + &$v, $v + $v);
+        assert_eq!(&$v + $v, $v + $v);
+        assert_eq!($v + &$v, $v + $v);
         // vector + scalar ops
         assert_eq!($v + $s, $VectorN::new($($v.$field + $s),+));
         assert_eq!($s + $v, $VectorN::new($($s + $v.$field),+));
-        assert_eq!(&$v + $s, $VectorN::new($($v.$field + $s),+));
-        assert_eq!($s + &$v, $VectorN::new($($s + $v.$field),+));
+        assert_eq!(&$v + $s, $v + $s);
+        assert_eq!($s + &$v, $s + $v);
+        // commutativity
         assert_eq!($v + $s, $s + $v);
     )
 }
@@ -53,14 +54,15 @@ macro_rules! test_op_sub {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector - vector ops
         assert_eq!($v - $v, $VectorN::new($($v.$field - $v.$field),+));
-        assert_eq!(&$v - &$v, $VectorN::new($($v.$field - $v.$field),+));
-        assert_eq!(&$v - $v, $VectorN::new($($v.$field - $v.$field),+));
-        assert_eq!($v - &$v, $VectorN::new($($v.$field - $v.$field),+));
+        assert_eq!(&$v - &$v, $v - $v);
+        assert_eq!(&$v - $v, $v - $v);
+        assert_eq!($v - &$v, $v - $v);
         // vector - scalar ops
         assert_eq!($v - $s, $VectorN::new($($v.$field - $s),+));
         assert_eq!($s - $v, $VectorN::new($($s - $v.$field),+));
-        assert_eq!(&$v - $s, $VectorN::new($($v.$field - $s),+));
-        assert_eq!($s - &$v, $VectorN::new($($s - $v.$field),+));
+        assert_eq!(&$v - $s, $v - $s);
+        assert_eq!($s - &$v, $s - $v);
+        // commutativity
         assert_eq!($v - $s, -($s - $v));
     )
 }
@@ -69,14 +71,15 @@ macro_rules! test_op_mul {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector * vector ops
         assert_eq!($v * $v, $VectorN::new($($v.$field * $v.$field),+));
-        assert_eq!(&$v * &$v, $VectorN::new($($v.$field * $v.$field),+));
-        assert_eq!(&$v * $v, $VectorN::new($($v.$field * $v.$field),+));
-        assert_eq!($v * &$v, $VectorN::new($($v.$field * $v.$field),+));
+        assert_eq!(&$v * &$v, $v * $v);
+        assert_eq!(&$v * $v, $v * $v);
+        assert_eq!($v * &$v, $v * $v);
         // vector * scalar ops
         assert_eq!($v * $s, $VectorN::new($($v.$field * $s),+));
         assert_eq!($s * $v, $VectorN::new($($s * $v.$field),+));
-        assert_eq!(&$v * $s, $VectorN::new($($v.$field * $s),+));
-        assert_eq!($s * &$v, $VectorN::new($($s * $v.$field),+));
+        assert_eq!(&$v * $s, $v * $s);
+        assert_eq!($s * &$v, $s * $v);
+        // commutativity
         assert_eq!($v * $s, $s * $v);
     )
 }
@@ -85,14 +88,14 @@ macro_rules! test_op_div {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector / vector ops
         assert_eq!($v / $v, $VectorN::new($($v.$field / $v.$field),+));
-        assert_eq!(&$v / &$v, $VectorN::new($($v.$field / $v.$field),+));
-        assert_eq!(&$v / $v, $VectorN::new($($v.$field / $v.$field),+));
-        assert_eq!($v / &$v, $VectorN::new($($v.$field / $v.$field),+));
+        assert_eq!(&$v / &$v, $v / $v);
+        assert_eq!(&$v / $v, $v / $v);
+        assert_eq!($v / &$v, $v / $v);
         // vector / scalar ops
         assert_eq!($v / $s, $VectorN::new($($v.$field / $s),+));
         assert_eq!($s / $v, $VectorN::new($($s / $v.$field),+));
-        assert_eq!(&$v / $s, $VectorN::new($($v.$field / $s),+));
-        assert_eq!($s / &$v, $VectorN::new($($s / $v.$field),+));
+        assert_eq!(&$v / $s, $v / $s);
+        assert_eq!($s / &$v, $s / $v);
     )
 }
 
@@ -100,14 +103,14 @@ macro_rules! test_op_rem {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector % vector ops
         assert_eq!($v % $v, $VectorN::new($($v.$field % $v.$field),+));
-        assert_eq!(&$v % &$v, $VectorN::new($($v.$field % $v.$field),+));
-        assert_eq!(&$v % $v, $VectorN::new($($v.$field % $v.$field),+));
-        assert_eq!($v % &$v, $VectorN::new($($v.$field % $v.$field),+));
+        assert_eq!(&$v % &$v, $v % $v);
+        assert_eq!(&$v % $v, $v % $v);
+        assert_eq!($v % &$v, $v % $v);
         // vector % scalar ops
         assert_eq!($v % $s, $VectorN::new($($v.$field % $s),+));
         assert_eq!($s % $v, $VectorN::new($($s % $v.$field),+));
-        assert_eq!(&$v % $s, $VectorN::new($($v.$field % $s),+));
-        assert_eq!($s % &$v, $VectorN::new($($s % $v.$field),+));
+        assert_eq!(&$v % $s, $v % $s);
+        assert_eq!($s % &$v, $s % $v);
     )
 }
 
