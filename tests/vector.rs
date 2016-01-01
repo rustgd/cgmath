@@ -33,7 +33,7 @@ fn test_from_value() {
     assert_eq!(Vector4::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
 }
 
-macro_rules! test_op_add {
+macro_rules! impl_test_add {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector + vector ops
         assert_eq!($v + $v, $VectorN::new($($v.$field + $v.$field),+));
@@ -50,7 +50,7 @@ macro_rules! test_op_add {
     )
 }
 
-macro_rules! test_op_sub {
+macro_rules! impl_test_sub {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector - vector ops
         assert_eq!($v - $v, $VectorN::new($($v.$field - $v.$field),+));
@@ -67,7 +67,7 @@ macro_rules! test_op_sub {
     )
 }
 
-macro_rules! test_op_mul {
+macro_rules! impl_test_mul {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector * vector ops
         assert_eq!($v * $v, $VectorN::new($($v.$field * $v.$field),+));
@@ -84,7 +84,7 @@ macro_rules! test_op_mul {
     )
 }
 
-macro_rules! test_op_div {
+macro_rules! impl_test_div {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector / vector ops
         assert_eq!($v / $v, $VectorN::new($($v.$field / $v.$field),+));
@@ -99,7 +99,7 @@ macro_rules! test_op_div {
     )
 }
 
-macro_rules! test_op_rem {
+macro_rules! impl_test_rem {
     ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
         // vector % vector ops
         assert_eq!($v % $v, $VectorN::new($($v.$field % $v.$field),+));
@@ -114,29 +114,39 @@ macro_rules! test_op_rem {
     )
 }
 
-macro_rules! test_ops {
-    ($VectorN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
-        test_op_add!($VectorN { $($field),+ }, $s, $v);
-        test_op_sub!($VectorN { $($field),+ }, $s, $v);
-        test_op_mul!($VectorN { $($field),+ }, $s, $v);
-        test_op_div!($VectorN { $($field),+ }, $s, $v);
-        test_op_rem!($VectorN { $($field),+ }, $s, $v);
-    )
+#[test]
+fn test_add() {
+    impl_test_add!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_add!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_add!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
 }
 
 #[test]
-fn test_ops() {
-    let a = [3.0f32, 4.0f32, 5.0f32, 6.0f32];
-    let s = 2.0f32;
+fn test_sub() {
+    impl_test_sub!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_sub!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_sub!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
+}
 
-    let v4 = Vector4::from(a);
-    test_ops!(Vector4 { x, y, z, w }, s, v4);
+#[test]
+fn test_mul() {
+    impl_test_mul!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_mul!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_mul!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
+}
 
-    let v3 = v4.truncate();
-    test_ops!(Vector3 { x, y, z }, s, v3);
+#[test]
+fn test_div() {
+    impl_test_div!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_div!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_div!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
+}
 
-    let v2 = v3.truncate();
-    test_ops!(Vector2 { x, y }, s, v2);
+#[test]
+fn test_rem() {
+    impl_test_rem!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_rem!(Vector3 { x, y, z }, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_rem!(Vector2 { x, y }, 2.0f32, vec2(2.0f32, 4.0));
 }
 
 #[test]
