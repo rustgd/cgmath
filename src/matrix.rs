@@ -859,7 +859,34 @@ macro_rules! impl_operators {
         impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
             fn mul(matrix, vector) -> $VectorN<S> { $VectorN::new($(matrix.row($row_index).dot(vector.clone())),+) }
         });
+
+        impl_scalar_ops!($MatrixN<usize> { $($field),+ });
+        impl_scalar_ops!($MatrixN<u8> { $($field),+ });
+        impl_scalar_ops!($MatrixN<u16> { $($field),+ });
+        impl_scalar_ops!($MatrixN<u32> { $($field),+ });
+        impl_scalar_ops!($MatrixN<u64> { $($field),+ });
+        impl_scalar_ops!($MatrixN<isize> { $($field),+ });
+        impl_scalar_ops!($MatrixN<i8> { $($field),+ });
+        impl_scalar_ops!($MatrixN<i16> { $($field),+ });
+        impl_scalar_ops!($MatrixN<i32> { $($field),+ });
+        impl_scalar_ops!($MatrixN<i64> { $($field),+ });
+        impl_scalar_ops!($MatrixN<f32> { $($field),+ });
+        impl_scalar_ops!($MatrixN<f64> { $($field),+ });
     }
+}
+
+macro_rules! impl_scalar_ops {
+    ($MatrixN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator!(Mul<$MatrixN<$S>> for $S {
+            fn mul(scalar, matrix) -> $MatrixN<$S> { $MatrixN { $($field: scalar * matrix.$field),+ } }
+        });
+        impl_operator!(Div<$MatrixN<$S>> for $S {
+            fn div(scalar, matrix) -> $MatrixN<$S> { $MatrixN { $($field: scalar / matrix.$field),+ } }
+        });
+        impl_operator!(Rem<$MatrixN<$S>> for $S {
+            fn rem(scalar, matrix) -> $MatrixN<$S> { $MatrixN { $($field: scalar % matrix.$field),+ } }
+        });
+    };
 }
 
 impl_operators!(Matrix2, Vector2 { x: 0, y: 1 });
