@@ -16,6 +16,42 @@
 #[macro_use]
 extern crate cgmath;
 
+macro_rules! impl_test_mul {
+    ($s:expr, $v:expr) => (
+        // point * scalar ops
+        assert_eq!($v * $s, Quaternion::from_sv($v.s * $s, $v.v * $s));
+        assert_eq!($s * $v, Quaternion::from_sv($s * $v.s, $s * $v.v));
+        assert_eq!(&$v * $s, $v * $s);
+        assert_eq!($s * &$v, $s * $v);
+        // commutativity
+        assert_eq!($v * $s, $s * $v);
+    )
+}
+
+macro_rules! impl_test_div {
+    ($s:expr, $v:expr) => (
+        // point / scalar ops
+        assert_eq!($v / $s, Quaternion::from_sv($v.s / $s, $v.v / $s));
+        assert_eq!($s / $v, Quaternion::from_sv($s / $v.s, $s / $v.v));
+        assert_eq!(&$v / $s, $v / $s);
+        assert_eq!($s / &$v, $s / $v);
+    )
+}
+
+mod operators {
+    use cgmath::*;
+
+    #[test]
+    fn test_mul() {
+        impl_test_mul!(2.0f32, Quaternion::from_euler(rad(1f32), rad(1f32), rad(1f32)));
+    }
+
+    #[test]
+    fn test_div() {
+        impl_test_div!(2.0f32, Quaternion::from_euler(rad(1f32), rad(1f32), rad(1f32)));
+    }
+}
+
 mod to_from_euler {
     use std::f32;
 
