@@ -95,6 +95,26 @@ macro_rules! impl_operator {
             }
         }
     };
+    // When the left operand is a scalar
+    ($Op:ident<$Rhs:ident<$S:ident>> for $Lhs:ty {
+        fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
+    }) => {
+        impl $Op<$Rhs<$S>> for $Lhs {
+            type Output = $Output;
+            #[inline]
+            fn $op(self, other: $Rhs<$S>) -> $Output {
+                let ($lhs, $rhs) = (self, other); $body
+            }
+        }
+
+        impl<'a> $Op<&'a $Rhs<$S>> for $Lhs {
+            type Output = $Output;
+            #[inline]
+            fn $op(self, other: &'a $Rhs<$S>) -> $Output {
+                let ($lhs, $rhs) = (self, other); $body
+            }
+        }
+    };
 }
 
 macro_rules! impl_assignment_operator {

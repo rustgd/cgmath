@@ -244,6 +244,7 @@ macro_rules! impl_vector {
         impl_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
             fn mul(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) }
         });
+
         impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
         });
@@ -277,12 +278,45 @@ macro_rules! impl_vector {
             fn rem_assign(&mut self, other) { $(self.$field %= other.$field);+ }
         });
 
+        impl_scalar_ops!($VectorN<usize> { $($field),+ });
+        impl_scalar_ops!($VectorN<u8> { $($field),+ });
+        impl_scalar_ops!($VectorN<u16> { $($field),+ });
+        impl_scalar_ops!($VectorN<u32> { $($field),+ });
+        impl_scalar_ops!($VectorN<u64> { $($field),+ });
+        impl_scalar_ops!($VectorN<isize> { $($field),+ });
+        impl_scalar_ops!($VectorN<i8> { $($field),+ });
+        impl_scalar_ops!($VectorN<i16> { $($field),+ });
+        impl_scalar_ops!($VectorN<i32> { $($field),+ });
+        impl_scalar_ops!($VectorN<i64> { $($field),+ });
+        impl_scalar_ops!($VectorN<f32> { $($field),+ });
+        impl_scalar_ops!($VectorN<f64> { $($field),+ });
+
         impl_index_operators!($VectorN<S>, $n, S, usize);
         impl_index_operators!($VectorN<S>, $n, [S], Range<usize>);
         impl_index_operators!($VectorN<S>, $n, [S], RangeTo<usize>);
         impl_index_operators!($VectorN<S>, $n, [S], RangeFrom<usize>);
         impl_index_operators!($VectorN<S>, $n, [S], RangeFull);
     }
+}
+
+macro_rules! impl_scalar_ops {
+    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator!(Add<$VectorN<$S>> for $S {
+            fn add(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar + vector.$field),+) }
+        });
+        impl_operator!(Sub<$VectorN<$S>> for $S {
+            fn sub(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar - vector.$field),+) }
+        });
+        impl_operator!(Mul<$VectorN<$S>> for $S {
+            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
+        });
+        impl_operator!(Div<$VectorN<$S>> for $S {
+            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
+        });
+        impl_operator!(Rem<$VectorN<$S>> for $S {
+            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
+        });
+    };
 }
 
 impl_vector!(Vector2<S> { x, y }, 2, vec2);

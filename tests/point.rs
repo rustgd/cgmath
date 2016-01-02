@@ -16,11 +16,62 @@
 
 extern crate cgmath;
 
-use cgmath::Point3;
+use cgmath::{Point2, Point3};
 use cgmath::ApproxEq;
+
+macro_rules! impl_test_mul {
+    ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
+        // point * scalar ops
+        assert_eq!($v * $s, $PointN::new($($v.$field * $s),+));
+        assert_eq!($s * $v, $PointN::new($($s * $v.$field),+));
+        assert_eq!(&$v * $s, $v * $s);
+        assert_eq!($s * &$v, $s * $v);
+        // commutativity
+        assert_eq!($v * $s, $s * $v);
+    )
+}
+
+macro_rules! impl_test_div {
+    ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
+        // point / scalar ops
+        assert_eq!($v / $s, $PointN::new($($v.$field / $s),+));
+        assert_eq!($s / $v, $PointN::new($($s / $v.$field),+));
+        assert_eq!(&$v / $s, $v / $s);
+        assert_eq!($s / &$v, $s / $v);
+    )
+}
+
+macro_rules! impl_test_rem {
+    ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
+        // point % scalar ops
+        assert_eq!($v % $s, $PointN::new($($v.$field % $s),+));
+        assert_eq!($s % $v, $PointN::new($($s % $v.$field),+));
+        assert_eq!(&$v % $s, $v % $s);
+        assert_eq!($s % &$v, $s % $v);
+    )
+}
 
 #[test]
 fn test_homogeneous() {
 	let p = Point3::new(1.0f64, 2.0f64, 3.0f64);
     assert!(p.approx_eq(&Point3::from_homogeneous(p.to_homogeneous())));
 }
+
+#[test]
+fn test_mul() {
+    impl_test_mul!(Point3 { x, y, z }, 2.0f32, Point3::new(2.0f32, 4.0, 6.0));
+    impl_test_mul!(Point2 { x, y }, 2.0f32, Point2::new(2.0f32, 4.0));
+}
+
+#[test]
+fn test_div() {
+    impl_test_div!(Point3 { x, y, z }, 2.0f32, Point3::new(2.0f32, 4.0, 6.0));
+    impl_test_div!(Point2 { x, y }, 2.0f32, Point2::new(2.0f32, 4.0));
+}
+
+#[test]
+fn test_rem() {
+    impl_test_rem!(Point3 { x, y, z }, 2.0f32, Point3::new(2.0f32, 4.0, 6.0));
+    impl_test_rem!(Point2 { x, y }, 2.0f32, Point2::new(2.0f32, 4.0));
+}
+

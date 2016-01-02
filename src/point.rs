@@ -172,12 +172,39 @@ macro_rules! impl_point {
             fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
         });
 
+        impl_scalar_ops!($PointN<usize> { $($field),+ });
+        impl_scalar_ops!($PointN<u8> { $($field),+ });
+        impl_scalar_ops!($PointN<u16> { $($field),+ });
+        impl_scalar_ops!($PointN<u32> { $($field),+ });
+        impl_scalar_ops!($PointN<u64> { $($field),+ });
+        impl_scalar_ops!($PointN<isize> { $($field),+ });
+        impl_scalar_ops!($PointN<i8> { $($field),+ });
+        impl_scalar_ops!($PointN<i16> { $($field),+ });
+        impl_scalar_ops!($PointN<i32> { $($field),+ });
+        impl_scalar_ops!($PointN<i64> { $($field),+ });
+        impl_scalar_ops!($PointN<f32> { $($field),+ });
+        impl_scalar_ops!($PointN<f64> { $($field),+ });
+
         impl_index_operators!($PointN<S>, $n, S, usize);
         impl_index_operators!($PointN<S>, $n, [S], Range<usize>);
         impl_index_operators!($PointN<S>, $n, [S], RangeTo<usize>);
         impl_index_operators!($PointN<S>, $n, [S], RangeFrom<usize>);
         impl_index_operators!($PointN<S>, $n, [S], RangeFull);
     }
+}
+
+macro_rules! impl_scalar_ops {
+    ($PointN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator!(Mul<$PointN<$S>> for $S {
+            fn mul(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar * vector.$field),+) }
+        });
+        impl_operator!(Div<$PointN<$S>> for $S {
+            fn div(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar / vector.$field),+) }
+        });
+        impl_operator!(Rem<$PointN<$S>> for $S {
+            fn rem(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar % vector.$field),+) }
+        });
+    };
 }
 
 impl_point!(Point2 { x, y }, Vector2, 2);

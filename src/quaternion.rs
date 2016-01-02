@@ -167,6 +167,31 @@ impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     }
 });
 
+macro_rules! impl_scalar_mul {
+    ($S:ident) => {
+        impl_operator!(Mul<Quaternion<$S>> for $S {
+            fn mul(scalar, quat) -> Quaternion<$S> {
+                Quaternion::from_sv(scalar * quat.s, scalar * quat.v)
+            }
+        });
+    };
+}
+
+macro_rules! impl_scalar_div {
+    ($S:ident) => {
+        impl_operator!(Div<Quaternion<$S>> for $S {
+            fn div(scalar, quat) -> Quaternion<$S> {
+                Quaternion::from_sv(scalar / quat.s, scalar / quat.v)
+            }
+        });
+    };
+}
+
+impl_scalar_mul!(f32);
+impl_scalar_mul!(f64);
+impl_scalar_div!(f32);
+impl_scalar_div!(f64);
+
 impl<S: BaseFloat> ApproxEq for Quaternion<S> {
     type Epsilon = S;
 
