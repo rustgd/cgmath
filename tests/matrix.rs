@@ -190,7 +190,6 @@ pub mod matrix3 {
 
     const V: Vector3<f64> = Vector3 { x: 1.0f64, y: 2.0f64, z:  3.0f64 };
     const F: f64 = 0.5;
-    const G: f64 = 6.0;
 
     #[test]
     fn test_neg() {
@@ -215,7 +214,7 @@ pub mod matrix3 {
                    Matrix3::new(2.0f64,  8.0f64, 14.0f64,
                                 4.0f64, 10.0f64, 16.0f64,
                                 6.0f64, 12.0f64, 18.0f64));
-        assert_eq!(G / D,
+        assert_eq!(6.0f64 / D,
                    Matrix3::new(2.0f64, 3.0f64, 6.0f64,
                                 3.0f64, 2.0f64, 3.0f64,
                                 6.0f64, 3.0f64, 2.0f64));
