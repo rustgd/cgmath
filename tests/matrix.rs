@@ -40,9 +40,30 @@ pub mod matrix2 {
 
     #[test]
     fn test_mul_scalar() {
-        assert_eq!(A * F,
-                   Matrix2::new(0.5f64, 1.5f64,
-                                1.0f64, 2.0f64));
+        let result = Matrix2::new(0.5f64, 1.5f64,
+                                  1.0f64, 2.0f64) ;
+        assert_eq!(A * F, result);
+        assert_eq!(F * A, result);
+    }
+
+    #[test]
+    fn test_div_scalar() {
+        assert_eq!(A / F,
+                   Matrix2::new(2.0f64, 6.0f64,
+                                4.0f64, 8.0f64));
+        assert_eq!(4.0f64 / C,
+                   Matrix2::new(2.0f64, 4.0f64,
+                                4.0f64, 2.0f64));
+    }
+
+    #[test]
+    fn test_rem_scalar() {
+        assert_eq!(A % 3.0f64,
+                   Matrix2::new(1.0f64, 0.0f64,
+                                2.0f64, 1.0f64));
+        assert_eq!(3.0f64 % A,
+                   Matrix2::new(0.0f64, 0.0f64,
+                                1.0f64, 3.0f64));
     }
 
     #[test]
@@ -180,10 +201,35 @@ pub mod matrix3 {
 
     #[test]
     fn test_mul_scalar() {
-        assert_eq!(A * F,
-                   Matrix3::new(0.5f64, 2.0f64, 3.5f64,
-                                1.0f64, 2.5f64, 4.0f64,
-                                1.5f64, 3.0f64, 4.5f64));
+        let result = Matrix3::new(0.5f64, 2.0f64, 3.5f64,
+                                  1.0f64, 2.5f64, 4.0f64,
+                                  1.5f64, 3.0f64, 4.5f64);
+        assert_eq!(A * F, result);
+        assert_eq!(F * A, result);
+    }
+
+    #[test]
+    fn test_div_scalar() {
+        assert_eq!(A / F,
+                   Matrix3::new(2.0f64,  8.0f64, 14.0f64,
+                                4.0f64, 10.0f64, 16.0f64,
+                                6.0f64, 12.0f64, 18.0f64));
+        assert_eq!(6.0f64 / D,
+                   Matrix3::new(2.0f64, 3.0f64, 6.0f64,
+                                3.0f64, 2.0f64, 3.0f64,
+                                6.0f64, 3.0f64, 2.0f64));
+    }
+
+    #[test]
+    fn test_rem_scalar() {
+        assert_eq!(A % 3.0f64,
+                   Matrix3::new(1.0f64, 1.0f64, 1.0f64,
+                                2.0f64, 2.0f64, 2.0f64,
+                                0.0f64, 0.0f64, 0.0f64));
+        assert_eq!(9.0f64 % A,
+                   Matrix3::new(0.0f64, 1.0f64, 2.0f64,
+                                1.0f64, 4.0f64, 1.0f64,
+                                0.0f64, 3.0f64, 0.0f64));
     }
 
     #[test]
@@ -402,11 +448,40 @@ pub mod matrix4 {
 
     #[test]
     fn test_mul_scalar() {
-        assert_eq!(A * F,
-                   Matrix4::new(0.5f64, 2.5f64, 4.5f64, 6.5f64,
-                                1.0f64, 3.0f64, 5.0f64, 7.0f64,
-                                1.5f64, 3.5f64, 5.5f64, 7.5f64,
-                                2.0f64, 4.0f64, 6.0f64, 8.0f64));
+        let result = Matrix4::new(0.5f64, 2.5f64, 4.5f64, 6.5f64,
+                                  1.0f64, 3.0f64, 5.0f64, 7.0f64,
+                                  1.5f64, 3.5f64, 5.5f64, 7.5f64,
+                                  2.0f64, 4.0f64, 6.0f64, 8.0f64);
+        assert_eq!(A * F, result);
+        assert_eq!(F * A, result);
+    }
+
+    #[test]
+    fn test_div_scalar() {
+        assert_eq!(A / F,
+                   Matrix4::new(2.0f64, 10.0f64, 18.0f64, 26.0f64,
+                                4.0f64, 12.0f64, 20.0f64, 28.0f64,
+                                6.0f64, 14.0f64, 22.0f64, 30.0f64,
+                                8.0f64, 16.0f64, 24.0f64, 32.0f64));
+        assert_eq!(12.0f64 / D,
+                   Matrix4::new( 3.0f64,  4.0f64,  6.0f64, 12.0f64,
+                                 4.0f64,  3.0f64,  4.0f64,  6.0f64,
+                                 6.0f64,  4.0f64,  3.0f64,  4.0f64,
+                                12.0f64,  6.0f64,  4.0f64,  3.0f64));
+    }
+
+    #[test]
+    fn test_rem_scalar() {
+        assert_eq!(A % 4.0f64,
+                   Matrix4::new(1.0f64, 1.0f64, 1.0f64, 1.0f64,
+                                2.0f64, 2.0f64, 2.0f64, 2.0f64,
+                                3.0f64, 3.0f64, 3.0f64, 3.0f64,
+                                0.0f64, 0.0f64, 0.0f64, 0.0f64));
+         assert_eq!(16.0f64 % A,
+                    Matrix4::new(0.0f64, 1.0f64, 7.0f64, 3.0f64,
+                                 0.0f64, 4.0f64, 6.0f64, 2.0f64,
+                                 1.0f64, 2.0f64, 5.0f64, 1.0f64,
+                                 0.0f64, 0.0f64, 4.0f64, 0.0f64));
     }
 
     #[test]

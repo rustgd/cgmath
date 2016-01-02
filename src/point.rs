@@ -196,13 +196,13 @@ macro_rules! impl_point {
 macro_rules! impl_scalar_ops {
     ($PointN:ident<$S:ident> { $($field:ident),+ }) => {
         impl_operator!(Mul<$PointN<$S>> for $S {
-            fn mul(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar * vector.$field),+) }
+            fn mul(scalar, point) -> $PointN<$S> { $PointN::new($(scalar * point.$field),+) }
         });
         impl_operator!(Div<$PointN<$S>> for $S {
-            fn div(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar / vector.$field),+) }
+            fn div(scalar, point) -> $PointN<$S> { $PointN::new($(scalar / point.$field),+) }
         });
         impl_operator!(Rem<$PointN<$S>> for $S {
-            fn rem(scalar, vector) -> $PointN<$S> { $PointN::new($(scalar % vector.$field),+) }
+            fn rem(scalar, point) -> $PointN<$S> { $PointN::new($(scalar % point.$field),+) }
         });
     };
 }
