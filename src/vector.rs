@@ -448,7 +448,7 @@ impl<S: BaseNum> Vector4<S> {
 }
 
 /// Specifies geometric operations for vectors. This is only implemented for
-/// 2-dimensional and 3-dimensional vectors.
+/// vectors of float types.
 pub trait EuclideanVector: Vector + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as Vector>::Scalar: BaseFloat,
