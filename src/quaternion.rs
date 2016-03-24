@@ -127,6 +127,10 @@ impl<S: BaseFloat> Quaternion<S> {
         self.magnitude2().sqrt()
     }
 
+    /// Invert this quaternion, returning the new quaternion.
+    #[inline]
+    pub fn invert(&self) -> Quaternion<S> { self.conjugate() / self.magnitude2() }
+
     /// Normalize this quaternion, returning the new quaternion.
     #[inline]
     pub fn normalize(self) -> Quaternion<S> {
