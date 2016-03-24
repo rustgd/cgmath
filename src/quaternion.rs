@@ -24,8 +24,6 @@ use angle::{Angle, Rad};
 use approx::ApproxEq;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
-use point::Point3;
-use rotation::{Rotation, Rotation3, Basis3};
 use vector::{Vector3, Vector, EuclideanVector};
 
 
@@ -49,6 +47,40 @@ impl<S: BaseFloat> Quaternion<S> {
     #[inline]
     pub fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
         Quaternion { s: s, v: v }
+    }
+
+    /// Create a rotation to a given direction with an `up` vector
+    #[inline]
+    pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
+        Matrix3::look_at(dir, up).into()
+    }
+
+    #[inline]
+    pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
+        let (s, c) = Rad::sin_cos(angle * cast(0.5f64).unwrap());
+        Quaternion::from_sv(c, axis * s)
+    }
+
+    /// - [Maths - Conversion Euler to Quaternion]
+    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm)
+    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
+        let (s1, c1) = Rad::sin_cos(x * cast(0.5f64).unwrap());
+        let (s2, c2) = Rad::sin_cos(y * cast(0.5f64).unwrap());
+        let (s3, c3) = Rad::sin_cos(z * cast(0.5f64).unwrap());
+
+        Quaternion::new(c1 * c2 * c3 - s1 * s2 * s3,
+                        s1 * s2 * c3 + c1 * c2 * s3,
+                        s1 * c2 * c3 + c1 * s2 * s3,
+                        c1 * s2 * c3 - s1 * c2 * s3)
+    }
+
+    /// Create a shortest rotation to transform vector `a` into `b`.
+    /// Both given vectors are assumed to have unit length.
+    #[inline]
+    pub fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Quaternion<S> {
+        //http://stackoverflow.com/questions/1171849/
+        //finding-quaternion-representing-the-rotation-from-one-vector-to-another
+        Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
     }
 
     /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
@@ -333,66 +365,6 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
                      xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2, S::zero(),
                      xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2, S::zero(),
                      S::zero(), S::zero(), S::zero(), S::one())
-    }
-}
-
-// Quaternion Rotation impls
-
-impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
-    #[inline]
-    fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
-}
-
-impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
-    #[inline]
-    fn one() -> Quaternion<S> { Quaternion::one() }
-
-    #[inline]
-    fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
-        Matrix3::look_at(dir, up).into()
-    }
-
-    #[inline]
-    fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Quaternion<S> {
-        //http://stackoverflow.com/questions/1171849/
-        //finding-quaternion-representing-the-rotation-from-one-vector-to-another
-        Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
-    }
-
-    #[inline]
-    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self * vec }
-
-    #[inline]
-    fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self * other }
-
-    #[inline]
-    fn concat_self(&mut self, other: &Quaternion<S>) { *self = &*self * other; }
-
-    #[inline]
-    fn invert(&self) -> Quaternion<S> { self.conjugate() / self.magnitude2() }
-
-    #[inline]
-    fn invert_self(&mut self) { *self = self.invert() }
-}
-
-impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
-    #[inline]
-    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
-        let (s, c) = Rad::sin_cos(angle * cast(0.5f64).unwrap());
-        Quaternion::from_sv(c, axis * s)
-    }
-
-    /// - [Maths - Conversion Euler to Quaternion]
-    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm)
-    fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
-        let (s1, c1) = Rad::sin_cos(x * cast(0.5f64).unwrap());
-        let (s2, c2) = Rad::sin_cos(y * cast(0.5f64).unwrap());
-        let (s3, c3) = Rad::sin_cos(z * cast(0.5f64).unwrap());
-
-        Quaternion::new(c1 * c2 * c3 - s1 * s2 * s3,
-                        s1 * s2 * c3 + c1 * c2 * s3,
-                        s1 * c2 * c3 + c1 * s2 * s3,
-                        c1 * s2 * c3 - s1 * c2 * s3)
     }
 }
 
