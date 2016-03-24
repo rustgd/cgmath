@@ -16,6 +16,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   `Quaternion` and `Angle` to make them easier to derive, and have clearer
   formatting.
 
+### Removed
+
+- Rotation types and structs: `Rotation`, `Rotation2`, `Rotation3`, `Basis3`, `Basis3`
+- Transform types and structs: `Transform`, `Transform2`, `Transform3`, `Decomposed`, `AffineMatrix3`
+
 ## [v0.7.0] - 2015-12-23
 
 ### Added
