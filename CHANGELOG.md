@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Improves the `fmt::Debug` impls for `Vector`, `Matrix`, `Point`, `Decomposed`,
   `Quaternion` and `Angle` to make them easier to derive, and have clearer
   formatting.
+- Marks vectors, points, matrices, and angles as `#[repr(C, packed)]`.
 
 ## [v0.7.0] - 2015-12-23
 
