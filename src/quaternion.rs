@@ -31,6 +31,9 @@ use vector::{Vector3, Vector, EuclideanVector};
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
 #[derive(Copy, Clone, Debug, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Quaternion<S> {
     pub s: S,
