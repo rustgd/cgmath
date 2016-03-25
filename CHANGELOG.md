@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Implements `fmt::Debug` for `Basis2`, `Basis3`, and `AffineMatrix3`
+- A `prelude` module for easy importing of common traits.
 
 ### Changed
 
