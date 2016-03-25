@@ -65,7 +65,53 @@ impl<S: BaseNum> Point3<S> {
     }
 }
 
-/// Specifies the numeric operations for point types.
+/// Points in a [Euclidean space](https://en.wikipedia.org/wiki/Euclidean_space)
+/// with an associated vector space, `Self::Vector`.
+///
+/// # Point-Vector distinction
+///
+/// `cgmath` distinguishes between points and vectors in the following way:
+///
+/// - Points are _locations_ relative to an origin
+/// - Vectors are _displacements_ between those points
+///
+/// For example, to find the midpoint between two points, you can write the
+/// following:
+///
+/// ```rust
+/// use cgmath::Point3;
+///
+/// let p0 = Point3::new(1.0, 2.0, 3.0);
+/// let p1 = Point3::new(-3.0, 1.0, 2.0);
+/// let midpoint: Point3<f32> = p0 + (p1 - p0) * 0.5;
+/// ```
+///
+/// Breaking the expression up, and adding explicit types makes it clearer
+/// to see what is going on:
+///
+/// ```rust
+/// # use cgmath::{Point3, Vector3};
+/// #
+/// # let p0 = Point3::new(1.0, 2.0, 3.0);
+/// # let p1 = Point3::new(-3.0, 1.0, 2.0);
+/// #
+/// let dv: Vector3<f32> = p1 - p0;
+/// let half_dv: Vector3<f32> = dv * 0.5;
+/// let midpoint: Point3<f32> = p0 + half_dv;
+/// ```
+///
+/// ## Converting between points and vectors
+///
+/// Points can be converted to and from displacement vectors using the
+/// `Point::{from_vec, to_vec}` methods. Note that under the hood these are
+/// implemented as inlined a type conversion, so should not have any performance
+/// implications.
+///
+/// ## References
+///
+/// - [CGAL 4.7 - 2D and 3D Linear Geometry Kernel: 3.1 Points and Vectors](http://doc.cgal.org/latest/Kernel_23/index.html#Kernel_23PointsandVectors)
+/// - [What is the difference between a point and a vector](http://math.stackexchange.com/q/645827)
+///
 pub trait Point: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Point>::Scalar>,
@@ -82,15 +128,23 @@ pub trait Point: Copy + Clone where
     /// Due to the equality constraints demanded by `Self::Vector`, this is effectively just an
     /// alias to `Self::Vector::Scalar`.
     type Scalar: BaseNum;
-    /// The associated displacement vector.
+
+    /// The associated space of displacement vectors.
     type Vector: Vector<Scalar = Self::Scalar>;
 
-    /// Create a point at the origin.
+    /// The point at the origin of the Euclidean space.
     fn origin() -> Self;
 
-    /// Create a point from a vector.
+    /// Convert a displacement vector to a point.
+    ///
+    /// This can be considered equivalent to the addition of the displacement
+    /// vector `v` to to `Self::origin()`.
     fn from_vec(v: Self::Vector) -> Self;
-    /// Convert a point to a vector.
+
+    /// Convert a point to a displacement vector.
+    ///
+    /// This can be seen as equivalent to the displacement vector from
+    /// `Self::origin()` to `self`.
     fn to_vec(self) -> Self::Vector;
 
     /// This is a weird one, but its useful for plane calculations.
