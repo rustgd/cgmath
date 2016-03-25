@@ -28,10 +28,16 @@ use rust_num::traits::cast;
 use approx::ApproxEq;
 use num::BaseFloat;
 
-/// An angle, in radians
+/// An angle, in radians.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
 pub struct Rad<S> { pub s: S }
-/// An angle, in degrees
+/// An angle, in degrees.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
 pub struct Deg<S> { pub s: S }
 

@@ -30,12 +30,25 @@ use num::{BaseNum, BaseFloat};
 use vector::*;
 
 /// A point in 2-dimensional space.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
-pub struct Point2<S> { pub x: S, pub y: S }
+pub struct Point2<S> {
+    pub x: S,
+    pub y: S,
+}
 
 /// A point in 3-dimensional space.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
-pub struct Point3<S> { pub x: S, pub y: S, pub z: S }
+pub struct Point3<S> {
+    pub x: S,
+    pub y: S,
+    pub z: S,
+}
 
 
 impl<S: BaseNum> Point2<S> {

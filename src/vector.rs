@@ -136,12 +136,42 @@ pub trait Vector: Copy + Clone where
 /// Dot product of two vectors.
 #[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { a.dot(b) }
 
+/// A 2-dimensional vector.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+pub struct Vector2<S> {
+    pub x: S,
+    pub y: S,
+}
+
+/// A 3-dimensional vector.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+pub struct Vector3<S> {
+    pub x: S,
+    pub y: S,
+    pub z: S,
+}
+
+/// A 4-dimensional vector.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+pub struct Vector4<S> {
+    pub x: S,
+    pub y: S,
+    pub z: S,
+    pub w: S,
+}
+
 // Utility macro for generating associated functions for the vectors
 macro_rules! impl_vector {
     ($VectorN:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => {
-        #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
-        pub struct $VectorN<S> { $(pub $field: S),+ }
-
         impl<$S> $VectorN<$S> {
             /// Construct a new vector, using the provided values.
             #[inline]
