@@ -54,6 +54,8 @@ pub use rust_num::{One, Zero, one, zero};
 
 // Modules
 
+pub mod prelude;
+
 mod macros;
 
 mod array;
