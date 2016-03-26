@@ -40,7 +40,7 @@
 //! let b: Vector2<f64> = Vector2::new(-3.0, -4.0);
 //!
 //! assert_eq!(a + b, Vector2::zero());
-//! assert_eq!(-(a * b), Vector2::new(9.0f64, 16.0f64));
+//! assert_eq!(-(a * 2.0), Vector2::new(-6.0, -8.0));
 //!
 //! // As with Rust's `int` and `f32` types, Vectors of different types cannot
 //! // be added and so on with impunity. The following will fail to compile:
@@ -97,24 +97,17 @@ use rust_num::{NumCast, Zero, One};
 
 use angle::{Angle, Rad};
 use approx::ApproxEq;
-use array::Array;
+use array::{Array, ElementWise};
 use num::{BaseNum, BaseFloat, PartialOrd};
 
-/// A trait that specifies a range of numeric operations for vectors. Not all
-/// of these make sense from a linear algebra point of view, but are included
-/// for pragmatic reasons.
+/// A trait that specifies a range of numeric operations for vectors.
 pub trait Vector: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Vector>::Scalar>,
 
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
-    Self: Mul<Self, Output = Self>,
-    Self: Div<Self, Output = Self>,
-    Self: Rem<Self, Output = Self>,
 
-    Self: Add<<Self as Vector>::Scalar, Output = Self>,
-    Self: Sub<<Self as Vector>::Scalar, Output = Self>,
     Self: Mul<<Self as Vector>::Scalar, Output = Self>,
     Self: Div<<Self as Vector>::Scalar, Output = Self>,
     Self: Rem<<Self as Vector>::Scalar, Output = Self>,
@@ -216,7 +209,7 @@ macro_rules! impl_vector {
 
             #[inline] fn from_value(scalar: S) -> $VectorN<S> { $VectorN { $($field: scalar),+ } }
 
-            #[inline] fn dot(self, other: $VectorN<S>) -> S { (self * other).sum() }
+            #[inline] fn dot(self, other: $VectorN<S>) -> S { $VectorN::mul_element_wise(self, other).sum() }
         }
 
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {
@@ -242,27 +235,15 @@ macro_rules! impl_vector {
             }
         }
 
-        impl_operator!(<S: BaseNum> Add<S> for $VectorN<S> {
-            fn add(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field + scalar),+) }
-        });
         impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
             fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
-        });
-        impl_assignment_operator!(<S: BaseNum> AddAssign<S> for $VectorN<S> {
-            fn add_assign(&mut self, scalar) { $(self.$field += scalar);+ }
         });
         impl_assignment_operator!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
             fn add_assign(&mut self, other) { $(self.$field += other.$field);+ }
         });
 
-        impl_operator!(<S: BaseNum> Sub<S> for $VectorN<S> {
-            fn sub(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field - scalar),+) }
-        });
         impl_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
-        });
-        impl_assignment_operator!(<S: BaseNum> SubAssign<S> for $VectorN<S> {
-            fn sub_assign(&mut self, scalar) { $(self.$field -= scalar);+ }
         });
         impl_assignment_operator!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
             fn sub_assign(&mut self, other) { $(self.$field -= other.$field);+ }
@@ -271,42 +252,51 @@ macro_rules! impl_vector {
         impl_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
             fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
         });
-        impl_operator!(<S: BaseNum> Mul<$VectorN<S> > for $VectorN<S> {
-            fn mul(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) }
-        });
-
         impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
-        });
-        impl_assignment_operator!(<S: BaseNum> MulAssign<$VectorN<S> > for $VectorN<S> {
-            fn mul_assign(&mut self, other) { $(self.$field *= other.$field);+ }
         });
 
         impl_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
             fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
         });
-        impl_operator!(<S: BaseNum> Div<$VectorN<S> > for $VectorN<S> {
-            fn div(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field / rhs.$field),+) }
-        });
         impl_assignment_operator!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
             fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
-        });
-        impl_assignment_operator!(<S: BaseNum> DivAssign<$VectorN<S> > for $VectorN<S> {
-            fn div_assign(&mut self, other) { $(self.$field /= other.$field);+ }
         });
 
         impl_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
             fn rem(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field % scalar),+) }
         });
-        impl_operator!(<S: BaseNum> Rem<$VectorN<S> > for $VectorN<S> {
-            fn rem(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field % rhs.$field),+) }
-        });
         impl_assignment_operator!(<S: BaseNum> RemAssign<S> for $VectorN<S> {
             fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
         });
-        impl_assignment_operator!(<S: BaseNum> RemAssign<$VectorN<S> > for $VectorN<S> {
-            fn rem_assign(&mut self, other) { $(self.$field %= other.$field);+ }
-        });
+
+        impl<S: BaseNum> ElementWise for $VectorN<S> {
+            #[inline] fn add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) }
+            #[inline] fn sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) }
+            #[inline] fn mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) }
+            #[inline] fn div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) }
+            #[inline] fn rem_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field % rhs.$field),+) }
+
+            #[cfg(feature = "unstable")] #[inline] fn add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ }
+            #[cfg(feature = "unstable")] #[inline] fn sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ }
+            #[cfg(feature = "unstable")] #[inline] fn mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ }
+            #[cfg(feature = "unstable")] #[inline] fn div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ }
+            #[cfg(feature = "unstable")] #[inline] fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ }
+        }
+
+        impl<S: BaseNum> ElementWise<S> for $VectorN<S> {
+            #[inline] fn add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) }
+            #[inline] fn sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) }
+            #[inline] fn mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) }
+            #[inline] fn div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) }
+            #[inline] fn rem_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field % rhs),+) }
+
+            #[cfg(feature = "unstable")] #[inline] fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ }
+            #[cfg(feature = "unstable")] #[inline] fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ }
+            #[cfg(feature = "unstable")] #[inline] fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ }
+            #[cfg(feature = "unstable")] #[inline] fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ }
+            #[cfg(feature = "unstable")] #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
+        }
 
         impl_scalar_ops!($VectorN<usize> { $($field),+ });
         impl_scalar_ops!($VectorN<u8> { $($field),+ });
@@ -331,12 +321,6 @@ macro_rules! impl_vector {
 
 macro_rules! impl_scalar_ops {
     ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
-        impl_operator!(Add<$VectorN<$S>> for $S {
-            fn add(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar + vector.$field),+) }
-        });
-        impl_operator!(Sub<$VectorN<$S>> for $S {
-            fn sub(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar - vector.$field),+) }
-        });
         impl_operator!(Mul<$VectorN<$S>> for $S {
             fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
         });

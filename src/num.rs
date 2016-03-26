@@ -17,6 +17,8 @@ use approx::ApproxEq;
 
 use std::cmp;
 use std::fmt;
+#[cfg(feature = "unstable")]
+use std::ops::*;
 
 use rust_num::{Float, Num, NumCast};
 
@@ -60,9 +62,22 @@ partial_ord_float!(f64);
 
 
 /// Base numeric types with partial ordering
-pub trait BaseNum:
-    Copy + NumCast + Clone + Num
-    + PartialOrd + cmp::PartialOrd + fmt::Debug
+#[cfg(not(feature = "unstable"))]
+pub trait BaseNum where
+    Self: Copy + Clone + fmt::Debug,
+    Self: Num + NumCast,
+    Self: PartialOrd + cmp::PartialOrd,
+{}
+
+
+/// Base numeric types with partial ordering
+#[cfg(feature = "unstable")]
+pub trait BaseNum where
+    Self: Copy + Clone + fmt::Debug,
+    Self: Num + NumCast,
+    Self: PartialOrd + cmp::PartialOrd,
+    Self: AddAssign + SubAssign,
+    Self: MulAssign + DivAssign + RemAssign,
 {}
 
 
