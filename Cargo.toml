@@ -35,3 +35,6 @@ rustc_serialize = "0.3"
 [dependencies]
 num = "0.1"
 rand = "0.3"
+
+[dev-dependencies]
+glium = "0.13.5"
