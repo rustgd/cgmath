@@ -134,7 +134,7 @@ pub trait Vector: Copy + Clone where
 }
 
 /// Dot product of two vectors.
-#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { a.dot(b) }
+#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { V::dot(a, b) }
 
 /// A 2-dimensional vector.
 ///
@@ -487,7 +487,7 @@ pub trait EuclideanVector: Vector + Sized where
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
-        self.dot(other).approx_eq(&Self::Scalar::zero())
+        Self::dot(self, other).approx_eq(&Self::Scalar::zero())
     }
 
     /// Returns the squared magnitude of the vector.
@@ -497,14 +497,16 @@ pub trait EuclideanVector: Vector + Sized where
     /// efficiently.
     #[inline]
     fn magnitude2(self) -> Self::Scalar {
-        self.dot(self)
+        Self::dot(self, self)
     }
 
     /// The distance from the tail to the tip of the vector.
     #[inline]
     fn magnitude(self) -> Self::Scalar {
-        // FIXME: Not sure why this annotation is needed
-        <<Self as Vector>::Scalar as ::rust_num::Float>::sqrt(self.dot(self))
+        use rust_num::Float;
+
+        // FIXME: Not sure why we can't use method syntax for `sqrt` here...
+        Float::sqrt(self.magnitude2())
     }
 
     /// The angle between the vector and `other`, in radians.
@@ -536,21 +538,21 @@ pub trait EuclideanVector: Vector + Sized where
 impl<S: BaseFloat> EuclideanVector for Vector2<S> {
     #[inline]
     fn angle(self, other: Vector2<S>) -> Rad<S> {
-        Rad::atan2(self.perp_dot(other), self.dot(other))
+        Rad::atan2(Self::perp_dot(self, other), Self::dot(self, other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
     fn angle(self, other: Vector3<S>) -> Rad<S> {
-        Rad::atan2(self.cross(other).magnitude(), self.dot(other))
+        Rad::atan2(self.cross(other).magnitude(), Self::dot(self, other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
     fn angle(self, other: Vector4<S>) -> Rad<S> {
-        Rad::acos(self.dot(other) / (self.magnitude() * other.magnitude()))
+        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
     }
 }
 
