@@ -5,6 +5,7 @@
 pub use angle::Angle;
 
 pub use array::Array;
+pub use array::ElementWise;
 
 pub use matrix::Matrix;
 pub use matrix::SquareMatrix;

@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - A `prelude` module for easy importing of common traits.
 - Constrained conversion functions for assisting in situations where type
   inference is difficult.
+- An `ElementWise` trait for non-mathematical element-wise operations.
 
 ### Changed
 
@@ -19,6 +20,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   `Quaternion` and `Angle` to make them easier to derive, and have clearer
   formatting.
 - Marks vectors, points, matrices, and angles as `#[repr(C, packed)]`.
+
+### Removed
+
+- The non-mathematical operator trait implementations have been removed from
+  the `Vector` trait, in favor of the `ElementWise` trait.
 
 ## [v0.7.0] - 2015-12-23
 

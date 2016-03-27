@@ -57,3 +57,19 @@ pub trait Array where
     /// The maximum element of the array.
     fn max(self) -> Self::Element where Self::Element: PartialOrd;
 }
+
+/// Element-wise arithmetic operations. These are supplied for pragmatic
+/// reasons, but will usually fall outside of traditional algebraic properties.
+pub trait ElementWise<Rhs = Self> {
+    fn add_element_wise(self, rhs: Rhs) -> Self;
+    fn sub_element_wise(self, rhs: Rhs) -> Self;
+    fn mul_element_wise(self, rhs: Rhs) -> Self;
+    fn div_element_wise(self, rhs: Rhs) -> Self;
+    fn rem_element_wise(self, rhs: Rhs) -> Self;
+
+    #[cfg(feature = "unstable")] fn add_assign_element_wise(&mut self, rhs: Rhs);
+    #[cfg(feature = "unstable")] fn sub_assign_element_wise(&mut self, rhs: Rhs);
+    #[cfg(feature = "unstable")] fn mul_assign_element_wise(&mut self, rhs: Rhs);
+    #[cfg(feature = "unstable")] fn div_assign_element_wise(&mut self, rhs: Rhs);
+    #[cfg(feature = "unstable")] fn rem_assign_element_wise(&mut self, rhs: Rhs);
+}

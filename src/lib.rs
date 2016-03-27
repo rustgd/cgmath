@@ -27,8 +27,6 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-#![cfg_attr(feature = "unstable", feature(augmented_assignments, op_assign_traits))]
-
 extern crate num as rust_num;
 extern crate rustc_serialize;
 extern crate rand;
