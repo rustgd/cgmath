@@ -83,7 +83,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// calculated.
     #[inline]
     pub fn magnitude2(self) -> S {
-        self.s * self.s + self.v.length2()
+        self.s * self.s + self.v.magnitude2()
     }
 
     /// The magnitude of the quaternion
