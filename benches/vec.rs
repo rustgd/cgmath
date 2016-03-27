@@ -67,9 +67,9 @@ bench_binop!(_bench_vector4_dot, Vector4<f32>, Vector4<f32>, dot);
 
 bench_binop!(_bench_vector3_cross, Vector3<f32>, Vector3<f32>, cross);
 
-bench_unop!(_bench_vector2_norm, Vector2<f32>, length);
-bench_unop!(_bench_vector3_norm, Vector3<f32>, length);
-bench_unop!(_bench_vector4_norm, Vector4<f32>, length);
+bench_unop!(_bench_vector2_magnitude, Vector2<f32>, magnitude);
+bench_unop!(_bench_vector3_magnitude, Vector3<f32>, magnitude);
+bench_unop!(_bench_vector4_magnitude, Vector4<f32>, magnitude);
 
 bench_unop!(_bench_vector2_normalize, Vector2<f32>, normalize);
 bench_unop!(_bench_vector3_normalize, Vector3<f32>, normalize);
