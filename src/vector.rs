@@ -127,7 +127,7 @@ pub trait Vector: Copy + Clone where
 }
 
 /// Dot product of two vectors.
-#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { a.dot(b) }
+#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { V::dot(a, b) }
 
 /// A 2-dimensional vector.
 ///
@@ -471,44 +471,47 @@ pub trait EuclideanVector: Vector + Sized where
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
-        self.dot(other).approx_eq(&Self::Scalar::zero())
+        Self::dot(self, other).approx_eq(&Self::Scalar::zero())
     }
 
-    /// Returns the squared length of the vector. This does not perform an
-    /// expensive square root operation like in the `length` method and can
-    /// therefore be more efficient for comparing the lengths of two vectors.
+    /// Returns the squared magnitude of the vector.
+    ///
+    /// This does not perform an expensive square root operation like in
+    /// `Vector::magnitude` method, and so can be used to compare vectors more
+    /// efficiently.
     #[inline]
-    fn length2(self) -> Self::Scalar {
-        self.dot(self)
+    fn magnitude2(self) -> Self::Scalar {
+        Self::dot(self, self)
     }
 
-    /// The norm of the vector.
+    /// The distance from the tail to the tip of the vector.
     #[inline]
-    fn length(self) -> Self::Scalar {
-        // FIXME: Not sure why this annotation is needed
-        <<Self as Vector>::Scalar as ::rust_num::Float>::sqrt(self.dot(self))
+    fn magnitude(self) -> Self::Scalar {
+        use rust_num::Float;
+
+        // FIXME: Not sure why we can't use method syntax for `sqrt` here...
+        Float::sqrt(self.magnitude2())
     }
 
     /// The angle between the vector and `other`, in radians.
     fn angle(self, other: Self) -> Rad<Self::Scalar>;
 
-    /// Returns a vector with the same direction, but with a `length` (or
-    /// `norm`) of `1`.
+    /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
     #[must_use]
     fn normalize(self) -> Self {
         self.normalize_to(Self::Scalar::one())
     }
 
-    /// Returns a vector with the same direction and a given `length`.
+    /// Returns a vector with the same direction and a given magnitude.
     #[inline]
     #[must_use]
-    fn normalize_to(self, length: Self::Scalar) -> Self {
-        self * (length / self.length())
+    fn normalize_to(self, magnitude: Self::Scalar) -> Self {
+        self * (magnitude / self.magnitude())
     }
 
-    /// Returns the result of linarly interpolating the length of the vector
-    /// towards the length of `other` by the specified amount.
+    /// Returns the result of linearly interpolating the magnitude of the vector
+    /// towards the magnitude of `other` by the specified amount.
     #[inline]
     #[must_use]
     fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
@@ -519,21 +522,21 @@ pub trait EuclideanVector: Vector + Sized where
 impl<S: BaseFloat> EuclideanVector for Vector2<S> {
     #[inline]
     fn angle(self, other: Vector2<S>) -> Rad<S> {
-        Rad::atan2(self.perp_dot(other), self.dot(other))
+        Rad::atan2(Self::perp_dot(self, other), Self::dot(self, other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
     fn angle(self, other: Vector3<S>) -> Rad<S> {
-        Rad::atan2(self.cross(other).length(), self.dot(other))
+        Rad::atan2(self.cross(other).magnitude(), Self::dot(self, other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
     fn angle(self, other: Vector4<S>) -> Rad<S> {
-        Rad::acos(self.dot(other) / (self.length() * other.length()))
+        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
     }
 }
 

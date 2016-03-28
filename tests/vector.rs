@@ -187,7 +187,7 @@ fn test_is_perpendicular() {
 }
 
 #[cfg(test)]
-mod test_length {
+mod test_magnitude {
     use cgmath::*;
 
     #[test]
@@ -195,11 +195,11 @@ mod test_length {
         let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3, 4, 5) Pythagorean triple
         let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5, 12, 13) Pythagorean triple
 
-        assert_eq!(a.length2(), a_res * a_res);
-        assert_eq!(b.length2(), b_res * b_res);
+        assert_eq!(a.magnitude2(), a_res * a_res);
+        assert_eq!(b.magnitude2(), b_res * b_res);
 
-        assert_eq!(a.length(), a_res);
-        assert_eq!(b.length(), b_res);
+        assert_eq!(a.magnitude(), a_res);
+        assert_eq!(b.magnitude(), b_res);
     }
 
     #[test]
@@ -207,11 +207,11 @@ mod test_length {
         let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2, 3, 6, 7) Pythagorean quadruple
         let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1, 4, 8, 9) Pythagorean quadruple
 
-        assert_eq!(a.length2(), a_res * a_res);
-        assert_eq!(b.length2(), b_res * b_res);
+        assert_eq!(a.magnitude2(), a_res * a_res);
+        assert_eq!(b.magnitude2(), b_res * b_res);
 
-        assert_eq!(a.length(), a_res);
-        assert_eq!(b.length(), b_res);
+        assert_eq!(a.magnitude(), a_res);
+        assert_eq!(b.magnitude(), b_res);
     }
 
     #[test]
@@ -219,11 +219,11 @@ mod test_length {
         let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1, 2, 4, 10, 11) Pythagorean quintuple
         let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1, 2, 8, 10, 13) Pythagorean quintuple
 
-        assert_eq!(a.length2(), a_res * a_res);
-        assert_eq!(b.length2(), b_res * b_res);
+        assert_eq!(a.magnitude2(), a_res * a_res);
+        assert_eq!(b.magnitude2(), b_res * b_res);
 
-        assert_eq!(a.length(), a_res);
-        assert_eq!(b.length(), b_res);
+        assert_eq!(a.magnitude(), a_res);
+        assert_eq!(b.magnitude(), b_res);
     }
 }
 

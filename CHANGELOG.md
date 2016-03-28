@@ -20,6 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   `Quaternion` and `Angle` to make them easier to derive, and have clearer
   formatting.
 - Marks vectors, points, matrices, and angles as `#[repr(C, packed)]`.
+- Renames the `Vector::{length, length2}` functions to `Vector::{magnitude, magnitude2}`.
 
 ### Removed
 
