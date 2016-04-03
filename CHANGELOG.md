@@ -21,11 +21,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   formatting.
 - Marks vectors, points, matrices, and angles as `#[repr(C, packed)]`.
 - Renames the `Vector::{length, length2}` functions to `Vector::{magnitude, magnitude2}`.
+- Moved `Angle::new` to be directly implemented on the `Rad` and `Deg` types.
 
 ### Removed
 
 - The non-mathematical operator trait implementations have been removed from
   the `Vector` trait, in favor of the `ElementWise` trait.
+- `Angle::equiv`.
 
 ## [v0.7.0] - 2015-12-23
 
