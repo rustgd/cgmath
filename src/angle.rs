@@ -107,11 +107,6 @@ pub trait Angle where
     fn turn_div_4() -> Self;
     fn turn_div_6() -> Self;
 
-    #[inline]
-    fn equiv(&self, other: &Self) -> bool {
-        self.normalize() == other.normalize()
-    }
-
     fn sin(self) -> Self::Unitless;
     fn cos(self) -> Self::Unitless;
     fn tan(self) -> Self::Unitless;
