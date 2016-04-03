@@ -183,7 +183,7 @@ pub trait Angle where
 
     /// Compute the cosecant of the angle.
     ///
-    /// This is the same a computing the reciprocal of `Self::sin`.
+    /// This is the same as computing the reciprocal of `Self::sin`.
     ///
     /// ```rust
     /// use cgmath::prelude::*;
@@ -199,7 +199,7 @@ pub trait Angle where
 
     /// Compute the secant of the angle.
     ///
-    /// This is the same a computing the reciprocal of `Self::tan`.
+    /// This is the same as computing the reciprocal of `Self::tan`.
     ///
     /// ```rust
     /// use cgmath::prelude::*;
@@ -215,7 +215,7 @@ pub trait Angle where
 
     /// Compute the cotatangent of the angle.
     ///
-    /// This is the same a computing the reciprocal of `Self::cos`.
+    /// This is the same as computing the reciprocal of `Self::cos`.
     ///
     /// ```rust
     /// use cgmath::prelude::*;
