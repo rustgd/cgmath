@@ -34,6 +34,7 @@ use num::BaseFloat;
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
 pub struct Rad<S> { pub s: S }
+
 /// An angle, in degrees.
 ///
 /// This type is marked as `#[repr(C, packed)]`.
@@ -76,9 +77,6 @@ pub trait Angle where
     Self: Div<<Self as Angle>::Unitless, Output = Self>,
 {
     type Unitless: BaseFloat;
-
-    /// Create an angle from a unitless value.
-    fn new(value: Self::Unitless) -> Self;
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
     #[inline]
@@ -124,13 +122,15 @@ pub trait Angle where
 
 macro_rules! impl_angle {
     ($Angle:ident, $fmt:expr, $full_turn:expr, $hi:expr) => {
-        impl<S: BaseFloat> Angle for $Angle<S> {
-            type Unitless = S;
-
+        impl<S: BaseFloat> $Angle<S> {
             #[inline]
-            fn new(value: S) -> $Angle<S> {
+            pub fn new(value: S) -> $Angle<S> {
                 $Angle { s: value }
             }
+        }
+
+        impl<S: BaseFloat> Angle for $Angle<S> {
+            type Unitless = S;
 
             #[inline]
             fn zero() -> $Angle<S> {
