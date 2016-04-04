@@ -216,14 +216,6 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<$S: Copy + Neg<Output = $S>> $VectorN<$S> {
-            /// Negate this vector in-place (multiply by -1).
-            #[inline]
-            pub fn neg_self(&mut self) {
-                $(self.$field = -self.$field);+
-            }
-        }
-
         /// The short constructor.
         #[inline]
         pub fn $constructor<S>($($field: S),+) -> $VectorN<S> {

@@ -100,15 +100,6 @@ impl<S: BaseFloat> Matrix2<S> {
     }
 }
 
-impl<S: Copy + Neg<Output = S>> Matrix2<S> {
-    /// Negate this `Matrix2` in-place.
-    #[inline]
-    pub fn neg_self(&mut self) {
-        self[0].neg_self();
-        self[1].neg_self();
-    }
-}
-
 impl<S: BaseFloat> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
@@ -200,16 +191,6 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 }
 
-impl<S: Copy + Neg<Output = S>> Matrix3<S> {
-    /// Negate this `Matrix3` in-place.
-    #[inline]
-    pub fn neg_self(&mut self) {
-        self[0].neg_self();
-        self[1].neg_self();
-        self[2].neg_self();
-    }
-}
-
 impl<S: BaseFloat> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
@@ -264,17 +245,6 @@ impl<S: BaseFloat> Matrix4<S> {
                      s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
                      s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
                      -eye.dot(s), -eye.dot(u), eye.dot(f), S::one())
-    }
-}
-
-impl<S: Copy + Neg<Output = S>> Matrix4<S> {
-    /// Negate this `Matrix4` in-place.
-    #[inline]
-    pub fn neg_self(&mut self) {
-        self[0].neg_self();
-        self[1].neg_self();
-        self[2].neg_self();
-        self[3].neg_self();
     }
 }
 
