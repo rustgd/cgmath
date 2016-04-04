@@ -108,8 +108,7 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 ///
 /// ## Vector addition
 ///
-/// Vectors are required to be able to be added, subtracted, or negated via the
-/// following traits:
+/// Vectors can be added, subtracted, or negated via the following traits:
 ///
 /// - `Add<Output = Self>`
 /// - `Sub<Output = Self>`
@@ -128,8 +127,8 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 ///
 /// ## Scalar multiplication
 ///
-/// Vectors are required to be able to be multiplied or divided by their
-/// associated scalars via the following traits:
+/// Vectors can be multiplied or divided by their associated scalars via the
+/// following traits:
 ///
 /// - `Mul<Self::Scalar, Output = Self>`
 /// - `Div<Self::Scalar, Output = Self>`
