@@ -177,7 +177,9 @@ pub trait Vector: Copy + Clone where
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector2<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
 }
 
@@ -187,8 +189,11 @@ pub struct Vector2<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector3<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
+    /// The z component of the vector.
     pub z: S,
 }
 
@@ -198,9 +203,13 @@ pub struct Vector3<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector4<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
+    /// The z component of the vector.
     pub z: S,
+    /// The w component of the vector.
     pub w: S,
 }
 
