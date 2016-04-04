@@ -22,11 +22,10 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, vec2, vec3};
+//! use cgmath::{Vector, Vector2, Vector3, Vector4, vec3};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), Vector3::zero());
-//! assert_eq!(Vector2::from_value(1.0f64), vec2(1.0, 1.0));
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
@@ -157,17 +156,6 @@ pub trait Vector: Copy + Clone where
     /// The associated scalar.
     type Scalar: BaseNum;
 
-    /// Construct a vector from a single value, replicating it.
-    ///
-    /// ```rust
-    /// use cgmath::prelude::*;
-    /// use cgmath::Vector3;
-    ///
-    /// assert_eq!(Vector3::from_value(1),
-    ///            Vector3::new(1, 1, 1));
-    /// ```
-    fn from_value(scalar: Self::Scalar) -> Self;
-
     /// The additive identity.
     ///
     /// Adding this to another `Self` value has no effect.
@@ -179,8 +167,7 @@ pub trait Vector: Copy + Clone where
     /// let v = Vector2::new(1, 2);
     /// assert_eq!(v + Vector2::zero(), v);
     /// ```
-    #[inline]
-    fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
+    fn zero() -> Self;
 }
 
 /// A 2-dimensional vector.
@@ -252,18 +239,38 @@ macro_rules! impl_vector {
         impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
 
-            #[inline] fn sum(self) -> S where S: Add<Output = S> { fold_array!(add, { $(self.$field),+ }) }
-            #[inline] fn product(self) -> S where S: Mul<Output = S> { fold_array!(mul, { $(self.$field),+ }) }
-            #[inline] fn min(self) -> S where S: PartialOrd { fold_array!(partial_min, { $(self.$field),+ }) }
-            #[inline] fn max(self) -> S where S: PartialOrd { fold_array!(partial_max, { $(self.$field),+ }) }
+            #[inline]
+            fn from_value(scalar: S) -> $VectorN<S> {
+                $VectorN { $($field: scalar),+ }
+            }
+
+            #[inline]
+            fn sum(self) -> S where S: Add<Output = S> {
+                fold_array!(add, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn product(self) -> S where S: Mul<Output = S> {
+                fold_array!(mul, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn min(self) -> S where S: PartialOrd {
+                fold_array!(partial_min, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn max(self) -> S where S: PartialOrd {
+                fold_array!(partial_max, { $(self.$field),+ })
+            }
         }
 
         impl<S: BaseNum> Vector for $VectorN<S> {
             type Scalar = S;
 
             #[inline]
-            fn from_value(scalar: S) -> $VectorN<S> {
-                $VectorN { $($field: scalar),+ }
+            fn zero() -> Self {
+                Self::from_value(Self::Scalar::zero())
             }
         }
 
