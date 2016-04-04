@@ -100,7 +100,9 @@ use approx::ApproxEq;
 use array::{Array, ElementWise};
 use num::{BaseNum, BaseFloat, PartialOrd};
 
-/// Vectors that can be added together and multiplied by scalars.
+/// Vectors that can be [added](http://mathworld.wolfram.com/VectorAddition.html)
+/// together and [multiplied](https://en.wikipedia.org/wiki/Scalar_multiplication)
+/// by scalars.
 ///
 /// # Required operators
 ///
@@ -523,7 +525,8 @@ impl<S: BaseNum> Vector4<S> {
     }
 }
 
-/// Vectors that also have a dot (or inner) product.
+/// Vectors that also have a [dot](https://en.wikipedia.org/wiki/Dot_product)
+/// (or [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product.
 ///
 /// The dot product allows for the definition of other useful operations, like
 /// finding the magnitude of a vector or normalizing it.
