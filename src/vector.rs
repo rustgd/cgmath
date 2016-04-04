@@ -62,7 +62,8 @@
 //! and [cross products](http://en.wikipedia.org/wiki/Cross_product).
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, dot};
+//! use cgmath::{Vector, EuclideanVector};
+//! use cgmath::{Vector2, Vector3, Vector4};
 //!
 //! // All vectors implement the dot product as a method:
 //! let a: Vector2<f64> = Vector2::new(3.0, 6.0);
@@ -70,7 +71,7 @@
 //! assert_eq!(a.dot(b), 0.0);
 //!
 //! // But there is also a top-level function:
-//! assert_eq!(a.dot(b), dot(a, b));
+//! assert_eq!(a.dot(b), cgmath::dot(a, b));
 //!
 //! // Cross products are defined for 3-dimensional vectors:
 //! let e: Vector3<f64> = Vector3::unit_x();
@@ -121,13 +122,7 @@ pub trait Vector: Copy + Clone where
     /// The additive identity vector. Adding this vector with another has no effect.
     #[inline]
     fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
-
-    /// Vector dot product
-    fn dot(self, other: Self) -> Self::Scalar;
 }
-
-/// Dot product of two vectors.
-#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { V::dot(a, b) }
 
 /// A 2-dimensional vector.
 ///
@@ -207,9 +202,10 @@ macro_rules! impl_vector {
         impl<S: BaseNum> Vector for $VectorN<S> {
             type Scalar = S;
 
-            #[inline] fn from_value(scalar: S) -> $VectorN<S> { $VectorN { $($field: scalar),+ } }
-
-            #[inline] fn dot(self, other: $VectorN<S>) -> S { $VectorN::mul_element_wise(self, other).sum() }
+            #[inline]
+            fn from_value(scalar: S) -> $VectorN<S> {
+                $VectorN { $($field: scalar),+ }
+            }
         }
 
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {
@@ -468,6 +464,9 @@ pub trait EuclideanVector: Vector + Sized where
     <Self as Vector>::Scalar: BaseFloat,
     Self: ApproxEq<Epsilon = <Self as Vector>::Scalar>,
 {
+    /// Vector dot (or inner) product.
+    fn dot(self, other: Self) -> Self::Scalar;
+
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
@@ -519,7 +518,20 @@ pub trait EuclideanVector: Vector + Sized where
     }
 }
 
+/// Dot product of two vectors.
+#[inline]
+pub fn dot<V: EuclideanVector>(a: V, b: V) -> V::Scalar where
+    V::Scalar: BaseFloat,
+{
+    V::dot(a, b)
+}
+
 impl<S: BaseFloat> EuclideanVector for Vector2<S> {
+    #[inline]
+    fn dot(self, other: Vector2<S>) -> S {
+        Vector2::mul_element_wise(self, other).sum()
+    }
+
     #[inline]
     fn angle(self, other: Vector2<S>) -> Rad<S> {
         Rad::atan2(Self::perp_dot(self, other), Self::dot(self, other))
@@ -528,12 +540,22 @@ impl<S: BaseFloat> EuclideanVector for Vector2<S> {
 
 impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
+    fn dot(self, other: Vector3<S>) -> S {
+        Vector3::mul_element_wise(self, other).sum()
+    }
+
+    #[inline]
     fn angle(self, other: Vector3<S>) -> Rad<S> {
         Rad::atan2(self.cross(other).magnitude(), Self::dot(self, other))
     }
 }
 
 impl<S: BaseFloat> EuclideanVector for Vector4<S> {
+    #[inline]
+    fn dot(self, other: Vector4<S>) -> S {
+        Vector4::mul_element_wise(self, other).sum()
+    }
+
     #[inline]
     fn angle(self, other: Vector4<S>) -> Rad<S> {
         Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))

@@ -122,9 +122,9 @@ fn test_rem() {
 
 #[test]
 fn test_dot() {
-    assert_eq!(Vector2::new(1isize, 2isize).dot(Vector2::new(3isize, 4isize)), 11isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).dot(Vector3::new(4isize, 5isize, 6isize)), 32isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).dot(Vector4::new(5isize, 6isize, 7isize, 8isize)), 70isize);
+    assert_eq!(Vector2::new(1.0, 2.0).dot(Vector2::new(3.0, 4.0)), 11.0);
+    assert_eq!(Vector3::new(1.0, 2.0, 3.0).dot(Vector3::new(4.0, 5.0, 6.0)), 32.0);
+    assert_eq!(Vector4::new(1.0, 2.0, 3.0, 4.0).dot(Vector4::new(5.0, 6.0, 7.0, 8.0)), 70.0);
 }
 
 #[test]
