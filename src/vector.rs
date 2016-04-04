@@ -560,8 +560,10 @@ pub trait EuclideanVector: Vector + Sized where
         Float::sqrt(self.magnitude2())
     }
 
-    /// The angle between the vector and `other`, in radians.
-    fn angle(self, other: Self) -> Rad<Self::Scalar>;
+    /// Returns the angle between two vectors in radians.
+    fn angle(self, other: Self) -> Rad<Self::Scalar> {
+        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
+    }
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
@@ -622,11 +624,6 @@ impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
     fn dot(self, other: Vector4<S>) -> S {
         Vector4::mul_element_wise(self, other).sum()
-    }
-
-    #[inline]
-    fn angle(self, other: Vector4<S>) -> Rad<S> {
-        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
     }
 }
 
