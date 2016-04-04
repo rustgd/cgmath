@@ -101,7 +101,48 @@ use approx::ApproxEq;
 use array::{Array, ElementWise};
 use num::{BaseNum, BaseFloat, PartialOrd};
 
-/// A trait that specifies a range of numeric operations for vectors.
+/// Vectors that can be added together and multiplied by scalars.
+///
+/// # Required operators
+///
+/// ## Vector addition
+///
+/// Vectors are required to be able to be added, subtracted, or negated via the
+/// following traits:
+///
+/// - `Add<Output = Self>`
+/// - `Sub<Output = Self>`
+/// - `Neg<Output = Self>`
+///
+/// ```rust
+/// use cgmath::Vector3;
+///
+/// let velocity0 = Vector3::new(1, 2, 0);
+/// let velocity1 = Vector3::new(1, 1, 0);
+///
+/// let total_velocity = velocity0 + velocity1;
+/// let velocity_diff = velocity1 - velocity0;
+/// let reversed_velocity0 = -velocity0;
+/// ```
+///
+/// ## Scalar multiplication
+///
+/// Vectors are required to be able to be multiplied or divided by their
+/// associated scalars via the following traits:
+///
+/// - `Mul<Self::Scalar, Output = Self>`
+/// - `Div<Self::Scalar, Output = Self>`
+/// - `Rem<Self::Scalar, Output = Self>`
+///
+/// ```rust
+/// use cgmath::Vector2;
+///
+/// let translation = Vector2::new(3.0, 4.0);
+/// let scale_factor = 2.0;
+///
+/// let upscaled_translation = translation * scale_factor;
+/// let downscaled_translation = translation / scale_factor;
+/// ```
 pub trait Vector: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Vector>::Scalar>,
@@ -117,9 +158,27 @@ pub trait Vector: Copy + Clone where
     type Scalar: BaseNum;
 
     /// Construct a vector from a single value, replicating it.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Vector3;
+    ///
+    /// assert_eq!(Vector3::from_value(1),
+    ///            Vector3::new(1, 1, 1));
+    /// ```
     fn from_value(scalar: Self::Scalar) -> Self;
 
-    /// The additive identity vector. Adding this vector with another has no effect.
+    /// The additive identity.
+    ///
+    /// Adding this to another `Self` value has no effect.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Vector2;
+    ///
+    /// let v = Vector2::new(1, 2);
+    /// assert_eq!(v + Vector2::zero(), v);
+    /// ```
     #[inline]
     fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
 }
@@ -457,8 +516,10 @@ impl<S: BaseNum> Vector4<S> {
     }
 }
 
-/// Specifies geometric operations for vectors. This is only implemented for
-/// vectors of float types.
+/// Vectors that also have a dot (or inner) product.
+///
+/// The dot product allows for the definition of other useful operations, like
+/// finding the magnitude of a vector or normalizing it.
 pub trait EuclideanVector: Vector + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as Vector>::Scalar: BaseFloat,
