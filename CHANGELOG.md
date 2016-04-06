@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Constrained conversion functions for assisting in situations where type
   inference is difficult.
 - An `ElementWise` trait for non-mathematical element-wise operations.
+- A default implementation for `EuclideanVector::angle`.
 
 ### Changed
 
@@ -21,13 +22,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   formatting.
 - Marks vectors, points, matrices, and angles as `#[repr(C, packed)]`.
 - Renames the `Vector::{length, length2}` functions to `Vector::{magnitude, magnitude2}`.
-- Moved `Angle::new` to be directly implemented on the `Rad` and `Deg` types.
+- Move `Angle::new` to be directly implemented on the `Rad` and `Deg` types.
+- Move `Vector::dot` to `EuclideanVector` trait.
+- Move `Vector::from_value` to `Array` trait.
 
 ### Removed
 
 - The non-mathematical operator trait implementations have been removed from
   the `Vector` trait, in favor of the `ElementWise` trait.
 - `Angle::equiv`.
+- Remove `neg_self` method on vectors and matrices.
 
 ## [v0.7.0] - 2015-12-23
 

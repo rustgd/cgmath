@@ -22,7 +22,7 @@ use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
 use point::{Point, Point2, Point3};
 use quaternion::Quaternion;
-use vector::{Vector, Vector2, Vector3};
+use vector::{EuclideanVector, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.

@@ -169,10 +169,30 @@ macro_rules! impl_point {
         impl<S: BaseNum> Array for $PointN<S> {
             type Element = S;
 
-            #[inline] fn sum(self) -> S { fold_array!(add, { $(self.$field),+ }) }
-            #[inline] fn product(self) -> S { fold_array!(mul, { $(self.$field),+ }) }
-            #[inline] fn min(self) -> S { fold_array!(partial_min, { $(self.$field),+ }) }
-            #[inline] fn max(self) -> S { fold_array!(partial_max, { $(self.$field),+ }) }
+            #[inline]
+            fn from_value(scalar: S) -> $PointN<S> {
+                $PointN { $($field: scalar),+ }
+            }
+
+            #[inline]
+            fn sum(self) -> S where S: Add<Output = S> {
+                fold_array!(add, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn product(self) -> S where S: Mul<Output = S> {
+                fold_array!(mul, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn min(self) -> S where S: PartialOrd {
+                fold_array!(partial_min, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn max(self) -> S where S: PartialOrd {
+                fold_array!(partial_max, { $(self.$field),+ })
+            }
         }
 
         impl<S: BaseNum> Point for $PointN<S> {

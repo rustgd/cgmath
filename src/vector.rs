@@ -22,11 +22,10 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, vec2, vec3};
+//! use cgmath::{Vector, Vector2, Vector3, Vector4, vec3};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), Vector3::zero());
-//! assert_eq!(Vector2::from_value(1.0f64), vec2(1.0, 1.0));
 //! ```
 //!
 //! Vectors can be manipulated with typical mathematical operations (addition,
@@ -62,7 +61,8 @@
 //! and [cross products](http://en.wikipedia.org/wiki/Cross_product).
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, dot};
+//! use cgmath::{Vector, EuclideanVector};
+//! use cgmath::{Vector2, Vector3, Vector4};
 //!
 //! // All vectors implement the dot product as a method:
 //! let a: Vector2<f64> = Vector2::new(3.0, 6.0);
@@ -70,7 +70,7 @@
 //! assert_eq!(a.dot(b), 0.0);
 //!
 //! // But there is also a top-level function:
-//! assert_eq!(a.dot(b), dot(a, b));
+//! assert_eq!(a.dot(b), cgmath::dot(a, b));
 //!
 //! // Cross products are defined for 3-dimensional vectors:
 //! let e: Vector3<f64> = Vector3::unit_x();
@@ -100,7 +100,49 @@ use approx::ApproxEq;
 use array::{Array, ElementWise};
 use num::{BaseNum, BaseFloat, PartialOrd};
 
-/// A trait that specifies a range of numeric operations for vectors.
+/// Vectors that can be [added](http://mathworld.wolfram.com/VectorAddition.html)
+/// together and [multiplied](https://en.wikipedia.org/wiki/Scalar_multiplication)
+/// by scalars.
+///
+/// # Required operators
+///
+/// ## Vector addition
+///
+/// Vectors can be added, subtracted, or negated via the following traits:
+///
+/// - `Add<Output = Self>`
+/// - `Sub<Output = Self>`
+/// - `Neg<Output = Self>`
+///
+/// ```rust
+/// use cgmath::Vector3;
+///
+/// let velocity0 = Vector3::new(1, 2, 0);
+/// let velocity1 = Vector3::new(1, 1, 0);
+///
+/// let total_velocity = velocity0 + velocity1;
+/// let velocity_diff = velocity1 - velocity0;
+/// let reversed_velocity0 = -velocity0;
+/// ```
+///
+/// ## Scalar multiplication
+///
+/// Vectors can be multiplied or divided by their associated scalars via the
+/// following traits:
+///
+/// - `Mul<Self::Scalar, Output = Self>`
+/// - `Div<Self::Scalar, Output = Self>`
+/// - `Rem<Self::Scalar, Output = Self>`
+///
+/// ```rust
+/// use cgmath::Vector2;
+///
+/// let translation = Vector2::new(3.0, 4.0);
+/// let scale_factor = 2.0;
+///
+/// let upscaled_translation = translation * scale_factor;
+/// let downscaled_translation = translation / scale_factor;
+/// ```
 pub trait Vector: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Vector>::Scalar>,
@@ -115,19 +157,19 @@ pub trait Vector: Copy + Clone where
     /// The associated scalar.
     type Scalar: BaseNum;
 
-    /// Construct a vector from a single value, replicating it.
-    fn from_value(scalar: Self::Scalar) -> Self;
-
-    /// The additive identity vector. Adding this vector with another has no effect.
-    #[inline]
-    fn zero() -> Self { Self::from_value(Self::Scalar::zero()) }
-
-    /// Vector dot product
-    fn dot(self, other: Self) -> Self::Scalar;
+    /// The additive identity.
+    ///
+    /// Adding this to another `Self` value has no effect.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Vector2;
+    ///
+    /// let v = Vector2::new(1, 2);
+    /// assert_eq!(v + Vector2::zero(), v);
+    /// ```
+    fn zero() -> Self;
 }
-
-/// Dot product of two vectors.
-#[inline] pub fn dot<V: Vector>(a: V, b: V) -> V::Scalar { V::dot(a, b) }
 
 /// A 2-dimensional vector.
 ///
@@ -135,7 +177,9 @@ pub trait Vector: Copy + Clone where
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector2<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
 }
 
@@ -145,8 +189,11 @@ pub struct Vector2<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector3<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
+    /// The z component of the vector.
     pub z: S,
 }
 
@@ -156,9 +203,13 @@ pub struct Vector3<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
 pub struct Vector4<S> {
+    /// The x component of the vector.
     pub x: S,
+    /// The y component of the vector.
     pub y: S,
+    /// The z component of the vector.
     pub z: S,
+    /// The w component of the vector.
     pub w: S,
 }
 
@@ -170,14 +221,6 @@ macro_rules! impl_vector {
             #[inline]
             pub fn new($($field: $S),+) -> $VectorN<$S> {
                 $VectorN { $($field: $field),+ }
-            }
-        }
-
-        impl<$S: Copy + Neg<Output = $S>> $VectorN<$S> {
-            /// Negate this vector in-place (multiply by -1).
-            #[inline]
-            pub fn neg_self(&mut self) {
-                $(self.$field = -self.$field);+
             }
         }
 
@@ -198,18 +241,39 @@ macro_rules! impl_vector {
         impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
 
-            #[inline] fn sum(self) -> S where S: Add<Output = S> { fold_array!(add, { $(self.$field),+ }) }
-            #[inline] fn product(self) -> S where S: Mul<Output = S> { fold_array!(mul, { $(self.$field),+ }) }
-            #[inline] fn min(self) -> S where S: PartialOrd { fold_array!(partial_min, { $(self.$field),+ }) }
-            #[inline] fn max(self) -> S where S: PartialOrd { fold_array!(partial_max, { $(self.$field),+ }) }
+            #[inline]
+            fn from_value(scalar: S) -> $VectorN<S> {
+                $VectorN { $($field: scalar),+ }
+            }
+
+            #[inline]
+            fn sum(self) -> S where S: Add<Output = S> {
+                fold_array!(add, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn product(self) -> S where S: Mul<Output = S> {
+                fold_array!(mul, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn min(self) -> S where S: PartialOrd {
+                fold_array!(partial_min, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn max(self) -> S where S: PartialOrd {
+                fold_array!(partial_max, { $(self.$field),+ })
+            }
         }
 
         impl<S: BaseNum> Vector for $VectorN<S> {
             type Scalar = S;
 
-            #[inline] fn from_value(scalar: S) -> $VectorN<S> { $VectorN { $($field: scalar),+ } }
-
-            #[inline] fn dot(self, other: $VectorN<S>) -> S { $VectorN::mul_element_wise(self, other).sum() }
+            #[inline]
+            fn zero() -> Self {
+                Self::from_value(Self::Scalar::zero())
+            }
         }
 
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {
@@ -461,13 +525,19 @@ impl<S: BaseNum> Vector4<S> {
     }
 }
 
-/// Specifies geometric operations for vectors. This is only implemented for
-/// vectors of float types.
+/// Vectors that also have a [dot](https://en.wikipedia.org/wiki/Dot_product)
+/// (or [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product.
+///
+/// The dot product allows for the definition of other useful operations, like
+/// finding the magnitude of a vector or normalizing it.
 pub trait EuclideanVector: Vector + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as Vector>::Scalar: BaseFloat,
     Self: ApproxEq<Epsilon = <Self as Vector>::Scalar>,
 {
+    /// Vector dot (or inner) product.
+    fn dot(self, other: Self) -> Self::Scalar;
+
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
@@ -493,8 +563,10 @@ pub trait EuclideanVector: Vector + Sized where
         Float::sqrt(self.magnitude2())
     }
 
-    /// The angle between the vector and `other`, in radians.
-    fn angle(self, other: Self) -> Rad<Self::Scalar>;
+    /// Returns the angle between two vectors in radians.
+    fn angle(self, other: Self) -> Rad<Self::Scalar> {
+        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
+    }
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
@@ -519,7 +591,20 @@ pub trait EuclideanVector: Vector + Sized where
     }
 }
 
+/// Dot product of two vectors.
+#[inline]
+pub fn dot<V: EuclideanVector>(a: V, b: V) -> V::Scalar where
+    V::Scalar: BaseFloat,
+{
+    V::dot(a, b)
+}
+
 impl<S: BaseFloat> EuclideanVector for Vector2<S> {
+    #[inline]
+    fn dot(self, other: Vector2<S>) -> S {
+        Vector2::mul_element_wise(self, other).sum()
+    }
+
     #[inline]
     fn angle(self, other: Vector2<S>) -> Rad<S> {
         Rad::atan2(Self::perp_dot(self, other), Self::dot(self, other))
@@ -528,6 +613,11 @@ impl<S: BaseFloat> EuclideanVector for Vector2<S> {
 
 impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     #[inline]
+    fn dot(self, other: Vector3<S>) -> S {
+        Vector3::mul_element_wise(self, other).sum()
+    }
+
+    #[inline]
     fn angle(self, other: Vector3<S>) -> Rad<S> {
         Rad::atan2(self.cross(other).magnitude(), Self::dot(self, other))
     }
@@ -535,8 +625,8 @@ impl<S: BaseFloat> EuclideanVector for Vector3<S> {
 
 impl<S: BaseFloat> EuclideanVector for Vector4<S> {
     #[inline]
-    fn angle(self, other: Vector4<S>) -> Rad<S> {
-        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
+    fn dot(self, other: Vector4<S>) -> S {
+        Vector4::mul_element_wise(self, other).sum()
     }
 }
 

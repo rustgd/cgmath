@@ -26,6 +26,17 @@ pub trait Array where
 {
     type Element: Copy;
 
+    /// Construct a vector from a single value, replicating it.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Vector3;
+    ///
+    /// assert_eq!(Vector3::from_value(1),
+    ///            Vector3::new(1, 1, 1));
+    /// ```
+    fn from_value(value: Self::Element) -> Self;
+
     /// Get the pointer to the first element of the array.
     #[inline]
     fn as_ptr(&self) -> *const Self::Element {
