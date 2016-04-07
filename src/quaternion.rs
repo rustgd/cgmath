@@ -26,7 +26,7 @@ use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3};
-use vector::{Vector3, Vector, EuclideanVector};
+use vector::{Vector3, VectorSpace, InnerSpace};
 
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector

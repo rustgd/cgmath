@@ -22,7 +22,7 @@
 //! vector are also provided:
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4, vec3};
+//! use cgmath::{VectorSpace, Vector2, Vector3, Vector4, vec3};
 //!
 //! assert_eq!(Vector2::new(1.0f64, 0.0f64), Vector2::unit_x());
 //! assert_eq!(vec3(0.0f64, 0.0f64, 0.0f64), Vector3::zero());
@@ -33,7 +33,7 @@
 //! using the built-in operators.
 //!
 //! ```rust
-//! use cgmath::{Vector, Vector2, Vector3, Vector4};
+//! use cgmath::{VectorSpace, Vector2, Vector3, Vector4};
 //!
 //! let a: Vector2<f64> = Vector2::new(3.0, 4.0);
 //! let b: Vector2<f64> = Vector2::new(-3.0, -4.0);
@@ -61,7 +61,7 @@
 //! and [cross products](http://en.wikipedia.org/wiki/Cross_product).
 //!
 //! ```rust
-//! use cgmath::{Vector, EuclideanVector};
+//! use cgmath::{VectorSpace, InnerSpace};
 //! use cgmath::{Vector2, Vector3, Vector4};
 //!
 //! // All vectors implement the dot product as a method:
@@ -83,9 +83,9 @@
 //! the methods provided by the [`Array`](../array/trait.Array.html) trait.
 //! This trait also provides a `map()` method for applying arbitrary functions.
 //!
-//! The [`Vector`](../trait.Vector.html) trait presents the most general
-//! features of the vectors, while [`EuclideanVector`]
-//! (../array/trait.EuclideanVector.html) is more specific to Euclidean space.
+//! The [`VectorSpace`](../trait.VectorSpace.html) trait presents the most
+//! general features of the vectors, while [`InnerSpace`]
+//! (../array/trait.InnerSpace.html) is more specific to Euclidean space.
 
 use std::fmt;
 use std::mem;
@@ -143,16 +143,16 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 /// let upscaled_translation = translation * scale_factor;
 /// let downscaled_translation = translation / scale_factor;
 /// ```
-pub trait Vector: Copy + Clone where
+pub trait VectorSpace: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array<Element = <Self as Vector>::Scalar>,
+    Self: Array<Element = <Self as VectorSpace>::Scalar>,
 
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
 
-    Self: Mul<<Self as Vector>::Scalar, Output = Self>,
-    Self: Div<<Self as Vector>::Scalar, Output = Self>,
-    Self: Rem<<Self as Vector>::Scalar, Output = Self>,
+    Self: Mul<<Self as VectorSpace>::Scalar, Output = Self>,
+    Self: Div<<Self as VectorSpace>::Scalar, Output = Self>,
+    Self: Rem<<Self as VectorSpace>::Scalar, Output = Self>,
 {
     /// The associated scalar.
     type Scalar: BaseNum;
@@ -267,7 +267,7 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseNum> Vector for $VectorN<S> {
+        impl<S: BaseNum> VectorSpace for $VectorN<S> {
             type Scalar = S;
 
             #[inline]
@@ -530,10 +530,10 @@ impl<S: BaseNum> Vector4<S> {
 ///
 /// The dot product allows for the definition of other useful operations, like
 /// finding the magnitude of a vector or normalizing it.
-pub trait EuclideanVector: Vector + Sized where
+pub trait InnerSpace: VectorSpace + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <Self as Vector>::Scalar: BaseFloat,
-    Self: ApproxEq<Epsilon = <Self as Vector>::Scalar>,
+    <Self as VectorSpace>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
 {
     /// Vector dot (or inner) product.
     fn dot(self, other: Self) -> Self::Scalar;
@@ -593,13 +593,13 @@ pub trait EuclideanVector: Vector + Sized where
 
 /// Dot product of two vectors.
 #[inline]
-pub fn dot<V: EuclideanVector>(a: V, b: V) -> V::Scalar where
+pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar where
     V::Scalar: BaseFloat,
 {
     V::dot(a, b)
 }
 
-impl<S: BaseFloat> EuclideanVector for Vector2<S> {
+impl<S: BaseFloat> InnerSpace for Vector2<S> {
     #[inline]
     fn dot(self, other: Vector2<S>) -> S {
         Vector2::mul_element_wise(self, other).sum()
@@ -611,7 +611,7 @@ impl<S: BaseFloat> EuclideanVector for Vector2<S> {
     }
 }
 
-impl<S: BaseFloat> EuclideanVector for Vector3<S> {
+impl<S: BaseFloat> InnerSpace for Vector3<S> {
     #[inline]
     fn dot(self, other: Vector3<S>) -> S {
         Vector3::mul_element_wise(self, other).sum()
@@ -623,7 +623,7 @@ impl<S: BaseFloat> EuclideanVector for Vector3<S> {
     }
 }
 
-impl<S: BaseFloat> EuclideanVector for Vector4<S> {
+impl<S: BaseFloat> InnerSpace for Vector4<S> {
     #[inline]
     fn dot(self, other: Vector4<S>) -> S {
         Vector4::mul_element_wise(self, other).sum()

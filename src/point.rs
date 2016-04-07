@@ -143,7 +143,7 @@ pub trait Point: Copy + Clone where
     type Scalar: BaseNum;
 
     /// The associated space of displacement vectors.
-    type Vector: Vector<Scalar = Self::Scalar>;
+    type Vector: VectorSpace<Scalar = Self::Scalar>;
 
     /// The point at the origin of the Euclidean space.
     fn origin() -> Self;

@@ -31,7 +31,7 @@ use array::Array;
 use num::BaseFloat;
 use point::{Point, Point3};
 use quaternion::Quaternion;
-use vector::{Vector, EuclideanVector};
+use vector::{VectorSpace, InnerSpace};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix

@@ -72,7 +72,7 @@ pub trait Transform<P: Point>: Sized {
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
 #[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
-pub struct Decomposed<V: Vector, R> {
+pub struct Decomposed<V: VectorSpace, R> {
     pub scale: V::Scalar,
     pub rot: R,
     pub disp: V,
@@ -82,7 +82,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <P as Point>::Scalar: BaseFloat,
     // FIXME: Investigate why this is needed!
-    <P as Point>::Vector: Vector,
+    <P as Point>::Vector: VectorSpace,
 {
     #[inline]
     fn one() -> Decomposed<P::Vector, R> {
