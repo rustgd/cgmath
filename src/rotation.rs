@@ -35,14 +35,14 @@ pub trait Rotation<P: Point>: PartialEq + Sized where
     fn one() -> Self;
 
     /// Create a rotation to a given direction with an 'up' vector
-    fn look_at(dir: P::Vector, up: P::Vector) -> Self;
+    fn look_at(dir: P::Diff, up: P::Diff) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: P::Vector, b: P::Vector) -> Self;
+    fn between_vectors(a: P::Diff, b: P::Diff) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: P::Vector) -> P::Vector;
+    fn rotate_vector(&self, vec: P::Diff) -> P::Diff;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.

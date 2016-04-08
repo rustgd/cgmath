@@ -79,7 +79,7 @@ impl<S: BaseNum> Point3<S> {
 }
 
 /// Points in a [Euclidean space](https://en.wikipedia.org/wiki/Euclidean_space)
-/// with an associated vector space, `Self::Vector`.
+/// with an associated space of displacement vectors.
 ///
 /// # Point-Vector distinction
 ///
@@ -129,21 +129,21 @@ pub trait Point: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as Point>::Scalar>,
 
-    Self: Add<<Self as Point>::Vector, Output = Self>,
-    Self: Sub<Self, Output = <Self as Point>::Vector>,
+    Self: Add<<Self as Point>::Diff, Output = Self>,
+    Self: Sub<Self, Output = <Self as Point>::Diff>,
 
     Self: Mul<<Self as Point>::Scalar, Output = Self>,
     Self: Div<<Self as Point>::Scalar, Output = Self>,
     Self: Rem<<Self as Point>::Scalar, Output = Self>,
 {
-    /// The associated scalar.
+    /// The associated scalar over which the space is defined.
     ///
-    /// Due to the equality constraints demanded by `Self::Vector`, this is effectively just an
-    /// alias to `Self::Vector::Scalar`.
+    /// Due to the equality constraints demanded by `Self::Diff`, this is effectively just an
+    /// alias to `Self::Diff::Scalar`.
     type Scalar: BaseNum;
 
     /// The associated space of displacement vectors.
-    type Vector: VectorSpace<Scalar = Self::Scalar>;
+    type Diff: VectorSpace<Scalar = Self::Scalar>;
 
     /// The point at the origin of the Euclidean space.
     fn origin() -> Self;
@@ -152,16 +152,16 @@ pub trait Point: Copy + Clone where
     ///
     /// This can be considered equivalent to the addition of the displacement
     /// vector `v` to to `Self::origin()`.
-    fn from_vec(v: Self::Vector) -> Self;
+    fn from_vec(v: Self::Diff) -> Self;
 
     /// Convert a point to a displacement vector.
     ///
     /// This can be seen as equivalent to the displacement vector from
     /// `Self::origin()` to `self`.
-    fn to_vec(self) -> Self::Vector;
+    fn to_vec(self) -> Self::Diff;
 
     /// This is a weird one, but its useful for plane calculations.
-    fn dot(self, v: Self::Vector) -> Self::Scalar;
+    fn dot(self, v: Self::Diff) -> Self::Scalar;
 }
 
 macro_rules! impl_point {
@@ -197,7 +197,7 @@ macro_rules! impl_point {
 
         impl<S: BaseNum> Point for $PointN<S> {
             type Scalar = S;
-            type Vector = $VectorN<S>;
+            type Diff = $VectorN<S>;
 
             #[inline]
             fn origin() -> $PointN<S> {

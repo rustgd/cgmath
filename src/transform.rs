@@ -34,17 +34,17 @@ pub trait Transform<P: Point>: Sized {
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
-    fn look_at(eye: P, center: P, up: P::Vector) -> Self;
+    fn look_at(eye: P, center: P, up: P::Diff) -> Self;
 
     /// Transform a vector using this transform.
-    fn transform_vector(&self, vec: P::Vector) -> P::Vector;
+    fn transform_vector(&self, vec: P::Diff) -> P::Diff;
 
     /// Transform a point using this transform.
     fn transform_point(&self, point: P) -> P;
 
     /// Transform a vector as a point using this transform.
     #[inline]
-    fn transform_as_point(&self, vec: P::Vector) -> P::Vector {
+    fn transform_as_point(&self, vec: P::Diff) -> P::Diff {
         self.transform_point(P::from_vec(vec)).to_vec()
     }
 
@@ -78,23 +78,23 @@ pub struct Decomposed<V: VectorSpace, R> {
     pub disp: V,
 }
 
-impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
+impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <P as Point>::Scalar: BaseFloat,
     // FIXME: Investigate why this is needed!
-    <P as Point>::Vector: VectorSpace,
+    <P as Point>::Diff: VectorSpace,
 {
     #[inline]
-    fn one() -> Decomposed<P::Vector, R> {
+    fn one() -> Decomposed<P::Diff, R> {
         Decomposed {
             scale: <P as Point>::Scalar::one(),
             rot: R::one(),
-            disp: P::Vector::zero(),
+            disp: P::Diff::zero(),
         }
     }
 
     #[inline]
-    fn look_at(eye: P, center: P, up: P::Vector) -> Decomposed<P::Vector, R> {
+    fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
         let rot = R::look_at(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
@@ -105,7 +105,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
     }
 
     #[inline]
-    fn transform_vector(&self, vec: P::Vector) -> P::Vector {
+    fn transform_vector(&self, vec: P::Diff) -> P::Diff {
         self.rot.rotate_vector(vec * self.scale)
     }
 
@@ -114,7 +114,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         self.rot.rotate_point(point * self.scale) + self.disp
     }
 
-    fn concat(&self, other: &Decomposed<P::Vector, R>) -> Decomposed<P::Vector, R> {
+    fn concat(&self, other: &Decomposed<P::Diff, R>) -> Decomposed<P::Diff, R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat(&other.rot),
@@ -122,7 +122,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         }
     }
 
-    fn invert(&self) -> Option<Decomposed<P::Vector, R>> {
+    fn invert(&self) -> Option<Decomposed<P::Diff, R>> {
         if self.scale.approx_eq(&<P as Point>::Scalar::zero()) {
             None
         } else {
