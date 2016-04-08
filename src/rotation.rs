@@ -20,16 +20,16 @@ use approx::ApproxEq;
 use matrix::SquareMatrix;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
-use point::{Point, Point2, Point3};
+use point::{EuclideanSpace, Point2, Point3};
 use quaternion::Quaternion;
 use vector::{InnerSpace, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: Point>: PartialEq + Sized where
+pub trait Rotation<P: EuclideanSpace>: PartialEq + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: ApproxEq<Epsilon = <P as Point>::Scalar>,
-    <P as Point>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
+    <P as EuclideanSpace>::Scalar: BaseFloat,
 {
     /// Create the identity transform (causes no transformation).
     fn one() -> Self;

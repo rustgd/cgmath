@@ -116,25 +116,25 @@ impl<S: BaseNum> Point3<S> {
 /// ## Converting between points and vectors
 ///
 /// Points can be converted to and from displacement vectors using the
-/// `Point::{from_vec, to_vec}` methods. Note that under the hood these are
-/// implemented as inlined a type conversion, so should not have any performance
-/// implications.
+/// `EuclideanSpace::{from_vec, to_vec}` methods. Note that under the hood these
+/// are implemented as inlined a type conversion, so should not have any
+/// performance implications.
 ///
 /// ## References
 ///
 /// - [CGAL 4.7 - 2D and 3D Linear Geometry Kernel: 3.1 Points and Vectors](http://doc.cgal.org/latest/Kernel_23/index.html#Kernel_23PointsandVectors)
 /// - [What is the difference between a point and a vector](http://math.stackexchange.com/q/645827)
 ///
-pub trait Point: Copy + Clone where
+pub trait EuclideanSpace: Copy + Clone where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array<Element = <Self as Point>::Scalar>,
+    Self: Array<Element = <Self as EuclideanSpace>::Scalar>,
 
-    Self: Add<<Self as Point>::Diff, Output = Self>,
-    Self: Sub<Self, Output = <Self as Point>::Diff>,
+    Self: Add<<Self as EuclideanSpace>::Diff, Output = Self>,
+    Self: Sub<Self, Output = <Self as EuclideanSpace>::Diff>,
 
-    Self: Mul<<Self as Point>::Scalar, Output = Self>,
-    Self: Div<<Self as Point>::Scalar, Output = Self>,
-    Self: Rem<<Self as Point>::Scalar, Output = Self>,
+    Self: Mul<<Self as EuclideanSpace>::Scalar, Output = Self>,
+    Self: Div<<Self as EuclideanSpace>::Scalar, Output = Self>,
+    Self: Rem<<Self as EuclideanSpace>::Scalar, Output = Self>,
 {
     /// The associated scalar over which the space is defined.
     ///
@@ -195,7 +195,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseNum> Point for $PointN<S> {
+        impl<S: BaseNum> EuclideanSpace for $PointN<S> {
             type Scalar = S;
             type Diff = $VectorN<S>;
 

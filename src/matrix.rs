@@ -29,7 +29,7 @@ use angle::{Angle, Rad};
 use approx::ApproxEq;
 use array::Array;
 use num::BaseFloat;
-use point::{Point, Point3};
+use point::{EuclideanSpace, Point3};
 use quaternion::Quaternion;
 use vector::{VectorSpace, InnerSpace};
 use vector::{Vector2, Vector3, Vector4};
