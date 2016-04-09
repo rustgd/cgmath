@@ -40,7 +40,9 @@ use vector::{Vector2, Vector3, Vector4};
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix2<S> {
+    /// The first column of the matrix.
     pub x: Vector2<S>,
+    /// The second column of the matrix.
     pub y: Vector2<S>,
 }
 
@@ -50,8 +52,11 @@ pub struct Matrix2<S> {
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix3<S> {
+    /// The first column of the matrix.
     pub x: Vector3<S>,
+    /// The second column of the matrix.
     pub y: Vector3<S>,
+    /// The third column of the matrix.
     pub z: Vector3<S>,
 }
 
@@ -61,9 +66,13 @@ pub struct Matrix3<S> {
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Matrix4<S> {
+    /// The first column of the matrix.
     pub x: Vector4<S>,
+    /// The second column of the matrix.
     pub y: Vector4<S>,
+    /// The third column of the matrix.
     pub z: Vector4<S>,
+    /// The fourth column of the matrix.
     pub w: Vector4<S>,
 }
 

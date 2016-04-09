@@ -36,7 +36,9 @@ use vector::{Vector3, VectorSpace, InnerSpace};
 #[repr(C, packed)]
 #[derive(Copy, Clone, Debug, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Quaternion<S> {
+    /// The scalar part of the quaternion.
     pub s: S,
+    /// The vector part of the quaternion.
     pub v: Vector3<S>,
 }
 
