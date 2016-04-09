@@ -25,6 +25,13 @@ is not fully covered by the testsuite. If you encounter any mistakes or
 omissions please let me know by posting an issue, or even better: send me a
 pull request with a fix.
 
+## Conventions
+
+cgmath interprets its vectors as column matrices (also known as "column
+vectors"), meaning when transforming a vector with a matrix, the matrix goes
+on the left. This is reflected in the fact that cgmath implements the 
+multiplication operator for Matrix * Vector, but not Vector * Matrix.
+
 ## Limitations
 
 cgmath is _not_ an n-dimensional library and is aimed at computer graphics
