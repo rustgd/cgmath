@@ -104,6 +104,8 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 /// together and [multiplied](https://en.wikipedia.org/wiki/Scalar_multiplication)
 /// by scalars.
 ///
+/// Examples include vectors, matrices, and quaternions.
+///
 /// # Required operators
 ///
 /// ## Vector addition
@@ -144,12 +146,10 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 /// let downscaled_translation = translation / scale_factor;
 /// ```
 pub trait VectorSpace: Copy + Clone where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array<Element = <Self as VectorSpace>::Scalar>,
-
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
 
+    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Mul<<Self as VectorSpace>::Scalar, Output = Self>,
     Self: Div<<Self as VectorSpace>::Scalar, Output = Self>,
     Self: Rem<<Self as VectorSpace>::Scalar, Output = Self>,
@@ -530,6 +530,8 @@ impl<S: BaseNum> Vector4<S> {
 ///
 /// The dot product allows for the definition of other useful operations, like
 /// finding the magnitude of a vector or normalizing it.
+///
+/// Examples include vectors and quaternions.
 pub trait InnerSpace: VectorSpace + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as VectorSpace>::Scalar: BaseFloat,

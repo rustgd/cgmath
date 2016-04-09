@@ -25,7 +25,6 @@ use rust_num::{One, Zero};
 
 use approx::ApproxEq;
 use array::Array;
-use matrix::Matrix;
 use num::{BaseNum, BaseFloat};
 use vector::*;
 

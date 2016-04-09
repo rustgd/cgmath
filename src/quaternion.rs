@@ -54,22 +54,10 @@ impl<S: BaseFloat> Quaternion<S> {
         Quaternion { s: s, v: v }
     }
 
-    /// The additive identity, ie: `q = 0 + 0i + 0j + 0i`
-    #[inline]
-    pub fn zero() -> Quaternion<S> {
-        Quaternion::new(S::zero(), S::zero(), S::zero(), S::zero())
-    }
-
-    /// The multiplicative identity, ie: `q = 1 + 0i + 0j + 0i`
+    /// The multiplicative identity.
     #[inline]
     pub fn one() -> Quaternion<S> {
         Quaternion::from_sv(S::one(), Vector3::zero())
-    }
-
-    /// The dot product of the quaternion and `q`.
-    #[inline]
-    pub fn dot(self, other: Quaternion<S>) -> S {
-        self.s * other.s + self.v.dot(other.v)
     }
 
     /// The conjugate of the quaternion.
@@ -78,35 +66,25 @@ impl<S: BaseFloat> Quaternion<S> {
         Quaternion::from_sv(self.s, -self.v)
     }
 
-    /// The squared magnitude of the quaternion. This is useful for
-    /// magnitude comparisons where the exact magnitude does not need to be
-    /// calculated.
-    #[inline]
-    pub fn magnitude2(self) -> S {
-        self.s * self.s + self.v.magnitude2()
-    }
-
-    /// The magnitude of the quaternion
-    ///
-    /// # Performance notes
-    ///
-    /// For instances where the exact magnitude of the quaternion does not need
-    /// to be known, for example for quaternion-quaternion magnitude comparisons,
-    /// it is advisable to use the `magnitude2` method instead.
-    #[inline]
-    pub fn magnitude(self) -> S {
-        self.magnitude2().sqrt()
-    }
-
-    /// Normalize this quaternion, returning the new quaternion.
-    #[inline]
-    pub fn normalize(self) -> Quaternion<S> {
-        self * (S::one() / self.magnitude())
-    }
-
     /// Do a normalized linear interpolation with `other`, by `amount`.
     pub fn nlerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
         (self * (S::one() - amount) + other * amount).normalize()
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Quaternion<S> {
+    type Scalar = S;
+
+    #[inline]
+    fn zero() -> Quaternion<S> {
+        Quaternion::from_sv(S::zero(), Vector3::zero())
+    }
+}
+
+impl<S: BaseFloat> InnerSpace for Quaternion<S> {
+    #[inline]
+    fn dot(self, other: Quaternion<S>) -> S {
+        self.s * other.s + self.v.dot(other.v)
     }
 }
 
@@ -132,6 +110,15 @@ impl_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
 });
 impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for Quaternion<S> {
     fn div_assign(&mut self, scalar) { self.s /= scalar; self.v /= scalar; }
+});
+
+impl_operator!(<S: BaseFloat> Rem<S> for Quaternion<S> {
+    fn rem(lhs, rhs) -> Quaternion<S> {
+        Quaternion::from_sv(lhs.s % rhs, lhs.v % rhs)
+    }
+});
+impl_assignment_operator!(<S: BaseFloat> RemAssign<S> for Quaternion<S> {
+    fn rem_assign(&mut self, scalar) { self.s %= scalar; self.v %= scalar; }
 });
 
 impl_operator!(<S: BaseFloat> Mul<Vector3<S> > for Quaternion<S> {

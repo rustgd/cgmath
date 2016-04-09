@@ -248,41 +248,86 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 }
 
+impl<S: BaseFloat> VectorSpace for Matrix2<S> {
+    type Scalar = S;
+
+    #[inline]
+    fn zero() -> Matrix2<S> {
+        Matrix2::new(S::zero(), S::zero(),
+                     S::zero(), S::zero())
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Matrix3<S> {
+    type Scalar = S;
+
+    #[inline]
+    fn zero() -> Matrix3<S> {
+        Matrix3::new(S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::zero())
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Matrix4<S> {
+    type Scalar = S;
+
+    #[inline]
+    fn zero() -> Matrix4<S> {
+        Matrix4::new(S::zero(), S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::zero())
+    }
+}
+
 /// A column-major matrix of arbitrary dimensions.
-pub trait Matrix  where
+///
+/// Because this is constrained to the `VectorSpace` trait, this means that
+/// following operators are required to be implemented:
+///
+/// Matrix addition:
+///
+/// - `Add<Output = Self>`
+/// - `Sub<Output = Self>`
+/// - `Neg<Output = Self>`
+///
+/// Scalar multiplication:
+///
+/// - `Mul<Self::Scalar, Output = Self>`
+/// - `Div<Self::Scalar, Output = Self>`
+/// - `Rem<Self::Scalar, Output = Self>`
+///
+/// Note that matrix multiplication is not required for implementors of this
+/// trait. This is due to the complexities of implementing these operators with
+/// Rust's current type system. For the multiplication of square matrices,
+/// see `SquareMatrix`.
+pub trait Matrix: VectorSpace where
+    Self::Scalar: BaseFloat,
+
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Matrix>::Column>,
     Self: IndexMut<usize, Output = <Self as Matrix>::Column>,
-    Self: ApproxEq<Epsilon = <Self as Matrix>::Element>,
-
-    Self: Add<Self, Output = Self>,
-    Self: Sub<Self, Output = Self>,
-    Self: Neg<Output = Self>,
-
-    Self: Mul<<Self as Matrix>::Element, Output = Self>,
-    Self: Div<<Self as Matrix>::Element, Output = Self>,
-    Self: Rem<<Self as Matrix>::Element, Output = Self>,
+    Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
 {
-    /// The type of the elements in the matrix.
-    type Element: BaseFloat;
-
     /// The row vector of the matrix.
-    type Row: Array<Element = Self::Element>;
-    /// The column vector of the matrix.
-    type Column: Array<Element = Self::Element>;
+    type Row: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
 
-    /// The type of the transposed matrix
-    type Transpose: Matrix<Element = Self::Element, Row = Self::Column, Column = Self::Row>;
+    /// The column vector of the matrix.
+    type Column: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
+
+    /// The result of transposing the matrix
+    type Transpose: Matrix<Scalar = Self::Scalar, Row = Self::Column, Column = Self::Row>;
 
     /// Get the pointer to the first element of the array.
     #[inline]
-    fn as_ptr(&self) -> *const Self::Element {
+    fn as_ptr(&self) -> *const Self::Scalar {
         &self[0][0]
     }
 
     /// Get a mutable pointer to the first element of the array.
     #[inline]
-    fn as_mut_ptr(&mut self) -> *mut Self::Element {
+    fn as_mut_ptr(&mut self) -> *mut Self::Scalar {
         &mut self[0][0]
     }
 
@@ -302,15 +347,14 @@ pub trait Matrix  where
     /// Swap the values at index `a` and `b`
     fn swap_elements(&mut self, a: (usize, usize), b: (usize, usize));
 
-    /// Create a matrix with all of the elements set to zero.
-    fn zero() -> Self;
-
     /// Transpose this matrix, returning a new matrix.
     fn transpose(&self) -> Self::Transpose;
 }
 
 /// A column-major major matrix where the rows and column vectors are of the same dimensions.
 pub trait SquareMatrix where
+    Self::Scalar: BaseFloat,
+
     Self: Matrix<
         // FIXME: Can be cleaned up once equality constraints in where clauses are implemented
         Column = <Self as SquareMatrix>::ColumnRow,
@@ -326,12 +370,12 @@ pub trait SquareMatrix where
     /// This is used to constrain the column and rows to be of the same type in lieu of equality
     /// constraints being implemented for `where` clauses. Once those are added, this type will
     /// likely go away.
-    type ColumnRow: Array<Element = Self::Element>;
+    type ColumnRow: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
 
     /// Create a new diagonal matrix using the supplied value.
-    fn from_value(value: Self::Element) -> Self;
+    fn from_value(value: Self::Scalar) -> Self;
     /// Create a matrix from a non-uniform scale
-    fn from_diagonal(diagonal: Self::Column) -> Self;
+    fn from_diagonal(diagonal: Self::ColumnRow) -> Self;
 
     /// The [identity matrix](https://en.wikipedia.org/wiki/Identity_matrix). Multiplying this
     /// matrix with another has no effect.
@@ -340,14 +384,14 @@ pub trait SquareMatrix where
     /// Transpose this matrix in-place.
     fn transpose_self(&mut self);
     /// Take the determinant of this matrix.
-    fn determinant(&self) -> Self::Element;
+    fn determinant(&self) -> Self::Scalar;
 
     /// Return a vector containing the diagonal of this matrix.
-    fn diagonal(&self) -> Self::Column;
+    fn diagonal(&self) -> Self::ColumnRow;
 
     /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
-    fn trace(&self) -> Self::Element { self.diagonal().sum() }
+    fn trace(&self) -> Self::Scalar { self.diagonal().sum() }
 
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
@@ -363,7 +407,7 @@ pub trait SquareMatrix where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Element::zero()) }
+    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Scalar::zero()) }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
@@ -380,7 +424,6 @@ pub trait SquareMatrix where
 }
 
 impl<S: BaseFloat> Matrix for Matrix2<S> {
-    type Element = S;
     type Column = Vector2<S>;
     type Row = Vector2<S>;
     type Transpose = Matrix2<S>;
@@ -407,12 +450,6 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
         let (ac, ar) = a;
         let (bc, br) = b;
         unsafe { ptr::swap(&mut self[ac][ar], &mut self[bc][br]) };
-    }
-
-    #[inline]
-    fn zero() -> Matrix2<S> {
-        Matrix2::new(S::zero(), S::zero(),
-                     S::zero(), S::zero())
     }
 
     fn transpose(&self) -> Matrix2<S> {
@@ -483,7 +520,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 }
 
 impl<S: BaseFloat> Matrix for Matrix3<S> {
-    type Element = S;
     type Column = Vector3<S>;
     type Row = Vector3<S>;
     type Transpose = Matrix3<S>;
@@ -512,13 +548,6 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
         let (ac, ar) = a;
         let (bc, br) = b;
         unsafe { ptr::swap(&mut self[ac][ar], &mut self[bc][br]) };
-    }
-
-    #[inline]
-    fn zero() -> Matrix3<S> {
-        Matrix3::new(S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero())
     }
 
     fn transpose(&self) -> Matrix3<S> {
@@ -603,7 +632,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 }
 
 impl<S: BaseFloat> Matrix for Matrix4<S> {
-    type Element = S;
     type Column = Vector4<S>;
     type Row = Vector4<S>;
     type Transpose = Matrix4<S>;
@@ -634,14 +662,6 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
         let (ac, ar) = a;
         let (bc, br) = b;
         unsafe { ptr::swap(&mut self[ac][ar], &mut self[bc][br]) };
-    }
-
-    #[inline]
-    fn zero() -> Matrix4<S> {
-        Matrix4::new(S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero())
     }
 
     fn transpose(&self) -> Matrix4<S> {
