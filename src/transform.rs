@@ -201,6 +201,10 @@ impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
     }
 }
 
+impl<S: BaseNum> From<Matrix4<S>> for AffineMatrix3<S> {
+    #[inline] fn from(mat: Matrix4<S>) -> AffineMatrix3<S> { AffineMatrix3 { mat: mat } }
+}
+
 impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
     #[inline] fn from(aff: AffineMatrix3<S>) -> Matrix4<S> { aff.mat }
 }
