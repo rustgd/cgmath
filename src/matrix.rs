@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Column major, square matrix types and traits.
-
 use std::fmt;
 use std::mem;
 use std::ops::*;
