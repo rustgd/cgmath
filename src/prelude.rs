@@ -10,7 +10,7 @@ pub use array::ElementWise;
 pub use matrix::Matrix;
 pub use matrix::SquareMatrix;
 
-pub use point::Point;
+pub use point::EuclideanSpace;
 
 pub use rotation::Rotation;
 pub use rotation::Rotation2;
@@ -20,5 +20,5 @@ pub use transform::Transform;
 pub use transform::Transform2;
 pub use transform::Transform3;
 
-pub use vector::EuclideanVector;
-pub use vector::Vector;
+pub use vector::InnerSpace;
+pub use vector::VectorSpace;

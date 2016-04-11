@@ -20,29 +20,29 @@ use approx::ApproxEq;
 use matrix::SquareMatrix;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
-use point::{Point, Point2, Point3};
+use point::{EuclideanSpace, Point2, Point3};
 use quaternion::Quaternion;
-use vector::{EuclideanVector, Vector2, Vector3};
+use vector::{InnerSpace, Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: Point>: PartialEq + Sized where
+pub trait Rotation<P: EuclideanSpace>: PartialEq + Sized where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: ApproxEq<Epsilon = <P as Point>::Scalar>,
-    <P as Point>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
+    <P as EuclideanSpace>::Scalar: BaseFloat,
 {
     /// Create the identity transform (causes no transformation).
     fn one() -> Self;
 
     /// Create a rotation to a given direction with an 'up' vector
-    fn look_at(dir: P::Vector, up: P::Vector) -> Self;
+    fn look_at(dir: P::Diff, up: P::Diff) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: P::Vector, b: P::Vector) -> Self;
+    fn between_vectors(a: P::Diff, b: P::Diff) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: P::Vector) -> P::Vector;
+    fn rotate_vector(&self, vec: P::Diff) -> P::Diff;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.

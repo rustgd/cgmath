@@ -27,24 +27,24 @@ use vector::*;
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<P: Point>: Sized {
+pub trait Transform<P: EuclideanSpace>: Sized {
     /// Create an identity transformation. That is, a transformation which
     /// does nothing.
     fn one() -> Self;
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
-    fn look_at(eye: P, center: P, up: P::Vector) -> Self;
+    fn look_at(eye: P, center: P, up: P::Diff) -> Self;
 
     /// Transform a vector using this transform.
-    fn transform_vector(&self, vec: P::Vector) -> P::Vector;
+    fn transform_vector(&self, vec: P::Diff) -> P::Diff;
 
     /// Transform a point using this transform.
     fn transform_point(&self, point: P) -> P;
 
     /// Transform a vector as a point using this transform.
     #[inline]
-    fn transform_as_point(&self, vec: P::Vector) -> P::Vector {
+    fn transform_as_point(&self, vec: P::Diff) -> P::Diff {
         self.transform_point(P::from_vec(vec)).to_vec()
     }
 
@@ -72,40 +72,40 @@ pub trait Transform<P: Point>: Sized {
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
 #[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
-pub struct Decomposed<V: Vector, R> {
+pub struct Decomposed<V: VectorSpace, R> {
     pub scale: V::Scalar,
     pub rot: R,
     pub disp: V,
 }
 
-impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
+impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <P as Point>::Scalar: BaseFloat,
+    <P as EuclideanSpace>::Scalar: BaseFloat,
     // FIXME: Investigate why this is needed!
-    <P as Point>::Vector: Vector,
+    <P as EuclideanSpace>::Diff: VectorSpace,
 {
     #[inline]
-    fn one() -> Decomposed<P::Vector, R> {
+    fn one() -> Decomposed<P::Diff, R> {
         Decomposed {
-            scale: <P as Point>::Scalar::one(),
+            scale: <P as EuclideanSpace>::Scalar::one(),
             rot: R::one(),
-            disp: P::Vector::zero(),
+            disp: P::Diff::zero(),
         }
     }
 
     #[inline]
-    fn look_at(eye: P, center: P, up: P::Vector) -> Decomposed<P::Vector, R> {
+    fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
         let rot = R::look_at(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
-            scale: <P as Point>::Scalar::one(),
+            scale: <P as EuclideanSpace>::Scalar::one(),
             rot: rot,
             disp: disp,
         }
     }
 
     #[inline]
-    fn transform_vector(&self, vec: P::Vector) -> P::Vector {
+    fn transform_vector(&self, vec: P::Diff) -> P::Diff {
         self.rot.rotate_vector(vec * self.scale)
     }
 
@@ -114,7 +114,7 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         self.rot.rotate_point(point * self.scale) + self.disp
     }
 
-    fn concat(&self, other: &Decomposed<P::Vector, R>) -> Decomposed<P::Vector, R> {
+    fn concat(&self, other: &Decomposed<P::Diff, R>) -> Decomposed<P::Diff, R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat(&other.rot),
@@ -122,11 +122,11 @@ impl<P: Point, R: Rotation<P>> Transform<P> for Decomposed<P::Vector, R> where
         }
     }
 
-    fn invert(&self) -> Option<Decomposed<P::Vector, R>> {
-        if self.scale.approx_eq(&<P as Point>::Scalar::zero()) {
+    fn invert(&self) -> Option<Decomposed<P::Diff, R>> {
+        if self.scale.approx_eq(&<P as EuclideanSpace>::Scalar::zero()) {
             None
         } else {
-            let s = <P as Point>::Scalar::one() / self.scale;
+            let s = <P as EuclideanSpace>::Scalar::one() / self.scale;
             let r = self.rot.invert();
             let d = r.rotate_vector(self.disp.clone()) * -s;
             Some(Decomposed {

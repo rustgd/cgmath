@@ -13,19 +13,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Computer graphics-centric math.
+//! A low-dimensional linear algebra library, targeted at computer graphics.
 //!
-//! This crate provides useful mathematical primitives and operations on them.
-//! It is organized into one module per primitive. The core structures are
-//! vectors and matrices. A strongly-typed interface is provided, to prevent
-//! mixing units or violating mathematical invariants.
+//! # Trait overview
 //!
-//! Transformations are not usually done directly on matrices, but go through
-//! transformation objects that can be converted to matrices. Rotations go
-//! through the `Basis` types, which are guaranteed to be orthogonal matrices.
-//! Despite this, one can directly create a limited rotation matrix using the
-//! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
-//! These are provided for convenience.
+//! In order to make a clean, composable API, we divide operations into traits
+//! that are roughly based on mathematical properties. The main ones that we
+//! concern ourselves with are listed below:
+//!
+//! - `VectorSpace`: Specifies the main operators for vectors, quaternions, and
+//!    matrices.
+//! - `InnerSpace`: For types that have a dot (or inner) product - ie. vectors or
+//!    quaternions. This also allows for the definition of operations that are
+//!    based on the dot product, like finding the magnitude or normalizing.
+//! - `EuclideanSpace`: Points in euclidean space, with an associated space of
+//!   displacement vectors.
+//! - `Matrix`: Common operations for matrices of arbitrary dimensions.
+//! - `SquareMatrix`: A special trait for matrices where the number of columns
+//!   equal the number of rows.
+//!
+//! Other traits are included for practical convenience, for example:
+//!
+//! - `Array`: For contiguous, indexable arrays of elements, specifically
+//!   vectors.
+//! - `ElementWise`: For element-wise addition, subtraction, multiplication,
+//!   division, and remainder operations.
+//!
+//! # The prelude
+//!
+//! Importing each trait individually can become a chore, so we provide a
+//! `prelude` module to allow you to import the main trait all at once. For
+//! example:
+//!
+//! ```rust
+//! use cgmath::prelude::*;
+//! ```
 
 extern crate num as rust_num;
 extern crate rustc_serialize;
