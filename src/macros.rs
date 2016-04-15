@@ -121,7 +121,6 @@ macro_rules! impl_assignment_operator {
     (<$S:ident: $Constraint:ident> $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident(&mut $lhs:ident, $rhs:ident) $body:block
     }) => {
-        #[cfg(feature = "unstable")]
         impl<$S: $Constraint + $Op<$S>> $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(&mut $lhs, $rhs: $Rhs) $body
