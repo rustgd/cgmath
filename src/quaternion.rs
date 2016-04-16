@@ -72,6 +72,87 @@ impl<S: BaseFloat> Quaternion<S> {
     pub fn nlerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
         (self * (S::one() - amount) + other * amount).normalize()
     }
+
+    /// Spherical Linear Intoperlation
+    ///
+    /// Return the spherical linear interpolation between the quaternion and
+    /// `other`. Both quaternions should be normalized first.
+    ///
+    /// # Performance notes
+    ///
+    /// The `acos` operation used in `slerp` is an expensive operation, so
+    /// unless your quarternions are far away from each other it's generally
+    /// more advisable to use `nlerp` when you know your rotations are going
+    /// to be small.
+    ///
+    /// - [Understanding Slerp, Then Not Using It]
+    ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
+    /// - [Arcsynthesis OpenGL tutorial]
+    ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
+    pub fn slerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
+        let dot = self.dot(other);
+        let dot_threshold = cast(0.9995f64).unwrap();
+
+        // if quaternions are close together use `nlerp`
+        if dot > dot_threshold {
+            self.nlerp(other, amount)
+        } else {
+            // stay within the domain of acos()
+            // TODO REMOVE WHEN https://github.com/mozilla/rust/issues/12068 IS RESOLVED
+            let robust_dot = if dot > S::one() {
+                S::one()
+            } else if dot < -S::one() {
+                -S::one()
+            } else {
+                dot
+            };
+
+            let theta = Rad::acos(robust_dot.clone());
+
+            let scale1 = Rad::sin(theta * (S::one() - amount));
+            let scale2 = Rad::sin(theta * amount);
+
+            (self * scale1 + other * scale2) * Rad::sin(theta).recip()
+        }
+    }
+
+    /// Convert a Quaternion to Eular angles
+    ///     This is a polar singularity aware conversion
+    ///
+    ///  Based on:
+    /// - [Maths - Conversion Quaternion to Euler]
+    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
+    pub fn to_euler(self) -> (Rad<S>, Rad<S>, Rad<S>) {
+        let sig: S = cast(0.499f64).unwrap();
+        let two: S = cast(2f64).unwrap();
+        let one: S = cast(1f64).unwrap();
+
+        let (qw, qx, qy, qz) = (self.s, self.v.x, self.v.y, self.v.z);
+        let (sqw, sqx, sqy, sqz) = (qw * qw, qx * qx, qy * qy, qz * qz);
+
+        let unit = sqx + sqy + sqz + sqw;
+        let test = qx * qy + qz * qw;
+
+        if test > sig * unit {
+            (
+                Rad::zero(),
+                Rad::turn_div_4(),
+                Rad::atan2(qx, qw) * two,
+            )
+        } else if test < -sig * unit {
+            (
+                Rad::zero(),
+                -Rad::turn_div_4(),
+                Rad::atan2(qx, qw) * two,
+            )
+        } else {
+            (
+                Rad::atan2(two * (qy * qw - qx * qz), one - two * (sqy + sqz)),
+                Rad::asin(two * (qx * qy + qz * qw)),
+                Rad::atan2(two * (qx * qw - qy * qz), one - two * (sqx + sqz)),
+            )
+        }
+    }
 }
 
 impl<S: BaseFloat> VectorSpace for Quaternion<S> {
@@ -191,89 +272,6 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
     fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
         self.s.approx_eq_eps(&other.s, epsilon) &&
         self.v.approx_eq_eps(&other.v, epsilon)
-    }
-}
-
-impl<S: BaseFloat> Quaternion<S> {
-    /// Spherical Linear Intoperlation
-    ///
-    /// Return the spherical linear interpolation between the quaternion and
-    /// `other`. Both quaternions should be normalized first.
-    ///
-    /// # Performance notes
-    ///
-    /// The `acos` operation used in `slerp` is an expensive operation, so
-    /// unless your quarternions are far away from each other it's generally
-    /// more advisable to use `nlerp` when you know your rotations are going
-    /// to be small.
-    ///
-    /// - [Understanding Slerp, Then Not Using It]
-    ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
-    /// - [Arcsynthesis OpenGL tutorial]
-    ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-    pub fn slerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
-        let dot = self.dot(other);
-        let dot_threshold = cast(0.9995f64).unwrap();
-
-        // if quaternions are close together use `nlerp`
-        if dot > dot_threshold {
-            self.nlerp(other, amount)
-        } else {
-            // stay within the domain of acos()
-            // TODO REMOVE WHEN https://github.com/mozilla/rust/issues/12068 IS RESOLVED
-            let robust_dot = if dot > S::one() {
-                S::one()
-            } else if dot < -S::one() {
-                -S::one()
-            } else {
-                dot
-            };
-
-            let theta = Rad::acos(robust_dot.clone());
-
-            let scale1 = Rad::sin(theta * (S::one() - amount));
-            let scale2 = Rad::sin(theta * amount);
-
-            (self * scale1 + other * scale2) * Rad::sin(theta).recip()
-        }
-    }
-
-    /// Convert a Quaternion to Eular angles
-    ///     This is a polar singularity aware conversion
-    ///
-    ///  Based on:
-    /// - [Maths - Conversion Quaternion to Euler]
-    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
-    pub fn to_euler(self) -> (Rad<S>, Rad<S>, Rad<S>) {
-        let sig: S = cast(0.499f64).unwrap();
-        let two: S = cast(2f64).unwrap();
-        let one: S = cast(1f64).unwrap();
-
-        let (qw, qx, qy, qz) = (self.s, self.v.x, self.v.y, self.v.z);
-        let (sqw, sqx, sqy, sqz) = (qw * qw, qx * qx, qy * qy, qz * qz);
-
-        let unit = sqx + sqy + sqz + sqw;
-        let test = qx * qy + qz * qw;
-
-        if test > sig * unit {
-            (
-                Rad::zero(),
-                Rad::turn_div_4(),
-                Rad::atan2(qx, qw) * two,
-            )
-        } else if test < -sig * unit {
-            (
-                Rad::zero(),
-                -Rad::turn_div_4(),
-                Rad::atan2(qx, qw) * two,
-            )
-        } else {
-            (
-                Rad::atan2(two * (qy * qw - qx * qz), one - two * (sqy + sqz)),
-                Rad::asin(two * (qx * qy + qz * qw)),
-                Rad::atan2(two * (qx * qw - qy * qz), one - two * (sqx + sqz)),
-            )
-        }
     }
 }
 
