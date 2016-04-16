@@ -865,11 +865,9 @@ macro_rules! impl_operators {
         impl_operator!(<S: BaseFloat> Sub<$MatrixN<S> > for $MatrixN<S> {
             fn sub(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field - rhs.$field),+ } }
         });
-        #[cfg(feature = "unstable")]
         impl<S: BaseFloat + AddAssign<S>> AddAssign<$MatrixN<S>> for $MatrixN<S> {
             fn add_assign(&mut self, other: $MatrixN<S>) { $(self.$field += other.$field);+ }
         }
-        #[cfg(feature = "unstable")]
         impl<S: BaseFloat + SubAssign<S>> SubAssign<$MatrixN<S>> for $MatrixN<S> {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
         }

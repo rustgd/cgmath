@@ -78,9 +78,9 @@ pub trait ElementWise<Rhs = Self> {
     fn div_element_wise(self, rhs: Rhs) -> Self;
     fn rem_element_wise(self, rhs: Rhs) -> Self;
 
-    #[cfg(feature = "unstable")] fn add_assign_element_wise(&mut self, rhs: Rhs);
-    #[cfg(feature = "unstable")] fn sub_assign_element_wise(&mut self, rhs: Rhs);
-    #[cfg(feature = "unstable")] fn mul_assign_element_wise(&mut self, rhs: Rhs);
-    #[cfg(feature = "unstable")] fn div_assign_element_wise(&mut self, rhs: Rhs);
-    #[cfg(feature = "unstable")] fn rem_assign_element_wise(&mut self, rhs: Rhs);
+    fn add_assign_element_wise(&mut self, rhs: Rhs);
+    fn sub_assign_element_wise(&mut self, rhs: Rhs);
+    fn mul_assign_element_wise(&mut self, rhs: Rhs);
+    fn div_assign_element_wise(&mut self, rhs: Rhs);
+    fn rem_assign_element_wise(&mut self, rhs: Rhs);
 }
