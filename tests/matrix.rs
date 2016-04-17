@@ -332,7 +332,7 @@ pub mod matrix3 {
 
         fn check_from_axis_angle_x(pitch: Rad<f32>) {
             let found = Matrix3::from_angle_x(pitch);
-            let expected = Matrix3::from_euler(pitch, rad(0.0), rad(0.0));
+            let expected = Matrix3::from(Euler { x: pitch, y: rad(0.0), z: rad(0.0) });
             assert_approx_eq_eps!(found, expected, 0.001);
         }
 
@@ -346,7 +346,7 @@ pub mod matrix3 {
 
         fn check_from_axis_angle_y(yaw: Rad<f32>) {
             let found = Matrix3::from_angle_y(yaw);
-            let expected = Matrix3::from_euler(rad(0.0), yaw, rad(0.0));
+            let expected = Matrix3::from(Euler { x: rad(0.0), y: yaw, z: rad(0.0) });
             assert_approx_eq_eps!(found, expected, 0.001);
         }
 
@@ -360,7 +360,7 @@ pub mod matrix3 {
 
         fn check_from_axis_angle_z(roll: Rad<f32>) {
             let found = Matrix3::from_angle_z(roll);
-            let expected = Matrix3::from_euler(rad(0.0), rad(0.0), roll);
+            let expected = Matrix3::from(Euler { x: rad(0.0), y: rad(0.0), z: roll });
             assert_approx_eq_eps!(found, expected, 0.001);
         }
 
@@ -375,7 +375,7 @@ pub mod matrix3 {
 
             fn check_from_axis_angle_x(pitch: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_x(), pitch);
-                let expected = Matrix3::from_euler(pitch, rad(0.0), rad(0.0));
+                let expected = Matrix3::from(Euler { x: pitch, y: rad(0.0), z: rad(0.0) });
                 assert_approx_eq_eps!(found, expected, 0.001);
             }
 
@@ -389,7 +389,7 @@ pub mod matrix3 {
 
             fn check_from_axis_angle_y(yaw: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_y(), yaw);
-                let expected = Matrix3::from_euler(rad(0.0), yaw, rad(0.0));
+                let expected = Matrix3::from(Euler { x: rad(0.0), y: yaw, z: rad(0.0) });
                 assert_approx_eq_eps!(found, expected, 0.001);
             }
 
@@ -403,7 +403,7 @@ pub mod matrix3 {
 
             fn check_from_axis_angle_z(roll: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_z(), roll);
-                let expected = Matrix3::from_euler(rad(0.0), rad(0.0), roll);
+                let expected = Matrix3::from(Euler { x: rad(0.0), y: rad(0.0), z: roll });
                 assert_approx_eq_eps!(found, expected, 0.001);
             }
 

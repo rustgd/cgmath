@@ -24,6 +24,7 @@ use structure::*;
 
 use angle::Rad;
 use approx::ApproxEq;
+use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
@@ -117,44 +118,6 @@ impl<S: BaseFloat> Quaternion<S> {
             (self * scale1 + other * scale2) * Rad::sin(theta).recip()
         }
     }
-
-    /// Convert a Quaternion to Eular angles
-    ///     This is a polar singularity aware conversion
-    ///
-    ///  Based on:
-    /// - [Maths - Conversion Quaternion to Euler]
-    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/)
-    pub fn to_euler(self) -> (Rad<S>, Rad<S>, Rad<S>) {
-        let sig: S = cast(0.499f64).unwrap();
-        let two: S = cast(2f64).unwrap();
-        let one: S = cast(1f64).unwrap();
-
-        let (qw, qx, qy, qz) = (self.s, self.v.x, self.v.y, self.v.z);
-        let (sqw, sqx, sqy, sqz) = (qw * qw, qx * qx, qy * qy, qz * qz);
-
-        let unit = sqx + sqy + sqz + sqw;
-        let test = qx * qy + qz * qw;
-
-        if test > sig * unit {
-            (
-                Rad::zero(),
-                Rad::turn_div_4(),
-                Rad::atan2(qx, qw) * two,
-            )
-        } else if test < -sig * unit {
-            (
-                Rad::zero(),
-                -Rad::turn_div_4(),
-                Rad::atan2(qx, qw) * two,
-            )
-        } else {
-            (
-                Rad::atan2(two * (qy * qw - qx * qz), one - two * (sqy + sqz)),
-                Rad::asin(two * (qx * qy + qz * qw)),
-                Rad::atan2(two * (qx * qw - qy * qz), one - two * (sqx + sqz)),
-            )
-        }
-    }
 }
 
 impl<S: BaseFloat> VectorSpace for Quaternion<S> {
@@ -170,6 +133,24 @@ impl<S: BaseFloat> InnerSpace for Quaternion<S> {
     #[inline]
     fn dot(self, other: Quaternion<S>) -> S {
         self.s * other.s + self.v.dot(other.v)
+    }
+}
+
+impl<A> From<Euler<A>> for Quaternion<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Quaternion<A::Unitless> {
+        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
+
+        let half = cast(0.5f64).unwrap();
+        let (s_x, c_x) = Rad::sin_cos(src.x.into() * half);
+        let (s_y, c_y) = Rad::sin_cos(src.y.into() * half);
+        let (s_z, c_z) = Rad::sin_cos(src.z.into() * half);
+
+        Quaternion::new(c_y * c_x * c_z - s_y * s_x * s_z,
+                        s_y * s_x * c_z + c_y * c_x * s_z,
+                        s_y * c_x * c_z + c_y * s_x * s_z,
+                        c_y * s_x * c_z - s_y * c_x * s_z)
     }
 }
 
@@ -372,19 +353,6 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
         let (s, c) = Rad::sin_cos(angle * cast(0.5f64).unwrap());
         Quaternion::from_sv(c, axis * s)
-    }
-
-    /// - [Maths - Conversion Euler to Quaternion]
-    ///   (http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm)
-    fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Quaternion<S> {
-        let (s1, c1) = Rad::sin_cos(x * cast(0.5f64).unwrap());
-        let (s2, c2) = Rad::sin_cos(y * cast(0.5f64).unwrap());
-        let (s3, c3) = Rad::sin_cos(z * cast(0.5f64).unwrap());
-
-        Quaternion::new(c1 * c2 * c3 - s1 * s2 * s3,
-                        s1 * s2 * c3 + c1 * c2 * s3,
-                        s1 * c2 * c3 + c1 * s2 * s3,
-                        c1 * s2 * c3 - s1 * c2 * s3)
     }
 }
 

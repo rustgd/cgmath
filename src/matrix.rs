@@ -25,6 +25,7 @@ use structure::*;
 
 use angle::Rad;
 use approx::ApproxEq;
+use euler::Euler;
 use num::BaseFloat;
 use point::Point3;
 use quaternion::Quaternion;
@@ -159,24 +160,6 @@ impl<S: BaseFloat> Matrix3<S> {
                      S::zero(), S::zero(), S::one())
     }
 
-    /// Create a rotation matrix from a set of euler angles.
-    ///
-    /// # Parameters
-    ///
-    /// - `x`: the angular rotation around the `x` axis (pitch).
-    /// - `y`: the angular rotation around the `y` axis (yaw).
-    /// - `z`: the angular rotation around the `z` axis (roll).
-    pub fn from_euler(x: Rad<S>, y: Rad<S>, z: Rad<S>) -> Matrix3<S> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = Rad::sin_cos(x);
-        let (sy, cy) = Rad::sin_cos(y);
-        let (sz, cz) = Rad::sin_cos(z);
-
-        Matrix3::new(cy * cz, cy * sz, -sy,
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
-    }
-
     /// Create a rotation matrix from an angle around an arbitrary axis.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = Rad::sin_cos(angle);
@@ -193,6 +176,37 @@ impl<S: BaseFloat> Matrix3<S> {
                      _1subc * axis.x * axis.z + s * axis.y,
                      _1subc * axis.y * axis.z - s * axis.x,
                      _1subc * axis.z * axis.z + c)
+    }
+}
+
+impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix3::new(cy * cz, cy * sz, -sy,
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+    }
+}
+
+impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
+                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
     }
 }
 
