@@ -55,20 +55,20 @@ extern crate rand;
 
 // Re-exports
 
-pub use array::*;
-pub use matrix::*;
-pub use quaternion::*;
-pub use vector::*;
+pub use approx::*;
+pub use num::*;
+pub use structure::*;
 
-pub use angle::*;
-pub use point::*;
+pub use matrix::{Matrix2, Matrix3, Matrix4};
+pub use quaternion::Quaternion;
+pub use vector::{Vector2, Vector3, Vector4, dot, vec2, vec3, vec4};
+
+pub use angle::{Deg, Rad, deg, rad};
+pub use point::{Point2, Point3};
 pub use rotation::*;
 pub use transform::*;
 
 pub use projection::*;
-
-pub use approx::ApproxEq;
-pub use num::*;
 
 pub use rust_num::{One, Zero, one, zero};
 
@@ -79,7 +79,9 @@ pub mod prelude;
 
 mod macros;
 
-mod array;
+mod approx;
+mod num;
+mod structure;
 
 mod matrix;
 mod quaternion;
@@ -91,6 +93,3 @@ mod rotation;
 mod transform;
 
 mod projection;
-
-mod approx;
-mod num;

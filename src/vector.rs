@@ -13,89 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use rand::{Rand, Rng};
+use rust_num::{NumCast, Zero, One};
 use std::fmt;
 use std::mem;
 use std::ops::*;
 
-use rand::{Rand, Rng};
+use structure::*;
 
-use rust_num::{NumCast, Zero, One};
-
-use angle::{Angle, Rad};
+use angle::Rad;
 use approx::ApproxEq;
-use array::{Array, ElementWise};
 use num::{BaseNum, BaseFloat, PartialOrd};
-
-/// Vectors that can be [added](http://mathworld.wolfram.com/VectorAddition.html)
-/// together and [multiplied](https://en.wikipedia.org/wiki/Scalar_multiplication)
-/// by scalars.
-///
-/// Examples include vectors, matrices, and quaternions.
-///
-/// # Required operators
-///
-/// ## Vector addition
-///
-/// Vectors can be added, subtracted, or negated via the following traits:
-///
-/// - `Add<Output = Self>`
-/// - `Sub<Output = Self>`
-/// - `Neg<Output = Self>`
-///
-/// ```rust
-/// use cgmath::Vector3;
-///
-/// let velocity0 = Vector3::new(1, 2, 0);
-/// let velocity1 = Vector3::new(1, 1, 0);
-///
-/// let total_velocity = velocity0 + velocity1;
-/// let velocity_diff = velocity1 - velocity0;
-/// let reversed_velocity0 = -velocity0;
-/// ```
-///
-/// ## Scalar multiplication
-///
-/// Vectors can be multiplied or divided by their associated scalars via the
-/// following traits:
-///
-/// - `Mul<Self::Scalar, Output = Self>`
-/// - `Div<Self::Scalar, Output = Self>`
-/// - `Rem<Self::Scalar, Output = Self>`
-///
-/// ```rust
-/// use cgmath::Vector2;
-///
-/// let translation = Vector2::new(3.0, 4.0);
-/// let scale_factor = 2.0;
-///
-/// let upscaled_translation = translation * scale_factor;
-/// let downscaled_translation = translation / scale_factor;
-/// ```
-pub trait VectorSpace: Copy + Clone where
-    Self: Add<Self, Output = Self>,
-    Self: Sub<Self, Output = Self>,
-
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Mul<<Self as VectorSpace>::Scalar, Output = Self>,
-    Self: Div<<Self as VectorSpace>::Scalar, Output = Self>,
-    Self: Rem<<Self as VectorSpace>::Scalar, Output = Self>,
-{
-    /// The associated scalar.
-    type Scalar: BaseNum;
-
-    /// The additive identity.
-    ///
-    /// Adding this to another `Self` value has no effect.
-    ///
-    /// ```rust
-    /// use cgmath::prelude::*;
-    /// use cgmath::Vector2;
-    ///
-    /// let v = Vector2::new(1, 2);
-    /// assert_eq!(v + Vector2::zero(), v);
-    /// ```
-    fn zero() -> Self;
-}
 
 /// A 2-dimensional vector.
 ///
@@ -448,74 +376,6 @@ impl<S: BaseNum> Vector4<S> {
             3 => Vector3::new(self.x, self.y, self.z),
             _ => panic!("{:?} is out of range", n)
         }
-    }
-}
-
-/// Vectors that also have a [dot](https://en.wikipedia.org/wiki/Dot_product)
-/// (or [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product.
-///
-/// The dot product allows for the definition of other useful operations, like
-/// finding the magnitude of a vector or normalizing it.
-///
-/// Examples include vectors and quaternions.
-pub trait InnerSpace: VectorSpace + Sized where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <Self as VectorSpace>::Scalar: BaseFloat,
-    Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
-{
-    /// Vector dot (or inner) product.
-    fn dot(self, other: Self) -> Self::Scalar;
-
-    /// Returns `true` if the vector is perpendicular (at right angles) to the
-    /// other vector.
-    fn is_perpendicular(self, other: Self) -> bool {
-        Self::dot(self, other).approx_eq(&Self::Scalar::zero())
-    }
-
-    /// Returns the squared magnitude of the vector.
-    ///
-    /// This does not perform an expensive square root operation like in
-    /// `Vector::magnitude` method, and so can be used to compare vectors more
-    /// efficiently.
-    #[inline]
-    fn magnitude2(self) -> Self::Scalar {
-        Self::dot(self, self)
-    }
-
-    /// The distance from the tail to the tip of the vector.
-    #[inline]
-    fn magnitude(self) -> Self::Scalar {
-        use rust_num::Float;
-
-        // FIXME: Not sure why we can't use method syntax for `sqrt` here...
-        Float::sqrt(self.magnitude2())
-    }
-
-    /// Returns the angle between two vectors in radians.
-    fn angle(self, other: Self) -> Rad<Self::Scalar> {
-        Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
-    }
-
-    /// Returns a vector with the same direction, but with a magnitude of `1`.
-    #[inline]
-    #[must_use]
-    fn normalize(self) -> Self {
-        self.normalize_to(Self::Scalar::one())
-    }
-
-    /// Returns a vector with the same direction and a given magnitude.
-    #[inline]
-    #[must_use]
-    fn normalize_to(self, magnitude: Self::Scalar) -> Self {
-        self * (magnitude / self.magnitude())
-    }
-
-    /// Returns the result of linearly interpolating the magnitude of the vector
-    /// towards the magnitude of `other` by the specified amount.
-    #[inline]
-    #[must_use]
-    fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
-        self + ((other - self) * amount)
     }
 }
 

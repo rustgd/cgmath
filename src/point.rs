@@ -23,10 +23,11 @@ use std::ops::*;
 
 use rust_num::{One, Zero};
 
+use structure::*;
+
 use approx::ApproxEq;
-use array::Array;
 use num::{BaseNum, BaseFloat};
-use vector::*;
+use vector::{Vector2, Vector3, Vector4};
 
 /// A point in 2-dimensional space.
 ///
@@ -75,92 +76,6 @@ impl<S: BaseNum> Point3<S> {
     pub fn to_homogeneous(self) -> Vector4<S> {
         Vector4::new(self.x, self.y, self.z, S::one())
     }
-}
-
-/// Points in a [Euclidean space](https://en.wikipedia.org/wiki/Euclidean_space)
-/// with an associated space of displacement vectors.
-///
-/// # Point-Vector distinction
-///
-/// `cgmath` distinguishes between points and vectors in the following way:
-///
-/// - Points are _locations_ relative to an origin
-/// - Vectors are _displacements_ between those points
-///
-/// For example, to find the midpoint between two points, you can write the
-/// following:
-///
-/// ```rust
-/// use cgmath::Point3;
-///
-/// let p0 = Point3::new(1.0, 2.0, 3.0);
-/// let p1 = Point3::new(-3.0, 1.0, 2.0);
-/// let midpoint: Point3<f32> = p0 + (p1 - p0) * 0.5;
-/// ```
-///
-/// Breaking the expression up, and adding explicit types makes it clearer
-/// to see what is going on:
-///
-/// ```rust
-/// # use cgmath::{Point3, Vector3};
-/// #
-/// # let p0 = Point3::new(1.0, 2.0, 3.0);
-/// # let p1 = Point3::new(-3.0, 1.0, 2.0);
-/// #
-/// let dv: Vector3<f32> = p1 - p0;
-/// let half_dv: Vector3<f32> = dv * 0.5;
-/// let midpoint: Point3<f32> = p0 + half_dv;
-/// ```
-///
-/// ## Converting between points and vectors
-///
-/// Points can be converted to and from displacement vectors using the
-/// `EuclideanSpace::{from_vec, to_vec}` methods. Note that under the hood these
-/// are implemented as inlined a type conversion, so should not have any
-/// performance implications.
-///
-/// ## References
-///
-/// - [CGAL 4.7 - 2D and 3D Linear Geometry Kernel: 3.1 Points and Vectors](http://doc.cgal.org/latest/Kernel_23/index.html#Kernel_23PointsandVectors)
-/// - [What is the difference between a point and a vector](http://math.stackexchange.com/q/645827)
-///
-pub trait EuclideanSpace: Copy + Clone where
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array<Element = <Self as EuclideanSpace>::Scalar>,
-
-    Self: Add<<Self as EuclideanSpace>::Diff, Output = Self>,
-    Self: Sub<Self, Output = <Self as EuclideanSpace>::Diff>,
-
-    Self: Mul<<Self as EuclideanSpace>::Scalar, Output = Self>,
-    Self: Div<<Self as EuclideanSpace>::Scalar, Output = Self>,
-    Self: Rem<<Self as EuclideanSpace>::Scalar, Output = Self>,
-{
-    /// The associated scalar over which the space is defined.
-    ///
-    /// Due to the equality constraints demanded by `Self::Diff`, this is effectively just an
-    /// alias to `Self::Diff::Scalar`.
-    type Scalar: BaseNum;
-
-    /// The associated space of displacement vectors.
-    type Diff: VectorSpace<Scalar = Self::Scalar>;
-
-    /// The point at the origin of the Euclidean space.
-    fn origin() -> Self;
-
-    /// Convert a displacement vector to a point.
-    ///
-    /// This can be considered equivalent to the addition of the displacement
-    /// vector `v` to to `Self::origin()`.
-    fn from_vec(v: Self::Diff) -> Self;
-
-    /// Convert a point to a displacement vector.
-    ///
-    /// This can be seen as equivalent to the displacement vector from
-    /// `Self::origin()` to `self`.
-    fn to_vec(self) -> Self::Diff;
-
-    /// This is a weird one, but its useful for plane calculations.
-    fn dot(self, v: Self::Diff) -> Self::Scalar;
 }
 
 macro_rules! impl_point {
