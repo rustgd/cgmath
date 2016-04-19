@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -35,4 +35,4 @@ rand = "0.3"
 rustc-serialize = "0.3"
 
 [dev-dependencies]
-glium = "0.13.5"
+glium = "0.14.0"

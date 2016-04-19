@@ -6,7 +6,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [v0.7.0] - 2016-04-06
+## [v0.9.0] - 2016-04-19
+
+### Changed
+
+- Assignment operators implementations have been stabilised, to coincide with
+  their [stabilisation in Rust 1.8](http://blog.rust-lang.org/2016/04/14/Rust-1.8.html).
+- Renames `Vector` trait to `VectorSpace`.
+- Renames `EuclideanVector` to `InnerSpace`.
+- Renames `Point` to `EuclideanSpace`, and `Point::Vector` to `EuclideanSpace::Diff`.
+- `Quaternion`s now implement `VectorSpace` and `InnerSpace` for the functions
+  they share.
+- The `Matrix` trait is now constraint by `VectorSpace`, with `Matrix::Element`
+  removed in favor of `VectorSpace::Scalar`.
+
+## [v0.8.0] - 2016-04-06
 
 ### Added
 
@@ -151,8 +165,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.8.0...HEAD
-[v0.7.0]: https://github.com/bjz/cgmath/compare/v0.7.0...v0.8.0
+[Unreleased]: https://github.com/bjz/cgmath/compare/v0.9.0...HEAD
+[v0.9.0]: https://github.com/bjz/cgmath/compare/v0.8.0...v0.9.0
+[v0.8.0]: https://github.com/bjz/cgmath/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/bjz/cgmath/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/bjz/cgmath/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/bjz/cgmath/compare/v0.4.0...v0.5.0
