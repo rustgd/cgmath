@@ -17,12 +17,14 @@ use std::fmt;
 
 use rust_num::{Zero, One};
 
+use structure::*;
+
 use approx::ApproxEq;
-use matrix::*;
-use num::*;
-use point::*;
+use matrix::{Matrix2, Matrix3, Matrix4};
+use num::{BaseFloat, BaseNum};
+use point::{Point2, Point3};
 use rotation::*;
-use vector::*;
+use vector::{Vector2, Vector3};
 
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
@@ -87,7 +89,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     #[inline]
     fn one() -> Decomposed<P::Diff, R> {
         Decomposed {
-            scale: <P as EuclideanSpace>::Scalar::one(),
+            scale: P::Scalar::one(),
             rot: R::one(),
             disp: P::Diff::zero(),
         }
@@ -98,7 +100,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
         let rot = R::look_at(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
-            scale: <P as EuclideanSpace>::Scalar::one(),
+            scale: P::Scalar::one(),
             rot: rot,
             disp: disp,
         }
@@ -123,10 +125,10 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     }
 
     fn invert(&self) -> Option<Decomposed<P::Diff, R>> {
-        if self.scale.approx_eq(&<P as EuclideanSpace>::Scalar::zero()) {
+        if self.scale.approx_eq(&P::Scalar::zero()) {
             None
         } else {
-            let s = <P as EuclideanSpace>::Scalar::one() / self.scale;
+            let s = P::Scalar::one() / self.scale;
             let r = self.rot.invert();
             let d = r.rotate_vector(self.disp.clone()) * -s;
             Some(Decomposed {

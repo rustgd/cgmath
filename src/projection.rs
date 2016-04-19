@@ -16,7 +16,9 @@
 use rust_num::{Zero, One};
 use rust_num::traits::cast;
 
-use angle::{Angle, Rad};
+use structure::Angle;
+
+use angle::Rad;
 use matrix::Matrix4;
 use num::BaseFloat;
 

@@ -13,23 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use rand::{Rand, Rng};
+use rust_num::{Zero, One};
+use rust_num::traits::cast;
 use std::fmt;
 use std::mem;
 use std::ops::*;
 use std::ptr;
 
-use rand::{Rand, Rng};
+use structure::*;
 
-use rust_num::{Zero, One};
-use rust_num::traits::cast;
-
-use angle::{Angle, Rad};
+use angle::Rad;
 use approx::ApproxEq;
-use array::Array;
 use num::BaseFloat;
-use point::{EuclideanSpace, Point3};
+use point::Point3;
 use quaternion::Quaternion;
-use vector::{VectorSpace, InnerSpace};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
@@ -286,148 +284,6 @@ impl<S: BaseFloat> VectorSpace for Matrix4<S> {
                      S::zero(), S::zero(), S::zero(), S::zero(),
                      S::zero(), S::zero(), S::zero(), S::zero())
     }
-}
-
-/// A column-major matrix of arbitrary dimensions.
-///
-/// Because this is constrained to the `VectorSpace` trait, this means that
-/// following operators are required to be implemented:
-///
-/// Matrix addition:
-///
-/// - `Add<Output = Self>`
-/// - `Sub<Output = Self>`
-/// - `Neg<Output = Self>`
-///
-/// Scalar multiplication:
-///
-/// - `Mul<Self::Scalar, Output = Self>`
-/// - `Div<Self::Scalar, Output = Self>`
-/// - `Rem<Self::Scalar, Output = Self>`
-///
-/// Note that matrix multiplication is not required for implementors of this
-/// trait. This is due to the complexities of implementing these operators with
-/// Rust's current type system. For the multiplication of square matrices,
-/// see `SquareMatrix`.
-pub trait Matrix: VectorSpace where
-    Self::Scalar: BaseFloat,
-
-    // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Index<usize, Output = <Self as Matrix>::Column>,
-    Self: IndexMut<usize, Output = <Self as Matrix>::Column>,
-    Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
-{
-    /// The row vector of the matrix.
-    type Row: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
-
-    /// The column vector of the matrix.
-    type Column: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
-
-    /// The result of transposing the matrix
-    type Transpose: Matrix<Scalar = Self::Scalar, Row = Self::Column, Column = Self::Row>;
-
-    /// Get the pointer to the first element of the array.
-    #[inline]
-    fn as_ptr(&self) -> *const Self::Scalar {
-        &self[0][0]
-    }
-
-    /// Get a mutable pointer to the first element of the array.
-    #[inline]
-    fn as_mut_ptr(&mut self) -> *mut Self::Scalar {
-        &mut self[0][0]
-    }
-
-    /// Replace a column in the array.
-    #[inline]
-    fn replace_col(&mut self, c: usize, src: Self::Column) -> Self::Column {
-        mem::replace(&mut self[c], src)
-    }
-
-    /// Get a row from this matrix by-value.
-    fn row(&self, r: usize) -> Self::Row;
-
-    /// Swap two rows of this array.
-    fn swap_rows(&mut self, a: usize, b: usize);
-    /// Swap two columns of this array.
-    fn swap_columns(&mut self, a: usize, b: usize);
-    /// Swap the values at index `a` and `b`
-    fn swap_elements(&mut self, a: (usize, usize), b: (usize, usize));
-
-    /// Transpose this matrix, returning a new matrix.
-    fn transpose(&self) -> Self::Transpose;
-}
-
-/// A column-major major matrix where the rows and column vectors are of the same dimensions.
-pub trait SquareMatrix where
-    Self::Scalar: BaseFloat,
-
-    Self: Matrix<
-        // FIXME: Can be cleaned up once equality constraints in where clauses are implemented
-        Column = <Self as SquareMatrix>::ColumnRow,
-        Row = <Self as SquareMatrix>::ColumnRow,
-        Transpose = Self,
-    >,
-    Self: Mul<<Self as SquareMatrix>::ColumnRow, Output = <Self as SquareMatrix>::ColumnRow>,
-    Self: Mul<Self, Output = Self>,
-{
-    // FIXME: Will not be needed once equality constraints in where clauses are implemented
-    /// The row/column vector of the matrix.
-    ///
-    /// This is used to constrain the column and rows to be of the same type in lieu of equality
-    /// constraints being implemented for `where` clauses. Once those are added, this type will
-    /// likely go away.
-    type ColumnRow: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
-
-    /// Create a new diagonal matrix using the supplied value.
-    fn from_value(value: Self::Scalar) -> Self;
-    /// Create a matrix from a non-uniform scale
-    fn from_diagonal(diagonal: Self::ColumnRow) -> Self;
-
-    /// The [identity matrix](https://en.wikipedia.org/wiki/Identity_matrix). Multiplying this
-    /// matrix with another has no effect.
-    fn identity() -> Self;
-
-    /// Transpose this matrix in-place.
-    fn transpose_self(&mut self);
-    /// Take the determinant of this matrix.
-    fn determinant(&self) -> Self::Scalar;
-
-    /// Return a vector containing the diagonal of this matrix.
-    fn diagonal(&self) -> Self::ColumnRow;
-
-    /// Return the trace of this matrix. That is, the sum of the diagonal.
-    #[inline]
-    fn trace(&self) -> Self::Scalar { self.diagonal().sum() }
-
-    /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
-    /// the identity matrix. Returns `None` if this matrix is not invertible
-    /// (has a determinant of zero).
-    #[must_use]
-    fn invert(&self) -> Option<Self>;
-
-    /// Invert this matrix in-place.
-    #[inline]
-    fn invert_self(&mut self) {
-        *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
-    }
-
-    /// Test if this matrix is invertible.
-    #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Scalar::zero()) }
-
-    /// Test if this matrix is the identity matrix. That is, it is diagonal
-    /// and every element in the diagonal is one.
-    #[inline]
-    fn is_identity(&self) -> bool { self.approx_eq(&Self::identity()) }
-
-    /// Test if this is a diagonal matrix. That is, every element outside of
-    /// the diagonal is 0.
-    fn is_diagonal(&self) -> bool;
-
-    /// Test if this matrix is symmetric. That is, it is equal to its
-    /// transpose.
-    fn is_symmetric(&self) -> bool;
 }
 
 impl<S: BaseFloat> Matrix for Matrix2<S> {

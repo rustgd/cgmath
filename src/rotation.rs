@@ -15,14 +15,15 @@
 
 use std::fmt;
 
-use angle::{Angle, Rad};
+use structure::*;
+
+use angle::Rad;
 use approx::ApproxEq;
-use matrix::SquareMatrix;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
-use point::{EuclideanSpace, Point2, Point3};
+use point::{Point2, Point3};
 use quaternion::Quaternion;
-use vector::{InnerSpace, Vector2, Vector3};
+use vector::{Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.

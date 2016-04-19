@@ -20,13 +20,15 @@ use rand::{Rand, Rng};
 use rust_num::{Float, One, Zero};
 use rust_num::traits::cast;
 
-use angle::{Angle, Rad};
+use structure::*;
+
+use angle::Rad;
 use approx::ApproxEq;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
 use rotation::{Rotation, Rotation3, Basis3};
-use vector::{Vector3, VectorSpace, InnerSpace};
+use vector::Vector3;
 
 
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
