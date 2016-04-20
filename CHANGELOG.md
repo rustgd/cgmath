@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.9.1] - 2016-04-20
+
+### Changed
+
+- Fix angle assignment operators so that they actually mutate `self`.
+
 ## [v0.9.0] - 2016-04-19
 
 ### Changed
@@ -165,7 +171,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/bjz/cgmath/compare/v0.9.1...HEAD
+[v0.9.0]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/bjz/cgmath/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/bjz/cgmath/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/bjz/cgmath/compare/v0.6.0...v0.7.0
