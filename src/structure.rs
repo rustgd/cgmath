@@ -514,7 +514,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Deg;
     ///
-    /// let v = Deg::new(180.0);
+    /// let v = Deg(180.0);
     /// assert_eq!(v + Deg::zero(), v);
     /// ```
     fn zero() -> Self;
@@ -540,7 +540,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::sin(angle);
     /// ```
     fn sin(self) -> Self::Unitless;
@@ -551,7 +551,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::cos(angle);
     /// ```
     fn cos(self) -> Self::Unitless;
@@ -562,7 +562,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::tan(angle);
     /// ```
     fn tan(self) -> Self::Unitless;
@@ -577,7 +577,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let (s, c) = Rad::sin_cos(angle);
     /// ```
     fn sin_cos(self) -> (Self::Unitless, Self::Unitless);
@@ -590,7 +590,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::csc(angle);
     /// ```
     #[inline]
@@ -606,7 +606,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::cot(angle);
     /// ```
     #[inline]
@@ -622,7 +622,7 @@ pub trait Angle where
     /// use cgmath::prelude::*;
     /// use cgmath::Rad;
     ///
-    /// let angle = Rad::new(35.0);
+    /// let angle = Rad(35.0);
     /// let ratio: f32 = Rad::sec(angle);
     /// ```
     #[inline]

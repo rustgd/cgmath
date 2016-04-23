@@ -34,115 +34,103 @@ use num::BaseFloat;
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
-pub struct Rad<S> { pub s: S }
+pub struct Rad<S>(pub S);
 
 /// An angle, in degrees.
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
 #[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
-pub struct Deg<S> { pub s: S }
-
-/// Create a new angle, in radians
-#[inline] pub fn rad<S: BaseFloat>(s: S) -> Rad<S> { Rad { s: s } }
-/// Create a new angle, in degrees
-#[inline] pub fn deg<S: BaseFloat>(s: S) -> Deg<S> { Deg { s: s } }
+pub struct Deg<S>(pub S);
 
 impl<S> From<Rad<S>> for Deg<S> where S: BaseFloat {
     #[inline]
-    fn from(r: Rad<S>) -> Deg<S> {
-        Deg::new(r.s * cast(180.0 / f64::consts::PI).unwrap())
+    fn from(src: Rad<S>) -> Deg<S> {
+        Deg(src.0 * cast(180.0 / f64::consts::PI).unwrap())
     }
 }
 
 impl<S> From<Deg<S>> for Rad<S> where S: BaseFloat {
     #[inline]
-    fn from(d: Deg<S>) -> Rad<S> {
-        Rad::new(d.s * cast(f64::consts::PI / 180.0).unwrap())
+    fn from(src: Deg<S>) -> Rad<S> {
+        Rad(src.0 * cast(f64::consts::PI / 180.0).unwrap())
     }
 }
 
 macro_rules! impl_angle {
     ($Angle:ident, $fmt:expr, $full_turn:expr, $hi:expr) => {
-        impl<S: BaseFloat> $Angle<S> {
-            #[inline]
-            pub fn new(value: S) -> $Angle<S> {
-                $Angle { s: value }
-            }
-        }
-
         impl<S: BaseFloat> Angle for $Angle<S> {
             type Unitless = S;
 
             #[inline]
             fn zero() -> $Angle<S> {
-                $Angle::new(S::zero())
+                $Angle(S::zero())
             }
 
-            #[inline] fn full_turn() -> $Angle<S> { $Angle::new(cast($full_turn).unwrap()) }
+            #[inline] fn full_turn() -> $Angle<S> { $Angle(cast($full_turn).unwrap()) }
             #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
             #[inline] fn turn_div_6() -> $Angle<S> { let factor: S = cast(6).unwrap(); $Angle::full_turn() / factor }
 
-            #[inline] fn sin(self) -> S { Rad::from(self).s.sin() }
-            #[inline] fn cos(self) -> S { Rad::from(self).s.cos() }
-            #[inline] fn tan(self) -> S { Rad::from(self).s.tan() }
-            #[inline] fn sin_cos(self) -> (S, S) { Rad::from(self).s.sin_cos() }
+            #[inline] fn sin(self) -> S { Rad::from(self).0.sin() }
+            #[inline] fn cos(self) -> S { Rad::from(self).0.cos() }
+            #[inline] fn tan(self) -> S { Rad::from(self).0.tan() }
+            #[inline] fn sin_cos(self) -> (S, S) { Rad::from(self).0.sin_cos() }
 
-            #[inline] fn asin(a: S) -> $Angle<S> { Rad::new(a.asin()).into() }
-            #[inline] fn acos(a: S) -> $Angle<S> { Rad::new(a.acos()).into() }
-            #[inline] fn atan(a: S) -> $Angle<S> { Rad::new(a.atan()).into() }
-            #[inline] fn atan2(a: S, b: S) -> $Angle<S> { Rad::new(a.atan2(b)).into() }
+            #[inline] fn asin(a: S) -> $Angle<S> { Rad(a.asin()).into() }
+            #[inline] fn acos(a: S) -> $Angle<S> { Rad(a.acos()).into() }
+            #[inline] fn atan(a: S) -> $Angle<S> { Rad(a.atan()).into() }
+            #[inline] fn atan2(a: S, b: S) -> $Angle<S> { Rad(a.atan2(b)).into() }
         }
 
         impl<S: BaseFloat> Neg for $Angle<S> {
             type Output = $Angle<S>;
 
             #[inline]
-            fn neg(self) -> $Angle<S> { $Angle::new(-self.s) }
+            fn neg(self) -> $Angle<S> { $Angle(-self.0) }
         }
 
         impl<'a, S: BaseFloat> Neg for &'a $Angle<S> {
             type Output = $Angle<S>;
 
             #[inline]
-            fn neg(self) -> $Angle<S> { $Angle::new(-self.s) }
+            fn neg(self) -> $Angle<S> { $Angle(-self.0) }
         }
 
         impl_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
-            fn add(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s + rhs.s) }
+            fn add(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 + rhs.0) }
         });
         impl_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
-            fn sub(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s - rhs.s) }
+            fn sub(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 - rhs.0) }
         });
         impl_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
-            fn div(lhs, rhs) -> S { lhs.s / rhs.s }
+            fn div(lhs, rhs) -> S { lhs.0 / rhs.0 }
         });
         impl_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
-            fn rem(lhs, rhs) -> $Angle<S> { $Angle::new(lhs.s % rhs.s) }
+            fn rem(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 % rhs.0) }
         });
         impl_assignment_operator!(<S: BaseFloat> AddAssign<$Angle<S> > for $Angle<S> {
-            fn add_assign(&mut self, other) { self.s += other.s; }
+            fn add_assign(&mut self, other) { self.0 += other.0; }
         });
         impl_assignment_operator!(<S: BaseFloat> SubAssign<$Angle<S> > for $Angle<S> {
-            fn sub_assign(&mut self, other) { self.s -= other.s; }
+            fn sub_assign(&mut self, other) { self.0 -= other.0; }
         });
         impl_assignment_operator!(<S: BaseFloat> RemAssign<$Angle<S> > for $Angle<S> {
-            fn rem_assign(&mut self, other) { self.s %= other.s; }
+            fn rem_assign(&mut self, other) { self.0 %= other.0; }
         });
 
         impl_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
-            fn mul(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s * scalar) }
+            fn mul(lhs, scalar) -> $Angle<S> { $Angle(lhs.0 * scalar) }
         });
         impl_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
-            fn div(lhs, scalar) -> $Angle<S> { $Angle::new(lhs.s / scalar) }
+            fn div(lhs, scalar) -> $Angle<S> { $Angle(lhs.0 / scalar) }
         });
         impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for $Angle<S> {
-            fn mul_assign(&mut self, scalar) { self.s *= scalar; }
+            fn mul_assign(&mut self, scalar) { self.0 *= scalar; }
         });
         impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for $Angle<S> {
-            fn div_assign(&mut self, scalar) { self.s /= scalar; }
+            fn div_assign(&mut self, scalar) { self.0 /= scalar; }
         });
 
         impl<S: BaseFloat> ApproxEq for $Angle<S> {
@@ -150,20 +138,20 @@ macro_rules! impl_angle {
 
             #[inline]
             fn approx_eq_eps(&self, other: &$Angle<S>, epsilon: &S) -> bool {
-                self.s.approx_eq_eps(&other.s, epsilon)
+                self.0.approx_eq_eps(&other.0, epsilon)
             }
         }
 
         impl<S: BaseFloat + SampleRange> Rand for $Angle<S> {
             #[inline]
             fn rand<R: Rng>(rng: &mut R) -> $Angle<S> {
-                $Angle::new(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
+                $Angle(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
             }
         }
 
         impl<S: fmt::Debug> fmt::Debug for $Angle<S> {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                write!(f, $fmt, self.s)
+                write!(f, $fmt, self.0)
             }
         }
     }

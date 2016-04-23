@@ -125,7 +125,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// matrix:
 ///
 /// ```no_run
-/// use cgmath::rad;
+/// use cgmath::Rad;
 /// use cgmath::Vector2;
 /// use cgmath::{Matrix, Matrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
@@ -135,7 +135,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
 /// // so the angle is 90 degrees, or π/2.
 /// let unit_x: Vector2<f64> = Vector2::unit_x();
-/// let rot: Basis2<f64> = Rotation2::from_angle(rad(0.5f64 * f64::consts::PI));
+/// let rot: Basis2<f64> = Rotation2::from_angle(Rad(0.5f64 * f64::consts::PI));
 ///
 /// // Rotate the vector using the two-dimensional rotation matrix:
 /// let unit_y = rot.rotate_vector(unit_x);
@@ -150,7 +150,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// assert_eq!(unit_y2, unit_y);
 ///
 /// // Note that we can also concatenate rotations:
-/// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
+/// let rot_half: Basis2<f64> = Rotation2::from_angle(Rad(0.25f64 * f64::consts::PI));
 /// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
