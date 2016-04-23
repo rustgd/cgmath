@@ -15,7 +15,7 @@
 
 //! Generic algebraic structures
 
-use rust_num::{cast, Float, One, Zero};
+use num_traits::{cast, Float, One, Zero};
 use std::cmp;
 use std::ops::*;
 
@@ -198,7 +198,7 @@ pub trait InnerSpace: VectorSpace + Sized where
     /// The distance from the tail to the tip of the vector.
     #[inline]
     fn magnitude(self) -> Self::Scalar {
-        use rust_num::Float;
+        use num_traits::Float;
 
         // FIXME: Not sure why we can't use method syntax for `sqrt` here...
         Float::sqrt(self.magnitude2())

@@ -15,7 +15,7 @@
 
 use std::fmt;
 
-use rust_num::{Zero, One};
+use num_traits::{Zero, One};
 
 use structure::*;
 

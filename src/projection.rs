@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rust_num::{Zero, One};
-use rust_num::traits::cast;
+use num_traits::{Zero, One};
+use num_traits::cast;
 
 use structure::Angle;
 

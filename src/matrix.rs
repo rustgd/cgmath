@@ -14,8 +14,8 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use rust_num::{Zero, One};
-use rust_num::traits::cast;
+use num_traits::{Zero, One};
+use num_traits::cast;
 use std::fmt;
 use std::mem;
 use std::ops::*;

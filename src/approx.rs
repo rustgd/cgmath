@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rust_num::{Float, NumCast};
-use rust_num::traits::cast;
+use num_traits::{Float, NumCast};
+use num_traits::cast;
 
 pub trait ApproxEq: Sized {
     type Epsilon: NumCast + Float;
