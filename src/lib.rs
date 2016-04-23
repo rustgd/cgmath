@@ -49,7 +49,7 @@
 //! use cgmath::prelude::*;
 //! ```
 
-extern crate num_traits;
+extern crate num_traits as _num_traits;
 extern crate rustc_serialize;
 extern crate rand;
 
@@ -75,6 +75,7 @@ pub use num_traits::{One, Zero};
 // Modules
 
 pub mod conv;
+pub use _num_traits as num_traits;
 pub mod prelude;
 
 mod macros;
