@@ -66,12 +66,25 @@ use num::BaseFloat;
 #[derive(PartialEq, Eq)]
 #[derive(RustcEncodable, RustcDecodable)]
 pub struct Euler<A: Angle> {
-    /// The angle to apply around the _x_ axis. Also known at the _pitch_ angle.
+    /// The angle to apply around the _x_ axis. Also known at the _pitch_.
     pub x: A,
-    /// The angle to apply around the _y_ axis. Also known at the _yaw_ angle.
+    /// The angle to apply around the _y_ axis. Also known at the _yaw_.
     pub y: A,
-    /// The angle to apply around the _z_ axis. Also known at the _roll_ angle.
+    /// The angle to apply around the _z_ axis. Also known at the _roll_.
     pub z: A,
+}
+
+impl<A: Angle> Euler<A> {
+    /// Construct a set of euler angles.
+    ///
+    /// # Arguments
+    ///
+    /// * `x` - The angle to apply around the _x_ axis. Also known at the _pitch_.
+    /// * `y` - The angle to apply around the _y_ axis. Also known at the _yaw_.
+    /// * `z` - The angle to apply around the _z_ axis. Also known at the _roll_.
+    pub fn new(x: A, y: A, z: A) -> Euler<A> {
+        Euler { x: x, y: y, z: z }
+    }
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for Euler<Rad<S>> {
