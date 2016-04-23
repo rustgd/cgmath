@@ -64,6 +64,7 @@ pub use quaternion::Quaternion;
 pub use vector::{Vector2, Vector3, Vector4, dot, vec2, vec3, vec4};
 
 pub use angle::{Deg, Rad, deg, rad};
+pub use euler::Euler;
 pub use point::{Point2, Point3};
 pub use rotation::*;
 pub use transform::*;
@@ -88,6 +89,7 @@ mod quaternion;
 mod vector;
 
 mod angle;
+mod euler;
 mod point;
 mod rotation;
 mod transform;

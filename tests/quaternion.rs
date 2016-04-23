@@ -43,12 +43,12 @@ mod operators {
 
     #[test]
     fn test_mul() {
-        impl_test_mul!(2.0f32, Quaternion::from_euler(rad(1f32), rad(1f32), rad(1f32)));
+        impl_test_mul!(2.0f32, Quaternion::from(Euler { x: rad(1f32), y: rad(1f32), z: rad(1f32) }));
     }
 
     #[test]
     fn test_div() {
-        impl_test_div!(2.0f32, Quaternion::from_euler(rad(1f32), rad(1f32), rad(1f32)));
+        impl_test_div!(2.0f32, Quaternion::from(Euler { x: rad(1f32), y: rad(1f32), z: rad(1f32) }));
     }
 }
 
@@ -57,28 +57,23 @@ mod to_from_euler {
 
     use cgmath::*;
 
-    fn check_euler(pitch: Rad<f32>, yaw: Rad<f32>, roll: Rad<f32>) {
-        let quat = Quaternion::from_euler(pitch, yaw, roll);
-        let (found_pitch, found_yaw, found_roll) = quat.to_euler();
-
-        assert_approx_eq_eps!(pitch, found_pitch, 0.001);
-        assert_approx_eq_eps!(yaw, found_yaw, 0.001);
-        assert_approx_eq_eps!(roll, found_roll, 0.001);
+    fn check_euler(rotation: Euler<Rad<f32>>) {
+        assert_approx_eq_eps!(Euler::from(Quaternion::from(rotation)), rotation, 0.001);
     }
 
     const HPI: f32 = f32::consts::FRAC_PI_2;
 
-    #[test] fn test_zero()                  { check_euler(rad(0f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_yaw_pos_1()             { check_euler(rad(0f32), rad(1f32), rad(0f32)); }
-    #[test] fn test_yaw_neg_1()             { check_euler(rad(0f32), rad(-1f32), rad(0f32)); }
-    #[test] fn test_pitch_pos_1()           { check_euler(rad(1f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_pitch_neg_1()           { check_euler(rad(-1f32), rad(0f32), rad(0f32)); }
-    #[test] fn test_roll_pos_1()            { check_euler(rad(0f32), rad(0f32), rad(1f32)); }
-    #[test] fn test_roll_neg_1()            { check_euler(rad(0f32), rad(0f32), rad(-1f32)); }
-    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(rad(1f32), rad(1f32), rad(1f32)); }
-    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(rad(-1f32), rad(-1f32), rad(-1f32)); }
-    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(rad(0f32), rad(HPI), rad(1f32)); }
-    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(rad(0f32), rad(-HPI), rad(1f32)); }
+    #[test] fn test_zero()                  { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad( 0f32) }); }
+    #[test] fn test_yaw_pos_1()             { check_euler(Euler { x: rad( 0f32), y: rad( 1f32), z: rad( 0f32) }); }
+    #[test] fn test_yaw_neg_1()             { check_euler(Euler { x: rad( 0f32), y: rad(-1f32), z: rad( 0f32) }); }
+    #[test] fn test_pitch_pos_1()           { check_euler(Euler { x: rad( 1f32), y: rad( 0f32), z: rad( 0f32) }); }
+    #[test] fn test_pitch_neg_1()           { check_euler(Euler { x: rad(-1f32), y: rad( 0f32), z: rad( 0f32) }); }
+    #[test] fn test_roll_pos_1()            { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad( 1f32) }); }
+    #[test] fn test_roll_neg_1()            { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad(-1f32) }); }
+    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(Euler { x: rad( 1f32), y: rad( 1f32), z: rad( 1f32) }); }
+    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(Euler { x: rad(-1f32), y: rad(-1f32), z: rad(-1f32) }); }
+    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(Euler { x: rad( 0f32), y: rad(  HPI), z: rad( 1f32) }); }
+    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(Euler { x: rad( 0f32), y: rad( -HPI), z: rad( 1f32) }); }
 }
 
 mod from {
@@ -86,7 +81,7 @@ mod from {
         use cgmath::*;
 
         fn check_with_euler(x: Rad<f32>, y: Rad<f32>, z: Rad<f32>) {
-            let matrix3 = Matrix3::from_euler(x, y, z);
+            let matrix3 = Matrix3::from(Euler { x: x, y: y, z: z });
             let quaternion = Quaternion::from(matrix3);
             let quaternion_matrix3 = Matrix3::from(quaternion);
             assert_approx_eq!(matrix3, quaternion_matrix3);

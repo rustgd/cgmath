@@ -21,7 +21,7 @@ extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
 use test::Bencher;
-use cgmath::{Quaternion, Basis2, Basis3, Vector3, Rotation2, Rotation3, Rad};
+use cgmath::*;
 
 #[path="common/macros.rs"]
 #[macro_use] mod macros;
@@ -55,7 +55,7 @@ fn _bench_rot3_from_axisangle(bh: &mut Bencher) {
     bench_from_axis_angle::<Basis3<f32>>(bh)
 }
 
-bench_construction!(_bench_rot2_from_axisangle, Basis2<f32>, Rotation2::from_angle [ angle: Rad<f32> ]);
+bench_construction!(_bench_rot2_from_axisangle, Basis2<f32>, Basis2::from_angle [ angle: Rad<f32> ]);
 
-bench_construction!(_bench_quat_from_euler_angles, Quaternion<f32>, Rotation3::from_euler [roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>]);
-bench_construction!(_bench_rot3_from_euler_angles, Basis3<f32>, Rotation3::from_euler [roll: Rad<f32>, pitch: Rad<f32>, yaw: Rad<f32>]);
+bench_construction!(_bench_quat_from_euler_angles, Quaternion<f32>, Quaternion::from [src: Euler<Rad<f32>>]);
+bench_construction!(_bench_rot3_from_euler_angles, Basis3<f32>, Basis3::from [src: Euler<Rad<f32>>]);
