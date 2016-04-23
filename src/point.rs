@@ -21,7 +21,7 @@ use std::fmt;
 use std::mem;
 use std::ops::*;
 
-use rust_num::{One, Zero};
+use num_traits::{One, Zero};
 
 use structure::*;
 

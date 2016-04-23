@@ -17,8 +17,8 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use rust_num::{Float, One, Zero};
-use rust_num::traits::cast;
+use num_traits::{Float, One, Zero};
+use num_traits::cast;
 
 use structure::*;
 

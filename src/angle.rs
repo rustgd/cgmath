@@ -21,8 +21,8 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
-use rust_num::{Float, Zero};
-use rust_num::traits::cast;
+use num_traits::{Float, Zero};
+use num_traits::cast;
 
 use structure::Angle;
 

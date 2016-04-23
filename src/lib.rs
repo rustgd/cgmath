@@ -49,7 +49,7 @@
 //! use cgmath::prelude::*;
 //! ```
 
-extern crate num as rust_num;
+extern crate num_traits;
 extern crate rustc_serialize;
 extern crate rand;
 
@@ -70,7 +70,7 @@ pub use transform::*;
 
 pub use projection::*;
 
-pub use rust_num::{One, Zero, one, zero};
+pub use num_traits::{One, Zero};
 
 // Modules
 

@@ -19,7 +19,7 @@ use std::cmp;
 use std::fmt;
 use std::ops::*;
 
-use rust_num::{Float, Num, NumCast};
+use num_traits::{Float, Num, NumCast};
 
 /// A trait providing a [partial ordering](http://mathworld.wolfram.com/PartialOrder.html).
 pub trait PartialOrd {
