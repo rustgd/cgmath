@@ -69,11 +69,11 @@ pub struct Vector4<S> {
 
 // Utility macro for generating associated functions for the vectors
 macro_rules! impl_vector {
-    ($VectorN:ident <$S:ident> { $($field:ident),+ }, $n:expr, $constructor:ident) => {
-        impl<$S> $VectorN<$S> {
+    ($VectorN:ident { $($field:ident),+ }, $n:expr, $constructor:ident) => {
+        impl<S> $VectorN<S> {
             /// Construct a new vector, using the provided values.
             #[inline]
-            pub fn new($($field: $S),+) -> $VectorN<$S> {
+            pub fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
         }
@@ -84,11 +84,20 @@ macro_rules! impl_vector {
             $VectorN::new($($field),+)
         }
 
-        impl<$S: NumCast + Copy> $VectorN<$S> {
+        impl<S: NumCast + Copy> $VectorN<S> {
             /// Component-wise casting to another type
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
                 $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
+            }
+        }
+
+        impl<S: BaseFloat> MetricSpace for $VectorN<S> {
+            type Metric = S;
+
+            #[inline]
+            fn distance2(self, other: Self) -> S {
+                (other - self).magnitude2()
             }
         }
 
@@ -251,9 +260,9 @@ macro_rules! impl_scalar_ops {
     };
 }
 
-impl_vector!(Vector2<S> { x, y }, 2, vec2);
-impl_vector!(Vector3<S> { x, y, z }, 3, vec3);
-impl_vector!(Vector4<S> { x, y, z, w }, 4, vec4);
+impl_vector!(Vector2 { x, y }, 2, vec2);
+impl_vector!(Vector3 { x, y, z }, 3, vec3);
+impl_vector!(Vector4 { x, y, z, w }, 4, vec4);
 
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
 impl_fixed_array_conversions!(Vector3<S> { x: 0, y: 1, z: 2 }, 3);

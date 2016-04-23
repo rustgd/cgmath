@@ -22,10 +22,11 @@
 //! concern ourselves with are listed below:
 //!
 //! - `VectorSpace`: Specifies the main operators for vectors, quaternions, and
-//!    matrices.
+//!   matrices.
+//! - `MetricSpace`: For types that have a distance function implemented.
 //! - `InnerSpace`: For types that have a dot (or inner) product - ie. vectors or
-//!    quaternions. This also allows for the definition of operations that are
-//!    based on the dot product, like finding the magnitude or normalizing.
+//!   quaternions. This also allows for the definition of operations that are
+//!   based on the dot product, like finding the magnitude or normalizing.
 //! - `EuclideanSpace`: Points in euclidean space, with an associated space of
 //!   displacement vectors.
 //! - `Matrix`: Common operations for matrices of arbitrary dimensions.

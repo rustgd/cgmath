@@ -164,6 +164,26 @@ pub trait VectorSpace: Copy + Clone where
     fn zero() -> Self;
 }
 
+/// A type with a distance function between values.
+///
+/// Examples are vectors, points, and quaternions.
+pub trait MetricSpace: Sized {
+    /// The metric to be returned by the `distance` function.
+    type Metric: BaseFloat;
+
+    /// Returns the squared distance.
+    ///
+    /// This does not perform an expensive square root operation like in
+    /// `MetricSpace::distance` method, and so can be used to compare distances
+    /// more efficiently.
+    fn distance2(self, other: Self) -> Self::Metric;
+
+    /// The distance between two values.
+    fn distance(self, other: Self) -> Self::Metric {
+        Float::sqrt(Self::distance2(self, other))
+    }
+}
+
 /// Vectors that also have a [dot](https://en.wikipedia.org/wiki/Dot_product)
 /// (or [inner](https://en.wikipedia.org/wiki/Inner_product_space)) product.
 ///
@@ -171,9 +191,10 @@ pub trait VectorSpace: Copy + Clone where
 /// finding the magnitude of a vector or normalizing it.
 ///
 /// Examples include vectors and quaternions.
-pub trait InnerSpace: VectorSpace + Sized where
+pub trait InnerSpace: VectorSpace where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as VectorSpace>::Scalar: BaseFloat,
+    Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
     Self: ApproxEq<Epsilon = <Self as VectorSpace>::Scalar>,
 {
     /// Vector dot (or inner) product.
@@ -185,11 +206,11 @@ pub trait InnerSpace: VectorSpace + Sized where
         Self::dot(self, other).approx_eq(&Self::Scalar::zero())
     }
 
-    /// Returns the squared magnitude of the vector.
+    /// Returns the squared magnitude.
     ///
     /// This does not perform an expensive square root operation like in
-    /// `Vector::magnitude` method, and so can be used to compare vectors more
-    /// efficiently.
+    /// `InnerSpace::magnitude` method, and so can be used to compare magnitudes
+    /// more efficiently.
     #[inline]
     fn magnitude2(self) -> Self::Scalar {
         Self::dot(self, self)
@@ -198,9 +219,6 @@ pub trait InnerSpace: VectorSpace + Sized where
     /// The distance from the tail to the tip of the vector.
     #[inline]
     fn magnitude(self) -> Self::Scalar {
-        use num_traits::Float;
-
-        // FIXME: Not sure why we can't use method syntax for `sqrt` here...
         Float::sqrt(self.magnitude2())
     }
 

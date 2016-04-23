@@ -129,6 +129,15 @@ impl<S: BaseFloat> VectorSpace for Quaternion<S> {
     }
 }
 
+impl<S: BaseFloat> MetricSpace for Quaternion<S> {
+    type Metric = S;
+
+    #[inline]
+    fn distance2(self, other: Self) -> S {
+        (other - self).magnitude2()
+    }
+}
+
 impl<S: BaseFloat> InnerSpace for Quaternion<S> {
     #[inline]
     fn dot(self, other: Quaternion<S>) -> S {
