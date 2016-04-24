@@ -43,12 +43,12 @@ mod operators {
 
     #[test]
     fn test_mul() {
-        impl_test_mul!(2.0f32, Quaternion::from(Euler { x: rad(1f32), y: rad(1f32), z: rad(1f32) }));
+        impl_test_mul!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
     }
 
     #[test]
     fn test_div() {
-        impl_test_div!(2.0f32, Quaternion::from(Euler { x: rad(1f32), y: rad(1f32), z: rad(1f32) }));
+        impl_test_div!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
     }
 }
 
@@ -63,17 +63,17 @@ mod to_from_euler {
 
     const HPI: f32 = f32::consts::FRAC_PI_2;
 
-    #[test] fn test_zero()                  { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad( 0f32) }); }
-    #[test] fn test_yaw_pos_1()             { check_euler(Euler { x: rad( 0f32), y: rad( 1f32), z: rad( 0f32) }); }
-    #[test] fn test_yaw_neg_1()             { check_euler(Euler { x: rad( 0f32), y: rad(-1f32), z: rad( 0f32) }); }
-    #[test] fn test_pitch_pos_1()           { check_euler(Euler { x: rad( 1f32), y: rad( 0f32), z: rad( 0f32) }); }
-    #[test] fn test_pitch_neg_1()           { check_euler(Euler { x: rad(-1f32), y: rad( 0f32), z: rad( 0f32) }); }
-    #[test] fn test_roll_pos_1()            { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad( 1f32) }); }
-    #[test] fn test_roll_neg_1()            { check_euler(Euler { x: rad( 0f32), y: rad( 0f32), z: rad(-1f32) }); }
-    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(Euler { x: rad( 1f32), y: rad( 1f32), z: rad( 1f32) }); }
-    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(Euler { x: rad(-1f32), y: rad(-1f32), z: rad(-1f32) }); }
-    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(Euler { x: rad( 0f32), y: rad(  HPI), z: rad( 1f32) }); }
-    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(Euler { x: rad( 0f32), y: rad( -HPI), z: rad( 1f32) }); }
+    #[test] fn test_zero()                  { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad( 0f32) }); }
+    #[test] fn test_yaw_pos_1()             { check_euler(Euler { x: Rad( 0f32), y: Rad( 1f32), z: Rad( 0f32) }); }
+    #[test] fn test_yaw_neg_1()             { check_euler(Euler { x: Rad( 0f32), y: Rad(-1f32), z: Rad( 0f32) }); }
+    #[test] fn test_pitch_pos_1()           { check_euler(Euler { x: Rad( 1f32), y: Rad( 0f32), z: Rad( 0f32) }); }
+    #[test] fn test_pitch_neg_1()           { check_euler(Euler { x: Rad(-1f32), y: Rad( 0f32), z: Rad( 0f32) }); }
+    #[test] fn test_roll_pos_1()            { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad( 1f32) }); }
+    #[test] fn test_roll_neg_1()            { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad(-1f32) }); }
+    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(Euler { x: Rad( 1f32), y: Rad( 1f32), z: Rad( 1f32) }); }
+    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(Euler { x: Rad(-1f32), y: Rad(-1f32), z: Rad(-1f32) }); }
+    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(Euler { x: Rad( 0f32), y: Rad(  HPI), z: Rad( 1f32) }); }
+    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(Euler { x: Rad( 0f32), y: Rad( -HPI), z: Rad( 1f32) }); }
 }
 
 mod from {
@@ -90,25 +90,25 @@ mod from {
         // triggers: trace >= S::zero()
         #[test]
         fn test_positive_trace() {
-            check_with_euler(rad(0.0f32), rad(0.0), rad(0.0f32));
+            check_with_euler(Rad(0.0f32), Rad(0.0), Rad(0.0f32));
         }
 
         // triggers: (mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])
         #[test]
         fn test_xx_maximum() {
-            check_with_euler(rad(2.0f32), rad(1.0), rad(-1.2f32));
+            check_with_euler(Rad(2.0f32), Rad(1.0), Rad(-1.2f32));
         }
 
         // triggers: mat[1][1] > mat[2][2]
         #[test]
         fn test_yy_maximum() {
-            check_with_euler(rad(2.0f32), rad(1.0), rad(3.0f32));
+            check_with_euler(Rad(2.0f32), Rad(1.0), Rad(3.0f32));
         }
 
         // base case
         #[test]
         fn test_zz_maximum() {
-            check_with_euler(rad(1.0f32), rad(1.0), rad(3.0f32));
+            check_with_euler(Rad(1.0f32), Rad(1.0), Rad(3.0f32));
         }
     }
 }

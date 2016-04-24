@@ -15,24 +15,24 @@
 
 extern crate cgmath;
 
-use cgmath::{Rad, Deg, rad, deg};
+use cgmath::{Rad, Deg};
 use cgmath::ApproxEq;
 
 #[test]
 fn conv() {
-    let angle: Rad<_> = deg(-5.0f64).into();
-    let angle: Deg<_> = angle.into();
-    assert!(angle.approx_eq(&deg(-5.0f64)));
+    let angle = Rad::from(Deg(-5.0f64));
+    let angle = Deg::from(angle);
+    assert!(angle.approx_eq(&Deg(-5.0f64)));
 
-    let angle: Rad<_> = deg(30.0f64).into();
-    let angle: Deg<_> = angle.into();
-    assert!(angle.approx_eq(&deg(30.0f64)));
+    let angle = Rad::from(Deg(30.0f64));
+    let angle = Deg::from(angle);
+    assert!(angle.approx_eq(&Deg(30.0f64)));
 
-    let angle: Deg<_> = rad(-5.0f64).into();
-    let angle: Rad<_> = angle.into();
-    assert!(angle.approx_eq(&rad(-5.0f64)));
+    let angle = Deg::from(Rad(-5.0f64));
+    let angle = Rad::from(angle);
+    assert!(angle.approx_eq(&Rad(-5.0f64)));
 
-    let angle: Deg<_> = rad(30.0f64).into();
-    let angle: Rad<_> = angle.into();
-    assert!(angle.approx_eq(&rad(30.0f64)));
+    let angle = Deg::from(Rad(30.0f64));
+    let angle = Rad::from(angle);
+    assert!(angle.approx_eq(&Rad(30.0f64)));
 }
