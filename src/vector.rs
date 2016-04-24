@@ -25,6 +25,16 @@ use angle::Rad;
 use approx::ApproxEq;
 use num::{BaseNum, BaseFloat, PartialOrd};
 
+/// A 1-dimensional vector.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+pub struct Vector1<S> {
+    /// The x component of the vector.
+    pub x: S,
+}
+
 /// A 2-dimensional vector.
 ///
 /// This type is marked as `#[repr(C, packed)]`.
@@ -260,19 +270,29 @@ macro_rules! impl_scalar_ops {
     };
 }
 
+impl_vector!(Vector1 { x }, 1, vec1);
 impl_vector!(Vector2 { x, y }, 2, vec2);
 impl_vector!(Vector3 { x, y, z }, 3, vec3);
 impl_vector!(Vector4 { x, y, z, w }, 4, vec4);
 
+impl_fixed_array_conversions!(Vector1<S> { x: 0 }, 1);
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
 impl_fixed_array_conversions!(Vector3<S> { x: 0, y: 1, z: 2 }, 3);
 impl_fixed_array_conversions!(Vector4<S> { x: 0, y: 1, z: 2, w: 3 }, 4);
 
+impl_tuple_conversions!(Vector1<S> { x }, (S,));
 impl_tuple_conversions!(Vector2<S> { x, y }, (S, S));
 impl_tuple_conversions!(Vector3<S> { x, y, z }, (S, S, S));
 impl_tuple_conversions!(Vector4<S> { x, y, z, w }, (S, S, S, S));
 
-/// Operations specific to numeric two-dimensional vectors.
+impl<S: BaseNum> Vector1<S> {
+    /// A unit vector in the `x` direction.
+    #[inline]
+    pub fn unit_x() -> Vector1<S> {
+        Vector1::new(S::one())
+    }
+}
+
 impl<S: BaseNum> Vector2<S> {
     /// A unit vector in the `x` direction.
     #[inline]
@@ -300,7 +320,6 @@ impl<S: BaseNum> Vector2<S> {
     }
 }
 
-/// Operations specific to numeric three-dimensional vectors.
 impl<S: BaseNum> Vector3<S> {
     /// A unit vector in the `x` direction.
     #[inline]
@@ -343,7 +362,6 @@ impl<S: BaseNum> Vector3<S> {
     }
 }
 
-/// Operations specific to numeric four-dimensional vectors.
 impl<S: BaseNum> Vector4<S> {
     /// A unit vector in the `x` direction.
     #[inline]
@@ -396,6 +414,13 @@ pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar where
     V::dot(a, b)
 }
 
+impl<S: BaseFloat> InnerSpace for Vector1<S> {
+    #[inline]
+    fn dot(self, other: Vector1<S>) -> S {
+        Vector1::mul_element_wise(self, other).sum()
+    }
+}
+
 impl<S: BaseFloat> InnerSpace for Vector2<S> {
     #[inline]
     fn dot(self, other: Vector2<S>) -> S {
@@ -424,6 +449,13 @@ impl<S: BaseFloat> InnerSpace for Vector4<S> {
     #[inline]
     fn dot(self, other: Vector4<S>) -> S {
         Vector4::mul_element_wise(self, other).sum()
+    }
+}
+
+impl<S: fmt::Debug> fmt::Debug for Vector1<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "Vector1 "));
+        <[S; 1] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
