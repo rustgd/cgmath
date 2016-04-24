@@ -129,9 +129,11 @@ macro_rules! impl_assignment_operator {
 }
 
 macro_rules! fold_array {
+    (&$method:ident, { $x:expr })                            => { *$x };
     (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
     (&$method:ident, { $x:expr, $y:expr, $z:expr })          => { $x.$method(&$y).$method(&$z) };
     (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => { $x.$method(&$y).$method(&$z).$method(&$w) };
+    ($method:ident, { $x:expr })                             => { $x };
     ($method:ident, { $x:expr, $y:expr })                    => { $x.$method($y) };
     ($method:ident, { $x:expr, $y:expr, $z:expr })           => { $x.$method($y).$method($z) };
     ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
@@ -191,7 +193,7 @@ macro_rules! impl_tuple_conversions {
         impl<$S> Into<$Tuple> for $ArrayN<$S> {
             #[inline]
             fn into(self) -> $Tuple {
-                match self { $ArrayN { $($field),+ } => ($($field),+) }
+                match self { $ArrayN { $($field),+ } => ($($field),+,) }
             }
         }
 
@@ -212,7 +214,7 @@ macro_rules! impl_tuple_conversions {
         impl<$S> From<$Tuple> for $ArrayN<$S> {
             #[inline]
             fn from(v: $Tuple) -> $ArrayN<$S> {
-                match v { ($($field),+) => $ArrayN { $($field: $field),+ } }
+                match v { ($($field),+,) => $ArrayN { $($field: $field),+ } }
             }
         }
 

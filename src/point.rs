@@ -27,7 +27,16 @@ use structure::*;
 
 use approx::ApproxEq;
 use num::{BaseNum, BaseFloat};
-use vector::{Vector2, Vector3, Vector4};
+use vector::{Vector1, Vector2, Vector3, Vector4};
+
+/// A point in 1-dimensional space.
+///
+/// This type is marked as `#[repr(C, packed)]`.
+#[repr(C, packed)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+pub struct Point1<S> {
+    pub x: S,
+}
 
 /// A point in 2-dimensional space.
 ///
@@ -50,6 +59,12 @@ pub struct Point3<S> {
     pub z: S,
 }
 
+impl<S: BaseNum> Point1<S> {
+    #[inline]
+    pub fn new(x: S) -> Point1<S> {
+        Point1 { x: x }
+    }
+}
 
 impl<S: BaseNum> Point2<S> {
     #[inline]
@@ -217,14 +232,24 @@ macro_rules! impl_scalar_ops {
     };
 }
 
+impl_point!(Point1 { x }, Vector1, 1);
 impl_point!(Point2 { x, y }, Vector2, 2);
 impl_point!(Point3 { x, y, z }, Vector3, 3);
 
+impl_fixed_array_conversions!(Point1<S> { x: 0 }, 1);
 impl_fixed_array_conversions!(Point2<S> { x: 0, y: 1 }, 2);
 impl_fixed_array_conversions!(Point3<S> { x: 0, y: 1, z: 2 }, 3);
 
+impl_tuple_conversions!(Point1<S> { x }, (S,));
 impl_tuple_conversions!(Point2<S> { x, y }, (S, S));
 impl_tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
+
+impl<S: fmt::Debug> fmt::Debug for Point1<S> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "Point1 "));
+        <[S; 1] as fmt::Debug>::fmt(self.as_ref(), f)
+    }
+}
 
 impl<S: fmt::Debug> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
