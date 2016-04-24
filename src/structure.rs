@@ -332,6 +332,46 @@ pub trait EuclideanSpace: Copy + Clone where
     /// `Self::origin()` to `self`.
     fn to_vec(self) -> Self::Diff;
 
+    /// Returns the middle point between two other points.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Point3;
+    ///
+    /// let p = Point3::midpoint(
+    ///     Point3::new(1.0, 2.0, 3.0),
+    ///     Point3::new(3.0, 1.0, 2.0),
+    /// );
+    /// ```
+    #[inline]
+    fn midpoint(self, other: Self) -> Self {
+        self + (other - self) / cast(2).unwrap()
+    }
+
+    /// Returns the average position of all points in the slice.
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Point2;
+    ///
+    /// let triangle = [
+    ///     Point2::new(1.0, 1.0),
+    ///     Point2::new(2.0, 3.0),
+    ///     Point2::new(3.0, 1.0),
+    /// ];
+    ///
+    /// let centroid = Point2::centroid(&triangle);
+    /// ```
+    #[inline]
+    fn centroid(points: &[Self]) -> Self {
+        let total_displacement =
+            points.iter().fold(Self::Diff::zero(), |acc, p| {
+                acc + p.to_vec()
+            });
+
+        Self::from_vec(total_displacement / cast(points.len()).unwrap())
+    }
+
     /// This is a weird one, but its useful for plane calculations.
     fn dot(self, v: Self::Diff) -> Self::Scalar;
 }
