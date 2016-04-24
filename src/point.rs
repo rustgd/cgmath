@@ -109,6 +109,15 @@ macro_rules! impl_point {
             }
         }
 
+        impl<S: BaseFloat> MetricSpace for $PointN<S> {
+            type Metric = S;
+
+            #[inline]
+            fn distance2(self, other: Self) -> S {
+                (other - self).magnitude2()
+            }
+        }
+
         impl<S: BaseNum> EuclideanSpace for $PointN<S> {
             type Scalar = S;
             type Diff = $VectorN<S>;
