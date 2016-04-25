@@ -72,8 +72,6 @@ pub use transform::*;
 
 pub use projection::*;
 
-pub use num_traits::{One, Zero};
-
 // Modules
 
 pub mod conv;

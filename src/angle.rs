@@ -21,10 +21,10 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
-use num_traits::{Float, Zero};
+use num_traits::Float;
 use num_traits::cast;
 
-use structure::Angle;
+use structure::*;
 
 use approx::ApproxEq;
 use num::BaseFloat;

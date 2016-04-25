@@ -15,7 +15,7 @@
 
 //! Generic algebraic structures
 
-use num_traits::{cast, Float, One, Zero};
+use num_traits::{cast, Float};
 use std::cmp;
 use std::ops::*;
 
@@ -23,6 +23,8 @@ use approx::ApproxEq;
 
 use angle::Rad;
 use num::{BaseNum, BaseFloat, PartialOrd};
+
+pub use num_traits::{One, Zero};
 
 /// An array containing elements of type `Element`
 pub trait Array where

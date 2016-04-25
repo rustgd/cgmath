@@ -21,8 +21,6 @@ use std::fmt;
 use std::mem;
 use std::ops::*;
 
-use num_traits::{One, Zero};
-
 use structure::*;
 
 use approx::ApproxEq;

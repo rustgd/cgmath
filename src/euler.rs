@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::{cast, Zero};
+use num_traits::cast;
 
 use structure::*;
 

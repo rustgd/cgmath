@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::{NumCast, Zero, One};
+use num_traits::NumCast;
 use std::fmt;
 use std::mem;
 use std::ops::*;
