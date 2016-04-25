@@ -17,7 +17,7 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use num_traits::{Float, One, Zero};
+use num_traits::Float;
 use num_traits::cast;
 
 use structure::*;
@@ -120,13 +120,20 @@ impl<S: BaseFloat> Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> VectorSpace for Quaternion<S> {
-    type Scalar = S;
-
+impl<S: BaseFloat> Zero for Quaternion<S> {
     #[inline]
     fn zero() -> Quaternion<S> {
         Quaternion::from_sv(S::zero(), Vector3::zero())
     }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        Quaternion::approx_eq(self, &Quaternion::zero())
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Quaternion<S> {
+    type Scalar = S;
 }
 
 impl<S: BaseFloat> MetricSpace for Quaternion<S> {

@@ -15,8 +15,6 @@
 
 use std::fmt;
 
-use num_traits::{Zero, One};
-
 use structure::*;
 
 use approx::ApproxEq;

@@ -15,7 +15,7 @@
 
 //! Generic algebraic structures
 
-use num_traits::{cast, Float, One, Zero};
+use num_traits::{cast, Float};
 use std::cmp;
 use std::ops::*;
 
@@ -23,6 +23,8 @@ use approx::ApproxEq;
 
 use angle::Rad;
 use num::{BaseNum, BaseFloat, PartialOrd};
+
+pub use num_traits::{One, Zero};
 
 /// An array containing elements of type `Element`
 pub trait Array where
@@ -120,6 +122,17 @@ pub trait ElementWise<Rhs = Self> {
 /// let reversed_velocity0 = -velocity0;
 /// ```
 ///
+/// Vector spaces are also required to implement the additive identity trait,
+/// `Zero`. Adding this to another vector should have no effect:
+///
+/// ```rust
+/// use cgmath::prelude::*;
+/// use cgmath::Vector2;
+///
+/// let v = Vector2::new(1, 2);
+/// assert_eq!(v + Vector2::zero(), v);
+/// ```
+///
 /// ## Scalar multiplication
 ///
 /// Vectors can be multiplied or divided by their associated scalars via the
@@ -139,6 +152,8 @@ pub trait ElementWise<Rhs = Self> {
 /// let downscaled_translation = translation / scale_factor;
 /// ```
 pub trait VectorSpace: Copy + Clone where
+    Self: Zero,
+
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
 
@@ -149,19 +164,6 @@ pub trait VectorSpace: Copy + Clone where
 {
     /// The associated scalar.
     type Scalar: BaseNum;
-
-    /// The additive identity.
-    ///
-    /// Adding this to another `Self` value has no effect.
-    ///
-    /// ```rust
-    /// use cgmath::prelude::*;
-    /// use cgmath::Vector2;
-    ///
-    /// let v = Vector2::new(1, 2);
-    /// assert_eq!(v + Vector2::zero(), v);
-    /// ```
-    fn zero() -> Self;
 }
 
 /// A type with a distance function between values.
@@ -452,6 +454,8 @@ pub trait Matrix: VectorSpace where
 pub trait SquareMatrix where
     Self::Scalar: BaseFloat,
 
+    Self: One,
+
     Self: Matrix<
         // FIXME: Can be cleaned up once equality constraints in where clauses are implemented
         Column = <Self as SquareMatrix>::ColumnRow,
@@ -474,9 +478,18 @@ pub trait SquareMatrix where
     /// Create a matrix from a non-uniform scale
     fn from_diagonal(diagonal: Self::ColumnRow) -> Self;
 
-    /// The [identity matrix](https://en.wikipedia.org/wiki/Identity_matrix). Multiplying this
-    /// matrix with another has no effect.
-    fn identity() -> Self;
+    /// The [identity matrix]. Multiplying this matrix with another should have
+    /// no effect.
+    ///
+    /// Note that this is exactly the same as `One::one`. The term 'identity
+    /// matrix' is more common though, so we provide this method as an
+    /// alternative.
+    ///
+    /// [identity matrix]: https://en.wikipedia.org/wiki/Identity_matrix
+    #[inline]
+    fn identity() -> Self {
+        Self::one()
+    }
 
     /// Transpose this matrix in-place.
     fn transpose_self(&mut self);
@@ -532,6 +545,8 @@ pub trait Angle where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <Self as Angle>::Unitless>,
 
+    Self: Zero,
+
     Self: Neg<Output = Self>,
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
@@ -562,35 +577,36 @@ pub trait Angle where
         Self::normalize((self - other) * half + self)
     }
 
-    /// The additive identity.
-    ///
-    /// Adding this to another angle has no affect.
-    ///
-    /// For example:
-    ///
-    /// ```rust
-    /// use cgmath::prelude::*;
-    /// use cgmath::Deg;
-    ///
-    /// let v = Deg::new(180.0);
-    /// assert_eq!(v + Deg::zero(), v);
-    /// ```
-    fn zero() -> Self;
-
     /// A full rotation.
     fn full_turn() -> Self;
 
     /// Half of a full rotation.
-    fn turn_div_2() -> Self;
+    #[inline]
+    fn turn_div_2() -> Self {
+        let factor: Self::Unitless = cast(2).unwrap();
+        Self::full_turn() / factor
+    }
 
     /// A third of a full rotation.
-    fn turn_div_3() -> Self;
+    #[inline]
+    fn turn_div_3() -> Self {
+        let factor: Self::Unitless = cast(3).unwrap();
+        Self::full_turn() / factor
+    }
 
     /// A quarter of a full rotation.
-    fn turn_div_4() -> Self;
+    #[inline]
+    fn turn_div_4() -> Self {
+        let factor: Self::Unitless = cast(4).unwrap();
+        Self::full_turn() / factor
+    }
 
     /// A sixth of a full rotation.
-    fn turn_div_6() -> Self;
+    #[inline]
+    fn turn_div_6() -> Self {
+        let factor: Self::Unitless = cast(6).unwrap();
+        Self::full_turn() / factor
+    }
 
     /// Compute the sine of the angle, returning a unitless ratio.
     ///

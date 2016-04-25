@@ -14,7 +14,6 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::{Zero, One};
 use num_traits::cast;
 use std::fmt;
 use std::mem;
@@ -267,30 +266,34 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix2<S> {
-    type Scalar = S;
-
+impl<S: BaseFloat> Zero for Matrix2<S> {
     #[inline]
     fn zero() -> Matrix2<S> {
         Matrix2::new(S::zero(), S::zero(),
                      S::zero(), S::zero())
     }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        Matrix2::approx_eq(self, &Matrix2::zero())
+    }
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix3<S> {
-    type Scalar = S;
-
+impl<S: BaseFloat> Zero for Matrix3<S> {
     #[inline]
     fn zero() -> Matrix3<S> {
         Matrix3::new(S::zero(), S::zero(), S::zero(),
                      S::zero(), S::zero(), S::zero(),
                      S::zero(), S::zero(), S::zero())
     }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        Matrix3::approx_eq(self, &Matrix3::zero())
+    }
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix4<S> {
-    type Scalar = S;
-
+impl<S: BaseFloat> Zero for Matrix4<S> {
     #[inline]
     fn zero() -> Matrix4<S> {
         Matrix4::new(S::zero(), S::zero(), S::zero(), S::zero(),
@@ -298,6 +301,44 @@ impl<S: BaseFloat> VectorSpace for Matrix4<S> {
                      S::zero(), S::zero(), S::zero(), S::zero(),
                      S::zero(), S::zero(), S::zero(), S::zero())
     }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        Matrix4::approx_eq(self, &Matrix4::zero())
+    }
+}
+
+impl<S: BaseFloat> One for Matrix2<S> {
+    #[inline]
+    fn one() -> Matrix2<S> {
+        Matrix2::from_value(S::one())
+    }
+}
+
+impl<S: BaseFloat> One for Matrix3<S> {
+    #[inline]
+    fn one() -> Matrix3<S> {
+        Matrix3::from_value(S::one())
+    }
+}
+
+impl<S: BaseFloat> One for Matrix4<S> {
+    #[inline]
+    fn one() -> Matrix4<S> {
+        Matrix4::from_value(S::one())
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Matrix2<S> {
+    type Scalar = S;
+}
+
+impl<S: BaseFloat> VectorSpace for Matrix3<S> {
+    type Scalar = S;
+}
+
+impl<S: BaseFloat> VectorSpace for Matrix4<S> {
+    type Scalar = S;
 }
 
 impl<S: BaseFloat> Matrix for Matrix2<S> {
@@ -348,11 +389,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
     fn from_diagonal(value: Vector2<S>) -> Matrix2<S> {
         Matrix2::new(value.x, S::zero(),
                      S::zero(), value.y)
-    }
-
-    #[inline]
-    fn identity() -> Matrix2<S> {
-        Matrix2::from_value(S::one())
     }
 
     #[inline]
@@ -449,11 +485,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
         Matrix3::new(value.x, S::zero(), S::zero(),
                      S::zero(), value.y, S::zero(),
                      S::zero(), S::zero(), value.z)
-    }
-
-    #[inline]
-    fn identity() -> Matrix3<S> {
-        Matrix3::from_value(S::one())
     }
 
     #[inline]
@@ -566,11 +597,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                      S::zero(), value.y, S::zero(), S::zero(),
                      S::zero(), S::zero(), value.z, S::zero(),
                      S::zero(), S::zero(), S::zero(), value.w)
-    }
-
-    #[inline]
-    fn identity() -> Matrix4<S> {
-        Matrix4::from_value(S::one())
     }
 
     fn transpose_self(&mut self) {
