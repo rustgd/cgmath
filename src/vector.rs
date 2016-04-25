@@ -140,13 +140,20 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseNum> VectorSpace for $VectorN<S> {
-            type Scalar = S;
+        impl<S: BaseNum> Zero for $VectorN<S> {
+            #[inline]
+            fn zero() -> $VectorN<S> {
+                $VectorN::from_value(S::zero())
+            }
 
             #[inline]
-            fn zero() -> Self {
-                Self::from_value(Self::Scalar::zero())
+            fn is_zero(&self) -> bool {
+                *self == $VectorN::zero()
             }
+        }
+
+        impl<S: BaseNum> VectorSpace for $VectorN<S> {
+            type Scalar = S;
         }
 
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {

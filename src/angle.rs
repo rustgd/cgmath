@@ -71,19 +71,22 @@ macro_rules! impl_angle {
             }
         }
 
-        impl<S: BaseFloat> Angle for $Angle<S> {
-            type Unitless = S;
-
+        impl<S: BaseFloat> Zero for $Angle<S> {
             #[inline]
             fn zero() -> $Angle<S> {
                 $Angle::new(S::zero())
             }
 
+            #[inline]
+            fn is_zero(&self) -> bool {
+                $Angle::approx_eq(self, &$Angle::zero())
+            }
+        }
+
+        impl<S: BaseFloat> Angle for $Angle<S> {
+            type Unitless = S;
+
             #[inline] fn full_turn() -> $Angle<S> { $Angle::new(cast($full_turn).unwrap()) }
-            #[inline] fn turn_div_2() -> $Angle<S> { let factor: S = cast(2).unwrap(); $Angle::full_turn() / factor }
-            #[inline] fn turn_div_3() -> $Angle<S> { let factor: S = cast(3).unwrap(); $Angle::full_turn() / factor }
-            #[inline] fn turn_div_4() -> $Angle<S> { let factor: S = cast(4).unwrap(); $Angle::full_turn() / factor }
-            #[inline] fn turn_div_6() -> $Angle<S> { let factor: S = cast(6).unwrap(); $Angle::full_turn() / factor }
 
             #[inline] fn sin(self) -> S { Rad::from(self).s.sin() }
             #[inline] fn cos(self) -> S { Rad::from(self).s.cos() }

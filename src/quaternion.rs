@@ -120,13 +120,20 @@ impl<S: BaseFloat> Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> VectorSpace for Quaternion<S> {
-    type Scalar = S;
-
+impl<S: BaseFloat> Zero for Quaternion<S> {
     #[inline]
     fn zero() -> Quaternion<S> {
         Quaternion::from_sv(S::zero(), Vector3::zero())
     }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        Quaternion::approx_eq(self, &Quaternion::zero())
+    }
+}
+
+impl<S: BaseFloat> VectorSpace for Quaternion<S> {
+    type Scalar = S;
 }
 
 impl<S: BaseFloat> MetricSpace for Quaternion<S> {
