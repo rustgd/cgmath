@@ -26,7 +26,7 @@ use angle::Rad;
 use approx::ApproxEq;
 use euler::Euler;
 use num::BaseFloat;
-use point::Point3;
+use point::{Point2, Point3};
 use quaternion::Quaternion;
 use transform::{Transform, Transform2, Transform3};
 use vector::{Vector2, Vector3, Vector4};
@@ -756,6 +756,33 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
     }
 }
 
+impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
+  fn one() -> Matrix3<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+    let dir = center - eye;
+    Matrix3::from(Matrix2::look_at(dir, up))
+  }
+
+  fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {
+    (self * vec.extend(S::zero())).truncate()
+  }
+
+  fn transform_point(&self, point: Point2<S>) -> Point2<S> {
+    Point2::from_vec((self * Point3::new(point.x, point.y, S::one()).to_vec()).truncate())
+  }
+
+  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+    self * other
+  }
+
+  fn invert(&self) -> Option<Matrix3<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
   fn one() -> Matrix3<S> {
     One::one()
@@ -808,6 +835,8 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     SquareMatrix::invert(self)
   }
 }
+
+impl<S: BaseFloat> Transform2<S> for Matrix3<S> {}
 
 impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
 
