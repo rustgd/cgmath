@@ -178,37 +178,6 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 }
 
-impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
-    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
-{
-    fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = Rad::sin_cos(src.x.into());
-        let (sy, cy) = Rad::sin_cos(src.y.into());
-        let (sz, cz) = Rad::sin_cos(src.z.into());
-
-        Matrix3::new(cy * cz, cy * sz, -sy,
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
-    }
-}
-
-impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
-    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
-{
-    fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = Rad::sin_cos(src.x.into());
-        let (sy, cy) = Rad::sin_cos(src.y.into());
-        let (sz, cz) = Rad::sin_cos(src.z.into());
-
-        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
-                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
-    }
-}
-
 impl<S: BaseFloat> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
@@ -935,6 +904,37 @@ index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
 // index_operators!(Matrix2<S>, 2, [Vector2<S>], RangeFull);
 // index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
 // index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
+
+impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix3::new(cy * cz, cy * sz, -sy,
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+    }
+}
+
+impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
+                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
+    }
+}
 
 macro_rules! fixed_array_conversions {
     ($MatrixN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
