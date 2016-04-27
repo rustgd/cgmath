@@ -672,7 +672,7 @@ pub trait Angle where
         Self::sin(self).recip()
     }
 
-    /// Compute the secant of the angle.
+    /// Compute the cotangent of the angle.
     ///
     /// This is the same as computing the reciprocal of `Self::tan`.
     ///
@@ -688,7 +688,7 @@ pub trait Angle where
         Self::tan(self).recip()
     }
 
-    /// Compute the cotatangent of the angle.
+    /// Compute the secant of the angle.
     ///
     /// This is the same as computing the reciprocal of `Self::cos`.
     ///
