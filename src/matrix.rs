@@ -28,6 +28,7 @@ use euler::Euler;
 use num::BaseFloat;
 use point::Point3;
 use quaternion::Quaternion;
+use transform::{Transform, Transform2, Transform3};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
@@ -754,6 +755,34 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
         self[3].approx_eq_eps(&other[3], epsilon)
     }
 }
+
+impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
+  fn one() -> Matrix4<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+    Matrix4::look_at(eye, center, up)
+  }
+
+  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+    (self * vec.extend(S::zero())).truncate()
+  }
+
+  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+    Point3::from_homogeneous(self * point.to_homogeneous())
+  }
+
+  fn concat(&self, other: &Matrix4<S>) -> Matrix4<S> {
+    self * other
+  }
+
+  fn invert(&self) -> Option<Matrix4<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
+impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
 
 macro_rules! impl_operators {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {

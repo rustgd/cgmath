@@ -197,7 +197,7 @@ impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
 
     #[inline]
     fn invert(&self) -> Option<AffineMatrix3<S>> {
-        self.mat.invert().map(|m| AffineMatrix3{ mat: m })
+        SquareMatrix::invert(& self.mat).map(|m| AffineMatrix3{ mat: m })
     }
 }
 
