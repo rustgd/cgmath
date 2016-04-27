@@ -756,6 +756,33 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
     }
 }
 
+impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
+  fn one() -> Matrix3<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+    let dir = center - eye;
+    Matrix3::look_at(dir, up)
+  }
+
+  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+    self * vec
+  }
+
+  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+    Point3::from_vec(self * point.to_vec())
+  }
+
+  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+    self * other
+  }
+
+  fn invert(&self) -> Option<Matrix3<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
   fn one() -> Matrix4<S> {
     One::one()
@@ -781,6 +808,8 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     SquareMatrix::invert(self)
   }
 }
+
+impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
 
 impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
 
