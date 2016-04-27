@@ -264,6 +264,62 @@ impl<S: BaseFloat> Matrix4<S> {
                      s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
                      -eye.dot(s), -eye.dot(u), eye.dot(f), S::one())
     }
+
+    /// Create a homogeneous transformation matrix from a rotation around the `x` axis (pitch).
+    pub fn from_angle_x(theta: Rad<S>) -> Matrix4<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = Rad::sin_cos(theta);
+        Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
+                     S::zero(), c, s, S::zero(),
+                     S::zero(), -s, c, S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix from a rotation around the `y` axis (yaw).
+    pub fn from_angle_y(theta: Rad<S>) -> Matrix4<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = Rad::sin_cos(theta);
+        Matrix4::new(c, S::zero(), -s, S::zero(),
+                     S::zero(), S::one(), S::zero(), S::zero(),
+                     s, S::zero(), c, S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix from a rotation around the `z` axis (roll).
+    pub fn from_angle_z(theta: Rad<S>) -> Matrix4<S> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+        let (s, c) = Rad::sin_cos(theta);
+        Matrix4::new( c, s, S::zero(), S::zero(),
+                     -s, c, S::zero(), S::zero(),
+                     S::zero(), S::zero(), S::one(), S::zero(),
+                     S::zero(), S::zero(), S::zero(), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix from an angle around an arbitrary axis.
+    pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix4<S> {
+        let (s, c) = Rad::sin_cos(angle);
+        let _1subc = S::one() - c;
+
+        Matrix4::new(_1subc * axis.x * axis.x + c,
+                     _1subc * axis.x * axis.y + s * axis.z,
+                     _1subc * axis.x * axis.z - s * axis.y,
+                     S::zero(),
+
+                     _1subc * axis.x * axis.y - s * axis.z,
+                     _1subc * axis.y * axis.y + c,
+                     _1subc * axis.y * axis.z + s * axis.x,
+                     S::zero(),
+
+                     _1subc * axis.x * axis.z + s * axis.y,
+                     _1subc * axis.y * axis.z - s * axis.x,
+                     _1subc * axis.z * axis.z + c,
+                     S::zero(),
+
+                     S::zero(),
+                     S::zero(),
+                     S::zero(),
+                     S::one())
+    }
 }
 
 impl<S: BaseFloat> Zero for Matrix2<S> {
