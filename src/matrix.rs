@@ -778,7 +778,7 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
     self * other
   }
 
-  fn invert(&self) -> Option<Matrix3<S>> {
+  fn inverse_transform(&self) -> Option<Matrix3<S>> {
     SquareMatrix::invert(self)
   }
 }
@@ -805,7 +805,7 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     self * other
   }
 
-  fn invert(&self) -> Option<Matrix3<S>> {
+  fn inverse_transform(&self) -> Option<Matrix3<S>> {
     SquareMatrix::invert(self)
   }
 }
@@ -831,7 +831,7 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     self * other
   }
 
-  fn invert(&self) -> Option<Matrix4<S>> {
+  fn inverse_transform(&self) -> Option<Matrix4<S>> {
     SquareMatrix::invert(self)
   }
 }

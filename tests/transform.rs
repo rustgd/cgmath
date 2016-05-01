@@ -26,7 +26,7 @@ fn test_invert() {
         rot: Quaternion::new(0.5f64,0.5,0.5,0.5),
         disp: Vector3::new(6.0f64,-7.0,8.0)
     };
-	let ti = t.invert().expect("Expected successful inversion");
+	let ti = t.inverse_transform().expect("Expected successful inversion");
 	let vt = t.transform_vector(v);
     assert!(v.approx_eq(&ti.transform_vector(vt)));
 }
