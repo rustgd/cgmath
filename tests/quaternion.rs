@@ -112,3 +112,59 @@ mod from {
         }
     }
 }
+
+mod rotate_from_euler {
+    use cgmath::*;
+
+    #[test]
+    fn test_x() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from(Euler::new(deg(90.0).into(), rad(0.0), rad(0.0)));
+        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+
+        let rot = Quaternion::from(Euler::new(deg(-90.0).into(), rad(0.0), rad(0.0)));
+        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_y() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from(Euler::new(rad(0.0), deg(90.0).into(), rad(0.0)));
+        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+
+        let rot = Quaternion::from(Euler::new(rad(0.0), deg(-90.0).into(), rad(0.0)));
+        assert_approx_eq!(vec3(-1.0, 0.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_z() {
+        let vec = vec3(1.0, 0.0, 0.0);
+
+        let rot = Quaternion::from(Euler::new(rad(0.0), rad(0.0), deg(90.0).into()));
+        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+
+        let rot = Quaternion::from(Euler::new(rad(0.0), rad(0.0), deg(-90.0).into()));
+        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+    }
+
+
+    // tests that the Y rotation is done after the X
+    #[test]
+    fn test_x_then_y() {
+        let vec = vec3(0.0, 1.0, 0.0);
+
+        let rot = Quaternion::from(Euler::new(deg(90.0).into(), deg(90.0).into(), rad(0.0)));
+        assert_approx_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
+    }
+
+    // tests that the Z rotation is done after the Y
+    #[test]
+    fn test_y_then_z() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from(Euler::new(rad(0.0), deg(90.0).into(), deg(90.0).into()));
+        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+    }
+}

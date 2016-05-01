@@ -156,17 +156,20 @@ impl<A> From<Euler<A>> for Quaternion<<A as Angle>::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Quaternion<A::Unitless> {
+        // Euclidean Space has an Euler to quat equation, but it is for a different order (YXZ):
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
+        // Page A-2 here has the formula for XYZ:
+        // http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
 
         let half = cast(0.5f64).unwrap();
         let (s_x, c_x) = Rad::sin_cos(src.x.into() * half);
         let (s_y, c_y) = Rad::sin_cos(src.y.into() * half);
         let (s_z, c_z) = Rad::sin_cos(src.z.into() * half);
 
-        Quaternion::new(c_y * c_x * c_z - s_y * s_x * s_z,
-                        s_y * s_x * c_z + c_y * c_x * s_z,
-                        s_y * c_x * c_z + c_y * s_x * s_z,
-                        c_y * s_x * c_z - s_y * c_x * s_z)
+        Quaternion::new(-s_x * s_y * s_z + c_x * c_y * c_z,
+                         s_x * c_y * c_z + s_y * s_z * c_x,
+                        -s_x * s_z * c_y + s_y * c_x * c_z,
+                         s_x * s_y * c_z + s_z * c_x * c_y)
     }
 }
 
