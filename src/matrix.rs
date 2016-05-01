@@ -161,6 +161,8 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 
     /// Create a rotation matrix from an angle around an arbitrary axis.
+    ///
+    /// The specified axis **must be normalized**, or it represents an invalid rotation.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = Rad::sin_cos(angle);
         let _1subc = S::one() - c;
@@ -266,6 +268,8 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 
     /// Create a homogeneous transformation matrix from an angle around an arbitrary axis.
+    ///
+    /// The specified axis **must be normalized**, or it represents an invalid rotation.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix4<S> {
         let (s, c) = Rad::sin_cos(angle);
         let _1subc = S::one() - c;

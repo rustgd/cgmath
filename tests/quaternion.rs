@@ -168,3 +168,55 @@ mod rotate_from_euler {
         assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
     }
 }
+
+mod rotate_from_axis_angle {
+    use cgmath::*;
+
+    #[test]
+    fn test_x() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from_angle_x(deg(90.0).into());
+        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_y() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from_angle_y(deg(90.0).into());
+        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_z() {
+        let vec = vec3(1.0, 0.0, 0.0);
+
+        let rot = Quaternion::from_angle_z(deg(90.0).into());
+        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_xy() {
+        let vec = vec3(0.0, 0.0, 1.0);
+
+        let rot = Quaternion::from_axis_angle(vec3(1.0, 1.0, 0.0).normalize(), deg(90.0).into());
+        assert_approx_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
+    }
+
+    #[test]
+    fn test_yz() {
+        let vec = vec3(1.0, 0.0, 0.0);
+
+        let rot = Quaternion::from_axis_angle(vec3(0.0, 1.0, 1.0).normalize(), deg(-90.0).into());
+        assert_approx_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
+    }
+
+    #[test]
+    fn test_xz() {
+        let vec = vec3(0.0, 1.0, 0.0);
+
+        let rot = Quaternion::from_axis_angle(vec3(1.0, 0.0, 1.0).normalize(), deg(90.0).into());
+        assert_approx_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
+    }
+}
