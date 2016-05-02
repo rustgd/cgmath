@@ -36,9 +36,9 @@ multiplication operator for Matrix * Vector, but not Vector * Matrix.
 
 cgmath is _not_ an n-dimensional library and is aimed at computer graphics
 applications rather than general linear algebra. It only offers the 2, 3, and
-4 dimensional structures that are more than useful for most computer graphics
+4 dimensional structures that are more than enough for most computer graphics
 applications. This design decision was made in order to simplify the
-implementation (Rust cannot paramerise over constants at compile time), and to
+implementation (Rust cannot parameterize over constants at compile time), and to
 make dimension-specific optimisations easier in the future.
 
 ## Contributing
