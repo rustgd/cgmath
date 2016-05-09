@@ -53,7 +53,7 @@ pub trait Transform<P: EuclideanSpace>: Sized {
     fn concat(&self, other: &Self) -> Self;
 
     /// Create a transform that "un-does" this one.
-    fn invert(&self) -> Option<Self>;
+    fn inverse_transform(&self) -> Option<Self>;
 
     /// Combine this transform with another, in-place.
     #[inline]
@@ -64,8 +64,8 @@ pub trait Transform<P: EuclideanSpace>: Sized {
     /// Invert this transform in-place, failing if the transformation is not
     /// invertible.
     #[inline]
-    fn invert_self(&mut self) {
-        *self = self.invert().unwrap()
+    fn to_inverse(&mut self) {
+        *self = self.inverse_transform().unwrap()
     }
 }
 
@@ -122,7 +122,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
         }
     }
 
-    fn invert(&self) -> Option<Decomposed<P::Diff, R>> {
+    fn inverse_transform(&self) -> Option<Decomposed<P::Diff, R>> {
         if self.scale.approx_eq(&P::Scalar::zero()) {
             None
         } else {
@@ -196,8 +196,8 @@ impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
     }
 
     #[inline]
-    fn invert(&self) -> Option<AffineMatrix3<S>> {
-        self.mat.invert().map(|m| AffineMatrix3{ mat: m })
+    fn inverse_transform(&self) -> Option<AffineMatrix3<S>> {
+        SquareMatrix::invert(& self.mat).map(|m| AffineMatrix3{ mat: m })
     }
 }
 

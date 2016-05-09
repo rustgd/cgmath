@@ -26,8 +26,9 @@ use angle::Rad;
 use approx::ApproxEq;
 use euler::Euler;
 use num::BaseFloat;
-use point::Point3;
+use point::{Point2, Point3};
 use quaternion::Quaternion;
+use transform::{Transform, Transform2, Transform3};
 use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
@@ -175,37 +176,6 @@ impl<S: BaseFloat> Matrix3<S> {
                      _1subc * axis.x * axis.z + s * axis.y,
                      _1subc * axis.y * axis.z - s * axis.x,
                      _1subc * axis.z * axis.z + c)
-    }
-}
-
-impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
-    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
-{
-    fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = Rad::sin_cos(src.x.into());
-        let (sy, cy) = Rad::sin_cos(src.y.into());
-        let (sz, cz) = Rad::sin_cos(src.z.into());
-
-        Matrix3::new(cy * cz, cy * sz, -sy,
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
-    }
-}
-
-impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
-    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
-{
-    fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        let (sx, cx) = Rad::sin_cos(src.x.into());
-        let (sy, cy) = Rad::sin_cos(src.y.into());
-        let (sz, cz) = Rad::sin_cos(src.z.into());
-
-        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
-                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
     }
 }
 
@@ -786,6 +756,92 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
     }
 }
 
+impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
+  fn one() -> Matrix3<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+    let dir = center - eye;
+    Matrix3::from(Matrix2::look_at(dir, up))
+  }
+
+  fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {
+    (self * vec.extend(S::zero())).truncate()
+  }
+
+  fn transform_point(&self, point: Point2<S>) -> Point2<S> {
+    Point2::from_vec((self * Point3::new(point.x, point.y, S::one()).to_vec()).truncate())
+  }
+
+  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+    self * other
+  }
+
+  fn inverse_transform(&self) -> Option<Matrix3<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
+impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
+  fn one() -> Matrix3<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+    let dir = center - eye;
+    Matrix3::look_at(dir, up)
+  }
+
+  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+    self * vec
+  }
+
+  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+    Point3::from_vec(self * point.to_vec())
+  }
+
+  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+    self * other
+  }
+
+  fn inverse_transform(&self) -> Option<Matrix3<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
+impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
+  fn one() -> Matrix4<S> {
+    One::one()
+  }
+
+  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+    Matrix4::look_at(eye, center, up)
+  }
+
+  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+    (self * vec.extend(S::zero())).truncate()
+  }
+
+  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+    Point3::from_homogeneous(self * point.to_homogeneous())
+  }
+
+  fn concat(&self, other: &Matrix4<S>) -> Matrix4<S> {
+    self * other
+  }
+
+  fn inverse_transform(&self) -> Option<Matrix4<S>> {
+    SquareMatrix::invert(self)
+  }
+}
+
+impl<S: BaseFloat> Transform2<S> for Matrix3<S> {}
+
+impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
+
+impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
+
 macro_rules! impl_operators {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
         impl_operator!(<S: BaseFloat> Neg for $MatrixN<S> {
@@ -935,6 +991,37 @@ index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
 // index_operators!(Matrix2<S>, 2, [Vector2<S>], RangeFull);
 // index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
 // index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
+
+impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix3::new(cy * cz, cy * sz, -sy,
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+    }
+}
+
+impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
+    A: Angle + Into<Rad<<A as Angle>::Unitless>>,
+{
+    fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
+        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        let (sx, cx) = Rad::sin_cos(src.x.into());
+        let (sy, cy) = Rad::sin_cos(src.y.into());
+        let (sz, cz) = Rad::sin_cos(src.z.into());
+
+        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
+                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
+                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
+                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
+    }
+}
 
 macro_rules! fixed_array_conversions {
     ($MatrixN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
