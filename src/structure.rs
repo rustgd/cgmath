@@ -509,12 +509,6 @@ pub trait SquareMatrix where
     #[must_use]
     fn invert(&self) -> Option<Self>;
 
-    /// Invert this matrix in-place.
-    #[inline]
-    fn invert_self(&mut self) {
-        *self = self.invert().expect("Attempted to invert a matrix with zero determinant.");
-    }
-
     /// Test if this matrix is invertible.
     #[inline]
     fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Scalar::zero()) }
