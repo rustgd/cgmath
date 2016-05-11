@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fmt;
-
 use structure::*;
 
 use approx::ApproxEq;
@@ -155,54 +153,3 @@ impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<
 impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
-
-/// A homogeneous transformation matrix.
-#[derive(Copy, Clone, RustcEncodable, RustcDecodable)]
-pub struct AffineMatrix3<S> {
-    pub mat: Matrix4<S>,
-}
-
-impl<S: BaseFloat> Transform<Point3<S>> for AffineMatrix3<S> {
-    #[inline]
-    fn one() -> AffineMatrix3<S> {
-       AffineMatrix3 { mat: Matrix4::identity() }
-    }
-
-    #[inline]
-    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> AffineMatrix3<S> {
-        AffineMatrix3 { mat: Matrix4::look_at(eye, center, up) }
-    }
-
-    #[inline]
-    fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
-        (self.mat * vec.extend(S::zero())).truncate()
-    }
-
-    #[inline]
-    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-        Point3::from_homogeneous(self.mat * point.to_homogeneous())
-    }
-
-    #[inline]
-    fn concat(&self, other: &AffineMatrix3<S>) -> AffineMatrix3<S> {
-        AffineMatrix3 { mat: self.mat * other.mat }
-    }
-
-    #[inline]
-    fn inverse_transform(&self) -> Option<AffineMatrix3<S>> {
-        SquareMatrix::invert(& self.mat).map(|m| AffineMatrix3{ mat: m })
-    }
-}
-
-impl<S: BaseNum> From<AffineMatrix3<S>> for Matrix4<S> {
-    #[inline] fn from(aff: AffineMatrix3<S>) -> Matrix4<S> { aff.mat }
-}
-
-impl<S: BaseFloat> Transform3<S> for AffineMatrix3<S> {}
-
-impl<S: fmt::Debug> fmt::Debug for AffineMatrix3<S> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "AffineMatrix3 "));
-        <[[S; 4]; 4] as fmt::Debug>::fmt(self.mat.as_ref(), f)
-    }
-}
