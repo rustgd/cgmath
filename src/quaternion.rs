@@ -17,7 +17,6 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use num_traits::Float;
 use num_traits::cast;
 
 use structure::*;

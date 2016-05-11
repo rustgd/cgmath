@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::{Zero, One};
+use num_traits::{Zero};
 use num_traits::cast;
 
 use structure::Angle;
