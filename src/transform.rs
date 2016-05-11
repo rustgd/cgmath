@@ -40,12 +40,6 @@ pub trait Transform<P: EuclideanSpace>: Sized {
     /// Transform a point using this transform.
     fn transform_point(&self, point: P) -> P;
 
-    /// Transform a vector as a point using this transform.
-    #[inline]
-    fn transform_as_point(&self, vec: P::Diff) -> P::Diff {
-        self.transform_point(P::from_vec(vec)).to_vec()
-    }
-
     /// Combine this transform with another, yielding a new transformation
     /// which has the effects of both.
     fn concat(&self, other: &Self) -> Self;
@@ -109,7 +103,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot.concat(&other.rot),
-            disp: self.transform_as_point(other.disp.clone()),
+            disp: self.disp + other.disp,
         }
     }
 
