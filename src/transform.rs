@@ -60,13 +60,6 @@ pub trait Transform<P: EuclideanSpace>: Sized {
     fn concat_self(&mut self, other: &Self) {
         *self = Self::concat(self, other);
     }
-
-    /// Invert this transform in-place, failing if the transformation is not
-    /// invertible.
-    #[inline]
-    fn to_inverse(&mut self) {
-        *self = self.inverse_transform().unwrap()
-    }
 }
 
 /// A generic transformation consisting of a rotation,

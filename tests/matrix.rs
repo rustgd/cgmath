@@ -130,13 +130,6 @@ pub mod matrix2 {
     }
 
     #[test]
-    fn test_invert_self() {
-        let mut mut_a = A;
-        mut_a.invert_self();
-        assert_eq!(mut_a, A.invert().unwrap());
-    }
-
-    #[test]
     fn test_predicates() {
         assert!(Matrix2::<f64>::identity().is_identity());
         assert!(Matrix2::<f64>::identity().is_symmetric());
@@ -298,13 +291,6 @@ pub mod matrix3 {
                    Matrix3::new(0.5f64, -1.0f64,  1.0f64,
                                 0.0f64,  0.5f64, -2.0f64,
                                 0.0f64,  0.0f64,  1.0f64));
-    }
-
-    #[test]
-    fn test_invert_self() {
-        let mut mut_c = C;
-        mut_c.invert_self();
-        assert_eq!(mut_c, C.invert().unwrap());
     }
 
     #[test]
@@ -577,13 +563,6 @@ pub mod matrix4 {
                                  -0.987005f64,  0.125786f64, -0.099998f64, 0.0f64,
                                   0.,       -1.244597f64, -1.565561f64, 1.0f64);
         assert!((mat_f.invert().unwrap() * mat_f).is_identity());
-    }
-
-    #[test]
-    fn test_invert_self() {
-        let mut mut_c = C;
-        mut_c.invert_self();
-        assert_eq!(mut_c, C.invert().unwrap());
     }
 
     #[test]

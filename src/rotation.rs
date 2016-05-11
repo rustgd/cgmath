@@ -198,11 +198,6 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     // to be faster
     #[inline]
     fn invert(&self) -> Basis2<S> { Basis2 { mat: self.mat.invert().unwrap() } }
-
-    // TODO: we know the matrix is orthogonal, so this could be re-written
-    // to be faster
-    #[inline]
-    fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
 impl<S: BaseFloat> ApproxEq for Basis2<S> {
@@ -289,11 +284,6 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     // to be faster
     #[inline]
     fn invert(&self) -> Basis3<S> { Basis3 { mat: self.mat.invert().unwrap() } }
-
-    // TODO: we know the matrix is orthogonal, so this could be re-written
-    // to be faster
-    #[inline]
-    fn invert_self(&mut self) { self.mat.invert_self(); }
 }
 
 impl<S: BaseFloat> ApproxEq for Basis3<S> {
