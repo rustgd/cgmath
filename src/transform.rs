@@ -102,7 +102,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     fn concat(&self, other: &Decomposed<P::Diff, R>) -> Decomposed<P::Diff, R> {
         Decomposed {
             scale: self.scale * other.scale,
-            rot: self.rot.concat(&other.rot),
+            rot: self.rot * other.rot,
             disp: self.disp + other.disp,
         }
     }
