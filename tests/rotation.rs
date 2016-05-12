@@ -33,7 +33,7 @@ mod rotation {
 #[test]
 fn test_invert_basis2() {
     let a: Basis2<_> = rotation::a2();
-    let a = a.concat(&a.invert());
+    let a = a * a.invert();
     let a: &Matrix2<_> = a.as_ref();
     assert!(a.is_identity());
 }
@@ -41,7 +41,7 @@ fn test_invert_basis2() {
 #[test]
 fn test_invert_basis3() {
     let a: Basis3<_> = rotation::a3();
-    let a = a.concat(&a.invert());
+    let a = a * a.invert();
     let a: &Matrix3<_> = a.as_ref();
     assert!(a.is_identity());
 }

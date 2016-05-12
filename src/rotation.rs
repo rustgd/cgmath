@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::fmt;
+use std::ops::*;
 
 use structure::*;
 
@@ -28,14 +29,11 @@ use vector::{Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: EuclideanSpace>: PartialEq + Sized where
+pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
     <P as EuclideanSpace>::Scalar: BaseFloat,
 {
-    /// Create the identity transform (causes no transformation).
-    fn one() -> Self;
-
     /// Create a rotation to a given direction with an 'up' vector
     fn look_at(dir: P::Diff, up: P::Diff) -> Self;
 
@@ -53,24 +51,9 @@ pub trait Rotation<P: EuclideanSpace>: PartialEq + Sized where
         P::from_vec(self.rotate_vector(point.to_vec()))
     }
 
-    /// Create a new rotation which combines both this rotation, and another.
-    fn concat(&self, other: &Self) -> Self;
-
     /// Create a new rotation which "un-does" this rotation. That is,
-    /// `r.concat(r.invert())` is the identity.
+    /// `r * r.invert()` is the identity.
     fn invert(&self) -> Self;
-
-    /// Modify this rotation in-place by combining it with another.
-    #[inline]
-    fn concat_self(&mut self, other: &Self) {
-        *self = Self::concat(self, other);
-    }
-
-    /// Invert this rotation in-place.
-    #[inline]
-    fn invert_self(&mut self) {
-        *self = self.invert();
-    }
 }
 
 /// A two-dimensional rotation.
@@ -151,7 +134,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 ///
 /// // Note that we can also concatenate rotations:
 /// let rot_half: Basis2<f64> = Rotation2::from_angle(rad(0.25f64 * f64::consts::PI));
-/// let unit_y3 = rot_half.concat(&rot_half).rotate_vector(unit_x);
+/// let unit_y3 = (rot_half * rot_half).rotate_vector(unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
 #[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
@@ -173,9 +156,6 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
 
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
-    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::identity() } }
-
-    #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 { mat: Matrix2::look_at(dir, up) }
     }
@@ -188,17 +168,20 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> { self.mat * vec }
 
-    #[inline]
-    fn concat(&self, other: &Basis2<S>) -> Basis2<S> { Basis2 { mat: self.mat * other.mat } }
-
-    #[inline]
-    fn concat_self(&mut self, other: &Basis2<S>) { self.mat = self.mat * other.mat; }
-
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster
     #[inline]
     fn invert(&self) -> Basis2<S> { Basis2 { mat: self.mat.invert().unwrap() } }
 }
+
+impl<S: BaseFloat> One for Basis2<S> {
+    #[inline]
+    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
+}
+
+impl_operator!(<S: BaseFloat> Mul<Basis2<S> > for Basis2<S> {
+    fn mul(lhs, rhs) -> Basis2<S> { Basis2 { mat: lhs.mat * rhs.mat  } }
+});
 
 impl<S: BaseFloat> ApproxEq for Basis2<S> {
     type Epsilon = S;
@@ -258,9 +241,6 @@ impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
-    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::identity() } }
-
-    #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 { mat: Matrix3::look_at(dir, up) }
     }
@@ -274,17 +254,20 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
     fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self.mat * vec }
 
-    #[inline]
-    fn concat(&self, other: &Basis3<S>) -> Basis3<S> { Basis3 { mat: self.mat * other.mat } }
-
-    #[inline]
-    fn concat_self(&mut self, other: &Basis3<S>) { self.mat = self.mat * other.mat; }
-
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster
     #[inline]
     fn invert(&self) -> Basis3<S> { Basis3 { mat: self.mat.invert().unwrap() } }
 }
+
+impl<S: BaseFloat> One for Basis3<S> {
+    #[inline]
+    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
+}
+
+impl_operator!(<S: BaseFloat> Mul<Basis3<S> > for Basis3<S> {
+    fn mul(lhs, rhs) -> Basis3<S> { Basis3 { mat: lhs.mat * rhs.mat  } }
+});
 
 impl<S: BaseFloat> ApproxEq for Basis3<S> {
     type Epsilon = S;

@@ -58,12 +58,6 @@ impl<S: BaseFloat> Quaternion<S> {
         Quaternion { s: s, v: v }
     }
 
-    /// The multiplicative identity.
-    #[inline]
-    pub fn one() -> Quaternion<S> {
-        Quaternion::from_sv(S::one(), Vector3::zero())
-    }
-
     /// The conjugate of the quaternion.
     #[inline]
     pub fn conjugate(self) -> Quaternion<S> {
@@ -128,6 +122,13 @@ impl<S: BaseFloat> Zero for Quaternion<S> {
     #[inline]
     fn is_zero(&self) -> bool {
         Quaternion::approx_eq(self, &Quaternion::zero())
+    }
+}
+
+impl<S: BaseFloat> One for Quaternion<S> {
+    #[inline]
+    fn one() -> Quaternion<S> {
+        Quaternion::from_sv(S::one(), Vector3::zero())
     }
 }
 
@@ -333,9 +334,6 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     #[inline]
-    fn one() -> Quaternion<S> { Quaternion::one() }
-
-    #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
         Matrix3::look_at(dir, up).into()
     }
@@ -351,16 +349,7 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self * vec }
 
     #[inline]
-    fn concat(&self, other: &Quaternion<S>) -> Quaternion<S> { self * other }
-
-    #[inline]
-    fn concat_self(&mut self, other: &Quaternion<S>) { *self = &*self * other; }
-
-    #[inline]
     fn invert(&self) -> Quaternion<S> { self.conjugate() / self.magnitude2() }
-
-    #[inline]
-    fn invert_self(&mut self) { *self = self.invert() }
 }
 
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
