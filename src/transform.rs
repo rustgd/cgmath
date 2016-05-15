@@ -56,7 +56,8 @@ pub trait Transform<P: EuclideanSpace>: Sized {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Decomposed<V: VectorSpace, R> {
     pub scale: V::Scalar,
     pub rot: R,

@@ -32,14 +32,16 @@ use num::BaseFloat;
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Rad<S> { pub s: S }
 
 /// An angle, in degrees.
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(Copy, Clone, PartialEq, PartialOrd, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq, PartialOrd)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Deg<S> { pub s: S }
 
 /// Create a new angle, in radians

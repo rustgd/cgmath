@@ -28,11 +28,12 @@ name = "cgmath"
 
 [features]
 unstable = []
+default = ["rustc-serialize"]
 
 [dependencies]
 num-traits = "0.1"
 rand = "0.3"
-rustc-serialize = "0.3"
+rustc-serialize = { version = "0.3", optional = true }
 
 [dev-dependencies]
 glium = "0.14.0"

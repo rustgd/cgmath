@@ -35,7 +35,8 @@ use vector::{Vector2, Vector3, Vector4};
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Matrix2<S> {
     /// The first column of the matrix.
     pub x: Vector2<S>,
@@ -47,7 +48,8 @@ pub struct Matrix2<S> {
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Matrix3<S> {
     /// The first column of the matrix.
     pub x: Vector3<S>,
@@ -61,7 +63,8 @@ pub struct Matrix3<S> {
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Matrix4<S> {
     /// The first column of the matrix.
     pub x: Vector4<S>,
