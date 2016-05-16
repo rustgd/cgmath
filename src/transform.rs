@@ -56,7 +56,8 @@ pub trait Transform<P: EuclideanSpace>: Sized {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 pub struct Decomposed<V: VectorSpace, R> {
     pub scale: V::Scalar,
     pub rot: R,
@@ -147,3 +148,162 @@ impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<
 impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
+
+impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
+    where S: ApproxEq<Epsilon = E>, S::Scalar: ApproxEq<Epsilon = E>, R: ApproxEq<Epsilon = E>
+{
+    type Epsilon = E;
+
+    fn approx_eq_eps(&self, other: &Self, epsilon: &Self::Epsilon) -> bool {
+        self.scale.approx_eq_eps(&other.scale, epsilon) &&
+        self.rot.approx_eq_eps(&other.rot, epsilon) &&
+        self.disp.approx_eq_eps(&other.disp, epsilon)
+    }
+}
+
+#[cfg(feature = "eders")]
+#[doc(hidden)]
+mod eders_ser {
+    use structure::VectorSpace;
+    use super::Decomposed;
+    use serde::{self, Serialize};
+
+    impl<V: VectorSpace, R> Serialize for Decomposed<V, R>
+        where V: Serialize, V::Scalar: Serialize, R: Serialize
+    {
+        fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
+            where S: serde::Serializer
+        {
+            serializer.serialize_struct("Decomposed", DecomposedVisitor {
+                value: self,
+                state: 0,
+            })
+        }
+    }
+
+    struct DecomposedVisitor<'a, V: 'a + VectorSpace, R: 'a> {
+        value: &'a Decomposed<V, R>,
+        state: u8,
+    }
+
+    impl<'a, V: 'a + VectorSpace, R> serde::ser::MapVisitor for DecomposedVisitor<'a, V, R>
+        where V: Serialize, V::Scalar: Serialize, R: Serialize
+    {
+        fn visit<S>(&mut self, serializer: &mut S) -> Result<Option<()>, S::Error>
+            where S: serde::Serializer
+        {
+            match self.state {
+                0 => {
+                    self.state += 1;
+                    Ok(Some(try!(serializer.serialize_struct_elt("scale", &self.value.scale))))
+                },
+                1 => {
+                    self.state += 1;
+                    Ok(Some(try!(serializer.serialize_struct_elt("rot", &self.value.rot))))
+                },
+                2 => {
+                    self.state += 1;
+                    Ok(Some(try!(serializer.serialize_struct_elt("disp", &self.value.disp))))
+                },
+                _ => {
+                    Ok(None)
+                },
+            }
+        }
+    }
+}
+
+#[cfg(feature = "eders")]
+#[doc(hidden)]
+mod eders_de {
+    use structure::VectorSpace;
+    use super::Decomposed;
+    use serde::{self, Deserialize};
+    use std::marker::PhantomData;
+
+    enum DecomposedField {
+        Scale,
+        Rot,
+        Disp,
+    }
+
+    impl Deserialize for DecomposedField {
+        fn deserialize<D>(deserializer: &mut D) -> Result<DecomposedField, D::Error>
+            where D: serde::Deserializer
+        {
+            struct DecomposedFieldVisitor;
+
+            impl serde::de::Visitor for DecomposedFieldVisitor {
+                type Value = DecomposedField;
+
+                fn visit_str<E>(&mut self, value: &str) -> Result<DecomposedField, E>
+                    where E: serde::de::Error
+                {
+                    match value {
+                        "scale" => Ok(DecomposedField::Scale),
+                        "rot" => Ok(DecomposedField::Rot),
+                        "disp" => Ok(DecomposedField::Disp),
+                        _ => Err(serde::de::Error::custom("expected scale, rot or disp")),
+                    }
+                }
+            }
+
+            deserializer.deserialize(DecomposedFieldVisitor)
+        }
+    }
+
+    impl<S: VectorSpace, R> Deserialize for Decomposed<S, R>
+        where S: Deserialize, S::Scalar: Deserialize, R: Deserialize
+    {
+        fn deserialize<D>(deserializer: &mut D) -> Result<Decomposed<S, R>, D::Error>
+            where D: serde::de::Deserializer
+        {
+            const FIELDS: &'static [&'static str] = &["scale", "rot", "disp"];
+            deserializer.deserialize_struct("Decomposed", FIELDS, DecomposedVisitor(PhantomData))
+        }
+    }
+
+    struct DecomposedVisitor<S: VectorSpace, R>(PhantomData<(S, R)>);
+
+    impl<S: VectorSpace, R> serde::de::Visitor for DecomposedVisitor<S, R>
+        where S: Deserialize, S::Scalar: Deserialize, R: Deserialize
+    {
+        type Value = Decomposed<S, R>;
+
+        fn visit_map<V>(&mut self, mut visitor: V) -> Result<Decomposed<S, R>, V::Error>
+            where V: serde::de::MapVisitor
+        {
+            let mut scale = None;
+            let mut rot = None;
+            let mut disp = None;
+
+            loop {
+                match try!(visitor.visit_key()) {
+                    Some(DecomposedField::Scale) => { scale = Some(try!(visitor.visit_value())); },
+                    Some(DecomposedField::Rot) => { rot = Some(try!(visitor.visit_value())); },
+                    Some(DecomposedField::Disp) => { disp = Some(try!(visitor.visit_value())); },
+                    _ => { break; },
+                }
+            }
+
+            let scale = match scale {
+                Some(scale) => scale,
+                None => try!(visitor.missing_field("scale")),
+            };
+
+            let rot = match rot {
+                Some(rot) => rot,
+                None => try!(visitor.missing_field("rot")),
+            };
+
+            let disp = match disp {
+                Some(disp) => disp,
+                None => try!(visitor.missing_field("disp")),
+            };
+
+            try!(visitor.end());
+
+            Ok(Decomposed { scale: scale, rot: rot, disp: disp })
+        }
+    }
+}

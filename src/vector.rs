@@ -29,7 +29,9 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector1<S> {
     /// The x component of the vector.
     pub x: S,
@@ -39,7 +41,9 @@ pub struct Vector1<S> {
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector2<S> {
     /// The x component of the vector.
     pub x: S,
@@ -51,7 +55,9 @@ pub struct Vector2<S> {
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector3<S> {
     /// The x component of the vector.
     pub x: S,
@@ -65,7 +71,9 @@ pub struct Vector3<S> {
 ///
 /// This type is marked as `#[repr(C, packed)]`.
 #[repr(C, packed)]
-#[derive(PartialEq, Eq, Copy, Clone, Hash, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Eq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector4<S> {
     /// The x component of the vector.
     pub x: S,

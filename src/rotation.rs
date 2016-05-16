@@ -137,7 +137,9 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// let unit_y3 = (rot_half * rot_half).rotate_vector(unit_x);
 /// assert!(unit_y3.approx_eq(&unit_y2));
 /// ```
-#[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Copy, Clone)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis2<S> {
     mat: Matrix2<S>
 }
@@ -209,7 +211,9 @@ impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
 /// been restricted to a subeset of those implemented on `Matrix3`.
-#[derive(PartialEq, Copy, Clone, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Copy, Clone)]
+#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis3<S> {
     mat: Matrix3<S>
 }
