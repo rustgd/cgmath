@@ -38,6 +38,7 @@ use vector::Vector3;
 #[repr(C, packed)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Quaternion<S> {
     /// The scalar part of the quaternion.
     pub s: S,

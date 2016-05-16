@@ -50,11 +50,17 @@
 //! use cgmath::prelude::*;
 //! ```
 
+#![cfg_attr(feature = "eders", feature(plugin, custom_derive))]
+#![cfg_attr(feature = "eders", plugin(serde_macros))]
+
 pub extern crate num_traits;
 extern crate rand;
 
 #[cfg(feature = "rustc-serialize")]
 extern crate rustc_serialize;
+
+#[cfg(feature = "eders")]
+extern crate serde;
 
 // Re-exports
 

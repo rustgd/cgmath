@@ -33,6 +33,7 @@ use vector::{Vector1, Vector2, Vector3, Vector4};
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Point1<S> {
     pub x: S,
 }
@@ -43,6 +44,7 @@ pub struct Point1<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Point2<S> {
     pub x: S,
     pub y: S,
@@ -54,6 +56,7 @@ pub struct Point2<S> {
 #[repr(C, packed)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Point3<S> {
     pub x: S,
     pub y: S,

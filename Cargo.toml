@@ -29,11 +29,14 @@ name = "cgmath"
 [features]
 unstable = []
 default = ["rustc-serialize"]
+eders = ["serde", "serde_macros"]
 
 [dependencies]
 num-traits = "0.1"
 rand = "0.3"
 rustc-serialize = { version = "0.3", optional = true }
+serde = { version = "0.7", optional = true }
+serde_macros = { version = "0.7", optional = true }
 
 [dev-dependencies]
 glium = "0.14.0"

@@ -139,6 +139,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// ```
 #[derive(PartialEq, Copy, Clone)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis2<S> {
     mat: Matrix2<S>
 }
@@ -212,6 +213,7 @@ impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
 /// been restricted to a subeset of those implemented on `Matrix3`.
 #[derive(PartialEq, Copy, Clone)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis3<S> {
     mat: Matrix3<S>
 }
