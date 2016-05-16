@@ -40,3 +40,4 @@ serde_macros = { version = "0.7", optional = true }
 
 [dev-dependencies]
 glium = "0.14.0"
+serde_json = "0.7"
