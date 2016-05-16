@@ -149,6 +149,18 @@ impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> 
 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
+impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
+    where S: ApproxEq<Epsilon = E>, S::Scalar: ApproxEq<Epsilon = E>, R: ApproxEq<Epsilon = E>
+{
+    type Epsilon = E;
+
+    fn approx_eq_eps(&self, other: &Self, epsilon: &Self::Epsilon) -> bool {
+        self.scale.approx_eq_eps(&other.scale, epsilon) &&
+        self.rot.approx_eq_eps(&other.rot, epsilon) &&
+        self.disp.approx_eq_eps(&other.disp, epsilon)
+    }
+}
+
 #[cfg(feature = "eders")]
 #[doc(hidden)]
 mod eders_ser {
