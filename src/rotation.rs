@@ -72,6 +72,8 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
                                  + Into<Quaternion<S>>
                                  + From<Euler<Rad<S>>> {
     /// Create a rotation using an angle around a given axis.
+    ///
+    /// The specified axis **must be normalized**, or it represents an invalid rotation.
     fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Self;
 
     /// Create a rotation from an angle around the `x` axis (pitch).

@@ -167,6 +167,8 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 
     /// Create a rotation matrix from an angle around an arbitrary axis.
+    ///
+    /// The specified axis **must be normalized**, or it represents an invalid rotation.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
         let (s, c) = Rad::sin_cos(angle);
         let _1subc = S::one() - c;
@@ -272,6 +274,8 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 
     /// Create a homogeneous transformation matrix from an angle around an arbitrary axis.
+    ///
+    /// The specified axis **must be normalized**, or it represents an invalid rotation.
     pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix4<S> {
         let (s, c) = Rad::sin_cos(angle);
         let _1subc = S::one() - c;
@@ -1002,14 +1006,14 @@ impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        // Page A-2: http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
         let (sx, cx) = Rad::sin_cos(src.x.into());
         let (sy, cy) = Rad::sin_cos(src.y.into());
         let (sz, cz) = Rad::sin_cos(src.z.into());
 
-        Matrix3::new(cy * cz, cy * sz, -sy,
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy,
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy)
+        Matrix3::new(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz,
+                     -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz,
+                     sy, -sx * cy, cx * cy)
     }
 }
 
@@ -1017,14 +1021,14 @@ impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
-        // http://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        // Page A-2: http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
         let (sx, cx) = Rad::sin_cos(src.x.into());
         let (sy, cy) = Rad::sin_cos(src.y.into());
         let (sz, cz) = Rad::sin_cos(src.z.into());
 
-        Matrix4::new(cy * cz, cy * sz, -sy, A::Unitless::zero(),
-                     -cx * sz + sx * sy * cz, cx * cz + sx * sy * sz, sx * cy, A::Unitless::zero(),
-                     sx * sz + cx * sy * cz, -sx * cz + cx * sy * sz, cx * cy, A::Unitless::zero(),
+        Matrix4::new(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz, A::Unitless::zero(),
+                     -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz, A::Unitless::zero(),
+                     sy, -sx * cy, cx * cy, A::Unitless::zero(),
                      A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
     }
 }

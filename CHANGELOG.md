@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Fix Euler angles to quaternion and quaternion to Euler angles conversion. The axes are now
+  correct, and the order the angles are applied is XYZ. The conversion now matches the conversion
+  from axis angle.
+- Fix Euler angles to matrix conversion.
+
 ## [v0.9.1] - 2016-04-20
 
 ### Changed
