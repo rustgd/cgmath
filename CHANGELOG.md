@@ -6,12 +6,38 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.10.0] - 2016-05-11
+
+### Added
+
+- A `MetricSpace` trait for types that have a distance between elements.
+- `EuclideanSpace::{midpoint, centroid}` functions with default
+  implementations.
+- `Vector1` and `Point1` structs.
+- Serde support behind the `eders` feature flag.
+- An `ApproxEq` implementation for `Decomposed`.
+
 ### Changed
 
-- Fix Euler angles to quaternion and quaternion to Euler angles conversion. The axes are now
-  correct, and the order the angles are applied is XYZ. The conversion now matches the conversion
-  from axis angle.
-- Fix Euler angles to matrix conversion.
+- Depend on the `num-traits` crate rather than `num`, seeing as we only use the
+  traits in `num`. `num_traits` has also been re-exported so that you can more
+  easily use these in your project.
+- Use an `Euler` type for euler angle conversions.
+- Constrain `InnerSpace` by `MetricSpace`.
+- Constrain `Rotation` by `One`
+- Implement `Transform` and `Transform3` for `Matrix4`.
+- Implement `Transform`, `Transform2`, and `Transform3` for `Matrix4`.
+- Fix `Euler`-`Quaternion` and `Quaternion`-`Euler` conversions. The axes are
+  now correct, and the angles are applied in _x_-_y_-_z_ order. The conversion now
+  matches the conversion from axis angle.
+- Fix `Euler`-`{Matrix3, Matrix4}` conversions.
+
+## Removed
+
+- `Rotation::transform_as_point`
+- `AffineMatrix3`
+- `Rotation::invert_self`
+- `Matrix::invert_self`
 
 ## [v0.9.1] - 2016-04-20
 
@@ -178,8 +204,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.9.1...HEAD
-[v0.9.0]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
+[Unreleased]: https://github.com/bjz/cgmath/compare/v0.10.0...HEAD
+[v0.10.0]: https://github.com/bjz/cgmath/compare/v0.9.1...v0.10.0
+[v0.9.1]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/bjz/cgmath/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/bjz/cgmath/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/bjz/cgmath/compare/v0.6.0...v0.7.0
