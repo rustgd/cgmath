@@ -113,6 +113,31 @@ mod from {
     }
 }
 
+mod arc {
+    use cgmath::*;
+
+    fn test(src: Vector3<f32>, dst: Vector3<f32>) {
+        let q = Quaternion::from_arc(src, dst, None);
+        let v = q.rotate_vector(src);
+        assert_approx_eq!(v, dst);
+    }
+
+    #[test]
+    fn test_arc() {
+        let v = Vector3::unit_x();
+        {
+            let q = Quaternion::from_arc(v, v, None);
+            assert_eq!(q, Quaternion::new(1.0, 0.0, 0.0, 0.0));
+        }
+        test(v, -v);
+        {
+            let q: Quaternion<f32> = Quaternion::from_arc(v, Vector3::unit_y(), None);
+            let q2 = Quaternion::from_axis_angle(Vector3::unit_z(), Angle::turn_div_4());
+            assert_approx_eq!(q, q2);
+        }
+    }
+}
+
 mod rotate_from_euler {
     use cgmath::*;
 

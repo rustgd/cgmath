@@ -60,6 +60,34 @@ impl<S: BaseFloat> Quaternion<S> {
         Quaternion { s: s, v: v }
     }
 
+    /// Construct a new quaternion as a closest arc between two vectors
+    ///
+    /// Return the closest rotation that turns `src` vector into `dst`.
+    ///
+    /// - [Related StackOverflow question]
+    ///   (http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
+    /// - [Ogre implementation for normalized vectors]
+    ///   (https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
+    pub fn from_arc(src: Vector3<S>, dst: Vector3<S>, fallback: Option<Vector3<S>>)
+                    -> Quaternion<S> {
+        let mag_avg = (src.magnitude2() * dst.magnitude2()).sqrt();
+        let dot = src.dot(dst);
+        if dot.approx_eq(&mag_avg) {
+            One::one()
+        }else if dot.approx_eq(&-mag_avg) {
+            let axis = fallback.unwrap_or_else(|| {
+                let mut v = Vector3::unit_x().cross(src);
+                if v.approx_eq(&Zero::zero()) {
+                    v = Vector3::unit_y().cross(src);
+                }
+                v.normalize()
+            });
+            Rotation3::from_axis_angle(axis, Angle::turn_div_2())
+        }else {
+            Quaternion::from_sv(mag_avg + dot, src.cross(dst)).normalize()
+        }
+    }
+
     /// The conjugate of the quaternion.
     #[inline]
     pub fn conjugate(self) -> Quaternion<S> {
