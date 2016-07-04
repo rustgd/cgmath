@@ -104,7 +104,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot * other.rot,
-            disp: self.disp + other.disp,
+            disp: self.rot.rotate_vector(other.disp * self.scale) + self.disp,
         }
     }
 
