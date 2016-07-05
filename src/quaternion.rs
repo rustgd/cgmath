@@ -73,8 +73,8 @@ impl<S: BaseFloat> Quaternion<S> {
         let mag_avg = (src.magnitude2() * dst.magnitude2()).sqrt();
         let dot = src.dot(dst);
         if dot.approx_eq(&mag_avg) {
-            One::one()
-        }else if dot.approx_eq(&-mag_avg) {
+            Quaternion::one()
+        } else if dot.approx_eq(&-mag_avg) {
             let axis = fallback.unwrap_or_else(|| {
                 let mut v = Vector3::unit_x().cross(src);
                 if v.approx_eq(&Zero::zero()) {
@@ -82,8 +82,8 @@ impl<S: BaseFloat> Quaternion<S> {
                 }
                 v.normalize()
             });
-            Rotation3::from_axis_angle(axis, Angle::turn_div_2())
-        }else {
+            Quaternion::from_axis_angle(axis, Rad::turn_div_2())
+        } else {
             Quaternion::from_sv(mag_avg + dot, src.cross(dst)).normalize()
         }
     }
