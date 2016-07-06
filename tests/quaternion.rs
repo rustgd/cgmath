@@ -113,6 +113,42 @@ mod from {
     }
 }
 
+mod arc {
+    use cgmath::*;
+
+    #[inline]
+    fn test(src: Vector3<f32>, dst: Vector3<f32>) {
+        let q = Quaternion::from_arc(src, dst, None);
+        let v = q.rotate_vector(src);
+        assert_approx_eq!(v.normalize(), dst.normalize());
+    }
+
+    #[test]
+    fn test_same() {
+        let v = Vector3::unit_x();
+        let q = Quaternion::from_arc(v, v, None);
+        assert_eq!(q, Quaternion::new(1.0, 0.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_opposite() {
+        let v = Vector3::unit_x();
+        test(v, -v);
+    }
+
+    #[test]
+    fn test_random() {
+        test(vec3(1.0, 2.0, 3.0), vec3(-4.0, 5.0, -6.0));
+    }
+
+    #[test]
+    fn test_ortho() {
+        let q: Quaternion<f32> = Quaternion::from_arc(Vector3::unit_x(), Vector3::unit_y(), None);
+        let q2 = Quaternion::from_axis_angle(Vector3::unit_z(), Rad::turn_div_4());
+        assert_approx_eq!(q, q2);
+    }
+}
+
 mod rotate_from_euler {
     use cgmath::*;
 
