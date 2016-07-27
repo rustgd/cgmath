@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/bjz/cgmath/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/cgmath)
 
-[Documentation](http://bjz.github.io/cgmath)
+[Documentation](http://brendanzab.github.io/cgmath/)
 
 A linear algebra and mathematics library for computer graphics.
 
