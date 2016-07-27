@@ -387,8 +387,8 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
     #[inline]
-    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Quaternion<S> {
-        let (s, c) = Rad::sin_cos(angle * cast(0.5f64).unwrap());
+    fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Quaternion<S> {
+        let (s, c) = Rad::sin_cos(angle.into() * cast(0.5f64).unwrap());
         Quaternion::from_sv(c, axis * s)
     }
 }
