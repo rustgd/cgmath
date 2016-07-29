@@ -103,12 +103,11 @@ impl<S: BaseFloat> Matrix2<S> {
     }
 
     #[inline]
-    pub fn from_angle(theta: Rad<S>) -> Matrix2<S> {
-        let cos_theta = Rad::cos(theta);
-        let sin_theta = Rad::sin(theta);
+    pub fn from_angle<A: Into<Rad<S>>>(theta: A) -> Matrix2<S> {
+        let (s, c) = Rad::sin_cos(theta.into());
 
-        Matrix2::new(cos_theta,  sin_theta,
-                     -sin_theta, cos_theta)
+        Matrix2::new(c,  s,
+                     -s, c)
     }
 }
 
@@ -140,27 +139,27 @@ impl<S: BaseFloat> Matrix3<S> {
     }
 
     /// Create a rotation matrix from a rotation around the `x` axis (pitch).
-    pub fn from_angle_x(theta: Rad<S>) -> Matrix3<S> {
+    pub fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix3::new(S::one(), S::zero(), S::zero(),
                      S::zero(), c, s,
                      S::zero(), -s, c)
     }
 
     /// Create a rotation matrix from a rotation around the `y` axis (yaw).
-    pub fn from_angle_y(theta: Rad<S>) -> Matrix3<S> {
+    pub fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix3::new(c, S::zero(), -s,
                      S::zero(), S::one(), S::zero(),
                      s, S::zero(), c)
     }
 
     /// Create a rotation matrix from a rotation around the `z` axis (roll).
-    pub fn from_angle_z(theta: Rad<S>) -> Matrix3<S> {
+    pub fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix3::new( c, s, S::zero(),
                      -s, c, S::zero(),
                      S::zero(), S::zero(), S::one())
@@ -169,8 +168,8 @@ impl<S: BaseFloat> Matrix3<S> {
     /// Create a rotation matrix from an angle around an arbitrary axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
-    pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix3<S> {
-        let (s, c) = Rad::sin_cos(angle);
+    pub fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Matrix3<S> {
+        let (s, c) = Rad::sin_cos(angle.into());
         let _1subc = S::one() - c;
 
         Matrix3::new(_1subc * axis.x * axis.x + c,
@@ -244,9 +243,9 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `x` axis (pitch).
-    pub fn from_angle_x(theta: Rad<S>) -> Matrix4<S> {
+    pub fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
                      S::zero(), c, s, S::zero(),
                      S::zero(), -s, c, S::zero(),
@@ -254,9 +253,9 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `y` axis (yaw).
-    pub fn from_angle_y(theta: Rad<S>) -> Matrix4<S> {
+    pub fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix4::new(c, S::zero(), -s, S::zero(),
                      S::zero(), S::one(), S::zero(), S::zero(),
                      s, S::zero(), c, S::zero(),
@@ -264,9 +263,9 @@ impl<S: BaseFloat> Matrix4<S> {
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `z` axis (roll).
-    pub fn from_angle_z(theta: Rad<S>) -> Matrix4<S> {
+    pub fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
-        let (s, c) = Rad::sin_cos(theta);
+        let (s, c) = Rad::sin_cos(theta.into());
         Matrix4::new( c, s, S::zero(), S::zero(),
                      -s, c, S::zero(), S::zero(),
                      S::zero(), S::zero(), S::one(), S::zero(),
@@ -276,8 +275,8 @@ impl<S: BaseFloat> Matrix4<S> {
     /// Create a homogeneous transformation matrix from an angle around an arbitrary axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
-    pub fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Matrix4<S> {
-        let (s, c) = Rad::sin_cos(angle);
+    pub fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Matrix4<S> {
+        let (s, c) = Rad::sin_cos(angle.into());
         let _1subc = S::one() - c;
 
         Matrix4::new(_1subc * axis.x * axis.x + c,

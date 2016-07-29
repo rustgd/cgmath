@@ -62,7 +62,7 @@ pub trait Rotation2<S: BaseFloat>: Rotation<Point2<S>>
                                  + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
-    fn from_angle(theta: Rad<S>) -> Self;
+    fn from_angle<A: Into<Rad<S>>>(theta: A) -> Self;
 }
 
 /// A three-dimensional rotation.
@@ -74,23 +74,23 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
     /// Create a rotation using an angle around a given axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
-    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Self;
+    fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Self;
 
     /// Create a rotation from an angle around the `x` axis (pitch).
     #[inline]
-    fn from_angle_x(theta: Rad<S>) -> Self {
+    fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_x(), theta)
     }
 
     /// Create a rotation from an angle around the `y` axis (yaw).
     #[inline]
-    fn from_angle_y(theta: Rad<S>) -> Self {
+    fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_y(), theta)
     }
 
     /// Create a rotation from an angle around the `z` axis (roll).
     #[inline]
-    fn from_angle_z(theta: Rad<S>) -> Self {
+    fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_z(), theta)
     }
 }
@@ -197,7 +197,7 @@ impl<S: BaseFloat> ApproxEq for Basis2<S> {
 }
 
 impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
-    fn from_angle(theta: Rad<S>) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
+    fn from_angle<A: Into<Rad<S>>>(theta: A) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
@@ -285,19 +285,19 @@ impl<S: BaseFloat> ApproxEq for Basis3<S> {
 }
 
 impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
-    fn from_axis_angle(axis: Vector3<S>, angle: Rad<S>) -> Basis3<S> {
+    fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_axis_angle(axis, angle) }
     }
 
-    fn from_angle_x(theta: Rad<S>) -> Basis3<S> {
+    fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_angle_x(theta) }
     }
 
-    fn from_angle_y(theta: Rad<S>) -> Basis3<S> {
+    fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_angle_y(theta) }
     }
 
-    fn from_angle_z(theta: Rad<S>) -> Basis3<S> {
+    fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
         Basis3 { mat: Matrix3::from_angle_z(theta) }
     }
 }
