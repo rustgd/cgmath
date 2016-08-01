@@ -229,17 +229,17 @@ mod test_magnitude {
 
 #[test]
 fn test_angle() {
-    assert!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &-rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &-Rad(f64::consts::FRAC_PI_2) ));
 
-    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &rad(2.0f64 * f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_3) ));
+    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &Rad(2.0f64 * f64::consts::FRAC_PI_3) ));
 
-    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
+    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
 }
 
 #[test]
