@@ -72,7 +72,7 @@ pub use matrix::{Matrix2, Matrix3, Matrix4};
 pub use quaternion::Quaternion;
 pub use vector::{Vector1, Vector2, Vector3, Vector4, dot, vec1, vec2, vec3, vec4};
 
-pub use angle::{Deg, Rad, deg, rad};
+pub use angle::{Deg, Rad};
 pub use euler::Euler;
 pub use point::{Point1, Point2, Point3};
 pub use rotation::*;

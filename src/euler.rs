@@ -63,9 +63,9 @@ use num::BaseFloat;
 /// use cgmath::{Deg, Euler, Quaternion};
 ///
 /// let rotation = Quaternion::from(Euler {
-///     x: Deg::new(90.0),
-///     y: Deg::new(45.0),
-///     z: Deg::new(15.0),
+///     x: Deg(90.0),
+///     y: Deg(45.0),
+///     z: Deg(15.0),
 /// });
 /// ```
 ///
