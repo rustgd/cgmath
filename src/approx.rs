@@ -20,7 +20,7 @@ pub trait ApproxEq: Sized {
     type Epsilon: NumCast + Float;
 
     fn approx_epsilon() -> Self::Epsilon {
-        cast(1.0e-5f64).unwrap()
+        cast(1.0e-16f64).unwrap()
     }
 
     fn approx_eq(&self, other: &Self) -> bool {
