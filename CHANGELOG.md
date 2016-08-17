@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.11.0] - 2016-08-17
+
+### Added
+
+- `Quaternion::from_arc`
+
+### Changed
+
+- Change the angle types to be tuple structs
+- Make from-angle constructors take generic `Into<Rad<S>>` values
+- Fix `Decomposed::concat` implementation
+
 ## [v0.10.0] - 2016-05-11
 
 ### Added
@@ -204,7 +216,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/bjz/cgmath/compare/v0.11.0...HEAD
+[v0.11.0]: https://github.com/bjz/cgmath/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/bjz/cgmath/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/bjz/cgmath/compare/v0.8.0...v0.9.0
