@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.10.0"
+version = "0.11.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -16,9 +16,9 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
-documentation = "http://bjz.github.io/cgmath"
-homepage = "https://github.com/bjz/cgmath"
-repository = "https://github.com/bjz/cgmath"
+documentation = "http://brendanzab.github.io/cgmath"
+homepage = "https://github.com/brendanzab/cgmath"
+repository = "https://github.com/brendanzab/cgmath"
 readme = "README.md"
 
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
