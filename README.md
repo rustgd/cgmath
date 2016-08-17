@@ -1,8 +1,8 @@
 # cgmath-rs
 
-[![Build Status](https://travis-ci.org/bjz/cgmath.svg?branch=master)](https://travis-ci.org/bjz/cgmath)
+[![Build Status](https://travis-ci.org/brendanzab/cgmath.svg?branch=master)](https://travis-ci.org/brendanzab/cgmath)
 [![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/cgmath)
-[![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/bjz/cgmath/blob/master/LICENSE)
+[![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/brendanzab/cgmath/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/cgmath)
 
 [Documentation](http://brendanzab.github.io/cgmath/)
@@ -29,7 +29,7 @@ pull request with a fix.
 
 cgmath interprets its vectors as column matrices (also known as "column
 vectors"), meaning when transforming a vector with a matrix, the matrix goes
-on the left. This is reflected in the fact that cgmath implements the 
+on the left. This is reflected in the fact that cgmath implements the
 multiplication operator for Matrix * Vector, but not Vector * Matrix.
 
 ## Limitations
