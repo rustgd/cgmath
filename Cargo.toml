@@ -36,9 +36,9 @@ approx = "0.1"
 num-traits = "0.1"
 rand = "0.3"
 rustc-serialize = { version = "0.3", optional = true }
-serde = { version = "0.7", optional = true }
-serde_macros = { version = "0.7", optional = true }
+serde = { version = "0.8", optional = true }
+serde_macros = { version = "0.8", optional = true }
 
 [dev-dependencies]
-glium = "0.14.0"
-serde_json = "0.7"
+glium = "0.15"
+serde_json = "0.8"
