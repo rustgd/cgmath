@@ -109,7 +109,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     }
 
     fn inverse_transform(&self) -> Option<Decomposed<P::Diff, R>> {
-        if self.scale.approx_eq(&P::Scalar::zero()) {
+        if ulps_eq!(self.scale, &P::Scalar::zero()) {
             None
         } else {
             let s = P::Scalar::one() / self.scale;
@@ -154,10 +154,33 @@ impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
 {
     type Epsilon = E;
 
-    fn approx_eq_eps(&self, other: &Self, epsilon: &Self::Epsilon) -> bool {
-        self.scale.approx_eq_eps(&other.scale, epsilon) &&
-        self.rot.approx_eq_eps(&other.rot, epsilon) &&
-        self.disp.approx_eq_eps(&other.disp, epsilon)
+    #[inline]
+    fn default_epsilon() -> E {
+        E::default_epsilon()
+    }
+
+    #[inline]
+    fn default_max_relative() -> E {
+        E::default_max_relative()
+    }
+
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        E::default_max_ulps()
+    }
+
+    #[inline]
+    fn relative_eq(&self, other: &Self, epsilon: E, max_relative: E) -> bool {
+        S::Scalar::relative_eq(&self.scale, &other.scale, epsilon, max_relative) &&
+        R::relative_eq(&self.rot, &other.rot, epsilon, max_relative) &&
+        S::relative_eq(&self.disp, &other.disp, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Self, epsilon: E, max_ulps: u32) -> bool {
+        S::Scalar::ulps_eq(&self.scale, &other.scale, epsilon, max_ulps) &&
+        R::ulps_eq(&self.rot, &other.rot, epsilon, max_ulps) &&
+        S::ulps_eq(&self.disp, &other.disp, epsilon, max_ulps)
     }
 }
 

@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+#[macro_use]
+extern crate approx;
 extern crate cgmath;
 
 use cgmath::{Point2, Point3};
-use cgmath::ApproxEq;
 
 macro_rules! impl_test_mul {
     ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
@@ -54,7 +54,7 @@ macro_rules! impl_test_rem {
 #[test]
 fn test_homogeneous() {
 	let p = Point3::new(1.0f64, 2.0f64, 3.0f64);
-    assert!(p.approx_eq(&Point3::from_homogeneous(p.to_homogeneous())));
+    assert_ulps_eq!(&p, &Point3::from_homogeneous(p.to_homogeneous()));
 }
 
 #[test]
@@ -74,4 +74,3 @@ fn test_rem() {
     impl_test_rem!(Point3 { x, y, z }, 2.0f32, Point3::new(2.0f32, 4.0, 6.0));
     impl_test_rem!(Point2 { x, y }, 2.0f32, Point2::new(2.0f32, 4.0));
 }
-

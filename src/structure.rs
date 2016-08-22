@@ -205,7 +205,7 @@ pub trait InnerSpace: VectorSpace where
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
     fn is_perpendicular(self, other: Self) -> bool {
-        Self::dot(self, other).approx_eq(&Self::Scalar::zero())
+        ulps_eq!(Self::dot(self, other), &Self::Scalar::zero())
     }
 
     /// Returns the squared magnitude.
@@ -511,12 +511,12 @@ pub trait SquareMatrix where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { !self.determinant().approx_eq(&Self::Scalar::zero()) }
+    fn is_invertible(&self) -> bool { ulps_ne!(self.determinant(), &Self::Scalar::zero()) }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool { self.approx_eq(&Self::identity()) }
+    fn is_identity(&self) -> bool { ulps_eq!(self, &Self::identity()) }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.

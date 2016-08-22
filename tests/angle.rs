@@ -13,26 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
+extern crate approx;
 extern crate cgmath;
 
 use cgmath::{Rad, Deg};
-use cgmath::ApproxEq;
 
 #[test]
 fn conv() {
     let angle: Rad<_> = Deg(-5.0f64).into();
     let angle: Deg<_> = angle.into();
-    assert!(angle.approx_eq(&Deg(-5.0f64)));
+    assert_ulps_eq!(&angle, &Deg(-5.0f64));
 
     let angle: Rad<_> = Deg(30.0f64).into();
     let angle: Deg<_> = angle.into();
-    assert!(angle.approx_eq(&Deg(30.0f64)));
+    assert_ulps_eq!(&angle, &Deg(30.0f64));
 
     let angle: Deg<_> = Rad(-5.0f64).into();
     let angle: Rad<_> = angle.into();
-    assert!(angle.approx_eq(&Rad(-5.0f64)));
+    assert_ulps_eq!(&angle, &Rad(-5.0f64));
 
     let angle: Deg<_> = Rad(30.0f64).into();
     let angle: Rad<_> = angle.into();
-    assert!(angle.approx_eq(&Rad(30.0f64)));
+    assert_ulps_eq!(&angle, &Rad(30.0f64));
 }

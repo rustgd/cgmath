@@ -14,6 +14,8 @@
 // limitations under the License.
 
 #[macro_use]
+extern crate approx;
+#[macro_use]
 extern crate cgmath;
 
 macro_rules! impl_test_mul {
@@ -58,7 +60,7 @@ mod to_from_euler {
     use cgmath::*;
 
     fn check_euler(rotation: Euler<Rad<f32>>) {
-        assert_approx_eq_eps!(Euler::from(Quaternion::from(rotation)), rotation, 0.001);
+        assert_relative_eq!(Euler::from(Quaternion::from(rotation)), rotation, epsilon = 0.001);
     }
 
     const HPI: f32 = f32::consts::FRAC_PI_2;
@@ -84,7 +86,7 @@ mod from {
             let matrix3 = Matrix3::from(Euler { x: x, y: y, z: z });
             let quaternion = Quaternion::from(matrix3);
             let quaternion_matrix3 = Matrix3::from(quaternion);
-            assert_approx_eq!(matrix3, quaternion_matrix3);
+            assert_ulps_eq!(matrix3, quaternion_matrix3);
         }
 
         // triggers: trace >= S::zero()
@@ -120,7 +122,7 @@ mod arc {
     fn test(src: Vector3<f32>, dst: Vector3<f32>) {
         let q = Quaternion::from_arc(src, dst, None);
         let v = q.rotate_vector(src);
-        assert_approx_eq!(v.normalize(), dst.normalize());
+        assert_ulps_eq!(v.normalize(), dst.normalize());
     }
 
     #[test]
@@ -145,7 +147,7 @@ mod arc {
     fn test_ortho() {
         let q: Quaternion<f32> = Quaternion::from_arc(Vector3::unit_x(), Vector3::unit_y(), None);
         let q2 = Quaternion::from_axis_angle(Vector3::unit_z(), Rad::turn_div_4());
-        assert_approx_eq!(q, q2);
+        assert_ulps_eq!(q, q2);
     }
 }
 
@@ -157,10 +159,10 @@ mod rotate_from_euler {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from(Euler::new(Deg(90.0), Deg(0.0), Deg(0.0)));
-        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
 
         let rot = Quaternion::from(Euler::new(Deg(-90.0), Deg(0.0), Deg(0.0)));
-        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -168,10 +170,10 @@ mod rotate_from_euler {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(90.0), Deg(0.0)));
-        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(-90.0), Deg(0.0)));
-        assert_approx_eq!(vec3(-1.0, 0.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(-1.0, 0.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -179,10 +181,10 @@ mod rotate_from_euler {
         let vec = vec3(1.0, 0.0, 0.0);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(0.0), Deg(90.0)));
-        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(0.0), Deg(-90.0)));
-        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
     }
 
 
@@ -192,7 +194,7 @@ mod rotate_from_euler {
         let vec = vec3(0.0, 1.0, 0.0);
 
         let rot = Quaternion::from(Euler::new(Deg(90.0), Deg(90.0), Deg(0.0)));
-        assert_approx_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
     }
 
     // tests that the Z rotation is done after the Y
@@ -201,7 +203,7 @@ mod rotate_from_euler {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(90.0), Deg(90.0)));
-        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
     }
 }
 
@@ -213,7 +215,7 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from_angle_x(Deg(90.0));
-        assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -221,7 +223,7 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from_angle_y(Deg(90.0));
-        assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -229,7 +231,7 @@ mod rotate_from_axis_angle {
         let vec = vec3(1.0, 0.0, 0.0);
 
         let rot = Quaternion::from_angle_z(Deg(90.0));
-        assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -237,7 +239,7 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from_axis_angle(vec3(1.0, 1.0, 0.0).normalize(), Deg(90.0));
-        assert_approx_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
+        assert_ulps_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
     }
 
     #[test]
@@ -245,7 +247,7 @@ mod rotate_from_axis_angle {
         let vec = vec3(1.0, 0.0, 0.0);
 
         let rot = Quaternion::from_axis_angle(vec3(0.0, 1.0, 1.0).normalize(), Deg(-90.0));
-        assert_approx_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
     }
 
     #[test]
@@ -253,6 +255,6 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 1.0, 0.0);
 
         let rot = Quaternion::from_axis_angle(vec3(1.0, 0.0, 1.0).normalize(), Deg(90.0));
-        assert_approx_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
+        assert_ulps_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
     }
 }

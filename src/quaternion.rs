@@ -72,12 +72,12 @@ impl<S: BaseFloat> Quaternion<S> {
                     -> Quaternion<S> {
         let mag_avg = (src.magnitude2() * dst.magnitude2()).sqrt();
         let dot = src.dot(dst);
-        if dot.approx_eq(&mag_avg) {
+        if ulps_eq!(dot, &mag_avg) {
             Quaternion::one()
-        } else if dot.approx_eq(&-mag_avg) {
+        } else if ulps_eq!(dot, &-mag_avg) {
             let axis = fallback.unwrap_or_else(|| {
                 let mut v = Vector3::unit_x().cross(src);
-                if v.approx_eq(&Zero::zero()) {
+                if ulps_eq!(v, &Zero::zero()) {
                     v = Vector3::unit_y().cross(src);
                 }
                 v.normalize()
@@ -151,7 +151,7 @@ impl<S: BaseFloat> Zero for Quaternion<S> {
 
     #[inline]
     fn is_zero(&self) -> bool {
-        Quaternion::approx_eq(self, &Quaternion::zero())
+        ulps_eq!(self, &Quaternion::zero())
     }
 }
 
@@ -298,12 +298,33 @@ impl_scalar_div!(f32);
 impl_scalar_div!(f64);
 
 impl<S: BaseFloat> ApproxEq for Quaternion<S> {
-    type Epsilon = S;
+    type Epsilon = S::Epsilon;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Quaternion<S>, epsilon: &S) -> bool {
-        self.s.approx_eq_eps(&other.s, epsilon) &&
-        self.v.approx_eq_eps(&other.v, epsilon)
+    fn default_epsilon() -> S::Epsilon {
+        S::default_epsilon()
+    }
+
+    #[inline]
+    fn default_max_relative() -> S::Epsilon {
+        S::default_max_relative()
+    }
+
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
+    }
+
+    #[inline]
+    fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
+        S::relative_eq(&self.s, &other.s, epsilon, max_relative) &&
+        Vector3::relative_eq(&self.v, &other.v, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
+        S::ulps_eq(&self.s, &other.s, epsilon, max_ulps) &&
+        Vector3::ulps_eq(&self.v, &other.v, epsilon, max_ulps)
     }
 }
 
