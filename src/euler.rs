@@ -25,7 +25,7 @@ use num::BaseFloat;
 
 /// A set of [Euler angles] representing a rotation in three-dimensional space.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
+/// This type is marked as `#[repr(C)]`.
 ///
 /// The axis rotation sequence is XYZ. That is, the rotation is first around
 /// the X axis, then the Y axis, and lastly the Z axis (using intrinsic
@@ -72,7 +72,7 @@ use num::BaseFloat;
 /// [Euler angles]: https://en.wikipedia.org/wiki/Euler_angles
 /// [gimbal lock]: https://en.wikipedia.org/wiki/Gimbal_lock#Gimbal_lock_in_applied_mathematics
 /// [convert]: #defining-rotations-using-euler-angles
-#[repr(C, packed)]
+#[repr(C)]
 #[derive(Copy, Clone, Debug)]
 #[derive(PartialEq, Eq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]

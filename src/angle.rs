@@ -30,8 +30,8 @@ use num::BaseFloat;
 
 /// An angle, in radians.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -39,8 +39,8 @@ pub struct Rad<S>(pub S);
 
 /// An angle, in degrees.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]

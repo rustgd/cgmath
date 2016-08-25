@@ -34,8 +34,8 @@ use vector::Vector3;
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]

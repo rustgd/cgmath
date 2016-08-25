@@ -33,8 +33,8 @@ use vector::{Vector2, Vector3, Vector4};
 
 /// A 2 x 2, column major matrix
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -47,8 +47,8 @@ pub struct Matrix2<S> {
 
 /// A 3 x 3, column major matrix
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -63,8 +63,8 @@ pub struct Matrix3<S> {
 
 /// A 4 x 4, column major matrix
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
