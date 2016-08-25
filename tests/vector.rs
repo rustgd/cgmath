@@ -14,6 +14,8 @@
 // limitations under the License.
 
 #[macro_use]
+extern crate approx;
+#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
@@ -229,30 +231,30 @@ mod test_magnitude {
 
 #[test]
 fn test_angle() {
-    assert!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)).approx_eq( &-Rad(f64::consts::FRAC_PI_2) ));
+    assert_ulps_eq!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)), &Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)), &-Rad(f64::consts::FRAC_PI_2));
 
-    assert!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_3) ));
-    assert!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)).approx_eq( &Rad(2.0f64 * f64::consts::FRAC_PI_3) ));
+    assert_ulps_eq!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)), &Rad(f64::consts::FRAC_PI_3));
+    assert_ulps_eq!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)), &Rad(f64::consts::FRAC_PI_3));
+    assert_ulps_eq!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)), &Rad(2.0f64 * f64::consts::FRAC_PI_3));
 
-    assert!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
-    assert!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)).approx_eq( &Rad(f64::consts::FRAC_PI_2) ));
+    assert_ulps_eq!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)), &Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
 }
 
 #[test]
 fn test_normalize() {
     // TODO: test normalize_to, normalize_sel.0, and normalize_self_to
-    assert!(Vector2::new(3.0f64, 4.0f64).normalize().approx_eq( &Vector2::new(3.0/5.0, 4.0/5.0) ));
-    assert!(Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize().approx_eq( &Vector3::new(2.0/7.0, 3.0/7.0, 6.0/7.0) ));
-    assert!(Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize().approx_eq( &Vector4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0) ));
+    assert_ulps_eq!(Vector2::new(3.0f64, 4.0f64).normalize(), &Vector2::new(3.0/5.0, 4.0/5.0));
+    assert_ulps_eq!(Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize(), &Vector3::new(2.0/7.0, 3.0/7.0, 6.0/7.0));
+    assert_ulps_eq!(Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize(), &Vector4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0));
 }
 
 #[test]
 fn test_cast() {
-    assert_approx_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
-    assert_approx_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));
-    assert_approx_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
+    assert_ulps_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
+    assert_ulps_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));
+    assert_ulps_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
 }

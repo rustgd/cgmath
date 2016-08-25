@@ -109,7 +109,7 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     }
 
     fn inverse_transform(&self) -> Option<Decomposed<P::Diff, R>> {
-        if self.scale.approx_eq(&P::Scalar::zero()) {
+        if ulps_eq!(self.scale, &P::Scalar::zero()) {
             None
         } else {
             let s = P::Scalar::one() / self.scale;
@@ -154,10 +154,33 @@ impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
 {
     type Epsilon = E;
 
-    fn approx_eq_eps(&self, other: &Self, epsilon: &Self::Epsilon) -> bool {
-        self.scale.approx_eq_eps(&other.scale, epsilon) &&
-        self.rot.approx_eq_eps(&other.rot, epsilon) &&
-        self.disp.approx_eq_eps(&other.disp, epsilon)
+    #[inline]
+    fn default_epsilon() -> E {
+        E::default_epsilon()
+    }
+
+    #[inline]
+    fn default_max_relative() -> E {
+        E::default_max_relative()
+    }
+
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        E::default_max_ulps()
+    }
+
+    #[inline]
+    fn relative_eq(&self, other: &Self, epsilon: E, max_relative: E) -> bool {
+        S::Scalar::relative_eq(&self.scale, &other.scale, epsilon, max_relative) &&
+        R::relative_eq(&self.rot, &other.rot, epsilon, max_relative) &&
+        S::relative_eq(&self.disp, &other.disp, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Self, epsilon: E, max_ulps: u32) -> bool {
+        S::Scalar::ulps_eq(&self.scale, &other.scale, epsilon, max_ulps) &&
+        R::ulps_eq(&self.rot, &other.rot, epsilon, max_ulps) &&
+        S::ulps_eq(&self.disp, &other.disp, epsilon, max_ulps)
     }
 }
 
@@ -174,41 +197,11 @@ mod eders_ser {
         fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
             where S: serde::Serializer
         {
-            serializer.serialize_struct("Decomposed", DecomposedVisitor {
-                value: self,
-                state: 0,
-            })
-        }
-    }
-
-    struct DecomposedVisitor<'a, V: 'a + VectorSpace, R: 'a> {
-        value: &'a Decomposed<V, R>,
-        state: u8,
-    }
-
-    impl<'a, V: 'a + VectorSpace, R> serde::ser::MapVisitor for DecomposedVisitor<'a, V, R>
-        where V: Serialize, V::Scalar: Serialize, R: Serialize
-    {
-        fn visit<S>(&mut self, serializer: &mut S) -> Result<Option<()>, S::Error>
-            where S: serde::Serializer
-        {
-            match self.state {
-                0 => {
-                    self.state += 1;
-                    Ok(Some(try!(serializer.serialize_struct_elt("scale", &self.value.scale))))
-                },
-                1 => {
-                    self.state += 1;
-                    Ok(Some(try!(serializer.serialize_struct_elt("rot", &self.value.rot))))
-                },
-                2 => {
-                    self.state += 1;
-                    Ok(Some(try!(serializer.serialize_struct_elt("disp", &self.value.disp))))
-                },
-                _ => {
-                    Ok(None)
-                },
-            }
+            let mut state = try!(serializer.serialize_struct("Decomposed", 3));
+            try!(serializer.serialize_struct_elt(&mut state, "scale", &self.scale));
+            try!(serializer.serialize_struct_elt(&mut state, "rot", &self.rot));
+            try!(serializer.serialize_struct_elt(&mut state, "disp", &self.disp));
+            serializer.serialize_struct_end(state)
         }
     }
 }

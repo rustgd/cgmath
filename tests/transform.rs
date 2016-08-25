@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+#[macro_use]
+extern crate approx;
 extern crate cgmath;
 
 #[cfg(feature = "eders")]
@@ -31,7 +32,7 @@ fn test_invert() {
     };
     let ti = t.inverse_transform().expect("Expected successful inversion");
     let vt = t.transform_vector(v);
-    assert!(v.approx_eq(&ti.transform_vector(vt)));
+    assert_ulps_eq!(&v, &ti.transform_vector(vt));
 }
 
 #[test]
@@ -42,7 +43,7 @@ fn test_look_at() {
     let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);
     let point = Point3::new(1.0f64, 0.0, 0.0);
     let view_point = Point3::new(0.0f64, 1.0, 5.0);
-    assert!(t.transform_point(point).approx_eq(&view_point));
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
 }
 
 #[cfg(feature = "eders")]
@@ -57,5 +58,5 @@ fn test_serialize() {
     let serialized = serde_json::to_string(&t).unwrap();
     let deserialized: Decomposed<Vector3<f64>, Quaternion<f64>> = serde_json::from_str(&serialized).unwrap();
 
-    assert!(t.approx_eq(&deserialized));
+    assert_ulps_eq!(&t, &deserialized);
 }

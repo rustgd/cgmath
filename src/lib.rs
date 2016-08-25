@@ -53,6 +53,8 @@
 #![cfg_attr(feature = "eders", feature(plugin, custom_derive))]
 #![cfg_attr(feature = "eders", plugin(serde_macros))]
 
+#[macro_use]
+extern crate approx;
 pub extern crate num_traits;
 extern crate rand;
 
@@ -87,7 +89,6 @@ pub mod prelude;
 
 mod macros;
 
-mod approx;
 mod num;
 mod structure;
 

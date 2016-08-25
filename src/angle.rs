@@ -70,7 +70,7 @@ macro_rules! impl_angle {
 
             #[inline]
             fn is_zero(&self) -> bool {
-                $Angle::approx_eq(self, &$Angle::zero())
+                ulps_eq!(self, &Self::zero())
             }
         }
 
@@ -140,11 +140,31 @@ macro_rules! impl_angle {
         });
 
         impl<S: BaseFloat> ApproxEq for $Angle<S> {
-            type Epsilon = S;
+            type Epsilon = S::Epsilon;
 
             #[inline]
-            fn approx_eq_eps(&self, other: &$Angle<S>, epsilon: &S) -> bool {
-                self.0.approx_eq_eps(&other.0, epsilon)
+            fn default_epsilon() -> S::Epsilon {
+                S::default_epsilon()
+            }
+
+            #[inline]
+            fn default_max_relative() -> S::Epsilon {
+                S::default_max_relative()
+            }
+
+            #[inline]
+            fn default_max_ulps() -> u32 {
+                S::default_max_ulps()
+            }
+
+            #[inline]
+            fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
+                S::relative_eq(&self.0, &other.0, epsilon, max_relative)
+            }
+
+            #[inline]
+            fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
+                S::ulps_eq(&self.0, &other.0, epsilon, max_ulps)
             }
         }
 

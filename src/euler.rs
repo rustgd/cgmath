@@ -142,13 +142,35 @@ impl<S: BaseFloat> From<Quaternion<S>> for Euler<Rad<S>> {
 }
 
 impl<A: Angle> ApproxEq for Euler<A> {
-    type Epsilon = A::Unitless;
+    type Epsilon = A::Epsilon;
 
     #[inline]
-    fn approx_eq_eps(&self, other: &Euler<A>, epsilon: &A::Unitless) -> bool {
-        self.x.approx_eq_eps(&other.x, epsilon) &&
-        self.y.approx_eq_eps(&other.y, epsilon) &&
-        self.z.approx_eq_eps(&other.z, epsilon)
+    fn default_epsilon() -> A::Epsilon {
+        A::default_epsilon()
+    }
+
+    #[inline]
+    fn default_max_relative() -> A::Epsilon {
+        A::default_max_relative()
+    }
+
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        A::default_max_ulps()
+    }
+
+    #[inline]
+    fn relative_eq(&self, other: &Self, epsilon: A::Epsilon, max_relative: A::Epsilon) -> bool {
+        A::relative_eq(&self.x, &other.x, epsilon, max_relative) &&
+        A::relative_eq(&self.y, &other.y, epsilon, max_relative) &&
+        A::relative_eq(&self.z, &other.z, epsilon, max_relative)
+    }
+
+    #[inline]
+    fn ulps_eq(&self, other: &Self, epsilon: A::Epsilon, max_ulps: u32) -> bool {
+        A::ulps_eq(&self.x, &other.x, epsilon, max_ulps) &&
+        A::ulps_eq(&self.y, &other.y, epsilon, max_ulps) &&
+        A::ulps_eq(&self.z, &other.z, epsilon, max_ulps)
     }
 }
 

@@ -14,6 +14,8 @@
 // limitations under the License.
 
 #[macro_use]
+extern crate approx;
+#[macro_use]
 extern crate cgmath;
 
 pub mod matrix2 {
@@ -153,15 +155,15 @@ pub mod matrix2 {
     fn test_from_angle() {
         // Rotate the vector (1, 0) by π/2 radians to the vector (0, 1)
         let rot1 = Matrix2::from_angle(Rad(0.5f64 * f64::consts::PI));
-        assert_approx_eq!(rot1 * Vector2::unit_x(), &Vector2::unit_y());
+        assert_ulps_eq!(rot1 * Vector2::unit_x(), &Vector2::unit_y());
 
         // Rotate the vector (-1, 0) by -π/2 radians to the vector (0, 1)
         let rot2 = -rot1;
-        assert_approx_eq!(rot2 * -Vector2::unit_x(), &Vector2::unit_y());
+        assert_ulps_eq!(rot2 * -Vector2::unit_x(), &Vector2::unit_y());
 
         // Rotate the vector (1, 1) by π radians to the vector (-1, -1)
         let rot3: Matrix2<f64> = Matrix2::from_angle(Rad(f64::consts::PI));
-        assert_approx_eq!(rot3 * Vector2::new(1.0, 1.0), &Vector2::new(-1.0, -1.0));
+        assert_ulps_eq!(rot3 * Vector2::new(1.0, 1.0), &Vector2::new(-1.0, -1.0));
     }
 }
 
@@ -319,7 +321,7 @@ pub mod matrix3 {
         fn check_from_axis_angle_x(pitch: Rad<f32>) {
             let found = Matrix3::from_angle_x(pitch);
             let expected = Matrix3::from(Euler { x: pitch, y: Rad(0.0), z: Rad(0.0) });
-            assert_approx_eq_eps!(found, expected, 0.001);
+            assert_relative_eq!(found, expected, epsilon = 0.001);
         }
 
         #[test] fn test_zero()      { check_from_axis_angle_x(Rad(0.0)); }
@@ -333,7 +335,7 @@ pub mod matrix3 {
         fn check_from_axis_angle_y(yaw: Rad<f32>) {
             let found = Matrix3::from_angle_y(yaw);
             let expected = Matrix3::from(Euler { x: Rad(0.0), y: yaw, z: Rad(0.0) });
-            assert_approx_eq_eps!(found, expected, 0.001);
+            assert_relative_eq!(found, expected, epsilon = 0.001);
         }
 
         #[test] fn test_zero()      { check_from_axis_angle_y(Rad(0.0)); }
@@ -347,7 +349,7 @@ pub mod matrix3 {
         fn check_from_axis_angle_z(roll: Rad<f32>) {
             let found = Matrix3::from_angle_z(roll);
             let expected = Matrix3::from(Euler { x: Rad(0.0), y: Rad(0.0), z: roll });
-            assert_approx_eq_eps!(found, expected, 0.001);
+            assert_relative_eq!(found, expected, epsilon = 0.001);
         }
 
         #[test] fn test_zero()      { check_from_axis_angle_z(Rad(0.0)); }
@@ -362,7 +364,7 @@ pub mod matrix3 {
             fn check_from_axis_angle_x(pitch: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_x(), pitch);
                 let expected = Matrix3::from(Euler { x: pitch, y: Rad(0.0), z: Rad(0.0) });
-                assert_approx_eq_eps!(found, expected, 0.001);
+                assert_relative_eq!(found, expected, epsilon = 0.001);
             }
 
             #[test] fn test_zero()      { check_from_axis_angle_x(Rad(0.0)); }
@@ -376,7 +378,7 @@ pub mod matrix3 {
             fn check_from_axis_angle_y(yaw: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_y(), yaw);
                 let expected = Matrix3::from(Euler { x: Rad(0.0), y: yaw, z: Rad(0.0) });
-                assert_approx_eq_eps!(found, expected, 0.001);
+                assert_relative_eq!(found, expected, epsilon = 0.001);
             }
 
             #[test] fn test_zero()      { check_from_axis_angle_y(Rad(0.0)); }
@@ -390,7 +392,7 @@ pub mod matrix3 {
             fn check_from_axis_angle_z(roll: Rad<f32>) {
                 let found = Matrix3::from_axis_angle(Vector3::unit_z(), roll);
                 let expected = Matrix3::from(Euler { x: Rad(0.0), y: Rad(0.0), z: roll });
-                assert_approx_eq_eps!(found, expected, 0.001);
+                assert_relative_eq!(found, expected, epsilon = 0.001);
             }
 
             #[test] fn test_zero()      { check_from_axis_angle_z(Rad(0.0)); }
@@ -407,10 +409,10 @@ pub mod matrix3 {
             let vec = vec3(0.0, 0.0, 1.0);
 
             let rot = Matrix3::from(Euler::new(Deg(90.0), Deg(0.0), Deg(0.0)));
-            assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
 
             let rot = Matrix3::from(Euler::new(Deg(-90.0), Deg(0.0), Deg(0.0)));
-            assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -418,10 +420,10 @@ pub mod matrix3 {
             let vec = vec3(0.0, 0.0, 1.0);
 
             let rot = Matrix3::from(Euler::new(Deg(0.0), Deg(90.0), Deg(0.0)));
-            assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
 
             let rot = Matrix3::from(Euler::new(Deg(0.0), Deg(-90.0), Deg(0.0)));
-            assert_approx_eq!(vec3(-1.0, 0.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(-1.0, 0.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -429,10 +431,10 @@ pub mod matrix3 {
             let vec = vec3(1.0, 0.0, 0.0);
 
             let rot = Matrix3::from(Euler::new(Deg(0.0), Deg(0.0), Deg(90.0)));
-            assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
 
             let rot = Matrix3::from(Euler::new(Deg(0.0), Deg(0.0), Deg(-90.0)));
-            assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
         }
 
 
@@ -442,7 +444,7 @@ pub mod matrix3 {
             let vec = vec3(0.0, 1.0, 0.0);
 
             let rot = Matrix3::from(Euler::new(Deg(90.0), Deg(90.0), Deg(0.0)));
-            assert_approx_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
         }
 
         // tests that the Z rotation is done after the Y
@@ -451,7 +453,7 @@ pub mod matrix3 {
             let vec = vec3(0.0, 0.0, 1.0);
 
             let rot = Matrix3::from(Euler::new(Deg(0.0), Deg(90.0), Deg(90.0)));
-            assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
         }
     }
 
@@ -464,7 +466,7 @@ pub mod matrix3 {
 
             let rot = Matrix3::from_angle_x(Deg(90.0));
             println!("x mat: {:?}", rot);
-            assert_approx_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -472,7 +474,7 @@ pub mod matrix3 {
             let vec = vec3(0.0, 0.0, 1.0);
 
             let rot = Matrix3::from_angle_y(Deg(90.0));
-            assert_approx_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -480,7 +482,7 @@ pub mod matrix3 {
             let vec = vec3(1.0, 0.0, 0.0);
 
             let rot = Matrix3::from_angle_z(Deg(90.0));
-            assert_approx_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, 1.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -488,7 +490,7 @@ pub mod matrix3 {
             let vec = vec3(0.0, 0.0, 1.0);
 
             let rot = Matrix3::from_axis_angle(vec3(1.0, 1.0, 0.0).normalize(), Deg(90.0));
-            assert_approx_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
+            assert_ulps_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
         }
 
         #[test]
@@ -496,7 +498,7 @@ pub mod matrix3 {
             let vec = vec3(1.0, 0.0, 0.0);
 
             let rot = Matrix3::from_axis_angle(vec3(0.0, 1.0, 1.0).normalize(), Deg(-90.0));
-            assert_approx_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
+            assert_ulps_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
         }
 
         #[test]
@@ -504,7 +506,7 @@ pub mod matrix3 {
             let vec = vec3(0.0, 1.0, 0.0);
 
             let rot = Matrix3::from_axis_angle(vec3(1.0, 0.0, 1.0).normalize(), Deg(90.0));
-            assert_approx_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
+            assert_ulps_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
         }
     }
 }
@@ -643,11 +645,11 @@ pub mod matrix4 {
     fn test_invert() {
         assert!(Matrix4::<f64>::identity().invert().unwrap().is_identity());
 
-        assert!(C.invert().unwrap().approx_eq(&(
+        assert_ulps_eq!(&C.invert().unwrap(), &(
                 Matrix4::new( 5.0f64, -4.0f64,  1.0f64,  0.0f64,
                              -4.0f64,  8.0f64, -4.0f64,  0.0f64,
                               4.0f64, -8.0f64,  4.0f64,  8.0f64,
-                             -3.0f64,  4.0f64,  1.0f64, -8.0f64) * 0.125f64)));
+                             -3.0f64,  4.0f64,  1.0f64, -8.0f64) * 0.125f64));
 
         let mat_c = Matrix4::new(-0.131917f64, -0.76871f64,   0.625846f64, 0.0f64,
                                  -0.,        0.631364f64,  0.775487f64, 0.0f64,
@@ -714,7 +716,7 @@ pub mod matrix4 {
             let matrix_long = Matrix3::from(quaternion);
             let matrix_long = Matrix4::from(matrix_long);
 
-            assert_approx_eq!(matrix_short, matrix_long);
+            assert_ulps_eq!(matrix_short, matrix_long);
         }
     }
 }
