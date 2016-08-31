@@ -29,8 +29,8 @@ use vector::{Vector1, Vector2, Vector3, Vector4};
 
 /// A point in 1-dimensional space.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -40,8 +40,8 @@ pub struct Point1<S> {
 
 /// A point in 2-dimensional space.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -52,8 +52,8 @@ pub struct Point2<S> {
 
 /// A point in 3-dimensional space.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]

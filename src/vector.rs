@@ -27,8 +27,8 @@ use num::{BaseNum, BaseFloat, PartialOrd};
 
 /// A 1-dimensional vector.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -39,8 +39,8 @@ pub struct Vector1<S> {
 
 /// A 2-dimensional vector.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -53,8 +53,8 @@ pub struct Vector2<S> {
 
 /// A 3-dimensional vector.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
@@ -69,8 +69,8 @@ pub struct Vector3<S> {
 
 /// A 4-dimensional vector.
 ///
-/// This type is marked as `#[repr(C, packed)]`.
-#[repr(C, packed)]
+/// This type is marked as `#[repr(C)]`.
+#[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
