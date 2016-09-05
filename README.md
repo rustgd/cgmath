@@ -1,11 +1,10 @@
 # cgmath-rs
 
 [![Build Status](https://travis-ci.org/brendanzab/cgmath.svg?branch=master)](https://travis-ci.org/brendanzab/cgmath)
+[![Documentation](https://docs.rs/cgmath/badge.svg)](https://docs.rs/cgmath)
 [![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/cgmath)
 [![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/brendanzab/cgmath/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/cgmath)
-
-[Documentation](http://brendanzab.github.io/cgmath/)
 
 A linear algebra and mathematics library for computer graphics.
 

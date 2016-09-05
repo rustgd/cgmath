@@ -16,7 +16,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
-documentation = "http://brendanzab.github.io/cgmath"
+documentation = "https://docs.rs/cgmath"
 homepage = "https://github.com/brendanzab/cgmath"
 repository = "https://github.com/brendanzab/cgmath"
 readme = "README.md"
