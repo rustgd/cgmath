@@ -5,23 +5,5 @@ rust:
   - beta
   - stable
 
-env:
-  global:
-    - TRAVIS_CARGO_NIGHTLY_FEATURE="eders"
-    - secure: afYeHpC8BJeyajd3vd84xRBYJKxQorKfh4lGvesu/hqh0bHc6lxrqGt0Pthb2m2YDODZiGSbx9yr9UetelZIJUSA3LoiG5PdDrtH/Kwdn5xGcBWSZl3v/sH+oB3AeR7Eji6mj0mrydQxn8PQbEACvR6lpGCYE2R48KrftYmD6Js=
-
-before_script:
-  - |
-      pip install 'travis-cargo<0.2' --user &&
-      export PATH=$HOME/.local/bin:$PATH
-
 script:
-  - |
-      travis-cargo build &&
-      travis-cargo test &&
-      travis-cargo bench &&
-      travis-cargo --only stable doc
-
-after_success:
-  - |
-      travis-cargo --only stable doc-upload --branch stable
+  - cargo build && cargo test && cargo bench
