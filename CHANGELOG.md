@@ -6,6 +6,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.12.0] - 2016-09-14
+
+### Changed
+
+- Use [approx](https://github.com/brendanzab/approx/) for approximate equality
+  comparisons
+- Remove `#[repr(packed)]` from all structs where it was specified
+- Update serde to 0.8
+
 ## [v0.11.0] - 2016-08-17
 
 ### Added
@@ -216,7 +225,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/bjz/cgmath/compare/v0.12.0...HEAD
+[v0.12.0]: https://github.com/bjz/cgmath/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/bjz/cgmath/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/bjz/cgmath/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
