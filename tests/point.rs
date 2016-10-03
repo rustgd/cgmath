@@ -17,7 +17,7 @@
 extern crate approx;
 extern crate cgmath;
 
-use cgmath::{Point2, Point3};
+use cgmath::{Point1, Point2, Point3};
 
 macro_rules! impl_test_mul {
     ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (
@@ -73,4 +73,11 @@ fn test_div() {
 fn test_rem() {
     impl_test_rem!(Point3 { x, y, z }, 2.0f32, Point3::new(2.0f32, 4.0, 6.0));
     impl_test_rem!(Point2 { x, y }, 2.0f32, Point2::new(2.0f32, 4.0));
+}
+
+#[test]
+fn test_cast() {
+    assert_ulps_eq!(Point1::new(0.9f64).cast(), Point1::new(0.9f32));
+    assert_ulps_eq!(Point2::new(0.9f64, 1.5).cast(), Point2::new(0.9f32, 1.5));
+    assert_ulps_eq!(Point3::new(1.0f64, 2.4, -3.13).cast(), Point3::new(1.0f32, 2.4, -3.13));
 }

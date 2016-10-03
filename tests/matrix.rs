@@ -704,6 +704,33 @@ pub mod matrix4 {
         assert_eq!(res, Vector4::new(1., 2., 3., 1.));
     }
 
+    #[test]
+    fn test_cast() {
+        assert_ulps_eq!(Matrix2::new(0.2f64, 1.5, 4.7, 2.3).cast(), Matrix2::new(0.2f32, 1.5, 4.7, 2.3));
+        assert_ulps_eq!(Matrix3::new(
+            0.2f64, 1.5, 4.7,
+            2.3,    5.7, 2.1,
+            4.6,    5.2, 6.6,
+        ).cast(), Matrix3::new(
+            0.2f32, 1.5, 4.7,
+            2.3,    5.7, 2.1,
+            4.6,    5.2, 6.6,
+        ));
+
+        assert_ulps_eq!(Matrix4::new(
+            0.2f64, 1.5, 4.7, 2.5,
+            2.3,    5.7, 2.1, 1.1,
+            4.6,    5.2, 6.6, 0.2,
+            3.2,    1.8, 0.4, 2.9,
+        ).cast(), Matrix4::new(
+            0.2f32, 1.5, 4.7, 2.5,
+            2.3,    5.7, 2.1, 1.1,
+            4.6,    5.2, 6.6, 0.2,
+            3.2,    1.8, 0.4, 2.9,
+        ));
+
+    }
+
     mod from {
         use cgmath::*;
 
