@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::cast;
+use num_traits::{cast, NumCast};
 use std::fmt;
 use std::mem;
 use std::ops::*;
@@ -917,7 +917,7 @@ impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
 
 impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
 
-macro_rules! impl_operators {
+macro_rules! impl_matrix {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
         impl_operator!(<S: BaseFloat> Neg for $MatrixN<S> {
             fn neg(matrix) -> $MatrixN<S> { $MatrixN { $($field: -matrix.$field),+ } }
@@ -971,6 +971,15 @@ macro_rules! impl_operators {
         impl_scalar_ops!($MatrixN<i64> { $($field),+ });
         impl_scalar_ops!($MatrixN<f32> { $($field),+ });
         impl_scalar_ops!($MatrixN<f64> { $($field),+ });
+
+
+        impl<S: NumCast + Copy> $MatrixN<S> {
+            /// Component-wise casting to another type
+            #[inline]
+            pub fn cast<T: NumCast>(&self) -> $MatrixN<T> {
+                $MatrixN { $($field: self.$field.cast() ),+ }
+            }
+        }
     }
 }
 
@@ -988,9 +997,9 @@ macro_rules! impl_scalar_ops {
     };
 }
 
-impl_operators!(Matrix2, Vector2 { x: 0, y: 1 });
-impl_operators!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
-impl_operators!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
+impl_matrix!(Matrix2, Vector2 { x: 0, y: 1 });
+impl_matrix!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
+impl_matrix!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
 impl_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
     fn mul(lhs, rhs) -> Matrix2<S> {
