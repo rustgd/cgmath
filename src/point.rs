@@ -17,6 +17,7 @@
 //! disinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
+use num_traits::NumCast;
 use std::fmt;
 use std::mem;
 use std::ops::*;
@@ -125,6 +126,14 @@ macro_rules! impl_point {
             #[inline]
             fn max(self) -> S where S: PartialOrd {
                 fold_array!(partial_max, { $(self.$field),+ })
+            }
+        }
+
+        impl<S: NumCast + Copy> $PointN<S> {
+            /// Component-wise casting to another type
+            #[inline]
+            pub fn cast<T: NumCast>(&self) -> $PointN<T> {
+                $PointN { $($field: NumCast::from(self.$field).unwrap()),+ }
             }
         }
 
