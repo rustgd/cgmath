@@ -26,10 +26,6 @@ use vector::{Vector2, Vector3};
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
 pub trait Transform<P: EuclideanSpace>: Sized {
-    /// Create an identity transformation. That is, a transformation which
-    /// does nothing.
-    fn one() -> Self;
-
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
     fn look_at(eye: P, center: P, up: P::Diff) -> Self;
@@ -70,15 +66,6 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R> 
     // FIXME: Investigate why this is needed!
     <P as EuclideanSpace>::Diff: VectorSpace,
 {
-    #[inline]
-    fn one() -> Decomposed<P::Diff, R> {
-        Decomposed {
-            scale: P::Scalar::one(),
-            rot: R::one(),
-            disp: P::Diff::zero(),
-        }
-    }
-
     #[inline]
     fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
         let rot = R::look_at(center - eye, up);
