@@ -615,6 +615,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 }
 
+//#[cfg(not(feature = "use_simd"))]
 impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     type ColumnRow = Vector4<S>;
 
@@ -672,7 +673,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn invert(&self) -> Option<Matrix4<S>> {
-        let det = self.determinant();
+        let det: S = self.determinant();
         if ulps_eq!(det, &S::zero()) { None } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
@@ -731,6 +732,123 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
         ulps_eq!(self[3][2], &self[2][3])
     }
 }
+// #[cfg(feature = "use_simd")]
+// impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
+//     type ColumnRow = Vector4<S>;
+
+//     #[inline]
+//     default fn from_value(value: S) -> Matrix4<S> {
+//         Matrix4::new(value, S::zero(), S::zero(), S::zero(),
+//                      S::zero(), value, S::zero(), S::zero(),
+//                      S::zero(), S::zero(), value, S::zero(),
+//                      S::zero(), S::zero(), S::zero(), value)
+//     }
+
+//     #[inline]
+//     default fn from_diagonal(value: Vector4<S>) -> Matrix4<S> {
+//         Matrix4::new(value.x, S::zero(), S::zero(), S::zero(),
+//                      S::zero(), value.y, S::zero(), S::zero(),
+//                      S::zero(), S::zero(), value.z, S::zero(),
+//                      S::zero(), S::zero(), S::zero(), value.w)
+//     }
+
+//     default fn transpose_self(&mut self) {
+//         self.swap_elements((0, 1), (1, 0));
+//         self.swap_elements((0, 2), (2, 0));
+//         self.swap_elements((0, 3), (3, 0));
+//         self.swap_elements((1, 2), (2, 1));
+//         self.swap_elements((1, 3), (3, 1));
+//         self.swap_elements((2, 3), (3, 2));
+//     }
+
+//     default fn determinant(&self) -> S {
+//         let m0 = Matrix3::new(self[1][1], self[2][1], self[3][1],
+//                               self[1][2], self[2][2], self[3][2],
+//                               self[1][3], self[2][3], self[3][3]);
+//         let m1 = Matrix3::new(self[0][1], self[2][1], self[3][1],
+//                               self[0][2], self[2][2], self[3][2],
+//                               self[0][3], self[2][3], self[3][3]);
+//         let m2 = Matrix3::new(self[0][1], self[1][1], self[3][1],
+//                               self[0][2], self[1][2], self[3][2],
+//                               self[0][3], self[1][3], self[3][3]);
+//         let m3 = Matrix3::new(self[0][1], self[1][1], self[2][1],
+//                               self[0][2], self[1][2], self[2][2],
+//                               self[0][3], self[1][3], self[2][3]);
+
+//         self[0][0] * m0.determinant() -
+//         self[1][0] * m1.determinant() +
+//         self[2][0] * m2.determinant() -
+//         self[3][0] * m3.determinant()
+//     }
+
+//     #[inline]
+//     default fn diagonal(&self) -> Vector4<S> {
+//         Vector4::new(self[0][0],
+//                      self[1][1],
+//                      self[2][2],
+//                      self[3][3])
+//     }
+
+//     default fn invert(&self) -> Option<Matrix4<S>> {
+//         let det = self.determinant();
+//         if ulps_eq!(det, &S::zero()) { None } else {
+//             let inv_det = S::one() / det;
+//             let t = self.transpose();
+//             let cf = |i, j| {
+//                 let mat = match i {
+//                     0 => Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+//                     1 => Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
+//                     2 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j)),
+//                     3 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j)),
+//                     _ => panic!("out of range"),
+//                 };
+//                 let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
+//                 mat.determinant() * sign * inv_det
+//             };
+
+//             Some(Matrix4::new(cf(0, 0), cf(0, 1), cf(0, 2), cf(0, 3),
+//                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
+//                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
+//                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
+//         }
+//     }
+
+//     default fn is_diagonal(&self) -> bool {
+//         ulps_eq!(self[0][1], &S::zero()) &&
+//         ulps_eq!(self[0][2], &S::zero()) &&
+//         ulps_eq!(self[0][3], &S::zero()) &&
+
+//         ulps_eq!(self[1][0], &S::zero()) &&
+//         ulps_eq!(self[1][2], &S::zero()) &&
+//         ulps_eq!(self[1][3], &S::zero()) &&
+
+//         ulps_eq!(self[2][0], &S::zero()) &&
+//         ulps_eq!(self[2][1], &S::zero()) &&
+//         ulps_eq!(self[2][3], &S::zero()) &&
+
+//         ulps_eq!(self[3][0], &S::zero()) &&
+//         ulps_eq!(self[3][1], &S::zero()) &&
+//         ulps_eq!(self[3][2], &S::zero())
+//     }
+
+//     default fn is_symmetric(&self) -> bool {
+//         ulps_eq!(self[0][1], &self[1][0]) &&
+//         ulps_eq!(self[0][2], &self[2][0]) &&
+//         ulps_eq!(self[0][3], &self[3][0]) &&
+
+//         ulps_eq!(self[1][0], &self[0][1]) &&
+//         ulps_eq!(self[1][2], &self[2][1]) &&
+//         ulps_eq!(self[1][3], &self[3][1]) &&
+
+//         ulps_eq!(self[2][0], &self[0][2]) &&
+//         ulps_eq!(self[2][1], &self[1][2]) &&
+//         ulps_eq!(self[2][3], &self[3][2]) &&
+
+//         ulps_eq!(self[3][0], &self[0][3]) &&
+//         ulps_eq!(self[3][1], &self[1][3]) &&
+//         ulps_eq!(self[3][2], &self[2][3])
+//     }
+// }
 
 impl<S: BaseFloat> ApproxEq for Matrix2<S> {
     type Epsilon = S::Epsilon;
@@ -955,10 +1073,6 @@ macro_rules! impl_matrix {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
         }
 
-        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
-            fn mul(matrix, vector) -> $VectorN<S> { $VectorN::new($(matrix.row($row_index).dot(vector.clone())),+) }
-        });
-
         impl_scalar_ops!($MatrixN<usize> { $($field),+ });
         impl_scalar_ops!($MatrixN<u8> { $($field),+ });
         impl_scalar_ops!($MatrixN<u16> { $($field),+ });
@@ -1001,6 +1115,25 @@ impl_matrix!(Matrix2, Vector2 { x: 0, y: 1 });
 impl_matrix!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
 impl_matrix!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
+macro_rules! impl_mv_operator {
+    ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
+        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
+            fn mul(matrix, vector) -> $VectorN<S> {$VectorN::new($(matrix.row($row_index).dot(vector.clone())),+)}
+        });
+    }
+}
+
+impl_mv_operator!(Matrix2, Vector2 { x: 0, y: 1 });
+impl_mv_operator!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
+#[cfg(not(feature = "use_simd"))]
+impl_mv_operator!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
+#[cfg(feature = "use_simd")]
+impl_operator!(<S: BaseFloat> Mul<Vector4<S> > for Matrix4<S> {
+    fn mul(matrix, vector) -> Vector4<S> {
+        matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]
+    }
+});
+
 impl_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
     fn mul(lhs, rhs) -> Matrix2<S> {
         Matrix2::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]),
@@ -1020,21 +1153,21 @@ impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
-macro_rules! dot_matrix4 {
-    ($A:expr, $B:expr, $I:expr, $J:expr) => {
-        ($A[0][$I]) * ($B[$J][0]) +
-        ($A[1][$I]) * ($B[$J][1]) +
-        ($A[2][$I]) * ($B[$J][2]) +
-        ($A[3][$I]) * ($B[$J][3])
-    };
-}
 
 impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
     fn mul(lhs, rhs) -> Matrix4<S> {
-        Matrix4::new(dot_matrix4!(lhs, rhs, 0, 0), dot_matrix4!(lhs, rhs, 1, 0), dot_matrix4!(lhs, rhs, 2, 0), dot_matrix4!(lhs, rhs, 3, 0),
-                     dot_matrix4!(lhs, rhs, 0, 1), dot_matrix4!(lhs, rhs, 1, 1), dot_matrix4!(lhs, rhs, 2, 1), dot_matrix4!(lhs, rhs, 3, 1),
-                     dot_matrix4!(lhs, rhs, 0, 2), dot_matrix4!(lhs, rhs, 1, 2), dot_matrix4!(lhs, rhs, 2, 2), dot_matrix4!(lhs, rhs, 3, 2),
-                     dot_matrix4!(lhs, rhs, 0, 3), dot_matrix4!(lhs, rhs, 1, 3), dot_matrix4!(lhs, rhs, 2, 3), dot_matrix4!(lhs, rhs, 3, 3))
+        {
+            let a = lhs[0];
+            let b = lhs[1];
+            let c = lhs[2];
+            let d = lhs[3];
+            Matrix4::from_cols(
+                a*rhs[0][0] + b*rhs[0][1] + c*rhs[0][2] + d*rhs[0][3],
+                a*rhs[1][0] + b*rhs[1][1] + c*rhs[1][2] + d*rhs[1][3],
+                a*rhs[2][0] + b*rhs[2][1] + c*rhs[2][2] + d*rhs[2][3],
+                a*rhs[3][0] + b*rhs[3][1] + c*rhs[3][2] + d*rhs[3][3],
+            )
+        }
     }
 });
 
@@ -1318,3 +1451,39 @@ impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
         Matrix4{ x: rng.gen(), y: rng.gen(), z: rng.gen(), w: rng.gen() }
     }
 }
+
+// Sadly buggy.
+// #[cfg(feature = "use_simd")]
+// impl SquareMatrix for Matrix4<f32> {
+//     fn determinant(&self) -> f32 {
+//         let a = Simdf32x4::new(self.z[1], self.x[1], self.w[1], self.y[1]);
+//         let b = Simdf32x4::new(self.y[2], self.y[2], self.z[2], self.z[2]);
+//         let c = Simdf32x4::new(self.x[3], self.z[3], self.x[3], self.z[3]);
+//         let mut tmp = a * (b * c);
+//         let d = Simdf32x4::new(self.y[1], self.y[1], self.z[1], self.z[1]);
+//         let e = Simdf32x4::new(self.x[2], self.z[2], self.x[2], self.z[2]);
+//         let f = Simdf32x4::new(self.z[3], self.x[3], self.w[3], self.y[3]);
+//         let tmp1 = d * (e * f);
+//         tmp = tmp + tmp1;
+//         let g = Simdf32x4::new(self.x[1], self.z[1], self.x[1], self.z[1]);
+//         let h = Simdf32x4::new(self.z[2], self.x[2], self.w[2], self.y[2]);
+//         let i = Simdf32x4::new(self.y[3], self.y[3], self.z[3], self.z[3]);
+//         let tmp1 = g * (h * i);
+//         tmp = tmp + tmp1;
+//         let tmp1 = g * (b * f);
+//         tmp = tmp - tmp1;
+//         let tmp1 = d * (h * c);
+//         tmp = tmp - tmp1;
+//         let tmp1 = a * (e * i);
+//         tmp = tmp - tmp1;
+//         let tmp: Vector4<f32> = (tmp * Simdf32x4::new(self.x[0], self.y[0], self.z[0], self.w[0])).into();
+//         tmp.sum()
+//     }
+// }
+
+// #[cfg(feature = "use_simd")]
+// impl_operator_simd!(@mm Mul<Vector4<f32>> for Matrix4<f32> {
+//     fn mul(matrix, vector) -> Vector4<f32> {
+//         matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]
+//     }
+// });

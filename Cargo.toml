@@ -30,6 +30,7 @@ name = "cgmath"
 unstable = []
 default = ["rustc-serialize"]
 eders = ["serde", "serde_macros"]
+use_simd = ["simd"]
 
 [dependencies]
 approx = "0.1"
@@ -38,6 +39,7 @@ rand = "0.3"
 rustc-serialize = { version = "0.3", optional = true }
 serde = { version = "0.8", optional = true }
 serde_macros = { version = "0.8", optional = true }
+simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
 glium = "0.15"
