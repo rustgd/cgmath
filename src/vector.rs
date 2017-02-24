@@ -299,6 +299,7 @@ macro_rules! impl_vector {
 }
 
 // Utility macro for generating associated functions for the vectors
+// mainly duplication
 #[cfg(feature = "use_simd")]
 macro_rules! impl_vector_default {
     ($VectorN:ident { $($field:ident),+ }, $n:expr, $constructor:ident) => {

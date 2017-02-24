@@ -615,7 +615,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 }
 
-//#[cfg(not(feature = "use_simd"))]
+
 impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     type ColumnRow = Vector4<S>;
 
@@ -673,7 +673,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn invert(&self) -> Option<Matrix4<S>> {
-        let det: S = self.determinant();
+        let det = self.determinant();
         if ulps_eq!(det, &S::zero()) { None } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
@@ -732,123 +732,6 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
         ulps_eq!(self[3][2], &self[2][3])
     }
 }
-// #[cfg(feature = "use_simd")]
-// impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
-//     type ColumnRow = Vector4<S>;
-
-//     #[inline]
-//     default fn from_value(value: S) -> Matrix4<S> {
-//         Matrix4::new(value, S::zero(), S::zero(), S::zero(),
-//                      S::zero(), value, S::zero(), S::zero(),
-//                      S::zero(), S::zero(), value, S::zero(),
-//                      S::zero(), S::zero(), S::zero(), value)
-//     }
-
-//     #[inline]
-//     default fn from_diagonal(value: Vector4<S>) -> Matrix4<S> {
-//         Matrix4::new(value.x, S::zero(), S::zero(), S::zero(),
-//                      S::zero(), value.y, S::zero(), S::zero(),
-//                      S::zero(), S::zero(), value.z, S::zero(),
-//                      S::zero(), S::zero(), S::zero(), value.w)
-//     }
-
-//     default fn transpose_self(&mut self) {
-//         self.swap_elements((0, 1), (1, 0));
-//         self.swap_elements((0, 2), (2, 0));
-//         self.swap_elements((0, 3), (3, 0));
-//         self.swap_elements((1, 2), (2, 1));
-//         self.swap_elements((1, 3), (3, 1));
-//         self.swap_elements((2, 3), (3, 2));
-//     }
-
-//     default fn determinant(&self) -> S {
-//         let m0 = Matrix3::new(self[1][1], self[2][1], self[3][1],
-//                               self[1][2], self[2][2], self[3][2],
-//                               self[1][3], self[2][3], self[3][3]);
-//         let m1 = Matrix3::new(self[0][1], self[2][1], self[3][1],
-//                               self[0][2], self[2][2], self[3][2],
-//                               self[0][3], self[2][3], self[3][3]);
-//         let m2 = Matrix3::new(self[0][1], self[1][1], self[3][1],
-//                               self[0][2], self[1][2], self[3][2],
-//                               self[0][3], self[1][3], self[3][3]);
-//         let m3 = Matrix3::new(self[0][1], self[1][1], self[2][1],
-//                               self[0][2], self[1][2], self[2][2],
-//                               self[0][3], self[1][3], self[2][3]);
-
-//         self[0][0] * m0.determinant() -
-//         self[1][0] * m1.determinant() +
-//         self[2][0] * m2.determinant() -
-//         self[3][0] * m3.determinant()
-//     }
-
-//     #[inline]
-//     default fn diagonal(&self) -> Vector4<S> {
-//         Vector4::new(self[0][0],
-//                      self[1][1],
-//                      self[2][2],
-//                      self[3][3])
-//     }
-
-//     default fn invert(&self) -> Option<Matrix4<S>> {
-//         let det = self.determinant();
-//         if ulps_eq!(det, &S::zero()) { None } else {
-//             let inv_det = S::one() / det;
-//             let t = self.transpose();
-//             let cf = |i, j| {
-//                 let mat = match i {
-//                     0 => Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
-//                     1 => Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
-//                     2 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j)),
-//                     3 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j)),
-//                     _ => panic!("out of range"),
-//                 };
-//                 let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
-//                 mat.determinant() * sign * inv_det
-//             };
-
-//             Some(Matrix4::new(cf(0, 0), cf(0, 1), cf(0, 2), cf(0, 3),
-//                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
-//                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
-//                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
-//         }
-//     }
-
-//     default fn is_diagonal(&self) -> bool {
-//         ulps_eq!(self[0][1], &S::zero()) &&
-//         ulps_eq!(self[0][2], &S::zero()) &&
-//         ulps_eq!(self[0][3], &S::zero()) &&
-
-//         ulps_eq!(self[1][0], &S::zero()) &&
-//         ulps_eq!(self[1][2], &S::zero()) &&
-//         ulps_eq!(self[1][3], &S::zero()) &&
-
-//         ulps_eq!(self[2][0], &S::zero()) &&
-//         ulps_eq!(self[2][1], &S::zero()) &&
-//         ulps_eq!(self[2][3], &S::zero()) &&
-
-//         ulps_eq!(self[3][0], &S::zero()) &&
-//         ulps_eq!(self[3][1], &S::zero()) &&
-//         ulps_eq!(self[3][2], &S::zero())
-//     }
-
-//     default fn is_symmetric(&self) -> bool {
-//         ulps_eq!(self[0][1], &self[1][0]) &&
-//         ulps_eq!(self[0][2], &self[2][0]) &&
-//         ulps_eq!(self[0][3], &self[3][0]) &&
-
-//         ulps_eq!(self[1][0], &self[0][1]) &&
-//         ulps_eq!(self[1][2], &self[2][1]) &&
-//         ulps_eq!(self[1][3], &self[3][1]) &&
-
-//         ulps_eq!(self[2][0], &self[0][2]) &&
-//         ulps_eq!(self[2][1], &self[1][2]) &&
-//         ulps_eq!(self[2][3], &self[3][2]) &&
-
-//         ulps_eq!(self[3][0], &self[0][3]) &&
-//         ulps_eq!(self[3][1], &self[1][3]) &&
-//         ulps_eq!(self[3][2], &self[2][3])
-//     }
-// }
 
 impl<S: BaseFloat> ApproxEq for Matrix2<S> {
     type Epsilon = S::Epsilon;
@@ -1452,7 +1335,8 @@ impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
     }
 }
 
-// Sadly buggy.
+// Specialization strangely won't work for this.
+// TODO: find another way
 // #[cfg(feature = "use_simd")]
 // impl SquareMatrix for Matrix4<f32> {
 //     fn determinant(&self) -> f32 {
