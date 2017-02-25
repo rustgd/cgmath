@@ -645,23 +645,10 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn determinant(&self) -> S {
-        let m0 = Matrix3::new(self[1][1], self[2][1], self[3][1],
-                              self[1][2], self[2][2], self[3][2],
-                              self[1][3], self[2][3], self[3][3]);
-        let m1 = Matrix3::new(self[0][1], self[2][1], self[3][1],
-                              self[0][2], self[2][2], self[3][2],
-                              self[0][3], self[2][3], self[3][3]);
-        let m2 = Matrix3::new(self[0][1], self[1][1], self[3][1],
-                              self[0][2], self[1][2], self[3][2],
-                              self[0][3], self[1][3], self[3][3]);
-        let m3 = Matrix3::new(self[0][1], self[1][1], self[2][1],
-                              self[0][2], self[1][2], self[2][2],
-                              self[0][3], self[1][3], self[2][3]);
-
-        self[0][0] * m0.determinant() -
-        self[1][0] * m1.determinant() +
-        self[2][0] * m2.determinant() -
-        self[3][0] * m3.determinant()
+        let tmp = unsafe {
+            det_sub_proc_unsafe(self, 1, 2, 3)
+        };
+        tmp.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]))
     }
 
     #[inline]
@@ -672,6 +659,12 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                      self[3][3])
     }
 
+    // The new implementation results in negative optimization when used 
+    // without SIMD. so we opt them in with configuration.
+    // A better option would be using specialization. But currently somewhat
+    // specialization is too buggy, and it won't apply here. I'm getting
+    // weird error msgs. Help wanted.
+    #[cfg(not(feature = "use_simd"))]
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
         if ulps_eq!(det, &S::zero()) { None } else {
@@ -693,6 +686,27 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
+        }
+    }
+    #[cfg(feature = "use_simd")]
+    fn invert(&self) -> Option<Matrix4<S>> {
+        let tmp0 = unsafe {
+            det_sub_proc_unsafe(self, 1, 2, 3)
+        };
+        let det = tmp0.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]));
+        if ulps_eq!(det, &S::zero()) { None } else {
+            let inv_det = S::one() / det;
+            let tmp0 = tmp0 * inv_det;
+            let tmp1 = unsafe {
+                det_sub_proc_unsafe(self, 0, 3, 2) * inv_det
+            };
+            let tmp2 = unsafe {
+                det_sub_proc_unsafe(self, 0, 1, 3) * inv_det
+            };
+            let tmp3 = unsafe {
+                det_sub_proc_unsafe(self, 0, 2, 1) * inv_det
+            };
+            Some(Matrix4::from_cols(tmp0, tmp1, tmp2, tmp3))
         }
     }
 
@@ -1036,6 +1050,7 @@ impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
+// Update: this should now be a bit more efficient
 
 impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
     fn mul(lhs, rhs) -> Matrix4<S> {
@@ -1335,39 +1350,26 @@ impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
     }
 }
 
-// Specialization strangely won't work for this.
-// TODO: find another way
-// #[cfg(feature = "use_simd")]
-// impl SquareMatrix for Matrix4<f32> {
-//     fn determinant(&self) -> f32 {
-//         let a = Simdf32x4::new(self.z[1], self.x[1], self.w[1], self.y[1]);
-//         let b = Simdf32x4::new(self.y[2], self.y[2], self.z[2], self.z[2]);
-//         let c = Simdf32x4::new(self.x[3], self.z[3], self.x[3], self.z[3]);
-//         let mut tmp = a * (b * c);
-//         let d = Simdf32x4::new(self.y[1], self.y[1], self.z[1], self.z[1]);
-//         let e = Simdf32x4::new(self.x[2], self.z[2], self.x[2], self.z[2]);
-//         let f = Simdf32x4::new(self.z[3], self.x[3], self.w[3], self.y[3]);
-//         let tmp1 = d * (e * f);
-//         tmp = tmp + tmp1;
-//         let g = Simdf32x4::new(self.x[1], self.z[1], self.x[1], self.z[1]);
-//         let h = Simdf32x4::new(self.z[2], self.x[2], self.w[2], self.y[2]);
-//         let i = Simdf32x4::new(self.y[3], self.y[3], self.z[3], self.z[3]);
-//         let tmp1 = g * (h * i);
-//         tmp = tmp + tmp1;
-//         let tmp1 = g * (b * f);
-//         tmp = tmp - tmp1;
-//         let tmp1 = d * (h * c);
-//         tmp = tmp - tmp1;
-//         let tmp1 = a * (e * i);
-//         tmp = tmp - tmp1;
-//         let tmp: Vector4<f32> = (tmp * Simdf32x4::new(self.x[0], self.y[0], self.z[0], self.w[0])).into();
-//         tmp.sum()
-//     }
-// }
+// Sub procedure for SIMD when dealing with determinant and inversion
+#[inline]
+unsafe fn det_sub_proc_unsafe<S: BaseFloat>(m: &Matrix4<S>, x: usize, y: usize, z: usize) -> Vector4<S> {
+    let s: &[S; 16] = m.as_ref();
+    let a = Vector4::new(*s.get_unchecked(4 + x), *s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(8 + x));
+    let b = Vector4::new(*s.get_unchecked(8 + y), *s.get_unchecked(8 + y), *s.get_unchecked(4 + y), *s.get_unchecked(4 + y));
+    let c = Vector4::new(*s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(12 + z), *s.get_unchecked(z));
 
-// #[cfg(feature = "use_simd")]
-// impl_operator_simd!(@mm Mul<Vector4<f32>> for Matrix4<f32> {
-//     fn mul(matrix, vector) -> Vector4<f32> {
-//         matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]
-//     }
-// });
+    let d = Vector4::new(*s.get_unchecked(8 + x), *s.get_unchecked(8 + x), *s.get_unchecked(4 + x), *s.get_unchecked(4 + x));
+    let e = Vector4::new(*s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(12 + y), *s.get_unchecked(y));
+    let f = Vector4::new(*s.get_unchecked(4 + z), *s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(8 + z));
+
+    let g = Vector4::new(*s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(12 + x), *s.get_unchecked(x));
+    let h = Vector4::new(*s.get_unchecked(4 + y), *s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(8 + y));
+    let i = Vector4::new(*s.get_unchecked(8 + z), *s.get_unchecked(8 + z), *s.get_unchecked(4 + z), *s.get_unchecked(4 + z));
+    let mut tmp = a.mul_element_wise(b.mul_element_wise(c));
+    tmp += d.mul_element_wise(e.mul_element_wise(f));
+    tmp += g.mul_element_wise(h.mul_element_wise(i));
+    tmp -= a.mul_element_wise(e.mul_element_wise(i));
+    tmp -= d.mul_element_wise(h.mul_element_wise(c));
+    tmp -= g.mul_element_wise(b.mul_element_wise(f));
+    tmp
+}

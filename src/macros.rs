@@ -381,21 +381,11 @@ macro_rules! impl_operator_simd {
                 let $x: $Simd = self.into(); $body
             }
         }
-
-        // #[cfg(feature = "simd")]
-        // impl<'a> $Op for &'a $Lhs {
-        //     type Output = $Output;
-        //     #[inline]
-        //     fn $op(self) -> $Output {
-        //         let $x: $Simd = (*self).into(); $body
-        //     }
-        // }
     };
     // When the right operand is a scalar
     (@rs [$Simd:ident]; $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
     }) => {
- 
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
@@ -411,6 +401,7 @@ macro_rules! impl_operator_simd {
             }
         }
     };
+
     // When the right operand is a compound type
     ([$Simd:ident]; $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
@@ -430,7 +421,6 @@ macro_rules! impl_operator_simd {
                 let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), (*other).into()); $body
             }
         }
-
  
         impl<'a> $Op<$Rhs> for &'a $Lhs {
             #[inline]
@@ -439,7 +429,6 @@ macro_rules! impl_operator_simd {
             }
         }
 
- 
         impl<'a, 'b> $Op<&'a $Rhs> for &'b $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {
@@ -447,18 +436,17 @@ macro_rules! impl_operator_simd {
             }
         }
     };
+
     // When the left operand is a scalar
     (@ls [$Simd:ident]; $Op:ident<$Rhs:ty> for $Lhs:ident {
         fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
     }) => {
- 
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
                 let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), other.into()); $body
             }
         }
-
  
         impl<'a> $Op<&'a $Rhs> for $Lhs {
             #[inline]
@@ -467,47 +455,4 @@ macro_rules! impl_operator_simd {
             }
         }
     };
-
-    // // When left is row-vec, right is colume-matrix
-    // (@vm [$Simd: ident]; $Op:ident<$Rhs:ty> for $Lhs:ty {
-    //     fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty {
-
-    //     }
-    // })
-
-    // When matrix with matrix
-    (@mm $Op:ident<$Rhs:ty> for $Lhs:ty {
-        fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body: expr }
-    }) => {
-        impl $Op<$Rhs> for $Lhs {
-            #[inline]
-            fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
- 
-        impl<'a> $Op<&'a $Rhs> for $Lhs {
-            #[inline]
-            fn $op(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
- 
-        impl<'a> $Op<$Rhs> for &'a $Lhs {
-            #[inline]
-            fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-
- 
-        impl<'a, 'b> $Op<&'a $Rhs> for &'b $Lhs {
-            #[inline]
-            fn $op(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs) = (self, other); $body
-            }
-        }
-    }
 }
