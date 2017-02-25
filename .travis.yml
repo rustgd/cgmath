@@ -7,5 +7,5 @@ rust:
 
 script:
   - cargo build && cargo test
-  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo bench;
-  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo build --features "use_simd" && cargo test --features "use_simd" && cargo bench --features "use_simd"
+  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo bench; fi
+  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo build --features "use_simd" && cargo test --features "use_simd" && cargo bench --features "use_simd"; fi
