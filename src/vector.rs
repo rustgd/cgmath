@@ -802,6 +802,14 @@ impl Into<Simdf32x4> for Vector4<f32> {
     }
 }
 
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdf32x4]; Add<Vector4<f32>> for Vector4<f32> {
+        fn add(lhs, rhs) -> Vector4<f32> {
+            (lhs + rhs).into()
+        }
+    }
+}
 
 #[cfg(feature = "use_simd")]
 impl_operator_simd!{
@@ -1050,20 +1058,10 @@ impl Into<Simdu32x4> for Vector4<u32> {
     }
 }
 
-
 #[cfg(feature = "use_simd")]
 impl_operator_simd!{
     [Simdu32x4]; Add<Vector4<u32>> for Vector4<u32> {
         fn add(lhs, rhs) -> Vector4<u32> {
-            (lhs + rhs).into()
-        }
-    }
-}
-
-#[cfg(feature = "use_simd")]
-impl_operator_simd!{
-    [Simdf32x4]; Add<Vector4<f32>> for Vector4<f32> {
-        fn add(lhs, rhs) -> Vector4<f32> {
             (lhs + rhs).into()
         }
     }
