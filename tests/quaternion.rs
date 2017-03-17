@@ -194,13 +194,13 @@ mod rotate_from_euler {
         let vec = vec3(0.0, 1.0, 0.0);
 
         let rot = Quaternion::from(Euler::new(Deg(90.0), Deg(90.0), Deg(0.0)));
-        assert_ulps_eq!(vec3(0.0, 0.0, 1.0), rot * vec);
+        assert_ulps_eq!(vec3(0.0f32, 0.0f32, 1.0f32), rot * vec);
     }
 
     // tests that the Z rotation is done after the Y
     #[test]
     fn test_y_then_z() {
-        let vec = vec3(0.0, 0.0, 1.0);
+        let vec = vec3(0.0f32, 0.0f32, 1.0f32);
 
         let rot = Quaternion::from(Euler::new(Deg(0.0), Deg(90.0), Deg(90.0)));
         assert_ulps_eq!(vec3(1.0, 0.0, 0.0), rot * vec);

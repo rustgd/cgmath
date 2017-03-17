@@ -50,7 +50,7 @@
 //! use cgmath::prelude::*;
 //! ```
 
-#![cfg_attr(feature = "eders", feature(proc_macro))]
+#![cfg_attr(feature = "use_simd", feature(specialization))]
 
 #[macro_use]
 extern crate approx;
@@ -65,6 +65,9 @@ extern crate rustc_serialize;
 extern crate serde_derive;
 #[cfg(feature = "eders")]
 extern crate serde;
+
+#[cfg(feature = "use_simd")]
+extern crate simd;
 
 // Re-exports
 

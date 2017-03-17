@@ -59,3 +59,5 @@ bench_unop!(_bench_matrix4_invert, Matrix4<f32>, invert);
 bench_unop!(_bench_matrix2_transpose, Matrix2<f32>, transpose);
 bench_unop!(_bench_matrix3_transpose, Matrix3<f32>, transpose);
 bench_unop!(_bench_matrix4_transpose, Matrix4<f32>, transpose);
+
+bench_unop!(_bench_matrix4_determinant, Matrix4<f32>, determinant);

@@ -25,6 +25,13 @@ use angle::Rad;
 use approx::ApproxEq;
 use num::{BaseNum, BaseFloat, PartialOrd};
 
+#[cfg(feature = "use_simd")]
+use simd::f32x4 as Simdf32x4;
+#[cfg(feature = "use_simd")]
+use simd::i32x4 as Simdi32x4;
+#[cfg(feature = "use_simd")]
+use simd::u32x4 as Simdu32x4;
+
 /// A 1-dimensional vector.
 ///
 /// This type is marked as `#[repr(C)]`.
@@ -291,6 +298,218 @@ macro_rules! impl_vector {
     }
 }
 
+// Utility macro for generating associated functions for the vectors
+// mainly duplication
+#[cfg(feature = "use_simd")]
+macro_rules! impl_vector_default {
+    ($VectorN:ident { $($field:ident),+ }, $n:expr, $constructor:ident) => {
+        impl<S> $VectorN<S> {
+            /// Construct a new vector, using the provided values.
+            #[inline]
+            pub fn new($($field: S),+) -> $VectorN<S> {
+                $VectorN { $($field: $field),+ }
+            }
+        }
+
+        /// The short constructor.
+        #[inline]
+        pub fn $constructor<S>($($field: S),+) -> $VectorN<S> {
+            $VectorN::new($($field),+)
+        }
+
+        impl<S: NumCast + Copy> $VectorN<S> {
+            /// Component-wise casting to another type
+            #[inline]
+            pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
+                $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
+            }
+        }
+
+        impl<S: BaseFloat> MetricSpace for $VectorN<S> {
+            type Metric = S;
+
+            #[inline]
+            fn distance2(self, other: Self) -> S {
+                (other - self).magnitude2()
+            }
+        }
+
+        impl<S: Copy> Array for $VectorN<S> {
+            type Element = S;
+
+            #[inline]
+            fn from_value(scalar: S) -> $VectorN<S> {
+                $VectorN { $($field: scalar),+ }
+            }
+
+            #[inline]
+            fn sum(self) -> S where S: Add<Output = S> {
+                fold_array!(add, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn product(self) -> S where S: Mul<Output = S> {
+                fold_array!(mul, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn min(self) -> S where S: PartialOrd {
+                fold_array!(partial_min, { $(self.$field),+ })
+            }
+
+            #[inline]
+            fn max(self) -> S where S: PartialOrd {
+                fold_array!(partial_max, { $(self.$field),+ })
+            }
+        }
+
+        impl<S: BaseNum> Zero for $VectorN<S> {
+            #[inline]
+            fn zero() -> $VectorN<S> {
+                $VectorN::from_value(S::zero())
+            }
+
+            #[inline]
+            fn is_zero(&self) -> bool {
+                *self == $VectorN::zero()
+            }
+        }
+
+        impl<S: BaseNum> VectorSpace for $VectorN<S> {
+            type Scalar = S;
+        }
+
+        impl<S: Neg<Output = S>> Neg for $VectorN<S> {
+            type Output = $VectorN<S>;
+
+            #[inline]
+            default fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
+        }
+
+        impl<S: BaseFloat> ApproxEq for $VectorN<S> {
+            type Epsilon = S::Epsilon;
+
+            #[inline]
+            fn default_epsilon() -> S::Epsilon {
+                S::default_epsilon()
+            }
+
+            #[inline]
+            fn default_max_relative() -> S::Epsilon {
+                S::default_max_relative()
+            }
+
+            #[inline]
+            fn default_max_ulps() -> u32 {
+                S::default_max_ulps()
+            }
+
+            #[inline]
+            fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
+                $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+
+            #[inline]
+            fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
+                $(S::ulps_eq(&self.$field, &other.$field, epsilon, max_ulps))&&+
+            }
+        }
+
+        impl<S: BaseFloat + Rand> Rand for $VectorN<S> {
+            #[inline]
+            fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
+                $VectorN { $($field: rng.gen()),+ }
+            }
+        }
+
+        impl_operator_default!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
+            fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
+        });
+
+        impl_assignment_operator_default!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
+            fn add_assign(&mut self, other) { $(self.$field += other.$field);+ }
+        });
+
+        impl_operator_default!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
+            fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
+        });
+
+        impl_assignment_operator_default!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
+            fn sub_assign(&mut self, other) { $(self.$field -= other.$field);+ }
+        });
+
+        impl_operator_default!(<S: BaseNum> Mul<S> for $VectorN<S> {
+            fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
+        });
+
+        impl_assignment_operator_default!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
+            fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
+        });
+
+        impl_operator_default!(<S: BaseNum> Div<S> for $VectorN<S> {
+            fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
+        });
+
+        impl_assignment_operator_default!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
+            fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
+        });
+
+        impl_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
+            fn rem(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field % scalar),+) }
+        });
+        impl_assignment_operator!(<S: BaseNum> RemAssign<S> for $VectorN<S> {
+            fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
+        });
+
+        impl<S: BaseNum> ElementWise for $VectorN<S> {
+            #[inline] default fn add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) }
+            #[inline] default fn sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) }
+            #[inline] default fn mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) }
+            #[inline] default fn div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) }
+            #[inline] fn rem_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field % rhs.$field),+) }
+
+            #[inline] default fn add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ }
+            #[inline] default fn sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ }
+            #[inline] default fn mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ }
+            #[inline] default fn div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ }
+            #[inline] fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ }
+        }
+
+        impl<S: BaseNum> ElementWise<S> for $VectorN<S> {
+            #[inline] default fn add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) }
+            #[inline] default fn sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) }
+            #[inline] default fn mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) }
+            #[inline] default fn div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) }
+            #[inline] fn rem_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field % rhs),+) }
+
+            #[inline] default fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ }
+            #[inline] default fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ }
+            #[inline] default fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ }
+            #[inline] default fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ }
+            #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
+        }
+
+        impl_scalar_ops!($VectorN<usize> { $($field),+ });
+        impl_scalar_ops!($VectorN<u8> { $($field),+ });
+        impl_scalar_ops!($VectorN<u16> { $($field),+ });
+        impl_scalar_ops_default!($VectorN<u32> { $($field),+ });
+        impl_scalar_ops!($VectorN<u64> { $($field),+ });
+        impl_scalar_ops!($VectorN<isize> { $($field),+ });
+        impl_scalar_ops!($VectorN<i8> { $($field),+ });
+        impl_scalar_ops!($VectorN<i16> { $($field),+ });
+        impl_scalar_ops_default!($VectorN<i32> { $($field),+ });
+        impl_scalar_ops!($VectorN<i64> { $($field),+ });
+        impl_scalar_ops_default!($VectorN<f32> { $($field),+ });
+        impl_scalar_ops!($VectorN<f64> { $($field),+ });
+
+        impl_index_operators!($VectorN<S>, $n, S, usize);
+        impl_index_operators!($VectorN<S>, $n, [S], Range<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeTo<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeFrom<usize>);
+        impl_index_operators!($VectorN<S>, $n, [S], RangeFull);
+    }
+}
+
 macro_rules! impl_scalar_ops {
     ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
         impl_operator!(Mul<$VectorN<$S>> for $S {
@@ -305,10 +524,28 @@ macro_rules! impl_scalar_ops {
     };
 }
 
+#[cfg(feature = "use_simd")]
+macro_rules! impl_scalar_ops_default {
+    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
+        impl_operator_default!(Mul<$VectorN<$S>> for $S {
+            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
+        });
+        impl_operator_default!(Div<$VectorN<$S>> for $S {
+            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
+        });
+        impl_operator_default!(Rem<$VectorN<$S>> for $S {
+            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
+        });
+    };
+}
+
 impl_vector!(Vector1 { x }, 1, vec1);
 impl_vector!(Vector2 { x, y }, 2, vec2);
 impl_vector!(Vector3 { x, y, z }, 3, vec3);
+#[cfg(not(feature = "use_simd"))]
 impl_vector!(Vector4 { x, y, z, w }, 4, vec4);
+#[cfg(feature = "use_simd")]
+impl_vector_default!(Vector4 { x, y, z, w }, 4, vec4);
 
 impl_fixed_array_conversions!(Vector1<S> { x: 0 }, 1);
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
@@ -350,7 +587,7 @@ impl<S: BaseNum> Vector2<S> {
     /// Create a `Vector3`, using the `x` and `y` values from this vector, and the
     /// provided `z`.
     #[inline]
-    pub fn extend(self, z: S)-> Vector3<S> {
+    pub fn extend(self, z: S) -> Vector3<S> {
         Vector3::new(self.x, self.y, z)
     }
 }
@@ -386,13 +623,13 @@ impl<S: BaseNum> Vector3<S> {
     /// Create a `Vector4`, using the `x`, `y` and `z` values from this vector, and the
     /// provided `w`.
     #[inline]
-    pub fn extend(self, w: S)-> Vector4<S> {
+    pub fn extend(self, w: S) -> Vector4<S> {
         Vector4::new(self.x, self.y, self.z, w)
     }
 
     /// Create a `Vector2`, dropping the `z` value.
     #[inline]
-    pub fn truncate(self)-> Vector2<S> {
+    pub fn truncate(self) -> Vector2<S> {
         Vector2::new(self.x, self.y)
     }
 }
@@ -424,27 +661,27 @@ impl<S: BaseNum> Vector4<S> {
 
     /// Create a `Vector3`, dropping the `w` value.
     #[inline]
-    pub fn truncate(self)-> Vector3<S> {
+    pub fn truncate(self) -> Vector3<S> {
         Vector3::new(self.x, self.y, self.z)
     }
 
     /// Create a `Vector3`, dropping the nth element
     #[inline]
-    pub fn truncate_n(&self, n: isize)-> Vector3<S> {
+    pub fn truncate_n(&self, n: isize) -> Vector3<S> {
         match n {
             0 => Vector3::new(self.y, self.z, self.w),
             1 => Vector3::new(self.x, self.z, self.w),
             2 => Vector3::new(self.x, self.y, self.w),
             3 => Vector3::new(self.x, self.y, self.z),
-            _ => panic!("{:?} is out of range", n)
+            _ => panic!("{:?} is out of range", n),
         }
     }
 }
 
 /// Dot product of two vectors.
 #[inline]
-pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar where
-    V::Scalar: BaseFloat,
+pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar
+    where V::Scalar: BaseFloat
 {
     V::dot(a, b)
 }
@@ -514,6 +751,369 @@ impl<S: fmt::Debug> fmt::Debug for Vector4<S> {
         <[S; 4] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
+
+#[cfg(feature = "use_simd")]
+impl From<Simdf32x4> for Vector4<f32> {
+    #[inline]
+    fn from(f: Simdf32x4) -> Self {
+        unsafe {
+            let mut ret: Self = mem::uninitialized();
+            {
+                let ret_mut: &mut [f32; 4] = ret.as_mut();
+                f.store(ret_mut.as_mut(), 0 as usize);
+            }
+            ret
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl Vector4<f32> {
+    /// Compute and return the square root of each element.
+    #[inline]
+    pub fn sqrt_element_wide(self) -> Self {
+        let s: Simdf32x4 = self.into();
+        s.sqrt().into()
+    }
+
+    /// Compute and return the reciprocal of the square root of each element.
+    #[inline]
+    pub fn rsqrt_element_wide(self) -> Self {
+        let s: Simdf32x4 = self.into();
+        s.approx_rsqrt().into()
+    }
+
+    /// Compute and return the reciprocal of each element.
+    #[inline]
+    pub fn recip_element_wide(self) -> Self {
+        let s: Simdf32x4 = self.into();
+        s.approx_reciprocal().into()
+    }
+}
+
+
+
+#[cfg(feature = "use_simd")]
+impl Into<Simdf32x4> for Vector4<f32> {
+    #[inline]
+    fn into(self) -> Simdf32x4 {
+        let self_ref: &[f32; 4] = self.as_ref();
+        Simdf32x4::load(self_ref.as_ref(), 0 as usize)
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdf32x4]; Add<Vector4<f32>> for Vector4<f32> {
+        fn add(lhs, rhs) -> Vector4<f32> {
+            (lhs + rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdf32x4]; Sub<Vector4<f32>> for Vector4<f32> {
+        fn sub(lhs, rhs) -> Vector4<f32> {
+            (lhs - rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{@rs
+    [Simdf32x4]; Mul<f32> for Vector4<f32> {
+        fn mul(lhs, rhs) -> Vector4<f32> {
+            (lhs * rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{@rs
+    [Simdf32x4]; Div<f32> for Vector4<f32> {
+        fn div(lhs, rhs) -> Vector4<f32> {
+            (lhs / rhs).into()
+        }
+    }
+}
+
+
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdf32x4]; Neg for Vector4<f32> {
+        fn neg(lhs) -> Vector4<f32> {
+            (-lhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl AddAssign for Vector4<f32> {
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs: Simdf32x4 = rhs.into();
+        *self = (s + rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl SubAssign for Vector4<f32> {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs: Simdf32x4 = rhs.into();
+        *self = (s - rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl MulAssign<f32> for Vector4<f32> {
+    fn mul_assign(&mut self, other: f32) {
+        let s: Simdf32x4 = (*self).into();
+        let other = Simdf32x4::splat(other);
+        *self = (s * other).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl DivAssign<f32> for Vector4<f32> {
+    fn div_assign(&mut self, other: f32) {
+        let s: Simdf32x4 = (*self).into();
+        let other = Simdf32x4::splat(other);
+        *self = (s / other).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl ElementWise for Vector4<f32> {
+    #[inline] fn add_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self + rhs }
+    #[inline] fn sub_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self - rhs }
+    #[inline] fn mul_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+        let s: Simdf32x4 = self.into();
+        let rhs: Simdf32x4 = rhs.into();
+        (s * rhs).into()
+    }
+    #[inline] fn div_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+        let s: Simdf32x4 = self.into();
+        let rhs: Simdf32x4 = rhs.into();
+        (s / rhs).into()
+    }
+
+    #[inline] fn add_assign_element_wise(&mut self, rhs: Vector4<f32>) { (*self) += rhs; }
+    #[inline] fn sub_assign_element_wise(&mut self, rhs: Vector4<f32>) { (*self) -= rhs; }
+    #[inline] fn mul_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs: Simdf32x4 = rhs.into();
+        *self = (s * rhs).into();
+    }
+    #[inline] fn div_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs: Simdf32x4 = rhs.into();
+        *self = (s * rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl ElementWise<f32> for Vector4<f32> {
+    #[inline] fn add_element_wise(self, rhs: f32) -> Vector4<f32> {
+        let s: Simdf32x4 = self.into();
+        let rhs = Simdf32x4::splat(rhs);
+        (s + rhs).into()
+    }
+    #[inline] fn sub_element_wise(self, rhs: f32) -> Vector4<f32> {
+        let s: Simdf32x4 = self.into();
+        let rhs = Simdf32x4::splat(rhs);
+        (s - rhs).into()
+    }
+    #[inline] fn mul_element_wise(self, rhs: f32) -> Vector4<f32> { self * rhs }
+    #[inline] fn div_element_wise(self, rhs: f32) -> Vector4<f32> { self / rhs }
+
+    #[inline] fn add_assign_element_wise(&mut self, rhs: f32) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs = Simdf32x4::splat(rhs);
+        *self = (s + rhs).into();
+    }
+    #[inline] fn sub_assign_element_wise(&mut self, rhs: f32) {
+        let s: Simdf32x4 = (*self).into();
+        let rhs = Simdf32x4::splat(rhs);
+        *self = (s - rhs).into();
+    }
+    #[inline] fn mul_assign_element_wise(&mut self, rhs: f32) { (*self) *= rhs; }
+    #[inline] fn div_assign_element_wise(&mut self, rhs: f32) { (*self) /= rhs; }
+}
+
+#[cfg(feature = "use_simd")]
+impl From<Simdi32x4> for Vector4<i32> {
+    #[inline]
+    fn from(f: Simdi32x4) -> Self {
+        unsafe {
+            let mut ret: Self = mem::uninitialized();
+            {
+                let ret_mut: &mut [i32; 4] = ret.as_mut();
+                f.store(ret_mut.as_mut(), 0 as usize);
+            }
+            ret
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl Into<Simdi32x4> for Vector4<i32> {
+    #[inline]
+    fn into(self) -> Simdi32x4 {
+        let self_ref: &[i32; 4] = self.as_ref();
+        Simdi32x4::load(self_ref.as_ref(), 0 as usize)
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdi32x4]; Add<Vector4<i32>> for Vector4<i32> {
+        fn add(lhs, rhs) -> Vector4<i32> {
+            (lhs + rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdi32x4]; Sub<Vector4<i32>> for Vector4<i32> {
+        fn sub(lhs, rhs) -> Vector4<i32> {
+            (lhs - rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{@rs
+    [Simdi32x4]; Mul<i32> for Vector4<i32> {
+        fn mul(lhs, rhs) -> Vector4<i32> {
+            (lhs * rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdi32x4]; Neg for Vector4<i32> {
+        fn neg(lhs) -> Vector4<i32> {
+            (-lhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl AddAssign for Vector4<i32> {
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        let s: Simdi32x4 = (*self).into();
+        let rhs: Simdi32x4 = rhs.into();
+        *self = (s + rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl SubAssign for Vector4<i32> {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        let s: Simdi32x4 = (*self).into();
+        let rhs: Simdi32x4 = rhs.into();
+        *self = (s - rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl MulAssign<i32> for Vector4<i32> {
+    fn mul_assign(&mut self, other: i32) {
+        let s: Simdi32x4 = (*self).into();
+        let other = Simdi32x4::splat(other);
+        *self = (s * other).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl From<Simdu32x4> for Vector4<u32> {
+    #[inline]
+    fn from(f: Simdu32x4) -> Self {
+        unsafe {
+            let mut ret: Self = mem::uninitialized();
+            {
+                let ret_mut: &mut [u32; 4] = ret.as_mut();
+                f.store(ret_mut.as_mut(), 0 as usize);
+            }
+            ret
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl Into<Simdu32x4> for Vector4<u32> {
+    #[inline]
+    fn into(self) -> Simdu32x4 {
+        let self_ref: &[u32; 4] = self.as_ref();
+        Simdu32x4::load(self_ref.as_ref(), 0 as usize)
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdu32x4]; Add<Vector4<u32>> for Vector4<u32> {
+        fn add(lhs, rhs) -> Vector4<u32> {
+            (lhs + rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{
+    [Simdu32x4]; Sub<Vector4<u32>> for Vector4<u32> {
+        fn sub(lhs, rhs) -> Vector4<u32> {
+            (lhs - rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl_operator_simd!{@rs
+    [Simdu32x4]; Mul<u32> for Vector4<u32> {
+        fn mul(lhs, rhs) -> Vector4<u32> {
+            (lhs * rhs).into()
+        }
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl AddAssign for Vector4<u32> {
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        let s: Simdu32x4 = (*self).into();
+        let rhs: Simdu32x4 = rhs.into();
+        *self = (s + rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl SubAssign for Vector4<u32> {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Self) {
+        let s: Simdu32x4 = (*self).into();
+        let rhs: Simdu32x4 = rhs.into();
+        *self = (s - rhs).into();
+    }
+}
+
+#[cfg(feature = "use_simd")]
+impl MulAssign<u32> for Vector4<u32> {
+    fn mul_assign(&mut self, other: u32) {
+        let s: Simdu32x4 = (*self).into();
+        let other = Simdu32x4::splat(other);
+        *self = (s * other).into();
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -729,7 +1329,12 @@ mod tests {
     mod vector4 {
         use vector::*;
 
-        const VECTOR4: Vector4<i32> = Vector4 { x: 1, y: 2, z: 3, w: 4 };
+        const VECTOR4: Vector4<i32> = Vector4 {
+            x: 1,
+            y: 2,
+            z: 3,
+            w: 4,
+        };
 
         #[test]
         fn test_index() {
@@ -796,11 +1401,11 @@ mod tests {
         fn test_as_mut() {
             let mut v = VECTOR4;
             {
-                let v: &mut[i32; 4] = v.as_mut();
+                let v: &mut [i32; 4] = v.as_mut();
                 assert_eq!(v, &mut [1, 2, 3, 4]);
             }
             {
-                let v: &mut(i32, i32, i32, i32) = v.as_mut();
+                let v: &mut (i32, i32, i32, i32) = v.as_mut();
                 assert_eq!(v, &mut (1, 2, 3, 4));
             }
         }
