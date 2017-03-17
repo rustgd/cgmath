@@ -615,6 +615,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 }
 
+
 impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     type ColumnRow = Vector4<S>;
 
@@ -644,23 +645,10 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn determinant(&self) -> S {
-        let m0 = Matrix3::new(self[1][1], self[2][1], self[3][1],
-                              self[1][2], self[2][2], self[3][2],
-                              self[1][3], self[2][3], self[3][3]);
-        let m1 = Matrix3::new(self[0][1], self[2][1], self[3][1],
-                              self[0][2], self[2][2], self[3][2],
-                              self[0][3], self[2][3], self[3][3]);
-        let m2 = Matrix3::new(self[0][1], self[1][1], self[3][1],
-                              self[0][2], self[1][2], self[3][2],
-                              self[0][3], self[1][3], self[3][3]);
-        let m3 = Matrix3::new(self[0][1], self[1][1], self[2][1],
-                              self[0][2], self[1][2], self[2][2],
-                              self[0][3], self[1][3], self[2][3]);
-
-        self[0][0] * m0.determinant() -
-        self[1][0] * m1.determinant() +
-        self[2][0] * m2.determinant() -
-        self[3][0] * m3.determinant()
+        let tmp = unsafe {
+            det_sub_proc_unsafe(self, 1, 2, 3)
+        };
+        tmp.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]))
     }
 
     #[inline]
@@ -671,6 +659,12 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                      self[3][3])
     }
 
+    // The new implementation results in negative optimization when used 
+    // without SIMD. so we opt them in with configuration.
+    // A better option would be using specialization. But currently somewhat
+    // specialization is too buggy, and it won't apply here. I'm getting
+    // weird error msgs. Help wanted.
+    #[cfg(not(feature = "use_simd"))]
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
         if ulps_eq!(det, &S::zero()) { None } else {
@@ -692,6 +686,27 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                               cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
                               cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
+        }
+    }
+    #[cfg(feature = "use_simd")]
+    fn invert(&self) -> Option<Matrix4<S>> {
+        let tmp0 = unsafe {
+            det_sub_proc_unsafe(self, 1, 2, 3)
+        };
+        let det = tmp0.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]));
+        if ulps_eq!(det, &S::zero()) { None } else {
+            let inv_det = S::one() / det;
+            let tmp0 = tmp0 * inv_det;
+            let tmp1 = unsafe {
+                det_sub_proc_unsafe(self, 0, 3, 2) * inv_det
+            };
+            let tmp2 = unsafe {
+                det_sub_proc_unsafe(self, 0, 1, 3) * inv_det
+            };
+            let tmp3 = unsafe {
+                det_sub_proc_unsafe(self, 0, 2, 1) * inv_det
+            };
+            Some(Matrix4::from_cols(tmp0, tmp1, tmp2, tmp3))
         }
     }
 
@@ -955,10 +970,6 @@ macro_rules! impl_matrix {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
         }
 
-        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
-            fn mul(matrix, vector) -> $VectorN<S> { $VectorN::new($(matrix.row($row_index).dot(vector.clone())),+) }
-        });
-
         impl_scalar_ops!($MatrixN<usize> { $($field),+ });
         impl_scalar_ops!($MatrixN<u8> { $($field),+ });
         impl_scalar_ops!($MatrixN<u16> { $($field),+ });
@@ -1001,6 +1012,25 @@ impl_matrix!(Matrix2, Vector2 { x: 0, y: 1 });
 impl_matrix!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
 impl_matrix!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
+macro_rules! impl_mv_operator {
+    ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
+        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
+            fn mul(matrix, vector) -> $VectorN<S> {$VectorN::new($(matrix.row($row_index).dot(vector.clone())),+)}
+        });
+    }
+}
+
+impl_mv_operator!(Matrix2, Vector2 { x: 0, y: 1 });
+impl_mv_operator!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
+#[cfg(not(feature = "use_simd"))]
+impl_mv_operator!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
+#[cfg(feature = "use_simd")]
+impl_operator!(<S: BaseFloat> Mul<Vector4<S> > for Matrix4<S> {
+    fn mul(matrix, vector) -> Vector4<S> {
+        matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]
+    }
+});
+
 impl_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
     fn mul(lhs, rhs) -> Matrix2<S> {
         Matrix2::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]),
@@ -1020,21 +1050,22 @@ impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
 // causes the LLVM to miss identical loads and multiplies. This optimization
 // causes the code to be auto vectorized properly increasing the performance
 // around ~4 times.
-macro_rules! dot_matrix4 {
-    ($A:expr, $B:expr, $I:expr, $J:expr) => {
-        ($A[0][$I]) * ($B[$J][0]) +
-        ($A[1][$I]) * ($B[$J][1]) +
-        ($A[2][$I]) * ($B[$J][2]) +
-        ($A[3][$I]) * ($B[$J][3])
-    };
-}
+// Update: this should now be a bit more efficient
 
 impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
     fn mul(lhs, rhs) -> Matrix4<S> {
-        Matrix4::new(dot_matrix4!(lhs, rhs, 0, 0), dot_matrix4!(lhs, rhs, 1, 0), dot_matrix4!(lhs, rhs, 2, 0), dot_matrix4!(lhs, rhs, 3, 0),
-                     dot_matrix4!(lhs, rhs, 0, 1), dot_matrix4!(lhs, rhs, 1, 1), dot_matrix4!(lhs, rhs, 2, 1), dot_matrix4!(lhs, rhs, 3, 1),
-                     dot_matrix4!(lhs, rhs, 0, 2), dot_matrix4!(lhs, rhs, 1, 2), dot_matrix4!(lhs, rhs, 2, 2), dot_matrix4!(lhs, rhs, 3, 2),
-                     dot_matrix4!(lhs, rhs, 0, 3), dot_matrix4!(lhs, rhs, 1, 3), dot_matrix4!(lhs, rhs, 2, 3), dot_matrix4!(lhs, rhs, 3, 3))
+        {
+            let a = lhs[0];
+            let b = lhs[1];
+            let c = lhs[2];
+            let d = lhs[3];
+            Matrix4::from_cols(
+                a*rhs[0][0] + b*rhs[0][1] + c*rhs[0][2] + d*rhs[0][3],
+                a*rhs[1][0] + b*rhs[1][1] + c*rhs[1][2] + d*rhs[1][3],
+                a*rhs[2][0] + b*rhs[2][1] + c*rhs[2][2] + d*rhs[2][3],
+                a*rhs[3][0] + b*rhs[3][1] + c*rhs[3][2] + d*rhs[3][3],
+            )
+        }
     }
 });
 
@@ -1317,4 +1348,28 @@ impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
     fn rand<R: Rng>(rng: &mut R) -> Matrix4<S> {
         Matrix4{ x: rng.gen(), y: rng.gen(), z: rng.gen(), w: rng.gen() }
     }
+}
+
+// Sub procedure for SIMD when dealing with determinant and inversion
+#[inline]
+unsafe fn det_sub_proc_unsafe<S: BaseFloat>(m: &Matrix4<S>, x: usize, y: usize, z: usize) -> Vector4<S> {
+    let s: &[S; 16] = m.as_ref();
+    let a = Vector4::new(*s.get_unchecked(4 + x), *s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(8 + x));
+    let b = Vector4::new(*s.get_unchecked(8 + y), *s.get_unchecked(8 + y), *s.get_unchecked(4 + y), *s.get_unchecked(4 + y));
+    let c = Vector4::new(*s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(12 + z), *s.get_unchecked(z));
+
+    let d = Vector4::new(*s.get_unchecked(8 + x), *s.get_unchecked(8 + x), *s.get_unchecked(4 + x), *s.get_unchecked(4 + x));
+    let e = Vector4::new(*s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(12 + y), *s.get_unchecked(y));
+    let f = Vector4::new(*s.get_unchecked(4 + z), *s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(8 + z));
+
+    let g = Vector4::new(*s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(12 + x), *s.get_unchecked(x));
+    let h = Vector4::new(*s.get_unchecked(4 + y), *s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(8 + y));
+    let i = Vector4::new(*s.get_unchecked(8 + z), *s.get_unchecked(8 + z), *s.get_unchecked(4 + z), *s.get_unchecked(4 + z));
+    let mut tmp = a.mul_element_wise(b.mul_element_wise(c));
+    tmp += d.mul_element_wise(e.mul_element_wise(f));
+    tmp += g.mul_element_wise(h.mul_element_wise(i));
+    tmp -= a.mul_element_wise(e.mul_element_wise(i));
+    tmp -= d.mul_element_wise(h.mul_element_wise(c));
+    tmp -= g.mul_element_wise(b.mul_element_wise(f));
+    tmp
 }
