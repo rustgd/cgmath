@@ -232,7 +232,7 @@ impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
 /// The matrix is guaranteed to be orthogonal, so some operations, specifically
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
-/// been restricted to a subeset of those implemented on `Matrix3`.
+/// been restricted to a subset of those implemented on `Matrix3`.
 #[derive(PartialEq, Copy, Clone)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
