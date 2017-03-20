@@ -34,7 +34,7 @@ pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
     Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
     <P as EuclideanSpace>::Scalar: BaseFloat,
 {
-    /// Create a rotation to a given direction with an 'up' vector
+    /// Create a rotation to a given direction with an 'up' vector.
     fn look_at(dir: P::Diff, up: P::Diff) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
