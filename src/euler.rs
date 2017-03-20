@@ -43,7 +43,7 @@ use num::BaseFloat;
 /// Note that while [Euler angles] are intuitive to define, they are prone to
 /// [gimbal lock] and are challenging to interpolate between. Instead we
 /// recommend that you convert them to a more robust representation, such as a
-/// quaternion or or rotation matrix. To this end, `From<Euler<A>>` conversions
+/// quaternion or a rotation matrix. To this end, `From<Euler<A>>` conversions
 /// are provided for the following types:
 ///
 /// - [`Basis3`](struct.Basis3.html)
