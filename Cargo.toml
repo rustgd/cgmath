@@ -29,7 +29,7 @@ name = "cgmath"
 [features]
 unstable = []
 default = ["rustc-serialize"]
-eders = ["serde", "serde_macros"]
+eders = ["serde", "serde_derive"]
 use_simd = ["simd"]
 
 [dependencies]
@@ -38,7 +38,7 @@ num-traits = "0.1"
 rand = "0.3"
 rustc-serialize = { version = "0.3", optional = true }
 serde = { version = "0.8", optional = true }
-serde_macros = { version = "0.8", optional = true }
+serde_derive = { version = "0.8", optional = true }
 simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
