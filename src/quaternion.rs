@@ -74,13 +74,13 @@ impl Into<Simdf32x4> for Quaternion<f32> {
 
 impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
-    /// imaginary components
+    /// imaginary components.
     #[inline]
     pub fn new(w: S, xi: S, yj: S, zk: S) -> Quaternion<S> {
         Quaternion::from_sv(w, Vector3::new(xi, yj, zk))
     }
 
-    /// Construct a new quaternion from a scalar and a vector
+    /// Construct a new quaternion from a scalar and a vector.
     #[inline]
     pub fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
         Quaternion { s: s, v: v }
@@ -559,7 +559,7 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
-    /// Convert the quaternion to a 3 x 3 rotation matrix
+    /// Convert the quaternion to a 3 x 3 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix3<S> {
         let x2 = quat.v.x + quat.v.x;
         let y2 = quat.v.y + quat.v.y;
@@ -584,7 +584,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
-    /// Convert the quaternion to a 4 x 4 rotation matrix
+    /// Convert the quaternion to a 4 x 4 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix4<S> {
         let x2 = quat.v.x + quat.v.x;
         let y2 = quat.v.y + quat.v.y;

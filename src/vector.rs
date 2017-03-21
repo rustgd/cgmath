@@ -110,7 +110,7 @@ macro_rules! impl_vector {
         }
 
         impl<S: NumCast + Copy> $VectorN<S> {
-            /// Component-wise casting to another type
+            /// Component-wise casting to another type.
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
                 $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
@@ -318,7 +318,7 @@ macro_rules! impl_vector_default {
         }
 
         impl<S: NumCast + Copy> $VectorN<S> {
-            /// Component-wise casting to another type
+            /// Component-wise casting to another type.
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
                 $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
@@ -665,7 +665,7 @@ impl<S: BaseNum> Vector4<S> {
         Vector3::new(self.x, self.y, self.z)
     }
 
-    /// Create a `Vector3`, dropping the nth element
+    /// Create a `Vector3`, dropping the nth element.
     #[inline]
     pub fn truncate_n(&self, n: isize) -> Vector3<S> {
         match n {
