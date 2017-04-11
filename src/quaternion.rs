@@ -624,9 +624,28 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 
     #[inline]
     fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Quaternion<S> {
-        //http://stackoverflow.com/questions/1171849/
-        //finding-quaternion-representing-the-rotation-from-one-vector-to-another
-        Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
+        // http://stackoverflow.com/a/11741520/2074937 see 'Half-Way Quaternion Solution'
+
+        let k_cos_theta = a.dot(b);
+
+        // same direction
+        if ulps_eq!(k_cos_theta, S::one()) {
+            return Quaternion::one();
+        }
+
+        let k = (a.magnitude2() * b.magnitude2()).sqrt();
+
+        // opposite direction
+        if ulps_eq!(k_cos_theta / k, -S::one()) {
+            let mut orthogonal = a.cross(Vector3::unit_x());
+            if ulps_eq!(orthogonal.magnitude2(), S::zero()) {
+                orthogonal = a.cross(Vector3::unit_y());
+            }
+            return Quaternion::from_sv(S::zero(), orthogonal.normalize());
+        }
+
+        // any other direction
+        Quaternion::from_sv(k + k_cos_theta, a.cross(b)).normalize()
     }
 
     #[inline]
