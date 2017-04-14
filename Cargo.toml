@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.12.0"
+version = "0.13.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -42,5 +42,5 @@ serde_derive = { version = "0.9", optional = true }
 simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
-glium = "0.15"
+glium = "0.16"
 serde_json = "0.9"
