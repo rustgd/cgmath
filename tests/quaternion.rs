@@ -258,3 +258,57 @@ mod rotate_from_axis_angle {
         assert_ulps_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
     }
 }
+
+mod rotate_between_vectors {
+    use cgmath::*;
+
+    #[test]
+    fn test_around_z_0() {
+        let expected = Quaternion::new(1.0, 0.0, 0.0, 0.0);
+
+        let a = vec3(12.0, 0.0, 0.0);
+        let b = vec3(1.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_90_cw() {
+        let expected = Quaternion::new(0.5_f32.sqrt(), 0.0, 0.0, 0.5_f32.sqrt());
+
+        let a = vec3(8.0, 0.0, 0.0);
+        let b = vec3(0.0, 9.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_90_ccw() {
+        let expected = Quaternion::new(0.5_f32.sqrt(), 0.0, 0.0, -0.5_f32.sqrt());
+
+        let a = vec3(-26.0, 0.0, 0.0);
+        let b = vec3(0.0, 10.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_180_cw() {
+        let expected = Quaternion::new(0.0, 0.0, 0.0, 1.0);
+
+        let a = vec3(10.0, 0.0, 0.0);
+        let b = vec3(-5.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_180_ccw() {
+        let expected = Quaternion::new(0.0, 0.0, 0.0, -1.0);
+
+        let a = vec3(-3.0, 0.0, 0.0);
+        let b = vec3(40.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+}
