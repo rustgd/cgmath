@@ -630,7 +630,7 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 
         // same direction
         if ulps_eq!(k_cos_theta, S::one()) {
-            return Quaternion::one();
+            return Quaternion::<S>::one();
         }
 
         let k = (a.magnitude2() * b.magnitude2()).sqrt();
