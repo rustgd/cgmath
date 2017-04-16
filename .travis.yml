@@ -5,7 +5,23 @@ rust:
   - beta
   - stable
 
+cache: cargo
+
+env:
+  - CARGO_FEATURES=""
+  - CARGO_FEATURES="eders"
+
+matrix:
+  include:
+    - rust: nightly
+      env: CARGO_FEATURES="use_simd"
+    - rust: nightly
+      env: CARGO_FEATURES="eders use_simd"
+
 script:
-  - cargo build && cargo test && cargo test --features "eders"
-  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo bench; fi
-  - if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then cargo build --features "use_simd" && cargo test --features "use_simd" && cargo bench --features "use_simd"; fi
+  - cargo build --features "$CARGO_FEATURES"
+  - cargo test --features "$CARGO_FEATURES"
+  - |
+    if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
+      cargo bench --features "$CARGO_FEATURES"
+    fi
