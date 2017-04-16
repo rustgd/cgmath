@@ -36,7 +36,6 @@ use vector::{Vector2, Vector3, Vector4};
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix2<S> {
     /// The first column of the matrix.
@@ -50,7 +49,6 @@ pub struct Matrix2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix3<S> {
     /// The first column of the matrix.
@@ -66,7 +64,6 @@ pub struct Matrix3<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix4<S> {
     /// The first column of the matrix.

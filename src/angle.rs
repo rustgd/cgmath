@@ -33,7 +33,6 @@ use num::BaseFloat;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Rad<S>(pub S);
 
@@ -42,7 +41,6 @@ pub struct Rad<S>(pub S);
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Deg<S>(pub S);
 

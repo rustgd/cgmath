@@ -57,9 +57,6 @@ extern crate approx;
 pub extern crate num_traits;
 extern crate rand;
 
-#[cfg(feature = "rustc-serialize")]
-extern crate rustc_serialize;
-
 #[cfg(feature = "eders")]
 #[macro_use]
 extern crate serde_derive;

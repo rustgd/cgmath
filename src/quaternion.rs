@@ -39,7 +39,6 @@ use simd::f32x4 as Simdf32x4;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Quaternion<S> {
     /// The scalar part of the quaternion.
