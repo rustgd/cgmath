@@ -1,7 +1,7 @@
 [package]
 
 name = "cgmath"
-version = "0.13.0"
+version = "0.13.1"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
         "Colin Sherratt",
@@ -35,10 +35,10 @@ use_simd = ["simd"]
 approx = "0.1"
 num-traits = "0.1"
 rand = "0.3"
-serde = { version = "0.9", optional = true }
-serde_derive = { version = "0.9", optional = true }
+serde = { version = "1.0", optional = true }
+serde_derive = { version = "1.0", optional = true }
 simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
 glium = "0.16"
-serde_json = "0.9"
+serde_json = "1.0"

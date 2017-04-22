@@ -224,13 +224,13 @@ mod eders_de {
         Disp,
     }
 
-    impl Deserialize for DecomposedField {
+    impl<'a> Deserialize<'a> for DecomposedField {
         fn deserialize<D>(deserializer: D) -> Result<DecomposedField, D::Error>
-            where D: serde::Deserializer
+            where D: serde::Deserializer<'a>
         {
             struct DecomposedFieldVisitor;
 
-            impl serde::de::Visitor for DecomposedFieldVisitor {
+            impl<'b> serde::de::Visitor<'b> for DecomposedFieldVisitor {
                 type Value = DecomposedField;
 
                 fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
@@ -249,17 +249,17 @@ mod eders_de {
                 }
             }
 
-            deserializer.deserialize(DecomposedFieldVisitor)
+            deserializer.deserialize_str(DecomposedFieldVisitor)
         }
     }
 
-    impl<S: VectorSpace, R> Deserialize for Decomposed<S, R>
-        where S: Deserialize,
-              S::Scalar: Deserialize,
-              R: Deserialize
+    impl<'a, S: VectorSpace, R> Deserialize<'a> for Decomposed<S, R>
+        where S: Deserialize<'a>,
+              S::Scalar: Deserialize<'a>,
+              R: Deserialize<'a>
     {
         fn deserialize<D>(deserializer: D) -> Result<Decomposed<S, R>, D::Error>
-            where D: serde::de::Deserializer
+            where D: serde::de::Deserializer<'a>
         {
             const FIELDS: &'static [&'static str] = &["scale", "rot", "disp"];
             deserializer.deserialize_struct("Decomposed", FIELDS, DecomposedVisitor(PhantomData))
@@ -268,10 +268,10 @@ mod eders_de {
 
     struct DecomposedVisitor<S: VectorSpace, R>(PhantomData<(S, R)>);
 
-    impl<S: VectorSpace, R> serde::de::Visitor for DecomposedVisitor<S, R>
-        where S: Deserialize,
-              S::Scalar: Deserialize,
-              R: Deserialize
+    impl<'a, S: VectorSpace, R> serde::de::Visitor<'a> for DecomposedVisitor<S, R>
+        where S: Deserialize<'a>,
+              S::Scalar: Deserialize<'a>,
+              R: Deserialize<'a>
     {
         type Value = Decomposed<S, R>;
 
@@ -280,22 +280,22 @@ mod eders_de {
         }
 
         fn visit_map<V>(self, mut visitor: V) -> Result<Decomposed<S, R>, V::Error>
-            where V: serde::de::MapVisitor
+            where V: serde::de::MapAccess<'a>
         {
             let mut scale = None;
             let mut rot = None;
             let mut disp = None;
 
-            while let Some(key) = visitor.visit_key()? {
+            while let Some(key) = visitor.next_key()? {
                 match key {
                     DecomposedField::Scale => {
-                        scale = Some(visitor.visit_value()?);
+                        scale = Some(visitor.next_value()?);
                     }
                     DecomposedField::Rot => {
-                        rot = Some(visitor.visit_value()?);
+                        rot = Some(visitor.next_value()?);
                     }
                     DecomposedField::Disp => {
-                        disp = Some(visitor.visit_value()?);
+                        disp = Some(visitor.next_value()?);
                     }
                 }
             }
