@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.13.1] - 2017-04-22
+
+### Changed
+
+- Update `serde` and `serde_derive` to version `1.0`.
+
 ## [v0.13.0] - 2017-04-14
 
 ### Added
@@ -238,7 +244,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.13.1...HEAD
+[v0.13.1]: https://github.com/brendanzab/cgmath/compare/v0.13.0...v0.13.1
 [v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.12.0...v0.13.0
 [v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/brendanzab/cgmath/compare/v0.10.0...v0.11.0
