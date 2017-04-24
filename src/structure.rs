@@ -17,6 +17,7 @@
 
 use num_traits::{cast, Float};
 use std::cmp;
+use std::iter;
 use std::ops::*;
 
 use approx::ApproxEq;
@@ -153,6 +154,7 @@ pub trait ElementWise<Rhs = Self> {
 /// ```
 pub trait VectorSpace: Copy + Clone where
     Self: Zero,
+    Self: iter::Sum<Self>,
 
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
@@ -455,6 +457,7 @@ pub trait SquareMatrix where
     Self::Scalar: BaseFloat,
 
     Self: One,
+    Self: iter::Product,
 
     Self: Matrix<
         // FIXME: Can be cleaned up once equality constraints in where clauses are implemented

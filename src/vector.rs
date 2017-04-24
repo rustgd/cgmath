@@ -16,6 +16,7 @@
 use rand::{Rand, Rng};
 use num_traits::NumCast;
 use std::fmt;
+use std::iter;
 use std::mem;
 use std::ops::*;
 
@@ -160,6 +161,20 @@ macro_rules! impl_vector {
             #[inline]
             fn is_zero(&self) -> bool {
                 *self == $VectorN::zero()
+            }
+        }
+
+        impl<S: BaseNum> iter::Sum for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
             }
         }
 
@@ -368,6 +383,20 @@ macro_rules! impl_vector_default {
             #[inline]
             fn is_zero(&self) -> bool {
                 *self == $VectorN::zero()
+            }
+        }
+
+        impl<S: BaseNum> iter::Sum for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
             }
         }
 
