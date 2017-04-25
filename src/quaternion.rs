@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::iter;
 use std::mem;
 use std::ops::*;
 
@@ -184,6 +185,34 @@ impl<S: BaseFloat> One for Quaternion<S> {
     #[inline]
     fn one() -> Quaternion<S> {
         Quaternion::from_sv(S::one(), Vector3::zero())
+    }
+}
+
+impl<S: BaseFloat> iter::Sum for Quaternion<S> {
+    #[inline]
+    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+        iter.fold(Self::zero(), Add::add)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Self> for Quaternion<S> {
+    #[inline]
+    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+        iter.fold(Self::zero(), Add::add)
+    }
+}
+
+impl<S: BaseFloat> iter::Product for Quaternion<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+        iter.fold(Self::one(), Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Quaternion<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+        iter.fold(Self::one(), Mul::mul)
     }
 }
 

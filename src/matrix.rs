@@ -16,6 +16,7 @@
 use rand::{Rand, Rng};
 use num_traits::{cast, NumCast};
 use std::fmt;
+use std::iter;
 use std::mem;
 use std::ops::*;
 use std::ptr;
@@ -965,6 +966,34 @@ macro_rules! impl_matrix {
         }
         impl<S: BaseFloat + SubAssign<S>> SubAssign<$MatrixN<S>> for $MatrixN<S> {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
+        }
+
+        impl<S: BaseFloat> iter::Sum for $MatrixN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Self> for $MatrixN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
+            }
+        }
+
+        impl<S: BaseFloat> iter::Product for $MatrixN<S> {
+            #[inline]
+            fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(Self::identity(), Mul::mul)
+            }
+        }
+
+        impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for $MatrixN<S> {
+            #[inline]
+            fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(Self::identity(), Mul::mul)
+            }
         }
 
         impl_scalar_ops!($MatrixN<usize> { $($field),+ });

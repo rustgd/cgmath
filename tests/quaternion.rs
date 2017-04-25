@@ -52,6 +52,16 @@ mod operators {
     fn test_div() {
         impl_test_div!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
     }
+
+    #[test]
+    fn test_iter_product() {
+        let q1 = Quaternion::from(Euler { x: Rad(2f32), y: Rad(1f32), z: Rad(1f32) });
+        let q2 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(2f32), z: Rad(1f32) });
+        let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
+
+        let res: Quaternion<f32> = [q1, q2, q3].iter().product();
+        assert_eq!(res, q1 * q2 * q3);
+    }
 }
 
 mod to_from_euler {

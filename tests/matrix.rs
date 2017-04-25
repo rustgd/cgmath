@@ -97,6 +97,18 @@ pub mod matrix2 {
     }
 
     #[test]
+    fn test_sum_matrix() {
+        let res: Matrix2<f64> = [A, B, C].iter().sum();
+        assert_eq!(res, A + B + C);
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        let res: Matrix2<f64> = [A, B, C].iter().product();
+        assert_eq!(res, A * B * C);
+    }
+
+    #[test]
     fn test_determinant() {
         assert_eq!(A.determinant(), -2.0f64)
     }
@@ -256,6 +268,18 @@ pub mod matrix3 {
                                 48.0f64, 111.0f64, 174.0f64));
 
         assert_eq!(A * B, &A * &B);
+    }
+
+    #[test]
+    fn test_sum_matrix() {
+        let res: Matrix3<f64> = [A, B, C, D].iter().sum();
+        assert_eq!(res, A + B + C + D);
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        let res: Matrix3<f64> = [A, B, C, D].iter().product();
+        assert_eq!(res, A * B * C * D);
     }
 
     #[test]
@@ -613,6 +637,18 @@ pub mod matrix4 {
                                 130.0f64, 306.0f64, 482.0f64, 658.0f64));
 
         assert_eq!(A * B, &A * &B);
+    }
+
+    #[test]
+    fn test_sum_matrix() {
+        let res: Matrix4<f64> = [A, B, C, D].iter().sum();
+        assert_eq!(res, A + B + C + D);
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        let res: Matrix4<f64> = [A, B, C, D].iter().product();
+        assert_eq!(res, A * B * C * D);
     }
 
     #[test]

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::fmt;
+use std::iter;
 use std::ops::*;
 
 use structure::*;
@@ -33,6 +34,7 @@ pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
     <P as EuclideanSpace>::Scalar: BaseFloat,
+    Self: iter::Product<Self>,
 {
     /// Create a rotation to a given direction with an 'up' vector.
     fn look_at(dir: P::Diff, up: P::Diff) -> Self;
@@ -157,6 +159,20 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
 }
 
+impl<S: BaseFloat> iter::Product for Basis2<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+        iter.fold(Basis2 { mat: Matrix2::identity() }, Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Basis2<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+        iter.fold(Basis2 { mat: Matrix2::identity() }, Mul::mul)
+    }
+}
+
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
@@ -261,6 +277,20 @@ impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
 impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
     #[inline]
     fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
+}
+
+impl<S: BaseFloat> iter::Product for Basis3<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+        iter.fold(Basis3 { mat: Matrix3::identity() }, Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Basis3<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+        iter.fold(Basis3 { mat: Matrix3::identity() }, Mul::mul)
+    }
 }
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
