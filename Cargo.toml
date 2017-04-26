@@ -1,18 +1,8 @@
 [package]
 
 name = "cgmath"
-version = "0.13.1"
-authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
-        "Brian Heylin",
-        "Colin Sherratt",
-        "Dzmitry Malyshau",
-        "Erick Tryzelaar",
-        "Luqman Aden",
-        "Maik Klein",
-        "Mikko Perttunen",
-        "Pierre Krieger",
-        "Tomasz Stachowiak"
-]
+version = "0.14.0"
+authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>"]
 license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
