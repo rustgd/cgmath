@@ -164,17 +164,17 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseNum> iter::Sum for $VectorN<S> {
+        impl<S: BaseNum> iter::Sum<$VectorN<S>> for $VectorN<S> {
             #[inline]
-            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
+            fn sum<I: Iterator<Item=$VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
             }
         }
 
-        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a $VectorN<S>> for $VectorN<S> {
             #[inline]
-            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
+            fn sum<I: Iterator<Item=&'a $VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
             }
         }
 

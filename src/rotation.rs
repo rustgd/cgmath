@@ -159,17 +159,17 @@ impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
 }
 
-impl<S: BaseFloat> iter::Product for Basis2<S> {
+impl<S: BaseFloat> iter::Product<Basis2<S>> for Basis2<S> {
     #[inline]
-    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
-        iter.fold(Basis2 { mat: Matrix2::identity() }, Mul::mul)
+    fn product<I: Iterator<Item=Basis2<S>>>(iter: I) -> Basis2<S> {
+        iter.fold(Basis2::one(), Mul::mul)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Basis2<S> {
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-        iter.fold(Basis2 { mat: Matrix2::identity() }, Mul::mul)
+    fn product<I: Iterator<Item=&'a Basis2<S>>>(iter: I) -> Basis2<S> {
+        iter.fold(Basis2::one(), Mul::mul)
     }
 }
 
@@ -279,17 +279,17 @@ impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
     fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
 }
 
-impl<S: BaseFloat> iter::Product for Basis3<S> {
+impl<S: BaseFloat> iter::Product<Basis3<S>> for Basis3<S> {
     #[inline]
-    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
-        iter.fold(Basis3 { mat: Matrix3::identity() }, Mul::mul)
+    fn product<I: Iterator<Item=Basis3<S>>>(iter: I) -> Basis3<S> {
+        iter.fold(Basis3::one(), Mul::mul)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Basis3<S> {
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-        iter.fold(Basis3 { mat: Matrix3::identity() }, Mul::mul)
+    fn product<I: Iterator<Item=&'a Basis3<S>>>(iter: I) -> Basis3<S> {
+        iter.fold(Basis3::one(), Mul::mul)
     }
 }
 
