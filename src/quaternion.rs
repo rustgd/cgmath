@@ -188,31 +188,31 @@ impl<S: BaseFloat> One for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> iter::Sum for Quaternion<S> {
+impl<S: BaseFloat> iter::Sum<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
-        iter.fold(Self::zero(), Add::add)
+    fn sum<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::zero(), Add::add)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Self> for Quaternion<S> {
+impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-        iter.fold(Self::zero(), Add::add)
+    fn sum<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::zero(), Add::add)
     }
 }
 
-impl<S: BaseFloat> iter::Product for Quaternion<S> {
+impl<S: BaseFloat> iter::Product<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
-        iter.fold(Self::one(), Mul::mul)
+    fn product<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::one(), Mul::mul)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Product<&'a Self> for Quaternion<S> {
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-        iter.fold(Self::one(), Mul::mul)
+    fn product<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::one(), Mul::mul)
     }
 }
 

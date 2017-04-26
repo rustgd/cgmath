@@ -15,7 +15,6 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 pub mod matrix2 {
@@ -98,14 +97,14 @@ pub mod matrix2 {
 
     #[test]
     fn test_sum_matrix() {
-        let res: Matrix2<f64> = [A, B, C].iter().sum();
-        assert_eq!(res, A + B + C);
+        assert_eq!(A + B + C, [A, B, C].iter().sum());
+        assert_eq!(A + B + C, [A, B, C].iter().cloned().sum());
     }
 
     #[test]
     fn test_product_matrix() {
-        let res: Matrix2<f64> = [A, B, C].iter().product();
-        assert_eq!(res, A * B * C);
+        assert_eq!(A * B * C, [A, B, C].iter().product());
+        assert_eq!(A * B * C, [A, B, C].iter().cloned().product());
     }
 
     #[test]
@@ -272,14 +271,14 @@ pub mod matrix3 {
 
     #[test]
     fn test_sum_matrix() {
-        let res: Matrix3<f64> = [A, B, C, D].iter().sum();
-        assert_eq!(res, A + B + C + D);
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().sum());
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().cloned().sum());
     }
 
     #[test]
     fn test_product_matrix() {
-        let res: Matrix3<f64> = [A, B, C, D].iter().product();
-        assert_eq!(res, A * B * C * D);
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().product());
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().cloned().product());
     }
 
     #[test]
@@ -641,14 +640,14 @@ pub mod matrix4 {
 
     #[test]
     fn test_sum_matrix() {
-        let res: Matrix4<f64> = [A, B, C, D].iter().sum();
-        assert_eq!(res, A + B + C + D);
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().sum());
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().cloned().sum());
     }
 
     #[test]
     fn test_product_matrix() {
-        let res: Matrix4<f64> = [A, B, C, D].iter().product();
-        assert_eq!(res, A * B * C * D);
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().product());
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().cloned().product());
     }
 
     #[test]

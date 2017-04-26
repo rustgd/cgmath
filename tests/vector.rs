@@ -15,7 +15,6 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
@@ -90,9 +89,8 @@ macro_rules! impl_test_rem {
 
 macro_rules! impl_test_iter_sum {
     ($VectorN:ident { $($field:ident),+ }, $ty:ty, $s:expr, $v:expr) => (
-        let res: $VectorN<$ty> = iter::repeat($v).take($s as usize).sum();
-        assert_eq!(res,
-                   $VectorN::new($($v.$field * $s),+));
+        assert_eq!($VectorN::new($($v.$field * $s),+),
+                   iter::repeat($v).take($s as usize).sum());
     )
 }
 

@@ -15,7 +15,6 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
@@ -168,7 +167,6 @@ mod test_magnitude {
             assert_relative_eq!(a.sqrt_element_wide().recip_element_wide(), Vector4::new(1f32, 1f32/2f32, 1f32/3f32, 1f32/4f32), max_relative = 0.005f32);
             assert_relative_eq!(a.rsqrt_element_wide(), Vector4::new(1f32, 1f32/2f32, 1f32/3f32, 1f32/4f32), max_relative= 0.005f32);
         }
-        
     }
 }
 
