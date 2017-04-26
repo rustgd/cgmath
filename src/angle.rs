@@ -17,6 +17,7 @@
 
 use std::fmt;
 use std::f64;
+use std::iter;
 use std::ops::*;
 
 use rand::{Rand, Rng};
@@ -69,6 +70,20 @@ macro_rules! impl_angle {
             #[inline]
             fn is_zero(&self) -> bool {
                 ulps_eq!(self, &Self::zero())
+            }
+        }
+
+        impl<S: BaseFloat> iter::Sum<$Angle<S>> for $Angle<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=$Angle<S>>>(iter: I) -> $Angle<S> {
+                iter.fold($Angle::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseFloat> iter::Sum<&'a $Angle<S>> for $Angle<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a $Angle<S>>>(iter: I) -> $Angle<S> {
+                iter.fold($Angle::zero(), Add::add)
             }
         }
 

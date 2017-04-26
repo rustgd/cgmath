@@ -59,6 +59,7 @@ mod operators {
         let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
 
         assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().sum());
+        assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().cloned().sum());
     }
 
     #[test]
@@ -68,6 +69,7 @@ mod operators {
         let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
 
         assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().product());
+        assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().cloned().product());
     }
 }
 

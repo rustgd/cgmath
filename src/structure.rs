@@ -551,6 +551,8 @@ pub trait Angle where
     Self: Mul<<Self as Angle>::Unitless, Output = Self>,
     Self: Div<Self, Output = <Self as Angle>::Unitless>,
     Self: Div<<Self as Angle>::Unitless, Output = Self>,
+
+    Self: iter::Sum,
 {
     type Unitless: BaseFloat;
 
