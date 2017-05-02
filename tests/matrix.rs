@@ -338,6 +338,23 @@ pub mod matrix3 {
         assert!(Matrix3::from_value(6.0f64).is_diagonal());
     }
 
+    mod look_at {
+        use cgmath::*;
+        use super::*;
+
+        fn check_look_at(dir: Vector3<f64>, up: Vector3<f64>) {
+            let m = Matrix3::look_at(dir, up);
+            assert_relative_eq!(m*dir, Vector3::unit_z());
+        }
+
+        #[test]
+        fn test_look_at() {
+            check_look_at(V.normalize(), Vector3::unit_y());
+            check_look_at(Vector3::unit_x(), Vector3::unit_y());
+            check_look_at(Vector3::unit_y(), Vector3::unit_z());
+        }
+    }
+
     mod from_axis_x {
         use cgmath::*;
 
@@ -779,6 +796,33 @@ pub mod matrix4 {
             let matrix_long = Matrix4::from(matrix_long);
 
             assert_ulps_eq!(matrix_short, matrix_long);
+        }
+    }
+
+    mod lookat {
+        use cgmath::*;
+
+        const A: Point3<f32> = Point3{x:0.0, y:0.0, z:0.0};
+        const B: Point3<f32> = Point3{x:1.0, y:2.0, z:3.0};
+        const C: Point3<f32> = Point3{x:-8.0, y:-7.0, z:6.0};
+        const UP: Vector3<f32> = Vector3{x:0.0, y:-1.0, z:2.0};
+        const LOOK: Vector3<f32> = Vector3{x:0.0, y:0.0, z:1.0};
+        
+        fn check_look_at(eye: Point3<f32>, center: Point3<f32>, up: Vector3<f32>) {
+            let m = Matrix4::look_at(eye, center, up);
+            let mt = <Matrix4<_> as Transform<_>>::look_at(eye, center, up);
+            let dir = (center - eye).normalize();
+            assert_relative_eq!(m.transform_vector(dir), LOOK);
+            assert_relative_eq!(m.transform_point(eye), A);
+            assert_relative_eq!(mt.transform_vector(dir), LOOK);
+            assert_relative_eq!(mt.transform_point(eye), A);
+        }
+
+        #[test]
+        fn test_look_at() {
+            check_look_at(A, B, UP);
+            check_look_at(B, C, UP);
+            check_look_at(A, C, UP);
         }
     }
 }

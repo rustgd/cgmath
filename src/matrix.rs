@@ -93,8 +93,8 @@ impl<S: BaseFloat> Matrix2<S> {
         Matrix2 { x: c0, y: c1 }
     }
 
-    /// Create a transformation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Create a homogeneous transformation matrix that will cause a vector `dir`
+    /// to point towards `Vectors::unit_y()`, using `up` for orientation.
     pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
         //TODO: verify look_at 2D
         Matrix2::from_cols(up, dir).transpose()
@@ -126,8 +126,8 @@ impl<S: BaseFloat> Matrix3<S> {
         Matrix3 { x: c0, y: c1, z: c2 }
     }
 
-    /// Create a rotation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Create a homogeneous transformation matrix that will cause a vector `dir`
+    /// to point towards `Vector3::unit_z()`, using `up` for orientation.
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
         let side = up.cross(dir).normalize();
@@ -227,9 +227,24 @@ impl<S: BaseFloat> Matrix4<S> {
                      S::zero(), S::zero(), S::zero(), S::one())
     }
 
-    /// Create a homogeneous transformation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Create a transformation matrix that will transform a vector
+    /// `(center-dir)` to point towards `Vector3::unit_z()`, as well as transform
+    /// a point `eye` to `Point3::origin()`, using `up` for orientation.
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        let f = (center - eye).normalize();
+        let s = up.cross(f).normalize();
+        let u = f.cross(s).normalize();
+
+        Matrix4::new(s.x.clone(), u.x.clone(), f.x.clone(), S::zero(),
+                     s.y.clone(), u.y.clone(), f.y.clone(), S::zero(),
+                     s.z.clone(), u.z.clone(), f.z.clone(), S::zero(),
+                     -eye.dot(s), -eye.dot(u), -eye.dot(f), S::one())
+    }
+
+    /// Create a transformation matrix that will transform a vector
+    /// `(center-dir)` to point towards `-Vector3::unit_z()`, as well as transform
+    /// a point `eye` to `Point3::origin()`, using `up` for orientation.
+    pub fn look_at_neg_z(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = (center - eye).normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(f);
@@ -903,6 +918,10 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     One::one()
   }
 
+  /// Create a transformation that rotates a vector to look at `center` from `eye`,
+  /// using `up` for orientation.
+  /// In addition, a point `eye` would be translated to `Point3::origin()` by the
+  /// resultant matrix.
   fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
     Matrix4::look_at(eye, center, up)
   }

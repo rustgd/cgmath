@@ -40,10 +40,27 @@ fn test_look_at() {
     let eye = Point3::new(0.0f64, 0.0, -5.0);
     let center = Point3::new(0.0f64, 0.0, 0.0);
     let up = Vector3::new(1.0f64, 0.0, 0.0);
-    let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);
+    let tq: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);
+    let tb: Decomposed<Vector3<f64>, Basis3<f64>> = Transform::look_at(eye, center, up); 
     let point = Point3::new(1.0f64, 0.0, 0.0);
     let view_point = Point3::new(0.0f64, 1.0, 5.0);
-    assert_ulps_eq!(&t.transform_point(point), &view_point);
+    assert_ulps_eq!(&tq.transform_point(point), &view_point);
+    assert_ulps_eq!(&tb.transform_point(point), &view_point);
+
+    let eye = Point3::new(1.0, 3.0, 5.0);
+    let center = Point3::origin();
+    let up = Vector3::unit_y();
+
+    let trans0: Matrix4<f32> = Decomposed::<Vector3<f32>, Quaternion<f32>>::look_at(eye, center, up)
+        .inverse_transform().unwrap().into();
+    
+    let trans1: Matrix4<f32> = Decomposed::<Vector3<f32>, Basis3<f32>>::look_at(eye, center, up)
+        .inverse_transform().unwrap().into();
+    
+    let trans2: Matrix4<f32> = Matrix4::look_at(eye, center, up)
+        .inverse_transform().unwrap().into();
+    assert_relative_eq!(trans0, trans2, max_relative=0.0001);
+    assert_relative_eq!(trans2, trans1);
 }
 
 #[cfg(feature = "eders")]
