@@ -256,7 +256,7 @@ impl InnerSpace for Quaternion<f32> {
     }
 }
 
-impl<A> From<Euler<A>> for Quaternion<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Quaternion<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Quaternion<A::Unitless> {

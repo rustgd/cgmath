@@ -1133,7 +1133,7 @@ index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
 // index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
 // index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
 
-impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Matrix3<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
@@ -1148,7 +1148,7 @@ impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
     }
 }
 
-impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Matrix4<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix4<A::Unitless> {

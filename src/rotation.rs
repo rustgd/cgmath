@@ -370,7 +370,7 @@ impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
     }
 }
 
-impl<A: Angle> From<Euler<A>> for Basis3<<A as Angle>::Unitless> where
+impl<A: Angle> From<Euler<A>> for Basis3<A::Unitless> where
     A: Into<Rad<<A as Angle>::Unitless>>,
 {
     /// Create a three-dimensional rotation matrix from a set of euler angles.
