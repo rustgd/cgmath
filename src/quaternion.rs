@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::iter;
 use std::mem;
 use std::ops::*;
 
@@ -39,7 +40,6 @@ use simd::f32x4 as Simdf32x4;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Quaternion<S> {
     /// The scalar part of the quaternion.
@@ -74,13 +74,13 @@ impl Into<Simdf32x4> for Quaternion<f32> {
 
 impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
-    /// imaginary components
+    /// imaginary components.
     #[inline]
     pub fn new(w: S, xi: S, yj: S, zk: S) -> Quaternion<S> {
         Quaternion::from_sv(w, Vector3::new(xi, yj, zk))
     }
 
-    /// Construct a new quaternion from a scalar and a vector
+    /// Construct a new quaternion from a scalar and a vector.
     #[inline]
     pub fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
         Quaternion { s: s, v: v }
@@ -188,6 +188,34 @@ impl<S: BaseFloat> One for Quaternion<S> {
     }
 }
 
+impl<S: BaseFloat> iter::Sum<Quaternion<S>> for Quaternion<S> {
+    #[inline]
+    fn sum<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::zero(), Add::add)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Quaternion<S>> for Quaternion<S> {
+    #[inline]
+    fn sum<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::zero(), Add::add)
+    }
+}
+
+impl<S: BaseFloat> iter::Product<Quaternion<S>> for Quaternion<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::one(), Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Quaternion<S>> for Quaternion<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+        iter.fold(Quaternion::<S>::one(), Mul::mul)
+    }
+}
+
 impl<S: BaseFloat> VectorSpace for Quaternion<S> {
     type Scalar = S;
 }
@@ -228,7 +256,7 @@ impl InnerSpace for Quaternion<f32> {
     }
 }
 
-impl<A> From<Euler<A>> for Quaternion<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Quaternion<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Quaternion<A::Unitless> {
@@ -559,7 +587,7 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
-    /// Convert the quaternion to a 3 x 3 rotation matrix
+    /// Convert the quaternion to a 3 x 3 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix3<S> {
         let x2 = quat.v.x + quat.v.x;
         let y2 = quat.v.y + quat.v.y;
@@ -584,7 +612,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
-    /// Convert the quaternion to a 4 x 4 rotation matrix
+    /// Convert the quaternion to a 4 x 4 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix4<S> {
         let x2 = quat.v.x + quat.v.x;
         let y2 = quat.v.y + quat.v.y;
@@ -624,9 +652,28 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
 
     #[inline]
     fn between_vectors(a: Vector3<S>, b: Vector3<S>) -> Quaternion<S> {
-        //http://stackoverflow.com/questions/1171849/
-        //finding-quaternion-representing-the-rotation-from-one-vector-to-another
-        Quaternion::from_sv(S::one() + a.dot(b), a.cross(b)).normalize()
+        // http://stackoverflow.com/a/11741520/2074937 see 'Half-Way Quaternion Solution'
+
+        let k_cos_theta = a.dot(b);
+
+        // same direction
+        if ulps_eq!(k_cos_theta, S::one()) {
+            return Quaternion::<S>::one();
+        }
+
+        let k = (a.magnitude2() * b.magnitude2()).sqrt();
+
+        // opposite direction
+        if ulps_eq!(k_cos_theta / k, -S::one()) {
+            let mut orthogonal = a.cross(Vector3::unit_x());
+            if ulps_eq!(orthogonal.magnitude2(), S::zero()) {
+                orthogonal = a.cross(Vector3::unit_y());
+            }
+            return Quaternion::from_sv(S::zero(), orthogonal.normalize());
+        }
+
+        // any other direction
+        Quaternion::from_sv(k + k_cos_theta, a.cross(b)).normalize()
     }
 
     #[inline]

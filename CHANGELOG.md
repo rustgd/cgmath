@@ -6,6 +6,39 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.14.1] - 2017-05-02
+
+### Fixed
+
+- Added a workaround for rust-lang/rust#41478, and in the process cleaned up
+  some type projections for angles
+
+## [v0.14.0] - 2017-04-26
+
+## Changed
+
+- Constrained `VectorSpace`, `Rotation`, and `Angle` by `iter::Sum`
+- Constrained `SquareMatrix` by `iter::Product`
+
+## [v0.13.1] - 2017-04-22
+
+### Changed
+
+- Update `serde` and `serde_derive` to version `1.0`.
+
+## [v0.13.0] - 2017-04-14
+
+### Added
+
+- Add optional `use_simd` feature to improve the performance of `Vector4<f32>`,
+  `Matrix4<f32>` and `Quaternion<f32>`. According to @DaseinPhaos in #394, under
+  the given benchmark certain operations were able to become up to 60% faster.
+- Add component wise casting for the matrix and point types
+
+### Changed
+
+- Update `serde` to version `0.9`, and use `serde_derive` instead of `serde_macros`.
+
 ## [v0.12.0] - 2016-09-14
 
 ### Changed
@@ -225,30 +258,34 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/bjz/cgmath/compare/v0.12.0...HEAD
-[v0.12.0]: https://github.com/bjz/cgmath/compare/v0.11.0...v0.12.0
-[v0.11.0]: https://github.com/bjz/cgmath/compare/v0.10.0...v0.11.0
-[v0.10.0]: https://github.com/bjz/cgmath/compare/v0.9.1...v0.10.0
-[v0.9.1]: https://github.com/bjz/cgmath/compare/v0.9.0...v0.9.1
-[v0.9.0]: https://github.com/bjz/cgmath/compare/v0.8.0...v0.9.0
-[v0.8.0]: https://github.com/bjz/cgmath/compare/v0.7.0...v0.8.0
-[v0.7.0]: https://github.com/bjz/cgmath/compare/v0.6.0...v0.7.0
-[v0.6.0]: https://github.com/bjz/cgmath/compare/v0.5.0...v0.6.0
-[v0.5.0]: https://github.com/bjz/cgmath/compare/v0.4.0...v0.5.0
-[v0.4.0]: https://github.com/bjz/cgmath/compare/v0.3.1...v0.4.0
-[v0.3.1]: https://github.com/bjz/cgmath/compare/v0.3.0...v0.3.1
-[v0.3.0]: https://github.com/bjz/cgmath/compare/v0.2.0...v0.3.0
-[v0.2.0]: https://github.com/bjz/cgmath/compare/v0.1.6...v0.2.0
-[v0.1.6]: https://github.com/bjz/cgmath/compare/v0.1.5...v0.1.6
-[v0.1.5]: https://github.com/bjz/cgmath/compare/v0.1.4...v0.1.5
-[v0.1.4]: https://github.com/bjz/cgmath/compare/v0.1.3...v0.1.4
-[v0.1.3]: https://github.com/bjz/cgmath/compare/v0.1.2...v0.1.3
-[v0.1.2]: https://github.com/bjz/cgmath/compare/v0.1.1...v0.1.2
-[v0.1.1]: https://github.com/bjz/cgmath/compare/v0.1.0...v0.1.1
-[v0.1.0]: https://github.com/bjz/cgmath/compare/v0.0.8...v0.1.0
-[v0.0.8]: https://github.com/bjz/cgmath/compare/v0.0.7...v0.0.8
-[v0.0.7]: https://github.com/bjz/cgmath/compare/v0.0.6...v0.0.7
-[v0.0.6]: https://github.com/bjz/cgmath/compare/v0.0.5...v0.0.6
-[v0.0.5]: https://github.com/bjz/cgmath/compare/v0.0.4...v0.0.5
-[v0.0.4]: https://github.com/bjz/cgmath/compare/v0.0.3...v0.0.4
-[v0.0.3]: https://github.com/bjz/cgmath/compare/v0.0.1...v0.0.3
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.14.1...HEAD
+[v0.14.1]: https://github.com/brendanzab/cgmath/compare/v0.14.0...v0.14.1
+[v0.14.0]: https://github.com/brendanzab/cgmath/compare/v0.13.1...v0.14.0
+[v0.13.1]: https://github.com/brendanzab/cgmath/compare/v0.13.0...v0.13.1
+[v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.12.0...v0.13.0
+[v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.11.0...v0.12.0
+[v0.11.0]: https://github.com/brendanzab/cgmath/compare/v0.10.0...v0.11.0
+[v0.10.0]: https://github.com/brendanzab/cgmath/compare/v0.9.1...v0.10.0
+[v0.9.1]: https://github.com/brendanzab/cgmath/compare/v0.9.0...v0.9.1
+[v0.9.0]: https://github.com/brendanzab/cgmath/compare/v0.8.0...v0.9.0
+[v0.8.0]: https://github.com/brendanzab/cgmath/compare/v0.7.0...v0.8.0
+[v0.7.0]: https://github.com/brendanzab/cgmath/compare/v0.6.0...v0.7.0
+[v0.6.0]: https://github.com/brendanzab/cgmath/compare/v0.5.0...v0.6.0
+[v0.5.0]: https://github.com/brendanzab/cgmath/compare/v0.4.0...v0.5.0
+[v0.4.0]: https://github.com/brendanzab/cgmath/compare/v0.3.1...v0.4.0
+[v0.3.1]: https://github.com/brendanzab/cgmath/compare/v0.3.0...v0.3.1
+[v0.3.0]: https://github.com/brendanzab/cgmath/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/brendanzab/cgmath/compare/v0.1.6...v0.2.0
+[v0.1.6]: https://github.com/brendanzab/cgmath/compare/v0.1.5...v0.1.6
+[v0.1.5]: https://github.com/brendanzab/cgmath/compare/v0.1.4...v0.1.5
+[v0.1.4]: https://github.com/brendanzab/cgmath/compare/v0.1.3...v0.1.4
+[v0.1.3]: https://github.com/brendanzab/cgmath/compare/v0.1.2...v0.1.3
+[v0.1.2]: https://github.com/brendanzab/cgmath/compare/v0.1.1...v0.1.2
+[v0.1.1]: https://github.com/brendanzab/cgmath/compare/v0.1.0...v0.1.1
+[v0.1.0]: https://github.com/brendanzab/cgmath/compare/v0.0.8...v0.1.0
+[v0.0.8]: https://github.com/brendanzab/cgmath/compare/v0.0.7...v0.0.8
+[v0.0.7]: https://github.com/brendanzab/cgmath/compare/v0.0.6...v0.0.7
+[v0.0.6]: https://github.com/brendanzab/cgmath/compare/v0.0.5...v0.0.6
+[v0.0.5]: https://github.com/brendanzab/cgmath/compare/v0.0.4...v0.0.5
+[v0.0.4]: https://github.com/brendanzab/cgmath/compare/v0.0.3...v0.0.4
+[v0.0.3]: https://github.com/brendanzab/cgmath/compare/v0.0.1...v0.0.3

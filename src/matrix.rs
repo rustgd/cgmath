@@ -16,6 +16,7 @@
 use rand::{Rand, Rng};
 use num_traits::{cast, NumCast};
 use std::fmt;
+use std::iter;
 use std::mem;
 use std::ops::*;
 use std::ptr;
@@ -36,7 +37,6 @@ use vector::{Vector2, Vector3, Vector4};
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix2<S> {
     /// The first column of the matrix.
@@ -50,7 +50,6 @@ pub struct Matrix2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix3<S> {
     /// The first column of the matrix.
@@ -66,7 +65,6 @@ pub struct Matrix3<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Matrix4<S> {
     /// The first column of the matrix.
@@ -659,7 +657,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                      self[3][3])
     }
 
-    // The new implementation results in negative optimization when used 
+    // The new implementation results in negative optimization when used
     // without SIMD. so we opt them in with configuration.
     // A better option would be using specialization. But currently somewhat
     // specialization is too buggy, and it won't apply here. I'm getting
@@ -970,6 +968,34 @@ macro_rules! impl_matrix {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
         }
 
+        impl<S: BaseFloat> iter::Sum<$MatrixN<S>> for $MatrixN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=$MatrixN<S>>>(iter: I) -> $MatrixN<S> {
+                iter.fold($MatrixN::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseFloat> iter::Sum<&'a $MatrixN<S>> for $MatrixN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a $MatrixN<S>>>(iter: I) -> $MatrixN<S> {
+                iter.fold($MatrixN::zero(), Add::add)
+            }
+        }
+
+        impl<S: BaseFloat> iter::Product for $MatrixN<S> {
+            #[inline]
+            fn product<I: Iterator<Item=$MatrixN<S>>>(iter: I) -> $MatrixN<S> {
+                iter.fold($MatrixN::identity(), Mul::mul)
+            }
+        }
+
+        impl<'a, S: 'a + BaseFloat> iter::Product<&'a $MatrixN<S>> for $MatrixN<S> {
+            #[inline]
+            fn product<I: Iterator<Item=&'a $MatrixN<S>>>(iter: I) -> $MatrixN<S> {
+                iter.fold($MatrixN::identity(), Mul::mul)
+            }
+        }
+
         impl_scalar_ops!($MatrixN<usize> { $($field),+ });
         impl_scalar_ops!($MatrixN<u8> { $($field),+ });
         impl_scalar_ops!($MatrixN<u16> { $($field),+ });
@@ -1107,7 +1133,7 @@ index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
 // index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
 // index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
 
-impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Matrix3<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
@@ -1122,7 +1148,7 @@ impl<A> From<Euler<A>> for Matrix3<<A as Angle>::Unitless> where
     }
 }
 
-impl<A> From<Euler<A>> for Matrix4<<A as Angle>::Unitless> where
+impl<A> From<Euler<A>> for Matrix4<A::Unitless> where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix4<A::Unitless> {

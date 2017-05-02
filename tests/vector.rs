@@ -15,11 +15,11 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 use cgmath::*;
 use std::f64;
+use std::iter;
 
 #[test]
 fn test_constructor() {
@@ -87,6 +87,13 @@ macro_rules! impl_test_rem {
     )
 }
 
+macro_rules! impl_test_iter_sum {
+    ($VectorN:ident { $($field:ident),+ }, $ty:ty, $s:expr, $v:expr) => (
+        assert_eq!($VectorN::new($($v.$field * $s),+),
+                   iter::repeat($v).take($s as usize).sum());
+    )
+}
+
 #[test]
 fn test_add() {
     impl_test_add!(Vector4 { x, y, z, w }, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
@@ -138,6 +145,17 @@ fn test_sum() {
     assert_eq!(Vector2::new(3.0f64, 4.0f64).sum(), 7.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).sum(), 15.0f64);
     assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).sum(), 26.0f64);
+}
+
+#[test]
+fn test_iter_sum() {
+    impl_test_iter_sum!(Vector4 { x, y, z, w }, f32, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_iter_sum!(Vector3 { x, y, z }, f32, 2.0f32, vec3(2.0f32, 4.0, 6.0));
+    impl_test_iter_sum!(Vector2 { x, y }, f32, 2.0f32, vec2(2.0f32, 4.0));
+
+    impl_test_iter_sum!(Vector4 { x, y, z, w }, usize, 2usize, vec4(2usize, 4, 6, 8));
+    impl_test_iter_sum!(Vector3 { x, y, z }, usize, 2usize, vec3(2usize, 4, 6));
+    impl_test_iter_sum!(Vector2 { x, y }, usize, 2usize, vec2(2usize, 4));
 }
 
 #[test]

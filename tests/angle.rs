@@ -20,7 +20,7 @@ extern crate cgmath;
 use cgmath::{Rad, Deg};
 
 #[test]
-fn conv() {
+fn test_conv() {
     let angle: Rad<_> = Deg(-5.0f64).into();
     let angle: Deg<_> = angle.into();
     assert_ulps_eq!(&angle, &Deg(-5.0f64));
@@ -36,4 +36,24 @@ fn conv() {
     let angle: Deg<_> = Rad(30.0f64).into();
     let angle: Rad<_> = angle.into();
     assert_ulps_eq!(&angle, &Rad(30.0f64));
+}
+
+mod rad {
+    use cgmath::Rad;
+
+    #[test]
+    fn test_iter_sum() {
+        assert_eq!(Rad(2.0) + Rad(3.0) + Rad(4.0), [Rad(2.0), Rad(3.0), Rad(4.0)].iter().sum());
+        assert_eq!(Rad(2.0) + Rad(3.0) + Rad(4.0), [Rad(2.0), Rad(3.0), Rad(4.0)].iter().cloned().sum());
+    }
+}
+
+mod deg {
+    use cgmath::Deg;
+
+    #[test]
+    fn test_iter_sum() {
+        assert_eq!(Deg(2.0) + Deg(3.0) + Deg(4.0), [Deg(2.0), Deg(3.0), Deg(4.0)].iter().sum());
+        assert_eq!(Deg(2.0) + Deg(3.0) + Deg(4.0), [Deg(2.0), Deg(3.0), Deg(4.0)].iter().cloned().sum());
+    }
 }

@@ -15,7 +15,6 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 macro_rules! impl_test_mul {
@@ -51,6 +50,26 @@ mod operators {
     #[test]
     fn test_div() {
         impl_test_div!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
+    }
+
+    #[test]
+    fn test_iter_sum() {
+        let q1 = Quaternion::from(Euler { x: Rad(2f32), y: Rad(1f32), z: Rad(1f32) });
+        let q2 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(2f32), z: Rad(1f32) });
+        let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
+
+        assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().sum());
+        assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().cloned().sum());
+    }
+
+    #[test]
+    fn test_iter_product() {
+        let q1 = Quaternion::from(Euler { x: Rad(2f32), y: Rad(1f32), z: Rad(1f32) });
+        let q2 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(2f32), z: Rad(1f32) });
+        let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
+
+        assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().product());
+        assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().cloned().product());
     }
 }
 
@@ -256,5 +275,59 @@ mod rotate_from_axis_angle {
 
         let rot = Quaternion::from_axis_angle(vec3(1.0, 0.0, 1.0).normalize(), Deg(90.0));
         assert_ulps_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
+    }
+}
+
+mod rotate_between_vectors {
+    use cgmath::*;
+
+    #[test]
+    fn test_around_z_0() {
+        let expected = Quaternion::new(1.0, 0.0, 0.0, 0.0);
+
+        let a = vec3(12.0, 0.0, 0.0);
+        let b = vec3(1.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_90_cw() {
+        let expected = Quaternion::new(0.5_f32.sqrt(), 0.0, 0.0, 0.5_f32.sqrt());
+
+        let a = vec3(8.0, 0.0, 0.0);
+        let b = vec3(0.0, 9.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_90_ccw() {
+        let expected = Quaternion::new(0.5_f32.sqrt(), 0.0, 0.0, -0.5_f32.sqrt());
+
+        let a = vec3(-26.0, 0.0, 0.0);
+        let b = vec3(0.0, 10.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_180_cw() {
+        let expected = Quaternion::new(0.0, 0.0, 0.0, 1.0);
+
+        let a = vec3(10.0, 0.0, 0.0);
+        let b = vec3(-5.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
+    }
+
+    #[test]
+    fn test_around_z_180_ccw() {
+        let expected = Quaternion::new(0.0, 0.0, 0.0, -1.0);
+
+        let a = vec3(-3.0, 0.0, 0.0);
+        let b = vec3(40.0, 0.0, 0.0);
+
+        assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
     }
 }

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::fmt;
+use std::iter;
 use std::ops::*;
 
 use structure::*;
@@ -31,10 +32,11 @@ use vector::{Vector2, Vector3};
 /// creates a circular motion, and preserves at least one point in the space.
 pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
-    <P as EuclideanSpace>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = P::Scalar>,
+    P::Scalar: BaseFloat,
+    Self: iter::Product<Self>,
 {
-    /// Create a rotation to a given direction with an 'up' vector
+    /// Create a rotation to a given direction with an 'up' vector.
     fn look_at(dir: P::Diff, up: P::Diff) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
@@ -140,7 +142,6 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 /// // assert_ulps_eq!(&unit_y3, &unit_y2); // TODO: Figure out how to use this
 /// ```
 #[derive(PartialEq, Copy, Clone)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis2<S> {
     mat: Matrix2<S>
@@ -156,6 +157,20 @@ impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
 impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     #[inline]
     fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
+}
+
+impl<S: BaseFloat> iter::Product<Basis2<S>> for Basis2<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Basis2<S>>>(iter: I) -> Basis2<S> {
+        iter.fold(Basis2::one(), Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Basis2<S>>>(iter: I) -> Basis2<S> {
+        iter.fold(Basis2::one(), Mul::mul)
+    }
 }
 
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
@@ -232,9 +247,8 @@ impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
 /// The matrix is guaranteed to be orthogonal, so some operations, specifically
 /// inversion, can be implemented more efficiently than the implementations for
 /// `math::Matrix3`. To ensure orthogonality is maintained, the operations have
-/// been restricted to a subeset of those implemented on `Matrix3`.
+/// been restricted to a subset of those implemented on `Matrix3`.
 #[derive(PartialEq, Copy, Clone)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Basis3<S> {
     mat: Matrix3<S>
@@ -263,6 +277,20 @@ impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
 impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
     #[inline]
     fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
+}
+
+impl<S: BaseFloat> iter::Product<Basis3<S>> for Basis3<S> {
+    #[inline]
+    fn product<I: Iterator<Item=Basis3<S>>>(iter: I) -> Basis3<S> {
+        iter.fold(Basis3::one(), Mul::mul)
+    }
+}
+
+impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
+    #[inline]
+    fn product<I: Iterator<Item=&'a Basis3<S>>>(iter: I) -> Basis3<S> {
+        iter.fold(Basis3::one(), Mul::mul)
+    }
 }
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
@@ -342,7 +370,7 @@ impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
     }
 }
 
-impl<A: Angle> From<Euler<A>> for Basis3<<A as Angle>::Unitless> where
+impl<A: Angle> From<Euler<A>> for Basis3<A::Unitless> where
     A: Into<Rad<<A as Angle>::Unitless>>,
 {
     /// Create a three-dimensional rotation matrix from a set of euler angles.

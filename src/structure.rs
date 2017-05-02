@@ -17,6 +17,7 @@
 
 use num_traits::{cast, Float};
 use std::cmp;
+use std::iter;
 use std::ops::*;
 
 use approx::ApproxEq;
@@ -156,6 +157,7 @@ pub trait VectorSpace: Copy + Clone where
 
     Self: Add<Self, Output = Self>,
     Self: Sub<Self, Output = Self>,
+    Self: iter::Sum<Self>,
 
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Mul<<Self as VectorSpace>::Scalar, Output = Self>,
@@ -455,6 +457,7 @@ pub trait SquareMatrix where
     Self::Scalar: BaseFloat,
 
     Self: One,
+    Self: iter::Product<Self>,
 
     Self: Matrix<
         // FIXME: Can be cleaned up once equality constraints in where clauses are implemented
@@ -548,6 +551,8 @@ pub trait Angle where
     Self: Mul<<Self as Angle>::Unitless, Output = Self>,
     Self: Div<Self, Output = <Self as Angle>::Unitless>,
     Self: Div<<Self as Angle>::Unitless, Output = Self>,
+
+    Self: iter::Sum,
 {
     type Unitless: BaseFloat;
 

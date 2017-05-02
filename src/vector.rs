@@ -16,6 +16,7 @@
 use rand::{Rand, Rng};
 use num_traits::NumCast;
 use std::fmt;
+use std::iter;
 use std::mem;
 use std::ops::*;
 
@@ -37,7 +38,6 @@ use simd::u32x4 as Simdu32x4;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector1<S> {
     /// The x component of the vector.
@@ -49,7 +49,6 @@ pub struct Vector1<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector2<S> {
     /// The x component of the vector.
@@ -63,7 +62,6 @@ pub struct Vector2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector3<S> {
     /// The x component of the vector.
@@ -79,7 +77,6 @@ pub struct Vector3<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Vector4<S> {
     /// The x component of the vector.
@@ -110,7 +107,7 @@ macro_rules! impl_vector {
         }
 
         impl<S: NumCast + Copy> $VectorN<S> {
-            /// Component-wise casting to another type
+            /// Component-wise casting to another type.
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
                 $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
@@ -164,6 +161,20 @@ macro_rules! impl_vector {
             #[inline]
             fn is_zero(&self) -> bool {
                 *self == $VectorN::zero()
+            }
+        }
+
+        impl<S: BaseNum> iter::Sum<$VectorN<S>> for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=$VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a $VectorN<S>> for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a $VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
             }
         }
 
@@ -318,7 +329,7 @@ macro_rules! impl_vector_default {
         }
 
         impl<S: NumCast + Copy> $VectorN<S> {
-            /// Component-wise casting to another type
+            /// Component-wise casting to another type.
             #[inline]
             pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
                 $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
@@ -372,6 +383,20 @@ macro_rules! impl_vector_default {
             #[inline]
             fn is_zero(&self) -> bool {
                 *self == $VectorN::zero()
+            }
+        }
+
+        impl<S: BaseNum> iter::Sum for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
+            }
+        }
+
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
+            #[inline]
+            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                iter.fold(Self::zero(), Add::add)
             }
         }
 
@@ -665,7 +690,7 @@ impl<S: BaseNum> Vector4<S> {
         Vector3::new(self.x, self.y, self.z)
     }
 
-    /// Create a `Vector3`, dropping the nth element
+    /// Create a `Vector3`, dropping the nth element.
     #[inline]
     pub fn truncate_n(&self, n: isize) -> Vector3<S> {
         match n {

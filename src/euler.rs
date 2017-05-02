@@ -43,7 +43,7 @@ use num::BaseFloat;
 /// Note that while [Euler angles] are intuitive to define, they are prone to
 /// [gimbal lock] and are challenging to interpolate between. Instead we
 /// recommend that you convert them to a more robust representation, such as a
-/// quaternion or or rotation matrix. To this end, `From<Euler<A>>` conversions
+/// quaternion or a rotation matrix. To this end, `From<Euler<A>>` conversions
 /// are provided for the following types:
 ///
 /// - [`Basis3`](struct.Basis3.html)
@@ -75,7 +75,6 @@ use num::BaseFloat;
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 #[derive(PartialEq, Eq)]
-#[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
 pub struct Euler<A: Angle> {
     /// The angle to apply around the _x_ axis. Also known at the _pitch_.

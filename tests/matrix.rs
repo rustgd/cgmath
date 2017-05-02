@@ -15,7 +15,6 @@
 
 #[macro_use]
 extern crate approx;
-#[macro_use]
 extern crate cgmath;
 
 pub mod matrix2 {
@@ -94,6 +93,18 @@ pub mod matrix2 {
                                 13.0f64, 29.0f64));
 
         assert_eq!(A * B, &A * &B);
+    }
+
+    #[test]
+    fn test_sum_matrix() {
+        assert_eq!(A + B + C, [A, B, C].iter().sum());
+        assert_eq!(A + B + C, [A, B, C].iter().cloned().sum());
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        assert_eq!(A * B * C, [A, B, C].iter().product());
+        assert_eq!(A * B * C, [A, B, C].iter().cloned().product());
     }
 
     #[test]
@@ -256,6 +267,18 @@ pub mod matrix3 {
                                 48.0f64, 111.0f64, 174.0f64));
 
         assert_eq!(A * B, &A * &B);
+    }
+
+    #[test]
+    fn test_sum_matrix() {
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().sum());
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().cloned().sum());
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().product());
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().cloned().product());
     }
 
     #[test]
@@ -613,6 +636,18 @@ pub mod matrix4 {
                                 130.0f64, 306.0f64, 482.0f64, 658.0f64));
 
         assert_eq!(A * B, &A * &B);
+    }
+
+    #[test]
+    fn test_sum_matrix() {
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().sum());
+        assert_eq!(A + B + C + D, [A, B, C, D].iter().cloned().sum());
+    }
+
+    #[test]
+    fn test_product_matrix() {
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().product());
+        assert_eq!(A * B * C * D, [A, B, C, D].iter().cloned().product());
     }
 
     #[test]
