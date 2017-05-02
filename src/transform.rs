@@ -64,9 +64,9 @@ pub struct Decomposed<V: VectorSpace, R> {
 }
 
 impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
-    where <P as EuclideanSpace>::Scalar: BaseFloat,
+    where P::Scalar: BaseFloat,
           // FIXME: Investigate why this is needed!
-          <P as EuclideanSpace>::Diff: VectorSpace
+          P::Diff: VectorSpace
 {
     #[inline]
     fn one() -> Decomposed<P::Diff, R> {
