@@ -32,8 +32,8 @@ use vector::{Vector2, Vector3};
 /// creates a circular motion, and preserves at least one point in the space.
 pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: ApproxEq<Epsilon = <P as EuclideanSpace>::Scalar>,
-    <P as EuclideanSpace>::Scalar: BaseFloat,
+    Self: ApproxEq<Epsilon = P::Scalar>,
+    P::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
     /// Create a rotation to a given direction with an 'up' vector.

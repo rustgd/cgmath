@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.14.1] - 2017-05-02
+
+### Fixed
+
+- Added a workaround for rust-lang/rust#41478, and in the process cleaned up
+  some type projections for angles
+
 ## [v0.14.0] - 2017-04-26
 
 ## Changed
@@ -251,8 +258,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.14.0...HEAD
-[v0.13.1]: https://github.com/brendanzab/cgmath/compare/v0.13.1...v0.14.0
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.14.1...HEAD
+[v0.14.1]: https://github.com/brendanzab/cgmath/compare/v0.14.0...v0.14.1
+[v0.14.0]: https://github.com/brendanzab/cgmath/compare/v0.13.1...v0.14.0
 [v0.13.1]: https://github.com/brendanzab/cgmath/compare/v0.13.0...v0.13.1
 [v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.12.0...v0.13.0
 [v0.12.0]: https://github.com/brendanzab/cgmath/compare/v0.11.0...v0.12.0
