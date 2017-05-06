@@ -114,16 +114,6 @@ macro_rules! impl_point {
             fn product(self) -> S where S: Mul<Output = S> {
                 fold_array!(mul, { $(self.$field),+ })
             }
-
-            #[inline]
-            fn min(self) -> S where S: PartialOrd {
-                fold_array!(partial_min, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn max(self) -> S where S: PartialOrd {
-                fold_array!(partial_max, { $(self.$field),+ })
-            }
         }
 
         impl<S: NumCast + Copy> $PointN<S> {

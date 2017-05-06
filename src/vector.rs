@@ -24,7 +24,7 @@ use structure::*;
 
 use angle::Rad;
 use approx::ApproxEq;
-use num::{BaseNum, BaseFloat, PartialOrd};
+use num::{BaseNum, BaseFloat};
 
 #[cfg(feature = "use_simd")]
 use simd::f32x4 as Simdf32x4;
@@ -139,16 +139,6 @@ macro_rules! impl_vector {
             #[inline]
             fn product(self) -> S where S: Mul<Output = S> {
                 fold_array!(mul, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn min(self) -> S where S: PartialOrd {
-                fold_array!(partial_min, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn max(self) -> S where S: PartialOrd {
-                fold_array!(partial_max, { $(self.$field),+ })
             }
         }
 
@@ -361,16 +351,6 @@ macro_rules! impl_vector_default {
             #[inline]
             fn product(self) -> S where S: Mul<Output = S> {
                 fold_array!(mul, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn min(self) -> S where S: PartialOrd {
-                fold_array!(partial_min, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn max(self) -> S where S: PartialOrd {
-                fold_array!(partial_max, { $(self.$field),+ })
             }
         }
 
