@@ -23,7 +23,7 @@ use std::ops::*;
 use approx::ApproxEq;
 
 use angle::Rad;
-use num::{BaseNum, BaseFloat, PartialOrd};
+use num::{BaseNum, BaseFloat};
 
 pub use num_traits::{One, Zero};
 
@@ -72,12 +72,6 @@ pub trait Array where
 
     /// The product of the elements of the array.
     fn product(self) -> Self::Element where Self::Element: Mul<Output = <Self as Array>::Element>;
-
-    /// The minimum element of the array.
-    fn min(self) -> Self::Element where Self::Element: PartialOrd;
-
-    /// The maximum element of the array.
-    fn max(self) -> Self::Element where Self::Element: PartialOrd;
 }
 
 /// Element-wise arithmetic operations. These are supplied for pragmatic

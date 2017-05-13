@@ -127,20 +127,6 @@ fn test_product() {
 }
 
 #[test]
-fn test_min() {
-    assert_eq!(Vector4::new(1f32, 2f32, 3f32, 4f32).min(), 1f32);
-
-    assert_eq!(Vector4::new(5.0f32, 6.0f32, 7.0f32, 8.0f32).min(), 5.0f32);
-}
-
-#[test]
-fn test_max() {
-    assert_eq!(Vector4::new(1f32, 2f32, 3f32, 4f32).max(), 4f32);
-
-    assert_eq!(Vector4::new(5.0f32, 6.0f32, 7.0f32, 8.0f32).max(), 8.0f32);
-}
-
-#[test]
 fn test_is_perpendicular() {
     assert!(Vector4::new(1.0f32, 0.0f32, 0.0f32, 0.0f32).is_perpendicular(Vector4::new(0.0f32, 0.0f32, 0.0f32, 1.0f32)));
 }

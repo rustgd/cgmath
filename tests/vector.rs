@@ -170,28 +170,6 @@ fn test_product() {
 }
 
 #[test]
-fn test_min() {
-    assert_eq!(Vector2::new(1isize, 2isize).min(), 1isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).min(), 1isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).min(), 1isize);
-
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).min(), 3.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).min(), 4.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).min(), 5.0f64);
-}
-
-#[test]
-fn test_max() {
-    assert_eq!(Vector2::new(1isize, 2isize).max(), 2isize);
-    assert_eq!(Vector3::new(1isize, 2isize, 3isize).max(), 3isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).max(), 4isize);
-
-    assert_eq!(Vector2::new(3.0f64, 4.0f64).max(), 4.0f64);
-    assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).max(), 6.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).max(), 8.0f64);
-}
-
-#[test]
 fn test_cross() {
     let a = Vector3::new(1isize, 2isize, 3isize);
     let b = Vector3::new(4isize, 5isize, 6isize);
