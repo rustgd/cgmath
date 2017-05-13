@@ -443,11 +443,13 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
     #[inline]
     fn invert(&self) -> Option<Matrix2<S>> {
         let det = self.determinant();
-        if ulps_eq!(det, &S::zero()) {
+        if det == S::zero() {
             None
         } else {
-            Some(Matrix2::new( self[1][1] / det, -self[0][1] / det,
-                              -self[1][0] / det,  self[0][0] / det))
+            Some(Matrix2::new(self[1][1] / det,
+                              -self[0][1] / det,
+                              -self[1][0] / det,
+                              self[0][0] / det))
         }
     }
 
@@ -542,7 +544,9 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 
     fn invert(&self) -> Option<Matrix3<S>> {
         let det = self.determinant();
-        if ulps_eq!(det, &S::zero()) { None } else {
+        if det == S::zero() {
+            None
+        } else {
             Some(Matrix3::from_cols(self[1].cross(self[2]) / det,
                                     self[2].cross(self[0]) / det,
                                     self[0].cross(self[1]) / det).transpose())
@@ -665,7 +669,9 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     #[cfg(not(feature = "use_simd"))]
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
-        if ulps_eq!(det, &S::zero()) { None } else {
+        if det == S::zero() {
+            None
+        } else {
             let inv_det = S::one() / det;
             let t = self.transpose();
             let cf = |i, j| {
@@ -692,7 +698,10 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
             det_sub_proc_unsafe(self, 1, 2, 3)
         };
         let det = tmp0.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]));
-        if ulps_eq!(det, &S::zero()) { None } else {
+
+        if det == S::zero() {
+            None
+        } else {
             let inv_det = S::one() / det;
             let tmp0 = tmp0 * inv_det;
             let tmp1 = unsafe {
