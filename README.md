@@ -1,5 +1,7 @@
 # cgmath-rs
 
+[![Join the chat at https://gitter.im/brendanzab/cgmath](https://badges.gitter.im/brendanzab/cgmath.svg)](https://gitter.im/brendanzab/cgmath?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/brendanzab/cgmath.svg?branch=master)](https://travis-ci.org/brendanzab/cgmath)
 [![Documentation](https://docs.rs/cgmath/badge.svg)](https://docs.rs/cgmath)
 [![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/cgmath)
