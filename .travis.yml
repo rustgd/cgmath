@@ -9,14 +9,14 @@ cache: cargo
 
 env:
   - CARGO_FEATURES=""
-  - CARGO_FEATURES="eders"
+  - CARGO_FEATURES="serde"
 
 matrix:
   include:
     - rust: nightly
       env: CARGO_FEATURES="simd"
     - rust: nightly
-      env: CARGO_FEATURES="eders simd"
+      env: CARGO_FEATURES="serde simd"
 
 script:
   - cargo build --features "$CARGO_FEATURES"

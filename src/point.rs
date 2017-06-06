@@ -33,7 +33,7 @@ use vector::{Vector1, Vector2, Vector3, Vector4};
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Point1<S> {
     pub x: S,
 }
@@ -43,7 +43,7 @@ pub struct Point1<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Point2<S> {
     pub x: S,
     pub y: S,
@@ -54,7 +54,7 @@ pub struct Point2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Point3<S> {
     pub x: S,
     pub y: S,

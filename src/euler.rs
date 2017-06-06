@@ -75,7 +75,7 @@ use num::BaseFloat;
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 #[derive(PartialEq, Eq)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Euler<A: Angle> {
     /// The angle to apply around the _x_ axis. Also known at the _pitch_.
     pub x: A,

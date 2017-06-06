@@ -184,9 +184,9 @@ impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
     }
 }
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 #[doc(hidden)]
-mod eders_ser {
+mod serde_ser {
     use structure::VectorSpace;
     use super::Decomposed;
     use serde::{self, Serialize};
@@ -209,9 +209,9 @@ mod eders_ser {
     }
 }
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 #[doc(hidden)]
-mod eders_de {
+mod serde_de {
     use structure::VectorSpace;
     use super::Decomposed;
     use serde::{self, Deserialize};

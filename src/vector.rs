@@ -38,7 +38,7 @@ use simd::u32x4 as Simdu32x4;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Vector1<S> {
     /// The x component of the vector.
     pub x: S,
@@ -49,7 +49,7 @@ pub struct Vector1<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Vector2<S> {
     /// The x component of the vector.
     pub x: S,
@@ -62,7 +62,7 @@ pub struct Vector2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Vector3<S> {
     /// The x component of the vector.
     pub x: S,
@@ -77,7 +77,7 @@ pub struct Vector3<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(PartialEq, Eq, Copy, Clone, Hash)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Vector4<S> {
     /// The x component of the vector.
     pub x: S,

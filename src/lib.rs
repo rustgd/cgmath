@@ -57,10 +57,8 @@ extern crate approx;
 pub extern crate num_traits;
 extern crate rand;
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 #[macro_use]
-extern crate serde_derive;
-#[cfg(feature = "eders")]
 extern crate serde;
 
 #[cfg(feature = "simd")]
