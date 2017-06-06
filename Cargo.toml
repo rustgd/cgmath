@@ -21,6 +21,7 @@ unstable = []
 
 [dependencies]
 approx = "0.1"
+mint = { version = "0.4.1", optional = true }
 num-traits = "0.1"
 rand = "0.3"
 serde = { version = "1.0", features = ["serde_derive"], optional = true }

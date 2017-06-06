@@ -54,6 +54,10 @@
 
 #[macro_use]
 extern crate approx;
+
+#[cfg(feature = "mint")]
+pub extern crate mint;
+
 pub extern crate num_traits;
 extern crate rand;
 

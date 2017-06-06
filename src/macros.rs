@@ -456,3 +456,23 @@ macro_rules! impl_operator_simd {
         }
     };
 }
+
+/// Generate `mint` types conversion implementations
+#[cfg(feature = "mint")]
+macro_rules! impl_mint_conversions {
+    ($ArrayN:ident { $($field:ident),+ }, $Mint:ident) => {
+        impl<S: Clone> Into<mint::$Mint<S>> for $ArrayN<S> {
+            #[inline]
+            fn into(self) -> mint::$Mint<S> {
+                mint::$Mint::from([$(self.$field),+])
+            }
+        }
+
+        impl<S> From<mint::$Mint<S>> for $ArrayN<S> {
+            #[inline]
+            fn from(v: mint::$Mint<S>) -> Self {
+                $ArrayN { $( $field: v.$field, )+ }
+            }
+        }
+    }
+}

@@ -6,21 +6,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- Refactored `simd` and `serde` dependencies to match feature names
+- Refactor `simd` and `serde` dependencies to match feature names
+- Integrate `mint` conversions behind a feature
 
 ## [v0.14.1] - 2017-05-02
 
 ### Fixed
 
-- Added a workaround for rust-lang/rust#41478, and in the process cleaned up
+- Add a workaround for rust-lang/rust#41478, and in the process cleaned up
   some type projections for angles
 
 ## [v0.14.0] - 2017-04-26
 
 ## Changed
 
-- Constrained `VectorSpace`, `Rotation`, and `Angle` by `iter::Sum`
-- Constrained `SquareMatrix` by `iter::Product`
+- Constrain `VectorSpace`, `Rotation`, and `Angle` by `iter::Sum`
+- Constrain `SquareMatrix` by `iter::Product`
 
 ## [v0.13.1] - 2017-04-22
 

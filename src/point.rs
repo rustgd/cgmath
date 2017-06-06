@@ -28,6 +28,9 @@ use approx::ApproxEq;
 use num::{BaseNum, BaseFloat};
 use vector::{Vector1, Vector2, Vector3, Vector4};
 
+#[cfg(feature = "mint")]
+use mint;
+
 /// A point in 1-dimensional space.
 ///
 /// This type is marked as `#[repr(C)]`.
@@ -263,6 +266,11 @@ impl_fixed_array_conversions!(Point3<S> { x: 0, y: 1, z: 2 }, 3);
 impl_tuple_conversions!(Point1<S> { x }, (S,));
 impl_tuple_conversions!(Point2<S> { x, y }, (S, S));
 impl_tuple_conversions!(Point3<S> { x, y, z }, (S, S, S));
+
+#[cfg(feature = "mint")]
+impl_mint_conversions!(Point2 { x, y }, Point2);
+#[cfg(feature = "mint")]
+impl_mint_conversions!(Point3 { x, y, z }, Point3);
 
 impl<S: fmt::Debug> fmt::Debug for Point1<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
