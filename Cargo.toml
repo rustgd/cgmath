@@ -19,7 +19,6 @@ name = "cgmath"
 [features]
 unstable = []
 eders = ["serde", "serde_derive"]
-use_simd = ["simd"]
 
 [dependencies]
 approx = "0.1"

@@ -255,7 +255,7 @@ macro_rules! impl_index_operators {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 macro_rules! impl_operator_default {
     // When it is an unary operator
     (<$S:ident: $Constraint:ident> $Op:ident for $Lhs:ty {
@@ -355,7 +355,7 @@ macro_rules! impl_operator_default {
     };
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 macro_rules! impl_assignment_operator_default {
     (<$S:ident: $Constraint:ident> $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident(&mut $lhs:ident, $rhs:ident) $body:block
@@ -368,13 +368,13 @@ macro_rules! impl_assignment_operator_default {
 }
 
 /// Generates a binary operator implementation for the permutations of by-ref and by-val, for simd
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 macro_rules! impl_operator_simd {
     // When it is an unary operator
     ([$Simd:ident]; $Op:ident for $Lhs:ty {
         fn $op:ident($x:ident) -> $Output:ty { $body:expr }
     }) => {
- 
+
         impl $Op for $Lhs {
             #[inline]
             fn $op(self) -> $Output {
@@ -393,7 +393,7 @@ macro_rules! impl_operator_simd {
             }
         }
 
- 
+
         impl<'a> $Op<$Rhs> for &'a $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
@@ -406,7 +406,7 @@ macro_rules! impl_operator_simd {
     ([$Simd:ident]; $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
     }) => {
- 
+
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
@@ -414,14 +414,14 @@ macro_rules! impl_operator_simd {
             }
         }
 
- 
+
         impl<'a> $Op<&'a $Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {
                 let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), (*other).into()); $body
             }
         }
- 
+
         impl<'a> $Op<$Rhs> for &'a $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
@@ -447,7 +447,7 @@ macro_rules! impl_operator_simd {
                 let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), other.into()); $body
             }
         }
- 
+
         impl<'a> $Op<&'a $Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {

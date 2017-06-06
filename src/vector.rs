@@ -26,11 +26,11 @@ use angle::Rad;
 use approx::ApproxEq;
 use num::{BaseNum, BaseFloat};
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 use simd::f32x4 as Simdf32x4;
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 use simd::i32x4 as Simdi32x4;
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 use simd::u32x4 as Simdu32x4;
 
 /// A 1-dimensional vector.
@@ -301,7 +301,7 @@ macro_rules! impl_vector {
 
 // Utility macro for generating associated functions for the vectors
 // mainly duplication
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 macro_rules! impl_vector_default {
     ($VectorN:ident { $($field:ident),+ }, $n:expr, $constructor:ident) => {
         impl<S> $VectorN<S> {
@@ -529,7 +529,7 @@ macro_rules! impl_scalar_ops {
     };
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 macro_rules! impl_scalar_ops_default {
     ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
         impl_operator_default!(Mul<$VectorN<$S>> for $S {
@@ -547,9 +547,9 @@ macro_rules! impl_scalar_ops_default {
 impl_vector!(Vector1 { x }, 1, vec1);
 impl_vector!(Vector2 { x, y }, 2, vec2);
 impl_vector!(Vector3 { x, y, z }, 3, vec3);
-#[cfg(not(feature = "use_simd"))]
+#[cfg(not(feature = "simd"))]
 impl_vector!(Vector4 { x, y, z, w }, 4, vec4);
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_vector_default!(Vector4 { x, y, z, w }, 4, vec4);
 
 impl_fixed_array_conversions!(Vector1<S> { x: 0 }, 1);
@@ -757,7 +757,7 @@ impl<S: fmt::Debug> fmt::Debug for Vector4<S> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl From<Simdf32x4> for Vector4<f32> {
     #[inline]
     fn from(f: Simdf32x4) -> Self {
@@ -772,7 +772,7 @@ impl From<Simdf32x4> for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl Vector4<f32> {
     /// Compute and return the square root of each element.
     #[inline]
@@ -798,7 +798,7 @@ impl Vector4<f32> {
 
 
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl Into<Simdf32x4> for Vector4<f32> {
     #[inline]
     fn into(self) -> Simdf32x4 {
@@ -807,7 +807,7 @@ impl Into<Simdf32x4> for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdf32x4]; Add<Vector4<f32>> for Vector4<f32> {
         fn add(lhs, rhs) -> Vector4<f32> {
@@ -816,7 +816,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdf32x4]; Sub<Vector4<f32>> for Vector4<f32> {
         fn sub(lhs, rhs) -> Vector4<f32> {
@@ -825,7 +825,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{@rs
     [Simdf32x4]; Mul<f32> for Vector4<f32> {
         fn mul(lhs, rhs) -> Vector4<f32> {
@@ -834,7 +834,7 @@ impl_operator_simd!{@rs
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{@rs
     [Simdf32x4]; Div<f32> for Vector4<f32> {
         fn div(lhs, rhs) -> Vector4<f32> {
@@ -845,7 +845,7 @@ impl_operator_simd!{@rs
 
 
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdf32x4]; Neg for Vector4<f32> {
         fn neg(lhs) -> Vector4<f32> {
@@ -854,7 +854,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl AddAssign for Vector4<f32> {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
@@ -864,7 +864,7 @@ impl AddAssign for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl SubAssign for Vector4<f32> {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
@@ -874,7 +874,7 @@ impl SubAssign for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl MulAssign<f32> for Vector4<f32> {
     fn mul_assign(&mut self, other: f32) {
         let s: Simdf32x4 = (*self).into();
@@ -883,7 +883,7 @@ impl MulAssign<f32> for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl DivAssign<f32> for Vector4<f32> {
     fn div_assign(&mut self, other: f32) {
         let s: Simdf32x4 = (*self).into();
@@ -892,7 +892,7 @@ impl DivAssign<f32> for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl ElementWise for Vector4<f32> {
     #[inline] fn add_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self + rhs }
     #[inline] fn sub_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self - rhs }
@@ -921,7 +921,7 @@ impl ElementWise for Vector4<f32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl ElementWise<f32> for Vector4<f32> {
     #[inline] fn add_element_wise(self, rhs: f32) -> Vector4<f32> {
         let s: Simdf32x4 = self.into();
@@ -950,7 +950,7 @@ impl ElementWise<f32> for Vector4<f32> {
     #[inline] fn div_assign_element_wise(&mut self, rhs: f32) { (*self) /= rhs; }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl From<Simdi32x4> for Vector4<i32> {
     #[inline]
     fn from(f: Simdi32x4) -> Self {
@@ -965,7 +965,7 @@ impl From<Simdi32x4> for Vector4<i32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl Into<Simdi32x4> for Vector4<i32> {
     #[inline]
     fn into(self) -> Simdi32x4 {
@@ -974,7 +974,7 @@ impl Into<Simdi32x4> for Vector4<i32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdi32x4]; Add<Vector4<i32>> for Vector4<i32> {
         fn add(lhs, rhs) -> Vector4<i32> {
@@ -983,7 +983,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdi32x4]; Sub<Vector4<i32>> for Vector4<i32> {
         fn sub(lhs, rhs) -> Vector4<i32> {
@@ -992,7 +992,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{@rs
     [Simdi32x4]; Mul<i32> for Vector4<i32> {
         fn mul(lhs, rhs) -> Vector4<i32> {
@@ -1001,7 +1001,7 @@ impl_operator_simd!{@rs
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdi32x4]; Neg for Vector4<i32> {
         fn neg(lhs) -> Vector4<i32> {
@@ -1010,7 +1010,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl AddAssign for Vector4<i32> {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
@@ -1020,7 +1020,7 @@ impl AddAssign for Vector4<i32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl SubAssign for Vector4<i32> {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
@@ -1030,7 +1030,7 @@ impl SubAssign for Vector4<i32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl MulAssign<i32> for Vector4<i32> {
     fn mul_assign(&mut self, other: i32) {
         let s: Simdi32x4 = (*self).into();
@@ -1039,7 +1039,7 @@ impl MulAssign<i32> for Vector4<i32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl From<Simdu32x4> for Vector4<u32> {
     #[inline]
     fn from(f: Simdu32x4) -> Self {
@@ -1054,7 +1054,7 @@ impl From<Simdu32x4> for Vector4<u32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl Into<Simdu32x4> for Vector4<u32> {
     #[inline]
     fn into(self) -> Simdu32x4 {
@@ -1063,7 +1063,7 @@ impl Into<Simdu32x4> for Vector4<u32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdu32x4]; Add<Vector4<u32>> for Vector4<u32> {
         fn add(lhs, rhs) -> Vector4<u32> {
@@ -1072,7 +1072,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{
     [Simdu32x4]; Sub<Vector4<u32>> for Vector4<u32> {
         fn sub(lhs, rhs) -> Vector4<u32> {
@@ -1081,7 +1081,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator_simd!{@rs
     [Simdu32x4]; Mul<u32> for Vector4<u32> {
         fn mul(lhs, rhs) -> Vector4<u32> {
@@ -1090,7 +1090,7 @@ impl_operator_simd!{@rs
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl AddAssign for Vector4<u32> {
     #[inline]
     fn add_assign(&mut self, rhs: Self) {
@@ -1100,7 +1100,7 @@ impl AddAssign for Vector4<u32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl SubAssign for Vector4<u32> {
     #[inline]
     fn sub_assign(&mut self, rhs: Self) {
@@ -1110,7 +1110,7 @@ impl SubAssign for Vector4<u32> {
     }
 }
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl MulAssign<u32> for Vector4<u32> {
     fn mul_assign(&mut self, other: u32) {
         let s: Simdu32x4 = (*self).into();
