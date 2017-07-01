@@ -37,7 +37,7 @@ use vector::{Vector2, Vector3, Vector4};
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Matrix2<S> {
     /// The first column of the matrix.
     pub x: Vector2<S>,
@@ -50,7 +50,7 @@ pub struct Matrix2<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Matrix3<S> {
     /// The first column of the matrix.
     pub x: Vector3<S>,
@@ -65,7 +65,7 @@ pub struct Matrix3<S> {
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Matrix4<S> {
     /// The first column of the matrix.
     pub x: Vector4<S>,
@@ -666,7 +666,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     // A better option would be using specialization. But currently somewhat
     // specialization is too buggy, and it won't apply here. I'm getting
     // weird error msgs. Help wanted.
-    #[cfg(not(feature = "use_simd"))]
+    #[cfg(not(feature = "simd"))]
     fn invert(&self) -> Option<Matrix4<S>> {
         let det = self.determinant();
         if det == S::zero() {
@@ -692,7 +692,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
                               cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
         }
     }
-    #[cfg(feature = "use_simd")]
+    #[cfg(feature = "simd")]
     fn invert(&self) -> Option<Matrix4<S>> {
         let tmp0 = unsafe {
             det_sub_proc_unsafe(self, 1, 2, 3)
@@ -1057,9 +1057,9 @@ macro_rules! impl_mv_operator {
 
 impl_mv_operator!(Matrix2, Vector2 { x: 0, y: 1 });
 impl_mv_operator!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
-#[cfg(not(feature = "use_simd"))]
+#[cfg(not(feature = "simd"))]
 impl_mv_operator!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 impl_operator!(<S: BaseFloat> Mul<Vector4<S> > for Matrix4<S> {
     fn mul(matrix, vector) -> Vector4<S> {
         matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]

@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Refactored `simd` and `serde` dependencies to match feature names
+
 ## [v0.14.1] - 2017-05-02
 
 ### Fixed

@@ -50,20 +50,18 @@
 //! use cgmath::prelude::*;
 //! ```
 
-#![cfg_attr(feature = "use_simd", feature(specialization))]
+#![cfg_attr(feature = "simd", feature(specialization))]
 
 #[macro_use]
 extern crate approx;
 pub extern crate num_traits;
 extern crate rand;
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 #[macro_use]
-extern crate serde_derive;
-#[cfg(feature = "eders")]
 extern crate serde;
 
-#[cfg(feature = "use_simd")]
+#[cfg(feature = "simd")]
 extern crate simd;
 
 // Re-exports

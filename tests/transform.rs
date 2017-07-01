@@ -17,7 +17,7 @@
 extern crate approx;
 extern crate cgmath;
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 extern crate serde_json;
 
 use cgmath::*;
@@ -46,7 +46,7 @@ fn test_look_at() {
     assert_ulps_eq!(&t.transform_point(point), &view_point);
 }
 
-#[cfg(feature = "eders")]
+#[cfg(feature = "serde")]
 #[test]
 fn test_serialize() {
     let t = Decomposed {

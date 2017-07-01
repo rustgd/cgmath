@@ -34,7 +34,7 @@ use num::BaseFloat;
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rad<S>(pub S);
 
 /// An angle, in degrees.
@@ -42,7 +42,7 @@ pub struct Rad<S>(pub S);
 /// This type is marked as `#[repr(C)]`.
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
-#[cfg_attr(feature = "eders", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Deg<S>(pub S);
 
 impl<S> From<Rad<S>> for Deg<S> where S: BaseFloat {
