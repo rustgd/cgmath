@@ -18,7 +18,7 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use num_traits::cast;
+use num_traits::{NumCast, cast};
 
 use structure::*;
 
@@ -226,6 +226,13 @@ impl<S: BaseFloat> MetricSpace for Quaternion<S> {
     #[inline]
     fn distance2(self, other: Self) -> S {
         (other - self).magnitude2()
+    }
+}
+
+impl<S: NumCast + Copy> Quaternion<S> {
+    /// Component-wise casting to another type.
+    pub fn cast<T: BaseFloat>(&self) -> Quaternion<T> {
+        Quaternion::from_sv(NumCast::from(self.s).unwrap(), self.v.cast())
     }
 }
 

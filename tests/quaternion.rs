@@ -331,3 +331,13 @@ mod rotate_between_vectors {
         assert_ulps_eq!(Quaternion::between_vectors(a, b), expected);
     }
 }
+
+mod cast {
+    use cgmath::*;
+
+    #[test]
+    fn test_cast() {
+        assert_ulps_eq!(Quaternion::new(0.9f64, 1.5, 2.4, 7.6).cast(),
+                        Quaternion::new(0.9f32, 1.5, 2.4, 7.6));
+    }
+}
