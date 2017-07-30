@@ -32,6 +32,9 @@ use quaternion::Quaternion;
 use transform::{Transform, Transform2, Transform3};
 use vector::{Vector2, Vector3, Vector4};
 
+#[cfg(feature = "mint")]
+use mint;
+
 /// A 2 x 2, column major matrix
 ///
 /// This type is marked as `#[repr(C)]`.
@@ -1267,6 +1270,33 @@ macro_rules! fixed_array_conversions {
 fixed_array_conversions!(Matrix2<S> { x:0, y:1 }, 2);
 fixed_array_conversions!(Matrix3<S> { x:0, y:1, z:2 }, 3);
 fixed_array_conversions!(Matrix4<S> { x:0, y:1, z:2, w:3 }, 4);
+
+#[cfg(feature = "mint")]
+macro_rules! mint_conversions {
+    ($MatrixN:ident { $($field:ident),+ }, $MintN:ident) => {
+        impl<S: Clone> Into<mint::$MintN<S>> for $MatrixN<S> {
+            #[inline]
+            fn into(self) -> mint::$MintN<S> {
+                mint::$MintN { $($field: self.$field.into()),+ }
+            }
+        }
+
+        impl<S> From<mint::$MintN<S>> for $MatrixN<S> {
+            #[inline]
+            fn from(m: mint::$MintN<S>) -> Self {
+                $MatrixN { $($field: m.$field.into()),+ }
+            }
+        }
+
+    }
+}
+
+#[cfg(feature = "mint")]
+mint_conversions!(Matrix2 { x, y }, ColumnMatrix2);
+#[cfg(feature = "mint")]
+mint_conversions!(Matrix3 { x, y, z }, ColumnMatrix3);
+#[cfg(feature = "mint")]
+mint_conversions!(Matrix4 { x, y, z, w }, ColumnMatrix4);
 
 impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner

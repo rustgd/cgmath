@@ -21,6 +21,8 @@ use structure::*;
 use angle::Rad;
 use approx::ApproxEq;
 use quaternion::Quaternion;
+#[cfg(feature = "mint")]
+use mint;
 use num::BaseFloat;
 
 /// A set of [Euler angles] representing a rotation in three-dimensional space.
@@ -177,5 +179,26 @@ impl<A: Angle + Rand> Rand for Euler<A> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Euler<A> {
         Euler { x: rng.gen(), y: rng.gen(), z: rng.gen() }
+    }
+}
+
+#[cfg(feature = "mint")]
+type MintEuler<S> = mint::EulerAngles<S, mint::IntraXYZ>;
+
+#[cfg(feature = "mint")]
+impl<S, A: Angle + From<S>> From<MintEuler<S>> for Euler<A> {
+    fn from(mint: MintEuler<S>) -> Self {
+        Euler {
+            x: mint.a.into(),
+            y: mint.b.into(),
+            z: mint.c.into(),
+        }
+    }
+}
+
+#[cfg(feature = "mint")]
+impl<S: Clone, A: Angle + Into<S>> Into<MintEuler<S>> for Euler<A> {
+    fn into(self) -> MintEuler<S> {
+        MintEuler::from([self.x.into(), self.y.into(), self.z.into()])
     }
 }

@@ -33,6 +33,9 @@ use simd::i32x4 as Simdi32x4;
 #[cfg(feature = "simd")]
 use simd::u32x4 as Simdu32x4;
 
+#[cfg(feature = "mint")]
+use mint;
+
 /// A 1-dimensional vector.
 ///
 /// This type is marked as `#[repr(C)]`.
@@ -1118,6 +1121,13 @@ impl MulAssign<u32> for Vector4<u32> {
         *self = (s * other).into();
     }
 }
+
+#[cfg(feature = "mint")]
+impl_mint_conversions!(Vector2 { x, y }, Vector2);
+#[cfg(feature = "mint")]
+impl_mint_conversions!(Vector3 { x, y, z }, Vector3);
+#[cfg(feature = "mint")]
+impl_mint_conversions!(Vector4 { x, y, z, w }, Vector4);
 
 
 #[cfg(test)]

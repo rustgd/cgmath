@@ -34,6 +34,9 @@ use vector::Vector3;
 #[cfg(feature = "simd")]
 use simd::f32x4 as Simdf32x4;
 
+#[cfg(feature = "mint")]
+use mint;
+
 /// A [quaternion](https://en.wikipedia.org/wiki/Quaternion) in scalar/vector
 /// form.
 ///
@@ -814,6 +817,27 @@ impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
        Quaternion::from_sv(rng.gen(), rng.gen())
     }
 }
+
+#[cfg(feature = "mint")]
+impl<S> From<mint::Quaternion<S>> for Quaternion<S> {
+    fn from(q: mint::Quaternion<S>) -> Self {
+        Quaternion {
+            s: q.s,
+            v: q.v.into(),
+        }
+    }
+}
+
+#[cfg(feature = "mint")]
+impl<S: Clone> Into<mint::Quaternion<S>> for Quaternion<S> {
+    fn into(self) -> mint::Quaternion<S> {
+        mint::Quaternion {
+            s: self.s,
+            v: self.v.into(),
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
