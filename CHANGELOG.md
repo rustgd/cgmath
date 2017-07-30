@@ -6,8 +6,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- Refactor `simd` and `serde` dependencies to match feature names
-- Integrate `mint` conversions behind a feature
+## [v0.15.0] - 2017-07-30
+
+### Added
+
+- Implement `mint` conversions behind a feature
+- Add `Quaternion::cast`
+
+### Changed
+
+- Rename `use_simd` feature to `simd`
+- Rename `eders` feature to `serde`
+
+### Fixed
+
+- Fix matrix inversions for small determinants
 
 ## [v0.14.1] - 2017-05-02
 
@@ -261,7 +274,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.14.1...HEAD
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.15.0...HEAD
+[v0.15.0]: https://github.com/brendanzab/cgmath/compare/v0.14.1...v0.15.0
 [v0.14.1]: https://github.com/brendanzab/cgmath/compare/v0.14.0...v0.14.1
 [v0.14.0]: https://github.com/brendanzab/cgmath/compare/v0.13.1...v0.14.0
 [v0.13.1]: https://github.com/brendanzab/cgmath/compare/v0.13.0...v0.13.1
