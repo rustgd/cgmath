@@ -130,6 +130,11 @@ macro_rules! impl_vector {
             type Element = S;
 
             #[inline]
+            fn len() -> usize {
+                $n
+            }
+
+            #[inline]
             fn from_value(scalar: S) -> $VectorN<S> {
                 $VectorN { $($field: scalar),+ }
             }
@@ -340,6 +345,11 @@ macro_rules! impl_vector_default {
 
         impl<S: Copy> Array for $VectorN<S> {
             type Element = S;
+
+            #[inline]
+            fn len() -> usize {
+                $n
+            }
 
             #[inline]
             fn from_value(scalar: S) -> $VectorN<S> {

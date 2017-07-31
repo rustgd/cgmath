@@ -104,6 +104,11 @@ macro_rules! impl_point {
             type Element = S;
 
             #[inline]
+            fn len() -> usize {
+                $n
+            }
+
+            #[inline]
             fn from_value(scalar: S) -> $PointN<S> {
                 $PointN { $($field: scalar),+ }
             }
