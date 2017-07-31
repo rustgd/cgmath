@@ -35,6 +35,16 @@ pub trait Array where
 {
     type Element: Copy;
 
+    /// Get the number of elements in the array type
+    ///
+    /// ```rust
+    /// use cgmath::prelude::*;
+    /// use cgmath::Vector3;
+    ///
+    /// assert_eq!(Vector3::<f32>::len(), 3);
+    /// ```
+    fn len() -> usize;
+
     /// Construct a vector from a single value, replicating it.
     ///
     /// ```rust
