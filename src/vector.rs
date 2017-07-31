@@ -347,6 +347,11 @@ macro_rules! impl_vector_default {
             type Element = S;
 
             #[inline]
+            fn len() -> usize {
+                $n
+            }
+
+            #[inline]
             fn from_value(scalar: S) -> $VectorN<S> {
                 $VectorN { $($field: scalar),+ }
             }
