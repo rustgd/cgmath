@@ -239,20 +239,10 @@ impl<S: NumCast + Copy> Quaternion<S> {
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl<S: BaseFloat> InnerSpace for Quaternion<S> {
-    #[inline]
-    fn dot(self, other: Quaternion<S>) -> S {
-        self.s * other.s + self.v.dot(other.v)
-    }
-}
-
-#[cfg(feature = "simd")]
-impl<S: BaseFloat> InnerSpace for Quaternion<S> {
-    #[inline]
-    default fn dot(self, other: Quaternion<S>) -> S {
-        self.s * other.s + self.v.dot(other.v)
-    }
+    impl_fn!(fn dot(lhs, other: Quaternion<S>) -> S {
+        lhs.s * other.s + lhs.v.dot(other.v)
+    });
 }
 
 #[cfg(feature = "simd")]
@@ -287,15 +277,7 @@ impl<A> From<Euler<A>> for Quaternion<A::Unitless> where
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Neg for Quaternion<S> {
-    fn neg(quat) -> Quaternion<S> {
-        Quaternion::from_sv(-quat.s, -quat.v)
-    }
-});
-
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Neg for Quaternion<S> {
     fn neg(quat) -> Quaternion<S> {
         Quaternion::from_sv(-quat.s, -quat.v)
     }
@@ -310,15 +292,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Mul<S> for Quaternion<S> {
-    fn mul(lhs, rhs) -> Quaternion<S> {
-        Quaternion::from_sv(lhs.s * rhs, lhs.v * rhs)
-    }
-});
-
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Mul<S> for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s * rhs, lhs.v * rhs)
     }
@@ -333,13 +307,7 @@ impl_operator_simd!{@rs
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for Quaternion<S> {
-    fn mul_assign(&mut self, scalar) { self.s *= scalar; self.v *= scalar; }
-});
-
-#[cfg(feature = "simd")]
-impl_assignment_operator_default!(<S: BaseFloat> MulAssign<S> for Quaternion<S> {
     fn mul_assign(&mut self, scalar) { self.s *= scalar; self.v *= scalar; }
 });
 
@@ -352,19 +320,12 @@ impl MulAssign<f32> for Quaternion<f32> {
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
     fn div(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s / rhs, lhs.v / rhs)
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Div<S> for Quaternion<S> {
-    fn div(lhs, rhs) -> Quaternion<S> {
-        Quaternion::from_sv(lhs.s / rhs, lhs.v / rhs)
-    }
-});
 
 #[cfg(feature = "simd")]
 impl_operator_simd!{@rs
@@ -375,13 +336,7 @@ impl_operator_simd!{@rs
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for Quaternion<S> {
-    fn div_assign(&mut self, scalar) { self.s /= scalar; self.v /= scalar; }
-});
-
-#[cfg(feature = "simd")]
-impl_assignment_operator_default!(<S: BaseFloat> DivAssign<S> for Quaternion<S> {
     fn div_assign(&mut self, scalar) { self.s /= scalar; self.v /= scalar; }
 });
 
@@ -413,15 +368,7 @@ impl_operator!(<S: BaseFloat> Mul<Vector3<S> > for Quaternion<S> {
     }}
 });
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Add<Quaternion<S> > for Quaternion<S> {
-    fn add(lhs, rhs) -> Quaternion<S> {
-        Quaternion::from_sv(lhs.s + rhs.s, lhs.v + rhs.v)
-    }
-});
-
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Add<Quaternion<S> > for Quaternion<S> {
     fn add(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s + rhs.s, lhs.v + rhs.v)
     }
@@ -436,13 +383,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_assignment_operator!(<S: BaseFloat> AddAssign<Quaternion<S> > for Quaternion<S> {
-    fn add_assign(&mut self, other) { self.s += other.s; self.v += other.v; }
-});
-
-#[cfg(feature = "simd")]
-impl_assignment_operator_default!(<S: BaseFloat> AddAssign<Quaternion<S> > for Quaternion<S> {
     fn add_assign(&mut self, other) { self.s += other.s; self.v += other.v; }
 });
 
@@ -456,15 +397,7 @@ impl AddAssign for Quaternion<f32> {
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
-    fn sub(lhs, rhs) -> Quaternion<S> {
-        Quaternion::from_sv(lhs.s - rhs.s, lhs.v - rhs.v)
-    }
-});
-
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
     fn sub(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s - rhs.s, lhs.v - rhs.v)
     }
@@ -479,13 +412,7 @@ impl_operator_simd!{
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_assignment_operator!(<S: BaseFloat> SubAssign<Quaternion<S> > for Quaternion<S> {
-    fn sub_assign(&mut self, other) { self.s -= other.s; self.v -= other.v; }
-});
-
-#[cfg(feature = "simd")]
-impl_assignment_operator_default!(<S: BaseFloat> SubAssign<Quaternion<S> > for Quaternion<S> {
     fn sub_assign(&mut self, other) { self.s -= other.s; self.v -= other.v; }
 });
 
@@ -499,18 +426,7 @@ impl SubAssign for Quaternion<f32> {
     }
 }
 
-#[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
-    fn mul(lhs, rhs) -> Quaternion<S> {
-        Quaternion::new(lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
-                        lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,
-                        lhs.s * rhs.v.y + lhs.v.y * rhs.s + lhs.v.z * rhs.v.x - lhs.v.x * rhs.v.z,
-                        lhs.s * rhs.v.z + lhs.v.z * rhs.s + lhs.v.x * rhs.v.y - lhs.v.y * rhs.v.x)
-    }
-});
-
-#[cfg(feature = "simd")]
-impl_operator_default!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
         Quaternion::new(lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
                         lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,

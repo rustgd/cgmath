@@ -24,7 +24,7 @@ use structure::*;
 
 use angle::Rad;
 use approx::ApproxEq;
-use num::{BaseNum, BaseFloat};
+use num::{BaseNum, BaseFloat, BaseSigned};
 
 #[cfg(feature = "simd")]
 use simd::f32x4 as Simdf32x4;
@@ -180,12 +180,9 @@ macro_rules! impl_vector {
             type Scalar = S;
         }
 
-        impl<S: Neg<Output = S>> Neg for $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
-        }
+        impl_operator!(<S: BaseSigned> Neg for $VectorN<S> {
+            fn neg(x) -> $VectorN<S> { $VectorN::new($(-x.$field),+) }
+        });
 
         impl<S: BaseFloat> ApproxEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
@@ -259,31 +256,32 @@ macro_rules! impl_vector {
         });
 
         impl<S: BaseNum> ElementWise for $VectorN<S> {
-            #[inline] fn add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) }
-            #[inline] fn sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) }
-            #[inline] fn mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) }
-            #[inline] fn div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) }
-            #[inline] fn rem_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field % rhs.$field),+) }
+            
+            impl_fn!(fn add_element_wise(lhs, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) });
+            impl_fn!(fn sub_element_wise(lhs, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) });
+            impl_fn!(fn mul_element_wise(lhs, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs.$field),+) });
+            impl_fn!(fn div_element_wise(lhs, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(lhs.$field / rhs.$field),+) });
+            impl_fn!(fn rem_element_wise(lhs, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(lhs.$field % rhs.$field),+) });
 
-            #[inline] fn add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ }
-            #[inline] fn sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ }
-            #[inline] fn mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ }
-            #[inline] fn div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ }
-            #[inline] fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ }
+            impl_fn!(fn add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ });
+            impl_fn!(fn sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ });
+            impl_fn!(fn mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ });
+            impl_fn!(fn div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ });
+            impl_fn!(fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ });
         }
 
         impl<S: BaseNum> ElementWise<S> for $VectorN<S> {
-            #[inline] fn add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) }
-            #[inline] fn sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) }
-            #[inline] fn mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) }
-            #[inline] fn div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) }
-            #[inline] fn rem_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field % rhs),+) }
+            impl_fn!(fn add_element_wise(lhs, rhs: S) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs),+) });
+            impl_fn!(fn sub_element_wise(lhs, rhs: S) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs),+) });
+            impl_fn!(fn mul_element_wise(lhs, rhs: S) -> $VectorN<S> { $VectorN::new($(lhs.$field * rhs),+) });
+            impl_fn!(fn div_element_wise(lhs, rhs: S) -> $VectorN<S> { $VectorN::new($(lhs.$field / rhs),+) });
+            impl_fn!(fn rem_element_wise(lhs, rhs: S) -> $VectorN<S> { $VectorN::new($(lhs.$field % rhs),+) });
 
-            #[inline] fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ }
-            #[inline] fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ }
-            #[inline] fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ }
-            #[inline] fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ }
-            #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
+            impl_fn!(fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ });
+            impl_fn!(fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ });
+            impl_fn!(fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ });
+            impl_fn!(fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ });
+            impl_fn!(fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ });
         }
 
         impl_scalar_ops!($VectorN<usize> { $($field),+ });
@@ -297,227 +295,6 @@ macro_rules! impl_vector {
         impl_scalar_ops!($VectorN<i32> { $($field),+ });
         impl_scalar_ops!($VectorN<i64> { $($field),+ });
         impl_scalar_ops!($VectorN<f32> { $($field),+ });
-        impl_scalar_ops!($VectorN<f64> { $($field),+ });
-
-        impl_index_operators!($VectorN<S>, $n, S, usize);
-        impl_index_operators!($VectorN<S>, $n, [S], Range<usize>);
-        impl_index_operators!($VectorN<S>, $n, [S], RangeTo<usize>);
-        impl_index_operators!($VectorN<S>, $n, [S], RangeFrom<usize>);
-        impl_index_operators!($VectorN<S>, $n, [S], RangeFull);
-    }
-}
-
-// Utility macro for generating associated functions for the vectors
-// mainly duplication
-#[cfg(feature = "simd")]
-macro_rules! impl_vector_default {
-    ($VectorN:ident { $($field:ident),+ }, $n:expr, $constructor:ident) => {
-        impl<S> $VectorN<S> {
-            /// Construct a new vector, using the provided values.
-            #[inline]
-            pub fn new($($field: S),+) -> $VectorN<S> {
-                $VectorN { $($field: $field),+ }
-            }
-        }
-
-        /// The short constructor.
-        #[inline]
-        pub fn $constructor<S>($($field: S),+) -> $VectorN<S> {
-            $VectorN::new($($field),+)
-        }
-
-        impl<S: NumCast + Copy> $VectorN<S> {
-            /// Component-wise casting to another type.
-            #[inline]
-            pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
-                $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
-            }
-        }
-
-        impl<S: BaseFloat> MetricSpace for $VectorN<S> {
-            type Metric = S;
-
-            #[inline]
-            fn distance2(self, other: Self) -> S {
-                (other - self).magnitude2()
-            }
-        }
-
-        impl<S: Copy> Array for $VectorN<S> {
-            type Element = S;
-
-            #[inline]
-            fn len() -> usize {
-                $n
-            }
-
-            #[inline]
-            fn from_value(scalar: S) -> $VectorN<S> {
-                $VectorN { $($field: scalar),+ }
-            }
-
-            #[inline]
-            fn sum(self) -> S where S: Add<Output = S> {
-                fold_array!(add, { $(self.$field),+ })
-            }
-
-            #[inline]
-            fn product(self) -> S where S: Mul<Output = S> {
-                fold_array!(mul, { $(self.$field),+ })
-            }
-        }
-
-        impl<S: BaseNum> Zero for $VectorN<S> {
-            #[inline]
-            fn zero() -> $VectorN<S> {
-                $VectorN::from_value(S::zero())
-            }
-
-            #[inline]
-            fn is_zero(&self) -> bool {
-                *self == $VectorN::zero()
-            }
-        }
-
-        impl<S: BaseNum> iter::Sum for $VectorN<S> {
-            #[inline]
-            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
-            }
-        }
-
-        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
-            #[inline]
-            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
-            }
-        }
-
-        impl<S: BaseNum> VectorSpace for $VectorN<S> {
-            type Scalar = S;
-        }
-
-        impl<S: Neg<Output = S>> Neg for $VectorN<S> {
-            type Output = $VectorN<S>;
-
-            #[inline]
-            default fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
-        }
-
-        impl<S: BaseFloat> ApproxEq for $VectorN<S> {
-            type Epsilon = S::Epsilon;
-
-            #[inline]
-            fn default_epsilon() -> S::Epsilon {
-                S::default_epsilon()
-            }
-
-            #[inline]
-            fn default_max_relative() -> S::Epsilon {
-                S::default_max_relative()
-            }
-
-            #[inline]
-            fn default_max_ulps() -> u32 {
-                S::default_max_ulps()
-            }
-
-            #[inline]
-            fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
-                $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
-            }
-
-            #[inline]
-            fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
-                $(S::ulps_eq(&self.$field, &other.$field, epsilon, max_ulps))&&+
-            }
-        }
-
-        impl<S: BaseFloat + Rand> Rand for $VectorN<S> {
-            #[inline]
-            fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
-                $VectorN { $($field: rng.gen()),+ }
-            }
-        }
-
-        impl_operator_default!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
-            fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
-        });
-
-        impl_assignment_operator_default!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
-            fn add_assign(&mut self, other) { $(self.$field += other.$field);+ }
-        });
-
-        impl_operator_default!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
-            fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
-        });
-
-        impl_assignment_operator_default!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
-            fn sub_assign(&mut self, other) { $(self.$field -= other.$field);+ }
-        });
-
-        impl_operator_default!(<S: BaseNum> Mul<S> for $VectorN<S> {
-            fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
-        });
-
-        impl_assignment_operator_default!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
-            fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
-        });
-
-        impl_operator_default!(<S: BaseNum> Div<S> for $VectorN<S> {
-            fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
-        });
-
-        impl_assignment_operator_default!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
-            fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
-        });
-
-        impl_operator!(<S: BaseNum> Rem<S> for $VectorN<S> {
-            fn rem(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field % scalar),+) }
-        });
-        impl_assignment_operator!(<S: BaseNum> RemAssign<S> for $VectorN<S> {
-            fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
-        });
-
-        impl<S: BaseNum> ElementWise for $VectorN<S> {
-            #[inline] default fn add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) }
-            #[inline] default fn sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) }
-            #[inline] default fn mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) }
-            #[inline] default fn div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) }
-            #[inline] fn rem_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field % rhs.$field),+) }
-
-            #[inline] default fn add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ }
-            #[inline] default fn sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ }
-            #[inline] default fn mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ }
-            #[inline] default fn div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ }
-            #[inline] fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ }
-        }
-
-        impl<S: BaseNum> ElementWise<S> for $VectorN<S> {
-            #[inline] default fn add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) }
-            #[inline] default fn sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) }
-            #[inline] default fn mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) }
-            #[inline] default fn div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) }
-            #[inline] fn rem_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field % rhs),+) }
-
-            #[inline] default fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ }
-            #[inline] default fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ }
-            #[inline] default fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ }
-            #[inline] default fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ }
-            #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
-        }
-
-        impl_scalar_ops!($VectorN<usize> { $($field),+ });
-        impl_scalar_ops!($VectorN<u8> { $($field),+ });
-        impl_scalar_ops!($VectorN<u16> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<u32> { $($field),+ });
-        impl_scalar_ops!($VectorN<u64> { $($field),+ });
-        impl_scalar_ops!($VectorN<isize> { $($field),+ });
-        impl_scalar_ops!($VectorN<i8> { $($field),+ });
-        impl_scalar_ops!($VectorN<i16> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<i32> { $($field),+ });
-        impl_scalar_ops!($VectorN<i64> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<f32> { $($field),+ });
         impl_scalar_ops!($VectorN<f64> { $($field),+ });
 
         impl_index_operators!($VectorN<S>, $n, S, usize);
@@ -542,28 +319,10 @@ macro_rules! impl_scalar_ops {
     };
 }
 
-#[cfg(feature = "simd")]
-macro_rules! impl_scalar_ops_default {
-    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
-        impl_operator_default!(Mul<$VectorN<$S>> for $S {
-            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
-        });
-        impl_operator_default!(Div<$VectorN<$S>> for $S {
-            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
-        });
-        impl_operator_default!(Rem<$VectorN<$S>> for $S {
-            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
-        });
-    };
-}
-
 impl_vector!(Vector1 { x }, 1, vec1);
 impl_vector!(Vector2 { x, y }, 2, vec2);
 impl_vector!(Vector3 { x, y, z }, 3, vec3);
-#[cfg(not(feature = "simd"))]
 impl_vector!(Vector4 { x, y, z, w }, 4, vec4);
-#[cfg(feature = "simd")]
-impl_vector_default!(Vector4 { x, y, z, w }, 4, vec4);
 
 impl_fixed_array_conversions!(Vector1<S> { x: 0 }, 1);
 impl_fixed_array_conversions!(Vector2<S> { x: 0, y: 1 }, 2);
