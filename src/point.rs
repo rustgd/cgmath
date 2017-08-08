@@ -17,7 +17,7 @@
 //! disinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
-use num_traits::NumCast;
+use num_traits::{NumCast, Bounded};
 use std::fmt;
 use std::mem;
 use std::ops::*;
@@ -192,6 +192,18 @@ macro_rules! impl_point {
             #[inline]
             fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
                 $(S::ulps_eq(&self.$field, &other.$field, epsilon, max_ulps))&&+
+            }
+        }
+
+        impl<S: Bounded> Bounded for $PointN<S> {
+            #[inline]
+            fn min_value() -> $PointN<S> {
+                $PointN { $($field: S::min_value()),+ }
+            }
+
+            #[inline]
+            fn max_value() -> $PointN<S> {
+                $PointN { $($field: S::max_value()),+ }
             }
         }
 

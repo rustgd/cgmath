@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::NumCast;
+use num_traits::{NumCast, Bounded};
 use std::fmt;
 use std::iter;
 use std::mem;
@@ -220,6 +220,18 @@ macro_rules! impl_vector {
             #[inline]
             fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
+            }
+        }
+
+        impl<S: Bounded> Bounded for $VectorN<S> {
+            #[inline]
+            fn min_value() -> $VectorN<S> {
+                $VectorN { $($field: S::min_value()),+ }
+            }
+
+            #[inline]
+            fn max_value() -> $VectorN<S> {
+                $VectorN { $($field: S::max_value()),+ }
             }
         }
 
