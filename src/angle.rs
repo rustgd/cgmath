@@ -22,7 +22,7 @@ use std::ops::*;
 
 use rand::{Rand, Rng};
 use rand::distributions::range::SampleRange;
-use num_traits::cast;
+use num_traits::{cast, Bounded};
 
 use structure::*;
 
@@ -115,6 +115,18 @@ macro_rules! impl_angle {
 
             #[inline]
             fn neg(self) -> $Angle<S> { $Angle(-self.0) }
+        }
+
+        impl<S: Bounded> Bounded for $Angle<S> {
+            #[inline]
+            fn min_value() -> $Angle<S> {
+                $Angle(S::min_value())
+            }
+
+            #[inline]
+            fn max_value() -> $Angle<S> {
+                $Angle(S::max_value())
+            }
         }
 
         impl_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
