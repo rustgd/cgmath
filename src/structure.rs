@@ -310,6 +310,7 @@ pub trait EuclideanSpace: Copy + Clone where
     Self: Array<Element = <Self as EuclideanSpace>::Scalar>,
 
     Self: Add<<Self as EuclideanSpace>::Diff, Output = Self>,
+    Self: Sub<<Self as EuclideanSpace>::Diff, Output = Self>,
     Self: Sub<Self, Output = <Self as EuclideanSpace>::Diff>,
 
     Self: Mul<<Self as EuclideanSpace>::Scalar, Output = Self>,
