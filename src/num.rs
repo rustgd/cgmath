@@ -18,14 +18,18 @@ use approx::ApproxEq;
 use std::fmt;
 use std::ops::*;
 
-use num_traits::{Float, Num, NumCast};
+use num_traits::{Float, Num, NumCast, Signed};
 
 /// Base numeric types with partial ordering
 pub trait BaseNum: Copy + Clone + fmt::Debug + Num + NumCast + PartialOrd + AddAssign + SubAssign + MulAssign + DivAssign + RemAssign {}
 
 impl<T> BaseNum for T where T: Copy + Clone + fmt::Debug + Num + NumCast + PartialOrd + AddAssign + SubAssign + MulAssign + DivAssign + RemAssign {}
 
-/// Base floating point types
-pub trait BaseFloat: BaseNum + Float + ApproxEq<Epsilon = Self> {}
+/// Base signed types
+pub trait BaseSigned: BaseNum + Signed {}
 
-impl<T> BaseFloat for T where T: BaseNum + Float + ApproxEq<Epsilon = Self> {}
+impl<T> BaseSigned for T where T: BaseNum + Signed {}
+/// Base floating point types
+pub trait BaseFloat: BaseSigned + Float + ApproxEq<Epsilon = Self> {}
+
+impl<T> BaseFloat for T where T: BaseSigned + Float + ApproxEq<Epsilon = Self> {}
