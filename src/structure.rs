@@ -25,7 +25,7 @@ use approx::ApproxEq;
 use angle::Rad;
 use num::{BaseNum, BaseFloat};
 
-pub use num_traits::{One, Zero};
+pub use num_traits::{One, Zero, Bounded};
 
 /// An array containing elements of type `Element`
 pub trait Array where
