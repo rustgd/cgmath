@@ -347,8 +347,14 @@ macro_rules! impl_vector_default {
         impl<S: NumCast + Copy> $VectorN<S> {
             /// Component-wise casting to another type.
             #[inline]
-            pub fn cast<T: NumCast>(&self) -> $VectorN<T> {
-                $VectorN { $($field: NumCast::from(self.$field).unwrap()),+ }
+            pub fn cast<T: NumCast>(&self) -> Option<$VectorN<T>> {
+                $(
+                    let $field = match NumCast::from(self.$field) {
+                        Some(field) => field,
+                        None => return None
+                    };
+                )+
+                Some($VectorN { $($field),+ })
             }
         }
 
