@@ -127,8 +127,14 @@ macro_rules! impl_point {
         impl<S: NumCast + Copy> $PointN<S> {
             /// Component-wise casting to another type
             #[inline]
-            pub fn cast<T: NumCast>(&self) -> $PointN<T> {
-                $PointN { $($field: NumCast::from(self.$field).unwrap()),+ }
+            pub fn cast<T: NumCast>(&self) -> Option<$PointN<T>> {
+                $(
+                    let $field = match NumCast::from(self.$field) {
+                        Some(field) => field,
+                        None => return None
+                    };
+                )+
+                Some($PointN { $($field),+ })
             }
         }
 

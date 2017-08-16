@@ -250,7 +250,7 @@ fn test_normalize() {
 
 #[test]
 fn test_cast() {
-    assert_ulps_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
-    assert_ulps_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));
-    assert_ulps_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
+    assert_ulps_eq!(Vector2::new(0.9f64, 1.5).cast().unwrap(), Vector2::new(0.9f32, 1.5));
+    assert_ulps_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast().unwrap(), Vector3::new(1.0f32, 2.4, -3.13));
+    assert_ulps_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast().unwrap(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
 }

@@ -171,5 +171,5 @@ fn test_normalize() {
 
 #[test]
 fn test_cast() {
-    assert_ulps_eq!(Vector4::new(13.5f32, -4.6, -8.3, 2.41).cast(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
+    assert_ulps_eq!(Vector4::new(13.5f32, -4.6, -8.3, 2.41).cast().unwrap(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
 }

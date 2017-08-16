@@ -77,7 +77,7 @@ fn test_rem() {
 
 #[test]
 fn test_cast() {
-    assert_ulps_eq!(Point1::new(0.9f64).cast(), Point1::new(0.9f32));
-    assert_ulps_eq!(Point2::new(0.9f64, 1.5).cast(), Point2::new(0.9f32, 1.5));
-    assert_ulps_eq!(Point3::new(1.0f64, 2.4, -3.13).cast(), Point3::new(1.0f32, 2.4, -3.13));
+    assert_ulps_eq!(Point1::new(0.9f64).cast().unwrap(), Point1::new(0.9f32));
+    assert_ulps_eq!(Point2::new(0.9f64, 1.5).cast().unwrap(), Point2::new(0.9f32, 1.5));
+    assert_ulps_eq!(Point3::new(1.0f64, 2.4, -3.13).cast().unwrap(), Point3::new(1.0f32, 2.4, -3.13));
 }
