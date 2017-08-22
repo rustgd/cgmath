@@ -256,6 +256,15 @@ pub trait InnerSpace: VectorSpace where
     fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
         self + ((other - self) * amount)
     }
+
+    /// Returns the
+    /// [vector projection](https://en.wikipedia.org/wiki/Vector_projection)
+    /// of the current inner space projected onto the supplied argument.
+    #[inline]
+    #[must_use]
+    fn project_on(self, other: Self) -> Self {
+        other * (self.dot(other) / other.magnitude2())
+    }
 }
 
 /// Points in a [Euclidean space](https://en.wikipedia.org/wiki/Euclidean_space)

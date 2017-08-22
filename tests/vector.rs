@@ -249,6 +249,13 @@ fn test_normalize() {
 }
 
 #[test]
+fn test_project_on() {
+    assert_ulps_eq!(Vector2::new(-1.0f64, 5.0).project_on(Vector2::new(2.0, 4.0)), &Vector2::new(9.0/5.0, 18.0/5.0));
+    assert_ulps_eq!(Vector3::new(5.0f64, 6.0, 7.0).project_on(Vector3::new(1.0, 1.0, 1.0)), &Vector3::new(6.0, 6.0, 6.0));
+    assert_ulps_eq!(Vector4::new(0.0f64, -5.0, 5.0, 5.0).project_on(Vector4::new(0.0, 1.0, 0.0, 0.5)), &Vector4::new(0.0, -2.0, 0.0, -1.0));
+}
+
+#[test]
 fn test_cast() {
     assert_ulps_eq!(Vector2::new(0.9f64, 1.5).cast(), Vector2::new(0.9f32, 1.5));
     assert_ulps_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast(), Vector3::new(1.0f32, 2.4, -3.13));
