@@ -234,8 +234,16 @@ impl<S: BaseFloat> MetricSpace for Quaternion<S> {
 
 impl<S: NumCast + Copy> Quaternion<S> {
     /// Component-wise casting to another type.
-    pub fn cast<T: BaseFloat>(&self) -> Quaternion<T> {
-        Quaternion::from_sv(NumCast::from(self.s).unwrap(), self.v.cast())
+    pub fn cast<T: BaseFloat>(&self) -> Option<Quaternion<T>> {
+        let s = match NumCast::from(self.s) {
+            Some(s) => s,
+            None => return None
+        };
+        let v = match self.v.cast() {
+            Some(v) => v,
+            None => return None
+        };
+        Some(Quaternion::from_sv(s, v))
     }
 }
 

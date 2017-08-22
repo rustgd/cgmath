@@ -1025,8 +1025,14 @@ macro_rules! impl_matrix {
         impl<S: NumCast + Copy> $MatrixN<S> {
             /// Component-wise casting to another type
             #[inline]
-            pub fn cast<T: NumCast>(&self) -> $MatrixN<T> {
-                $MatrixN { $($field: self.$field.cast() ),+ }
+            pub fn cast<T: NumCast>(&self) -> Option<$MatrixN<T>> {
+                $(
+                    let $field = match self.$field.cast() {
+                        Some(field) => field,
+                        None => return None
+                    };
+                )+
+                Some($MatrixN { $($field),+ })
             }
         }
     }
