@@ -36,6 +36,18 @@ fn test_invert() {
 }
 
 #[test]
+fn test_inverse_vector() {
+    let v = Vector3::new(1.0f64, 2.0, 3.0);
+    let t = Decomposed {
+        scale: 1.5f64,
+        rot: Quaternion::new(0.5f64, 0.5, 0.5, 0.5),
+        disp: Vector3::new(6.0f64, -7.0, 8.0),
+    };
+    let vt = t.inverse_transform_vector(v).expect("Expected successful inversion");
+    assert_ulps_eq!(v, t.transform_vector(vt));
+}
+
+#[test]
 fn test_look_at() {
     let eye = Point3::new(0.0f64, 0.0, -5.0);
     let center = Point3::new(0.0f64, 0.0, 0.0);
