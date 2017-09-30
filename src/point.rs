@@ -70,7 +70,7 @@ impl<S: BaseNum> Point1<S> {
         Point1 { x: x }
     }
 
-    impl_swizzle_functions!(Point1, S, x);
+    impl_swizzle_functions!(Point1, Point2, Point3, S, x);
 }
 
 impl<S: BaseNum> Point2<S> {
@@ -79,7 +79,7 @@ impl<S: BaseNum> Point2<S> {
         Point2 { x: x, y: y }
     }
 
-    impl_swizzle_functions!(Point1, Point2, S, xy);
+    impl_swizzle_functions!(Point1, Point2, Point3, S, xy);
 }
 
 impl<S: BaseNum> Point3<S> {

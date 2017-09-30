@@ -606,7 +606,7 @@ impl<S: BaseNum> Vector1<S> {
         Vector1::new(S::one())
     }
 
-    impl_swizzle_functions!(Vector1, S, x);
+    impl_swizzle_functions!(Vector1, Vector2, Vector3, Vector4, S, x);
 }
 
 impl<S: BaseNum> Vector2<S> {
@@ -635,7 +635,7 @@ impl<S: BaseNum> Vector2<S> {
         Vector3::new(self.x, self.y, z)
     }
 
-    impl_swizzle_functions!(Vector1, Vector2, S, xy);
+    impl_swizzle_functions!(Vector1, Vector2, Vector3, Vector4, S, xy);
 }
 
 impl<S: BaseNum> Vector3<S> {
@@ -679,7 +679,7 @@ impl<S: BaseNum> Vector3<S> {
         Vector2::new(self.x, self.y)
     }
 
-    impl_swizzle_functions!(Vector1, Vector2, Vector3, S, xyz);
+    impl_swizzle_functions!(Vector1, Vector2, Vector3, Vector4, S, xyz);
 }
 
 impl<S: BaseNum> Vector4<S> {
