@@ -32,10 +32,12 @@ fn gen_swizzle_functions(variables: &'static str, upto: usize) -> String {
     let nn = (variables.len()+1).pow(upto as u32);
     for i in 1..nn {
         if let Some((swizzle_name, swizzle_impl)) = gen_swizzle_nth(variables, i, upto) {
-            let vec_type = format!("$vector_type{}", swizzle_name.len());
+            let dim = format!("{}", swizzle_name.len());
             result.push_str(
-                &format!("        #[inline] pub fn {0}(&self) -> {2}<$S> {{ {2}::new({1}) }}\n",
-                swizzle_name, swizzle_impl, vec_type));
+                &format!("
+        /// Swizzle operator that creates a new type with dimension {2} from variables `{0}`.
+        #[inline] pub fn {0}(&self) -> $vector_type{2}<$S> {{ $vector_type{2}::new({1}) }}\n",
+                swizzle_name, swizzle_impl, dim));
         }
     }
     result
