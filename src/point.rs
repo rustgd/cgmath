@@ -69,6 +69,8 @@ impl<S: BaseNum> Point1<S> {
     pub fn new(x: S) -> Point1<S> {
         Point1 { x: x }
     }
+
+    impl_swizzle_functions!(Point1, S, x);
 }
 
 impl<S: BaseNum> Point2<S> {
@@ -76,6 +78,8 @@ impl<S: BaseNum> Point2<S> {
     pub fn new(x: S, y: S) -> Point2<S> {
         Point2 { x: x, y: y }
     }
+
+    impl_swizzle_functions!(Point1, Point2, S, xy);
 }
 
 impl<S: BaseNum> Point3<S> {
@@ -83,6 +87,8 @@ impl<S: BaseNum> Point3<S> {
     pub fn new(x: S, y: S, z: S) -> Point3<S> {
         Point3 { x: x, y: y, z: z }
     }
+
+    impl_swizzle_functions!(Point1, Point2, Point3, S, xyz);
 }
 
 impl<S: BaseNum> Point3<S> {
