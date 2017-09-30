@@ -476,3 +476,5 @@ macro_rules! impl_mint_conversions {
         }
     }
 }
+
+include!(concat!(env!("OUT_DIR"), "/swizzle_operator_macro.rs"));
