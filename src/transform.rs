@@ -37,6 +37,11 @@ pub trait Transform<P: EuclideanSpace>: Sized {
     /// Transform a vector using this transform.
     fn transform_vector(&self, vec: P::Diff) -> P::Diff;
 
+    /// Inverse transform a vector using this transform
+    fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
+        self.inverse_transform().and_then(|inverse| Some(inverse.transform_vector(vec)))
+    }
+
     /// Transform a point using this transform.
     fn transform_point(&self, point: P) -> P;
 
@@ -91,6 +96,15 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
     #[inline]
     fn transform_vector(&self, vec: P::Diff) -> P::Diff {
         self.rot.rotate_vector(vec * self.scale)
+    }
+
+    #[inline]
+    fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
+        if ulps_eq!(self.scale, &P::Scalar::zero()) {
+            None
+        } else {
+            Some(self.rot.invert().rotate_vector(vec / self.scale))
+        }
     }
 
     #[inline]
