@@ -32,6 +32,32 @@ vectors"), meaning when transforming a vector with a matrix, the matrix goes
 on the left. This is reflected in the fact that cgmath implements the
 multiplication operator for Matrix * Vector, but not Vector * Matrix.
 
+## Features
+
+### Swizzling
+This library offers an optional feature called
+["swizzling"](https://en.wikipedia.org/wiki/Swizzling_(computer_graphics))
+widely familiar to GPU programmers. To enable swizzle operators, pass the
+`--features="swizzle"` option to cargo. Enabling this feature will increase
+the size of the cgmath library by approximately 0.6MB. This isn't an
+issue if the library is linked in the "normal" way by adding cgmath as a
+dependency in Cargo.toml, which will link cgmath statically so all unused
+swizzle operators will be optimized away by the compiler in release mode.
+
+#### Example
+If we have
+```rust
+let v = Vector3::new(1.0, 2.0, 3.0);
+```
+then `v.xyxz()` produces a
+```rust
+Vector4 { x: 1.0, y: 2.0, z: 1.0, w: 3.0 }
+```
+and `v.zy()` produces a
+```rust
+Vector2 { x: 3.0, y: 2.0 }
+```
+
 ## Limitations
 
 cgmath is _not_ an n-dimensional library and is aimed at computer graphics
