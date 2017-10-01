@@ -13,13 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![cfg(feature = "swizzle")]
+
 extern crate cgmath;
 
 use cgmath::{Point1, Point2, Point3, Vector1, Vector2, Vector3, Vector4};
 
 // Sanity checks
 #[test]
-fn test_point() {
+fn test_point_swizzle() {
     let p1 = Point1::new(1.0);
     let p2 = Point2::new(1.0, 2.0);
     let p3 = Point3::new(1.0, 2.0, 3.0);
@@ -38,7 +40,7 @@ fn test_point() {
 }
 
 #[test]
-fn test_vector() {
+fn test_vector_swizzle() {
     let p1 = Vector1::new(1.0);
     let p2 = Vector2::new(1.0, 2.0);
     let p3 = Vector3::new(1.0, 2.0, 3.0);
