@@ -6,6 +6,7 @@ use std::string::String;
 
 /// Generate the name of the swizzle function and what it returns.
 /// NOTE: This function assumes that variables are in ASCII format
+#[cfg(feature = "swizzle")]
 fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<(String, String)> {
     debug_assert!(i > 0); // zeroth permutation is empty
     let mut swizzle_impl = String::new();
@@ -27,6 +28,7 @@ fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<
 /// `upto`: largest output vector size (e.g. for `variables = "xy"` and `upto = 4`, `xyxy()` is a
 /// valid swizzle operator.
 /// NOTE: This function assumes that variables are in ASCII format
+#[cfg(feature = "swizzle")]
 fn gen_swizzle_functions(variables: &'static str, upto: usize) -> String {
     let mut result = String::new();
     let nn = (variables.len()+1).pow(upto as u32);
@@ -42,6 +44,12 @@ fn gen_swizzle_functions(variables: &'static str, upto: usize) -> String {
     }
     result
 }
+
+#[cfg(not(feature = "swizzle"))]
+fn gen_swizzle_functions(_: &'static str, _: usize) -> String {
+    String::new()
+}
+
 
 /// This script generates the macro for building swizzle operators for multidimensional
 /// vectors and points. This macro is included in macros.rs
@@ -75,13 +83,13 @@ macro_rules! impl_swizzle_functions {{
     ($vector_type1:ident, $vector_type2:ident, $vector_type3:ident, $vector_type4:ident, $S:ident, xyzw) => {{
 {xyzw4}
     }};
-}}", x3=gen_swizzle_functions("x",3),
-     xy3=gen_swizzle_functions("xy",3),
-     xyz3=gen_swizzle_functions("xyz",3),
-     x4=gen_swizzle_functions("x",4),
-     xy4=gen_swizzle_functions("xy",4),
-     xyz4=gen_swizzle_functions("xyz",4),
-     xyzw4=gen_swizzle_functions("xyzw",4));
+}}", x3 = gen_swizzle_functions("x", 3),
+     xy3 = gen_swizzle_functions("xy", 3),
+     xyz3 = gen_swizzle_functions("xyz", 3),
+     x4 = gen_swizzle_functions("x", 4),
+     xy4 = gen_swizzle_functions("xy", 4),
+     xyz4 = gen_swizzle_functions("xyz", 4),
+     xyzw4 = gen_swizzle_functions("xyzw", 4));
     let mut f = File::create(swizzle_file_path)
         .expect("Unable to create file that defines the swizzle operator macro.");
     f.write_all(data.as_bytes()).expect("Unable to write swizzle operator macro.");

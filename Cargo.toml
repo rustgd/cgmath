@@ -18,6 +18,7 @@ name = "cgmath"
 
 [features]
 unstable = []
+swizzle = []
 
 [dependencies]
 approx = "0.1"
