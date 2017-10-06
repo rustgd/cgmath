@@ -205,7 +205,7 @@ macro_rules! impl_point {
             fn add_assign(&mut self, vector) { $(self.$field += vector.$field);+ }
         });
         impl_assignment_operator!(<S: BaseNum> SubAssign<$VectorN<S>> for $PointN<S> {
-            fn sub_assign(&mut self, vector) { $(self.$field += vector.$field);+ }
+            fn sub_assign(&mut self, vector) { $(self.$field -= vector.$field);+ }
         });
 
         impl_operator!(<S: BaseNum> Sub<$PointN<S> > for $PointN<S> {
