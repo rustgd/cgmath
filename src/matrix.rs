@@ -232,8 +232,8 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        let f = (center - eye).normalize();
+    pub fn look_at_dir(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
+        let f = dir.normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(f);
 
@@ -241,6 +241,12 @@ impl<S: BaseFloat> Matrix4<S> {
                      s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
                      s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
                      -eye.dot(s), -eye.dot(u), eye.dot(f), S::one())
+    }
+
+    /// Create a homogeneous transformation matrix that will cause a vector to point at
+    /// `center`, using `up` for orientation.
+    pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_at_dir(eye, center - eye, up)
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `x` axis (pitch).
