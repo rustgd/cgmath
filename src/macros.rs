@@ -142,10 +142,10 @@ macro_rules! fold_array {
 /// Generate array conversion implementations for a compound array type
 macro_rules! impl_fixed_array_conversions {
     ($ArrayN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-        impl<$S> Into<[$S; $n]> for $ArrayN<$S> {
+        impl<$S: Copy> Into<[$S; $n]> for $ArrayN<$S> {
             #[inline]
             fn into(self) -> [$S; $n] {
-                match self { $ArrayN { $($field),+ } => [$($field),+] }
+                unsafe { mem::transmute_copy(&self) }
             }
         }
 
@@ -163,11 +163,11 @@ macro_rules! impl_fixed_array_conversions {
             }
         }
 
-        impl<$S: Clone> From<[$S; $n]> for $ArrayN<$S> {
+        impl<$S> From<[$S; $n]> for $ArrayN<$S> {
             #[inline]
             fn from(v: [$S; $n]) -> $ArrayN<$S> {
                 // We need to use a clone here because we can't pattern match on arrays yet
-                $ArrayN { $($field: v[$index].clone()),+ }
+                unsafe { mem::transmute_copy(&v) }
             }
         }
 
