@@ -142,7 +142,7 @@ macro_rules! fold_array {
 /// Generate array conversion implementations for a compound array type
 macro_rules! impl_fixed_array_conversions {
     ($ArrayN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-        impl<$S> Into<[$S; $n]> for $ArrayN<$S> {
+        impl<$S: Copy> Into<[$S; $n]> for $ArrayN<$S> {
             #[inline]
             fn into(self) -> [$S; $n] {
                 unsafe { mem::transmute_copy(&self) }
