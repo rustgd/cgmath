@@ -603,6 +603,13 @@ where
         }
     }
 
+    /// Return the angle, normalized to the range `[-turn_div_2, turn_div_2)`.
+    #[inline]
+    fn normalize_signed(self) -> Self {
+        let rem = self.normalize();
+        if Self::turn_div_2() < rem { rem - Self::full_turn() } else { rem }
+    }
+
     /// Return the angle rotated by half a turn.
     #[inline]
     fn opposite(self) -> Self {
