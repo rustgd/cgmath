@@ -35,9 +35,9 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, f
     }.into()
 }
 
-/// Create a perspective matrix from a view frustrum.
+/// Create a perspective matrix from a view frustum.
 ///
-/// This is the equivalent of the now deprecated [glFrustrum]
+/// This is the equivalent of the now deprecated [glFrustum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {

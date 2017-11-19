@@ -128,7 +128,7 @@ impl<S: BaseFloat> Quaternion<S> {
         (self * (S::one() - amount) + other * amount).normalize()
     }
 
-    /// Spherical Linear Intoperlation
+    /// Spherical Linear Interpolation
     ///
     /// Return the spherical linear interpolation between the quaternion and
     /// `other`. Both quaternions should be normalized first.
@@ -136,7 +136,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// # Performance notes
     ///
     /// The `acos` operation used in `slerp` is an expensive operation, so
-    /// unless your quarternions are far away from each other it's generally
+    /// unless your quaternions are far away from each other it's generally
     /// more advisable to use `nlerp` when you know your rotations are going
     /// to be small.
     ///
