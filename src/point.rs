@@ -14,7 +14,7 @@
 // limitations under the License.
 
 //! Points are fixed positions in affine space with no length or direction. This
-//! disinguishes them from vectors, which have a length and direction, but do
+//! distinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
 use num_traits::{NumCast, Bounded};
