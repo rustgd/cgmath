@@ -651,7 +651,7 @@ impl<S: BaseNum> Vector3<S> {
         Vector3::new(S::zero(), S::one(), S::zero())
     }
 
-    /// A unit vector in the `w` direction.
+    /// A unit vector in the `z` direction.
     #[inline]
     pub fn unit_z() -> Vector3<S> {
         Vector3::new(S::zero(), S::zero(), S::one())
