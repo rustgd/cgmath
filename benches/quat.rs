@@ -15,9 +15,9 @@
 
 #![feature(test)]
 
+extern crate cgmath;
 extern crate rand;
 extern crate test;
-extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
 use std::ops::*;
@@ -25,8 +25,9 @@ use test::Bencher;
 
 use cgmath::*;
 
-#[path="common/macros.rs"]
-#[macro_use] mod macros;
+#[path = "common/macros.rs"]
+#[macro_use]
+mod macros;
 
 bench_binop!(_bench_quat_add_q, Quaternion<f32>, Quaternion<f32>, add);
 bench_binop!(_bench_quat_sub_q, Quaternion<f32>, Quaternion<f32>, sub);

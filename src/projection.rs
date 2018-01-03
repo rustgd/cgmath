@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::{Zero};
+use num_traits::Zero;
 use num_traits::cast;
 
 use structure::Angle;
@@ -26,12 +26,17 @@ use num::BaseFloat;
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
+    fovy: A,
+    aspect: S,
+    near: S,
+    far: S,
+) -> Matrix4<S> {
     PerspectiveFov {
-        fovy:   fovy.into(),
+        fovy: fovy.into(),
         aspect: aspect,
-        near:   near,
-        far:    far,
+        near: near,
+        far: far,
     }.into()
 }
 
@@ -41,12 +46,12 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, f
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
 pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
-        left:   left,
-        right:  right,
+        left: left,
+        right: right,
         bottom: bottom,
-        top:    top,
-        near:   near,
-        far:    far,
+        top: top,
+        near: near,
+        far: far,
     }.into()
 }
 
@@ -56,12 +61,12 @@ pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far:
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
 pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
-        left:   left,
-        right:  right,
+        left: left,
+        right: right,
         bottom: bottom,
-        top:    top,
-        near:   near,
-        far:    far,
+        top: top,
+        near: near,
+        far: far,
     }.into()
 }
 
@@ -70,10 +75,10 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct PerspectiveFov<S> {
-    pub fovy:   Rad<S>,
+    pub fovy: Rad<S>,
     pub aspect: S,
-    pub near:   S,
-    pub far:    S,
+    pub near: S,
+    pub far: S,
 }
 
 impl<S: BaseFloat> PerspectiveFov<S> {
@@ -84,24 +89,49 @@ impl<S: BaseFloat> PerspectiveFov<S> {
         let xmax = ymax * self.aspect;
 
         Perspective {
-            left:   -xmax,
-            right:   xmax,
+            left: -xmax,
+            right: xmax,
             bottom: -ymax,
-            top:     ymax,
-            near:    self.near.clone(),
-            far:     self.far.clone(),
+            top: ymax,
+            near: self.near.clone(),
+            far: self.far.clone(),
         }
     }
 }
 
 impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
     fn from(persp: PerspectiveFov<S>) -> Matrix4<S> {
-        assert!(persp.fovy   > Rad::zero(), "The vertical field of view cannot be below zero, found: {:?}", persp.fovy);
-        assert!(persp.fovy   < Rad::turn_div_2(), "The vertical field of view cannot be greater than a half turn, found: {:?}", persp.fovy);
-        assert!(persp.aspect > S::zero(), "The aspect ratio cannot be below zero, found: {:?}", persp.aspect);
-        assert!(persp.near   > S::zero(), "The near plane distance cannot be below zero, found: {:?}", persp.near);
-        assert!(persp.far    > S::zero(), "The far plane distance cannot be below zero, found: {:?}", persp.far);
-        assert!(persp.far    > persp.near, "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}", persp.far, persp.near);
+        assert!(
+            persp.fovy > Rad::zero(),
+            "The vertical field of view cannot be below zero, found: {:?}",
+            persp.fovy
+        );
+        assert!(
+            persp.fovy < Rad::turn_div_2(),
+            "The vertical field of view cannot be greater than a half turn, found: {:?}",
+            persp.fovy
+        );
+        assert!(
+            persp.aspect > S::zero(),
+            "The aspect ratio cannot be below zero, found: {:?}",
+            persp.aspect
+        );
+        assert!(
+            persp.near > S::zero(),
+            "The near plane distance cannot be below zero, found: {:?}",
+            persp.near
+        );
+        assert!(
+            persp.far > S::zero(),
+            "The far plane distance cannot be below zero, found: {:?}",
+            persp.far
+        );
+        assert!(
+            persp.far > persp.near,
+            "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}",
+            persp.far,
+            persp.near
+        );
 
         let two: S = cast(2).unwrap();
         let f = Rad::cot(persp.fovy / two);
@@ -126,10 +156,13 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
         let c3r2 = (two * persp.far * persp.near) / (persp.near - persp.far);
         let c3r3 = S::zero();
 
-        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                     c1r0, c1r1, c1r2, c1r3,
-                     c2r0, c2r1, c2r2, c2r3,
-                     c3r0, c3r1, c3r2, c3r3)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c0r0, c0r1, c0r2, c0r3,
+            c1r0, c1r1, c1r2, c1r3,
+            c2r0, c2r1, c2r2, c2r3,
+            c3r0, c3r1, c3r2, c3r3,
+        )
     }
 }
 
@@ -137,19 +170,34 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Perspective<S> {
-    pub left:   S,
-    pub right:  S,
+    pub left: S,
+    pub right: S,
     pub bottom: S,
-    pub top:    S,
-    pub near:   S,
-    pub far:    S,
+    pub top: S,
+    pub near: S,
+    pub far: S,
 }
 
 impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
     fn from(persp: Perspective<S>) -> Matrix4<S> {
-        assert!(persp.left   <= persp.right, "`left` cannot be greater than `right`, found: left: {:?} right: {:?}", persp.left, persp.right);
-        assert!(persp.bottom <= persp.top,   "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}", persp.bottom, persp.top);
-        assert!(persp.near   <= persp.far,   "`near` cannot be greater than `far`, found: near: {:?} far: {:?}", persp.near, persp.far);
+        assert!(
+            persp.left <= persp.right,
+            "`left` cannot be greater than `right`, found: left: {:?} right: {:?}",
+            persp.left,
+            persp.right
+        );
+        assert!(
+            persp.bottom <= persp.top,
+            "`bottom` cannot be greater than `top`, found: bottom: {:?} top: {:?}",
+            persp.bottom,
+            persp.top
+        );
+        assert!(
+            persp.near <= persp.far,
+            "`near` cannot be greater than `far`, found: near: {:?} far: {:?}",
+            persp.near,
+            persp.far
+        );
 
         let two: S = cast(2i8).unwrap();
 
@@ -173,10 +221,13 @@ impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
         let c3r2 = -(two * persp.far * persp.near) / (persp.far - persp.near);
         let c3r3 = S::zero();
 
-        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                     c1r0, c1r1, c1r2, c1r3,
-                     c2r0, c2r1, c2r2, c2r3,
-                     c3r0, c3r1, c3r2, c3r3)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c0r0, c0r1, c0r2, c0r3,
+            c1r0, c1r1, c1r2, c1r3,
+            c2r0, c2r1, c2r2, c2r3,
+            c3r0, c3r1, c3r2, c3r3,
+        )
     }
 }
 
@@ -184,12 +235,12 @@ impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Ortho<S> {
-    pub left:   S,
-    pub right:  S,
+    pub left: S,
+    pub right: S,
     pub bottom: S,
-    pub top:    S,
-    pub near:   S,
-    pub far:    S,
+    pub top: S,
+    pub near: S,
+    pub far: S,
 }
 
 impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
@@ -216,9 +267,12 @@ impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
         let c3r2 = -(ortho.far + ortho.near) / (ortho.far - ortho.near);
         let c3r3 = S::one();
 
-        Matrix4::new(c0r0, c0r1, c0r2, c0r3,
-                     c1r0, c1r1, c1r2, c1r3,
-                     c2r0, c2r1, c2r2, c2r3,
-                     c3r0, c3r1, c3r2, c3r3)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c0r0, c0r1, c0r2, c0r3,
+            c1r0, c1r1, c1r2, c1r3,
+            c2r0, c2r1, c2r2, c2r3,
+            c3r0, c3r1, c3r2, c3r3,
+        )
     }
 }

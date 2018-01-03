@@ -17,7 +17,7 @@
 //! distinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
-use num_traits::{NumCast, Bounded};
+use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::mem;
 use std::ops::*;
@@ -25,7 +25,7 @@ use std::ops::*;
 use structure::*;
 
 use approx::ApproxEq;
-use num::{BaseNum, BaseFloat};
+use num::{BaseFloat, BaseNum};
 use vector::{Vector1, Vector2, Vector3, Vector4};
 
 #[cfg(feature = "mint")]
@@ -95,7 +95,7 @@ impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: Vector4<S>) -> Point3<S> {
         let e = v.truncate() * (S::one() / v.w);
-        Point3::new(e.x, e.y, e.z)  //FIXME
+        Point3::new(e.x, e.y, e.z) //FIXME
     }
 
     #[inline]

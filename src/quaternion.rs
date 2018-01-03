@@ -18,7 +18,7 @@ use std::mem;
 use std::ops::*;
 
 use rand::{Rand, Rng};
-use num_traits::{NumCast, cast};
+use num_traits::{cast, NumCast};
 
 use structure::*;
 
@@ -28,7 +28,7 @@ use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
-use rotation::{Rotation, Rotation3, Basis3};
+use rotation::{Basis3, Rotation, Rotation3};
 use vector::Vector3;
 
 #[cfg(feature = "simd")]
@@ -97,8 +97,11 @@ impl<S: BaseFloat> Quaternion<S> {
     ///   (http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
     /// - [Ogre implementation for normalized vectors]
     ///   (https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
-    pub fn from_arc(src: Vector3<S>, dst: Vector3<S>, fallback: Option<Vector3<S>>)
-                    -> Quaternion<S> {
+    pub fn from_arc(
+        src: Vector3<S>,
+        dst: Vector3<S>,
+        fallback: Option<Vector3<S>>,
+    ) -> Quaternion<S> {
         let mag_avg = (src.magnitude2() * dst.magnitude2()).sqrt();
         let dot = src.dot(dst);
         if ulps_eq!(dot, &mag_avg) {
@@ -193,28 +196,28 @@ impl<S: BaseFloat> One for Quaternion<S> {
 
 impl<S: BaseFloat> iter::Sum<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn sum<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+    fn sum<I: Iterator<Item = Quaternion<S>>>(iter: I) -> Quaternion<S> {
         iter.fold(Quaternion::<S>::zero(), Add::add)
     }
 }
 
 impl<'a, S: 'a + BaseFloat> iter::Sum<&'a Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn sum<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+    fn sum<I: Iterator<Item = &'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
         iter.fold(Quaternion::<S>::zero(), Add::add)
     }
 }
 
 impl<S: BaseFloat> iter::Product<Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn product<I: Iterator<Item=Quaternion<S>>>(iter: I) -> Quaternion<S> {
+    fn product<I: Iterator<Item = Quaternion<S>>>(iter: I) -> Quaternion<S> {
         iter.fold(Quaternion::<S>::one(), Mul::mul)
     }
 }
 
 impl<'a, S: 'a + BaseFloat> iter::Product<&'a Quaternion<S>> for Quaternion<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
+    fn product<I: Iterator<Item = &'a Quaternion<S>>>(iter: I) -> Quaternion<S> {
         iter.fold(Quaternion::<S>::one(), Mul::mul)
     }
 }
@@ -237,11 +240,11 @@ impl<S: NumCast + Copy> Quaternion<S> {
     pub fn cast<T: BaseFloat>(&self) -> Option<Quaternion<T>> {
         let s = match NumCast::from(self.s) {
             Some(s) => s,
-            None => return None
+            None => return None,
         };
         let v = match self.v.cast() {
             Some(v) => v,
-            None => return None
+            None => return None,
         };
         Some(Quaternion::from_sv(s, v))
     }
@@ -274,7 +277,8 @@ impl InnerSpace for Quaternion<f32> {
     }
 }
 
-impl<A> From<Euler<A>> for Quaternion<A::Unitless> where
+impl<A> From<Euler<A>> for Quaternion<A::Unitless>
+where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Quaternion<A::Unitless> {
@@ -288,10 +292,12 @@ impl<A> From<Euler<A>> for Quaternion<A::Unitless> where
         let (s_y, c_y) = Rad::sin_cos(src.y.into() * half);
         let (s_z, c_z) = Rad::sin_cos(src.z.into() * half);
 
-        Quaternion::new(-s_x * s_y * s_z + c_x * c_y * c_z,
-                         s_x * c_y * c_z + s_y * s_z * c_x,
-                        -s_x * s_z * c_y + s_y * c_x * c_z,
-                         s_x * s_y * c_z + s_z * c_x * c_y)
+        Quaternion::new(
+            -s_x * s_y * s_z + c_x * c_y * c_z,
+            s_x * c_y * c_z + s_y * s_z * c_x,
+            -s_x * s_z * c_y + s_y * c_x * c_z,
+            s_x * s_y * c_z + s_z * c_x * c_y,
+        )
     }
 }
 
@@ -510,20 +516,24 @@ impl SubAssign for Quaternion<f32> {
 #[cfg(not(feature = "simd"))]
 impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
-        Quaternion::new(lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
-                        lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,
-                        lhs.s * rhs.v.y + lhs.v.y * rhs.s + lhs.v.z * rhs.v.x - lhs.v.x * rhs.v.z,
-                        lhs.s * rhs.v.z + lhs.v.z * rhs.s + lhs.v.x * rhs.v.y - lhs.v.y * rhs.v.x)
+        Quaternion::new(
+            lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
+            lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,
+            lhs.s * rhs.v.y + lhs.v.y * rhs.s + lhs.v.z * rhs.v.x - lhs.v.x * rhs.v.z,
+            lhs.s * rhs.v.z + lhs.v.z * rhs.s + lhs.v.x * rhs.v.y - lhs.v.y * rhs.v.x,
+        )
     }
 });
 
 #[cfg(feature = "simd")]
 impl_operator_default!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
-        Quaternion::new(lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
-                        lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,
-                        lhs.s * rhs.v.y + lhs.v.y * rhs.s + lhs.v.z * rhs.v.x - lhs.v.x * rhs.v.z,
-                        lhs.s * rhs.v.z + lhs.v.z * rhs.s + lhs.v.x * rhs.v.y - lhs.v.y * rhs.v.x)
+        Quaternion::new(
+            lhs.s * rhs.s - lhs.v.x * rhs.v.x - lhs.v.y * rhs.v.y - lhs.v.z * rhs.v.z,
+            lhs.s * rhs.v.x + lhs.v.x * rhs.s + lhs.v.y * rhs.v.z - lhs.v.z * rhs.v.y,
+            lhs.s * rhs.v.y + lhs.v.y * rhs.s + lhs.v.z * rhs.v.x - lhs.v.x * rhs.v.z,
+            lhs.s * rhs.v.z + lhs.v.z * rhs.s + lhs.v.x * rhs.v.y - lhs.v.y * rhs.v.x,
+        )
     }
 });
 
@@ -593,14 +603,14 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
-        S::relative_eq(&self.s, &other.s, epsilon, max_relative) &&
-        Vector3::relative_eq(&self.v, &other.v, epsilon, max_relative)
+        S::relative_eq(&self.s, &other.s, epsilon, max_relative)
+            && Vector3::relative_eq(&self.v, &other.v, epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
-        S::ulps_eq(&self.s, &other.s, epsilon, max_ulps) &&
-        Vector3::ulps_eq(&self.v, &other.v, epsilon, max_ulps)
+        S::ulps_eq(&self.s, &other.s, epsilon, max_ulps)
+            && Vector3::ulps_eq(&self.v, &other.v, epsilon, max_ulps)
     }
 }
 
@@ -623,9 +633,12 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
         let sz2 = z2 * quat.s;
         let sx2 = x2 * quat.s;
 
-        Matrix3::new(S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
-                     xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2,
-                     xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2,
+            xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2,
+            xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2,
+        )
     }
 }
 
@@ -648,10 +661,13 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
         let sz2 = z2 * quat.s;
         let sx2 = x2 * quat.s;
 
-        Matrix4::new(S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2, S::zero(),
-                     xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2, S::zero(),
-                     xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2, S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            S::one() - yy2 - zz2, xy2 + sz2, xz2 - sy2, S::zero(),
+            xy2 - sz2, S::one() - xx2 - zz2, yz2 + sx2, S::zero(),
+            xz2 + sy2, yz2 - sx2, S::one() - xx2 - yy2, S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 }
 
@@ -659,7 +675,9 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
 
 impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     #[inline]
-    fn from(quat: Quaternion<S>) -> Basis3<S> { Basis3::from_quaternion(&quat) }
+    fn from(quat: Quaternion<S>) -> Basis3<S> {
+        Basis3::from_quaternion(&quat)
+    }
 }
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
@@ -695,10 +713,14 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self * vec }
+    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+        self * vec
+    }
 
     #[inline]
-    fn invert(&self) -> Quaternion<S> { self.conjugate() / self.magnitude2() }
+    fn invert(&self) -> Quaternion<S> {
+        self.conjugate() / self.magnitude2()
+    }
 }
 
 impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
@@ -712,7 +734,9 @@ impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
 impl<S: BaseFloat> Into<[S; 4]> for Quaternion<S> {
     #[inline]
     fn into(self) -> [S; 4] {
-        match self.into() { (w, xi, yj, zk) => [w, xi, yj, zk] }
+        match self.into() {
+            (w, xi, yj, zk) => [w, xi, yj, zk],
+        }
     }
 }
 
@@ -754,7 +778,12 @@ impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
 impl<S: BaseFloat> Into<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn into(self) -> (S, S, S, S) {
-        match self { Quaternion { s, v: Vector3 { x, y, z } } => (s, x, y, z) }
+        match self {
+            Quaternion {
+                s,
+                v: Vector3 { x, y, z },
+            } => (s, x, y, z),
+        }
     }
 }
 
@@ -775,7 +804,9 @@ impl<S: BaseFloat> AsMut<(S, S, S, S)> for Quaternion<S> {
 impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn from(v: (S, S, S, S)) -> Quaternion<S> {
-        match v { (w, xi, yj, zk) => Quaternion::new(w, xi, yj, zk) }
+        match v {
+            (w, xi, yj, zk) => Quaternion::new(w, xi, yj, zk),
+        }
     }
 }
 
@@ -822,7 +853,7 @@ index_operators!(S, [S], RangeFull);
 impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Quaternion<S> {
-       Quaternion::from_sv(rng.gen(), rng.gen())
+        Quaternion::from_sv(rng.gen(), rng.gen())
     }
 }
 
@@ -846,7 +877,6 @@ impl<S: Clone> Into<mint::Quaternion<S>> for Quaternion<S> {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use quaternion::*;
@@ -854,7 +884,11 @@ mod tests {
 
     const QUATERNION: Quaternion<f32> = Quaternion {
         s: 1.0,
-        v: Vector3 { x: 2.0, y: 3.0, z: 4.0 },
+        v: Vector3 {
+            x: 2.0,
+            y: 3.0,
+            z: 4.0,
+        },
     };
 
     #[test]
@@ -887,11 +921,11 @@ mod tests {
     fn test_as_mut() {
         let mut v = QUATERNION;
         {
-            let v: &mut[f32; 4] = v.as_mut();
+            let v: &mut [f32; 4] = v.as_mut();
             assert_eq!(v, &mut [1.0, 2.0, 3.0, 4.0]);
         }
         {
-            let v: &mut(f32, f32, f32, f32) = v.as_mut();
+            let v: &mut (f32, f32, f32, f32) = v.as_mut();
             assert_eq!(v, &mut (1.0, 2.0, 3.0, 4.0));
         }
     }

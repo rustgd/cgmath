@@ -15,9 +15,9 @@
 
 #![feature(test)]
 
+extern crate cgmath;
 extern crate rand;
 extern crate test;
-extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
 use std::ops::*;
@@ -25,8 +25,9 @@ use test::Bencher;
 
 use cgmath::*;
 
-#[path="common/macros.rs"]
-#[macro_use] mod macros;
+#[path = "common/macros.rs"]
+#[macro_use]
+mod macros;
 
 bench_binop!(_bench_vector2_add_v, Vector2<f32>, Vector2<f32>, add);
 bench_binop!(_bench_vector3_add_v, Vector3<f32>, Vector3<f32>, add);

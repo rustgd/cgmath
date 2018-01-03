@@ -30,7 +30,8 @@ use vector::{Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
+pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One
+where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: ApproxEq<Epsilon = P::Scalar>,
     P::Scalar: BaseFloat,
@@ -59,20 +60,17 @@ pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One where
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S: BaseFloat>: Rotation<Point2<S>>
-                                 + Into<Matrix2<S>>
-                                 + Into<Basis2<S>> {
+pub trait Rotation2<S: BaseFloat>
+    : Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle<A: Into<Rad<S>>>(theta: A) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
-                                 + Into<Matrix3<S>>
-                                 + Into<Basis3<S>>
-                                 + Into<Quaternion<S>>
-                                 + From<Euler<Rad<S>>> {
+pub trait Rotation3<S: BaseFloat>
+    : Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
+    {
     /// Create a rotation using an angle around a given axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
@@ -96,7 +94,6 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
         Rotation3::from_axis_angle(Vector3::unit_z(), theta)
     }
 }
-
 
 /// A two-dimensional rotation matrix.
 ///
@@ -144,7 +141,7 @@ pub trait Rotation3<S: BaseFloat>: Rotation<Point3<S>>
 #[derive(PartialEq, Copy, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Basis2<S> {
-    mat: Matrix2<S>
+    mat: Matrix2<S>,
 }
 
 impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
@@ -156,19 +153,21 @@ impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
 
 impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
     #[inline]
-    fn from(b: Basis2<S>) -> Matrix2<S> { b.mat }
+    fn from(b: Basis2<S>) -> Matrix2<S> {
+        b.mat
+    }
 }
 
 impl<S: BaseFloat> iter::Product<Basis2<S>> for Basis2<S> {
     #[inline]
-    fn product<I: Iterator<Item=Basis2<S>>>(iter: I) -> Basis2<S> {
+    fn product<I: Iterator<Item = Basis2<S>>>(iter: I) -> Basis2<S> {
         iter.fold(Basis2::one(), Mul::mul)
     }
 }
 
 impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Basis2<S>>>(iter: I) -> Basis2<S> {
+    fn product<I: Iterator<Item = &'a Basis2<S>>>(iter: I) -> Basis2<S> {
         iter.fold(Basis2::one(), Mul::mul)
     }
 }
@@ -176,26 +175,38 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
-        Basis2 { mat: Matrix2::look_at(dir, up) }
+        Basis2 {
+            mat: Matrix2::look_at(dir, up),
+        }
     }
 
     #[inline]
     fn between_vectors(a: Vector2<S>, b: Vector2<S>) -> Basis2<S> {
-        Rotation2::from_angle(Rad::acos(a.dot(b)) )
+        Rotation2::from_angle(Rad::acos(a.dot(b)))
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> { self.mat * vec }
+    fn rotate_vector(&self, vec: Vector2<S>) -> Vector2<S> {
+        self.mat * vec
+    }
 
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster
     #[inline]
-    fn invert(&self) -> Basis2<S> { Basis2 { mat: self.mat.invert().unwrap() } }
+    fn invert(&self) -> Basis2<S> {
+        Basis2 {
+            mat: self.mat.invert().unwrap(),
+        }
+    }
 }
 
 impl<S: BaseFloat> One for Basis2<S> {
     #[inline]
-    fn one() -> Basis2<S> { Basis2 { mat: Matrix2::one() } }
+    fn one() -> Basis2<S> {
+        Basis2 {
+            mat: Matrix2::one(),
+        }
+    }
 }
 
 impl_operator!(<S: BaseFloat> Mul<Basis2<S> > for Basis2<S> {
@@ -232,7 +243,11 @@ impl<S: BaseFloat> ApproxEq for Basis2<S> {
 }
 
 impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
-    fn from_angle<A: Into<Rad<S>>>(theta: A) -> Basis2<S> { Basis2 { mat: Matrix2::from_angle(theta) } }
+    fn from_angle<A: Into<Rad<S>>>(theta: A) -> Basis2<S> {
+        Basis2 {
+            mat: Matrix2::from_angle(theta),
+        }
+    }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
@@ -251,14 +266,16 @@ impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
 #[derive(PartialEq, Copy, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Basis3<S> {
-    mat: Matrix3<S>
+    mat: Matrix3<S>,
 }
 
 impl<S: BaseFloat> Basis3<S> {
     /// Create a new rotation matrix from a quaternion.
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
-        Basis3 { mat: quaternion.clone().into() }
+        Basis3 {
+            mat: quaternion.clone().into(),
+        }
     }
 }
 
@@ -271,24 +288,28 @@ impl<S> AsRef<Matrix3<S>> for Basis3<S> {
 
 impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
     #[inline]
-    fn from(b: Basis3<S>) -> Matrix3<S> { b.mat }
+    fn from(b: Basis3<S>) -> Matrix3<S> {
+        b.mat
+    }
 }
 
 impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
     #[inline]
-    fn from(b: Basis3<S>) -> Quaternion<S> { b.mat.into() }
+    fn from(b: Basis3<S>) -> Quaternion<S> {
+        b.mat.into()
+    }
 }
 
 impl<S: BaseFloat> iter::Product<Basis3<S>> for Basis3<S> {
     #[inline]
-    fn product<I: Iterator<Item=Basis3<S>>>(iter: I) -> Basis3<S> {
+    fn product<I: Iterator<Item = Basis3<S>>>(iter: I) -> Basis3<S> {
         iter.fold(Basis3::one(), Mul::mul)
     }
 }
 
 impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     #[inline]
-    fn product<I: Iterator<Item=&'a Basis3<S>>>(iter: I) -> Basis3<S> {
+    fn product<I: Iterator<Item = &'a Basis3<S>>>(iter: I) -> Basis3<S> {
         iter.fold(Basis3::one(), Mul::mul)
     }
 }
@@ -296,7 +317,9 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
-        Basis3 { mat: Matrix3::look_at(dir, up) }
+        Basis3 {
+            mat: Matrix3::look_at(dir, up),
+        }
     }
 
     #[inline]
@@ -306,17 +329,27 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     }
 
     #[inline]
-    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> { self.mat * vec }
+    fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+        self.mat * vec
+    }
 
     // TODO: we know the matrix is orthogonal, so this could be re-written
     // to be faster
     #[inline]
-    fn invert(&self) -> Basis3<S> { Basis3 { mat: self.mat.invert().unwrap() } }
+    fn invert(&self) -> Basis3<S> {
+        Basis3 {
+            mat: self.mat.invert().unwrap(),
+        }
+    }
 }
 
 impl<S: BaseFloat> One for Basis3<S> {
     #[inline]
-    fn one() -> Basis3<S> { Basis3 { mat: Matrix3::one() } }
+    fn one() -> Basis3<S> {
+        Basis3 {
+            mat: Matrix3::one(),
+        }
+    }
 }
 
 impl_operator!(<S: BaseFloat> Mul<Basis3<S> > for Basis3<S> {
@@ -354,23 +387,32 @@ impl<S: BaseFloat> ApproxEq for Basis3<S> {
 
 impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
     fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Basis3<S> {
-        Basis3 { mat: Matrix3::from_axis_angle(axis, angle) }
+        Basis3 {
+            mat: Matrix3::from_axis_angle(axis, angle),
+        }
     }
 
     fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
-        Basis3 { mat: Matrix3::from_angle_x(theta) }
+        Basis3 {
+            mat: Matrix3::from_angle_x(theta),
+        }
     }
 
     fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
-        Basis3 { mat: Matrix3::from_angle_y(theta) }
+        Basis3 {
+            mat: Matrix3::from_angle_y(theta),
+        }
     }
 
     fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Basis3<S> {
-        Basis3 { mat: Matrix3::from_angle_z(theta) }
+        Basis3 {
+            mat: Matrix3::from_angle_z(theta),
+        }
     }
 }
 
-impl<A: Angle> From<Euler<A>> for Basis3<A::Unitless> where
+impl<A: Angle> From<Euler<A>> for Basis3<A::Unitless>
+where
     A: Into<Rad<<A as Angle>::Unitless>>,
 {
     /// Create a three-dimensional rotation matrix from a set of euler angles.

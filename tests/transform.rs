@@ -30,7 +30,8 @@ fn test_invert() {
         rot: Quaternion::new(0.5f64, 0.5, 0.5, 0.5),
         disp: Vector3::new(6.0f64, -7.0, 8.0),
     };
-    let ti = t.inverse_transform().expect("Expected successful inversion");
+    let ti = t.inverse_transform()
+        .expect("Expected successful inversion");
     let vt = t.transform_vector(v);
     assert_ulps_eq!(&v, &ti.transform_vector(vt));
 }
@@ -43,7 +44,8 @@ fn test_inverse_vector() {
         rot: Quaternion::new(0.5f64, 0.5, 0.5, 0.5),
         disp: Vector3::new(6.0f64, -7.0, 8.0),
     };
-    let vt = t.inverse_transform_vector(v).expect("Expected successful inversion");
+    let vt = t.inverse_transform_vector(v)
+        .expect("Expected successful inversion");
     assert_ulps_eq!(v, t.transform_vector(vt));
 }
 
@@ -68,7 +70,8 @@ fn test_serialize() {
     };
 
     let serialized = serde_json::to_string(&t).unwrap();
-    let deserialized: Decomposed<Vector3<f64>, Quaternion<f64>> = serde_json::from_str(&serialized).unwrap();
+    let deserialized: Decomposed<Vector3<f64>, Quaternion<f64>> =
+        serde_json::from_str(&serialized).unwrap();
 
     assert_ulps_eq!(&t, &deserialized);
 }

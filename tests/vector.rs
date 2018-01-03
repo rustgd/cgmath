@@ -25,14 +25,26 @@ use std::iter;
 fn test_constructor() {
     assert_eq!(vec2(1f32, 2f32), Vector2::new(1f32, 2f32));
     assert_eq!(vec3(1f64, 2f64, 3f64), Vector3::new(1f64, 2f64, 3f64));
-    assert_eq!(vec4(1isize, 2isize, 3isize, 4isize), Vector4::new(1isize, 2isize, 3isize, 4isize));
+    assert_eq!(
+        vec4(1isize, 2isize, 3isize, 4isize),
+        Vector4::new(1isize, 2isize, 3isize, 4isize)
+    );
 }
 
 #[test]
 fn test_from_value() {
-    assert_eq!(Vector2::from_value(102isize), Vector2::new(102isize, 102isize));
-    assert_eq!(Vector3::from_value(22isize), Vector3::new(22isize, 22isize, 22isize));
-    assert_eq!(Vector4::from_value(76.5f64), Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64));
+    assert_eq!(
+        Vector2::from_value(102isize),
+        Vector2::new(102isize, 102isize)
+    );
+    assert_eq!(
+        Vector3::from_value(22isize),
+        Vector3::new(22isize, 22isize, 22isize)
+    );
+    assert_eq!(
+        Vector4::from_value(76.5f64),
+        Vector4::new(76.5f64, 76.5f64, 76.5f64, 76.5f64)
+    );
 }
 
 macro_rules! impl_test_add {
@@ -132,8 +144,14 @@ fn test_rem() {
 #[test]
 fn test_dot() {
     assert_eq!(Vector2::new(1.0, 2.0).dot(Vector2::new(3.0, 4.0)), 11.0);
-    assert_eq!(Vector3::new(1.0, 2.0, 3.0).dot(Vector3::new(4.0, 5.0, 6.0)), 32.0);
-    assert_eq!(Vector4::new(1.0, 2.0, 3.0, 4.0).dot(Vector4::new(5.0, 6.0, 7.0, 8.0)), 70.0);
+    assert_eq!(
+        Vector3::new(1.0, 2.0, 3.0).dot(Vector3::new(4.0, 5.0, 6.0)),
+        32.0
+    );
+    assert_eq!(
+        Vector4::new(1.0, 2.0, 3.0, 4.0).dot(Vector4::new(5.0, 6.0, 7.0, 8.0)),
+        70.0
+    );
 }
 
 #[test]
@@ -149,7 +167,12 @@ fn test_sum() {
 
 #[test]
 fn test_iter_sum() {
-    impl_test_iter_sum!(Vector4 { x, y, z, w }, f32, 2.0f32, vec4(2.0f32, 4.0, 6.0, 8.0));
+    impl_test_iter_sum!(
+        Vector4 { x, y, z, w },
+        f32,
+        2.0f32,
+        vec4(2.0f32, 4.0, 6.0, 8.0)
+    );
     impl_test_iter_sum!(Vector3 { x, y, z }, f32, 2.0f32, vec3(2.0f32, 4.0, 6.0));
     impl_test_iter_sum!(Vector2 { x, y }, f32, 2.0f32, vec2(2.0f32, 4.0));
 
@@ -162,11 +185,17 @@ fn test_iter_sum() {
 fn test_product() {
     assert_eq!(Vector2::new(1isize, 2isize).product(), 2isize);
     assert_eq!(Vector3::new(1isize, 2isize, 3isize).product(), 6isize);
-    assert_eq!(Vector4::new(1isize, 2isize, 3isize, 4isize).product(), 24isize);
+    assert_eq!(
+        Vector4::new(1isize, 2isize, 3isize, 4isize).product(),
+        24isize
+    );
 
     assert_eq!(Vector2::new(3.0f64, 4.0f64).product(), 12.0f64);
     assert_eq!(Vector3::new(4.0f64, 5.0f64, 6.0f64).product(), 120.0f64);
-    assert_eq!(Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).product(), 1680.0f64);
+    assert_eq!(
+        Vector4::new(5.0f64, 6.0f64, 7.0f64, 8.0f64).product(),
+        1680.0f64
+    );
 }
 
 #[test]
@@ -180,8 +209,17 @@ fn test_cross() {
 #[test]
 fn test_is_perpendicular() {
     assert!(Vector2::new(1.0f64, 0.0f64).is_perpendicular(Vector2::new(0.0f64, 1.0f64)));
-    assert!(Vector3::new(0.0f64, 1.0f64, 0.0f64).is_perpendicular(Vector3::new(0.0f64, 0.0f64, 1.0f64)));
-    assert!(Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64).is_perpendicular(Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64)));
+    assert!(
+        Vector3::new(0.0f64, 1.0f64, 0.0f64).is_perpendicular(Vector3::new(0.0f64, 0.0f64, 1.0f64))
+    );
+    assert!(
+        Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64).is_perpendicular(Vector4::new(
+            0.0f64,
+            0.0f64,
+            0.0f64,
+            1.0f64
+        ))
+    );
 }
 
 #[cfg(test)]
@@ -189,7 +227,7 @@ mod test_magnitude {
     use cgmath::*;
 
     #[test]
-    fn test_vector2(){
+    fn test_vector2() {
         let (a, a_res) = (Vector2::new(3.0f64, 4.0f64), 5.0f64); // (3, 4, 5) Pythagorean triple
         let (b, b_res) = (Vector2::new(5.0f64, 12.0f64), 13.0f64); // (5, 12, 13) Pythagorean triple
 
@@ -201,7 +239,7 @@ mod test_magnitude {
     }
 
     #[test]
-    fn test_vector3(){
+    fn test_vector3() {
         let (a, a_res) = (Vector3::new(2.0f64, 3.0f64, 6.0f64), 7.0f64); // (2, 3, 6, 7) Pythagorean quadruple
         let (b, b_res) = (Vector3::new(1.0f64, 4.0f64, 8.0f64), 9.0f64); // (1, 4, 8, 9) Pythagorean quadruple
 
@@ -213,7 +251,7 @@ mod test_magnitude {
     }
 
     #[test]
-    fn test_vector4(){
+    fn test_vector4() {
         let (a, a_res) = (Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64), 11.0f64); // (1, 2, 4, 10, 11) Pythagorean quintuple
         let (b, b_res) = (Vector4::new(1.0f64, 2.0f64, 8.0f64, 10.0f64), 13.0f64); // (1, 2, 8, 10, 13) Pythagorean quintuple
 
@@ -227,37 +265,106 @@ mod test_magnitude {
 
 #[test]
 fn test_angle() {
-    assert_ulps_eq!(Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
-    assert_ulps_eq!(Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)), &Rad(f64::consts::FRAC_PI_2));
-    assert_ulps_eq!(Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)), &-Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(
+        Vector2::new(1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)),
+        &Rad(f64::consts::FRAC_PI_2)
+    );
+    assert_ulps_eq!(
+        Vector2::new(10.0f64, 0.0f64).angle(Vector2::new(0.0f64, 5.0f64)),
+        &Rad(f64::consts::FRAC_PI_2)
+    );
+    assert_ulps_eq!(
+        Vector2::new(-1.0f64, 0.0f64).angle(Vector2::new(0.0f64, 1.0f64)),
+        &-Rad(f64::consts::FRAC_PI_2)
+    );
 
-    assert_ulps_eq!(Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)), &Rad(f64::consts::FRAC_PI_3));
-    assert_ulps_eq!(Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)), &Rad(f64::consts::FRAC_PI_3));
-    assert_ulps_eq!(Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)), &Rad(2.0f64 * f64::consts::FRAC_PI_3));
+    assert_ulps_eq!(
+        Vector3::new(1.0f64, 0.0f64, 1.0f64).angle(Vector3::new(1.0f64, 1.0f64, 0.0f64)),
+        &Rad(f64::consts::FRAC_PI_3)
+    );
+    assert_ulps_eq!(
+        Vector3::new(10.0f64, 0.0f64, 10.0f64).angle(Vector3::new(5.0f64, 5.0f64, 0.0f64)),
+        &Rad(f64::consts::FRAC_PI_3)
+    );
+    assert_ulps_eq!(
+        Vector3::new(-1.0f64, 0.0f64, -1.0f64).angle(Vector3::new(1.0f64, -1.0f64, 0.0f64)),
+        &Rad(2.0f64 * f64::consts::FRAC_PI_3)
+    );
 
-    assert_ulps_eq!(Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
-    assert_ulps_eq!(Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)), &Rad(f64::consts::FRAC_PI_2));
-    assert_ulps_eq!(Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)), &Rad(f64::consts::FRAC_PI_2));
+    assert_ulps_eq!(
+        Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(
+            0.0f64,
+            1.0f64,
+            0.0f64,
+            1.0f64
+        )),
+        &Rad(f64::consts::FRAC_PI_2)
+    );
+    assert_ulps_eq!(
+        Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(
+            0.0f64,
+            5.0f64,
+            0.0f64,
+            5.0f64
+        )),
+        &Rad(f64::consts::FRAC_PI_2)
+    );
+    assert_ulps_eq!(
+        Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(
+            0.0f64,
+            1.0f64,
+            0.0f64,
+            1.0f64
+        )),
+        &Rad(f64::consts::FRAC_PI_2)
+    );
 }
 
 #[test]
 fn test_normalize() {
     // TODO: test normalize_to, normalize_sel.0, and normalize_self_to
-    assert_ulps_eq!(Vector2::new(3.0f64, 4.0f64).normalize(), &Vector2::new(3.0/5.0, 4.0/5.0));
-    assert_ulps_eq!(Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize(), &Vector3::new(2.0/7.0, 3.0/7.0, 6.0/7.0));
-    assert_ulps_eq!(Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize(), &Vector4::new(1.0/11.0, 2.0/11.0, 4.0/11.0, 10.0/11.0));
+    assert_ulps_eq!(
+        Vector2::new(3.0f64, 4.0f64).normalize(),
+        &Vector2::new(3.0 / 5.0, 4.0 / 5.0)
+    );
+    assert_ulps_eq!(
+        Vector3::new(2.0f64, 3.0f64, 6.0f64).normalize(),
+        &Vector3::new(2.0 / 7.0, 3.0 / 7.0, 6.0 / 7.0)
+    );
+    assert_ulps_eq!(
+        Vector4::new(1.0f64, 2.0f64, 4.0f64, 10.0f64).normalize(),
+        &Vector4::new(1.0 / 11.0, 2.0 / 11.0, 4.0 / 11.0, 10.0 / 11.0)
+    );
 }
 
 #[test]
 fn test_project_on() {
-    assert_ulps_eq!(Vector2::new(-1.0f64, 5.0).project_on(Vector2::new(2.0, 4.0)), &Vector2::new(9.0/5.0, 18.0/5.0));
-    assert_ulps_eq!(Vector3::new(5.0f64, 6.0, 7.0).project_on(Vector3::new(1.0, 1.0, 1.0)), &Vector3::new(6.0, 6.0, 6.0));
-    assert_ulps_eq!(Vector4::new(0.0f64, -5.0, 5.0, 5.0).project_on(Vector4::new(0.0, 1.0, 0.0, 0.5)), &Vector4::new(0.0, -2.0, 0.0, -1.0));
+    assert_ulps_eq!(
+        Vector2::new(-1.0f64, 5.0).project_on(Vector2::new(2.0, 4.0)),
+        &Vector2::new(9.0 / 5.0, 18.0 / 5.0)
+    );
+    assert_ulps_eq!(
+        Vector3::new(5.0f64, 6.0, 7.0).project_on(Vector3::new(1.0, 1.0, 1.0)),
+        &Vector3::new(6.0, 6.0, 6.0)
+    );
+    assert_ulps_eq!(
+        Vector4::new(0.0f64, -5.0, 5.0, 5.0).project_on(Vector4::new(0.0, 1.0, 0.0, 0.5)),
+        &Vector4::new(0.0, -2.0, 0.0, -1.0)
+    );
 }
 
 #[test]
 fn test_cast() {
-    assert_ulps_eq!(Vector2::new(0.9f64, 1.5).cast().unwrap(), Vector2::new(0.9f32, 1.5));
-    assert_ulps_eq!(Vector3::new(1.0f64, 2.4, -3.13).cast().unwrap(), Vector3::new(1.0f32, 2.4, -3.13));
-    assert_ulps_eq!(Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast().unwrap(), Vector4::new(13.5f32, -4.6, -8.3, 2.41));
+    assert_ulps_eq!(
+        Vector2::new(0.9f64, 1.5).cast().unwrap(),
+        Vector2::new(0.9f32, 1.5)
+    );
+    assert_ulps_eq!(
+        Vector3::new(1.0f64, 2.4, -3.13).cast().unwrap(),
+        Vector3::new(1.0f32, 2.4, -3.13)
+    );
+    assert_ulps_eq!(
+        Vector4::new(13.5f64, -4.6, -8.3, 2.41).cast().unwrap(),
+        Vector4::new(13.5f32, -4.6, -8.3, 2.41)
+    );
 }

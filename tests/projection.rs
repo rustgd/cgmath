@@ -15,7 +15,7 @@
 
 extern crate cgmath;
 
-use cgmath::{Vector4, ortho, Matrix4};
+use cgmath::{ortho, Matrix4, Vector4};
 
 #[test]
 fn test_ortho_scale() {
@@ -35,7 +35,6 @@ fn test_ortho_scale() {
     assert_eq!(near, Vector4::new(-1f32, -1., 1., 1.));
     assert_eq!(orig, Vector4::new(0f32, 0., 0., 1.));
     assert_eq!(far, Vector4::new(1f32, 1., -1., 1.));
-
 
     let o: Matrix4<f32> = ortho(-2., 2., -2., 2., -2., 2.);
     let near = o * vec_near;
