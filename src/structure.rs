@@ -237,14 +237,12 @@ pub trait InnerSpace: VectorSpace where
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
-    #[must_use]
     fn normalize(self) -> Self {
         self.normalize_to(Self::Scalar::one())
     }
 
     /// Returns a vector with the same direction and a given magnitude.
     #[inline]
-    #[must_use]
     fn normalize_to(self, magnitude: Self::Scalar) -> Self {
         self * (magnitude / self.magnitude())
     }
@@ -252,7 +250,6 @@ pub trait InnerSpace: VectorSpace where
     /// Returns the result of linearly interpolating the magnitude of the vector
     /// towards the magnitude of `other` by the specified amount.
     #[inline]
-    #[must_use]
     fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
         self + ((other - self) * amount)
     }
@@ -261,7 +258,6 @@ pub trait InnerSpace: VectorSpace where
     /// [vector projection](https://en.wikipedia.org/wiki/Vector_projection)
     /// of the current inner space projected onto the supplied argument.
     #[inline]
-    #[must_use]
     fn project_on(self, other: Self) -> Self {
         other * (self.dot(other) / other.magnitude2())
     }
@@ -523,7 +519,6 @@ pub trait SquareMatrix where
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
     /// (has a determinant of zero).
-    #[must_use]
     fn invert(&self) -> Option<Self>;
 
     /// Test if this matrix is invertible.

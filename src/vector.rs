@@ -659,7 +659,6 @@ impl<S: BaseNum> Vector3<S> {
 
     /// Returns the cross product of the vector and `other`.
     #[inline]
-    #[must_use]
     pub fn cross(self, other: Vector3<S>) -> Vector3<S> {
         Vector3::new((self.y * other.z) - (self.z * other.y),
                      (self.z * other.x) - (self.x * other.z),
