@@ -39,7 +39,8 @@ pub trait Transform<P: EuclideanSpace>: Sized {
 
     /// Inverse transform a vector using this transform
     fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
-        self.inverse_transform().and_then(|inverse| Some(inverse.transform_vector(vec)))
+        self.inverse_transform()
+            .and_then(|inverse| Some(inverse.transform_vector(vec)))
     }
 
     /// Transform a point using this transform.
@@ -69,9 +70,10 @@ pub struct Decomposed<V: VectorSpace, R> {
 }
 
 impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
-    where P::Scalar: BaseFloat,
-          // FIXME: Investigate why this is needed!
-          P::Diff: VectorSpace
+where
+    P::Scalar: BaseFloat,
+    // FIXME: Investigate why this is needed!
+    P::Diff: VectorSpace,
 {
     #[inline]
     fn one() -> Decomposed<P::Diff, R> {
@@ -128,10 +130,10 @@ impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
             let r = self.rot.invert();
             let d = r.rotate_vector(self.disp.clone()) * -s;
             Some(Decomposed {
-                     scale: s,
-                     rot: r,
-                     disp: d,
-                 })
+                scale: s,
+                rot: r,
+                disp: d,
+            })
         }
     }
 }
@@ -162,9 +164,10 @@ impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
 impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
-    where S: ApproxEq<Epsilon = E>,
-          S::Scalar: ApproxEq<Epsilon = E>,
-          R: ApproxEq<Epsilon = E>
+where
+    S: ApproxEq<Epsilon = E>,
+    S::Scalar: ApproxEq<Epsilon = E>,
+    R: ApproxEq<Epsilon = E>,
 {
     type Epsilon = E;
 
@@ -185,16 +188,16 @@ impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: E, max_relative: E) -> bool {
-        S::Scalar::relative_eq(&self.scale, &other.scale, epsilon, max_relative) &&
-        R::relative_eq(&self.rot, &other.rot, epsilon, max_relative) &&
-        S::relative_eq(&self.disp, &other.disp, epsilon, max_relative)
+        S::Scalar::relative_eq(&self.scale, &other.scale, epsilon, max_relative)
+            && R::relative_eq(&self.rot, &other.rot, epsilon, max_relative)
+            && S::relative_eq(&self.disp, &other.disp, epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: E, max_ulps: u32) -> bool {
-        S::Scalar::ulps_eq(&self.scale, &other.scale, epsilon, max_ulps) &&
-        R::ulps_eq(&self.rot, &other.rot, epsilon, max_ulps) &&
-        S::ulps_eq(&self.disp, &other.disp, epsilon, max_ulps)
+        S::Scalar::ulps_eq(&self.scale, &other.scale, epsilon, max_ulps)
+            && R::ulps_eq(&self.rot, &other.rot, epsilon, max_ulps)
+            && S::ulps_eq(&self.disp, &other.disp, epsilon, max_ulps)
     }
 }
 
@@ -207,12 +210,14 @@ mod serde_ser {
     use serde::ser::SerializeStruct;
 
     impl<V, R> Serialize for Decomposed<V, R>
-        where V: Serialize + VectorSpace,
-              V::Scalar: Serialize,
-              R: Serialize
+    where
+        V: Serialize + VectorSpace,
+        V::Scalar: Serialize,
+        R: Serialize,
     {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where S: serde::Serializer
+        where
+            S: serde::Serializer,
         {
             let mut struc = serializer.serialize_struct("Decomposed", 3)?;
             struc.serialize_field("scale", &self.scale)?;
@@ -240,7 +245,8 @@ mod serde_de {
 
     impl<'a> Deserialize<'a> for DecomposedField {
         fn deserialize<D>(deserializer: D) -> Result<DecomposedField, D::Error>
-            where D: serde::Deserializer<'a>
+        where
+            D: serde::Deserializer<'a>,
         {
             struct DecomposedFieldVisitor;
 
@@ -252,7 +258,8 @@ mod serde_de {
                 }
 
                 fn visit_str<E>(self, value: &str) -> Result<DecomposedField, E>
-                    where E: serde::de::Error
+                where
+                    E: serde::de::Error,
                 {
                     match value {
                         "scale" => Ok(DecomposedField::Scale),
@@ -268,12 +275,14 @@ mod serde_de {
     }
 
     impl<'a, S: VectorSpace, R> Deserialize<'a> for Decomposed<S, R>
-        where S: Deserialize<'a>,
-              S::Scalar: Deserialize<'a>,
-              R: Deserialize<'a>
+    where
+        S: Deserialize<'a>,
+        S::Scalar: Deserialize<'a>,
+        R: Deserialize<'a>,
     {
         fn deserialize<D>(deserializer: D) -> Result<Decomposed<S, R>, D::Error>
-            where D: serde::de::Deserializer<'a>
+        where
+            D: serde::de::Deserializer<'a>,
         {
             const FIELDS: &'static [&'static str] = &["scale", "rot", "disp"];
             deserializer.deserialize_struct("Decomposed", FIELDS, DecomposedVisitor(PhantomData))
@@ -283,9 +292,10 @@ mod serde_de {
     struct DecomposedVisitor<S: VectorSpace, R>(PhantomData<(S, R)>);
 
     impl<'a, S: VectorSpace, R> serde::de::Visitor<'a> for DecomposedVisitor<S, R>
-        where S: Deserialize<'a>,
-              S::Scalar: Deserialize<'a>,
-              R: Deserialize<'a>
+    where
+        S: Deserialize<'a>,
+        S::Scalar: Deserialize<'a>,
+        R: Deserialize<'a>,
     {
         type Value = Decomposed<S, R>;
 
@@ -294,7 +304,8 @@ mod serde_de {
         }
 
         fn visit_map<V>(self, mut visitor: V) -> Result<Decomposed<S, R>, V::Error>
-            where V: serde::de::MapAccess<'a>
+        where
+            V: serde::de::MapAccess<'a>,
         {
             let mut scale = None;
             let mut rot = None;
@@ -330,10 +341,10 @@ mod serde_de {
             };
 
             Ok(Decomposed {
-                   scale: scale,
-                   rot: rot,
-                   disp: disp,
-               })
+                scale: scale,
+                rot: rot,
+                disp: disp,
+            })
         }
     }
 }

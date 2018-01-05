@@ -15,16 +15,17 @@
 
 #![feature(test)]
 
+extern crate cgmath;
 extern crate rand;
 extern crate test;
-extern crate cgmath;
 
 use rand::{IsaacRng, Rng};
 use test::Bencher;
 use cgmath::*;
 
-#[path="common/macros.rs"]
-#[macro_use] mod macros;
+#[path = "common/macros.rs"]
+#[macro_use]
+mod macros;
 
 fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
     const LEN: usize = 1 << 13;
@@ -39,7 +40,8 @@ fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
         i = (i + 1) & (LEN - 1);
 
         unsafe {
-            let res: T = Rotation3::from_axis_angle(*axis.get_unchecked(i), *angle.get_unchecked(i));
+            let res: T =
+                Rotation3::from_axis_angle(*axis.get_unchecked(i), *angle.get_unchecked(i));
             test::black_box(res)
         }
     })
@@ -55,7 +57,19 @@ fn _bench_rot3_from_axisangle(bh: &mut Bencher) {
     bench_from_axis_angle::<Basis3<f32>>(bh)
 }
 
-bench_construction!(_bench_rot2_from_axisangle, Basis2<f32>, Basis2::from_angle [ angle: Rad<f32> ]);
+bench_construction!(
+    _bench_rot2_from_axisangle,
+    Basis2<f32>,
+    Basis2::from_angle[angle: Rad<f32>]
+);
 
-bench_construction!(_bench_quat_from_euler_angles, Quaternion<f32>, Quaternion::from [src: Euler<Rad<f32>>]);
-bench_construction!(_bench_rot3_from_euler_angles, Basis3<f32>, Basis3::from [src: Euler<Rad<f32>>]);
+bench_construction!(
+    _bench_quat_from_euler_angles,
+    Quaternion<f32>,
+    Quaternion::from[src: Euler<Rad<f32>>]
+);
+bench_construction!(
+    _bench_rot3_from_euler_angles,
+    Basis3<f32>,
+    Basis3::from[src: Euler<Rad<f32>>]
+);

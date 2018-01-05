@@ -45,14 +45,20 @@ pub struct Rad<S>(pub S);
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Deg<S>(pub S);
 
-impl<S> From<Rad<S>> for Deg<S> where S: BaseFloat {
+impl<S> From<Rad<S>> for Deg<S>
+where
+    S: BaseFloat,
+{
     #[inline]
     fn from(rad: Rad<S>) -> Deg<S> {
         Deg(rad.0 * cast(180.0 / f64::consts::PI).unwrap())
     }
 }
 
-impl<S> From<Deg<S>> for Rad<S> where S: BaseFloat {
+impl<S> From<Deg<S>> for Rad<S>
+where
+    S: BaseFloat,
+{
     #[inline]
     fn from(deg: Deg<S>) -> Rad<S> {
         Rad(deg.0 * cast(f64::consts::PI / 180.0).unwrap())

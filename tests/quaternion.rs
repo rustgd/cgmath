@@ -44,19 +44,45 @@ mod operators {
 
     #[test]
     fn test_mul() {
-        impl_test_mul!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
+        impl_test_mul!(
+            2.0f32,
+            Quaternion::from(Euler {
+                x: Rad(1f32),
+                y: Rad(1f32),
+                z: Rad(1f32),
+            })
+        );
     }
 
     #[test]
     fn test_div() {
-        impl_test_div!(2.0f32, Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(1f32) }));
+        impl_test_div!(
+            2.0f32,
+            Quaternion::from(Euler {
+                x: Rad(1f32),
+                y: Rad(1f32),
+                z: Rad(1f32),
+            })
+        );
     }
 
     #[test]
     fn test_iter_sum() {
-        let q1 = Quaternion::from(Euler { x: Rad(2f32), y: Rad(1f32), z: Rad(1f32) });
-        let q2 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(2f32), z: Rad(1f32) });
-        let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
+        let q1 = Quaternion::from(Euler {
+            x: Rad(2f32),
+            y: Rad(1f32),
+            z: Rad(1f32),
+        });
+        let q2 = Quaternion::from(Euler {
+            x: Rad(1f32),
+            y: Rad(2f32),
+            z: Rad(1f32),
+        });
+        let q3 = Quaternion::from(Euler {
+            x: Rad(1f32),
+            y: Rad(1f32),
+            z: Rad(2f32),
+        });
 
         assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().sum());
         assert_eq!(q1 + q2 + q3, [q1, q2, q3].iter().cloned().sum());
@@ -64,9 +90,21 @@ mod operators {
 
     #[test]
     fn test_iter_product() {
-        let q1 = Quaternion::from(Euler { x: Rad(2f32), y: Rad(1f32), z: Rad(1f32) });
-        let q2 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(2f32), z: Rad(1f32) });
-        let q3 = Quaternion::from(Euler { x: Rad(1f32), y: Rad(1f32), z: Rad(2f32) });
+        let q1 = Quaternion::from(Euler {
+            x: Rad(2f32),
+            y: Rad(1f32),
+            z: Rad(1f32),
+        });
+        let q2 = Quaternion::from(Euler {
+            x: Rad(1f32),
+            y: Rad(2f32),
+            z: Rad(1f32),
+        });
+        let q3 = Quaternion::from(Euler {
+            x: Rad(1f32),
+            y: Rad(1f32),
+            z: Rad(2f32),
+        });
 
         assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().product());
         assert_eq!(q1 * q2 * q3, [q1, q2, q3].iter().cloned().product());
@@ -79,22 +117,103 @@ mod to_from_euler {
     use cgmath::*;
 
     fn check_euler(rotation: Euler<Rad<f32>>) {
-        assert_relative_eq!(Euler::from(Quaternion::from(rotation)), rotation, epsilon = 0.001);
+        assert_relative_eq!(
+            Euler::from(Quaternion::from(rotation)),
+            rotation,
+            epsilon = 0.001
+        );
     }
 
     const HPI: f32 = f32::consts::FRAC_PI_2;
 
-    #[test] fn test_zero()                  { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad( 0f32) }); }
-    #[test] fn test_yaw_pos_1()             { check_euler(Euler { x: Rad( 0f32), y: Rad( 1f32), z: Rad( 0f32) }); }
-    #[test] fn test_yaw_neg_1()             { check_euler(Euler { x: Rad( 0f32), y: Rad(-1f32), z: Rad( 0f32) }); }
-    #[test] fn test_pitch_pos_1()           { check_euler(Euler { x: Rad( 1f32), y: Rad( 0f32), z: Rad( 0f32) }); }
-    #[test] fn test_pitch_neg_1()           { check_euler(Euler { x: Rad(-1f32), y: Rad( 0f32), z: Rad( 0f32) }); }
-    #[test] fn test_roll_pos_1()            { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad( 1f32) }); }
-    #[test] fn test_roll_neg_1()            { check_euler(Euler { x: Rad( 0f32), y: Rad( 0f32), z: Rad(-1f32) }); }
-    #[test] fn test_pitch_yaw_roll_pos_1()  { check_euler(Euler { x: Rad( 1f32), y: Rad( 1f32), z: Rad( 1f32) }); }
-    #[test] fn test_pitch_yaw_roll_neg_1()  { check_euler(Euler { x: Rad(-1f32), y: Rad(-1f32), z: Rad(-1f32) }); }
-    #[test] fn test_pitch_yaw_roll_pos_hp() { check_euler(Euler { x: Rad( 0f32), y: Rad(  HPI), z: Rad( 1f32) }); }
-    #[test] fn test_pitch_yaw_roll_neg_hp() { check_euler(Euler { x: Rad( 0f32), y: Rad( -HPI), z: Rad( 1f32) }); }
+    #[test]
+    fn test_zero() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(0f32),
+            z: Rad(0f32),
+        });
+    }
+    #[test]
+    fn test_yaw_pos_1() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(1f32),
+            z: Rad(0f32),
+        });
+    }
+    #[test]
+    fn test_yaw_neg_1() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(-1f32),
+            z: Rad(0f32),
+        });
+    }
+    #[test]
+    fn test_pitch_pos_1() {
+        check_euler(Euler {
+            x: Rad(1f32),
+            y: Rad(0f32),
+            z: Rad(0f32),
+        });
+    }
+    #[test]
+    fn test_pitch_neg_1() {
+        check_euler(Euler {
+            x: Rad(-1f32),
+            y: Rad(0f32),
+            z: Rad(0f32),
+        });
+    }
+    #[test]
+    fn test_roll_pos_1() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(0f32),
+            z: Rad(1f32),
+        });
+    }
+    #[test]
+    fn test_roll_neg_1() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(0f32),
+            z: Rad(-1f32),
+        });
+    }
+    #[test]
+    fn test_pitch_yaw_roll_pos_1() {
+        check_euler(Euler {
+            x: Rad(1f32),
+            y: Rad(1f32),
+            z: Rad(1f32),
+        });
+    }
+    #[test]
+    fn test_pitch_yaw_roll_neg_1() {
+        check_euler(Euler {
+            x: Rad(-1f32),
+            y: Rad(-1f32),
+            z: Rad(-1f32),
+        });
+    }
+    #[test]
+    fn test_pitch_yaw_roll_pos_hp() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(HPI),
+            z: Rad(1f32),
+        });
+    }
+    #[test]
+    fn test_pitch_yaw_roll_neg_hp() {
+        check_euler(Euler {
+            x: Rad(0f32),
+            y: Rad(-HPI),
+            z: Rad(1f32),
+        });
+    }
 }
 
 mod from {
@@ -206,7 +325,6 @@ mod rotate_from_euler {
         assert_ulps_eq!(vec3(0.0, -1.0, 0.0), rot * vec);
     }
 
-
     // tests that the Y rotation is done after the X
     #[test]
     fn test_x_then_y() {
@@ -258,7 +376,10 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 0.0, 1.0);
 
         let rot = Quaternion::from_axis_angle(vec3(1.0, 1.0, 0.0).normalize(), Deg(90.0));
-        assert_ulps_eq!(vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0), rot * vec);
+        assert_ulps_eq!(
+            vec3(2.0f32.sqrt() / 2.0, -2.0f32.sqrt() / 2.0, 0.0),
+            rot * vec
+        );
     }
 
     #[test]
@@ -266,7 +387,10 @@ mod rotate_from_axis_angle {
         let vec = vec3(1.0, 0.0, 0.0);
 
         let rot = Quaternion::from_axis_angle(vec3(0.0, 1.0, 1.0).normalize(), Deg(-90.0));
-        assert_ulps_eq!(vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0), rot * vec);
+        assert_ulps_eq!(
+            vec3(0.0, -2.0f32.sqrt() / 2.0, 2.0f32.sqrt() / 2.0),
+            rot * vec
+        );
     }
 
     #[test]
@@ -274,7 +398,10 @@ mod rotate_from_axis_angle {
         let vec = vec3(0.0, 1.0, 0.0);
 
         let rot = Quaternion::from_axis_angle(vec3(1.0, 0.0, 1.0).normalize(), Deg(90.0));
-        assert_ulps_eq!(vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0), rot * vec);
+        assert_ulps_eq!(
+            vec3(-2.0f32.sqrt() / 2.0, 0.0, 2.0f32.sqrt() / 2.0),
+            rot * vec
+        );
     }
 }
 
@@ -337,7 +464,9 @@ mod cast {
 
     #[test]
     fn test_cast() {
-        assert_ulps_eq!(Quaternion::new(0.9f64, 1.5, 2.4, 7.6).cast().unwrap(),
-                        Quaternion::new(0.9f32, 1.5, 2.4, 7.6));
+        assert_ulps_eq!(
+            Quaternion::new(0.9f64, 1.5, 2.4, 7.6).cast().unwrap(),
+            Quaternion::new(0.9f32, 1.5, 2.4, 7.6)
+        );
     }
 }

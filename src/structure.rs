@@ -23,12 +23,13 @@ use std::ops::*;
 use approx::ApproxEq;
 
 use angle::Rad;
-use num::{BaseNum, BaseFloat};
+use num::{BaseFloat, BaseNum};
 
-pub use num_traits::{One, Zero, Bounded};
+pub use num_traits::{Bounded, One, Zero};
 
 /// An array containing elements of type `Element`
-pub trait Array where
+pub trait Array
+where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Array>::Element>,
     Self: IndexMut<usize, Output = <Self as Array>::Element>,
@@ -78,10 +79,14 @@ pub trait Array where
     }
 
     /// The sum of the elements of the array.
-    fn sum(self) -> Self::Element where Self::Element: Add<Output = <Self as Array>::Element>;
+    fn sum(self) -> Self::Element
+    where
+        Self::Element: Add<Output = <Self as Array>::Element>;
 
     /// The product of the elements of the array.
-    fn product(self) -> Self::Element where Self::Element: Mul<Output = <Self as Array>::Element>;
+    fn product(self) -> Self::Element
+    where
+        Self::Element: Mul<Output = <Self as Array>::Element>;
 }
 
 /// Element-wise arithmetic operations. These are supplied for pragmatic
@@ -156,7 +161,8 @@ pub trait ElementWise<Rhs = Self> {
 /// let upscaled_translation = translation * scale_factor;
 /// let downscaled_translation = translation / scale_factor;
 /// ```
-pub trait VectorSpace: Copy + Clone where
+pub trait VectorSpace: Copy + Clone
+where
     Self: Zero,
 
     Self: Add<Self, Output = Self>,
@@ -199,7 +205,8 @@ pub trait MetricSpace: Sized {
 /// finding the magnitude of a vector or normalizing it.
 ///
 /// Examples include vectors and quaternions.
-pub trait InnerSpace: VectorSpace where
+pub trait InnerSpace: VectorSpace
+where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     <Self as VectorSpace>::Scalar: BaseFloat,
     Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
@@ -237,14 +244,12 @@ pub trait InnerSpace: VectorSpace where
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
-    #[must_use]
     fn normalize(self) -> Self {
         self.normalize_to(Self::Scalar::one())
     }
 
     /// Returns a vector with the same direction and a given magnitude.
     #[inline]
-    #[must_use]
     fn normalize_to(self, magnitude: Self::Scalar) -> Self {
         self * (magnitude / self.magnitude())
     }
@@ -252,7 +257,6 @@ pub trait InnerSpace: VectorSpace where
     /// Returns the result of linearly interpolating the magnitude of the vector
     /// towards the magnitude of `other` by the specified amount.
     #[inline]
-    #[must_use]
     fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
         self + ((other - self) * amount)
     }
@@ -261,7 +265,6 @@ pub trait InnerSpace: VectorSpace where
     /// [vector projection](https://en.wikipedia.org/wiki/Vector_projection)
     /// of the current inner space projected onto the supplied argument.
     #[inline]
-    #[must_use]
     fn project_on(self, other: Self) -> Self {
         other * (self.dot(other) / other.magnitude2())
     }
@@ -314,7 +317,8 @@ pub trait InnerSpace: VectorSpace where
 /// - [CGAL 4.7 - 2D and 3D Linear Geometry Kernel: 3.1 Points and Vectors](http://doc.cgal.org/latest/Kernel_23/index.html#Kernel_23PointsandVectors)
 /// - [What is the difference between a point and a vector](http://math.stackexchange.com/q/645827)
 ///
-pub trait EuclideanSpace: Copy + Clone where
+pub trait EuclideanSpace: Copy + Clone
+where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Array<Element = <Self as EuclideanSpace>::Scalar>,
 
@@ -382,10 +386,9 @@ pub trait EuclideanSpace: Copy + Clone where
     /// ```
     #[inline]
     fn centroid(points: &[Self]) -> Self {
-        let total_displacement =
-            points.iter().fold(Self::Diff::zero(), |acc, p| {
-                acc + p.to_vec()
-            });
+        let total_displacement = points
+            .iter()
+            .fold(Self::Diff::zero(), |acc, p| acc + p.to_vec());
 
         Self::from_vec(total_displacement / cast(points.len()).unwrap())
     }
@@ -415,7 +418,8 @@ pub trait EuclideanSpace: Copy + Clone where
 /// trait. This is due to the complexities of implementing these operators with
 /// Rust's current type system. For the multiplication of square matrices,
 /// see `SquareMatrix`.
-pub trait Matrix: VectorSpace where
+pub trait Matrix: VectorSpace
+where
     Self::Scalar: BaseFloat,
 
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
@@ -467,7 +471,8 @@ pub trait Matrix: VectorSpace where
 }
 
 /// A column-major major matrix where the rows and column vectors are of the same dimensions.
-pub trait SquareMatrix where
+pub trait SquareMatrix
+where
     Self::Scalar: BaseFloat,
 
     Self: One,
@@ -518,22 +523,27 @@ pub trait SquareMatrix where
 
     /// Return the trace of this matrix. That is, the sum of the diagonal.
     #[inline]
-    fn trace(&self) -> Self::Scalar { self.diagonal().sum() }
+    fn trace(&self) -> Self::Scalar {
+        self.diagonal().sum()
+    }
 
     /// Invert this matrix, returning a new matrix. `m.mul_m(m.invert())` is
     /// the identity matrix. Returns `None` if this matrix is not invertible
     /// (has a determinant of zero).
-    #[must_use]
     fn invert(&self) -> Option<Self>;
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool { ulps_ne!(self.determinant(), &Self::Scalar::zero()) }
+    fn is_invertible(&self) -> bool {
+        ulps_ne!(self.determinant(), &Self::Scalar::zero())
+    }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool { ulps_eq!(self, &Self::identity()) }
+    fn is_identity(&self) -> bool {
+        ulps_eq!(self, &Self::identity())
+    }
 
     /// Test if this is a diagonal matrix. That is, every element outside of
     /// the diagonal is 0.
@@ -550,7 +560,8 @@ pub trait SquareMatrix where
 /// clear when semantic violations have occured - for example, adding degrees to
 /// radians, or adding a number to an angle.
 ///
-pub trait Angle where
+pub trait Angle
+where
     Self: Copy + Clone,
     Self: PartialEq + cmp::PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
@@ -574,7 +585,11 @@ pub trait Angle where
     #[inline]
     fn normalize(self) -> Self {
         let rem = self % Self::full_turn();
-        if rem < Self::zero() { rem + Self::full_turn() } else { rem }
+        if rem < Self::zero() {
+            rem + Self::full_turn()
+        } else {
+            rem
+        }
     }
 
     /// Return the angle rotated by half a turn.

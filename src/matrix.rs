@@ -80,14 +80,11 @@ pub struct Matrix4<S> {
     pub w: Vector4<S>,
 }
 
-
 impl<S: BaseFloat> Matrix2<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
-    pub fn new(c0r0: S, c0r1: S,
-               c1r0: S, c1r1: S) -> Matrix2<S> {
-        Matrix2::from_cols(Vector2::new(c0r0, c0r1),
-                           Vector2::new(c1r0, c1r1))
+    pub fn new(c0r0: S, c0r1: S, c1r0: S, c1r1: S) -> Matrix2<S> {
+        Matrix2::from_cols(Vector2::new(c0r0, c0r1), Vector2::new(c1r0, c1r1))
     }
 
     /// Create a new matrix, providing columns.
@@ -107,26 +104,34 @@ impl<S: BaseFloat> Matrix2<S> {
     pub fn from_angle<A: Into<Rad<S>>>(theta: A) -> Matrix2<S> {
         let (s, c) = Rad::sin_cos(theta.into());
 
-        Matrix2::new(c,  s,
-                     -s, c)
+        Matrix2::new(c, s, -s, c)
     }
 }
 
 impl<S: BaseFloat> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
-    pub fn new(c0r0:S, c0r1:S, c0r2:S,
-               c1r0:S, c1r1:S, c1r2:S,
-               c2r0:S, c2r1:S, c2r2:S) -> Matrix3<S> {
-        Matrix3::from_cols(Vector3::new(c0r0, c0r1, c0r2),
-                           Vector3::new(c1r0, c1r1, c1r2),
-                           Vector3::new(c2r0, c2r1, c2r2))
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    pub fn new(
+        c0r0:S, c0r1:S, c0r2:S,
+        c1r0:S, c1r1:S, c1r2:S,
+        c2r0:S, c2r1:S, c2r2:S,
+    ) -> Matrix3<S> {
+        Matrix3::from_cols(
+            Vector3::new(c0r0, c0r1, c0r2),
+            Vector3::new(c1r0, c1r1, c1r2),
+            Vector3::new(c2r0, c2r1, c2r2),
+        )
     }
 
     /// Create a new matrix, providing columns.
     #[inline]
     pub fn from_cols(c0: Vector3<S>, c1: Vector3<S>, c2: Vector3<S>) -> Matrix3<S> {
-        Matrix3 { x: c0, y: c1, z: c2 }
+        Matrix3 {
+            x: c0,
+            y: c1,
+            z: c2,
+        }
     }
 
     /// Create a rotation matrix that will cause a vector to point at
@@ -143,27 +148,39 @@ impl<S: BaseFloat> Matrix3<S> {
     pub fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix3::new(S::one(), S::zero(), S::zero(),
-                     S::zero(), c, s,
-                     S::zero(), -s, c)
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            S::one(), S::zero(), S::zero(),
+            S::zero(), c, s,
+            S::zero(), -s, c,
+        )
     }
 
     /// Create a rotation matrix from a rotation around the `y` axis (yaw).
     pub fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix3::new(c, S::zero(), -s,
-                     S::zero(), S::one(), S::zero(),
-                     s, S::zero(), c)
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            c, S::zero(), -s,
+            S::zero(), S::one(), S::zero(),
+            s, S::zero(), c,
+        )
     }
 
     /// Create a rotation matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Matrix3<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix3::new( c, s, S::zero(),
-                     -s, c, S::zero(),
-                     S::zero(), S::zero(), S::one())
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            c, s, S::zero(),
+            -s, c, S::zero(),
+            S::zero(), S::zero(), S::one(),
+        )
     }
 
     /// Create a rotation matrix from an angle around an arbitrary axis.
@@ -173,46 +190,62 @@ impl<S: BaseFloat> Matrix3<S> {
         let (s, c) = Rad::sin_cos(angle.into());
         let _1subc = S::one() - c;
 
-        Matrix3::new(_1subc * axis.x * axis.x + c,
-                     _1subc * axis.x * axis.y + s * axis.z,
-                     _1subc * axis.x * axis.z - s * axis.y,
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            _1subc * axis.x * axis.x + c,
+            _1subc * axis.x * axis.y + s * axis.z,
+            _1subc * axis.x * axis.z - s * axis.y,
 
-                     _1subc * axis.x * axis.y - s * axis.z,
-                     _1subc * axis.y * axis.y + c,
-                     _1subc * axis.y * axis.z + s * axis.x,
+            _1subc * axis.x * axis.y - s * axis.z,
+            _1subc * axis.y * axis.y + c,
+            _1subc * axis.y * axis.z + s * axis.x,
 
-                     _1subc * axis.x * axis.z + s * axis.y,
-                     _1subc * axis.y * axis.z - s * axis.x,
-                     _1subc * axis.z * axis.z + c)
+            _1subc * axis.x * axis.z + s * axis.y,
+            _1subc * axis.y * axis.z - s * axis.x,
+            _1subc * axis.z * axis.z + c,
+        )
     }
 }
 
 impl<S: BaseFloat> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
-    pub fn new(c0r0: S, c0r1: S, c0r2: S, c0r3: S,
-               c1r0: S, c1r1: S, c1r2: S, c1r3: S,
-               c2r0: S, c2r1: S, c2r2: S, c2r3: S,
-               c3r0: S, c3r1: S, c3r2: S, c3r3: S) -> Matrix4<S>  {
-        Matrix4::from_cols(Vector4::new(c0r0, c0r1, c0r2, c0r3),
-                           Vector4::new(c1r0, c1r1, c1r2, c1r3),
-                           Vector4::new(c2r0, c2r1, c2r2, c2r3),
-                           Vector4::new(c3r0, c3r1, c3r2, c3r3))
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    pub fn new(
+        c0r0: S, c0r1: S, c0r2: S, c0r3: S,
+        c1r0: S, c1r1: S, c1r2: S, c1r3: S,
+        c2r0: S, c2r1: S, c2r2: S, c2r3: S,
+        c3r0: S, c3r1: S, c3r2: S, c3r3: S,
+    ) -> Matrix4<S>  {
+        Matrix4::from_cols(
+            Vector4::new(c0r0, c0r1, c0r2, c0r3),
+            Vector4::new(c1r0, c1r1, c1r2, c1r3),
+            Vector4::new(c2r0, c2r1, c2r2, c2r3),
+            Vector4::new(c3r0, c3r1, c3r2, c3r3),
+        )
     }
 
     /// Create a new matrix, providing columns.
     #[inline]
     pub fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
-        Matrix4 { x: c0, y: c1, z: c2, w: c3 }
+        Matrix4 {
+            x: c0,
+            y: c1,
+            z: c2,
+            w: c3,
+        }
     }
 
     /// Create a homogeneous transformation matrix from a translation vector.
     #[inline]
     pub fn from_translation(v: Vector3<S>) -> Matrix4<S> {
-        Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::one(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::one(), S::zero(),
-                     v.x, v.y, v.z, S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            S::one(), S::zero(), S::zero(), S::zero(),
+            S::zero(), S::one(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::one(), S::zero(),
+            v.x, v.y, v.z, S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix from a scale value.
@@ -224,10 +257,13 @@ impl<S: BaseFloat> Matrix4<S> {
     /// Create a homogeneous transformation matrix from a set of scale values.
     #[inline]
     pub fn from_nonuniform_scale(x: S, y: S, z: S) -> Matrix4<S> {
-        Matrix4::new(x, S::zero(), S::zero(), S::zero(),
-                     S::zero(), y, S::zero(), S::zero(),
-                     S::zero(), S::zero(), z, S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            x, S::zero(), S::zero(), S::zero(),
+            S::zero(), y, S::zero(), S::zero(),
+            S::zero(), S::zero(), z, S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
@@ -237,10 +273,13 @@ impl<S: BaseFloat> Matrix4<S> {
         let s = f.cross(up).normalize();
         let u = s.cross(f);
 
-        Matrix4::new(s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
-                     s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
-                     s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
-                     -eye.dot(s), -eye.dot(u), eye.dot(f), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
+            s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
+            s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
+            -eye.dot(s), -eye.dot(u), eye.dot(f), S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
@@ -253,30 +292,42 @@ impl<S: BaseFloat> Matrix4<S> {
     pub fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix4::new(S::one(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), c, s, S::zero(),
-                     S::zero(), -s, c, S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            S::one(), S::zero(), S::zero(), S::zero(),
+            S::zero(), c, s, S::zero(),
+            S::zero(), -s, c, S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `y` axis (yaw).
     pub fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix4::new(c, S::zero(), -s, S::zero(),
-                     S::zero(), S::one(), S::zero(), S::zero(),
-                     s, S::zero(), c, S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c, S::zero(), -s, S::zero(),
+            S::zero(), S::one(), S::zero(), S::zero(),
+            s, S::zero(), c, S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `z` axis (roll).
     pub fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Matrix4<S> {
         // http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
         let (s, c) = Rad::sin_cos(theta.into());
-        Matrix4::new( c, s, S::zero(), S::zero(),
-                     -s, c, S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::one(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c, s, S::zero(), S::zero(),
+            -s, c, S::zero(), S::zero(),
+            S::zero(), S::zero(), S::one(), S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 
     /// Create a homogeneous transformation matrix from an angle around an arbitrary axis.
@@ -286,33 +337,36 @@ impl<S: BaseFloat> Matrix4<S> {
         let (s, c) = Rad::sin_cos(angle.into());
         let _1subc = S::one() - c;
 
-        Matrix4::new(_1subc * axis.x * axis.x + c,
-                     _1subc * axis.x * axis.y + s * axis.z,
-                     _1subc * axis.x * axis.z - s * axis.y,
-                     S::zero(),
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            _1subc * axis.x * axis.x + c,
+            _1subc * axis.x * axis.y + s * axis.z,
+            _1subc * axis.x * axis.z - s * axis.y,
+            S::zero(),
 
-                     _1subc * axis.x * axis.y - s * axis.z,
-                     _1subc * axis.y * axis.y + c,
-                     _1subc * axis.y * axis.z + s * axis.x,
-                     S::zero(),
+            _1subc * axis.x * axis.y - s * axis.z,
+            _1subc * axis.y * axis.y + c,
+            _1subc * axis.y * axis.z + s * axis.x,
+            S::zero(),
 
-                     _1subc * axis.x * axis.z + s * axis.y,
-                     _1subc * axis.y * axis.z - s * axis.x,
-                     _1subc * axis.z * axis.z + c,
-                     S::zero(),
+            _1subc * axis.x * axis.z + s * axis.y,
+            _1subc * axis.y * axis.z - s * axis.x,
+            _1subc * axis.z * axis.z + c,
+            S::zero(),
 
-                     S::zero(),
-                     S::zero(),
-                     S::zero(),
-                     S::one())
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 }
 
 impl<S: BaseFloat> Zero for Matrix2<S> {
     #[inline]
     fn zero() -> Matrix2<S> {
-        Matrix2::new(S::zero(), S::zero(),
-                     S::zero(), S::zero())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix2::new(
+            S::zero(), S::zero(),
+            S::zero(), S::zero(),
+        )
     }
 
     #[inline]
@@ -324,9 +378,12 @@ impl<S: BaseFloat> Zero for Matrix2<S> {
 impl<S: BaseFloat> Zero for Matrix3<S> {
     #[inline]
     fn zero() -> Matrix3<S> {
-        Matrix3::new(S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            S::zero(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::zero(),
+        )
     }
 
     #[inline]
@@ -338,10 +395,13 @@ impl<S: BaseFloat> Zero for Matrix3<S> {
 impl<S: BaseFloat> Zero for Matrix4<S> {
     #[inline]
     fn zero() -> Matrix4<S> {
-        Matrix4::new(S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::zero())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            S::zero(), S::zero(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::zero(), S::zero(),
+            S::zero(), S::zero(), S::zero(), S::zero(),
+        )
     }
 
     #[inline]
@@ -390,8 +450,7 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
 
     #[inline]
     fn row(&self, r: usize) -> Vector2<S> {
-        Vector2::new(self[0][r],
-                     self[1][r])
+        Vector2::new(self[0][r], self[1][r])
     }
 
     #[inline]
@@ -413,8 +472,11 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
     }
 
     fn transpose(&self) -> Matrix2<S> {
-        Matrix2::new(self[0][0], self[1][0],
-                     self[0][1], self[1][1])
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix2::new(
+            self[0][0], self[1][0],
+            self[0][1], self[1][1],
+        )
     }
 }
 
@@ -423,14 +485,20 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 
     #[inline]
     fn from_value(value: S) -> Matrix2<S> {
-        Matrix2::new(value, S::zero(),
-                     S::zero(), value)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix2::new(
+            value, S::zero(),
+            S::zero(), value,
+        )
     }
 
     #[inline]
     fn from_diagonal(value: Vector2<S>) -> Matrix2<S> {
-        Matrix2::new(value.x, S::zero(),
-                     S::zero(), value.y)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix2::new(
+            value.x, S::zero(),
+            S::zero(), value.y,
+        )
     }
 
     #[inline]
@@ -445,8 +513,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 
     #[inline]
     fn diagonal(&self) -> Vector2<S> {
-        Vector2::new(self[0][0],
-                     self[1][1])
+        Vector2::new(self[0][0], self[1][1])
     }
 
     #[inline]
@@ -455,24 +522,22 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
         if det == S::zero() {
             None
         } else {
-            Some(Matrix2::new(self[1][1] / det,
-                              -self[0][1] / det,
-                              -self[1][0] / det,
-                              self[0][0] / det))
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            Some(Matrix2::new(
+                self[1][1] / det, -self[0][1] / det,
+                -self[1][0] / det, self[0][0] / det,
+            ))
         }
     }
 
     #[inline]
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) &&
-        ulps_eq!(self[1][0], &S::zero())
+        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[1][0], &S::zero())
     }
-
 
     #[inline]
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) &&
-        ulps_eq!(self[1][0], &self[0][1])
+        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[1][0], &self[0][1])
     }
 }
 
@@ -483,9 +548,7 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
 
     #[inline]
     fn row(&self, r: usize) -> Vector3<S> {
-        Vector3::new(self[0][r],
-                     self[1][r],
-                     self[2][r])
+        Vector3::new(self[0][r], self[1][r], self[2][r])
     }
 
     #[inline]
@@ -508,9 +571,12 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
     }
 
     fn transpose(&self) -> Matrix3<S> {
-        Matrix3::new(self[0][0], self[1][0], self[2][0],
-                     self[0][1], self[1][1], self[2][1],
-                     self[0][2], self[1][2], self[2][2])
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            self[0][0], self[1][0], self[2][0],
+            self[0][1], self[1][1], self[2][1],
+            self[0][2], self[1][2], self[2][2],
+        )
     }
 }
 
@@ -519,16 +585,22 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 
     #[inline]
     fn from_value(value: S) -> Matrix3<S> {
-        Matrix3::new(value, S::zero(), S::zero(),
-                     S::zero(), value, S::zero(),
-                     S::zero(), S::zero(), value)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            value, S::zero(), S::zero(),
+            S::zero(), value, S::zero(),
+            S::zero(), S::zero(), value,
+        )
     }
 
     #[inline]
     fn from_diagonal(value: Vector3<S>) -> Matrix3<S> {
-        Matrix3::new(value.x, S::zero(), S::zero(),
-                     S::zero(), value.y, S::zero(),
-                     S::zero(), S::zero(), value.z)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            value.x, S::zero(), S::zero(),
+            S::zero(), value.y, S::zero(),
+            S::zero(), S::zero(), value.z,
+        )
     }
 
     #[inline]
@@ -539,16 +611,14 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
     }
 
     fn determinant(&self) -> S {
-        self[0][0] * (self[1][1] * self[2][2] - self[2][1] * self[1][2]) -
-        self[1][0] * (self[0][1] * self[2][2] - self[2][1] * self[0][2]) +
-        self[2][0] * (self[0][1] * self[1][2] - self[1][1] * self[0][2])
+        self[0][0] * (self[1][1] * self[2][2] - self[2][1] * self[1][2])
+            - self[1][0] * (self[0][1] * self[2][2] - self[2][1] * self[0][2])
+            + self[2][0] * (self[0][1] * self[1][2] - self[1][1] * self[0][2])
     }
 
     #[inline]
     fn diagonal(&self) -> Vector3<S> {
-        Vector3::new(self[0][0],
-                     self[1][1],
-                     self[2][2])
+        Vector3::new(self[0][0], self[1][1], self[2][2])
     }
 
     fn invert(&self) -> Option<Matrix3<S>> {
@@ -556,32 +626,26 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
         if det == S::zero() {
             None
         } else {
-            Some(Matrix3::from_cols(self[1].cross(self[2]) / det,
-                                    self[2].cross(self[0]) / det,
-                                    self[0].cross(self[1]) / det).transpose())
+            Some(
+                Matrix3::from_cols(
+                    self[1].cross(self[2]) / det,
+                    self[2].cross(self[0]) / det,
+                    self[0].cross(self[1]) / det,
+                ).transpose(),
+            )
         }
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) &&
-        ulps_eq!(self[0][2], &S::zero()) &&
-
-        ulps_eq!(self[1][0], &S::zero()) &&
-        ulps_eq!(self[1][2], &S::zero()) &&
-
-        ulps_eq!(self[2][0], &S::zero()) &&
-        ulps_eq!(self[2][1], &S::zero())
+        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[1][0], &S::zero()) && ulps_eq!(self[1][2], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) &&
-        ulps_eq!(self[0][2], &self[2][0]) &&
-
-        ulps_eq!(self[1][0], &self[0][1]) &&
-        ulps_eq!(self[1][2], &self[2][1]) &&
-
-        ulps_eq!(self[2][0], &self[0][2]) &&
-        ulps_eq!(self[2][1], &self[1][2])
+        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[1][0], &self[0][1]) && ulps_eq!(self[1][2], &self[2][1])
+            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
     }
 }
 
@@ -592,10 +656,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
 
     #[inline]
     fn row(&self, r: usize) -> Vector4<S> {
-        Vector4::new(self[0][r],
-                     self[1][r],
-                     self[2][r],
-                     self[3][r])
+        Vector4::new(self[0][r], self[1][r], self[2][r], self[3][r])
     }
 
     #[inline]
@@ -619,31 +680,39 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 
     fn transpose(&self) -> Matrix4<S> {
-        Matrix4::new(self[0][0], self[1][0], self[2][0], self[3][0],
-                     self[0][1], self[1][1], self[2][1], self[3][1],
-                     self[0][2], self[1][2], self[2][2], self[3][2],
-                     self[0][3], self[1][3], self[2][3], self[3][3])
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            self[0][0], self[1][0], self[2][0], self[3][0],
+            self[0][1], self[1][1], self[2][1], self[3][1],
+            self[0][2], self[1][2], self[2][2], self[3][2],
+            self[0][3], self[1][3], self[2][3], self[3][3],
+        )
     }
 }
-
 
 impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     type ColumnRow = Vector4<S>;
 
     #[inline]
     fn from_value(value: S) -> Matrix4<S> {
-        Matrix4::new(value, S::zero(), S::zero(), S::zero(),
-                     S::zero(), value, S::zero(), S::zero(),
-                     S::zero(), S::zero(), value, S::zero(),
-                     S::zero(), S::zero(), S::zero(), value)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            value, S::zero(), S::zero(), S::zero(),
+            S::zero(), value, S::zero(), S::zero(),
+            S::zero(), S::zero(), value, S::zero(),
+            S::zero(), S::zero(), S::zero(), value,
+        )
     }
 
     #[inline]
     fn from_diagonal(value: Vector4<S>) -> Matrix4<S> {
-        Matrix4::new(value.x, S::zero(), S::zero(), S::zero(),
-                     S::zero(), value.y, S::zero(), S::zero(),
-                     S::zero(), S::zero(), value.z, S::zero(),
-                     S::zero(), S::zero(), S::zero(), value.w)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            value.x, S::zero(), S::zero(), S::zero(),
+            S::zero(), value.y, S::zero(), S::zero(),
+            S::zero(), S::zero(), value.z, S::zero(),
+            S::zero(), S::zero(), S::zero(), value.w,
+        )
     }
 
     fn transpose_self(&mut self) {
@@ -656,18 +725,13 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn determinant(&self) -> S {
-        let tmp = unsafe {
-            det_sub_proc_unsafe(self, 1, 2, 3)
-        };
+        let tmp = unsafe { det_sub_proc_unsafe(self, 1, 2, 3) };
         tmp.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]))
     }
 
     #[inline]
     fn diagonal(&self) -> Vector4<S> {
-        Vector4::new(self[0][0],
-                     self[1][1],
-                     self[2][2],
-                     self[3][3])
+        Vector4::new(self[0][0], self[1][1], self[2][2], self[3][3])
     }
 
     // The new implementation results in negative optimization when used
@@ -685,27 +749,40 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
             let t = self.transpose();
             let cf = |i, j| {
                 let mat = match i {
-                    0 => Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
-                    1 => Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j)),
-                    2 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j)),
-                    3 => Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j)),
+                    0 => {
+                        Matrix3::from_cols(t.y.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j))
+                    }
+                    1 => {
+                        Matrix3::from_cols(t.x.truncate_n(j), t.z.truncate_n(j), t.w.truncate_n(j))
+                    }
+                    2 => {
+                        Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.w.truncate_n(j))
+                    }
+                    3 => {
+                        Matrix3::from_cols(t.x.truncate_n(j), t.y.truncate_n(j), t.z.truncate_n(j))
+                    }
                     _ => panic!("out of range"),
                 };
-                let sign = if (i + j) & 1 == 1 { -S::one() } else { S::one() };
+                let sign = if (i + j) & 1 == 1 {
+                    -S::one()
+                } else {
+                    S::one()
+                };
                 mat.determinant() * sign * inv_det
             };
 
-            Some(Matrix4::new(cf(0, 0), cf(0, 1), cf(0, 2), cf(0, 3),
-                              cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
-                              cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
-                              cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3)))
+            #[cfg_attr(rustfmt, rustfmt_skip)]
+            Some(Matrix4::new(
+                cf(0, 0), cf(0, 1), cf(0, 2), cf(0, 3),
+                cf(1, 0), cf(1, 1), cf(1, 2), cf(1, 3),
+                cf(2, 0), cf(2, 1), cf(2, 2), cf(2, 3),
+                cf(3, 0), cf(3, 1), cf(3, 2), cf(3, 3),
+            ))
         }
     }
     #[cfg(feature = "simd")]
     fn invert(&self) -> Option<Matrix4<S>> {
-        let tmp0 = unsafe {
-            det_sub_proc_unsafe(self, 1, 2, 3)
-        };
+        let tmp0 = unsafe { det_sub_proc_unsafe(self, 1, 2, 3) };
         let det = tmp0.dot(Vector4::new(self[0][0], self[1][0], self[2][0], self[3][0]));
 
         if det == S::zero() {
@@ -713,53 +790,29 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
         } else {
             let inv_det = S::one() / det;
             let tmp0 = tmp0 * inv_det;
-            let tmp1 = unsafe {
-                det_sub_proc_unsafe(self, 0, 3, 2) * inv_det
-            };
-            let tmp2 = unsafe {
-                det_sub_proc_unsafe(self, 0, 1, 3) * inv_det
-            };
-            let tmp3 = unsafe {
-                det_sub_proc_unsafe(self, 0, 2, 1) * inv_det
-            };
+            let tmp1 = unsafe { det_sub_proc_unsafe(self, 0, 3, 2) * inv_det };
+            let tmp2 = unsafe { det_sub_proc_unsafe(self, 0, 1, 3) * inv_det };
+            let tmp3 = unsafe { det_sub_proc_unsafe(self, 0, 2, 1) * inv_det };
             Some(Matrix4::from_cols(tmp0, tmp1, tmp2, tmp3))
         }
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) &&
-        ulps_eq!(self[0][2], &S::zero()) &&
-        ulps_eq!(self[0][3], &S::zero()) &&
-
-        ulps_eq!(self[1][0], &S::zero()) &&
-        ulps_eq!(self[1][2], &S::zero()) &&
-        ulps_eq!(self[1][3], &S::zero()) &&
-
-        ulps_eq!(self[2][0], &S::zero()) &&
-        ulps_eq!(self[2][1], &S::zero()) &&
-        ulps_eq!(self[2][3], &S::zero()) &&
-
-        ulps_eq!(self[3][0], &S::zero()) &&
-        ulps_eq!(self[3][1], &S::zero()) &&
-        ulps_eq!(self[3][2], &S::zero())
+        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[0][3], &S::zero()) && ulps_eq!(self[1][0], &S::zero())
+            && ulps_eq!(self[1][2], &S::zero()) && ulps_eq!(self[1][3], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
+            && ulps_eq!(self[2][3], &S::zero()) && ulps_eq!(self[3][0], &S::zero())
+            && ulps_eq!(self[3][1], &S::zero()) && ulps_eq!(self[3][2], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) &&
-        ulps_eq!(self[0][2], &self[2][0]) &&
-        ulps_eq!(self[0][3], &self[3][0]) &&
-
-        ulps_eq!(self[1][0], &self[0][1]) &&
-        ulps_eq!(self[1][2], &self[2][1]) &&
-        ulps_eq!(self[1][3], &self[3][1]) &&
-
-        ulps_eq!(self[2][0], &self[0][2]) &&
-        ulps_eq!(self[2][1], &self[1][2]) &&
-        ulps_eq!(self[2][3], &self[3][2]) &&
-
-        ulps_eq!(self[3][0], &self[0][3]) &&
-        ulps_eq!(self[3][1], &self[1][3]) &&
-        ulps_eq!(self[3][2], &self[2][3])
+        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[0][3], &self[3][0]) && ulps_eq!(self[1][0], &self[0][1])
+            && ulps_eq!(self[1][2], &self[2][1]) && ulps_eq!(self[1][3], &self[3][1])
+            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
+            && ulps_eq!(self[2][3], &self[3][2]) && ulps_eq!(self[3][0], &self[0][3])
+            && ulps_eq!(self[3][1], &self[1][3]) && ulps_eq!(self[3][2], &self[2][3])
     }
 }
 
@@ -783,14 +836,14 @@ impl<S: BaseFloat> ApproxEq for Matrix2<S> {
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
-        Vector2::relative_eq(&self[0], &other[0], epsilon, max_relative) &&
-        Vector2::relative_eq(&self[1], &other[1], epsilon, max_relative)
+        Vector2::relative_eq(&self[0], &other[0], epsilon, max_relative)
+            && Vector2::relative_eq(&self[1], &other[1], epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
-        Vector2::ulps_eq(&self[0], &other[0], epsilon, max_ulps) &&
-        Vector2::ulps_eq(&self[1], &other[1], epsilon, max_ulps)
+        Vector2::ulps_eq(&self[0], &other[0], epsilon, max_ulps)
+            && Vector2::ulps_eq(&self[1], &other[1], epsilon, max_ulps)
     }
 }
 
@@ -814,16 +867,16 @@ impl<S: BaseFloat> ApproxEq for Matrix3<S> {
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
-        Vector3::relative_eq(&self[0], &other[0], epsilon, max_relative) &&
-        Vector3::relative_eq(&self[1], &other[1], epsilon, max_relative) &&
-        Vector3::relative_eq(&self[2], &other[2], epsilon, max_relative)
+        Vector3::relative_eq(&self[0], &other[0], epsilon, max_relative)
+            && Vector3::relative_eq(&self[1], &other[1], epsilon, max_relative)
+            && Vector3::relative_eq(&self[2], &other[2], epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
-        Vector3::ulps_eq(&self[0], &other[0], epsilon, max_ulps) &&
-        Vector3::ulps_eq(&self[1], &other[1], epsilon, max_ulps) &&
-        Vector3::ulps_eq(&self[2], &other[2], epsilon, max_ulps)
+        Vector3::ulps_eq(&self[0], &other[0], epsilon, max_ulps)
+            && Vector3::ulps_eq(&self[1], &other[1], epsilon, max_ulps)
+            && Vector3::ulps_eq(&self[2], &other[2], epsilon, max_ulps)
     }
 }
 
@@ -847,99 +900,99 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
-        Vector4::relative_eq(&self[0], &other[0], epsilon, max_relative) &&
-        Vector4::relative_eq(&self[1], &other[1], epsilon, max_relative) &&
-        Vector4::relative_eq(&self[2], &other[2], epsilon, max_relative) &&
-        Vector4::relative_eq(&self[3], &other[3], epsilon, max_relative)
+        Vector4::relative_eq(&self[0], &other[0], epsilon, max_relative)
+            && Vector4::relative_eq(&self[1], &other[1], epsilon, max_relative)
+            && Vector4::relative_eq(&self[2], &other[2], epsilon, max_relative)
+            && Vector4::relative_eq(&self[3], &other[3], epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: S::Epsilon, max_ulps: u32) -> bool {
-        Vector4::ulps_eq(&self[0], &other[0], epsilon, max_ulps) &&
-        Vector4::ulps_eq(&self[1], &other[1], epsilon, max_ulps) &&
-        Vector4::ulps_eq(&self[2], &other[2], epsilon, max_ulps) &&
-        Vector4::ulps_eq(&self[3], &other[3], epsilon, max_ulps)
+        Vector4::ulps_eq(&self[0], &other[0], epsilon, max_ulps)
+            && Vector4::ulps_eq(&self[1], &other[1], epsilon, max_ulps)
+            && Vector4::ulps_eq(&self[2], &other[2], epsilon, max_ulps)
+            && Vector4::ulps_eq(&self[3], &other[3], epsilon, max_ulps)
     }
 }
 
 impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
-  fn one() -> Matrix3<S> {
-    One::one()
-  }
+    fn one() -> Matrix3<S> {
+        One::one()
+    }
 
-  fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
-    let dir = center - eye;
-    Matrix3::from(Matrix2::look_at(dir, up))
-  }
+    fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::from(Matrix2::look_at(dir, up))
+    }
 
-  fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {
-    (self * vec.extend(S::zero())).truncate()
-  }
+    fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {
+        (self * vec.extend(S::zero())).truncate()
+    }
 
-  fn transform_point(&self, point: Point2<S>) -> Point2<S> {
-    Point2::from_vec((self * Point3::new(point.x, point.y, S::one()).to_vec()).truncate())
-  }
+    fn transform_point(&self, point: Point2<S>) -> Point2<S> {
+        Point2::from_vec((self * Point3::new(point.x, point.y, S::one()).to_vec()).truncate())
+    }
 
-  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
-    self * other
-  }
+    fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+        self * other
+    }
 
-  fn inverse_transform(&self) -> Option<Matrix3<S>> {
-    SquareMatrix::invert(self)
-  }
+    fn inverse_transform(&self) -> Option<Matrix3<S>> {
+        SquareMatrix::invert(self)
+    }
 }
 
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
-  fn one() -> Matrix3<S> {
-    One::one()
-  }
+    fn one() -> Matrix3<S> {
+        One::one()
+    }
 
-  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
-    let dir = center - eye;
-    Matrix3::look_at(dir, up)
-  }
+    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::look_at(dir, up)
+    }
 
-  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
-    self * vec
-  }
+    fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+        self * vec
+    }
 
-  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-    Point3::from_vec(self * point.to_vec())
-  }
+    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+        Point3::from_vec(self * point.to_vec())
+    }
 
-  fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
-    self * other
-  }
+    fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
+        self * other
+    }
 
-  fn inverse_transform(&self) -> Option<Matrix3<S>> {
-    SquareMatrix::invert(self)
-  }
+    fn inverse_transform(&self) -> Option<Matrix3<S>> {
+        SquareMatrix::invert(self)
+    }
 }
 
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
-  fn one() -> Matrix4<S> {
-    One::one()
-  }
+    fn one() -> Matrix4<S> {
+        One::one()
+    }
 
-  fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-    Matrix4::look_at(eye, center, up)
-  }
+    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_at(eye, center, up)
+    }
 
-  fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
-    (self * vec.extend(S::zero())).truncate()
-  }
+    fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
+        (self * vec.extend(S::zero())).truncate()
+    }
 
-  fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-    Point3::from_homogeneous(self * point.to_homogeneous())
-  }
+    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
+        Point3::from_homogeneous(self * point.to_homogeneous())
+    }
 
-  fn concat(&self, other: &Matrix4<S>) -> Matrix4<S> {
-    self * other
-  }
+    fn concat(&self, other: &Matrix4<S>) -> Matrix4<S> {
+        self * other
+    }
 
-  fn inverse_transform(&self) -> Option<Matrix4<S>> {
-    SquareMatrix::invert(self)
-  }
+    fn inverse_transform(&self) -> Option<Matrix4<S>> {
+        SquareMatrix::invert(self)
+    }
 }
 
 impl<S: BaseFloat> Transform2<S> for Matrix3<S> {}
@@ -1060,6 +1113,7 @@ macro_rules! impl_scalar_ops {
 
 impl_matrix!(Matrix2, Vector2 { x: 0, y: 1 });
 impl_matrix!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
+#[cfg_attr(rustfmt, rustfmt_skip)]
 impl_matrix!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
 macro_rules! impl_mv_operator {
@@ -1073,7 +1127,9 @@ macro_rules! impl_mv_operator {
 impl_mv_operator!(Matrix2, Vector2 { x: 0, y: 1 });
 impl_mv_operator!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
 #[cfg(not(feature = "simd"))]
+#[cfg_attr(rustfmt, rustfmt_skip)]
 impl_mv_operator!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
+
 #[cfg(feature = "simd")]
 impl_operator!(<S: BaseFloat> Mul<Vector4<S> > for Matrix4<S> {
     fn mul(matrix, vector) -> Vector4<S> {
@@ -1109,6 +1165,8 @@ impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
             let b = lhs[1];
             let c = lhs[2];
             let d = lhs[3];
+
+            #[cfg_attr(rustfmt, rustfmt_skip)]
             Matrix4::from_cols(
                 a*rhs[0][0] + b*rhs[0][1] + c*rhs[0][2] + d*rhs[0][3],
                 a*rhs[1][0] + b*rhs[1][1] + c*rhs[1][2] + d*rhs[1][3],
@@ -1157,7 +1215,8 @@ index_operators!(Matrix4<S>, 4, Vector4<S>, usize);
 // index_operators!(Matrix3<S>, 3, [Vector3<S>], RangeFull);
 // index_operators!(Matrix4<S>, 4, [Vector4<S>], RangeFull);
 
-impl<A> From<Euler<A>> for Matrix3<A::Unitless> where
+impl<A> From<Euler<A>> for Matrix3<A::Unitless>
+where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix3<A::Unitless> {
@@ -1166,13 +1225,17 @@ impl<A> From<Euler<A>> for Matrix3<A::Unitless> where
         let (sy, cy) = Rad::sin_cos(src.y.into());
         let (sz, cz) = Rad::sin_cos(src.z.into());
 
-        Matrix3::new(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz,
-                     -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz,
-                     sy, -sx * cy, cx * cy)
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz,
+            -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz,
+            sy, -sx * cy, cx * cy,
+        )
     }
 }
 
-impl<A> From<Euler<A>> for Matrix4<A::Unitless> where
+impl<A> From<Euler<A>> for Matrix4<A::Unitless>
+where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
 {
     fn from(src: Euler<A>) -> Matrix4<A::Unitless> {
@@ -1181,10 +1244,13 @@ impl<A> From<Euler<A>> for Matrix4<A::Unitless> where
         let (sy, cy) = Rad::sin_cos(src.y.into());
         let (sz, cz) = Rad::sin_cos(src.z.into());
 
-        Matrix4::new(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz, A::Unitless::zero(),
-                     -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz, A::Unitless::zero(),
-                     sy, -sx * cy, cx * cy, A::Unitless::zero(),
-                     A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz, A::Unitless::zero(),
+            -cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz, A::Unitless::zero(),
+            sy, -sx * cy, cx * cy, A::Unitless::zero(),
+            A::Unitless::zero(), A::Unitless::zero(), A::Unitless::zero(), A::Unitless::one(),
+        )
     }
 }
 
@@ -1314,9 +1380,12 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix3<S> {
-        Matrix3::new(m[0][0], m[0][1], S::zero(),
-                     m[1][0], m[1][1], S::zero(),
-                     S::zero(), S::zero(), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            m[0][0], m[0][1], S::zero(),
+            m[1][0], m[1][1], S::zero(),
+            S::zero(), S::zero(), S::one(),
+        )
     }
 }
 
@@ -1324,10 +1393,13 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix4<S> {
-        Matrix4::new(m[0][0], m[0][1], S::zero(), S::zero(),
-                     m[1][0], m[1][1], S::zero(), S::zero(),
-                     S::zero(), S::zero(), S::one(), S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            m[0][0], m[0][1], S::zero(), S::zero(),
+            m[1][0], m[1][1], S::zero(), S::zero(),
+            S::zero(), S::zero(), S::one(), S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 }
 
@@ -1335,10 +1407,13 @@ impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix3<S>) -> Matrix4<S> {
-        Matrix4::new(m[0][0], m[0][1], m[0][2], S::zero(),
-                     m[1][0], m[1][1], m[1][2], S::zero(),
-                     m[2][0], m[2][1], m[2][2], S::zero(),
-                     S::zero(), S::zero(), S::zero(), S::one())
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            m[0][0], m[0][1], m[0][2], S::zero(),
+            m[1][0], m[1][1], m[1][2], S::zero(),
+            m[2][0], m[2][1], m[2][2], S::zero(),
+            S::zero(), S::zero(), S::zero(), S::one(),
+        )
     }
 }
 
@@ -1409,39 +1484,101 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
 impl<S: BaseFloat + Rand> Rand for Matrix2<S> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Matrix2<S> {
-        Matrix2{ x: rng.gen(), y: rng.gen() }
+        Matrix2 {
+            x: rng.gen(),
+            y: rng.gen(),
+        }
     }
 }
 
 impl<S: BaseFloat + Rand> Rand for Matrix3<S> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Matrix3<S> {
-        Matrix3{ x: rng.gen(), y: rng.gen(), z: rng.gen() }
+        Matrix3 {
+            x: rng.gen(),
+            y: rng.gen(),
+            z: rng.gen(),
+        }
     }
 }
 
 impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Matrix4<S> {
-        Matrix4{ x: rng.gen(), y: rng.gen(), z: rng.gen(), w: rng.gen() }
+        Matrix4 {
+            x: rng.gen(),
+            y: rng.gen(),
+            z: rng.gen(),
+            w: rng.gen(),
+        }
     }
 }
 
 // Sub procedure for SIMD when dealing with determinant and inversion
 #[inline]
-unsafe fn det_sub_proc_unsafe<S: BaseFloat>(m: &Matrix4<S>, x: usize, y: usize, z: usize) -> Vector4<S> {
+unsafe fn det_sub_proc_unsafe<S: BaseFloat>(
+    m: &Matrix4<S>,
+    x: usize,
+    y: usize,
+    z: usize,
+) -> Vector4<S> {
     let s: &[S; 16] = m.as_ref();
-    let a = Vector4::new(*s.get_unchecked(4 + x), *s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(8 + x));
-    let b = Vector4::new(*s.get_unchecked(8 + y), *s.get_unchecked(8 + y), *s.get_unchecked(4 + y), *s.get_unchecked(4 + y));
-    let c = Vector4::new(*s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(12 + z), *s.get_unchecked(z));
+    let a = Vector4::new(
+        *s.get_unchecked(4 + x),
+        *s.get_unchecked(12 + x),
+        *s.get_unchecked(x),
+        *s.get_unchecked(8 + x),
+    );
+    let b = Vector4::new(
+        *s.get_unchecked(8 + y),
+        *s.get_unchecked(8 + y),
+        *s.get_unchecked(4 + y),
+        *s.get_unchecked(4 + y),
+    );
+    let c = Vector4::new(
+        *s.get_unchecked(12 + z),
+        *s.get_unchecked(z),
+        *s.get_unchecked(12 + z),
+        *s.get_unchecked(z),
+    );
 
-    let d = Vector4::new(*s.get_unchecked(8 + x), *s.get_unchecked(8 + x), *s.get_unchecked(4 + x), *s.get_unchecked(4 + x));
-    let e = Vector4::new(*s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(12 + y), *s.get_unchecked(y));
-    let f = Vector4::new(*s.get_unchecked(4 + z), *s.get_unchecked(12 + z), *s.get_unchecked(z), *s.get_unchecked(8 + z));
+    let d = Vector4::new(
+        *s.get_unchecked(8 + x),
+        *s.get_unchecked(8 + x),
+        *s.get_unchecked(4 + x),
+        *s.get_unchecked(4 + x),
+    );
+    let e = Vector4::new(
+        *s.get_unchecked(12 + y),
+        *s.get_unchecked(y),
+        *s.get_unchecked(12 + y),
+        *s.get_unchecked(y),
+    );
+    let f = Vector4::new(
+        *s.get_unchecked(4 + z),
+        *s.get_unchecked(12 + z),
+        *s.get_unchecked(z),
+        *s.get_unchecked(8 + z),
+    );
 
-    let g = Vector4::new(*s.get_unchecked(12 + x), *s.get_unchecked(x), *s.get_unchecked(12 + x), *s.get_unchecked(x));
-    let h = Vector4::new(*s.get_unchecked(4 + y), *s.get_unchecked(12 + y), *s.get_unchecked(y), *s.get_unchecked(8 + y));
-    let i = Vector4::new(*s.get_unchecked(8 + z), *s.get_unchecked(8 + z), *s.get_unchecked(4 + z), *s.get_unchecked(4 + z));
+    let g = Vector4::new(
+        *s.get_unchecked(12 + x),
+        *s.get_unchecked(x),
+        *s.get_unchecked(12 + x),
+        *s.get_unchecked(x),
+    );
+    let h = Vector4::new(
+        *s.get_unchecked(4 + y),
+        *s.get_unchecked(12 + y),
+        *s.get_unchecked(y),
+        *s.get_unchecked(8 + y),
+    );
+    let i = Vector4::new(
+        *s.get_unchecked(8 + z),
+        *s.get_unchecked(8 + z),
+        *s.get_unchecked(4 + z),
+        *s.get_unchecked(4 + z),
+    );
     let mut tmp = a.mul_element_wise(b.mul_element_wise(c));
     tmp += d.mul_element_wise(e.mul_element_wise(f));
     tmp += g.mul_element_wise(h.mul_element_wise(i));

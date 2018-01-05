@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use rand::{Rand, Rng};
-use num_traits::{NumCast, Bounded};
+use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::iter;
 use std::mem;
@@ -24,7 +24,7 @@ use structure::*;
 
 use angle::Rad;
 use approx::ApproxEq;
-use num::{BaseNum, BaseFloat};
+use num::{BaseFloat, BaseNum};
 
 #[cfg(feature = "simd")]
 use simd::f32x4 as Simdf32x4;
@@ -659,11 +659,12 @@ impl<S: BaseNum> Vector3<S> {
 
     /// Returns the cross product of the vector and `other`.
     #[inline]
-    #[must_use]
     pub fn cross(self, other: Vector3<S>) -> Vector3<S> {
-        Vector3::new((self.y * other.z) - (self.z * other.y),
-                     (self.z * other.x) - (self.x * other.z),
-                     (self.x * other.y) - (self.y * other.x))
+        Vector3::new(
+            (self.y * other.z) - (self.z * other.y),
+            (self.z * other.x) - (self.x * other.z),
+            (self.x * other.y) - (self.y * other.x),
+        )
     }
 
     /// Create a `Vector4`, using the `x`, `y` and `z` values from this vector, and the
@@ -731,7 +732,8 @@ impl<S: BaseNum> Vector4<S> {
 /// Dot product of two vectors.
 #[inline]
 pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar
-    where V::Scalar: BaseFloat
+where
+    V::Scalar: BaseFloat,
 {
     V::dot(a, b)
 }
@@ -841,8 +843,6 @@ impl Vector4<f32> {
     }
 }
 
-
-
 #[cfg(feature = "simd")]
 impl Into<Simdf32x4> for Vector4<f32> {
     #[inline]
@@ -887,8 +887,6 @@ impl_operator_simd!{@rs
         }
     }
 }
-
-
 
 #[cfg(feature = "simd")]
 impl_operator_simd!{
@@ -939,27 +937,46 @@ impl DivAssign<f32> for Vector4<f32> {
 
 #[cfg(feature = "simd")]
 impl ElementWise for Vector4<f32> {
-    #[inline] fn add_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self + rhs }
-    #[inline] fn sub_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> { self - rhs }
-    #[inline] fn mul_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+    #[inline]
+    fn add_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+        self + rhs
+    }
+    #[inline]
+    fn sub_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+        self - rhs
+    }
+    #[inline]
+    fn mul_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
         let s: Simdf32x4 = self.into();
         let rhs: Simdf32x4 = rhs.into();
         (s * rhs).into()
     }
-    #[inline] fn div_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
+    #[inline]
+    fn div_element_wise(self, rhs: Vector4<f32>) -> Vector4<f32> {
         let s: Simdf32x4 = self.into();
         let rhs: Simdf32x4 = rhs.into();
         (s / rhs).into()
     }
 
-    #[inline] fn add_assign_element_wise(&mut self, rhs: Vector4<f32>) { (*self) += rhs; }
-    #[inline] fn sub_assign_element_wise(&mut self, rhs: Vector4<f32>) { (*self) -= rhs; }
-    #[inline] fn mul_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+    #[inline]
+    fn add_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+        (*self) += rhs;
+    }
+
+    #[inline]
+    fn sub_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+        (*self) -= rhs;
+    }
+
+    #[inline]
+    fn mul_assign_element_wise(&mut self, rhs: Vector4<f32>) {
         let s: Simdf32x4 = (*self).into();
         let rhs: Simdf32x4 = rhs.into();
         *self = (s * rhs).into();
     }
-    #[inline] fn div_assign_element_wise(&mut self, rhs: Vector4<f32>) {
+
+    #[inline]
+    fn div_assign_element_wise(&mut self, rhs: Vector4<f32>) {
         let s: Simdf32x4 = (*self).into();
         let rhs: Simdf32x4 = rhs.into();
         *self = (s * rhs).into();
@@ -968,31 +985,53 @@ impl ElementWise for Vector4<f32> {
 
 #[cfg(feature = "simd")]
 impl ElementWise<f32> for Vector4<f32> {
-    #[inline] fn add_element_wise(self, rhs: f32) -> Vector4<f32> {
+    #[inline]
+    fn add_element_wise(self, rhs: f32) -> Vector4<f32> {
         let s: Simdf32x4 = self.into();
         let rhs = Simdf32x4::splat(rhs);
         (s + rhs).into()
     }
-    #[inline] fn sub_element_wise(self, rhs: f32) -> Vector4<f32> {
+
+    #[inline]
+    fn sub_element_wise(self, rhs: f32) -> Vector4<f32> {
         let s: Simdf32x4 = self.into();
         let rhs = Simdf32x4::splat(rhs);
         (s - rhs).into()
     }
-    #[inline] fn mul_element_wise(self, rhs: f32) -> Vector4<f32> { self * rhs }
-    #[inline] fn div_element_wise(self, rhs: f32) -> Vector4<f32> { self / rhs }
 
-    #[inline] fn add_assign_element_wise(&mut self, rhs: f32) {
+    #[inline]
+    fn mul_element_wise(self, rhs: f32) -> Vector4<f32> {
+        self * rhs
+    }
+
+    #[inline]
+    fn div_element_wise(self, rhs: f32) -> Vector4<f32> {
+        self / rhs
+    }
+
+    #[inline]
+    fn add_assign_element_wise(&mut self, rhs: f32) {
         let s: Simdf32x4 = (*self).into();
         let rhs = Simdf32x4::splat(rhs);
         *self = (s + rhs).into();
     }
-    #[inline] fn sub_assign_element_wise(&mut self, rhs: f32) {
+
+    #[inline]
+    fn sub_assign_element_wise(&mut self, rhs: f32) {
         let s: Simdf32x4 = (*self).into();
         let rhs = Simdf32x4::splat(rhs);
         *self = (s - rhs).into();
     }
-    #[inline] fn mul_assign_element_wise(&mut self, rhs: f32) { (*self) *= rhs; }
-    #[inline] fn div_assign_element_wise(&mut self, rhs: f32) { (*self) /= rhs; }
+
+    #[inline]
+    fn mul_assign_element_wise(&mut self, rhs: f32) {
+        (*self) *= rhs;
+    }
+
+    #[inline]
+    fn div_assign_element_wise(&mut self, rhs: f32) {
+        (*self) /= rhs;
+    }
 }
 
 #[cfg(feature = "simd")]
@@ -1170,7 +1209,6 @@ impl_mint_conversions!(Vector2 { x, y }, Vector2);
 impl_mint_conversions!(Vector3 { x, y, z }, Vector3);
 #[cfg(feature = "mint")]
 impl_mint_conversions!(Vector4 { x, y, z, w }, Vector4);
-
 
 #[cfg(test)]
 mod tests {

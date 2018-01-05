@@ -75,8 +75,7 @@ use num::BaseFloat;
 /// [gimbal lock]: https://en.wikipedia.org/wiki/Gimbal_lock#Gimbal_lock_in_applied_mathematics
 /// [convert]: #defining-rotations-using-euler-angles
 #[repr(C)]
-#[derive(Copy, Clone, Debug)]
-#[derive(PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Euler<A: Angle> {
     /// The angle to apply around the _x_ axis. Also known at the _pitch_.
@@ -162,23 +161,27 @@ impl<A: Angle> ApproxEq for Euler<A> {
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: A::Epsilon, max_relative: A::Epsilon) -> bool {
-        A::relative_eq(&self.x, &other.x, epsilon, max_relative) &&
-        A::relative_eq(&self.y, &other.y, epsilon, max_relative) &&
-        A::relative_eq(&self.z, &other.z, epsilon, max_relative)
+        A::relative_eq(&self.x, &other.x, epsilon, max_relative)
+            && A::relative_eq(&self.y, &other.y, epsilon, max_relative)
+            && A::relative_eq(&self.z, &other.z, epsilon, max_relative)
     }
 
     #[inline]
     fn ulps_eq(&self, other: &Self, epsilon: A::Epsilon, max_ulps: u32) -> bool {
-        A::ulps_eq(&self.x, &other.x, epsilon, max_ulps) &&
-        A::ulps_eq(&self.y, &other.y, epsilon, max_ulps) &&
-        A::ulps_eq(&self.z, &other.z, epsilon, max_ulps)
+        A::ulps_eq(&self.x, &other.x, epsilon, max_ulps)
+            && A::ulps_eq(&self.y, &other.y, epsilon, max_ulps)
+            && A::ulps_eq(&self.z, &other.z, epsilon, max_ulps)
     }
 }
 
 impl<A: Angle + Rand> Rand for Euler<A> {
     #[inline]
     fn rand<R: Rng>(rng: &mut R) -> Euler<A> {
-        Euler { x: rng.gen(), y: rng.gen(), z: rng.gen() }
+        Euler {
+            x: rng.gen(),
+            y: rng.gen(),
+            z: rng.gen(),
+        }
     }
 }
 

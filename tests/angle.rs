@@ -17,7 +17,7 @@
 extern crate approx;
 extern crate cgmath;
 
-use cgmath::{Rad, Deg};
+use cgmath::{Deg, Rad};
 
 #[test]
 fn test_conv() {
@@ -43,8 +43,14 @@ mod rad {
 
     #[test]
     fn test_iter_sum() {
-        assert_eq!(Rad(2.0) + Rad(3.0) + Rad(4.0), [Rad(2.0), Rad(3.0), Rad(4.0)].iter().sum());
-        assert_eq!(Rad(2.0) + Rad(3.0) + Rad(4.0), [Rad(2.0), Rad(3.0), Rad(4.0)].iter().cloned().sum());
+        assert_eq!(
+            Rad(2.0) + Rad(3.0) + Rad(4.0),
+            [Rad(2.0), Rad(3.0), Rad(4.0)].iter().sum()
+        );
+        assert_eq!(
+            Rad(2.0) + Rad(3.0) + Rad(4.0),
+            [Rad(2.0), Rad(3.0), Rad(4.0)].iter().cloned().sum()
+        );
     }
 }
 
@@ -53,7 +59,13 @@ mod deg {
 
     #[test]
     fn test_iter_sum() {
-        assert_eq!(Deg(2.0) + Deg(3.0) + Deg(4.0), [Deg(2.0), Deg(3.0), Deg(4.0)].iter().sum());
-        assert_eq!(Deg(2.0) + Deg(3.0) + Deg(4.0), [Deg(2.0), Deg(3.0), Deg(4.0)].iter().cloned().sum());
+        assert_eq!(
+            Deg(2.0) + Deg(3.0) + Deg(4.0),
+            [Deg(2.0), Deg(3.0), Deg(4.0)].iter().sum()
+        );
+        assert_eq!(
+            Deg(2.0) + Deg(3.0) + Deg(4.0),
+            [Deg(2.0), Deg(3.0), Deg(4.0)].iter().cloned().sum()
+        );
     }
 }

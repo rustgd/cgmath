@@ -6,6 +6,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.16.0] - 2018-01-03
+
+### Added
+
+- Add `InnerSpace::project_on`
+- Add `Array::len`
+- Re-export `Bounded` and implement for vectors, points, and angles
+- Add vector subtraction to `EuclideanSpace`
+- Add swizzle functions behinde that `"swizzle"` feature
+- Add `Matrix4::look_at_dir`
+
+### Changed
+
+- Return `Option` from cast functions
+
 ## [v0.15.0] - 2017-07-30
 
 ### Added
@@ -274,7 +289,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.16.0...HEAD
+[v0.16.0]: https://github.com/brendanzab/cgmath/compare/v0.15.0...v0.16.0
 [v0.15.0]: https://github.com/brendanzab/cgmath/compare/v0.14.1...v0.15.0
 [v0.14.1]: https://github.com/brendanzab/cgmath/compare/v0.14.0...v0.14.1
 [v0.14.0]: https://github.com/brendanzab/cgmath/compare/v0.13.1...v0.14.0
