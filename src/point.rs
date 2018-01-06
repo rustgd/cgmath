@@ -255,6 +255,34 @@ macro_rules! impl_point {
             fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
         });
 
+        impl<S: BaseNum> ElementWise for $PointN<S> {
+            #[inline] fn add_element_wise(self, rhs: $PointN<S>) -> $PointN<S> { $PointN::new($(self.$field + rhs.$field),+) }
+            #[inline] fn sub_element_wise(self, rhs: $PointN<S>) -> $PointN<S> { $PointN::new($(self.$field - rhs.$field),+) }
+            #[inline] fn mul_element_wise(self, rhs: $PointN<S>) -> $PointN<S> { $PointN::new($(self.$field * rhs.$field),+) }
+            #[inline] fn div_element_wise(self, rhs: $PointN<S>) -> $PointN<S> { $PointN::new($(self.$field / rhs.$field),+) }
+            #[inline] fn rem_element_wise(self, rhs: $PointN<S>) -> $PointN<S> { $PointN::new($(self.$field % rhs.$field),+) }
+
+            #[inline] fn add_assign_element_wise(&mut self, rhs: $PointN<S>) { $(self.$field += rhs.$field);+ }
+            #[inline] fn sub_assign_element_wise(&mut self, rhs: $PointN<S>) { $(self.$field -= rhs.$field);+ }
+            #[inline] fn mul_assign_element_wise(&mut self, rhs: $PointN<S>) { $(self.$field *= rhs.$field);+ }
+            #[inline] fn div_assign_element_wise(&mut self, rhs: $PointN<S>) { $(self.$field /= rhs.$field);+ }
+            #[inline] fn rem_assign_element_wise(&mut self, rhs: $PointN<S>) { $(self.$field %= rhs.$field);+ }
+        }
+
+        impl<S: BaseNum> ElementWise<S> for $PointN<S> {
+            #[inline] fn add_element_wise(self, rhs: S) -> $PointN<S> { $PointN::new($(self.$field + rhs),+) }
+            #[inline] fn sub_element_wise(self, rhs: S) -> $PointN<S> { $PointN::new($(self.$field - rhs),+) }
+            #[inline] fn mul_element_wise(self, rhs: S) -> $PointN<S> { $PointN::new($(self.$field * rhs),+) }
+            #[inline] fn div_element_wise(self, rhs: S) -> $PointN<S> { $PointN::new($(self.$field / rhs),+) }
+            #[inline] fn rem_element_wise(self, rhs: S) -> $PointN<S> { $PointN::new($(self.$field % rhs),+) }
+
+            #[inline] fn add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ }
+            #[inline] fn sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ }
+            #[inline] fn mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ }
+            #[inline] fn div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ }
+            #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
+        }
+
         impl_scalar_ops!($PointN<usize> { $($field),+ });
         impl_scalar_ops!($PointN<u8> { $($field),+ });
         impl_scalar_ops!($PointN<u16> { $($field),+ });
