@@ -101,6 +101,13 @@ macro_rules! impl_vector {
             pub fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
+
+            #[inline]
+            pub fn map<U, F>(self, mut f: F) -> $VectorN<U>
+                where F: FnMut(S) -> U
+            {
+                $VectorN { $($field: f(self.$field)),+ }
+            }
         }
 
         /// The short constructor.
