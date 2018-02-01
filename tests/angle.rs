@@ -20,6 +20,18 @@ extern crate cgmath;
 use cgmath::{Angle, Deg, Rad};
 
 #[test]
+fn test_normalize() {
+    let angle: Rad<f64> = Rad::full_turn().normalize();
+    assert_ulps_eq!(&angle, &Rad(0f64));
+
+    let angle: Rad<f64> = (Rad::full_turn() + Rad::turn_div_4()).normalize();
+    assert_ulps_eq!(&angle, &Rad::turn_div_4());
+
+    let angle: Rad<f64> = (-Rad::turn_div_4()).normalize();
+    assert_ulps_eq!(&angle, &(Rad::full_turn() - Rad::turn_div_4()));
+}
+
+#[test]
 fn test_normalize_signed() {
     let angle: Rad<f64> = Rad::full_turn().normalize_signed();
     assert_ulps_eq!(&angle, &Rad(0f64));
