@@ -80,12 +80,14 @@ impl<S: BaseNum> Point3<S> {
 macro_rules! impl_point {
     ($PointN:ident { $($field:ident),+ }, $VectorN:ident, $n:expr) => {
         impl<S> $PointN<S> {
-            /// Construct a new vector, using the provided values.
+            /// Construct a new point, using the provided values.
             #[inline]
             pub fn new($($field: S),+) -> $PointN<S> {
                 $PointN { $($field: $field),+ }
             }
 
+            /// Perform the given operation on each field in the point, returning a new point
+            /// constructed from the operations.
             #[inline]
             pub fn map<U, F>(self, mut f: F) -> $PointN<U>
                 where F: FnMut(S) -> U
