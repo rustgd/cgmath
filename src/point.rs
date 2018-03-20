@@ -64,33 +64,6 @@ pub struct Point3<S> {
     pub z: S,
 }
 
-impl<S: BaseNum> Point1<S> {
-    #[inline]
-    pub fn new(x: S) -> Point1<S> {
-        Point1 { x: x }
-    }
-
-    impl_swizzle_functions!(Point1, Point2, Point3, S, x);
-}
-
-impl<S: BaseNum> Point2<S> {
-    #[inline]
-    pub fn new(x: S, y: S) -> Point2<S> {
-        Point2 { x: x, y: y }
-    }
-
-    impl_swizzle_functions!(Point1, Point2, Point3, S, xy);
-}
-
-impl<S: BaseNum> Point3<S> {
-    #[inline]
-    pub fn new(x: S, y: S, z: S) -> Point3<S> {
-        Point3 { x: x, y: y, z: z }
-    }
-
-    impl_swizzle_functions!(Point1, Point2, Point3, S, xyz);
-}
-
 impl<S: BaseNum> Point3<S> {
     #[inline]
     pub fn from_homogeneous(v: Vector4<S>) -> Point3<S> {
@@ -106,6 +79,23 @@ impl<S: BaseNum> Point3<S> {
 
 macro_rules! impl_point {
     ($PointN:ident { $($field:ident),+ }, $VectorN:ident, $n:expr) => {
+        impl<S> $PointN<S> {
+            /// Construct a new point, using the provided values.
+            #[inline]
+            pub fn new($($field: S),+) -> $PointN<S> {
+                $PointN { $($field: $field),+ }
+            }
+
+            /// Perform the given operation on each field in the point, returning a new point
+            /// constructed from the operations.
+            #[inline]
+            pub fn map<U, F>(self, mut f: F) -> $PointN<U>
+                where F: FnMut(S) -> U
+            {
+                $PointN { $($field: f(self.$field)),+ }
+            }
+        }
+
         impl<S: BaseNum> Array for $PointN<S> {
             type Element = S;
 
@@ -321,6 +311,18 @@ macro_rules! impl_scalar_ops {
 impl_point!(Point1 { x }, Vector1, 1);
 impl_point!(Point2 { x, y }, Vector2, 2);
 impl_point!(Point3 { x, y, z }, Vector3, 3);
+
+impl<S: Copy> Point1<S> {
+    impl_swizzle_functions!(Point1, Point2, Point3, S, x);
+}
+
+impl<S: Copy> Point2<S> {
+    impl_swizzle_functions!(Point1, Point2, Point3, S, xy);
+}
+
+impl<S: Copy> Point3<S> {
+    impl_swizzle_functions!(Point1, Point2, Point3, S, xyz);
+}
 
 impl_fixed_array_conversions!(Point1<S> { x: 0 }, 1);
 impl_fixed_array_conversions!(Point2<S> { x: 0, y: 1 }, 2);

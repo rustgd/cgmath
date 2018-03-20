@@ -101,6 +101,15 @@ macro_rules! impl_vector {
             pub fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
+
+            /// Perform the given operation on each field in the vector, returning a new point
+            /// constructed from the operations.
+            #[inline]
+            pub fn map<U, F>(self, mut f: F) -> $VectorN<U>
+                where F: FnMut(S) -> U
+            {
+                $VectorN { $($field: f(self.$field)),+ }
+            }
         }
 
         /// The short constructor.
