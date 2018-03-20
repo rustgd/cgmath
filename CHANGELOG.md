@@ -6,6 +6,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+ - Implement `ElementWise` trait for point types
+ - Add `map` function to points and vectors
+
+### Changed
+
+ - Remove `BaseNum` trait requirement for `PointN::new` functions
+
 ## [v0.16.0] - 2018-01-03
 
 ### Added
