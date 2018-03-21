@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.16.1] - 2018-03-21
+
 ### Added
 
  - Implement `ElementWise` trait for point types
@@ -298,7 +300,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.0.1 - 2014-06-24
 
-[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/brendanzab/cgmath/compare/v0.16.1...HEAD
+[v0.16.1]: https://github.com/brendanzab/cgmath/compare/v0.16.0...v0.16.1
 [v0.16.0]: https://github.com/brendanzab/cgmath/compare/v0.15.0...v0.16.0
 [v0.15.0]: https://github.com/brendanzab/cgmath/compare/v0.14.1...v0.15.0
 [v0.14.1]: https://github.com/brendanzab/cgmath/compare/v0.14.0...v0.14.1
