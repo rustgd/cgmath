@@ -93,10 +93,8 @@ impl<S: BaseFloat> Quaternion<S> {
     ///
     /// Return the closest rotation that turns `src` vector into `dst`.
     ///
-    /// - [Related StackOverflow question]
-    ///   (http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
-    /// - [Ogre implementation for normalized vectors]
-    ///   (https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
+    /// - [Related StackOverflow question](http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
+    /// - [Ogre implementation for normalized vectors](https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
     pub fn from_arc(
         src: Vector3<S>,
         dst: Vector3<S>,
@@ -143,10 +141,8 @@ impl<S: BaseFloat> Quaternion<S> {
     /// more advisable to use `nlerp` when you know your rotations are going
     /// to be small.
     ///
-    /// - [Understanding Slerp, Then Not Using It]
-    ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
-    /// - [Arcsynthesis OpenGL tutorial]
-    ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
+    /// - [Understanding Slerp, Then Not Using It](http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
+    /// - [Arcsynthesis OpenGL tutorial](http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
     pub fn slerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
         let dot = self.dot(other);
         let dot_threshold = cast(0.9995f64).unwrap();
@@ -172,6 +168,40 @@ impl<S: BaseFloat> Quaternion<S> {
 
             (self * scale1 + other * scale2) * Rad::sin(theta).recip()
         }
+    }
+
+    /// Decompose a quaternion into a swing and a twist.
+    /// See [this stackoverflow question] and [this paper] for more information.
+    /// To get the corresponding swing do, for example,
+    ///
+    /// ```
+    /// # #[macro_use] extern crate cgmath;
+    /// # fn main() {
+    /// use std::f32::consts::PI;
+    /// use cgmath::{Quaternion, Euler, Vector3, InnerSpace, Deg};
+    /// // Rotation of 45 degrees about y axis then 45 degrees about x axis
+    /// let rotation = Quaternion::from(Euler { x: Deg(45.0), y: Deg(45.0), z: Deg(0.0)});
+    /// let twist = rotation.twist(Vector3::new(1.0, 1.0, 0.0).normalize(), None);
+    /// // We solve `swing * twist = rotation => swing = rotation & twist ^-1`.
+    /// let swing = rotation * twist.conjugate();
+    /// // if we recombine our rotations we get the original back.
+    /// assert_ulps_eq!(rotation, swing * twist);
+    /// panic!("swing: {:#?}, twist: {:#?}, rotation: {:#?}, new rotation: {:#?}",
+    /// Euler::from(swing), Euler::from(twist), Euler::from(rotation), Euler::from(swing * twist));
+    /// # }
+    /// ```
+    /// . There is a degenerate case where the direction is orthogonal to the direction of the
+    /// quaternion, and the angle is 180 degrees. In this case there are infinite possible
+    /// decompositions, so allow the user to specify one with `fallback`.
+    ///
+    /// [this stackoverflow question]: https://stackoverflow.com/questions/3684269/component-of-a-quaternion-rotation-around-an-axis
+    /// [this paper]: https://arxiv.org/pdf/1506.05481.pdf
+    pub fn twist(&self, direction: Vector3<S>, fallback: Option<Vector3<S>>) -> Self {
+        let projection = self.v.project_on(direction);
+        if ulps_eq!(*self, <Quaternion<S> as Zero>::zero()) {
+            unimplemented!()
+        }
+        Quaternion::from_sv(self.s, projection).normalize()
     }
 }
 
