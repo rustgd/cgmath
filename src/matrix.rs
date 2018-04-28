@@ -106,6 +106,11 @@ impl<S: BaseFloat> Matrix2<S> {
 
         Matrix2::new(c, s, -s, c)
     }
+
+    /// Are all entries in the matrix finite.
+    pub fn is_finite(&self) -> bool {
+        self.x.is_finite() && self.y.is_finite()
+    }
 }
 
 impl<S: BaseFloat> Matrix3<S> {
@@ -204,6 +209,11 @@ impl<S: BaseFloat> Matrix3<S> {
             _1subc * axis.y * axis.z - s * axis.x,
             _1subc * axis.z * axis.z + c,
         )
+    }
+
+    /// Are all entries in the matrix finite.
+    pub fn is_finite(&self) -> bool {
+        self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
     }
 }
 
@@ -356,6 +366,11 @@ impl<S: BaseFloat> Matrix4<S> {
 
             S::zero(), S::zero(), S::zero(), S::one(),
         )
+    }
+
+    /// Are all entries in the matrix finite.
+    pub fn is_finite(&self) -> bool {
+        self.w.is_finite() && self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
     }
 }
 

@@ -118,6 +118,13 @@ macro_rules! impl_vector {
             $VectorN::new($($field),+)
         }
 
+        impl<S: BaseFloat> $VectorN<S> {
+            /// True if all entries in the vector are finite
+            pub fn is_finite(&self) -> bool {
+                $(self.$field.is_finite())&&+
+            }
+        }
+
         impl<S: NumCast + Copy> $VectorN<S> {
             /// Component-wise casting to another type.
             #[inline]
@@ -1323,6 +1330,14 @@ mod tests {
                 assert_eq!(v, &VECTOR2);
             }
         }
+
+        #[test]
+        fn test_is_finite() {
+            use num_traits::Float;
+            assert!(!Vector2::from([Float::nan(), 1.0]).is_finite());
+            assert!(!Vector2::from([1.0, Float::infinity()]).is_finite());
+            assert!(Vector2::from([-1.0, 1.0]).is_finite());
+        }
     }
 
     mod vector3 {
@@ -1427,6 +1442,14 @@ mod tests {
                 let v: &mut Vector3<_> = From::from(v);
                 assert_eq!(v, &VECTOR3);
             }
+        }
+
+        #[test]
+        fn test_is_finite() {
+            use num_traits::Float;
+            assert!(!Vector3::from([Float::nan(), 1.0, 1.0]).is_finite());
+            assert!(!Vector3::from([1.0, 1.0, Float::infinity()]).is_finite());
+            assert!(Vector3::from([-1.0, 1.0, 1.0]).is_finite());
         }
     }
 
@@ -1538,6 +1561,14 @@ mod tests {
                 let v: &mut Vector4<_> = From::from(v);
                 assert_eq!(v, &VECTOR4);
             }
+        }
+
+        #[test]
+        fn test_is_finite() {
+            use num_traits::Float;
+            assert!(!Vector4::from([0.0, Float::nan(), 1.0, 1.0]).is_finite());
+            assert!(!Vector4::from([1.0, 1.0, Float::neg_infinity(), 0.0]).is_finite());
+            assert!(Vector4::from([-1.0, 0.0, 1.0, 1.0]).is_finite());
         }
     }
 }
