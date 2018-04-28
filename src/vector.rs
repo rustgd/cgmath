@@ -360,6 +360,13 @@ macro_rules! impl_vector_default {
             $VectorN::new($($field),+)
         }
 
+        impl<S: BaseFloat> $VectorN<S> {
+            /// True if all entries in the vector are finite
+            pub fn is_finite(&self) -> bool {
+                $(self.$field.is_finite())&&+
+            }
+        }
+
         impl<S: NumCast + Copy> $VectorN<S> {
             /// Component-wise casting to another type.
             #[inline]
