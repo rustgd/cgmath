@@ -118,6 +118,10 @@ macro_rules! impl_point {
             fn product(self) -> S where S: Mul<Output = S> {
                 fold_array!(mul, { $(self.$field),+ })
             }
+
+            fn is_finite(&self) -> bool where S: BaseFloat {
+                $(self.$field.is_finite())&&+
+            }
         }
 
         impl<S: NumCast + Copy> $PointN<S> {

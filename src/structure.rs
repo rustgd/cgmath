@@ -87,6 +87,11 @@ where
     fn product(self) -> Self::Element
     where
         Self::Element: Mul<Output = <Self as Array>::Element>;
+
+    /// Whether all elements of the array are finite
+    fn is_finite(&self) -> bool
+    where
+        Self::Element: BaseFloat;
 }
 
 /// Element-wise arithmetic operations. These are supplied for pragmatic

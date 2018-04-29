@@ -118,13 +118,6 @@ macro_rules! impl_vector {
             $VectorN::new($($field),+)
         }
 
-        impl<S: BaseFloat> $VectorN<S> {
-            /// True if all entries in the vector are finite
-            pub fn is_finite(&self) -> bool {
-                $(self.$field.is_finite())&&+
-            }
-        }
-
         impl<S: NumCast + Copy> $VectorN<S> {
             /// Component-wise casting to another type.
             #[inline]
@@ -169,6 +162,10 @@ macro_rules! impl_vector {
             #[inline]
             fn product(self) -> S where S: Mul<Output = S> {
                 fold_array!(mul, { $(self.$field),+ })
+            }
+
+            fn is_finite(&self) -> bool where S: BaseFloat {
+                $(self.$field.is_finite())&&+
             }
         }
 

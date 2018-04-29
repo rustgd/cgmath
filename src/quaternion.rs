@@ -173,6 +173,10 @@ impl<S: BaseFloat> Quaternion<S> {
             (self * scale1 + other * scale2) * Rad::sin(theta).recip()
         }
     }
+
+    pub fn is_finite(&self) -> bool {
+        self.s.is_finite() && self.v.is_finite()
+    }
 }
 
 impl<S: BaseFloat> Zero for Quaternion<S> {
