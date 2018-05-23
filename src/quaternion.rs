@@ -23,7 +23,7 @@ use num_traits::{cast, NumCast};
 use structure::*;
 
 use angle::Rad;
-use approx::ApproxEq;
+use approx;
 use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
@@ -587,7 +587,7 @@ impl_scalar_mul!(f64);
 impl_scalar_div!(f32);
 impl_scalar_div!(f64);
 
-impl<S: BaseFloat> ApproxEq for Quaternion<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Quaternion<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -596,19 +596,29 @@ impl<S: BaseFloat> ApproxEq for Quaternion<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        S::abs_diff_eq(&self.s, &other.s, epsilon)
+            && Vector3::abs_diff_eq(&self.v, &other.v, epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Quaternion<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
     }
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
         S::relative_eq(&self.s, &other.s, epsilon, max_relative)
             && Vector3::relative_eq(&self.v, &other.v, epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Quaternion<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]

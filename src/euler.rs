@@ -19,7 +19,7 @@ use num_traits::cast;
 use structure::*;
 
 use angle::Rad;
-use approx::ApproxEq;
+use approx;
 use quaternion::Quaternion;
 #[cfg(feature = "mint")]
 use mint;
@@ -141,7 +141,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Euler<Rad<S>> {
     }
 }
 
-impl<A: Angle> ApproxEq for Euler<A> {
+impl<A: Angle> approx::AbsDiffEq for Euler<A> {
     type Epsilon = A::Epsilon;
 
     #[inline]
@@ -150,13 +150,17 @@ impl<A: Angle> ApproxEq for Euler<A> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: A::Epsilon) -> bool {
+        A::abs_diff_eq(&self.x, &other.x, epsilon)
+            && A::abs_diff_eq(&self.y, &other.y, epsilon)
+            && A::abs_diff_eq(&self.z, &other.z, epsilon)
+    }
+}
+
+impl<A: Angle> approx::RelativeEq for Euler<A> {
+    #[inline]
     fn default_max_relative() -> A::Epsilon {
         A::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        A::default_max_ulps()
     }
 
     #[inline]
@@ -164,6 +168,13 @@ impl<A: Angle> ApproxEq for Euler<A> {
         A::relative_eq(&self.x, &other.x, epsilon, max_relative)
             && A::relative_eq(&self.y, &other.y, epsilon, max_relative)
             && A::relative_eq(&self.z, &other.z, epsilon, max_relative)
+    }
+}
+
+impl<A: Angle> approx::UlpsEq for Euler<A> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        A::default_max_ulps()
     }
 
     #[inline]

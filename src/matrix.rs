@@ -24,7 +24,7 @@ use std::ptr;
 use structure::*;
 
 use angle::Rad;
-use approx::ApproxEq;
+use approx;
 use euler::Euler;
 use num::BaseFloat;
 use point::{Point2, Point3};
@@ -831,7 +831,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Matrix2<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Matrix2<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -840,19 +840,29 @@ impl<S: BaseFloat> ApproxEq for Matrix2<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        Vector2::abs_diff_eq(&self[0], &other[0], epsilon)
+            && Vector2::abs_diff_eq(&self[1], &other[1], epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Matrix2<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
     }
 
     #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
         Vector2::relative_eq(&self[0], &other[0], epsilon, max_relative)
             && Vector2::relative_eq(&self[1], &other[1], epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Matrix2<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]
@@ -862,7 +872,7 @@ impl<S: BaseFloat> ApproxEq for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Matrix3<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Matrix3<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -871,13 +881,17 @@ impl<S: BaseFloat> ApproxEq for Matrix3<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        Vector3::abs_diff_eq(&self[0], &other[0], epsilon)
+            && Vector3::abs_diff_eq(&self[1], &other[1], epsilon)
+            && Vector3::abs_diff_eq(&self[2], &other[2], epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Matrix3<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
     }
 
     #[inline]
@@ -885,6 +899,13 @@ impl<S: BaseFloat> ApproxEq for Matrix3<S> {
         Vector3::relative_eq(&self[0], &other[0], epsilon, max_relative)
             && Vector3::relative_eq(&self[1], &other[1], epsilon, max_relative)
             && Vector3::relative_eq(&self[2], &other[2], epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Matrix3<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]
@@ -895,7 +916,7 @@ impl<S: BaseFloat> ApproxEq for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> ApproxEq for Matrix4<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Matrix4<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -904,13 +925,18 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        Vector4::abs_diff_eq(&self[0], &other[0], epsilon)
+            && Vector4::abs_diff_eq(&self[1], &other[1], epsilon)
+            && Vector4::abs_diff_eq(&self[2], &other[2], epsilon)
+            && Vector4::abs_diff_eq(&self[3], &other[3], epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Matrix4<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
     }
 
     #[inline]
@@ -919,6 +945,13 @@ impl<S: BaseFloat> ApproxEq for Matrix4<S> {
             && Vector4::relative_eq(&self[1], &other[1], epsilon, max_relative)
             && Vector4::relative_eq(&self[2], &other[2], epsilon, max_relative)
             && Vector4::relative_eq(&self[3], &other[3], epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use approx::ApproxEq;
+use approx;
 
 use std::fmt;
 use std::ops::*;
@@ -21,8 +21,8 @@ use std::ops::*;
 use num_traits::{Float, Num, NumCast};
 
 /// Base numeric types with partial ordering
-pub trait BaseNum
-    : Copy
+pub trait BaseNum:
+    Copy
     + Clone
     + fmt::Debug
     + Num
@@ -32,7 +32,8 @@ pub trait BaseNum
     + SubAssign
     + MulAssign
     + DivAssign
-    + RemAssign {
+    + RemAssign
+{
 }
 
 impl<T> BaseNum for T
@@ -52,10 +53,21 @@ where
 }
 
 /// Base floating point types
-pub trait BaseFloat: BaseNum + Float + ApproxEq<Epsilon = Self> {}
+pub trait BaseFloat:
+    BaseNum
+    + Float
+    + approx::AbsDiffEq<Epsilon = Self>
+    + approx::RelativeEq<Epsilon = Self>
+    + approx::UlpsEq<Epsilon = Self>
+{
+}
 
 impl<T> BaseFloat for T
 where
-    T: BaseNum + Float + ApproxEq<Epsilon = Self>,
+    T: BaseNum
+        + Float
+        + approx::AbsDiffEq<Epsilon = Self>
+        + approx::RelativeEq<Epsilon = Self>
+        + approx::UlpsEq<Epsilon = Self>,
 {
 }

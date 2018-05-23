@@ -24,7 +24,7 @@ use std::ops::*;
 
 use structure::*;
 
-use approx::ApproxEq;
+use approx;
 use num::{BaseFloat, BaseNum};
 use vector::{Vector1, Vector2, Vector3, Vector4};
 
@@ -172,7 +172,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> ApproxEq for $PointN<S> {
+        impl<S: BaseFloat> approx::AbsDiffEq for $PointN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -181,18 +181,29 @@ macro_rules! impl_point {
             }
 
             #[inline]
+            fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon)
+            -> bool
+            {
+                $(S::abs_diff_eq(&self.$field, &other.$field, epsilon))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::RelativeEq for $PointN<S> {
+            #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
             }
 
             #[inline]
-            fn default_max_ulps() -> u32 {
-                S::default_max_ulps()
-            }
-
-            #[inline]
             fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
                 $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::UlpsEq for $PointN<S> {
+            #[inline]
+            fn default_max_ulps() -> u32 {
+                S::default_max_ulps()
             }
 
             #[inline]
