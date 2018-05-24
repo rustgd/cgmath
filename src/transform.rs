@@ -15,7 +15,7 @@
 
 use structure::*;
 
-use approx::ApproxEq;
+use approx;
 use matrix::{Matrix2, Matrix3, Matrix4};
 use num::{BaseFloat, BaseNum};
 use point::{Point2, Point3};
@@ -62,7 +62,7 @@ pub trait Transform<P: EuclideanSpace>: Sized {
 
 /// A generic transformation consisting of a rotation,
 /// displacement vector and scale amount.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Decomposed<V: VectorSpace, R> {
     pub scale: V::Scalar,
     pub rot: R,
@@ -163,11 +163,11 @@ impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> 
 
 impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
-impl<S: VectorSpace, R, E: BaseFloat> ApproxEq for Decomposed<S, R>
+impl<S: VectorSpace, R, E: BaseFloat> approx::AbsDiffEq for Decomposed<S, R>
 where
-    S: ApproxEq<Epsilon = E>,
-    S::Scalar: ApproxEq<Epsilon = E>,
-    R: ApproxEq<Epsilon = E>,
+    S: approx::AbsDiffEq<Epsilon = E>,
+    S::Scalar: approx::AbsDiffEq<Epsilon = E>,
+    R: approx::AbsDiffEq<Epsilon = E>,
 {
     type Epsilon = E;
 
@@ -177,13 +177,22 @@ where
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: E) -> bool {
+        S::Scalar::abs_diff_eq(&self.scale, &other.scale, epsilon)
+            && R::abs_diff_eq(&self.rot, &other.rot, epsilon)
+            && S::abs_diff_eq(&self.disp, &other.disp, epsilon)
+    }
+}
+
+impl<S: VectorSpace, R, E: BaseFloat> approx::RelativeEq for Decomposed<S, R>
+where
+    S: approx::RelativeEq<Epsilon = E>,
+    S::Scalar: approx::RelativeEq<Epsilon = E>,
+    R: approx::RelativeEq<Epsilon = E>,
+{
+    #[inline]
     fn default_max_relative() -> E {
         E::default_max_relative()
-    }
-
-    #[inline]
-    fn default_max_ulps() -> u32 {
-        E::default_max_ulps()
     }
 
     #[inline]
@@ -191,6 +200,18 @@ where
         S::Scalar::relative_eq(&self.scale, &other.scale, epsilon, max_relative)
             && R::relative_eq(&self.rot, &other.rot, epsilon, max_relative)
             && S::relative_eq(&self.disp, &other.disp, epsilon, max_relative)
+    }
+}
+
+impl<S: VectorSpace, R, E: BaseFloat> approx::UlpsEq for Decomposed<S, R>
+where
+    S: approx::UlpsEq<Epsilon = E>,
+    S::Scalar: approx::UlpsEq<Epsilon = E>,
+    R: approx::UlpsEq<Epsilon = E>,
+{
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        E::default_max_ulps()
     }
 
     #[inline]

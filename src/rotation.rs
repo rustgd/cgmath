@@ -20,7 +20,7 @@ use std::ops::*;
 use structure::*;
 
 use angle::Rad;
-use approx::ApproxEq;
+use approx;
 use euler::Euler;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
@@ -33,7 +33,9 @@ use vector::{Vector2, Vector3};
 pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: ApproxEq<Epsilon = P::Scalar>,
+    Self: approx::AbsDiffEq<Epsilon = P::Scalar>,
+    Self: approx::RelativeEq<Epsilon = P::Scalar>,
+    Self: approx::UlpsEq<Epsilon = P::Scalar>,
     P::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
@@ -113,7 +115,7 @@ pub trait Rotation3<S: BaseFloat>
 /// use cgmath::Vector2;
 /// use cgmath::{Matrix, Matrix2};
 /// use cgmath::{Rotation, Rotation2, Basis2};
-/// use cgmath::ApproxEq;
+/// use cgmath::UlpsEq;
 /// use std::f64;
 ///
 /// // For simplicity, we will rotate the unit x vector to the unit y vector --
@@ -213,7 +215,7 @@ impl_operator!(<S: BaseFloat> Mul<Basis2<S> > for Basis2<S> {
     fn mul(lhs, rhs) -> Basis2<S> { Basis2 { mat: lhs.mat * rhs.mat  } }
 });
 
-impl<S: BaseFloat> ApproxEq for Basis2<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Basis2<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -222,18 +224,27 @@ impl<S: BaseFloat> ApproxEq for Basis2<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        Matrix2::abs_diff_eq(&self.mat, &other.mat, epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Basis2<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
     }
 
     #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
-    }
-
-    #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
         Matrix2::relative_eq(&self.mat, &other.mat, epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Basis2<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]
@@ -356,7 +367,7 @@ impl_operator!(<S: BaseFloat> Mul<Basis3<S> > for Basis3<S> {
     fn mul(lhs, rhs) -> Basis3<S> { Basis3 { mat: lhs.mat * rhs.mat  } }
 });
 
-impl<S: BaseFloat> ApproxEq for Basis3<S> {
+impl<S: BaseFloat> approx::AbsDiffEq for Basis3<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -365,18 +376,27 @@ impl<S: BaseFloat> ApproxEq for Basis3<S> {
     }
 
     #[inline]
+    fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+        Matrix3::abs_diff_eq(&self.mat, &other.mat, epsilon)
+    }
+}
+
+impl<S: BaseFloat> approx::RelativeEq for Basis3<S> {
+    #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
     }
 
     #[inline]
-    fn default_max_ulps() -> u32 {
-        S::default_max_ulps()
-    }
-
-    #[inline]
     fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
         Matrix3::relative_eq(&self.mat, &other.mat, epsilon, max_relative)
+    }
+}
+
+impl<S: BaseFloat> approx::UlpsEq for Basis3<S> {
+    #[inline]
+    fn default_max_ulps() -> u32 {
+        S::default_max_ulps()
     }
 
     #[inline]

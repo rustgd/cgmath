@@ -23,7 +23,7 @@ use std::ops::*;
 use structure::*;
 
 use angle::Rad;
-use approx::ApproxEq;
+use approx;
 use num::{BaseFloat, BaseNum};
 
 #[cfg(feature = "simd")]
@@ -206,7 +206,7 @@ macro_rules! impl_vector {
             fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
         }
 
-        impl<S: BaseFloat> ApproxEq for $VectorN<S> {
+        impl<S: BaseFloat> approx::AbsDiffEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -215,18 +215,27 @@ macro_rules! impl_vector {
             }
 
             #[inline]
+            fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+                $(S::abs_diff_eq(&self.$field, &other.$field, epsilon))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::RelativeEq for $VectorN<S> {
+            #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
             }
 
             #[inline]
-            fn default_max_ulps() -> u32 {
-                S::default_max_ulps()
-            }
-
-            #[inline]
             fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
                 $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::UlpsEq for $VectorN<S> {
+            #[inline]
+            fn default_max_ulps() -> u32 {
+                S::default_max_ulps()
             }
 
             #[inline]
@@ -452,7 +461,7 @@ macro_rules! impl_vector_default {
             default fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
         }
 
-        impl<S: BaseFloat> ApproxEq for $VectorN<S> {
+        impl<S: BaseFloat> approx::AbsDiffEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -461,18 +470,27 @@ macro_rules! impl_vector_default {
             }
 
             #[inline]
+            fn abs_diff_eq(&self, other: &Self, epsilon: S::Epsilon) -> bool {
+                $(S::abs_diff_eq(&self.$field, &other.$field, epsilon))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::RelativeEq for $VectorN<S> {
+            #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
             }
 
             #[inline]
-            fn default_max_ulps() -> u32 {
-                S::default_max_ulps()
-            }
-
-            #[inline]
             fn relative_eq(&self, other: &Self, epsilon: S::Epsilon, max_relative: S::Epsilon) -> bool {
                 $(S::relative_eq(&self.$field, &other.$field, epsilon, max_relative))&&+
+            }
+        }
+
+        impl<S: BaseFloat> approx::UlpsEq for $VectorN<S> {
+            #[inline]
+            fn default_max_ulps() -> u32 {
+                S::default_max_ulps()
             }
 
             #[inline]
