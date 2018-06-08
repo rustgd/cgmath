@@ -17,7 +17,8 @@ use std::iter;
 use std::mem;
 use std::ops::*;
 
-use rand::{Rand, Rng};
+use rand::distributions::{Distribution, Standard};
+use rand::Rng;
 use num_traits::{cast, NumCast};
 
 use structure::*;
@@ -864,9 +865,12 @@ index_operators!(S, [S], RangeTo<usize>);
 index_operators!(S, [S], RangeFrom<usize>);
 index_operators!(S, [S], RangeFull);
 
-impl<S: BaseFloat + Rand> Rand for Quaternion<S> {
+impl<S> Distribution<Quaternion<S>> for Standard 
+    where Standard: Distribution<S>,
+        Standard: Distribution<Vector3<S>>,
+        S: BaseFloat {
     #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Quaternion<S> {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quaternion<S> {
         Quaternion::from_sv(rng.gen(), rng.gen())
     }
 }

@@ -24,7 +24,7 @@ swizzle = []
 approx = "0.2"
 mint = { version = "0.5", optional = true }
 num-traits = "0.2"
-rand = "0.4"
+rand = "0.5"
 serde = { version = "1.0", features = ["serde_derive"], optional = true }
 simd = { version = "0.2", optional = true }
 
