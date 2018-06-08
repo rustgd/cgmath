@@ -14,12 +14,13 @@
 // limitations under the License.
 
 #![feature(test)]
+#![allow(unused_macros)]
 
 extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use rand::{IsaacRng, Rng};
+use rand::{IsaacRng, Rng, FromEntropy};
 use std::ops::*;
 use test::Bencher;
 
