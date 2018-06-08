@@ -502,9 +502,11 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseFloat + Rand> Rand for $VectorN<S> {
+        impl<S> Distribution<$VectorN<S>> for Standard 
+            where S: BaseFloat,
+                Standard: Distribution<S>  {
             #[inline]
-            fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
             }
         }
