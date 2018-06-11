@@ -19,7 +19,7 @@ macro_rules! bench_binop {
         fn $name(bh: &mut Bencher) {
             const LEN: usize = 1 << 13;
 
-            let mut rng = IsaacRng::new_unseeded();
+            let mut rng = IsaacRng::from_entropy();
 
             let elems1: Vec<$t1> = (0..LEN).map(|_| rng.gen::<$t1>()).collect();
             let elems2: Vec<$t2> = (0..LEN).map(|_| rng.gen::<$t2>()).collect();
@@ -42,7 +42,7 @@ macro_rules! bench_unop {
         fn $name(bh: &mut Bencher) {
             const LEN: usize = 1 << 13;
 
-            let mut rng = IsaacRng::new_unseeded();
+            let mut rng = IsaacRng::from_entropy();
 
             let mut elems: Vec<$t> = (0..LEN).map(|_| rng.gen::<$t>()).collect();
             let mut i = 0;
@@ -64,7 +64,7 @@ macro_rules! bench_construction {
         fn $name(bh: &mut Bencher) {
             const LEN: usize = 1 << 13;
 
-            let mut rng = IsaacRng::new_unseeded();
+            let mut rng = IsaacRng::from_entropy();
 
             $(let $args: Vec<$types> = (0..LEN).map(|_| rng.gen::<$types>()).collect();)*
             let mut i = 0;

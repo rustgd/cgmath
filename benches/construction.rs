@@ -14,12 +14,13 @@
 // limitations under the License.
 
 #![feature(test)]
+#![allow(unused_macros)]
 
 extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use rand::{IsaacRng, Rng};
+use rand::{IsaacRng, Rng, FromEntropy};
 use test::Bencher;
 use cgmath::*;
 
@@ -30,7 +31,7 @@ mod macros;
 fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
     const LEN: usize = 1 << 13;
 
-    let mut rng = IsaacRng::new_unseeded();
+    let mut rng = IsaacRng::from_entropy();
 
     let axis: Vec<_> = (0..LEN).map(|_| rng.gen::<Vector3<f32>>()).collect();
     let angle: Vec<_> = (0..LEN).map(|_| rng.gen::<Rad<f32>>()).collect();

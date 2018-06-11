@@ -20,8 +20,9 @@ use std::f64;
 use std::iter;
 use std::ops::*;
 
-use rand::{Rand, Rng};
-use rand::distributions::range::SampleRange;
+use rand::Rng;
+use rand::distributions::{Distribution, Standard};
+use rand::distributions::uniform::SampleUniform;
 use num_traits::{cast, Bounded};
 
 use structure::*;
@@ -207,10 +208,12 @@ macro_rules! impl_angle {
                 S::ulps_eq(&self.0, &other.0, epsilon, max_ulps)
             }
         }
-
-        impl<S: BaseFloat + SampleRange> Rand for $Angle<S> {
+    
+        impl<S> Distribution<$Angle<S>> for Standard 
+            where Standard: Distribution<S>,
+                S: BaseFloat + SampleUniform {
             #[inline]
-            fn rand<R: Rng>(rng: &mut R) -> $Angle<S> {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $Angle<S> {
                 $Angle(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
             }
         }

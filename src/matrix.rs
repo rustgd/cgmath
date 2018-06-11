@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::{Rand, Rng};
+use rand::distributions::{Standard, Distribution};
+use rand::Rng;
 use num_traits::{cast, NumCast};
 use std::fmt;
 use std::iter;
@@ -1529,19 +1530,24 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat + Rand> Rand for Matrix2<S> {
+impl<S> Distribution<Matrix2<S>> for Standard
+    where 
+        Standard: Distribution<Vector2<S>>,
+        S: BaseFloat {
     #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Matrix2<S> {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix2<S> {
         Matrix2 {
-            x: rng.gen(),
-            y: rng.gen(),
+            x: self.sample(rng),
+            y: self.sample(rng),
         }
     }
 }
 
-impl<S: BaseFloat + Rand> Rand for Matrix3<S> {
+impl<S> Distribution<Matrix3<S>> for Standard
+    where Standard: Distribution<Vector3<S>>,
+        S: BaseFloat {
     #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Matrix3<S> {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix3<S> {
         Matrix3 {
             x: rng.gen(),
             y: rng.gen(),
@@ -1550,9 +1556,11 @@ impl<S: BaseFloat + Rand> Rand for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat + Rand> Rand for Matrix4<S> {
+impl<S> Distribution<Matrix4<S>> for Standard
+    where Standard: Distribution<Vector4<S>>,
+        S: BaseFloat {
     #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Matrix4<S> {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix4<S> {
         Matrix4 {
             x: rng.gen(),
             y: rng.gen(),

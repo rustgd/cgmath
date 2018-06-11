@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::{Rand, Rng};
+use rand::distributions::{Distribution, Standard};
+use rand::Rng;
 use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::iter;
@@ -244,9 +245,11 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseFloat + Rand> Rand for $VectorN<S> {
+        impl<S> Distribution<$VectorN<S>> for Standard
+            where Standard: Distribution<S>,
+                S: BaseFloat {
             #[inline]
-            fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
             }
         }
@@ -499,9 +502,11 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseFloat + Rand> Rand for $VectorN<S> {
+        impl<S> Distribution<$VectorN<S>> for Standard 
+            where S: BaseFloat,
+                Standard: Distribution<S>  {
             #[inline]
-            fn rand<R: Rng>(rng: &mut R) -> $VectorN<S> {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
             }
         }

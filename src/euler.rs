@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::{Rand, Rng};
+use rand::distributions::{Distribution, Standard};
+use rand::Rng;
 use num_traits::cast;
 
 use structure::*;
@@ -185,9 +186,10 @@ impl<A: Angle> approx::UlpsEq for Euler<A> {
     }
 }
 
-impl<A: Angle + Rand> Rand for Euler<A> {
-    #[inline]
-    fn rand<R: Rng>(rng: &mut R) -> Euler<A> {
+impl<A> Distribution<Euler<A>> for Standard
+    where Standard: Distribution<A>,
+        A: Angle {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Euler<A> {
         Euler {
             x: rng.gen(),
             y: rng.gen(),
