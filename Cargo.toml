@@ -29,5 +29,5 @@ serde = { version = "1.0", features = ["serde_derive"], optional = true }
 simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
-glium = "0.19"
+glium = "0.21"
 serde_json = "1.0"
