@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num_traits::{Bounded, NumCast};
 use rand::distributions::{Distribution, Standard};
 use rand::Rng;
-use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::iter;
 use std::mem;
@@ -25,7 +25,7 @@ use structure::*;
 
 use angle::Rad;
 use approx;
-use num::{BaseFloat, BaseNum};
+use num::{BaseFloat, BaseNum, BaseReal};
 
 #[cfg(feature = "simd")]
 use simd::f32x4 as Simdf32x4;
@@ -133,7 +133,7 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseFloat> MetricSpace for $VectorN<S> {
+        impl<S: BaseReal> MetricSpace for $VectorN<S> {
             type Metric = S;
 
             #[inline]
@@ -207,7 +207,7 @@ macro_rules! impl_vector {
             fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
         }
 
-        impl<S: BaseFloat> approx::AbsDiffEq for $VectorN<S> {
+        impl<S: BaseReal> approx::AbsDiffEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -221,7 +221,7 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseFloat> approx::RelativeEq for $VectorN<S> {
+        impl<S: BaseReal> approx::RelativeEq for $VectorN<S> {
             #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
@@ -233,7 +233,7 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseFloat> approx::UlpsEq for $VectorN<S> {
+        impl<S: BaseReal> approx::UlpsEq for $VectorN<S> {
             #[inline]
             fn default_max_ulps() -> u32 {
                 S::default_max_ulps()
@@ -247,7 +247,7 @@ macro_rules! impl_vector {
 
         impl<S> Distribution<$VectorN<S>> for Standard
             where Standard: Distribution<S>,
-                S: BaseFloat {
+                S: BaseReal {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
@@ -369,7 +369,7 @@ macro_rules! impl_vector_default {
             $VectorN::new($($field),+)
         }
 
-        impl<S: BaseFloat> $VectorN<S> {
+        impl<S: BaseReal> $VectorN<S> {
             /// True if all entries in the vector are finite
             pub fn is_finite(&self) -> bool {
                 $(self.$field.is_finite())&&+
@@ -390,7 +390,7 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseFloat> MetricSpace for $VectorN<S> {
+        impl<S: BaseReal> MetricSpace for $VectorN<S> {
             type Metric = S;
 
             #[inline]
@@ -422,7 +422,7 @@ macro_rules! impl_vector_default {
                 fold_array!(mul, { $(self.$field),+ })
             }
 
-            fn is_finite(&self) -> bool where S: BaseFloat {
+            fn is_finite(&self) -> bool where S: BaseReal {
                 $(self.$field.is_finite())&&+
             }
         }
@@ -464,7 +464,7 @@ macro_rules! impl_vector_default {
             default fn neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) }
         }
 
-        impl<S: BaseFloat> approx::AbsDiffEq for $VectorN<S> {
+        impl<S: BaseReal> approx::AbsDiffEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -478,7 +478,7 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseFloat> approx::RelativeEq for $VectorN<S> {
+        impl<S: BaseReal> approx::RelativeEq for $VectorN<S> {
             #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
@@ -490,7 +490,7 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseFloat> approx::UlpsEq for $VectorN<S> {
+        impl<S: BaseReal> approx::UlpsEq for $VectorN<S> {
             #[inline]
             fn default_max_ulps() -> u32 {
                 S::default_max_ulps()
@@ -503,7 +503,7 @@ macro_rules! impl_vector_default {
         }
 
         impl<S> Distribution<$VectorN<S>> for Standard 
-            where S: BaseFloat,
+            where S: BaseReal,
                 Standard: Distribution<S>  {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
@@ -780,19 +780,19 @@ impl<S: BaseNum> Vector4<S> {
 #[inline]
 pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar
 where
-    V::Scalar: BaseFloat,
+    V::Scalar: BaseReal,
 {
     V::dot(a, b)
 }
 
-impl<S: BaseFloat> InnerSpace for Vector1<S> {
+impl<S: BaseReal> InnerSpace for Vector1<S> {
     #[inline]
     fn dot(self, other: Vector1<S>) -> S {
         Vector1::mul_element_wise(self, other).sum()
     }
 }
 
-impl<S: BaseFloat> InnerSpace for Vector2<S> {
+impl<S: BaseReal> InnerSpace for Vector2<S> {
     #[inline]
     fn dot(self, other: Vector2<S>) -> S {
         Vector2::mul_element_wise(self, other).sum()
@@ -804,7 +804,7 @@ impl<S: BaseFloat> InnerSpace for Vector2<S> {
     }
 }
 
-impl<S: BaseFloat> InnerSpace for Vector3<S> {
+impl<S: BaseReal> InnerSpace for Vector3<S> {
     #[inline]
     fn dot(self, other: Vector3<S>) -> S {
         Vector3::mul_element_wise(self, other).sum()
@@ -816,7 +816,7 @@ impl<S: BaseFloat> InnerSpace for Vector3<S> {
     }
 }
 
-impl<S: BaseFloat> InnerSpace for Vector4<S> {
+impl<S: BaseReal> InnerSpace for Vector4<S> {
     #[inline]
     fn dot(self, other: Vector4<S>) -> S {
         Vector4::mul_element_wise(self, other).sum()

@@ -25,7 +25,7 @@ use std::ops::*;
 use structure::*;
 
 use approx;
-use num::{BaseFloat, BaseNum};
+use num::{BaseFloat, BaseNum, BaseReal};
 use vector::{Vector1, Vector2, Vector3, Vector4};
 
 #[cfg(feature = "mint")]
@@ -138,7 +138,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> MetricSpace for $PointN<S> {
+        impl<S: BaseReal> MetricSpace for $PointN<S> {
             type Metric = S;
 
             #[inline]
@@ -172,7 +172,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> approx::AbsDiffEq for $PointN<S> {
+        impl<S: BaseReal> approx::AbsDiffEq for $PointN<S> {
             type Epsilon = S::Epsilon;
 
             #[inline]
@@ -188,7 +188,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> approx::RelativeEq for $PointN<S> {
+        impl<S: BaseReal> approx::RelativeEq for $PointN<S> {
             #[inline]
             fn default_max_relative() -> S::Epsilon {
                 S::default_max_relative()
@@ -200,7 +200,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> approx::UlpsEq for $PointN<S> {
+        impl<S: BaseReal> approx::UlpsEq for $PointN<S> {
             #[inline]
             fn default_max_ulps() -> u32 {
                 S::default_max_ulps()

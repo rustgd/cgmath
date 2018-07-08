@@ -23,7 +23,7 @@ use angle::Rad;
 use approx;
 use euler::Euler;
 use matrix::{Matrix2, Matrix3};
-use num::BaseFloat;
+use num::BaseReal;
 use point::{Point2, Point3};
 use quaternion::Quaternion;
 use vector::{Vector2, Vector3};
@@ -36,7 +36,7 @@ where
     Self: approx::AbsDiffEq<Epsilon = P::Scalar>,
     Self: approx::RelativeEq<Epsilon = P::Scalar>,
     Self: approx::UlpsEq<Epsilon = P::Scalar>,
-    P::Scalar: BaseFloat,
+    P::Scalar: BaseReal,
     Self: iter::Product<Self>,
 {
     /// Create a rotation to a given direction with an 'up' vector.
@@ -62,17 +62,20 @@ where
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S: BaseFloat>
-    : Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>> {
+pub trait Rotation2<S: BaseReal>: Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>> {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle<A: Into<Rad<S>>>(theta: A) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseFloat>
-    : Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
-    {
+pub trait Rotation3<S: BaseReal>:
+    Rotation<Point3<S>>
+    + Into<Matrix3<S>>
+    + Into<Basis3<S>>
+    + Into<Quaternion<S>>
+    + From<Euler<Rad<S>>>
+{
     /// Create a rotation using an angle around a given axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
@@ -146,35 +149,35 @@ pub struct Basis2<S> {
     mat: Matrix2<S>,
 }
 
-impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
+impl<S: BaseReal> AsRef<Matrix2<S>> for Basis2<S> {
     #[inline]
     fn as_ref(&self) -> &Matrix2<S> {
         &self.mat
     }
 }
 
-impl<S: BaseFloat> From<Basis2<S>> for Matrix2<S> {
+impl<S: BaseReal> From<Basis2<S>> for Matrix2<S> {
     #[inline]
     fn from(b: Basis2<S>) -> Matrix2<S> {
         b.mat
     }
 }
 
-impl<S: BaseFloat> iter::Product<Basis2<S>> for Basis2<S> {
+impl<S: BaseReal> iter::Product<Basis2<S>> for Basis2<S> {
     #[inline]
     fn product<I: Iterator<Item = Basis2<S>>>(iter: I) -> Basis2<S> {
         iter.fold(Basis2::one(), Mul::mul)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
+impl<'a, S: 'a + BaseReal> iter::Product<&'a Basis2<S>> for Basis2<S> {
     #[inline]
     fn product<I: Iterator<Item = &'a Basis2<S>>>(iter: I) -> Basis2<S> {
         iter.fold(Basis2::one(), Mul::mul)
     }
 }
 
-impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
+impl<S: BaseReal> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
@@ -202,7 +205,7 @@ impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> One for Basis2<S> {
+impl<S: BaseReal> One for Basis2<S> {
     #[inline]
     fn one() -> Basis2<S> {
         Basis2 {
@@ -211,11 +214,11 @@ impl<S: BaseFloat> One for Basis2<S> {
     }
 }
 
-impl_operator!(<S: BaseFloat> Mul<Basis2<S> > for Basis2<S> {
+impl_operator!(<S: BaseReal> Mul<Basis2<S> > for Basis2<S> {
     fn mul(lhs, rhs) -> Basis2<S> { Basis2 { mat: lhs.mat * rhs.mat  } }
 });
 
-impl<S: BaseFloat> approx::AbsDiffEq for Basis2<S> {
+impl<S: BaseReal> approx::AbsDiffEq for Basis2<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -229,7 +232,7 @@ impl<S: BaseFloat> approx::AbsDiffEq for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> approx::RelativeEq for Basis2<S> {
+impl<S: BaseReal> approx::RelativeEq for Basis2<S> {
     #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
@@ -241,7 +244,7 @@ impl<S: BaseFloat> approx::RelativeEq for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> approx::UlpsEq for Basis2<S> {
+impl<S: BaseReal> approx::UlpsEq for Basis2<S> {
     #[inline]
     fn default_max_ulps() -> u32 {
         S::default_max_ulps()
@@ -253,7 +256,7 @@ impl<S: BaseFloat> approx::UlpsEq for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
+impl<S: BaseReal> Rotation2<S> for Basis2<S> {
     fn from_angle<A: Into<Rad<S>>>(theta: A) -> Basis2<S> {
         Basis2 {
             mat: Matrix2::from_angle(theta),
@@ -280,7 +283,7 @@ pub struct Basis3<S> {
     mat: Matrix3<S>,
 }
 
-impl<S: BaseFloat> Basis3<S> {
+impl<S: BaseReal> Basis3<S> {
     /// Create a new rotation matrix from a quaternion.
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
@@ -297,35 +300,35 @@ impl<S> AsRef<Matrix3<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> From<Basis3<S>> for Matrix3<S> {
+impl<S: BaseReal> From<Basis3<S>> for Matrix3<S> {
     #[inline]
     fn from(b: Basis3<S>) -> Matrix3<S> {
         b.mat
     }
 }
 
-impl<S: BaseFloat> From<Basis3<S>> for Quaternion<S> {
+impl<S: BaseReal> From<Basis3<S>> for Quaternion<S> {
     #[inline]
     fn from(b: Basis3<S>) -> Quaternion<S> {
         b.mat.into()
     }
 }
 
-impl<S: BaseFloat> iter::Product<Basis3<S>> for Basis3<S> {
+impl<S: BaseReal> iter::Product<Basis3<S>> for Basis3<S> {
     #[inline]
     fn product<I: Iterator<Item = Basis3<S>>>(iter: I) -> Basis3<S> {
         iter.fold(Basis3::one(), Mul::mul)
     }
 }
 
-impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
+impl<'a, S: 'a + BaseReal> iter::Product<&'a Basis3<S>> for Basis3<S> {
     #[inline]
     fn product<I: Iterator<Item = &'a Basis3<S>>>(iter: I) -> Basis3<S> {
         iter.fold(Basis3::one(), Mul::mul)
     }
 }
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
+impl<S: BaseReal> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {
@@ -354,7 +357,7 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> One for Basis3<S> {
+impl<S: BaseReal> One for Basis3<S> {
     #[inline]
     fn one() -> Basis3<S> {
         Basis3 {
@@ -363,11 +366,11 @@ impl<S: BaseFloat> One for Basis3<S> {
     }
 }
 
-impl_operator!(<S: BaseFloat> Mul<Basis3<S> > for Basis3<S> {
+impl_operator!(<S: BaseReal> Mul<Basis3<S> > for Basis3<S> {
     fn mul(lhs, rhs) -> Basis3<S> { Basis3 { mat: lhs.mat * rhs.mat  } }
 });
 
-impl<S: BaseFloat> approx::AbsDiffEq for Basis3<S> {
+impl<S: BaseReal> approx::AbsDiffEq for Basis3<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -381,7 +384,7 @@ impl<S: BaseFloat> approx::AbsDiffEq for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> approx::RelativeEq for Basis3<S> {
+impl<S: BaseReal> approx::RelativeEq for Basis3<S> {
     #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
@@ -393,7 +396,7 @@ impl<S: BaseFloat> approx::RelativeEq for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> approx::UlpsEq for Basis3<S> {
+impl<S: BaseReal> approx::UlpsEq for Basis3<S> {
     #[inline]
     fn default_max_ulps() -> u32 {
         S::default_max_ulps()
@@ -405,7 +408,7 @@ impl<S: BaseFloat> approx::UlpsEq for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
+impl<S: BaseReal> Rotation3<S> for Basis3<S> {
     fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Basis3<S> {
         Basis3 {
             mat: Matrix3::from_axis_angle(axis, angle),

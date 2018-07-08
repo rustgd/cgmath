@@ -15,7 +15,8 @@
 
 //! Generic algebraic structures
 
-use num_traits::{cast, Float};
+use num_traits::cast;
+use num_traits::real::Real;
 use std::cmp;
 use std::iter;
 use std::ops::*;
@@ -23,7 +24,7 @@ use std::ops::*;
 use approx;
 
 use angle::Rad;
-use num::{BaseFloat, BaseNum};
+use num::{BaseFloat, BaseNum, BaseReal};
 
 pub use num_traits::{Bounded, One, Zero};
 
@@ -188,7 +189,7 @@ where
 /// Examples are vectors, points, and quaternions.
 pub trait MetricSpace: Sized {
     /// The metric to be returned by the `distance` function.
-    type Metric: BaseFloat;
+    type Metric: BaseReal;
 
     /// Returns the squared distance.
     ///
@@ -199,7 +200,7 @@ pub trait MetricSpace: Sized {
 
     /// The distance between two values.
     fn distance(self, other: Self) -> Self::Metric {
-        Float::sqrt(Self::distance2(self, other))
+        Real::sqrt(Self::distance2(self, other))
     }
 }
 
@@ -213,7 +214,7 @@ pub trait MetricSpace: Sized {
 pub trait InnerSpace: VectorSpace
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <Self as VectorSpace>::Scalar: BaseFloat,
+    <Self as VectorSpace>::Scalar: BaseReal,
     Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
     // Self: approx::AbsDiffEq<Epsilon = <Self as VectorSpace>::Scalar>,
     // Self: approx::RelativeEq<Epsilon = <Self as VectorSpace>::Scalar>,
@@ -241,7 +242,7 @@ where
     /// The distance from the tail to the tip of the vector.
     #[inline]
     fn magnitude(self) -> Self::Scalar {
-        Float::sqrt(self.magnitude2())
+        Real::sqrt(self.magnitude2())
     }
 
     /// Returns the angle between two vectors in radians.
@@ -427,7 +428,7 @@ where
 /// see `SquareMatrix`.
 pub trait Matrix: VectorSpace
 where
-    Self::Scalar: BaseFloat,
+    Self::Scalar: BaseReal,
 
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Matrix>::Column>,
@@ -482,7 +483,7 @@ where
 /// A column-major major matrix where the rows and column vectors are of the same dimensions.
 pub trait SquareMatrix
 where
-    Self::Scalar: BaseFloat,
+    Self::Scalar: BaseReal,
 
     Self: One,
     Self: iter::Product<Self>,
@@ -590,7 +591,7 @@ where
 
     Self: iter::Sum,
 {
-    type Unitless: BaseFloat;
+    type Unitless: BaseReal;
 
     /// Return the angle, normalized to the range `[0, full_turn)`.
     #[inline]

@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::distributions::{Standard, Distribution};
-use rand::Rng;
 use num_traits::{cast, NumCast};
+use rand::distributions::{Distribution, Standard};
+use rand::Rng;
 use std::fmt;
 use std::iter;
 use std::mem;
@@ -27,7 +27,7 @@ use structure::*;
 use angle::Rad;
 use approx;
 use euler::Euler;
-use num::BaseFloat;
+use num::{BaseFloat, BaseReal};
 use point::{Point2, Point3};
 use quaternion::Quaternion;
 use transform::{Transform, Transform2, Transform3};
@@ -81,7 +81,7 @@ pub struct Matrix4<S> {
     pub w: Vector4<S>,
 }
 
-impl<S: BaseFloat> Matrix2<S> {
+impl<S: BaseReal> Matrix2<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     pub fn new(c0r0: S, c0r1: S, c1r0: S, c1r1: S) -> Matrix2<S> {
@@ -107,14 +107,16 @@ impl<S: BaseFloat> Matrix2<S> {
 
         Matrix2::new(c, s, -s, c)
     }
+}
 
+impl<S: BaseFloat> Matrix2<S> {
     /// Are all entries in the matrix finite.
     pub fn is_finite(&self) -> bool {
         self.x.is_finite() && self.y.is_finite()
     }
 }
 
-impl<S: BaseFloat> Matrix3<S> {
+impl<S: BaseReal> Matrix3<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -211,14 +213,16 @@ impl<S: BaseFloat> Matrix3<S> {
             _1subc * axis.z * axis.z + c,
         )
     }
+}
 
+impl<S: BaseFloat> Matrix3<S> {
     /// Are all entries in the matrix finite.
     pub fn is_finite(&self) -> bool {
         self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
     }
 }
 
-impl<S: BaseFloat> Matrix4<S> {
+impl<S: BaseReal> Matrix4<S> {
     /// Create a new matrix, providing values for each index.
     #[inline]
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -368,14 +372,16 @@ impl<S: BaseFloat> Matrix4<S> {
             S::zero(), S::zero(), S::zero(), S::one(),
         )
     }
+}
 
+impl<S: BaseFloat> Matrix4<S> {
     /// Are all entries in the matrix finite.
     pub fn is_finite(&self) -> bool {
         self.w.is_finite() && self.x.is_finite() && self.y.is_finite() && self.z.is_finite()
     }
 }
 
-impl<S: BaseFloat> Zero for Matrix2<S> {
+impl<S: BaseReal> Zero for Matrix2<S> {
     #[inline]
     fn zero() -> Matrix2<S> {
         #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -391,7 +397,7 @@ impl<S: BaseFloat> Zero for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> Zero for Matrix3<S> {
+impl<S: BaseReal> Zero for Matrix3<S> {
     #[inline]
     fn zero() -> Matrix3<S> {
         #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -408,7 +414,7 @@ impl<S: BaseFloat> Zero for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Zero for Matrix4<S> {
+impl<S: BaseReal> Zero for Matrix4<S> {
     #[inline]
     fn zero() -> Matrix4<S> {
         #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -426,40 +432,40 @@ impl<S: BaseFloat> Zero for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> One for Matrix2<S> {
+impl<S: BaseReal> One for Matrix2<S> {
     #[inline]
     fn one() -> Matrix2<S> {
         Matrix2::from_value(S::one())
     }
 }
 
-impl<S: BaseFloat> One for Matrix3<S> {
+impl<S: BaseReal> One for Matrix3<S> {
     #[inline]
     fn one() -> Matrix3<S> {
         Matrix3::from_value(S::one())
     }
 }
 
-impl<S: BaseFloat> One for Matrix4<S> {
+impl<S: BaseReal> One for Matrix4<S> {
     #[inline]
     fn one() -> Matrix4<S> {
         Matrix4::from_value(S::one())
     }
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix2<S> {
+impl<S: BaseReal> VectorSpace for Matrix2<S> {
     type Scalar = S;
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix3<S> {
+impl<S: BaseReal> VectorSpace for Matrix3<S> {
     type Scalar = S;
 }
 
-impl<S: BaseFloat> VectorSpace for Matrix4<S> {
+impl<S: BaseReal> VectorSpace for Matrix4<S> {
     type Scalar = S;
 }
 
-impl<S: BaseFloat> Matrix for Matrix2<S> {
+impl<S: BaseReal> Matrix for Matrix2<S> {
     type Column = Vector2<S>;
     type Row = Vector2<S>;
     type Transpose = Matrix2<S>;
@@ -496,7 +502,7 @@ impl<S: BaseFloat> Matrix for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
+impl<S: BaseReal> SquareMatrix for Matrix2<S> {
     type ColumnRow = Vector2<S>;
 
     #[inline]
@@ -557,7 +563,7 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> Matrix for Matrix3<S> {
+impl<S: BaseReal> Matrix for Matrix3<S> {
     type Column = Vector3<S>;
     type Row = Vector3<S>;
     type Transpose = Matrix3<S>;
@@ -596,7 +602,7 @@ impl<S: BaseFloat> Matrix for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
+impl<S: BaseReal> SquareMatrix for Matrix3<S> {
     type ColumnRow = Vector3<S>;
 
     #[inline]
@@ -653,19 +659,25 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
-            && ulps_eq!(self[1][0], &S::zero()) && ulps_eq!(self[1][2], &S::zero())
-            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
+        ulps_eq!(self[0][1], &S::zero())
+            && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[1][0], &S::zero())
+            && ulps_eq!(self[1][2], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero())
+            && ulps_eq!(self[2][1], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
-            && ulps_eq!(self[1][0], &self[0][1]) && ulps_eq!(self[1][2], &self[2][1])
-            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
+        ulps_eq!(self[0][1], &self[1][0])
+            && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[1][0], &self[0][1])
+            && ulps_eq!(self[1][2], &self[2][1])
+            && ulps_eq!(self[2][0], &self[0][2])
+            && ulps_eq!(self[2][1], &self[1][2])
     }
 }
 
-impl<S: BaseFloat> Matrix for Matrix4<S> {
+impl<S: BaseReal> Matrix for Matrix4<S> {
     type Column = Vector4<S>;
     type Row = Vector4<S>;
     type Transpose = Matrix4<S>;
@@ -706,7 +718,7 @@ impl<S: BaseFloat> Matrix for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
+impl<S: BaseReal> SquareMatrix for Matrix4<S> {
     type ColumnRow = Vector4<S>;
 
     #[inline]
@@ -814,25 +826,37 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
-            && ulps_eq!(self[0][3], &S::zero()) && ulps_eq!(self[1][0], &S::zero())
-            && ulps_eq!(self[1][2], &S::zero()) && ulps_eq!(self[1][3], &S::zero())
-            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
-            && ulps_eq!(self[2][3], &S::zero()) && ulps_eq!(self[3][0], &S::zero())
-            && ulps_eq!(self[3][1], &S::zero()) && ulps_eq!(self[3][2], &S::zero())
+        ulps_eq!(self[0][1], &S::zero())
+            && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[0][3], &S::zero())
+            && ulps_eq!(self[1][0], &S::zero())
+            && ulps_eq!(self[1][2], &S::zero())
+            && ulps_eq!(self[1][3], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero())
+            && ulps_eq!(self[2][1], &S::zero())
+            && ulps_eq!(self[2][3], &S::zero())
+            && ulps_eq!(self[3][0], &S::zero())
+            && ulps_eq!(self[3][1], &S::zero())
+            && ulps_eq!(self[3][2], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
-            && ulps_eq!(self[0][3], &self[3][0]) && ulps_eq!(self[1][0], &self[0][1])
-            && ulps_eq!(self[1][2], &self[2][1]) && ulps_eq!(self[1][3], &self[3][1])
-            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
-            && ulps_eq!(self[2][3], &self[3][2]) && ulps_eq!(self[3][0], &self[0][3])
-            && ulps_eq!(self[3][1], &self[1][3]) && ulps_eq!(self[3][2], &self[2][3])
+        ulps_eq!(self[0][1], &self[1][0])
+            && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[0][3], &self[3][0])
+            && ulps_eq!(self[1][0], &self[0][1])
+            && ulps_eq!(self[1][2], &self[2][1])
+            && ulps_eq!(self[1][3], &self[3][1])
+            && ulps_eq!(self[2][0], &self[0][2])
+            && ulps_eq!(self[2][1], &self[1][2])
+            && ulps_eq!(self[2][3], &self[3][2])
+            && ulps_eq!(self[3][0], &self[0][3])
+            && ulps_eq!(self[3][1], &self[1][3])
+            && ulps_eq!(self[3][2], &self[2][3])
     }
 }
 
-impl<S: BaseFloat> approx::AbsDiffEq for Matrix2<S> {
+impl<S: BaseReal> approx::AbsDiffEq for Matrix2<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -847,7 +871,7 @@ impl<S: BaseFloat> approx::AbsDiffEq for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> approx::RelativeEq for Matrix2<S> {
+impl<S: BaseReal> approx::RelativeEq for Matrix2<S> {
     #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
@@ -860,7 +884,7 @@ impl<S: BaseFloat> approx::RelativeEq for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> approx::UlpsEq for Matrix2<S> {
+impl<S: BaseReal> approx::UlpsEq for Matrix2<S> {
     #[inline]
     fn default_max_ulps() -> u32 {
         S::default_max_ulps()
@@ -873,7 +897,7 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix2<S> {
     }
 }
 
-impl<S: BaseFloat> approx::AbsDiffEq for Matrix3<S> {
+impl<S: BaseReal> approx::AbsDiffEq for Matrix3<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -889,7 +913,7 @@ impl<S: BaseFloat> approx::AbsDiffEq for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> approx::RelativeEq for Matrix3<S> {
+impl<S: BaseReal> approx::RelativeEq for Matrix3<S> {
     #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
@@ -903,7 +927,7 @@ impl<S: BaseFloat> approx::RelativeEq for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> approx::UlpsEq for Matrix3<S> {
+impl<S: BaseReal> approx::UlpsEq for Matrix3<S> {
     #[inline]
     fn default_max_ulps() -> u32 {
         S::default_max_ulps()
@@ -917,7 +941,7 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> approx::AbsDiffEq for Matrix4<S> {
+impl<S: BaseReal> approx::AbsDiffEq for Matrix4<S> {
     type Epsilon = S::Epsilon;
 
     #[inline]
@@ -934,7 +958,7 @@ impl<S: BaseFloat> approx::AbsDiffEq for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> approx::RelativeEq for Matrix4<S> {
+impl<S: BaseReal> approx::RelativeEq for Matrix4<S> {
     #[inline]
     fn default_max_relative() -> S::Epsilon {
         S::default_max_relative()
@@ -949,7 +973,7 @@ impl<S: BaseFloat> approx::RelativeEq for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
+impl<S: BaseReal> approx::UlpsEq for Matrix4<S> {
     #[inline]
     fn default_max_ulps() -> u32 {
         S::default_max_ulps()
@@ -964,7 +988,7 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
+impl<S: BaseReal> Transform<Point2<S>> for Matrix3<S> {
     fn one() -> Matrix3<S> {
         One::one()
     }
@@ -991,7 +1015,7 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
+impl<S: BaseReal> Transform<Point3<S>> for Matrix3<S> {
     fn one() -> Matrix3<S> {
         One::one()
     }
@@ -1018,7 +1042,7 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
+impl<S: BaseReal> Transform<Point3<S>> for Matrix4<S> {
     fn one() -> Matrix4<S> {
         One::one()
     }
@@ -1044,72 +1068,72 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Transform2<S> for Matrix3<S> {}
+impl<S: BaseReal> Transform2<S> for Matrix3<S> {}
 
-impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
+impl<S: BaseReal> Transform3<S> for Matrix3<S> {}
 
-impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
+impl<S: BaseReal> Transform3<S> for Matrix4<S> {}
 
 macro_rules! impl_matrix {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
-        impl_operator!(<S: BaseFloat> Neg for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Neg for $MatrixN<S> {
             fn neg(matrix) -> $MatrixN<S> { $MatrixN { $($field: -matrix.$field),+ } }
         });
 
-        impl_operator!(<S: BaseFloat> Mul<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Mul<S> for $MatrixN<S> {
             fn mul(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field * scalar),+ } }
         });
-        impl_operator!(<S: BaseFloat> Div<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Div<S> for $MatrixN<S> {
             fn div(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field / scalar),+ } }
         });
-        impl_operator!(<S: BaseFloat> Rem<S> for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Rem<S> for $MatrixN<S> {
             fn rem(matrix, scalar) -> $MatrixN<S> { $MatrixN { $($field: matrix.$field % scalar),+ } }
         });
-        impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for $MatrixN<S> {
+        impl_assignment_operator!(<S: BaseReal> MulAssign<S> for $MatrixN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
         });
-        impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for $MatrixN<S> {
+        impl_assignment_operator!(<S: BaseReal> DivAssign<S> for $MatrixN<S> {
             fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
         });
-        impl_assignment_operator!(<S: BaseFloat> RemAssign<S> for $MatrixN<S> {
+        impl_assignment_operator!(<S: BaseReal> RemAssign<S> for $MatrixN<S> {
             fn rem_assign(&mut self, scalar) { $(self.$field %= scalar);+ }
         });
 
-        impl_operator!(<S: BaseFloat> Add<$MatrixN<S> > for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Add<$MatrixN<S> > for $MatrixN<S> {
             fn add(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field + rhs.$field),+ } }
         });
-        impl_operator!(<S: BaseFloat> Sub<$MatrixN<S> > for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Sub<$MatrixN<S> > for $MatrixN<S> {
             fn sub(lhs, rhs) -> $MatrixN<S> { $MatrixN { $($field: lhs.$field - rhs.$field),+ } }
         });
-        impl<S: BaseFloat + AddAssign<S>> AddAssign<$MatrixN<S>> for $MatrixN<S> {
+        impl<S: BaseReal + AddAssign<S>> AddAssign<$MatrixN<S>> for $MatrixN<S> {
             fn add_assign(&mut self, other: $MatrixN<S>) { $(self.$field += other.$field);+ }
         }
-        impl<S: BaseFloat + SubAssign<S>> SubAssign<$MatrixN<S>> for $MatrixN<S> {
+        impl<S: BaseReal + SubAssign<S>> SubAssign<$MatrixN<S>> for $MatrixN<S> {
             fn sub_assign(&mut self, other: $MatrixN<S>) { $(self.$field -= other.$field);+ }
         }
 
-        impl<S: BaseFloat> iter::Sum<$MatrixN<S>> for $MatrixN<S> {
+        impl<S: BaseReal> iter::Sum<$MatrixN<S>> for $MatrixN<S> {
             #[inline]
             fn sum<I: Iterator<Item=$MatrixN<S>>>(iter: I) -> $MatrixN<S> {
                 iter.fold($MatrixN::zero(), Add::add)
             }
         }
 
-        impl<'a, S: 'a + BaseFloat> iter::Sum<&'a $MatrixN<S>> for $MatrixN<S> {
+        impl<'a, S: 'a + BaseReal> iter::Sum<&'a $MatrixN<S>> for $MatrixN<S> {
             #[inline]
             fn sum<I: Iterator<Item=&'a $MatrixN<S>>>(iter: I) -> $MatrixN<S> {
                 iter.fold($MatrixN::zero(), Add::add)
             }
         }
 
-        impl<S: BaseFloat> iter::Product for $MatrixN<S> {
+        impl<S: BaseReal> iter::Product for $MatrixN<S> {
             #[inline]
             fn product<I: Iterator<Item=$MatrixN<S>>>(iter: I) -> $MatrixN<S> {
                 iter.fold($MatrixN::identity(), Mul::mul)
             }
         }
 
-        impl<'a, S: 'a + BaseFloat> iter::Product<&'a $MatrixN<S>> for $MatrixN<S> {
+        impl<'a, S: 'a + BaseReal> iter::Product<&'a $MatrixN<S>> for $MatrixN<S> {
             #[inline]
             fn product<I: Iterator<Item=&'a $MatrixN<S>>>(iter: I) -> $MatrixN<S> {
                 iter.fold($MatrixN::identity(), Mul::mul)
@@ -1167,7 +1191,7 @@ impl_matrix!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
 macro_rules! impl_mv_operator {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
-        impl_operator!(<S: BaseFloat> Mul<$VectorN<S> > for $MatrixN<S> {
+        impl_operator!(<S: BaseReal> Mul<$VectorN<S> > for $MatrixN<S> {
             fn mul(matrix, vector) -> $VectorN<S> {$VectorN::new($(matrix.row($row_index).dot(vector.clone())),+)}
         });
     }
@@ -1180,20 +1204,20 @@ impl_mv_operator!(Matrix3, Vector3 { x: 0, y: 1, z: 2 });
 impl_mv_operator!(Matrix4, Vector4 { x: 0, y: 1, z: 2, w: 3 });
 
 #[cfg(feature = "simd")]
-impl_operator!(<S: BaseFloat> Mul<Vector4<S> > for Matrix4<S> {
+impl_operator!(<S: BaseReal> Mul<Vector4<S> > for Matrix4<S> {
     fn mul(matrix, vector) -> Vector4<S> {
         matrix[0] * vector[0] + matrix[1] * vector[1] + matrix[2] * vector[2] + matrix[3] * vector[3]
     }
 });
 
-impl_operator!(<S: BaseFloat> Mul<Matrix2<S> > for Matrix2<S> {
+impl_operator!(<S: BaseReal> Mul<Matrix2<S> > for Matrix2<S> {
     fn mul(lhs, rhs) -> Matrix2<S> {
         Matrix2::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]),
                      lhs.row(0).dot(rhs[1]), lhs.row(1).dot(rhs[1]))
     }
 });
 
-impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
+impl_operator!(<S: BaseReal> Mul<Matrix3<S> > for Matrix3<S> {
     fn mul(lhs, rhs) -> Matrix3<S> {
         Matrix3::new(lhs.row(0).dot(rhs[0]), lhs.row(1).dot(rhs[0]), lhs.row(2).dot(rhs[0]),
                      lhs.row(0).dot(rhs[1]), lhs.row(1).dot(rhs[1]), lhs.row(2).dot(rhs[1]),
@@ -1207,7 +1231,7 @@ impl_operator!(<S: BaseFloat> Mul<Matrix3<S> > for Matrix3<S> {
 // around ~4 times.
 // Update: this should now be a bit more efficient
 
-impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
+impl_operator!(<S: BaseReal> Mul<Matrix4<S> > for Matrix4<S> {
     fn mul(lhs, rhs) -> Matrix4<S> {
         {
             let a = lhs[0];
@@ -1227,7 +1251,7 @@ impl_operator!(<S: BaseFloat> Mul<Matrix4<S> > for Matrix4<S> {
 });
 
 macro_rules! index_operators {
-    ($MatrixN:ident<$S:ident>, $n:expr, $Output:ty, $I:ty) => {
+    ($MatrixN:ident < $S:ident > , $n:expr, $Output:ty, $I:ty) => {
         impl<$S> Index<$I> for $MatrixN<$S> {
             type Output = $Output;
 
@@ -1245,7 +1269,7 @@ macro_rules! index_operators {
                 From::from(&mut v[i])
             }
         }
-    }
+    };
 }
 
 index_operators!(Matrix2<S>, 2, Vector2<S>, usize);
@@ -1425,7 +1449,7 @@ mint_conversions!(Matrix3 { x, y, z }, ColumnMatrix3);
 #[cfg(feature = "mint")]
 mint_conversions!(Matrix4 { x, y, z, w }, ColumnMatrix4);
 
-impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
+impl<S: BaseReal> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix3<S> {
@@ -1438,7 +1462,7 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
+impl<S: BaseReal> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix4<S> {
@@ -1452,7 +1476,7 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
+impl<S: BaseReal> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix3<S>) -> Matrix4<S> {
@@ -1466,7 +1490,7 @@ impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
+impl<S: BaseReal> From<Matrix3<S>> for Quaternion<S> {
     /// Convert the matrix to a quaternion
     fn from(mat: Matrix3<S>) -> Quaternion<S> {
         // http://www.cs.ucr.edu/~vbz/resources/quatut.pdf
@@ -1531,9 +1555,10 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
 }
 
 impl<S> Distribution<Matrix2<S>> for Standard
-    where 
-        Standard: Distribution<Vector2<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector2<S>>,
+    S: BaseReal,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix2<S> {
         Matrix2 {
@@ -1544,8 +1569,10 @@ impl<S> Distribution<Matrix2<S>> for Standard
 }
 
 impl<S> Distribution<Matrix3<S>> for Standard
-    where Standard: Distribution<Vector3<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector3<S>>,
+    S: BaseReal,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix3<S> {
         Matrix3 {
@@ -1557,8 +1584,10 @@ impl<S> Distribution<Matrix3<S>> for Standard
 }
 
 impl<S> Distribution<Matrix4<S>> for Standard
-    where Standard: Distribution<Vector4<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector4<S>>,
+    S: BaseReal,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix4<S> {
         Matrix4 {
@@ -1572,7 +1601,7 @@ impl<S> Distribution<Matrix4<S>> for Standard
 
 // Sub procedure for SIMD when dealing with determinant and inversion
 #[inline]
-unsafe fn det_sub_proc_unsafe<S: BaseFloat>(
+unsafe fn det_sub_proc_unsafe<S: BaseReal>(
     m: &Matrix4<S>,
     x: usize,
     y: usize,

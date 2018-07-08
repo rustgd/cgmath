@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+ - Relax the `BaseFloat` requirement on most types and functions to a new trait,
+   `BaseReal`. This allows using `cgmath` with number types with no infinity or 
+   NaN values, such as fixed-point arithmetic.
+
 ## [v0.16.1] - 2018-03-21
 
 ### Added
@@ -243,7 +247,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Renamed `SquareMatrix::one` to `SquareMatrix::identity`. `identity` is easier
   to search for,
   and the more common name for the multiplicative identity for matrices.
-- Matrix impls have now been constrained to `S: BaseFloat`.
+- Matrix impls have now been constrained to `S: BaseReal`.
 
 ## [v0.5.0] - 2015-11-20
 

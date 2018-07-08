@@ -17,7 +17,7 @@ use structure::*;
 
 use approx;
 use matrix::{Matrix2, Matrix3, Matrix4};
-use num::{BaseFloat, BaseNum};
+use num::{BaseNum, BaseReal};
 use point::{Point2, Point3};
 use rotation::*;
 use vector::{Vector2, Vector3};
@@ -71,7 +71,7 @@ pub struct Decomposed<V: VectorSpace, R> {
 
 impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
 where
-    P::Scalar: BaseFloat,
+    P::Scalar: BaseReal,
     // FIXME: Investigate why this is needed!
     P::Diff: VectorSpace,
 {
@@ -141,7 +141,7 @@ where
 pub trait Transform2<S: BaseNum>: Transform<Point2<S>> + Into<Matrix3<S>> {}
 pub trait Transform3<S: BaseNum>: Transform<Point3<S>> + Into<Matrix4<S>> {}
 
-impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
+impl<S: BaseReal, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
     fn from(dec: Decomposed<Vector2<S>, R>) -> Matrix3<S> {
         let m: Matrix2<_> = dec.rot.into();
         let mut m: Matrix3<_> = (&m * dec.scale).into();
@@ -150,7 +150,7 @@ impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<
     }
 }
 
-impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<S> {
+impl<S: BaseReal, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<S> {
     fn from(dec: Decomposed<Vector3<S>, R>) -> Matrix4<S> {
         let m: Matrix3<_> = dec.rot.into();
         let mut m: Matrix4<_> = (&m * dec.scale).into();
@@ -159,11 +159,11 @@ impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<
     }
 }
 
-impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
+impl<S: BaseReal, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
 
-impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
+impl<S: BaseReal, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
-impl<S: VectorSpace, R, E: BaseFloat> approx::AbsDiffEq for Decomposed<S, R>
+impl<S: VectorSpace, R, E: BaseReal> approx::AbsDiffEq for Decomposed<S, R>
 where
     S: approx::AbsDiffEq<Epsilon = E>,
     S::Scalar: approx::AbsDiffEq<Epsilon = E>,
@@ -184,7 +184,7 @@ where
     }
 }
 
-impl<S: VectorSpace, R, E: BaseFloat> approx::RelativeEq for Decomposed<S, R>
+impl<S: VectorSpace, R, E: BaseReal> approx::RelativeEq for Decomposed<S, R>
 where
     S: approx::RelativeEq<Epsilon = E>,
     S::Scalar: approx::RelativeEq<Epsilon = E>,
@@ -203,7 +203,7 @@ where
     }
 }
 
-impl<S: VectorSpace, R, E: BaseFloat> approx::UlpsEq for Decomposed<S, R>
+impl<S: VectorSpace, R, E: BaseReal> approx::UlpsEq for Decomposed<S, R>
 where
     S: approx::UlpsEq<Epsilon = E>,
     S::Scalar: approx::UlpsEq<Epsilon = E>,
@@ -225,10 +225,10 @@ where
 #[cfg(feature = "serde")]
 #[doc(hidden)]
 mod serde_ser {
-    use structure::VectorSpace;
     use super::Decomposed;
-    use serde::{self, Serialize};
     use serde::ser::SerializeStruct;
+    use serde::{self, Serialize};
+    use structure::VectorSpace;
 
     impl<V, R> Serialize for Decomposed<V, R>
     where
@@ -252,11 +252,11 @@ mod serde_ser {
 #[cfg(feature = "serde")]
 #[doc(hidden)]
 mod serde_de {
-    use structure::VectorSpace;
     use super::Decomposed;
     use serde::{self, Deserialize};
-    use std::marker::PhantomData;
     use std::fmt;
+    use std::marker::PhantomData;
+    use structure::VectorSpace;
 
     enum DecomposedField {
         Scale,

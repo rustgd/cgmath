@@ -13,20 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Zero;
 use num_traits::cast;
+use num_traits::Zero;
 
 use structure::Angle;
 
 use angle::Rad;
 use matrix::Matrix4;
-use num::BaseFloat;
+use num::BaseReal;
 
 /// Create a perspective projection matrix.
 ///
 /// This is the equivalent to the [gluPerspective]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/gluPerspective.xml) function.
-pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
+pub fn perspective<S: BaseReal, A: Into<Rad<S>>>(
     fovy: A,
     aspect: S,
     near: S,
@@ -44,7 +44,7 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
 ///
 /// This is the equivalent of the now deprecated [glFrustum]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml) function.
-pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn frustum<S: BaseReal>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
         left: left,
         right: right,
@@ -59,7 +59,7 @@ pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far:
 ///
 /// This is the equivalent of the now deprecated [glOrtho]
 /// (http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml) function.
-pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
+pub fn ortho<S: BaseReal>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
         left: left,
         right: right,
@@ -81,7 +81,7 @@ pub struct PerspectiveFov<S> {
     pub far: S,
 }
 
-impl<S: BaseFloat> PerspectiveFov<S> {
+impl<S: BaseReal> PerspectiveFov<S> {
     pub fn to_perspective(&self) -> Perspective<S> {
         let two: S = cast(2).unwrap();
         let angle = self.fovy / two;
@@ -99,7 +99,7 @@ impl<S: BaseFloat> PerspectiveFov<S> {
     }
 }
 
-impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
+impl<S: BaseReal> From<PerspectiveFov<S>> for Matrix4<S> {
     fn from(persp: PerspectiveFov<S>) -> Matrix4<S> {
         assert!(
             persp.fovy > Rad::zero(),
@@ -178,7 +178,7 @@ pub struct Perspective<S> {
     pub far: S,
 }
 
-impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
+impl<S: BaseReal> From<Perspective<S>> for Matrix4<S> {
     fn from(persp: Perspective<S>) -> Matrix4<S> {
         assert!(
             persp.left <= persp.right,
@@ -243,7 +243,7 @@ pub struct Ortho<S> {
     pub far: S,
 }
 
-impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
+impl<S: BaseReal> From<Ortho<S>> for Matrix4<S> {
     fn from(ortho: Ortho<S>) -> Matrix4<S> {
         let two: S = cast(2).unwrap();
 

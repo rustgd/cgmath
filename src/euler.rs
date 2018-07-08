@@ -13,18 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num_traits::cast;
 use rand::distributions::{Distribution, Standard};
 use rand::Rng;
-use num_traits::cast;
 
 use structure::*;
 
 use angle::Rad;
 use approx;
-use quaternion::Quaternion;
 #[cfg(feature = "mint")]
 use mint;
-use num::BaseFloat;
+use num::BaseReal;
+use quaternion::Quaternion;
 
 /// A set of [Euler angles] representing a rotation in three-dimensional space.
 ///
@@ -100,7 +100,7 @@ impl<A: Angle> Euler<A> {
     }
 }
 
-impl<S: BaseFloat> From<Quaternion<S>> for Euler<Rad<S>> {
+impl<S: BaseReal> From<Quaternion<S>> for Euler<Rad<S>> {
     fn from(src: Quaternion<S>) -> Euler<Rad<S>> {
         let sig: S = cast(0.499).unwrap();
         let two: S = cast(2).unwrap();
@@ -187,8 +187,10 @@ impl<A: Angle> approx::UlpsEq for Euler<A> {
 }
 
 impl<A> Distribution<Euler<A>> for Standard
-    where Standard: Distribution<A>,
-        A: Angle {
+where
+    Standard: Distribution<A>,
+    A: Angle,
+{
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Euler<A> {
         Euler {
             x: rng.gen(),

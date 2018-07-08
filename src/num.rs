@@ -18,6 +18,7 @@ use approx;
 use std::fmt;
 use std::ops::*;
 
+use num_traits::real::Real;
 use num_traits::{Float, Num, NumCast};
 
 /// Base numeric types with partial ordering
@@ -53,6 +54,26 @@ where
 }
 
 /// Base floating point types
+pub trait BaseReal:
+    BaseNum
+    + Real
+    + approx::AbsDiffEq<Epsilon = Self>
+    + approx::RelativeEq<Epsilon = Self>
+    + approx::UlpsEq<Epsilon = Self>
+{
+}
+
+impl<T> BaseReal for T
+where
+    T: BaseNum
+        + Real
+        + approx::AbsDiffEq<Epsilon = Self>
+        + approx::RelativeEq<Epsilon = Self>
+        + approx::UlpsEq<Epsilon = Self>,
+{
+}
+
+/// Base floating point types
 pub trait BaseFloat:
     BaseNum
     + Float
@@ -70,4 +91,20 @@ where
         + approx::RelativeEq<Epsilon = Self>
         + approx::UlpsEq<Epsilon = Self>,
 {
+}
+
+#[cfg(test)]
+mod tests {
+    use num::{BaseFloat, BaseReal};
+
+    #[test]
+    fn test_float_impls_real() {
+        #![allow(dead_code)]
+
+        fn real<S: BaseReal>() {}
+
+        fn float<S: BaseFloat>() {
+            real::<S>()
+        }
+    }
 }
