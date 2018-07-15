@@ -369,7 +369,7 @@ macro_rules! impl_vector_default {
             $VectorN::new($($field),+)
         }
 
-        impl<S: BaseReal> $VectorN<S> {
+        impl<S: BaseFloat> $VectorN<S> {
             /// True if all entries in the vector are finite
             pub fn is_finite(&self) -> bool {
                 $(self.$field.is_finite())&&+
@@ -422,7 +422,7 @@ macro_rules! impl_vector_default {
                 fold_array!(mul, { $(self.$field),+ })
             }
 
-            fn is_finite(&self) -> bool where S: BaseReal {
+            fn is_finite(&self) -> bool where S: BaseFloat {
                 $(self.$field.is_finite())&&+
             }
         }
