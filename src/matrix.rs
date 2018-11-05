@@ -140,6 +140,35 @@ impl<S: BaseFloat> Matrix3<S> {
         }
     }
 
+    /// Create a homogeneous transformation matrix from a translation vector.
+    #[inline]
+    pub fn from_translation(v: Vector2<S>) -> Matrix3<S> {
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            S::one(), S::zero(), S::zero(),
+            S::zero(), S::one(), S::zero(),
+            v.x, v.y, S::one(),
+        )
+    }
+
+    /// Create a homogeneous transformation matrix from a scale value.
+    #[inline]
+    pub fn from_scale(value: S) -> Matrix3<S> {
+        Matrix3::from_nonuniform_scale(value, value)
+    }
+
+    /// Create a homogeneous transformation matrix from a set of scale values.
+    #[inline]
+    pub fn from_nonuniform_scale(x: S, y: S) -> Matrix3<S> {
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix3::new(
+            x, S::zero(), S::zero(),
+            S::zero(), y, S::zero(),
+            S::zero(), S::zero(), S::one(),
+        )
+    }
+
+
     /// Create a rotation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
