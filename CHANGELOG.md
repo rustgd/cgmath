@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+ - Move `lerp()` from `InnerSpace` to `VectorSpace`
+
 ## [v0.16.1] - 2018-03-21
 
 ### Added
