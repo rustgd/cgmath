@@ -208,13 +208,13 @@ macro_rules! impl_angle {
                 S::ulps_eq(&self.0, &other.0, epsilon, max_ulps)
             }
         }
-    
-        impl<S> Distribution<$Angle<S>> for Standard 
+
+        impl<S> Distribution<$Angle<S>> for Standard
             where Standard: Distribution<S>,
                 S: BaseFloat + SampleUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $Angle<S> {
-                $Angle(rng.gen_range(cast(-$hi).unwrap(), cast($hi).unwrap()))
+                $Angle(rng.gen_range(cast::<_, S>(-$hi).unwrap(), cast::<_, S>($hi).unwrap()))
             }
         }
 
