@@ -99,7 +99,7 @@ macro_rules! impl_vector {
         impl<S> $VectorN<S> {
             /// Construct a new vector, using the provided values.
             #[inline]
-            pub fn new($($field: S),+) -> $VectorN<S> {
+            pub const fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
 
@@ -115,7 +115,7 @@ macro_rules! impl_vector {
 
         /// The short constructor.
         #[inline]
-        pub fn $constructor<S>($($field: S),+) -> $VectorN<S> {
+        pub const fn $constructor<S>($($field: S),+) -> $VectorN<S> {
             $VectorN::new($($field),+)
         }
 
