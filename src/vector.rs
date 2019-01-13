@@ -358,7 +358,7 @@ macro_rules! impl_vector_default {
         impl<S> $VectorN<S> {
             /// Construct a new vector, using the provided values.
             #[inline]
-            pub fn new($($field: S),+) -> $VectorN<S> {
+            pub const fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
         }
