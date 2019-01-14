@@ -78,7 +78,7 @@ use num::BaseFloat;
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-pub struct Euler<A: Angle> {
+pub struct Euler<A> {
     /// The angle to apply around the _x_ axis. Also known at the _pitch_.
     pub x: A,
     /// The angle to apply around the _y_ axis. Also known at the _yaw_.
@@ -87,7 +87,7 @@ pub struct Euler<A: Angle> {
     pub z: A,
 }
 
-impl<A: Angle> Euler<A> {
+impl<A> Euler<A> {
     /// Construct a set of euler angles.
     ///
     /// # Arguments
@@ -95,7 +95,7 @@ impl<A: Angle> Euler<A> {
     /// * `x` - The angle to apply around the _x_ axis. Also known at the _pitch_.
     /// * `y` - The angle to apply around the _y_ axis. Also known at the _yaw_.
     /// * `z` - The angle to apply around the _z_ axis. Also known at the _roll_.
-    pub fn new(x: A, y: A, z: A) -> Euler<A> {
+    pub const fn new(x: A, y: A, z: A) -> Euler<A> {
         Euler { x: x, y: y, z: z }
     }
 }

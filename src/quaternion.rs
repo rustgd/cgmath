@@ -76,20 +76,22 @@ impl Into<Simdf32x4> for Quaternion<f32> {
     }
 }
 
-impl<S: BaseFloat> Quaternion<S> {
+impl<S> Quaternion<S> {
     /// Construct a new quaternion from one scalar component and three
     /// imaginary components.
     #[inline]
-    pub fn new(w: S, xi: S, yj: S, zk: S) -> Quaternion<S> {
+    pub const fn new(w: S, xi: S, yj: S, zk: S) -> Quaternion<S> {
         Quaternion::from_sv(w, Vector3::new(xi, yj, zk))
     }
 
     /// Construct a new quaternion from a scalar and a vector.
     #[inline]
-    pub fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
+    pub const fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
         Quaternion { s: s, v: v }
     }
+}
 
+impl<S: BaseFloat> Quaternion<S> {
     /// Construct a new quaternion as a closest arc between two vectors
     ///
     /// Return the closest rotation that turns `src` vector into `dst`.
