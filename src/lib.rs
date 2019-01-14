@@ -80,7 +80,7 @@ pub use vector::{dot, Vector1, Vector2, Vector3, Vector4, vec1, vec2, vec3, vec4
 
 pub use angle::{Deg, Rad};
 pub use euler::Euler;
-pub use point::{Point1, Point2, Point3};
+pub use point::{Point1, Point2, Point3, point1, point2, point3};
 pub use rotation::*;
 pub use transform::*;
 
