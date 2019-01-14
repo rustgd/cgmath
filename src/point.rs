@@ -82,7 +82,7 @@ macro_rules! impl_point {
         impl<S> $PointN<S> {
             /// Construct a new point, using the provided values.
             #[inline]
-            pub fn new($($field: S),+) -> $PointN<S> {
+            pub const fn new($($field: S),+) -> $PointN<S> {
                 $PointN { $($field: $field),+ }
             }
 
