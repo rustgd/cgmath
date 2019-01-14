@@ -181,6 +181,13 @@ where
 {
     /// The associated scalar.
     type Scalar: BaseNum;
+
+    /// Returns the result of linearly interpolating the vector
+    /// towards `other` by the specified amount.
+    #[inline]
+    fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
+        self + ((other - self) * amount)
+    }
 }
 
 /// A type with a distance function between values.
@@ -259,13 +266,6 @@ where
     #[inline]
     fn normalize_to(self, magnitude: Self::Scalar) -> Self {
         self * (magnitude / self.magnitude())
-    }
-
-    /// Returns the result of linearly interpolating the magnitude of the vector
-    /// towards the magnitude of `other` by the specified amount.
-    #[inline]
-    fn lerp(self, other: Self, amount: Self::Scalar) -> Self {
-        self + ((other - self) * amount)
     }
 
     /// Returns the
