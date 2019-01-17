@@ -6,12 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.17.0] - 2019-01-17
+
+### Added
+
+ - Add signed `Angle` normalization
+
 ### Changed
 
-## [v0.17.0] - 2019-01-17
  - Move `lerp()` from `InnerSpace` to `VectorSpace`
  - `const` constructors
- - Add signed `Angle` normalization
 
 ## [v0.16.1] - 2018-03-21
 
