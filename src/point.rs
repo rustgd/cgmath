@@ -78,7 +78,7 @@ impl<S: BaseNum> Point3<S> {
 }
 
 macro_rules! impl_point {
-    ($PointN:ident { $($field:ident),+ }, $VectorN:ident, $n:expr) => {
+    ($PointN:ident { $($field:ident),+ }, $VectorN:ident, $n:expr, $constructor:ident) => {
         impl<S> $PointN<S> {
             /// Construct a new point, using the provided values.
             #[inline]
@@ -94,6 +94,12 @@ macro_rules! impl_point {
             {
                 $PointN { $($field: f(self.$field)),+ }
             }
+        }
+
+        /// The short constructor.
+        #[inline]
+        pub const fn $constructor<S>($($field: S),+) -> $PointN<S> {
+            $PointN::new($($field),+)
         }
 
         impl<S: BaseNum> Array for $PointN<S> {
@@ -323,9 +329,9 @@ macro_rules! impl_scalar_ops {
     };
 }
 
-impl_point!(Point1 { x }, Vector1, 1);
-impl_point!(Point2 { x, y }, Vector2, 2);
-impl_point!(Point3 { x, y, z }, Vector3, 3);
+impl_point!(Point1 { x }, Vector1, 1, point1);
+impl_point!(Point2 { x, y }, Vector2, 2, point2);
+impl_point!(Point3 { x, y, z }, Vector3, 3, point3);
 
 impl<S: Copy> Point1<S> {
     impl_swizzle_functions!(Point1, Point2, Point3, S, x);

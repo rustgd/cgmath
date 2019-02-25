@@ -17,7 +17,14 @@
 extern crate approx;
 extern crate cgmath;
 
-use cgmath::{Point1, Point2, Point3};
+use cgmath::*;
+
+#[test]
+fn test_constructor() {
+    assert_eq!(point1(1f32), Point1::new(1f32));
+    assert_eq!(point2(1f32, 2f32), Point2::new(1f32, 2f32));
+    assert_eq!(point3(1f64, 2f64, 3f64), Point3::new(1f64, 2f64, 3f64));
+}
 
 macro_rules! impl_test_mul {
     ($PointN:ident { $($field:ident),+ }, $s:expr, $v:expr) => (

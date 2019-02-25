@@ -365,7 +365,7 @@ macro_rules! impl_vector_default {
 
         /// The short constructor.
         #[inline]
-        pub fn $constructor<S>($($field: S),+) -> $VectorN<S> {
+        pub const fn $constructor<S>($($field: S),+) -> $VectorN<S> {
             $VectorN::new($($field),+)
         }
 
