@@ -7,8 +7,8 @@ license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
 documentation = "https://docs.rs/cgmath"
-homepage = "https://github.com/brendanzab/cgmath"
-repository = "https://github.com/brendanzab/cgmath"
+homepage = "https://github.com/rustgd/cgmath"
+repository = "https://github.com/rustgd/cgmath"
 readme = "README.md"
 
 keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]

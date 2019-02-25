@@ -17,6 +17,8 @@ matrix:
       env: CARGO_FEATURES="simd"
     - rust: nightly
       env: CARGO_FEATURES="serde simd"
+  allow_failures:
+    - rust: nightly
 
 script:
   - cargo build --features "$CARGO_FEATURES"
