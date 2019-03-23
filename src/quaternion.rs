@@ -729,6 +729,9 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
         Quaternion::from_sv(k + k_cos_theta, a.cross(b)).normalize()
     }
 
+    /// Evaluate the conjugation of `vec` by `self`.
+    ///
+    /// Note that `self` should be a unit quaternion (i.e. normalized) to represent a 3D rotation.
     #[inline]
     fn rotate_vector(&self, vec: Vector3<S>) -> Vector3<S> {
         self * vec
