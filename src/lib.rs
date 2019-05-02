@@ -58,6 +58,7 @@ extern crate approx;
 #[cfg(feature = "mint")]
 pub extern crate mint;
 
+#[cfg(feature = "rand")]
 extern crate rand;
 pub extern crate num_traits;
 

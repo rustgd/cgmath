@@ -13,8 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+#[cfg(feature = "rand")]
+use rand::{
+    Rng,
+    distributions::{Distribution, Standard},
+};
 use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::iter;
@@ -245,6 +248,7 @@ macro_rules! impl_vector {
             }
         }
 
+        #[cfg(feature = "rand")]
         impl<S> Distribution<$VectorN<S>> for Standard
             where Standard: Distribution<S>,
                 S: BaseFloat {
@@ -502,7 +506,8 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S> Distribution<$VectorN<S>> for Standard 
+        #[cfg(feature = "rand")]
+        impl<S> Distribution<$VectorN<S>> for Standard
             where S: BaseFloat,
                 Standard: Distribution<S>  {
             #[inline]

@@ -20,9 +20,11 @@ use std::f64;
 use std::iter;
 use std::ops::*;
 
-use rand::Rng;
-use rand::distributions::{Distribution, Standard};
-use rand::distributions::uniform::SampleUniform;
+#[cfg(feature = "rand")]
+use rand::{
+    Rng,
+    distributions::{Distribution, Standard, uniform::SampleUniform},
+};
 use num_traits::{cast, Bounded};
 
 use structure::*;
@@ -209,6 +211,7 @@ macro_rules! impl_angle {
             }
         }
 
+        #[cfg(feature = "rand")]
         impl<S> Distribution<$Angle<S>> for Standard
             where Standard: Distribution<S>,
                 S: BaseFloat + SampleUniform {
