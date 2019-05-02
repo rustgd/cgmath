@@ -43,7 +43,7 @@
 //! # The prelude
 //!
 //! Importing each trait individually can become a chore, so we provide a
-//! `prelude` module to allow you to import the main trait all at once. For
+//! `prelude` module to allow you to import the main traits all at once. For
 //! example:
 //!
 //! ```rust
