@@ -17,7 +17,6 @@ keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
 name = "cgmath"
 
 [features]
-default = ["rand"]
 unstable = []
 swizzle = []
 
