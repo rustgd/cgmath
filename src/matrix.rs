@@ -13,8 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use rand::distributions::{Standard, Distribution};
-use rand::Rng;
+#[cfg(feature = "rand")]
+use rand::{
+    Rng,
+    distributions::{Standard, Distribution},
+};
 use num_traits::{cast, NumCast};
 use std::fmt;
 use std::iter;
@@ -1536,8 +1539,9 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
     }
 }
 
+#[cfg(feature = "rand")]
 impl<S> Distribution<Matrix2<S>> for Standard
-    where 
+    where
         Standard: Distribution<Vector2<S>>,
         S: BaseFloat {
     #[inline]
@@ -1549,6 +1553,7 @@ impl<S> Distribution<Matrix2<S>> for Standard
     }
 }
 
+#[cfg(feature = "rand")]
 impl<S> Distribution<Matrix3<S>> for Standard
     where Standard: Distribution<Vector3<S>>,
         S: BaseFloat {
@@ -1562,6 +1567,7 @@ impl<S> Distribution<Matrix3<S>> for Standard
     }
 }
 
+#[cfg(feature = "rand")]
 impl<S> Distribution<Matrix4<S>> for Standard
     where Standard: Distribution<Vector4<S>>,
         S: BaseFloat {

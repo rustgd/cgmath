@@ -17,8 +17,11 @@ use std::iter;
 use std::mem;
 use std::ops::*;
 
-use rand::distributions::{Distribution, Standard};
-use rand::Rng;
+#[cfg(feature = "rand")]
+use rand::{
+    Rng,
+    distributions::{Distribution, Standard},
+};
 use num_traits::{cast, NumCast};
 
 use structure::*;
@@ -870,7 +873,8 @@ index_operators!(S, [S], RangeTo<usize>);
 index_operators!(S, [S], RangeFrom<usize>);
 index_operators!(S, [S], RangeFull);
 
-impl<S> Distribution<Quaternion<S>> for Standard 
+#[cfg(feature = "rand")]
+impl<S> Distribution<Quaternion<S>> for Standard
     where Standard: Distribution<S>,
         Standard: Distribution<Vector3<S>>,
         S: BaseFloat {

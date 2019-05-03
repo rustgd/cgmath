@@ -9,7 +9,7 @@ cache: cargo
 
 env:
   - CARGO_FEATURES=""
-  - CARGO_FEATURES="mint serde"
+  - CARGO_FEATURES="mint serde rand"
 
 matrix:
   include:
@@ -25,5 +25,6 @@ script:
   - cargo test --features "$CARGO_FEATURES"
   - |
     if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
-      cargo bench --features "$CARGO_FEATURES"
+      # The benchmark always needs the 'rand' feature
+      cargo bench --features "$CARGO_FEATURES rand"
     fi
