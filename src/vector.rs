@@ -114,6 +114,16 @@ macro_rules! impl_vector {
             {
                 $VectorN { $($field: f(self.$field)),+ }
             }
+
+            /// Construct a new vector where each component is the result of
+            /// applying the given operation to each pair of components of the
+            /// given vectors.
+            #[inline]
+            pub fn zip<S2, S3, F>(self, v2: $VectorN<S2>, mut f: F) -> $VectorN<S3>
+                where F: FnMut(S, S2) -> S3
+            {
+                $VectorN { $($field: f(self.$field, v2.$field)),+ }
+            }
         }
 
         /// The short constructor.
@@ -1374,6 +1384,14 @@ mod tests {
             assert!(!Vector2::from([1.0, Float::infinity()]).is_finite());
             assert!(Vector2::from([-1.0, 1.0]).is_finite());
         }
+
+        #[test]
+        fn test_zip() {
+            assert_eq!(
+                Vector2::new(true, false),
+                Vector2::new(-2, 1).zip(Vector2::new(-1, -1), |a, b| a < b)
+            );
+        }
     }
 
     mod vector3 {
@@ -1486,6 +1504,14 @@ mod tests {
             assert!(!Vector3::from([Float::nan(), 1.0, 1.0]).is_finite());
             assert!(!Vector3::from([1.0, 1.0, Float::infinity()]).is_finite());
             assert!(Vector3::from([-1.0, 1.0, 1.0]).is_finite());
+        }
+
+        #[test]
+        fn test_zip() {
+            assert_eq!(
+                Vector3::new(true, false, false),
+                Vector3::new(-2, 1, 0).zip(Vector3::new(-1, -1, -1), |a, b| a < b)
+            );
         }
     }
 
@@ -1605,6 +1631,14 @@ mod tests {
             assert!(!Vector4::from([0.0, Float::nan(), 1.0, 1.0]).is_finite());
             assert!(!Vector4::from([1.0, 1.0, Float::neg_infinity(), 0.0]).is_finite());
             assert!(Vector4::from([-1.0, 0.0, 1.0, 1.0]).is_finite());
+        }
+
+        #[test]
+        fn test_zip() {
+            assert_eq!(
+                Vector4::new(true, false, false, false),
+                Vector4::new(-2, 1, 0, 1).zip(Vector4::new(-1, -1, -1, -1), |a, b| a < b)
+            );
         }
     }
 }

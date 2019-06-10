@@ -94,6 +94,16 @@ macro_rules! impl_point {
             {
                 $PointN { $($field: f(self.$field)),+ }
             }
+
+            /// Construct a new point where each component is the result of
+            /// applying the given operation to each pair of components of the
+            /// given points.
+            #[inline]
+            pub fn zip<S2, S3, F>(self, p2: $PointN<S2>, mut f: F) -> $PointN<S3>
+            where F: FnMut(S, S2) -> S3
+            {
+                $PointN { $($field: f(self.$field, p2.$field)),+ }
+            }
         }
 
         /// The short constructor.
@@ -483,6 +493,14 @@ mod tests {
                 assert_eq!(p, &POINT2);
             }
         }
+
+        #[test]
+        fn test_zip() {
+            assert_eq!(
+                Point2::new(true, false),
+                Point2::new(-2, 1).zip(Point2::new(-1, -1), |a, b| a < b)
+            );
+        }
     }
 
     mod point3 {
@@ -587,6 +605,14 @@ mod tests {
                 let p: &mut Point3<_> = From::from(p);
                 assert_eq!(p, &POINT3);
             }
+        }
+
+        #[test]
+        fn test_zip() {
+            assert_eq!(
+                Point3::new(true, false, false),
+                Point3::new(-2, 1, 0).zip(Point3::new(-1, -1, -1), |a, b| a < b)
+            );
         }
     }
 }
