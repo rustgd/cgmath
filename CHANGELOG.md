@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+ - Add `VectorN::zip` and `PointN::zip`
+ 
 ## [v0.17.0] - 2019-01-17
 
 ### Added
