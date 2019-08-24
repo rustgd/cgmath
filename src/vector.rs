@@ -840,28 +840,28 @@ impl<S: BaseFloat> InnerSpace for Vector4<S> {
 
 impl<S: fmt::Debug> fmt::Debug for Vector1<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Vector1 "));
+        write!(f, "Vector1 ")?;
         <[S; 1] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Vector2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Vector2 "));
+        write!(f, "Vector2 ")?;
         <[S; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Vector3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Vector3 "));
+        write!(f, "Vector3 ")?;
         <[S; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Vector4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Vector4 "));
+        write!(f, "Vector4 ")?;
         <[S; 4] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }

@@ -1520,21 +1520,21 @@ impl<S: BaseFloat> From<Matrix3<S>> for Quaternion<S> {
 
 impl<S: fmt::Debug> fmt::Debug for Matrix2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Matrix2 "));
+        write!(f, "Matrix2 ")?;
         <[[S; 2]; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Matrix3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Matrix3 "));
+        write!(f, "Matrix3 ")?;
         <[[S; 3]; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Matrix4 "));
+        write!(f, "Matrix4 ")?;
         <[[S; 4]; 4] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }

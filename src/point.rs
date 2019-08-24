@@ -370,21 +370,21 @@ impl_mint_conversions!(Point3 { x, y, z }, Point3);
 
 impl<S: fmt::Debug> fmt::Debug for Point1<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Point1 "));
+        write!(f, "Point1 ")?;
         <[S; 1] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Point2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Point2 "));
+        write!(f, "Point2 ")?;
         <[S; 2] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
 
 impl<S: fmt::Debug> fmt::Debug for Point3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Point3 "));
+        write!(f, "Point3 ")?;
         <[S; 3] as fmt::Debug>::fmt(self.as_ref(), f)
     }
 }
