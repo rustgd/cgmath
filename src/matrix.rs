@@ -99,11 +99,23 @@ impl<S> Matrix2<S> {
 }
 
 impl<S: BaseFloat> Matrix2<S> {
-    /// Create a transformation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Create a transformation matrix that will cause `unit_x()` to point at
+    /// `dir`. `unit_y()` will be perpendicular to `dir`, and the closest to `up`.
     pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
-        //TODO: verify look_at 2D
-        Matrix2::from_cols(up, dir).transpose()
+        Matrix2::look_at_stable(dir, up.x * dir.y >= up.y * dir.x)
+    }
+
+    /// Crate a transformation that will cause `unit_x()` to point at
+    /// `dir`. This is similar to `look_at`, but does not take an `up` vector.
+    /// This will not cause `unit_y()` to flip when `dir` crosses over the `up` vector.
+    pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Matrix2<S> {
+        let basis1 = dir.normalize();
+        let basis2 = if flip {
+            Vector2::new(basis1.y, -basis1.x)
+        } else {
+            Vector2::new(-basis1.y, basis1.x)
+        };
+        Matrix2::from_cols(basis1, basis2)
     }
 
     #[inline]

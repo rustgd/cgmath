@@ -146,6 +146,14 @@ pub struct Basis2<S> {
     mat: Matrix2<S>,
 }
 
+impl<S: BaseFloat> Basis2<S> {
+    pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Basis2<S> {
+        Basis2 {
+            mat: Matrix2::look_at_stable(dir, flip),
+        }
+    }
+}
+
 impl<S: BaseFloat> AsRef<Matrix2<S>> for Basis2<S> {
     #[inline]
     fn as_ref(&self) -> &Matrix2<S> {
