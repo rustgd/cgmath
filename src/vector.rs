@@ -375,19 +375,31 @@ macro_rules! impl_vector_default {
             pub const fn new($($field: S),+) -> $VectorN<S> {
                 $VectorN { $($field: $field),+ }
             }
+
+            /// Perform the given operation on each field in the vector, returning a new point
+            /// constructed from the operations.
+            #[inline]
+            pub fn map<U, F>(self, mut f: F) -> $VectorN<U>
+                where F: FnMut(S) -> U
+            {
+                $VectorN { $($field: f(self.$field)),+ }
+            }
+
+            /// Construct a new vector where each component is the result of
+            /// applying the given operation to each pair of components of the
+            /// given vectors.
+            #[inline]
+            pub fn zip<S2, S3, F>(self, v2: $VectorN<S2>, mut f: F) -> $VectorN<S3>
+                where F: FnMut(S, S2) -> S3
+            {
+                $VectorN { $($field: f(self.$field, v2.$field)),+ }
+            }
         }
 
         /// The short constructor.
         #[inline]
         pub const fn $constructor<S>($($field: S),+) -> $VectorN<S> {
             $VectorN::new($($field),+)
-        }
-
-        impl<S: BaseFloat> $VectorN<S> {
-            /// True if all entries in the vector are finite
-            pub fn is_finite(&self) -> bool {
-                $(self.$field.is_finite())&&+
-            }
         }
 
         impl<S: NumCast + Copy> $VectorN<S> {
@@ -453,17 +465,17 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl<S: BaseNum> iter::Sum for $VectorN<S> {
+        impl<S: BaseNum> iter::Sum<$VectorN<S>> for $VectorN<S> {
             #[inline]
-            fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
+            fn sum<I: Iterator<Item=$VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
             }
         }
 
-        impl<'a, S: 'a + BaseNum> iter::Sum<&'a Self> for $VectorN<S> {
+        impl<'a, S: 'a + BaseNum> iter::Sum<&'a $VectorN<S>> for $VectorN<S> {
             #[inline]
-            fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
-                iter.fold(Self::zero(), Add::add)
+            fn sum<I: Iterator<Item=&'a $VectorN<S>>>(iter: I) -> $VectorN<S> {
+                iter.fold($VectorN::zero(), Add::add)
             }
         }
 
@@ -518,18 +530,29 @@ macro_rules! impl_vector_default {
 
         #[cfg(feature = "rand")]
         impl<S> Distribution<$VectorN<S>> for Standard
-            where S: BaseFloat,
-                Standard: Distribution<S>  {
+            where Standard: Distribution<S>,
+                S: BaseFloat {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
             }
         }
 
+        impl<S: Bounded> Bounded for $VectorN<S> {
+            #[inline]
+            fn min_value() -> $VectorN<S> {
+                $VectorN { $($field: S::min_value()),+ }
+            }
+
+            #[inline]
+            fn max_value() -> $VectorN<S> {
+                $VectorN { $($field: S::max_value()),+ }
+            }
+        }
+
         impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
             fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
         });
-
         impl_assignment_operator!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
             fn add_assign(&mut self, other) { $(self.$field += other.$field);+ }
         });
@@ -537,7 +560,6 @@ macro_rules! impl_vector_default {
         impl_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
         });
-
         impl_assignment_operator!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
             fn sub_assign(&mut self, other) { $(self.$field -= other.$field);+ }
         });
@@ -545,7 +567,6 @@ macro_rules! impl_vector_default {
         impl_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
             fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
         });
-
         impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
         });
@@ -553,7 +574,6 @@ macro_rules! impl_vector_default {
         impl_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
             fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
         });
-
         impl_assignment_operator!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
             fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
         });
