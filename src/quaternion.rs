@@ -35,9 +35,6 @@ use point::Point3;
 use rotation::{Basis3, Rotation, Rotation3};
 use vector::Vector3;
 
-#[cfg(feature = "simd")]
-use simd::f32x4 as Simdf32x4;
-
 #[cfg(feature = "mint")]
 use mint;
 
@@ -53,30 +50,6 @@ pub struct Quaternion<S> {
     pub s: S,
     /// The vector part of the quaternion.
     pub v: Vector3<S>,
-}
-
-#[cfg(feature = "simd")]
-impl From<Simdf32x4> for Quaternion<f32> {
-    #[inline]
-    fn from(f: Simdf32x4) -> Self {
-        unsafe {
-            let mut ret: Self = mem::uninitialized();
-            {
-                let ret_mut: &mut [f32; 4] = ret.as_mut();
-                f.store(ret_mut.as_mut(), 0 as usize);
-            }
-            ret
-        }
-    }
-}
-
-#[cfg(feature = "simd")]
-impl Into<Simdf32x4> for Quaternion<f32> {
-    #[inline]
-    fn into(self) -> Simdf32x4 {
-        let self_ref: &[f32; 4] = self.as_ref();
-        Simdf32x4::load(self_ref.as_ref(), 0 as usize)
-    }
 }
 
 impl<S> Quaternion<S> {
@@ -267,17 +240,6 @@ impl<S: BaseFloat> InnerSpace for Quaternion<S> {
     } );
 }
 
-#[cfg(feature = "simd")]
-impl InnerSpace for Quaternion<f32> {
-    #[inline]
-    fn dot(self, other: Quaternion<f32>) -> f32 {
-        let lhs: Simdf32x4 = self.into();
-        let rhs: Simdf32x4 = other.into();
-        let r = lhs * rhs;
-        r.extract(0) + r.extract(1) + r.extract(2) + r.extract(3)
-    }
-}
-
 impl<A> From<Euler<A>> for Quaternion<A::Unitless>
 where
     A: Angle + Into<Rad<<A as Angle>::Unitless>>,
@@ -308,42 +270,15 @@ impl_operator!(<S: BaseFloat> Neg for Quaternion<S> {
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_simd!{
-    [Simdf32x4]; Neg for Quaternion<f32> {
-        fn neg(lhs) -> Quaternion<f32> {
-            (-lhs).into()
-        }
-    }
-}
-
 impl_operator!(<S: BaseFloat> Mul<S> for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
         Quaternion::from_sv(lhs.s * rhs, lhs.v * rhs)
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_simd!{@rs
-    [Simdf32x4]; Mul<f32> for Quaternion<f32> {
-        fn mul(lhs, rhs) -> Quaternion<f32> {
-            (lhs * rhs).into()
-        }
-    }
-}
-
 impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for Quaternion<S> {
     fn mul_assign(&mut self, scalar) { self.s *= scalar; self.v *= scalar; }
 });
-
-#[cfg(feature = "simd")]
-impl MulAssign<f32> for Quaternion<f32> {
-    fn mul_assign(&mut self, other: f32) {
-        let s: Simdf32x4 = (*self).into();
-        let other = Simdf32x4::splat(other);
-        *self = (s * other).into();
-    }
-}
 
 impl_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
     fn div(lhs, rhs) -> Quaternion<S> {
@@ -351,27 +286,9 @@ impl_operator!(<S: BaseFloat> Div<S> for Quaternion<S> {
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_simd!{@rs
-    [Simdf32x4]; Div<f32> for Quaternion<f32> {
-        fn div(lhs, rhs) -> Quaternion<f32> {
-            (lhs / rhs).into()
-        }
-    }
-}
-
 impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for Quaternion<S> {
     fn div_assign(&mut self, scalar) { self.s /= scalar; self.v /= scalar; }
 });
-
-#[cfg(feature = "simd")]
-impl DivAssign<f32> for Quaternion<f32> {
-    fn div_assign(&mut self, other: f32) {
-        let s: Simdf32x4 = (*self).into();
-        let other = Simdf32x4::splat(other);
-        *self = (s / other).into();
-    }
-}
 
 impl_operator!(<S: BaseFloat> Rem<S> for Quaternion<S> {
     fn rem(lhs, rhs) -> Quaternion<S> {
@@ -398,28 +315,9 @@ impl_operator!(<S: BaseFloat> Add<Quaternion<S> > for Quaternion<S> {
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_simd!{
-    [Simdf32x4]; Add<Quaternion<f32>> for Quaternion<f32> {
-        fn add(lhs, rhs) -> Quaternion<f32> {
-            (lhs + rhs).into()
-        }
-    }
-}
-
 impl_assignment_operator!(<S: BaseFloat> AddAssign<Quaternion<S> > for Quaternion<S> {
     fn add_assign(&mut self, other) { self.s += other.s; self.v += other.v; }
 });
-
-#[cfg(feature = "simd")]
-impl AddAssign for Quaternion<f32> {
-    #[inline]
-    fn add_assign(&mut self, rhs: Self) {
-        let s: Simdf32x4 = (*self).into();
-        let rhs: Simdf32x4 = rhs.into();
-        *self = (s + rhs).into();
-    }
-}
 
 impl_operator!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
     fn sub(lhs, rhs) -> Quaternion<S> {
@@ -427,28 +325,9 @@ impl_operator!(<S: BaseFloat> Sub<Quaternion<S> > for Quaternion<S> {
     }
 });
 
-#[cfg(feature = "simd")]
-impl_operator_simd!{
-    [Simdf32x4]; Sub<Quaternion<f32>> for Quaternion<f32> {
-        fn sub(lhs, rhs) -> Quaternion<f32> {
-            (lhs - rhs).into()
-        }
-    }
-}
-
 impl_assignment_operator!(<S: BaseFloat> SubAssign<Quaternion<S> > for Quaternion<S> {
     fn sub_assign(&mut self, other) { self.s -= other.s; self.v -= other.v; }
 });
-
-#[cfg(feature = "simd")]
-impl SubAssign for Quaternion<f32> {
-    #[inline]
-    fn sub_assign(&mut self, rhs: Self) {
-        let s: Simdf32x4 = (*self).into();
-        let rhs: Simdf32x4 = rhs.into();
-        *self = (s - rhs).into();
-    }
-}
 
 impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
     fn mul(lhs, rhs) -> Quaternion<S> {
@@ -460,27 +339,6 @@ impl_operator!(<S: BaseFloat> Mul<Quaternion<S> > for Quaternion<S> {
         )
     }
 });
-
-#[cfg(feature = "simd")]
-impl_operator_simd!{
-    [Simdf32x4]; Mul<Quaternion<f32>> for Quaternion<f32> {
-        fn mul(lhs, rhs) -> Quaternion<f32> {
-            {
-                let p0 = Simdf32x4::splat(lhs.extract(0)) * rhs;
-                let p1 = Simdf32x4::splat(lhs.extract(1)) * Simdf32x4::new(
-                    -rhs.extract(1), rhs.extract(0), -rhs.extract(3), rhs.extract(2)
-                );
-                let p2 = Simdf32x4::splat(lhs.extract(2)) * Simdf32x4::new(
-                    -rhs.extract(2), rhs.extract(3), rhs.extract(0), -rhs.extract(1)
-                );
-                let p3 = Simdf32x4::splat(lhs.extract(3)) * Simdf32x4::new(
-                    -rhs.extract(3), -rhs.extract(2), rhs.extract(1), rhs.extract(0)
-                );
-                (p0 + p1 + p2 + p3).into()
-            }
-        }
-    }
-}
 
 macro_rules! impl_scalar_mul {
     ($S:ident) => {
