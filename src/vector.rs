@@ -596,14 +596,14 @@ macro_rules! impl_vector_default {
         impl_scalar_ops!($VectorN<usize> { $($field),+ });
         impl_scalar_ops!($VectorN<u8> { $($field),+ });
         impl_scalar_ops!($VectorN<u16> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<u32> { $($field),+ });
+        impl_scalar_ops!($VectorN<u32> { $($field),+ });
         impl_scalar_ops!($VectorN<u64> { $($field),+ });
         impl_scalar_ops!($VectorN<isize> { $($field),+ });
         impl_scalar_ops!($VectorN<i8> { $($field),+ });
         impl_scalar_ops!($VectorN<i16> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<i32> { $($field),+ });
+        impl_scalar_ops!($VectorN<i32> { $($field),+ });
         impl_scalar_ops!($VectorN<i64> { $($field),+ });
-        impl_scalar_ops_default!($VectorN<f32> { $($field),+ });
+        impl_scalar_ops!($VectorN<f32> { $($field),+ });
         impl_scalar_ops!($VectorN<f64> { $($field),+ });
 
         impl_index_operators!($VectorN<S>, $n, S, usize);
@@ -615,21 +615,6 @@ macro_rules! impl_vector_default {
 }
 
 macro_rules! impl_scalar_ops {
-    ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
-        impl_operator!(Mul<$VectorN<$S>> for $S {
-            fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
-        });
-        impl_operator!(Div<$VectorN<$S>> for $S {
-            fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
-        });
-        impl_operator!(Rem<$VectorN<$S>> for $S {
-            fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
-        });
-    };
-}
-
-#[cfg(feature = "simd")]
-macro_rules! impl_scalar_ops_default {
     ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
         impl_operator!(Mul<$VectorN<$S>> for $S {
             fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
