@@ -271,9 +271,9 @@ impl<S: BaseFloat> InnerSpace for Quaternion<S> {
 #[cfg(feature = "simd")]
 impl<S: BaseFloat> InnerSpace for Quaternion<S> {
     #[inline]
-    default fn dot(self, other: Quaternion<S>) -> S {
+    default_fn!( dot(self, other: Quaternion<S>) -> S {
         self.s * other.s + self.v.dot(other.v)
-    }
+    } );
 }
 
 #[cfg(feature = "simd")]
