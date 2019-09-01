@@ -1,4 +1,5 @@
 .DS_Store
+.vs/
 /target
 /Cargo.lock
 /bench/bench
