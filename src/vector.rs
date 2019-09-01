@@ -526,35 +526,35 @@ macro_rules! impl_vector_default {
             }
         }
 
-        impl_operator_default!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Add<$VectorN<S> > for $VectorN<S> {
             fn add(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field + rhs.$field),+) }
         });
 
-        impl_assignment_operator_default!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
+        impl_assignment_operator!(<S: BaseNum> AddAssign<$VectorN<S> > for $VectorN<S> {
             fn add_assign(&mut self, other) { $(self.$field += other.$field);+ }
         });
 
-        impl_operator_default!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Sub<$VectorN<S> > for $VectorN<S> {
             fn sub(lhs, rhs) -> $VectorN<S> { $VectorN::new($(lhs.$field - rhs.$field),+) }
         });
 
-        impl_assignment_operator_default!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
+        impl_assignment_operator!(<S: BaseNum> SubAssign<$VectorN<S> > for $VectorN<S> {
             fn sub_assign(&mut self, other) { $(self.$field -= other.$field);+ }
         });
 
-        impl_operator_default!(<S: BaseNum> Mul<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Mul<S> for $VectorN<S> {
             fn mul(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field * scalar),+) }
         });
 
-        impl_assignment_operator_default!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
+        impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $VectorN<S> {
             fn mul_assign(&mut self, scalar) { $(self.$field *= scalar);+ }
         });
 
-        impl_operator_default!(<S: BaseNum> Div<S> for $VectorN<S> {
+        impl_operator!(<S: BaseNum> Div<S> for $VectorN<S> {
             fn div(vector, scalar) -> $VectorN<S> { $VectorN::new($(vector.$field / scalar),+) }
         });
 
-        impl_assignment_operator_default!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
+        impl_assignment_operator!(<S: BaseNum> DivAssign<S> for $VectorN<S> {
             fn div_assign(&mut self, scalar) { $(self.$field /= scalar);+ }
         });
 
@@ -631,13 +631,13 @@ macro_rules! impl_scalar_ops {
 #[cfg(feature = "simd")]
 macro_rules! impl_scalar_ops_default {
     ($VectorN:ident<$S:ident> { $($field:ident),+ }) => {
-        impl_operator_default!(Mul<$VectorN<$S>> for $S {
+        impl_operator!(Mul<$VectorN<$S>> for $S {
             fn mul(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar * vector.$field),+) }
         });
-        impl_operator_default!(Div<$VectorN<$S>> for $S {
+        impl_operator!(Div<$VectorN<$S>> for $S {
             fn div(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar / vector.$field),+) }
         });
-        impl_operator_default!(Rem<$VectorN<$S>> for $S {
+        impl_operator!(Rem<$VectorN<$S>> for $S {
             fn rem(scalar, vector) -> $VectorN<$S> { $VectorN::new($(scalar % vector.$field),+) }
         });
     };
