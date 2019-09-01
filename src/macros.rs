@@ -17,6 +17,16 @@
 
 #![macro_use]
 
+#[cfg(feature = "specialization")]
+macro_rules! default_fn {
+    { $($tt:tt)* } => { default fn $( $tt )* };
+}
+
+#[cfg(not(feature = "specialization"))]
+macro_rules! default_fn {
+    { $($tt:tt)* } => { fn $( $tt )* };
+}
+
 /// Generates a binary operator implementation for the permutations of by-ref and by-val
 macro_rules! impl_operator {
     // When it is an unary operator
