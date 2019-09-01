@@ -13,6 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use vector::*;
+
+use structure::*;
+
+use std::mem;
+use std::ops::*;
+
 use simd::f32x4 as Simdf32x4;
 use simd::i32x4 as Simdi32x4;
 use simd::u32x4 as Simdu32x4;

@@ -13,6 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use quaternion::*;
+
+use structure::*;
+
+use std::mem;
+use std::ops::*;
+
 use simd::f32x4 as Simdf32x4;
 
 impl From<Simdf32x4> for Quaternion<f32> {

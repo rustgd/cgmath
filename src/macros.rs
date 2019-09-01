@@ -17,12 +17,12 @@
 
 #![macro_use]
 
-#[cfg(feature = "specialization")]
+#[cfg(feature = "simd")]
 macro_rules! default_fn {
     { $($tt:tt)* } => { default fn $( $tt )* };
 }
 
-#[cfg(not(feature = "specialization"))]
+#[cfg(not(feature = "simd"))]
 macro_rules! default_fn {
     { $($tt:tt)* } => { fn $( $tt )* };
 }
