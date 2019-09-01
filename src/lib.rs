@@ -101,6 +101,9 @@ mod matrix;
 mod quaternion;
 mod vector;
 
+#[cfg(feature = "simd")]
+mod vector_simd;
+
 mod angle;
 mod euler;
 mod point;
