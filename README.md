@@ -57,6 +57,13 @@ and `v.zy()` produces a
 ```rust
 Vector2 { x: 3.0, y: 2.0 }
 ```
+### SIMD optimizations
+
+The current SIMD support depends on the deprecated "simd" package as well
+as the unstable "specialization" feature. To build this code, a pre-1.33 nightly
+build of Rust is required, e.g. 2019-01-01-nightly. Though the code is not
+useful in its present form, it has some worth preserving as starting point
+for a future migration (see https://github.com/rustgd/cgmath/issues/490).
 
 ## Limitations
 
