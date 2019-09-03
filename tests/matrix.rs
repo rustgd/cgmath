@@ -281,7 +281,7 @@ pub mod matrix3 {
     }
 
     #[test]
-    fn test_determinant() {;
+    fn test_determinant() {
         assert_eq!(A.determinant(), 0.0f64);
     }
 

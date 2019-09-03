@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+ - Refactored dependencies of experimental "specialization" feature into
+   default_fn! macro to reduce code duplication and complexity. Currently
+   only needed for non-functional SIMD feature.
+ - Refactored SIMD code into separate source files. See README.md for details.
+
 ### Added
 
  - Add `VectorN::zip` and `PointN::zip`

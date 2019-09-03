@@ -263,7 +263,7 @@ impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
 
 impl<S: fmt::Debug> fmt::Debug for Basis2<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Basis2 "));
+        write!(f, "Basis2 ")?;
         <[[S; 2]; 2] as fmt::Debug>::fmt(self.mat.as_ref(), f)
     }
 }
@@ -445,7 +445,7 @@ where
 
 impl<S: fmt::Debug> fmt::Debug for Basis3<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Basis3 "));
+        write!(f, "Basis3 ")?;
         <[[S; 3]; 3] as fmt::Debug>::fmt(self.mat.as_ref(), f)
     }
 }

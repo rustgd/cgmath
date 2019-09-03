@@ -99,7 +99,14 @@ mod structure;
 
 mod matrix;
 mod quaternion;
+
+#[cfg(feature = "simd")]
+mod quaternion_simd;
+
 mod vector;
+
+#[cfg(feature = "simd")]
+mod vector_simd;
 
 mod angle;
 mod euler;

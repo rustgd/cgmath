@@ -4,7 +4,8 @@
 //! For example, when declaring `glium` uniforms, we need to convert to fixed
 //! length arrays. We can use the `Into` trait directly, but it is rather ugly!
 //!
-//! ```rust
+//! --- Doc-test disabled because glium causes problems with nightly-2019-01-01 needed for "simd"
+//! ` ` `rust
 //! #[macro_use]
 //! extern crate glium;
 //! extern crate cgmath;
@@ -22,11 +23,12 @@
 //!     // Yuck!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻
 //! };
 //! # }
-//! ```
+//! ` ` `
 //!
 //! Instead, we can use the conversion functions from the `conv` module:
 //!
-//! ```rust
+//! --- Doc-test disabled because glium causes problems nightly-2019-01-01 needed for "simd"
+//! ` ` `rust
 //! #[macro_use]
 //! extern crate glium;
 //! extern crate cgmath;
@@ -45,7 +47,7 @@
 //!     // ┬─┬ノ( º _ ºノ)
 //! };
 //! # }
-//! ```
+//! ` ` `
 
 /// Force a conversion into a 2-element array.
 #[inline]

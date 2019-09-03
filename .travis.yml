@@ -17,6 +17,9 @@ matrix:
       env: CARGO_FEATURES="simd"
     - rust: nightly
       env: CARGO_FEATURES="serde simd"
+    - rust: nightly-2019-01-01
+      # an old nightly build where "simd" still worked and "specialization"
+      env: CARGO_FEATURES="simd"
   allow_failures:
     - rust: nightly
 
