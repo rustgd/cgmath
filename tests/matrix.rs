@@ -175,6 +175,27 @@ pub mod matrix2 {
         let rot3: Matrix2<f64> = Matrix2::from_angle(Rad(f64::consts::PI));
         assert_ulps_eq!(rot3 * Vector2::new(1.0, 1.0), &Vector2::new(-1.0, -1.0));
     }
+
+    #[test]
+    fn test_look_at() {
+        // rot should rotate unit_x() to look at the input vector
+        let rot = Matrix2::look_at(V, Vector2::unit_y());
+        assert_eq!(rot * Vector2::unit_x(),
+                   V.normalize());
+        let new_up = Vector2::new(-V.y, V.x).normalize();
+        assert_eq!(rot * Vector2::unit_y(),
+                   new_up);
+
+        let rot_down = Matrix2::look_at(V, -1.0 * Vector2::unit_y());
+        assert_eq!(rot_down * Vector2::unit_x(),
+                   V.normalize());
+        assert_eq!(rot_down * Vector2::unit_y(),
+                   -1.0 * new_up);
+
+        let rot2 = Matrix2::look_at(-V, Vector2::unit_y());
+        assert_eq!(rot2 * Vector2::unit_x(),
+                   (-V).normalize());
+    }
 }
 
 pub mod matrix3 {
