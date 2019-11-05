@@ -358,6 +358,14 @@ pub mod matrix3 {
         assert!(Matrix3::from_value(6.0f64).is_diagonal());
     }
 
+    #[test]
+    fn test_from_translation() {
+        let mat = Matrix3::from_translation(Vector2::new(1.0f64, 2.0f64));
+        let vertex = Vector3::new(0.0f64, 0.0f64, 1.0f64);
+        let res = mat * vertex;
+        assert_eq!(res, Vector3::new(1., 2., 1.));
+    }
+
     mod from_axis_x {
         use cgmath::*;
 
