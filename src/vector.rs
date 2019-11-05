@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num_traits::{Bounded, NumCast};
 #[cfg(feature = "rand")]
 use rand::{
-    Rng,
     distributions::{Distribution, Standard},
+    Rng,
 };
-use num_traits::{Bounded, NumCast};
 use std::fmt;
 use std::iter;
 use std::mem;

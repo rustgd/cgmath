@@ -20,9 +20,9 @@ extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use rand::{IsaacRng, Rng, FromEntropy};
-use test::Bencher;
 use cgmath::*;
+use rand::{FromEntropy, IsaacRng, Rng};
+use test::Bencher;
 
 #[path = "common/macros.rs"]
 #[macro_use]

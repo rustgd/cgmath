@@ -69,7 +69,7 @@ impl Into<Simdf32x4> for Vector4<f32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Add<Vector4<f32>> for Vector4<f32> {
         fn add(lhs, rhs) -> Vector4<f32> {
             (lhs + rhs).into()
@@ -77,7 +77,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Sub<Vector4<f32>> for Vector4<f32> {
         fn sub(lhs, rhs) -> Vector4<f32> {
             (lhs - rhs).into()
@@ -85,7 +85,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdf32x4]; Mul<f32> for Vector4<f32> {
         fn mul(lhs, rhs) -> Vector4<f32> {
             (lhs * rhs).into()
@@ -93,7 +93,7 @@ impl_operator_simd!{@rs
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdf32x4]; Div<f32> for Vector4<f32> {
         fn div(lhs, rhs) -> Vector4<f32> {
             (lhs / rhs).into()
@@ -101,7 +101,7 @@ impl_operator_simd!{@rs
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Neg for Vector4<f32> {
         fn neg(lhs) -> Vector4<f32> {
             (-lhs).into()
@@ -262,7 +262,7 @@ impl Into<Simdi32x4> for Vector4<i32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdi32x4]; Add<Vector4<i32>> for Vector4<i32> {
         fn add(lhs, rhs) -> Vector4<i32> {
             (lhs + rhs).into()
@@ -270,7 +270,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdi32x4]; Sub<Vector4<i32>> for Vector4<i32> {
         fn sub(lhs, rhs) -> Vector4<i32> {
             (lhs - rhs).into()
@@ -278,7 +278,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdi32x4]; Mul<i32> for Vector4<i32> {
         fn mul(lhs, rhs) -> Vector4<i32> {
             (lhs * rhs).into()
@@ -286,7 +286,7 @@ impl_operator_simd!{@rs
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdi32x4]; Neg for Vector4<i32> {
         fn neg(lhs) -> Vector4<i32> {
             (-lhs).into()
@@ -342,7 +342,7 @@ impl Into<Simdu32x4> for Vector4<u32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdu32x4]; Add<Vector4<u32>> for Vector4<u32> {
         fn add(lhs, rhs) -> Vector4<u32> {
             (lhs + rhs).into()
@@ -350,7 +350,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdu32x4]; Sub<Vector4<u32>> for Vector4<u32> {
         fn sub(lhs, rhs) -> Vector4<u32> {
             (lhs - rhs).into()
@@ -358,7 +358,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdu32x4]; Mul<u32> for Vector4<u32> {
         fn mul(lhs, rhs) -> Vector4<u32> {
             (lhs * rhs).into()

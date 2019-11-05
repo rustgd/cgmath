@@ -54,7 +54,7 @@ impl InnerSpace for Quaternion<f32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Neg for Quaternion<f32> {
         fn neg(lhs) -> Quaternion<f32> {
             (-lhs).into()
@@ -62,7 +62,7 @@ impl_operator_simd!{
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdf32x4]; Mul<f32> for Quaternion<f32> {
         fn mul(lhs, rhs) -> Quaternion<f32> {
             (lhs * rhs).into()
@@ -78,7 +78,7 @@ impl MulAssign<f32> for Quaternion<f32> {
     }
 }
 
-impl_operator_simd!{@rs
+impl_operator_simd! {@rs
     [Simdf32x4]; Div<f32> for Quaternion<f32> {
         fn div(lhs, rhs) -> Quaternion<f32> {
             (lhs / rhs).into()
@@ -94,7 +94,7 @@ impl DivAssign<f32> for Quaternion<f32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Add<Quaternion<f32>> for Quaternion<f32> {
         fn add(lhs, rhs) -> Quaternion<f32> {
             (lhs + rhs).into()
@@ -111,7 +111,7 @@ impl AddAssign for Quaternion<f32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Sub<Quaternion<f32>> for Quaternion<f32> {
         fn sub(lhs, rhs) -> Quaternion<f32> {
             (lhs - rhs).into()
@@ -128,7 +128,7 @@ impl SubAssign for Quaternion<f32> {
     }
 }
 
-impl_operator_simd!{
+impl_operator_simd! {
     [Simdf32x4]; Mul<Quaternion<f32>> for Quaternion<f32> {
         fn mul(lhs, rhs) -> Quaternion<f32> {
             {

@@ -15,17 +15,17 @@
 
 //! Angle units for type-safe, self-documenting code.
 
-use std::fmt;
 use std::f64;
+use std::fmt;
 use std::iter;
 use std::ops::*;
 
+use num_traits::{cast, Bounded};
 #[cfg(feature = "rand")]
 use rand::{
+    distributions::{uniform::SampleUniform, Distribution, Standard},
     Rng,
-    distributions::{Distribution, Standard, uniform::SampleUniform},
 };
-use num_traits::{cast, Bounded};
 
 use structure::*;
 
