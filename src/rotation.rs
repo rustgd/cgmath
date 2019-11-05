@@ -62,17 +62,18 @@ where
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S: BaseFloat>
-    : Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>> {
+pub trait Rotation2<S: BaseFloat>:
+    Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
+{
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
     fn from_angle<A: Into<Rad<S>>>(theta: A) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseFloat>
-    : Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
-    {
+pub trait Rotation3<S: BaseFloat>:
+    Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
+{
     /// Create a rotation using an angle around a given axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.

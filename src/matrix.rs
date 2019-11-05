@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num_traits::{cast, NumCast};
 #[cfg(feature = "rand")]
 use rand::{
+    distributions::{Distribution, Standard},
     Rng,
-    distributions::{Standard, Distribution},
 };
-use num_traits::{cast, NumCast};
 use std::fmt;
 use std::iter;
 use std::mem;
@@ -285,7 +285,12 @@ impl<S> Matrix4<S> {
 
     /// Create a new matrix, providing columns.
     #[inline]
-    pub const fn from_cols(c0: Vector4<S>, c1: Vector4<S>, c2: Vector4<S>, c3: Vector4<S>) -> Matrix4<S> {
+    pub const fn from_cols(
+        c0: Vector4<S>,
+        c1: Vector4<S>,
+        c2: Vector4<S>,
+        c3: Vector4<S>,
+    ) -> Matrix4<S> {
         Matrix4 {
             x: c0,
             y: c1,
@@ -696,21 +701,28 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
                     self[1].cross(self[2]) / det,
                     self[2].cross(self[0]) / det,
                     self[0].cross(self[1]) / det,
-                ).transpose(),
+                )
+                .transpose(),
             )
         }
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
-            && ulps_eq!(self[1][0], &S::zero()) && ulps_eq!(self[1][2], &S::zero())
-            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
+        ulps_eq!(self[0][1], &S::zero())
+            && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[1][0], &S::zero())
+            && ulps_eq!(self[1][2], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero())
+            && ulps_eq!(self[2][1], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
-            && ulps_eq!(self[1][0], &self[0][1]) && ulps_eq!(self[1][2], &self[2][1])
-            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
+        ulps_eq!(self[0][1], &self[1][0])
+            && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[1][0], &self[0][1])
+            && ulps_eq!(self[1][2], &self[2][1])
+            && ulps_eq!(self[2][0], &self[0][2])
+            && ulps_eq!(self[2][1], &self[1][2])
     }
 }
 
@@ -863,21 +875,33 @@ impl<S: BaseFloat> SquareMatrix for Matrix4<S> {
     }
 
     fn is_diagonal(&self) -> bool {
-        ulps_eq!(self[0][1], &S::zero()) && ulps_eq!(self[0][2], &S::zero())
-            && ulps_eq!(self[0][3], &S::zero()) && ulps_eq!(self[1][0], &S::zero())
-            && ulps_eq!(self[1][2], &S::zero()) && ulps_eq!(self[1][3], &S::zero())
-            && ulps_eq!(self[2][0], &S::zero()) && ulps_eq!(self[2][1], &S::zero())
-            && ulps_eq!(self[2][3], &S::zero()) && ulps_eq!(self[3][0], &S::zero())
-            && ulps_eq!(self[3][1], &S::zero()) && ulps_eq!(self[3][2], &S::zero())
+        ulps_eq!(self[0][1], &S::zero())
+            && ulps_eq!(self[0][2], &S::zero())
+            && ulps_eq!(self[0][3], &S::zero())
+            && ulps_eq!(self[1][0], &S::zero())
+            && ulps_eq!(self[1][2], &S::zero())
+            && ulps_eq!(self[1][3], &S::zero())
+            && ulps_eq!(self[2][0], &S::zero())
+            && ulps_eq!(self[2][1], &S::zero())
+            && ulps_eq!(self[2][3], &S::zero())
+            && ulps_eq!(self[3][0], &S::zero())
+            && ulps_eq!(self[3][1], &S::zero())
+            && ulps_eq!(self[3][2], &S::zero())
     }
 
     fn is_symmetric(&self) -> bool {
-        ulps_eq!(self[0][1], &self[1][0]) && ulps_eq!(self[0][2], &self[2][0])
-            && ulps_eq!(self[0][3], &self[3][0]) && ulps_eq!(self[1][0], &self[0][1])
-            && ulps_eq!(self[1][2], &self[2][1]) && ulps_eq!(self[1][3], &self[3][1])
-            && ulps_eq!(self[2][0], &self[0][2]) && ulps_eq!(self[2][1], &self[1][2])
-            && ulps_eq!(self[2][3], &self[3][2]) && ulps_eq!(self[3][0], &self[0][3])
-            && ulps_eq!(self[3][1], &self[1][3]) && ulps_eq!(self[3][2], &self[2][3])
+        ulps_eq!(self[0][1], &self[1][0])
+            && ulps_eq!(self[0][2], &self[2][0])
+            && ulps_eq!(self[0][3], &self[3][0])
+            && ulps_eq!(self[1][0], &self[0][1])
+            && ulps_eq!(self[1][2], &self[2][1])
+            && ulps_eq!(self[1][3], &self[3][1])
+            && ulps_eq!(self[2][0], &self[0][2])
+            && ulps_eq!(self[2][1], &self[1][2])
+            && ulps_eq!(self[2][3], &self[3][2])
+            && ulps_eq!(self[3][0], &self[0][3])
+            && ulps_eq!(self[3][1], &self[1][3])
+            && ulps_eq!(self[3][2], &self[2][3])
     }
 }
 
@@ -1294,7 +1318,7 @@ macro_rules! index_operators {
                 From::from(&mut v[i])
             }
         }
-    }
+    };
 }
 
 index_operators!(Matrix2<S>, 2, Vector2<S>, usize);
@@ -1581,9 +1605,10 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
 
 #[cfg(feature = "rand")]
 impl<S> Distribution<Matrix2<S>> for Standard
-    where
-        Standard: Distribution<Vector2<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector2<S>>,
+    S: BaseFloat,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix2<S> {
         Matrix2 {
@@ -1595,8 +1620,10 @@ impl<S> Distribution<Matrix2<S>> for Standard
 
 #[cfg(feature = "rand")]
 impl<S> Distribution<Matrix3<S>> for Standard
-    where Standard: Distribution<Vector3<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector3<S>>,
+    S: BaseFloat,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix3<S> {
         Matrix3 {
@@ -1609,8 +1636,10 @@ impl<S> Distribution<Matrix3<S>> for Standard
 
 #[cfg(feature = "rand")]
 impl<S> Distribution<Matrix4<S>> for Standard
-    where Standard: Distribution<Vector4<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<Vector4<S>>,
+    S: BaseFloat,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix4<S> {
         Matrix4 {

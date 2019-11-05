@@ -225,10 +225,10 @@ where
 #[cfg(feature = "serde")]
 #[doc(hidden)]
 mod serde_ser {
-    use structure::VectorSpace;
     use super::Decomposed;
-    use serde::{self, Serialize};
     use serde::ser::SerializeStruct;
+    use serde::{self, Serialize};
+    use structure::VectorSpace;
 
     impl<V, R> Serialize for Decomposed<V, R>
     where
@@ -252,11 +252,11 @@ mod serde_ser {
 #[cfg(feature = "serde")]
 #[doc(hidden)]
 mod serde_de {
-    use structure::VectorSpace;
     use super::Decomposed;
     use serde::{self, Deserialize};
-    use std::marker::PhantomData;
     use std::fmt;
+    use std::marker::PhantomData;
+    use structure::VectorSpace;
 
     enum DecomposedField {
         Scale,

@@ -135,12 +135,8 @@ fn test_rem() {
 #[test]
 fn test_dot() {
     assert_eq!(
-        Vector4::new(1.0f32, 2.0f32, 3.0f32, 4.0f32).dot(Vector4::new(
-            5.0f32,
-            6.0f32,
-            7.0f32,
-            8.0f32
-        )),
+        Vector4::new(1.0f32, 2.0f32, 3.0f32, 4.0f32)
+            .dot(Vector4::new(5.0f32, 6.0f32, 7.0f32, 8.0f32)),
         70.0f32
     );
 }
@@ -164,14 +160,8 @@ fn test_product() {
 
 #[test]
 fn test_is_perpendicular() {
-    assert!(
-        Vector4::new(1.0f32, 0.0f32, 0.0f32, 0.0f32).is_perpendicular(Vector4::new(
-            0.0f32,
-            0.0f32,
-            0.0f32,
-            1.0f32
-        ))
-    );
+    assert!(Vector4::new(1.0f32, 0.0f32, 0.0f32, 0.0f32)
+        .is_perpendicular(Vector4::new(0.0f32, 0.0f32, 0.0f32, 1.0f32)));
 }
 
 #[cfg(test)]
@@ -210,30 +200,18 @@ mod test_magnitude {
 #[test]
 fn test_angle() {
     assert_ulps_eq!(
-        Vector4::new(1.0f32, 0.0f32, 1.0f32, 0.0f32).angle(Vector4::new(
-            0.0f32,
-            1.0f32,
-            0.0f32,
-            1.0f32
-        )),
+        Vector4::new(1.0f32, 0.0f32, 1.0f32, 0.0f32)
+            .angle(Vector4::new(0.0f32, 1.0f32, 0.0f32, 1.0f32)),
         &Rad(f32::consts::FRAC_PI_2)
     );
     assert_ulps_eq!(
-        Vector4::new(10.0f32, 0.0f32, 10.0f32, 0.0f32).angle(Vector4::new(
-            0.0f32,
-            5.0f32,
-            0.0f32,
-            5.0f32
-        )),
+        Vector4::new(10.0f32, 0.0f32, 10.0f32, 0.0f32)
+            .angle(Vector4::new(0.0f32, 5.0f32, 0.0f32, 5.0f32)),
         &Rad(f32::consts::FRAC_PI_2)
     );
     assert_ulps_eq!(
-        Vector4::new(-1.0f32, 0.0f32, -1.0f32, 0.0f32).angle(Vector4::new(
-            0.0f32,
-            1.0f32,
-            0.0f32,
-            1.0f32
-        )),
+        Vector4::new(-1.0f32, 0.0f32, -1.0f32, 0.0f32)
+            .angle(Vector4::new(0.0f32, 1.0f32, 0.0f32, 1.0f32)),
         &Rad(f32::consts::FRAC_PI_2)
     );
 }

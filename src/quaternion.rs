@@ -17,12 +17,12 @@ use std::iter;
 use std::mem;
 use std::ops::*;
 
+use num_traits::{cast, NumCast};
 #[cfg(feature = "rand")]
 use rand::{
-    Rng,
     distributions::{Distribution, Standard},
+    Rng,
 };
-use num_traits::{cast, NumCast};
 
 use structure::*;
 
@@ -626,17 +626,19 @@ macro_rules! index_operators {
 
             #[inline]
             fn index<'a>(&'a self, i: $I) -> &'a $Output {
-                let v: &[$S; 4] = self.as_ref(); &v[i]
+                let v: &[$S; 4] = self.as_ref();
+                &v[i]
             }
         }
 
         impl<$S: BaseFloat> IndexMut<$I> for Quaternion<$S> {
             #[inline]
             fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
-                let v: &mut [$S; 4] = self.as_mut(); &mut v[i]
+                let v: &mut [$S; 4] = self.as_mut();
+                &mut v[i]
             }
         }
-    }
+    };
 }
 
 index_operators!(S, S, usize);
@@ -647,9 +649,11 @@ index_operators!(S, [S], RangeFull);
 
 #[cfg(feature = "rand")]
 impl<S> Distribution<Quaternion<S>> for Standard
-    where Standard: Distribution<S>,
-        Standard: Distribution<Vector3<S>>,
-        S: BaseFloat {
+where
+    Standard: Distribution<S>,
+    Standard: Distribution<Vector3<S>>,
+    S: BaseFloat,
+{
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quaternion<S> {
         Quaternion::from_sv(rng.gen(), rng.gen())

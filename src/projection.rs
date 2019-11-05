@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Zero;
 use num_traits::cast;
+use num_traits::Zero;
 
 use structure::Angle;
 
@@ -38,7 +38,8 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
         aspect: aspect,
         near: near,
         far: far,
-    }.into()
+    }
+    .into()
 }
 
 /// Create a perspective matrix from a view frustum.
@@ -54,7 +55,8 @@ pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far:
         top: top,
         near: near,
         far: far,
-    }.into()
+    }
+    .into()
 }
 
 /// Create an orthographic projection matrix.
@@ -70,7 +72,8 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
         top: top,
         near: near,
         far: far,
-    }.into()
+    }
+    .into()
 }
 
 /// A perspective projection based on a vertical field-of-view angle.

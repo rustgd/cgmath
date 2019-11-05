@@ -212,14 +212,8 @@ fn test_is_perpendicular() {
     assert!(
         Vector3::new(0.0f64, 1.0f64, 0.0f64).is_perpendicular(Vector3::new(0.0f64, 0.0f64, 1.0f64))
     );
-    assert!(
-        Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64).is_perpendicular(Vector4::new(
-            0.0f64,
-            0.0f64,
-            0.0f64,
-            1.0f64
-        ))
-    );
+    assert!(Vector4::new(1.0f64, 0.0f64, 0.0f64, 0.0f64)
+        .is_perpendicular(Vector4::new(0.0f64, 0.0f64, 0.0f64, 1.0f64)));
 }
 
 #[cfg(test)]
@@ -292,30 +286,18 @@ fn test_angle() {
     );
 
     assert_ulps_eq!(
-        Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64).angle(Vector4::new(
-            0.0f64,
-            1.0f64,
-            0.0f64,
-            1.0f64
-        )),
+        Vector4::new(1.0f64, 0.0f64, 1.0f64, 0.0f64)
+            .angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)),
         &Rad(f64::consts::FRAC_PI_2)
     );
     assert_ulps_eq!(
-        Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64).angle(Vector4::new(
-            0.0f64,
-            5.0f64,
-            0.0f64,
-            5.0f64
-        )),
+        Vector4::new(10.0f64, 0.0f64, 10.0f64, 0.0f64)
+            .angle(Vector4::new(0.0f64, 5.0f64, 0.0f64, 5.0f64)),
         &Rad(f64::consts::FRAC_PI_2)
     );
     assert_ulps_eq!(
-        Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64).angle(Vector4::new(
-            0.0f64,
-            1.0f64,
-            0.0f64,
-            1.0f64
-        )),
+        Vector4::new(-1.0f64, 0.0f64, -1.0f64, 0.0f64)
+            .angle(Vector4::new(0.0f64, 1.0f64, 0.0f64, 1.0f64)),
         &Rad(f64::consts::FRAC_PI_2)
     );
 }

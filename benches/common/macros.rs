@@ -28,9 +28,7 @@ macro_rules! bench_binop {
             bh.iter(|| {
                 i = (i + 1) & (LEN - 1);
 
-                unsafe {
-                    test::black_box(elems1.get_unchecked(i).$binop(*elems2.get_unchecked(i)))
-                }
+                unsafe { test::black_box(elems1.get_unchecked(i).$binop(*elems2.get_unchecked(i))) }
             })
         }
     };
@@ -50,9 +48,7 @@ macro_rules! bench_unop {
             bh.iter(|| {
                 i = (i + 1) & (LEN - 1);
 
-                unsafe {
-                    test::black_box(elems.get_unchecked_mut(i).$unop())
-                }
+                unsafe { test::black_box(elems.get_unchecked_mut(i).$unop()) }
             })
         }
     };

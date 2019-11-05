@@ -1,7 +1,7 @@
+use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use std::env;
 use std::string::String;
 
 /// Generate the name of the swizzle function and what it returns.
@@ -11,14 +11,18 @@ fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<
     debug_assert!(i > 0); // zeroth permutation is empty
     let mut swizzle_impl = String::new();
     let mut swizzle = String::new();
-    let n = variables.len()+1;
+    let n = variables.len() + 1;
     for _ in 0..upto {
-        if i == 0 { break; }
-        if i % n == 0 { return None; }
-        let c = variables.as_bytes()[i%n - 1] as char;
+        if i == 0 {
+            break;
+        }
+        if i % n == 0 {
+            return None;
+        }
+        let c = variables.as_bytes()[i % n - 1] as char;
         swizzle.push(c);
         swizzle_impl.push_str(&format!("self.{}, ", c));
-        i = i/n;
+        i = i / n;
     }
     Some((swizzle, swizzle_impl))
 }
@@ -31,15 +35,16 @@ fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<
 #[cfg(feature = "swizzle")]
 fn gen_swizzle_functions(variables: &'static str, upto: usize) -> String {
     let mut result = String::new();
-    let nn = (variables.len()+1).pow(upto as u32);
+    let nn = (variables.len() + 1).pow(upto as u32);
     for i in 1..nn {
         if let Some((swizzle_name, swizzle_impl)) = gen_swizzle_nth(variables, i, upto) {
             let dim = format!("{}", swizzle_name.len());
-            result.push_str(
-                &format!("
+            result.push_str(&format!(
+                "
         /// Swizzle operator that creates a new type with dimension {2} from variables `{0}`.
         #[inline] pub fn {0}(&self) -> $vector_type{2}<$S> {{ $vector_type{2}::new({1}) }}\n",
-                swizzle_name, swizzle_impl, dim));
+                swizzle_name, swizzle_impl, dim
+            ));
         }
     }
     result
@@ -49,7 +54,6 @@ fn gen_swizzle_functions(variables: &'static str, upto: usize) -> String {
 fn gen_swizzle_functions(_: &'static str, _: usize) -> String {
     String::new()
 }
-
 
 /// This script generates the macro for building swizzle operators for multidimensional
 /// vectors and points. This macro is included in macros.rs
@@ -92,5 +96,6 @@ macro_rules! impl_swizzle_functions {{
      xyzw4 = gen_swizzle_functions("xyzw", 4));
     let mut f = File::create(swizzle_file_path)
         .expect("Unable to create file that defines the swizzle operator macro.");
-    f.write_all(data.as_bytes()).expect("Unable to write swizzle operator macro.");
+    f.write_all(data.as_bytes())
+        .expect("Unable to write swizzle operator macro.");
 }

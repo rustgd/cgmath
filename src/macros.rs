@@ -139,14 +139,30 @@ macro_rules! impl_assignment_operator {
 }
 
 macro_rules! fold_array {
-    (&$method:ident, { $x:expr })                            => { *$x };
-    (&$method:ident, { $x:expr, $y:expr })                   => { $x.$method(&$y) };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr })          => { $x.$method(&$y).$method(&$z) };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => { $x.$method(&$y).$method(&$z).$method(&$w) };
-    ($method:ident, { $x:expr })                             => { $x };
-    ($method:ident, { $x:expr, $y:expr })                    => { $x.$method($y) };
-    ($method:ident, { $x:expr, $y:expr, $z:expr })           => { $x.$method($y).$method($z) };
-    ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr })  => { $x.$method($y).$method($z).$method($w) };
+    (&$method:ident, { $x:expr }) => {
+        *$x
+    };
+    (&$method:ident, { $x:expr, $y:expr }) => {
+        $x.$method(&$y)
+    };
+    (&$method:ident, { $x:expr, $y:expr, $z:expr }) => {
+        $x.$method(&$y).$method(&$z)
+    };
+    (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => {
+        $x.$method(&$y).$method(&$z).$method(&$w)
+    };
+    ($method:ident, { $x:expr }) => {
+        $x
+    };
+    ($method:ident, { $x:expr, $y:expr }) => {
+        $x.$method($y)
+    };
+    ($method:ident, { $x:expr, $y:expr, $z:expr }) => {
+        $x.$method($y).$method($z)
+    };
+    ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => {
+        $x.$method($y).$method($z).$method($w)
+    };
 }
 
 /// Generate array conversion implementations for a compound array type
@@ -252,17 +268,19 @@ macro_rules! impl_index_operators {
 
             #[inline]
             fn index<'a>(&'a self, i: $I) -> &'a $Output {
-                let v: &[$S; $n] = self.as_ref(); &v[i]
+                let v: &[$S; $n] = self.as_ref();
+                &v[i]
             }
         }
 
         impl<$S> IndexMut<$I> for $VectorN<$S> {
             #[inline]
             fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
-                let v: &mut [$S; $n] = self.as_mut(); &mut v[i]
+                let v: &mut [$S; $n] = self.as_mut();
+                &mut v[i]
             }
         }
-    }
+    };
 }
 
 /// Generates a binary operator implementation for the permutations of by-ref and by-val, for simd
@@ -272,11 +290,11 @@ macro_rules! impl_operator_simd {
     ([$Simd:ident]; $Op:ident for $Lhs:ty {
         fn $op:ident($x:ident) -> $Output:ty { $body:expr }
     }) => {
-
         impl $Op for $Lhs {
             #[inline]
             fn $op(self) -> $Output {
-                let $x: $Simd = self.into(); $body
+                let $x: $Simd = self.into();
+                $body
             }
         }
     };
@@ -287,15 +305,16 @@ macro_rules! impl_operator_simd {
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), $Simd::splat(other)); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), $Simd::splat(other));
+                $body
             }
         }
-
 
         impl<'a> $Op<$Rhs> for &'a $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), $Simd::splat(other)); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), $Simd::splat(other));
+                $body
             }
         }
     };
@@ -304,33 +323,35 @@ macro_rules! impl_operator_simd {
     ([$Simd:ident]; $Op:ident<$Rhs:ty> for $Lhs:ty {
         fn $op:ident($lhs:ident, $rhs:ident) -> $Output:ty { $body:expr }
     }) => {
-
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), other.into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), other.into());
+                $body
             }
         }
-
 
         impl<'a> $Op<&'a $Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), (*other).into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = (self.into(), (*other).into());
+                $body
             }
         }
 
         impl<'a> $Op<$Rhs> for &'a $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), other.into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), other.into());
+                $body
             }
         }
 
         impl<'a, 'b> $Op<&'a $Rhs> for &'b $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), (*other).into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = ((*self).into(), (*other).into());
+                $body
             }
         }
     };
@@ -342,14 +363,16 @@ macro_rules! impl_operator_simd {
         impl $Op<$Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), other.into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), other.into());
+                $body
             }
         }
 
         impl<'a> $Op<&'a $Rhs> for $Lhs {
             #[inline]
             fn $op(self, other: &'a $Rhs) -> $Output {
-                let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), (*other).into()); $body
+                let ($lhs, $rhs): ($Simd, $Simd) = ($Simd::splat(self), (*other).into());
+                $body
             }
         }
     };

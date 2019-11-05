@@ -36,8 +36,7 @@ pub trait BaseNum:
 {
 }
 
-impl<T> BaseNum for T
-where
+impl<T> BaseNum for T where
     T: Copy
         + Clone
         + fmt::Debug
@@ -48,7 +47,7 @@ where
         + SubAssign
         + MulAssign
         + DivAssign
-        + RemAssign,
+        + RemAssign
 {
 }
 
@@ -62,12 +61,11 @@ pub trait BaseFloat:
 {
 }
 
-impl<T> BaseFloat for T
-where
+impl<T> BaseFloat for T where
     T: BaseNum
         + Float
         + approx::AbsDiffEq<Epsilon = Self>
         + approx::RelativeEq<Epsilon = Self>
-        + approx::UlpsEq<Epsilon = Self>,
+        + approx::UlpsEq<Epsilon = Self>
 {
 }

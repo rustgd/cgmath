@@ -13,21 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use num_traits::cast;
 #[cfg(feature = "rand")]
 use rand::{
-    Rng,
     distributions::{Distribution, Standard},
+    Rng,
 };
-use num_traits::cast;
 
 use structure::*;
 
 use angle::Rad;
 use approx;
-use quaternion::Quaternion;
 #[cfg(feature = "mint")]
 use mint;
 use num::BaseFloat;
+use quaternion::Quaternion;
 
 /// A set of [Euler angles] representing a rotation in three-dimensional space.
 ///
@@ -191,8 +191,10 @@ impl<A: Angle> approx::UlpsEq for Euler<A> {
 
 #[cfg(feature = "rand")]
 impl<A> Distribution<Euler<A>> for Standard
-    where Standard: Distribution<A>,
-        A: Angle {
+where
+    Standard: Distribution<A>,
+    A: Angle,
+{
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Euler<A> {
         Euler {
             x: rng.gen(),
