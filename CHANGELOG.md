@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
    default_fn! macro to reduce code duplication and complexity. Currently
    only needed for non-functional SIMD feature.
  - Refactored SIMD code into separate source files. See README.md for details.
+ - **Breaking**: Quaternion memory layout changed to `[x, y, z, w]`. The
+   `From` and `Into` impls for `[S; 4]` and `(S, S, S, S)` have been changed
+   accordingly.
+
 
 ### Added
 
