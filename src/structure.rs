@@ -195,7 +195,7 @@ where
 /// Examples are vectors, points, and quaternions.
 pub trait MetricSpace: Sized {
     /// The metric to be returned by the `distance` function.
-    type Metric: BaseFloat;
+    type Metric: Float;
 
     /// Returns the squared distance.
     ///
@@ -219,19 +219,16 @@ pub trait MetricSpace: Sized {
 /// Examples include vectors and quaternions.
 pub trait InnerSpace: VectorSpace
 where
+    Self::Scalar: Float,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    <Self as VectorSpace>::Scalar: BaseFloat,
-    Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
-    // Self: approx::AbsDiffEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    // Self: approx::RelativeEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    Self: approx::UlpsEq<Epsilon = <Self as VectorSpace>::Scalar>,
+    Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>
 {
     /// Vector dot (or inner) product.
     fn dot(self, other: Self) -> Self::Scalar;
 
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
-    fn is_perpendicular(self, other: Self) -> bool {
+    fn is_perpendicular(self, other: Self) -> bool where Self::Scalar: approx::UlpsEq {
         ulps_eq!(Self::dot(self, other), &Self::Scalar::zero())
     }
 
@@ -252,7 +249,7 @@ where
     }
 
     /// Returns the angle between two vectors in radians.
-    fn angle(self, other: Self) -> Rad<Self::Scalar> {
+    fn angle(self, other: Self) -> Rad<Self::Scalar> where Self::Scalar: BaseFloat {
         Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
     }
 
@@ -427,14 +424,14 @@ where
 /// see `SquareMatrix`.
 pub trait Matrix: VectorSpace
 where
-    Self::Scalar: BaseFloat,
+    Self::Scalar: Float,
 
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Matrix>::Column>,
     Self: IndexMut<usize, Output = <Self as Matrix>::Column>,
-    Self: approx::AbsDiffEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    Self: approx::RelativeEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    Self: approx::UlpsEq<Epsilon = <Self as VectorSpace>::Scalar>,
+    //Self: approx::AbsDiffEq<Epsilon = <Self as VectorSpace>::Scalar>,
+    //Self: approx::RelativeEq<Epsilon = <Self as VectorSpace>::Scalar>,
+    //Self: approx::UlpsEq<Epsilon = <Self as VectorSpace>::Scalar>,
 {
     /// The row vector of the matrix.
     type Row: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
@@ -482,7 +479,7 @@ where
 /// A column-major major matrix where the rows and column vectors are of the same dimensions.
 pub trait SquareMatrix
 where
-    Self::Scalar: BaseFloat,
+    Self::Scalar: Float,
 
     Self: One,
     Self: iter::Product<Self>,
@@ -543,14 +540,14 @@ where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool {
+    fn is_invertible(&self) -> bool where Self::Scalar: approx::UlpsEq {
         ulps_ne!(self.determinant(), &Self::Scalar::zero())
     }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool {
+    fn is_identity(&self) -> bool where Self: approx::UlpsEq {
         ulps_eq!(self, &Self::identity())
     }
 
