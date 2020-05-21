@@ -91,7 +91,7 @@ where
     /// Whether all elements of the array are finite
     fn is_finite(&self) -> bool
     where
-        Self::Element: BaseFloat;
+        Self::Element: Float;
 }
 
 /// Element-wise arithmetic operations. These are supplied for pragmatic
