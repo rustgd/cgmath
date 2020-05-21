@@ -17,7 +17,7 @@
 //! distinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
-use num_traits::{Bounded, NumCast};
+use num_traits::{Float, Bounded, NumCast};
 use std::fmt;
 use std::mem;
 use std::ops::*;
@@ -135,7 +135,7 @@ macro_rules! impl_point {
                 fold_array!(mul, { $(self.$field),+ })
             }
 
-            fn is_finite(&self) -> bool where S: BaseFloat {
+            fn is_finite(&self) -> bool where S: Float {
                 $(self.$field.is_finite())&&+
             }
         }
