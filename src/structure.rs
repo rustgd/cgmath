@@ -429,9 +429,6 @@ where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Matrix>::Column>,
     Self: IndexMut<usize, Output = <Self as Matrix>::Column>,
-    //Self: approx::AbsDiffEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    //Self: approx::RelativeEq<Epsilon = <Self as VectorSpace>::Scalar>,
-    //Self: approx::UlpsEq<Epsilon = <Self as VectorSpace>::Scalar>,
 {
     /// The row vector of the matrix.
     type Row: VectorSpace<Scalar = Self::Scalar> + Array<Element = Self::Scalar>;
