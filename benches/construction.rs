@@ -20,9 +20,10 @@ extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use cgmath::*;
-use rand::{FromEntropy, IsaacRng, Rng};
+use rand::{Rng, SeedableRng, rngs::SmallRng};
 use test::Bencher;
+
+use cgmath::*;
 
 #[path = "common/macros.rs"]
 #[macro_use]
@@ -31,7 +32,7 @@ mod macros;
 fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
     const LEN: usize = 1 << 13;
 
-    let mut rng = IsaacRng::from_entropy();
+    let mut rng = SmallRng::from_entropy();
 
     let axis: Vec<_> = (0..LEN).map(|_| rng.gen::<Vector3<f32>>()).collect();
     let angle: Vec<_> = (0..LEN).map(|_| rng.gen::<Rad<f32>>()).collect();

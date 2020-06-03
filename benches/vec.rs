@@ -20,7 +20,7 @@ extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use rand::{FromEntropy, IsaacRng, Rng};
+use rand::{Rng, SeedableRng, rngs::SmallRng};
 use std::ops::*;
 use test::Bencher;
 
