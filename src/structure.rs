@@ -195,7 +195,7 @@ where
 /// Examples are vectors, points, and quaternions.
 pub trait MetricSpace: Sized {
     /// The metric to be returned by the `distance` function.
-    type Metric: Float;
+    type Metric;
 
     /// Returns the squared distance.
     ///
@@ -205,7 +205,7 @@ pub trait MetricSpace: Sized {
     fn distance2(self, other: Self) -> Self::Metric;
 
     /// The distance between two values.
-    fn distance(self, other: Self) -> Self::Metric {
+    fn distance(self, other: Self) -> Self::Metric where Self::Metric: Float {
         Float::sqrt(Self::distance2(self, other))
     }
 }
@@ -219,7 +219,6 @@ pub trait MetricSpace: Sized {
 /// Examples include vectors and quaternions.
 pub trait InnerSpace: VectorSpace
 where
-    Self::Scalar: Float,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>
 {
@@ -242,27 +241,9 @@ where
         Self::dot(self, self)
     }
 
-    /// The distance from the tail to the tip of the vector.
-    #[inline]
-    fn magnitude(self) -> Self::Scalar {
-        Float::sqrt(self.magnitude2())
-    }
-
     /// Returns the angle between two vectors in radians.
     fn angle(self, other: Self) -> Rad<Self::Scalar> where Self::Scalar: BaseFloat {
         Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
-    }
-
-    /// Returns a vector with the same direction, but with a magnitude of `1`.
-    #[inline]
-    fn normalize(self) -> Self {
-        self.normalize_to(Self::Scalar::one())
-    }
-
-    /// Returns a vector with the same direction and a given magnitude.
-    #[inline]
-    fn normalize_to(self, magnitude: Self::Scalar) -> Self {
-        self * (magnitude / self.magnitude())
     }
 
     /// Returns the
@@ -271,6 +252,24 @@ where
     #[inline]
     fn project_on(self, other: Self) -> Self {
         other * (self.dot(other) / other.magnitude2())
+    }
+
+    /// The distance from the tail to the tip of the vector.
+    #[inline]
+    fn magnitude(self) -> Self::Scalar where Self::Scalar: Float {
+        Float::sqrt(self.magnitude2())
+    }
+
+    /// Returns a vector with the same direction, but with a magnitude of `1`.
+    #[inline]
+    fn normalize(self) -> Self where Self::Scalar: Float {
+        self.normalize_to(Self::Scalar::one())
+    }
+
+    /// Returns a vector with the same direction and a given magnitude.
+    #[inline]
+    fn normalize_to(self, magnitude: Self::Scalar) -> Self where Self::Scalar: Float {
+        self * (magnitude / self.magnitude())
     }
 }
 

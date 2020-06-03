@@ -139,7 +139,7 @@ macro_rules! impl_vector {
             }
         }
 
-        impl<S: BaseNum + Float> MetricSpace for $VectorN<S> {
+        impl<S: BaseNum> MetricSpace for $VectorN<S> {
             type Metric = S;
 
             #[inline]
@@ -525,14 +525,14 @@ where
     V::dot(a, b)
 }
 
-impl<S: BaseNum + Float> InnerSpace for Vector1<S> {
+impl<S: BaseNum> InnerSpace for Vector1<S> {
     #[inline]
     fn dot(self, other: Vector1<S>) -> S {
         Vector1::mul_element_wise(self, other).sum()
     }
 }
 
-impl<S: BaseNum + Float> InnerSpace for Vector2<S> {
+impl<S: BaseNum> InnerSpace for Vector2<S> {
     #[inline]
     fn dot(self, other: Vector2<S>) -> S {
         Vector2::mul_element_wise(self, other).sum()
@@ -544,7 +544,7 @@ impl<S: BaseNum + Float> InnerSpace for Vector2<S> {
     }
 }
 
-impl<S: BaseNum + Float> InnerSpace for Vector3<S> {
+impl<S: BaseNum> InnerSpace for Vector3<S> {
     #[inline]
     fn dot(self, other: Vector3<S>) -> S {
         Vector3::mul_element_wise(self, other).sum()
@@ -556,7 +556,7 @@ impl<S: BaseNum + Float> InnerSpace for Vector3<S> {
     }
 }
 
-impl<S: BaseNum + Float> InnerSpace for Vector4<S> {
+impl<S: BaseNum> InnerSpace for Vector4<S> {
     #[inline]
     fn dot(self, other: Vector4<S>) -> S {
         Vector4::mul_element_wise(self, other).sum()
@@ -965,6 +965,12 @@ mod tests {
                 Vector4::new(true, false, false, false),
                 Vector4::new(-2, 1, 0, 1).zip(Vector4::new(-1, -1, -1, -1), |a, b| a < b)
             );
+        }
+
+        #[test]
+        fn test_dot() {
+            assert_eq!(vec3(1.0, 2.0, 3.0).dot(vec3(4.0, 5.0, 6.0)), 32.0);
+            assert_eq!(vec3(1, 2, 3).dot(vec3(4, 5, 6)), 32);
         }
     }
 }
