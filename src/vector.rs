@@ -213,6 +213,13 @@ macro_rules! impl_vector {
             default_fn!( neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) } );
         }
 
+        impl<S: BaseNum> EuclideanSpace for $VectorN<S> {
+            #[inline]
+            fn origin() -> $VectorN<S> {
+                $VectorN { $($field: S::zero()),+ }
+            }
+        }
+
         impl<S: BaseFloat> approx::AbsDiffEq for $VectorN<S> {
             type Epsilon = S::Epsilon;
 
@@ -426,6 +433,14 @@ impl<S: BaseNum> Vector2<S> {
 }
 
 impl<S: BaseNum> Vector3<S> {
+    #[inline]
+    pub fn to_homogeneous(self) -> Vector4<S> {
+        self.extend(S::one())
+    }
+    #[inline]
+    pub fn from_homogeneous(v : Vector4<S>) -> Vector3<S> {
+        v.truncate()
+    }
     /// A unit vector in the `x` direction.
     #[inline]
     pub fn unit_x() -> Vector3<S> {

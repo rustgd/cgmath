@@ -18,7 +18,6 @@ use structure::*;
 use approx;
 use matrix::{Matrix2, Matrix3, Matrix4};
 use num::{BaseFloat, BaseNum};
-use point::{Point2, Point3};
 use rotation::*;
 use vector::{Vector2, Vector3};
 
@@ -32,19 +31,19 @@ pub trait Transform<P: EuclideanSpace>: Sized {
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
-    fn look_at(eye: P, center: P, up: P::Diff) -> Self;
+    fn look_at(eye: P, center: P, up: P) -> Self;
 
     /// Transform a vector using this transform.
-    fn transform_vector(&self, vec: P::Diff) -> P::Diff;
-
-    /// Inverse transform a vector using this transform
-    fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
-        self.inverse_transform()
-            .and_then(|inverse| Some(inverse.transform_vector(vec)))
-    }
+    fn transform_vector(&self, vec : P) -> P;
 
     /// Transform a point using this transform.
     fn transform_point(&self, point: P) -> P;
+
+    /// Inverse transform a vector using this transform
+    fn inverse_transform_vector(&self, vec: P) -> Option<P> {
+        self.inverse_transform()
+            .and_then(|inverse| Some(inverse.transform_vector(vec)))
+    }
 
     /// Combine this transform with another, yielding a new transformation
     /// which has the effects of both.
@@ -69,23 +68,22 @@ pub struct Decomposed<V: VectorSpace, R> {
     pub disp: V,
 }
 
-impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
+// FIXME: Investigate why `VectorSpace` bound is needed
+impl<P: EuclideanSpace + VectorSpace, R: Rotation<P>> Transform<P> for Decomposed<P, R>
 where
-    P::Scalar: BaseFloat,
-    // FIXME: Investigate why this is needed!
-    P::Diff: VectorSpace,
+    <P as VectorSpace>::Scalar: BaseFloat,
 {
     #[inline]
-    fn one() -> Decomposed<P::Diff, R> {
+    fn one() -> Decomposed<P, R> {
         Decomposed {
             scale: P::Scalar::one(),
             rot: R::one(),
-            disp: P::Diff::zero(),
+            disp: P::zero(),
         }
     }
 
     #[inline]
-    fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
+    fn look_at(eye: P, center: P, up: P) -> Decomposed<P, R> {
         let rot = R::look_at(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
@@ -96,12 +94,12 @@ where
     }
 
     #[inline]
-    fn transform_vector(&self, vec: P::Diff) -> P::Diff {
+    fn transform_vector(&self, vec: P) -> P {
         self.rot.rotate_vector(vec * self.scale)
     }
 
     #[inline]
-    fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
+    fn inverse_transform_vector(&self, vec: P) -> Option<P> {
         if ulps_eq!(self.scale, &P::Scalar::zero()) {
             None
         } else {
@@ -114,7 +112,7 @@ where
         self.rot.rotate_point(point * self.scale) + self.disp
     }
 
-    fn concat(&self, other: &Decomposed<P::Diff, R>) -> Decomposed<P::Diff, R> {
+    fn concat(&self, other: &Decomposed<P, R>) -> Decomposed<P, R> {
         Decomposed {
             scale: self.scale * other.scale,
             rot: self.rot * other.rot,
@@ -122,7 +120,7 @@ where
         }
     }
 
-    fn inverse_transform(&self) -> Option<Decomposed<P::Diff, R>> {
+    fn inverse_transform(&self) -> Option<Decomposed<P, R>> {
         if ulps_eq!(self.scale, &P::Scalar::zero()) {
             None
         } else {
@@ -138,8 +136,8 @@ where
     }
 }
 
-pub trait Transform2<S: BaseNum>: Transform<Point2<S>> + Into<Matrix3<S>> {}
-pub trait Transform3<S: BaseNum>: Transform<Point3<S>> + Into<Matrix4<S>> {}
+pub trait Transform2<S: BaseNum>: Transform<Vector2<S>> + Into<Matrix3<S>> {}
+pub trait Transform3<S: BaseNum>: Transform<Vector3<S>> + Into<Matrix4<S>> {}
 
 impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
     fn from(dec: Decomposed<Vector2<S>, R>) -> Matrix3<S> {

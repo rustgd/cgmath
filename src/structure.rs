@@ -324,42 +324,22 @@ where
 /// - [CGAL 4.7 - 2D and 3D Linear Geometry Kernel: 3.1 Points and Vectors](http://doc.cgal.org/latest/Kernel_23/index.html#Kernel_23PointsandVectors)
 /// - [What is the difference between a point and a vector](http://math.stackexchange.com/q/645827)
 ///
-pub trait EuclideanSpace: Copy + Clone
+pub trait EuclideanSpace: Copy + Clone + VectorSpace
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: Array<Element = <Self as EuclideanSpace>::Scalar>,
+    Self: Array<Element = <Self as VectorSpace>::Scalar>,
 
-    Self: Add<<Self as EuclideanSpace>::Diff, Output = Self>,
-    Self: Sub<<Self as EuclideanSpace>::Diff, Output = Self>,
-    Self: Sub<Self, Output = <Self as EuclideanSpace>::Diff>,
+    Self: Add<Self, Output = Self>,
+    Self: Sub<Self, Output = Self>,
 
-    Self: Mul<<Self as EuclideanSpace>::Scalar, Output = Self>,
-    Self: Div<<Self as EuclideanSpace>::Scalar, Output = Self>,
-    Self: Rem<<Self as EuclideanSpace>::Scalar, Output = Self>,
+    Self: Mul<<Self as VectorSpace>::Scalar, Output = Self>,
+    Self: Div<<Self as VectorSpace>::Scalar, Output = Self>,
+    Self: Rem<<Self as VectorSpace>::Scalar, Output = Self>,
+
+    <Self as VectorSpace>::Scalar: BaseNum,
 {
-    /// The associated scalar over which the space is defined.
-    ///
-    /// Due to the equality constraints demanded by `Self::Diff`, this is effectively just an
-    /// alias to `Self::Diff::Scalar`.
-    type Scalar: BaseNum;
-
-    /// The associated space of displacement vectors.
-    type Diff: VectorSpace<Scalar = Self::Scalar>;
-
     /// The point at the origin of the Euclidean space.
     fn origin() -> Self;
-
-    /// Convert a displacement vector to a point.
-    ///
-    /// This can be considered equivalent to the addition of the displacement
-    /// vector `v` to to `Self::origin()`.
-    fn from_vec(v: Self::Diff) -> Self;
-
-    /// Convert a point to a displacement vector.
-    ///
-    /// This can be seen as equivalent to the displacement vector from
-    /// `Self::origin()` to `self`.
-    fn to_vec(self) -> Self::Diff;
 
     /// Returns the middle point between two other points.
     ///
@@ -395,13 +375,10 @@ where
     fn centroid(points: &[Self]) -> Self {
         let total_displacement = points
             .iter()
-            .fold(Self::Diff::zero(), |acc, p| acc + p.to_vec());
+            .fold(Self::zero(), |acc, p| acc + *p);
 
-        Self::from_vec(total_displacement / cast(points.len()).unwrap())
+        total_displacement / cast(points.len()).unwrap()
     }
-
-    /// This is a weird one, but its useful for plane calculations.
-    fn dot(self, v: Self::Diff) -> Self::Scalar;
 }
 
 /// A column-major matrix of arbitrary dimensions.

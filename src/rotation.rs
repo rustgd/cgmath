@@ -24,7 +24,6 @@ use approx;
 use euler::Euler;
 use matrix::{Matrix2, Matrix3};
 use num::BaseFloat;
-use point::{Point2, Point3};
 use quaternion::Quaternion;
 use vector::{Vector2, Vector3};
 
@@ -33,27 +32,27 @@ use vector::{Vector2, Vector3};
 pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: approx::AbsDiffEq<Epsilon = P::Scalar>,
-    Self: approx::RelativeEq<Epsilon = P::Scalar>,
-    Self: approx::UlpsEq<Epsilon = P::Scalar>,
-    P::Scalar: BaseFloat,
+    Self: approx::AbsDiffEq<Epsilon = <P as VectorSpace>::Scalar>,
+    Self: approx::RelativeEq<Epsilon = <P as VectorSpace>::Scalar>,
+    Self: approx::UlpsEq<Epsilon = <P as VectorSpace>::Scalar>,
+    <P as VectorSpace>::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
     /// Create a rotation to a given direction with an 'up' vector.
-    fn look_at(dir: P::Diff, up: P::Diff) -> Self;
+    fn look_at(dir: P, up: P) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: P::Diff, b: P::Diff) -> Self;
+    fn between_vectors(a: P, b: P) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: P::Diff) -> P::Diff;
+    fn rotate_vector(&self, vec: P) -> P;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.
     #[inline]
     fn rotate_point(&self, point: P) -> P {
-        P::from_vec(self.rotate_vector(point.to_vec()))
+        self.rotate_vector(point)
     }
 
     /// Create a new rotation which "un-does" this rotation. That is,
@@ -63,7 +62,7 @@ where
 
 /// A two-dimensional rotation.
 pub trait Rotation2<S: BaseFloat>:
-    Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
+    Rotation<Vector2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
 {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
@@ -72,7 +71,7 @@ pub trait Rotation2<S: BaseFloat>:
 
 /// A three-dimensional rotation.
 pub trait Rotation3<S: BaseFloat>:
-    Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
+    Rotation<Vector3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
 {
     /// Create a rotation using an angle around a given axis.
     ///
@@ -183,7 +182,7 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
+impl<S: BaseFloat> Rotation<Vector2<S>> for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
@@ -334,7 +333,7 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
+impl<S: BaseFloat> Rotation<Vector3<S>> for Basis3<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {

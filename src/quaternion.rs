@@ -31,7 +31,6 @@ use approx;
 use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
-use point::Point3;
 use rotation::{Basis3, Rotation, Rotation3};
 use vector::Vector3;
 
@@ -472,7 +471,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat> Rotation<Vector3<S>> for Quaternion<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
         Matrix3::look_at(dir, up).into()

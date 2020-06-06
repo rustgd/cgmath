@@ -31,7 +31,6 @@ use angle::Rad;
 use approx;
 use euler::Euler;
 use num::BaseFloat;
-use point::{Point2, Point3};
 use quaternion::Quaternion;
 use transform::{Transform, Transform2, Transform3};
 use vector::{Vector2, Vector3, Vector4};
@@ -333,7 +332,7 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    pub fn look_at_dir(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
+    pub fn look_at_dir(eye: Vector3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(f);
@@ -349,7 +348,7 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `center`, using `up` for orientation.
-    pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+    pub fn look_at(eye: Vector3<S>, center: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_at_dir(eye, center - eye, up)
     }
 
@@ -1037,12 +1036,12 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
+impl<S: BaseFloat> Transform<Vector2<S>> for Matrix3<S> {
     fn one() -> Matrix3<S> {
         One::one()
     }
 
-    fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+    fn look_at(eye: Vector2<S>, center: Vector2<S>, up: Vector2<S>) -> Matrix3<S> {
         let dir = center - eye;
         Matrix3::from(Matrix2::look_at(dir, up))
     }
@@ -1051,8 +1050,8 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
         (self * vec.extend(S::zero())).truncate()
     }
 
-    fn transform_point(&self, point: Point2<S>) -> Point2<S> {
-        Point2::from_vec((self * Point3::new(point.x, point.y, S::one()).to_vec()).truncate())
+    fn transform_point(&self, point: Vector2<S>) -> Vector2<S> {
+        (self * Vector3::new(point.x, point.y, S::one())).truncate()
     }
 
     fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
@@ -1064,12 +1063,12 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
+impl<S: BaseFloat> Transform<Vector3<S>> for Matrix3<S> {
     fn one() -> Matrix3<S> {
         One::one()
     }
 
-    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+    fn look_at(eye: Vector3<S>, center: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = center - eye;
         Matrix3::look_at(dir, up)
     }
@@ -1077,9 +1076,9 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
         self * vec
     }
-
-    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-        Point3::from_vec(self * point.to_vec())
+    
+    fn transform_point(&self, point: Vector3<S>) -> Vector3<S> {
+        self * point
     }
 
     fn concat(&self, other: &Matrix3<S>) -> Matrix3<S> {
@@ -1091,12 +1090,12 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
+impl<S: BaseFloat> Transform<Vector3<S>> for Matrix4<S> {
     fn one() -> Matrix4<S> {
         One::one()
     }
 
-    fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+    fn look_at(eye: Vector3<S>, center: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_at(eye, center, up)
     }
 
@@ -1104,8 +1103,8 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
         (self * vec.extend(S::zero())).truncate()
     }
 
-    fn transform_point(&self, point: Point3<S>) -> Point3<S> {
-        Point3::from_homogeneous(self * point.to_homogeneous())
+    fn transform_point(&self, point: Vector3<S>) -> Vector3<S> {
+        Vector3::from_homogeneous(self * point.to_homogeneous())
     }
 
     fn concat(&self, other: &Matrix4<S>) -> Matrix4<S> {
