@@ -30,7 +30,16 @@ use std::ops::Mul;
 pub trait Transform<P: EuclideanSpace>: Sized + One {
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
+    #[deprecated = "Use look_at_rh or look_at_lh"]
     fn look_at(eye: P, center: P, up: P::Diff) -> Self;
+
+    /// Create a transformation that rotates a vector to look at `center` from
+    /// `eye`, using `up` for orientation.
+    fn look_at_rh(eye: P, center: P, up: P::Diff) -> Self;
+
+    /// Create a transformation that rotates a vector to look at `center` from
+    /// `eye`, using `up` for orientation.
+    fn look_at_lh(eye: P, center: P, up: P::Diff) -> Self;
 
     /// Transform a vector using this transform.
     fn transform_vector(&self, vec: P::Diff) -> P::Diff;
@@ -105,6 +114,28 @@ where
     #[inline]
     fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
         let rot = R::look_at(center - eye, up);
+        let disp = rot.rotate_vector(P::origin() - eye);
+        Decomposed {
+            scale: P::Scalar::one(),
+            rot: rot,
+            disp: disp,
+        }
+    }
+
+    #[inline]
+    fn look_at_lh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
+        let rot = R::look_at(center - eye, up);
+        let disp = rot.rotate_vector(P::origin() - eye);
+        Decomposed {
+            scale: P::Scalar::one(),
+            rot: rot,
+            disp: disp,
+        }
+    }
+
+    #[inline]
+    fn look_at_rh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
+        let rot = R::look_at(eye - center, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
