@@ -118,6 +118,11 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             persp.fovy
         );
         assert!(
+            persp.aspect.abs() > S::zero(),
+            "The absolute aspect ratio cannot be zero, found: {:?}",
+            persp.aspect.abs()
+        );
+        assert!(
             persp.near > S::zero(),
             "The near plane distance cannot be below zero, found: {:?}",
             persp.near
@@ -126,6 +131,12 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             persp.far > S::zero(),
             "The far plane distance cannot be below zero, found: {:?}",
             persp.far
+        );
+        assert!(
+            (persp.far - persp.near).abs() > S::epsilon(),
+            "The far plane and near plane are too close, found: far: {:?}, near: {:?}",
+            persp.far,
+            persp.near
         );
 
         let two: S = cast(2).unwrap();
