@@ -127,12 +127,6 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             "The far plane distance cannot be below zero, found: {:?}",
             persp.far
         );
-        assert!(
-            persp.far > persp.near,
-            "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}",
-            persp.far,
-            persp.near
-        );
 
         let two: S = cast(2).unwrap();
         let f = Rad::cot(persp.fovy / two);
