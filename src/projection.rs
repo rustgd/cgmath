@@ -117,10 +117,11 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             "The vertical field of view cannot be greater than a half turn, found: {:?}",
             persp.fovy
         );
+
         assert!(
-            persp.aspect > S::zero(),
-            "The aspect ratio cannot be below zero, found: {:?}",
-            persp.aspect
+            abs_diff_ne!(persp.aspect.abs(), S::zero()),
+            "The absolute aspect ratio cannot be zero, found: {:?}",
+            persp.aspect.abs()
         );
         assert!(
             persp.near > S::zero(),
@@ -133,8 +134,8 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             persp.far
         );
         assert!(
-            persp.far > persp.near,
-            "The far plane cannot be closer than the near plane, found: far: {:?}, near: {:?}",
+            abs_diff_ne!(persp.far, persp.near),
+            "The far plane and near plane are too close, found: far: {:?}, near: {:?}",
             persp.far,
             persp.near
         );
