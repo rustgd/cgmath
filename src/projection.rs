@@ -134,7 +134,7 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             persp.far
         );
         assert!(
-            abs_diff_ne!((persp.far - persp.near).abs() ,S::zero()),
+            abs_diff_ne!(persp.far, persp.near),
             "The far plane and near plane are too close, found: far: {:?}, near: {:?}",
             persp.far,
             persp.near
