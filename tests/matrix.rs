@@ -728,10 +728,10 @@ pub mod matrix3 {
     }
 
     #[test]
-    fn test_look_at_lh() {
+    fn test_look_to_lh() {
         let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
         let up = Vector3::unit_y();
-        let m = Matrix3::look_at_lh(dir, up);
+        let m = Matrix3::look_to_lh(dir, up);
 
         assert_ulps_eq!(m, Matrix3::from([
             [0.9486833, -0.16903085, 0.26726127],
@@ -744,10 +744,10 @@ pub mod matrix3 {
     }
 
     #[test]
-    fn test_look_at_rh() {
+    fn test_look_to_rh() {
         let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
         let up = Vector3::unit_y();
-        let m = Matrix3::look_at_rh(dir, up);
+        let m = Matrix3::look_to_rh(dir, up);
 
         assert_ulps_eq!(m, Matrix3::from([
             [-0.9486833, -0.16903085, -0.26726127],
