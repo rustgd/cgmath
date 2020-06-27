@@ -1127,6 +1127,48 @@ pub mod matrix4 {
         );
     }
 
+    #[test]
+    fn test_look_to_rh() {
+        let eye = Point3::new(10.0, 15.0, 20.0);
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+
+        let m = Matrix4::look_to_rh(eye, dir, up);
+        #[allow(deprecated)]
+        assert_ulps_eq!(m, Matrix4::look_at_dir(eye, dir, up));
+
+        let expected = Matrix4::from([
+            [-0.9486833, -0.16903086, -0.26726127, 0.0],
+            [0.0, 0.84515435, -0.53452253, 0.0],
+            [0.31622776, -0.5070926, -0.8017838, 0.0],
+            [3.1622782, -0.84515476, 26.726126, 1.0_f32]
+        ]);
+        assert_ulps_eq!(expected, m);
+
+        let m = Matrix4::look_at_rh(eye, eye + dir, up);
+        assert_abs_diff_eq!(expected, m, epsilon = 1.0e-4);
+    }
+
+    #[test]
+    fn test_look_to_lh() {
+        let eye = Point3::new(10.0, 15.0, 20.0);
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+
+        let m = Matrix4::look_to_lh(eye, dir, up);
+
+        let expected = Matrix4::from([
+            [0.9486833, -0.16903086, 0.26726127, 0.0],
+            [0.0, 0.84515435, 0.53452253, 0.0],
+            [-0.31622776, -0.5070926, 0.8017838, 0.0],
+            [-3.1622782, -0.84515476, -26.726126, 1.0_f32]
+        ]);
+        assert_ulps_eq!(expected, m);
+
+        let m = Matrix4::look_at_lh(eye, eye + dir, up);
+        assert_abs_diff_eq!(expected, m, epsilon = 1.0e-4);
+    }
+
     mod from {
         use cgmath::*;
 
