@@ -191,11 +191,7 @@ impl<S: BaseFloat> Matrix3<S> {
     /// `dir`, using `up` for orientation.
     #[deprecated = "Use Matrix3::look_to_lh"]
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
-        let dir = dir.normalize();
-        let side = up.cross(dir).normalize();
-        let up = dir.cross(side).normalize();
-
-        Matrix3::from_cols(side, up, dir).transpose()
+        Matrix3::look_to_lh(dir, up)
     }
 
     /// Create a rotation matrix that will cause a vector to point at
