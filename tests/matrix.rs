@@ -726,6 +726,35 @@ pub mod matrix3 {
             );
         }
     }
+
+    #[test]
+    fn test_look_at_lh() {
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+        let m = Matrix3::look_at_lh(dir, up);
+
+        assert_ulps_eq!(m, Matrix3::from([
+            [0.9486833, -0.16903085, 0.26726127],
+            [0.0, 0.8451542, 0.53452253],
+            [-0.31622776, -0.50709254, 0.8017838_f32]
+        ]));
+
+        #[allow(deprecated)]
+        assert_ulps_eq!(m, Matrix3::look_at(dir, up));
+    }
+
+    #[test]
+    fn test_look_at_rh() {
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+        let m = Matrix3::look_at_rh(dir, up);
+
+        assert_ulps_eq!(m, Matrix3::from([
+            [-0.9486833, -0.16903085, -0.26726127],
+            [0.0, 0.8451542, -0.53452253],
+            [0.31622776, -0.50709254, -0.8017838_f32]
+        ]));
+    }
 }
 
 pub mod matrix4 {
