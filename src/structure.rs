@@ -564,6 +564,7 @@ where
 ///
 pub trait Angle
 where
+    Self: Sized,
     Self: Copy + Clone,
     Self: PartialEq + cmp::PartialOrd,
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
