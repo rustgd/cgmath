@@ -61,6 +61,19 @@ where
     fn invert(&self) -> Self;
 }
 
+/// A trait for a rotation in a specific Euclidean space.
+/// Implement this trait for any type that implements `Rotation<P>`
+/// for exactly one `P`,
+/// setting `type Euclidean = P`.
+/// In particular, a rotation cannot be used in `Decomposed`
+/// unless it implements `EuclideanRotation`.
+pub trait EuclideanRotation: Rotation<<Self as EuclideanRotation>::Euclidean>
+where
+    <<Self as EuclideanRotation>::Euclidean as EuclideanSpace>::Scalar: BaseFloat,
+{
+    type Euclidean: EuclideanSpace;
+}
+
 /// A two-dimensional rotation.
 pub trait Rotation2<S: BaseFloat>:
     Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
@@ -181,6 +194,10 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     fn product<I: Iterator<Item = &'a Basis2<S>>>(iter: I) -> Basis2<S> {
         iter.fold(Basis2::one(), Mul::mul)
     }
+}
+
+impl<S: BaseFloat> EuclideanRotation for Basis2<S> {
+    type Euclidean = Point2<S>;
 }
 
 impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
@@ -332,6 +349,10 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     fn product<I: Iterator<Item = &'a Basis3<S>>>(iter: I) -> Basis3<S> {
         iter.fold(Basis3::one(), Mul::mul)
     }
+}
+
+impl<S: BaseFloat> EuclideanRotation for Basis3<S> {
+    type Euclidean = Point3<S>;
 }
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {

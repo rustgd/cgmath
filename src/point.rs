@@ -17,7 +17,7 @@
 //! distinguishes them from vectors, which have a length and direction, but do
 //! not have a fixed position.
 
-use num_traits::{Float, Bounded, NumCast};
+use num_traits::{Bounded, Float, NumCast};
 use std::fmt;
 use std::mem;
 use std::ops::*;

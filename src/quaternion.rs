@@ -32,7 +32,7 @@ use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
-use rotation::{Basis3, Rotation, Rotation3};
+use rotation::{Basis3, EuclideanRotation, Rotation, Rotation3};
 use vector::Vector3;
 
 #[cfg(feature = "mint")]
@@ -470,6 +470,10 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     fn from(quat: Quaternion<S>) -> Basis3<S> {
         Basis3::from_quaternion(&quat)
     }
+}
+
+impl<S: BaseFloat> EuclideanRotation for Quaternion<S> {
+    type Euclidean = Point3<S>;
 }
 
 impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {

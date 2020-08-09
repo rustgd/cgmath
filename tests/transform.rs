@@ -22,6 +22,43 @@ extern crate serde_json;
 use cgmath::*;
 
 #[test]
+fn test_mul() {
+    let t1 = Decomposed {
+        scale: 2.0f64,
+        rot: Quaternion::new(0.5f64.sqrt(), 0.5f64.sqrt(), 0.0, 0.0),
+        disp: Vector3::new(1.0f64, 2.0, 3.0),
+    };
+    let t2 = Decomposed {
+        scale: 3.0f64,
+        rot: Quaternion::new(0.5f64.sqrt(), 0.0, 0.5f64.sqrt(), 0.0),
+        disp: Vector3::new(-2.0, 1.0, 0.0),
+    };
+
+    let actual = t1 * t2;
+
+    let expected = Decomposed {
+        scale: 6.0f64,
+        rot: Quaternion::new(0.5, 0.5, 0.5, 0.5),
+        disp: Vector3::new(-3.0, 2.0, 5.0),
+    };
+
+    assert_ulps_eq!(actual, expected);
+}
+
+#[test]
+fn test_mul_one() {
+    let t = Decomposed {
+        scale: 2.0f64,
+        rot: Quaternion::new(0.5f64.sqrt(), 0.5f64.sqrt(), 0.0, 0.0),
+        disp: Vector3::new(1.0f64, 2.0, 3.0),
+    };
+    let one = Decomposed::one();
+
+    assert_ulps_eq!(t * one, t);
+    assert_ulps_eq!(one * t, t);
+}
+
+#[test]
 fn test_invert() {
     let v = Vector3::new(1.0f64, 2.0, 3.0);
     let t = Decomposed {

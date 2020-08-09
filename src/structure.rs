@@ -205,7 +205,10 @@ pub trait MetricSpace: Sized {
     fn distance2(self, other: Self) -> Self::Metric;
 
     /// The distance between two values.
-    fn distance(self, other: Self) -> Self::Metric where Self::Metric: Float {
+    fn distance(self, other: Self) -> Self::Metric
+    where
+        Self::Metric: Float,
+    {
         Float::sqrt(Self::distance2(self, other))
     }
 }
@@ -220,14 +223,17 @@ pub trait MetricSpace: Sized {
 pub trait InnerSpace: VectorSpace
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>
+    Self: MetricSpace<Metric = <Self as VectorSpace>::Scalar>,
 {
     /// Vector dot (or inner) product.
     fn dot(self, other: Self) -> Self::Scalar;
 
     /// Returns `true` if the vector is perpendicular (at right angles) to the
     /// other vector.
-    fn is_perpendicular(self, other: Self) -> bool where Self::Scalar: approx::UlpsEq {
+    fn is_perpendicular(self, other: Self) -> bool
+    where
+        Self::Scalar: approx::UlpsEq,
+    {
         ulps_eq!(Self::dot(self, other), &Self::Scalar::zero())
     }
 
@@ -242,7 +248,10 @@ where
     }
 
     /// Returns the angle between two vectors in radians.
-    fn angle(self, other: Self) -> Rad<Self::Scalar> where Self::Scalar: BaseFloat {
+    fn angle(self, other: Self) -> Rad<Self::Scalar>
+    where
+        Self::Scalar: BaseFloat,
+    {
         Rad::acos(Self::dot(self, other) / (self.magnitude() * other.magnitude()))
     }
 
@@ -256,19 +265,28 @@ where
 
     /// The distance from the tail to the tip of the vector.
     #[inline]
-    fn magnitude(self) -> Self::Scalar where Self::Scalar: Float {
+    fn magnitude(self) -> Self::Scalar
+    where
+        Self::Scalar: Float,
+    {
         Float::sqrt(self.magnitude2())
     }
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
     #[inline]
-    fn normalize(self) -> Self where Self::Scalar: Float {
+    fn normalize(self) -> Self
+    where
+        Self::Scalar: Float,
+    {
         self.normalize_to(Self::Scalar::one())
     }
 
     /// Returns a vector with the same direction and a given magnitude.
     #[inline]
-    fn normalize_to(self, magnitude: Self::Scalar) -> Self where Self::Scalar: Float {
+    fn normalize_to(self, magnitude: Self::Scalar) -> Self
+    where
+        Self::Scalar: Float,
+    {
         self * (magnitude / self.magnitude())
     }
 }
@@ -536,14 +554,20 @@ where
 
     /// Test if this matrix is invertible.
     #[inline]
-    fn is_invertible(&self) -> bool where Self::Scalar: approx::UlpsEq {
+    fn is_invertible(&self) -> bool
+    where
+        Self::Scalar: approx::UlpsEq,
+    {
         ulps_ne!(self.determinant(), &Self::Scalar::zero())
     }
 
     /// Test if this matrix is the identity matrix. That is, it is diagonal
     /// and every element in the diagonal is one.
     #[inline]
-    fn is_identity(&self) -> bool where Self: approx::UlpsEq {
+    fn is_identity(&self) -> bool
+    where
+        Self: approx::UlpsEq,
+    {
         ulps_eq!(self, &Self::identity())
     }
 
