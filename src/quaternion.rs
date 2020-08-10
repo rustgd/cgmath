@@ -520,7 +520,9 @@ impl<S: BaseFloat> Rotation for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
+impl<S: BaseFloat> Rotation3 for Quaternion<S> {
+    type Scalar = S;
+
     #[inline]
     fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Quaternion<S> {
         let (s, c) = Rad::sin_cos(angle.into() * cast(0.5f64).unwrap());

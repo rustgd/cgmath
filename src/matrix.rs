@@ -1105,11 +1105,17 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> Transform2<S> for Matrix3<S> {}
+impl<S: BaseFloat> Transform2 for Matrix3<S> {
+    type Scalar = S;
+}
 
-impl<S: BaseFloat> Transform3<S> for Matrix3<S> {}
+impl<S: BaseFloat> Transform3 for Matrix3<S> {
+    type Scalar = S;
+}
 
-impl<S: BaseFloat> Transform3<S> for Matrix4<S> {}
+impl<S: BaseFloat> Transform3 for Matrix4<S> {
+    type Scalar = S;
+}
 
 macro_rules! impl_matrix {
     ($MatrixN:ident, $VectorN:ident { $($field:ident : $row_index:expr),+ }) => {
