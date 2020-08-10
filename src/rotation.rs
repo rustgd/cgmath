@@ -36,7 +36,7 @@ where
     Self: approx::AbsDiffEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
     Self: approx::RelativeEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
     Self: approx::UlpsEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
-    <<Self as Rotation>::Space as EuclideanSpace>::Scalar: BaseFloat,
+    <Self::Space as EuclideanSpace>::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
     type Space: EuclideanSpace;

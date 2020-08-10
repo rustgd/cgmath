@@ -105,7 +105,7 @@ where
 impl<P: EuclideanSpace, R: Rotation<Space = P>> Transform<P> for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
-    // FIXME: Investigate why this is needed!
+    // Needed to be able to multiply by a scalar
     P::Diff: VectorSpace,
 {
     #[inline]
@@ -165,12 +165,12 @@ where
 pub trait Transform2:
     Transform<Point2<<Self as Transform2>::Scalar>> + Into<Matrix3<<Self as Transform2>::Scalar>>
 {
-    type Scalar: BaseFloat;
+    type Scalar: BaseNum;
 }
 pub trait Transform3:
     Transform<Point3<<Self as Transform3>::Scalar>> + Into<Matrix4<<Self as Transform3>::Scalar>>
 {
-    type Scalar: BaseFloat;
+    type Scalar: BaseNum;
 }
 
 impl<S: BaseFloat, R: Rotation2<Scalar = S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
