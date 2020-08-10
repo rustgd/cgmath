@@ -101,14 +101,29 @@ impl<S> Matrix2<S> {
 impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause `unit_x()` to point at
     /// `dir`. `unit_y()` will be perpendicular to `dir`, and the closest to `up`.
+    #[deprecated = "Use Matrix2::look_to"]
     pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
-        Matrix2::look_at_stable(dir, up.x * dir.y >= up.y * dir.x)
+        Matrix2::look_to(dir, up)
     }
 
     /// Crate a transformation that will cause `unit_x()` to point at
-    /// `dir`. This is similar to `look_at`, but does not take an `up` vector.
+    /// `dir`. This is similar to `look_to`, but does not take an `up` vector.
     /// This will not cause `unit_y()` to flip when `dir` crosses over the `up` vector.
+    #[deprecated = "Use Matrix2::look_to_stable"]
     pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Matrix2<S> {
+        Matrix2::look_to_stable(dir, flip)
+    }
+
+    /// Create a transformation matrix that will cause `unit_x()` to point at
+    /// `dir`. `unit_y()` will be perpendicular to `dir`, and the closest to `up`.
+    pub fn look_to(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
+        Matrix2::look_to_stable(dir, up.x * dir.y >= up.y * dir.x)
+    }
+
+    /// Crate a transformation that will cause `unit_x()` to point at
+    /// `dir`. This is similar to `look_to`, but does not take an `up` vector.
+    /// This will not cause `unit_y()` to flip when `dir` crosses over the `up` vector.
+    pub fn look_to_stable(dir: Vector2<S>, flip: bool) -> Matrix2<S> {
         let basis1 = dir.normalize();
         let basis2 = if flip {
             Vector2::new(basis1.y, -basis1.x)
@@ -1089,17 +1104,17 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
 impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
     fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::from(Matrix2::look_at(dir, up))
+        Matrix3::from(Matrix2::look_to(dir, up))
     }
 
     fn look_at_lh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::from(Matrix2::look_at(dir, up))
+        Matrix3::from(Matrix2::look_to(dir, up))
     }
 
     fn look_at_rh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
         let dir = eye - center;
-        Matrix3::from(Matrix2::look_at(dir, up))
+        Matrix3::from(Matrix2::look_to(dir, up))
     }
 
     fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {

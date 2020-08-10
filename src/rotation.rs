@@ -169,9 +169,9 @@ pub struct Basis2<S> {
 }
 
 impl<S: BaseFloat> Basis2<S> {
-    pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Basis2<S> {
+    pub fn look_to_stable(dir: Vector2<S>, flip: bool) -> Basis2<S> {
         Basis2 {
-            mat: Matrix2::look_at_stable(dir, flip),
+            mat: Matrix2::look_to_stable(dir, flip),
         }
     }
 }
@@ -210,7 +210,7 @@ impl<S: BaseFloat> Rotation for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
-            mat: Matrix2::look_at(dir, up),
+            mat: Matrix2::look_to(dir, up),
         }
     }
 
