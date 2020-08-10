@@ -30,30 +30,32 @@ use vector::{Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One
+pub trait Rotation: Sized + Copy + One
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: approx::AbsDiffEq<Epsilon = P::Scalar>,
-    Self: approx::RelativeEq<Epsilon = P::Scalar>,
-    Self: approx::UlpsEq<Epsilon = P::Scalar>,
-    P::Scalar: BaseFloat,
+    Self: approx::AbsDiffEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    Self: approx::RelativeEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    Self: approx::UlpsEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    <<Self as Rotation>::Space as EuclideanSpace>::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
+    type Space: EuclideanSpace;
+
     /// Create a rotation to a given direction with an 'up' vector.
-    fn look_at(dir: P::Diff, up: P::Diff) -> Self;
+    fn look_at(dir: <Self::Space as EuclideanSpace>::Diff, up: <Self::Space as EuclideanSpace>::Diff) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: P::Diff, b: P::Diff) -> Self;
+    fn between_vectors(a: <Self::Space as EuclideanSpace>::Diff, b: <Self::Space as EuclideanSpace>::Diff) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: P::Diff) -> P::Diff;
+    fn rotate_vector(&self, vec: <Self::Space as EuclideanSpace>::Diff) -> <Self::Space as EuclideanSpace>::Diff;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.
     #[inline]
-    fn rotate_point(&self, point: P) -> P {
-        P::from_vec(self.rotate_vector(point.to_vec()))
+    fn rotate_point(&self, point: Self::Space) -> Self::Space {
+        Self::Space::from_vec(self.rotate_vector(point.to_vec()))
     }
 
     /// Create a new rotation which "un-does" this rotation. That is,
@@ -61,22 +63,9 @@ where
     fn invert(&self) -> Self;
 }
 
-/// A trait for a rotation in a specific Euclidean space.
-/// Implement this trait for any type that implements `Rotation<P>`
-/// for exactly one `P`,
-/// setting `type Euclidean = P`.
-/// In particular, a rotation cannot be used in `Decomposed`
-/// unless it implements `EuclideanRotation`.
-pub trait EuclideanRotation: Rotation<<Self as EuclideanRotation>::Euclidean>
-where
-    <<Self as EuclideanRotation>::Euclidean as EuclideanSpace>::Scalar: BaseFloat,
-{
-    type Euclidean: EuclideanSpace;
-}
-
 /// A two-dimensional rotation.
 pub trait Rotation2<S: BaseFloat>:
-    Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
+    Rotation<Space=Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
 {
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
@@ -85,7 +74,7 @@ pub trait Rotation2<S: BaseFloat>:
 
 /// A three-dimensional rotation.
 pub trait Rotation3<S: BaseFloat>:
-    Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
+    Rotation<Space=Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
 {
     /// Create a rotation using an angle around a given axis.
     ///
@@ -196,11 +185,9 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> EuclideanRotation for Basis2<S> {
-    type Euclidean = Point2<S>;
-}
+impl<S: BaseFloat> Rotation for Basis2<S> {
+    type Space = Point2<S>;
 
-impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
@@ -351,11 +338,9 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> EuclideanRotation for Basis3<S> {
-    type Euclidean = Point3<S>;
-}
+impl<S: BaseFloat> Rotation for Basis3<S> {
+    type Space = Point3<S>;
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {

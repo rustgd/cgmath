@@ -67,10 +67,7 @@ pub struct Decomposed<V: VectorSpace, R> {
     pub disp: V,
 }
 
-// using `EuclideanRotation` here to avoid the possibility that
-// the same struct implements `Rotation<P1>` and `Rotation<P2>`
-// and the compiler has to guess what `P` is.
-impl<P: EuclideanSpace, R: EuclideanRotation<Euclidean = P>> One for Decomposed<P::Diff, R>
+impl<P: EuclideanSpace, R: Rotation<Space=P>> One for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
     P::Diff: VectorSpace,
@@ -84,7 +81,7 @@ where
     }
 }
 
-impl<P: EuclideanSpace, R: EuclideanRotation<Euclidean = P>> Mul for Decomposed<P::Diff, R>
+impl<P: EuclideanSpace, R: Rotation<Space=P>> Mul for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
     P::Diff: VectorSpace,
@@ -105,7 +102,7 @@ where
     }
 }
 
-impl<P: EuclideanSpace, R: EuclideanRotation<Euclidean = P>> Transform<P> for Decomposed<P::Diff, R>
+impl<P: EuclideanSpace, R: Rotation<Space=P>> Transform<P> for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
     // FIXME: Investigate why this is needed!
@@ -186,15 +183,9 @@ impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<
     }
 }
 
-impl<S: BaseFloat, R> Transform2<S> for Decomposed<Vector2<S>, R> where
-    R: Rotation2<S> + EuclideanRotation<Euclidean = Point2<S>>
-{
-}
+impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
 
-impl<S: BaseFloat, R> Transform3<S> for Decomposed<Vector3<S>, R> where
-    R: Rotation3<S> + EuclideanRotation<Euclidean = Point3<S>>
-{
-}
+impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
 
 impl<S: VectorSpace, R, E: BaseFloat> approx::AbsDiffEq for Decomposed<S, R>
 where
