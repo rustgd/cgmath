@@ -204,7 +204,7 @@ impl<S: BaseFloat> Matrix3<S> {
 
     /// Create a rotation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    #[deprecated = "Use Matrix3::look_to_lh"]
+    #[deprecated = "Use Matrix3::look_to_lh or Matrix3::look_to_rh for the right handed variation"]
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         Matrix3::look_to_lh(dir, up)
     }
@@ -361,19 +361,9 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
-    #[deprecated = "Use Matrix4::look_to_rh"]
+    #[deprecated = "Use Matrix4::look_to_rh or Matrix3::look_to_lh for the left handed variation"]
     pub fn look_at_dir(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
-        let f = dir.normalize();
-        let s = f.cross(up).normalize();
-        let u = s.cross(f);
-
-        #[cfg_attr(rustfmt, rustfmt_skip)]
-        Matrix4::new(
-            s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
-            s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
-            s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
-            -eye.dot(s), -eye.dot(u), eye.dot(f), S::one(),
-        )
+        Self::look_to_rh(eye, dir, up)
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
@@ -400,9 +390,9 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `center`, using `up` for orientation.
-    #[deprecated = "Use Matrix4::look_at_rh"]
+    #[deprecated = "Use Matrix4::look_at_rh or look_at_lh for the left handed variation"]
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        Matrix4::look_at_dir(eye, center - eye, up)
+        Matrix4::look_to_rh(eye, center - eye, up)
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
@@ -1137,7 +1127,7 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::look_at(dir, up)
+        Matrix3::look_to_lh(dir, up)
     }
 
     fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {

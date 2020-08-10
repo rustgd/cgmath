@@ -31,7 +31,9 @@ pub trait Transform<P: EuclideanSpace>: Sized + One {
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
     #[deprecated = "Use look_at_rh or look_at_lh"]
-    fn look_at(eye: P, center: P, up: P::Diff) -> Self;
+    fn look_at(eye: P, center: P, up: P::Diff) -> Self {
+        Self::look_at_lh(eye, center, up)
+    }
 
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
@@ -113,7 +115,7 @@ where
 {
     #[inline]
     fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
-        let rot = R::look_at(center - eye, up);
+        let rot = R::look_to(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
@@ -124,7 +126,7 @@ where
 
     #[inline]
     fn look_at_lh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
-        let rot = R::look_at(center - eye, up);
+        let rot = R::look_to(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
@@ -135,7 +137,7 @@ where
 
     #[inline]
     fn look_at_rh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
-        let rot = R::look_at(eye - center, up);
+        let rot = R::look_to(eye - center, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),

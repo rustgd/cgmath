@@ -485,7 +485,7 @@ impl<S: BaseFloat> Rotation for Quaternion<S> {
 
     #[inline]
     fn look_to(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
-        Matrix3::look_at(dir, up).into()
+        Matrix3::look_to_lh(dir, up).into()
     }
 
     #[inline]
