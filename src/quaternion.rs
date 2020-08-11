@@ -126,30 +126,31 @@ impl<S: BaseFloat> Quaternion<S> {
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
     /// - [Arcsynthesis OpenGL tutorial]
     ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
-    pub fn slerp(self, other: Quaternion<S>, amount: S) -> Quaternion<S> {
-        let dot = self.dot(other);
-        let dot_threshold = cast(0.9995f64).unwrap();
+    pub fn slerp(self, mut other: Quaternion<S>, mut amount: S) -> Quaternion<S> {
+        let mut dot = self.dot(other);
+        let dot_threshold: S = cast(0.9995f64).unwrap();
+
+        // Fix for opposite quaternions: pick a perpendicular target and change the amount accordingly
+        // Therefore, the following code cannot assume that 0 <= amount <= 1.
+        if ulps_eq!(dot, -S::one()) {
+            other = Quaternion::from([self.v.x, -self.s, self.v.z, -self.v.y]);
+            amount += amount;
+            dot = S::zero();
+        }
 
         // if quaternions are close together use `nlerp`
         if dot > dot_threshold {
             self.nlerp(other, amount)
         } else {
             // stay within the domain of acos()
-            // TODO REMOVE WHEN https://github.com/mozilla/rust/issues/12068 IS RESOLVED
-            let robust_dot = if dot > S::one() {
-                S::one()
-            } else if dot < -S::one() {
-                -S::one()
-            } else {
-                dot
-            };
+            let robust_dot = dot.min(S::one()).max(-S::one());
 
             let theta = Rad::acos(robust_dot.clone());
 
             let scale1 = Rad::sin(theta * (S::one() - amount));
             let scale2 = Rad::sin(theta * amount);
 
-            (self * scale1 + other * scale2) * Rad::sin(theta).recip()
+            (self * scale1 + other * scale2).normalize()
         }
     }
 
@@ -757,5 +758,199 @@ mod tests {
             let v: &mut Quaternion<_> = From::from(v);
             assert_eq!(v, &QUATERNION);
         }
+    }
+
+    #[test]
+    fn test_nlerp_same() {
+        let q = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(q, q.nlerp(q, 0.1234));
+    }
+
+    #[test]
+    fn test_nlerp_start() {
+        let q = Quaternion::from([0.5f64.sqrt(), 0.0, 0.5f64.sqrt(), 0.0]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(q, q.nlerp(r, 0.0));
+    }
+
+    #[test]
+    fn test_nlerp_end() {
+        let q = Quaternion::from([0.5f64.sqrt(), 0.0, 0.5f64.sqrt(), 0.0]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(r, q.nlerp(r, 1.0));
+    }
+
+    #[test]
+    fn test_nlerp_half() {
+        let q = Quaternion::from([-0.5, 0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected =
+            Quaternion::from([0.0, 1.0 / 3f64.sqrt(), 1.0 / 3f64.sqrt(), 1.0 / 3f64.sqrt()]);
+        assert_ulps_eq!(expected, q.nlerp(r, 0.5));
+    }
+
+    #[test]
+    fn test_nlerp_quarter() {
+        let q = Quaternion::from([-0.5, 0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -1.0 / 13f64.sqrt(),
+            2.0 / 13f64.sqrt(),
+            2.0 / 13f64.sqrt(),
+            2.0 / 13f64.sqrt(),
+        ]);
+        assert_ulps_eq!(expected, q.nlerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_nlerp_zero_dot() {
+        let q = Quaternion::from([-0.5, -0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -1.0 / 10f64.sqrt(),
+            -1.0 / 10f64.sqrt(),
+            2.0 / 10f64.sqrt(),
+            2.0 / 10f64.sqrt(),
+        ]);
+        assert_ulps_eq!(expected, q.nlerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_nlerp_negative_dot() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -1.0 / 7f64.sqrt(),
+            -1.0 / 7f64.sqrt(),
+            -1.0 / 7f64.sqrt(),
+            2.0 / 7f64.sqrt(),
+        ]);
+        assert_ulps_eq!(expected, q.nlerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_nlerp_opposite() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, -0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([-0.5, -0.5, -0.5, -0.5]);
+        assert_ulps_eq!(expected, q.nlerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_nlerp_extrapolate() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -3.0 / 28f64.sqrt(),
+            -3.0 / 28f64.sqrt(),
+            -3.0 / 28f64.sqrt(),
+            1.0 / 28f64.sqrt(),
+        ]);
+        assert_ulps_eq!(expected, q.nlerp(r, -1.0));
+    }
+
+    #[test]
+    fn test_slerp_same() {
+        let q = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(q, q.slerp(q, 0.1234));
+    }
+
+    #[test]
+    fn test_slerp_start() {
+        let q = Quaternion::from([0.5f64.sqrt(), 0.0, 0.5f64.sqrt(), 0.0]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(q, q.slerp(r, 0.0));
+    }
+
+    #[test]
+    fn test_slerp_end() {
+        let q = Quaternion::from([0.5f64.sqrt(), 0.0, 0.5f64.sqrt(), 0.0]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+        assert_ulps_eq!(r, q.slerp(r, 1.0));
+    }
+
+    #[test]
+    fn test_slerp_half() {
+        let q = Quaternion::from([-0.5, 0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected =
+            Quaternion::from([0.0, 1.0 / 3f64.sqrt(), 1.0 / 3f64.sqrt(), 1.0 / 3f64.sqrt()]);
+        assert_ulps_eq!(expected, q.slerp(r, 0.5));
+    }
+
+    #[test]
+    fn test_slerp_quarter() {
+        let q = Quaternion::from([-0.5, 0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -0.2588190451025208,
+            0.5576775358252053,
+            0.5576775358252053,
+            0.5576775358252053,
+        ]);
+        assert_ulps_eq!(expected, q.slerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_slerp_zero_dot() {
+        let q = Quaternion::from([-0.5, -0.5, 0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -0.27059805007309845,
+            -0.27059805007309845,
+            0.6532814824381883,
+            0.6532814824381883,
+        ]);
+        assert_ulps_eq!(expected, q.slerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_slerp_negative_dot() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([
+            -0.2886751345948129,
+            -0.2886751345948129,
+            -0.2886751345948129,
+            0.8660254037844388,
+        ]);
+        assert_ulps_eq!(expected, q.slerp(r, 0.25));
+    }
+
+    #[test]
+    fn test_slerp_opposite() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, -0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        // Ambiguous. Just make sure the result is normalized and the angle is 45 degrees with q.
+        assert_ulps_eq!(r.magnitude(), 1.0);
+        assert_ulps_eq!(q.slerp(r, 0.25).dot(q), 0.5f64.sqrt());
+    }
+
+    #[test]
+    fn test_slerp_extrapolate() {
+        let q = Quaternion::from([-0.5, -0.5, -0.5, 0.5]);
+        let r = Quaternion::from([0.5, 0.5, 0.5, 0.5]);
+
+        let expected = Quaternion::from([0.0, 0.0, 0.0, -1.0]);
+        assert_ulps_eq!(expected, q.slerp(r, -1.0));
+    }
+
+    #[test]
+    fn test_slerp_regression() {
+        let a = Quaternion::<f32>::new(0.00052311074, 0.9999999, 0.00014682197, -0.000016342687);
+        let b = Quaternion::<f32>::new(0.019973433, -0.99980056, -0.00015678025, 0.000013882192);
+
+        assert_ulps_eq!(a.slerp(b, 0.5).magnitude(), 1.0);
     }
 }

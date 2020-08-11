@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::{Float, Bounded, NumCast};
+use num_traits::{Bounded, Float, NumCast};
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -539,7 +539,10 @@ impl<S: BaseNum> InnerSpace for Vector2<S> {
     }
 
     #[inline]
-    fn angle(self, other: Vector2<S>) -> Rad<S> where S: BaseFloat {
+    fn angle(self, other: Vector2<S>) -> Rad<S>
+    where
+        S: BaseFloat,
+    {
         Rad::atan2(Self::perp_dot(self, other), Self::dot(self, other))
     }
 }
@@ -551,7 +554,10 @@ impl<S: BaseNum> InnerSpace for Vector3<S> {
     }
 
     #[inline]
-    fn angle(self, other: Vector3<S>) -> Rad<S> where S: BaseFloat {
+    fn angle(self, other: Vector3<S>) -> Rad<S>
+    where
+        S: BaseFloat,
+    {
         Rad::atan2(self.cross(other).magnitude(), Self::dot(self, other))
     }
 }
