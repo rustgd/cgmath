@@ -366,8 +366,10 @@ impl<S: BaseFloat> Matrix4<S> {
         Self::look_to_rh(eye, dir, up)
     }
 
-    /// Create a homogeneous transformation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Creates a homogeneous right-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point in `dir` direction, using `up` for orientation
+    /// assuming a right-handed corrdinate system.
     pub fn look_to_rh(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
@@ -382,8 +384,10 @@ impl<S: BaseFloat> Matrix4<S> {
         )
     }
 
-    /// Create a homogeneous transformation matrix that will cause a vector to point at
-    /// `dir`, using `up` for orientation.
+    /// Creates a homogeneous left-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point in `dir` direction, using `up` for orientation
+    /// assuming a left-handed corrdinate system.
     pub fn look_to_lh(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_to_rh(eye, -dir, up)
     }
@@ -395,14 +399,18 @@ impl<S: BaseFloat> Matrix4<S> {
         Matrix4::look_to_rh(eye, center - eye, up)
     }
 
-    /// Create a homogeneous transformation matrix that will cause a vector to point at
-    /// `center`, using `up` for orientation.
+    /// Creates a homogeneous right-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point at `center`, using `up` for orientation
+    /// assuming a right-handed corrdinate system.
     pub fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_to_rh(eye, center - eye, up)
     }
 
-    /// Create a homogeneous transformation matrix that will cause a vector to point at
-    /// `center`, using `up` for orientation.
+    /// Creates a homogeneous left-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point at `center`, using `up` for orientation
+    /// assuming a left-handed corrdinate system.
     pub fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_to_lh(eye, center - eye, up)
     }

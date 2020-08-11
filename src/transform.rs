@@ -35,12 +35,16 @@ pub trait Transform<P: EuclideanSpace>: Sized + One {
         Self::look_at_lh(eye, center, up)
     }
 
-    /// Create a transformation that rotates a vector to look at `center` from
-    /// `eye`, using `up` for orientation.
+    /// Creates a right-handed look-at view transform.
+    ///
+    /// This transform rotates a vector to look at `center` from `eye`, using `up` for orientation
+    /// assuming a right-handed coordinate system.
     fn look_at_rh(eye: P, center: P, up: P::Diff) -> Self;
 
-    /// Create a transformation that rotates a vector to look at `center` from
-    /// `eye`, using `up` for orientation.
+    /// Creates a right-handed look-at view transform.
+    ///
+    /// This transform rotates a vector to look at `center` from `eye`, using `up` for orientation
+    /// assuming a left-handed coordinate system.
     fn look_at_lh(eye: P, center: P, up: P::Diff) -> Self;
 
     /// Transform a vector using this transform.

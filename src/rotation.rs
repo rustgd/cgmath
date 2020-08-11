@@ -371,6 +371,7 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
 impl<S: BaseFloat> Rotation for Basis3<S> {
     type Space = Point3<S>;
 
+    /// Construct a look-at view matrix assuming a left-handed coordinate system.
     #[inline]
     fn look_to(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {
