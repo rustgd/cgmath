@@ -145,7 +145,7 @@ impl<S: BaseFloat> Quaternion<S> {
             // stay within the domain of acos()
             let robust_dot = dot.min(S::one()).max(-S::one());
 
-            let theta = Rad::acos(robust_dot.clone());
+            let theta = Rad::acos(robust_dot);
 
             let scale1 = Rad::sin(theta * (S::one() - amount));
             let scale2 = Rad::sin(theta * amount);
