@@ -70,7 +70,6 @@ pub struct Decomposed<V: VectorSpace, R> {
 impl<P: EuclideanSpace, R: Rotation<Space = P>> One for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
-    P::Diff: VectorSpace,
 {
     fn one() -> Self {
         Decomposed {
@@ -105,7 +104,6 @@ where
 impl<P: EuclideanSpace, R: Rotation<Space = P>> Transform<P> for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
-    // Needed to be able to multiply by a scalar
     P::Diff: VectorSpace,
 {
     #[inline]
