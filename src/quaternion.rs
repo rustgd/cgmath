@@ -480,7 +480,9 @@ impl<S: BaseFloat> From<Quaternion<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
+impl<S: BaseFloat> Rotation for Quaternion<S> {
+    type Space = Point3<S>;
+
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Quaternion<S> {
         Matrix3::look_at(dir, up).into()
@@ -526,7 +528,9 @@ impl<S: BaseFloat> Rotation<Point3<S>> for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Quaternion<S> {
+impl<S: BaseFloat> Rotation3 for Quaternion<S> {
+    type Scalar = S;
+
     #[inline]
     fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Quaternion<S> {
         let (s, c) = Rad::sin_cos(angle.into() * cast(0.5f64).unwrap());

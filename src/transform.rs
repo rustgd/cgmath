@@ -22,14 +22,12 @@ use point::{Point2, Point3};
 use rotation::*;
 use vector::{Vector2, Vector3};
 
+use std::ops::Mul;
+
 /// A trait representing an [affine
 /// transformation](https://en.wikipedia.org/wiki/Affine_transformation) that
 /// can be applied to points or vectors. An affine transformation is one which
-pub trait Transform<P: EuclideanSpace>: Sized {
-    /// Create an identity transformation. That is, a transformation which
-    /// does nothing.
-    fn one() -> Self;
-
+pub trait Transform<P: EuclideanSpace>: Sized + One {
     /// Create a transformation that rotates a vector to look at `center` from
     /// `eye`, using `up` for orientation.
     fn look_at(eye: P, center: P, up: P::Diff) -> Self;
@@ -69,21 +67,41 @@ pub struct Decomposed<V: VectorSpace, R> {
     pub disp: V,
 }
 
-impl<P: EuclideanSpace, R: Rotation<P>> Transform<P> for Decomposed<P::Diff, R>
+impl<P: EuclideanSpace, R: Rotation<Space = P>> One for Decomposed<P::Diff, R>
 where
     P::Scalar: BaseFloat,
-    // FIXME: Investigate why this is needed!
-    P::Diff: VectorSpace,
 {
-    #[inline]
-    fn one() -> Decomposed<P::Diff, R> {
+    fn one() -> Self {
         Decomposed {
             scale: P::Scalar::one(),
             rot: R::one(),
             disp: P::Diff::zero(),
         }
     }
+}
 
+impl<P: EuclideanSpace, R: Rotation<Space = P>> Mul for Decomposed<P::Diff, R>
+where
+    P::Scalar: BaseFloat,
+    P::Diff: VectorSpace,
+{
+    type Output = Self;
+
+    /// Multiplies the two transforms together.
+    /// The result should be as if the two transforms were converted
+    /// to matrices, then multiplied, then converted back with
+    /// a (currently nonexistent) function that tries to convert
+    /// a matrix into a `Decomposed`.
+    fn mul(self, rhs: Decomposed<P::Diff, R>) -> Self::Output {
+        self.concat(&rhs)
+    }
+}
+
+impl<P: EuclideanSpace, R: Rotation<Space = P>> Transform<P> for Decomposed<P::Diff, R>
+where
+    P::Scalar: BaseFloat,
+    P::Diff: VectorSpace,
+{
     #[inline]
     fn look_at(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
         let rot = R::look_at(center - eye, up);
@@ -138,10 +156,18 @@ where
     }
 }
 
-pub trait Transform2<S: BaseNum>: Transform<Point2<S>> + Into<Matrix3<S>> {}
-pub trait Transform3<S: BaseNum>: Transform<Point3<S>> + Into<Matrix4<S>> {}
+pub trait Transform2:
+    Transform<Point2<<Self as Transform2>::Scalar>> + Into<Matrix3<<Self as Transform2>::Scalar>>
+{
+    type Scalar: BaseNum;
+}
+pub trait Transform3:
+    Transform<Point3<<Self as Transform3>::Scalar>> + Into<Matrix4<<Self as Transform3>::Scalar>>
+{
+    type Scalar: BaseNum;
+}
 
-impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
+impl<S: BaseFloat, R: Rotation2<Scalar = S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
     fn from(dec: Decomposed<Vector2<S>, R>) -> Matrix3<S> {
         let m: Matrix2<_> = dec.rot.into();
         let mut m: Matrix3<_> = (&m * dec.scale).into();
@@ -150,7 +176,7 @@ impl<S: BaseFloat, R: Rotation2<S>> From<Decomposed<Vector2<S>, R>> for Matrix3<
     }
 }
 
-impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<S> {
+impl<S: BaseFloat, R: Rotation3<Scalar = S>> From<Decomposed<Vector3<S>, R>> for Matrix4<S> {
     fn from(dec: Decomposed<Vector3<S>, R>) -> Matrix4<S> {
         let m: Matrix3<_> = dec.rot.into();
         let mut m: Matrix4<_> = (&m * dec.scale).into();
@@ -159,9 +185,13 @@ impl<S: BaseFloat, R: Rotation3<S>> From<Decomposed<Vector3<S>, R>> for Matrix4<
     }
 }
 
-impl<S: BaseFloat, R: Rotation2<S>> Transform2<S> for Decomposed<Vector2<S>, R> {}
+impl<S: BaseFloat, R: Rotation2<Scalar = S>> Transform2 for Decomposed<Vector2<S>, R> {
+    type Scalar = S;
+}
 
-impl<S: BaseFloat, R: Rotation3<S>> Transform3<S> for Decomposed<Vector3<S>, R> {}
+impl<S: BaseFloat, R: Rotation3<Scalar = S>> Transform3 for Decomposed<Vector3<S>, R> {
+    type Scalar = S;
+}
 
 impl<S: VectorSpace, R, E: BaseFloat> approx::AbsDiffEq for Decomposed<S, R>
 where

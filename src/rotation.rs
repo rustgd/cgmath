@@ -30,30 +30,41 @@ use vector::{Vector2, Vector3};
 
 /// A trait for a generic rotation. A rotation is a transformation that
 /// creates a circular motion, and preserves at least one point in the space.
-pub trait Rotation<P: EuclideanSpace>: Sized + Copy + One
+pub trait Rotation: Sized + Copy + One
 where
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
-    Self: approx::AbsDiffEq<Epsilon = P::Scalar>,
-    Self: approx::RelativeEq<Epsilon = P::Scalar>,
-    Self: approx::UlpsEq<Epsilon = P::Scalar>,
-    P::Scalar: BaseFloat,
+    Self: approx::AbsDiffEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    Self: approx::RelativeEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    Self: approx::UlpsEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
+    <Self::Space as EuclideanSpace>::Scalar: BaseFloat,
     Self: iter::Product<Self>,
 {
+    type Space: EuclideanSpace;
+
     /// Create a rotation to a given direction with an 'up' vector.
-    fn look_at(dir: P::Diff, up: P::Diff) -> Self;
+    fn look_at(
+        dir: <Self::Space as EuclideanSpace>::Diff,
+        up: <Self::Space as EuclideanSpace>::Diff,
+    ) -> Self;
 
     /// Create a shortest rotation to transform vector 'a' into 'b'.
     /// Both given vectors are assumed to have unit length.
-    fn between_vectors(a: P::Diff, b: P::Diff) -> Self;
+    fn between_vectors(
+        a: <Self::Space as EuclideanSpace>::Diff,
+        b: <Self::Space as EuclideanSpace>::Diff,
+    ) -> Self;
 
     /// Rotate a vector using this rotation.
-    fn rotate_vector(&self, vec: P::Diff) -> P::Diff;
+    fn rotate_vector(
+        &self,
+        vec: <Self::Space as EuclideanSpace>::Diff,
+    ) -> <Self::Space as EuclideanSpace>::Diff;
 
     /// Rotate a point using this rotation, by converting it to its
     /// representation as a vector.
     #[inline]
-    fn rotate_point(&self, point: P) -> P {
-        P::from_vec(self.rotate_vector(point.to_vec()))
+    fn rotate_point(&self, point: Self::Space) -> Self::Space {
+        Self::Space::from_vec(self.rotate_vector(point.to_vec()))
     }
 
     /// Create a new rotation which "un-does" this rotation. That is,
@@ -62,38 +73,48 @@ where
 }
 
 /// A two-dimensional rotation.
-pub trait Rotation2<S: BaseFloat>:
-    Rotation<Point2<S>> + Into<Matrix2<S>> + Into<Basis2<S>>
+pub trait Rotation2:
+    Rotation<Space = Point2<<Self as Rotation2>::Scalar>>
+    + Into<Matrix2<<Self as Rotation2>::Scalar>>
+    + Into<Basis2<<Self as Rotation2>::Scalar>>
 {
+    type Scalar: BaseFloat;
+
     /// Create a rotation by a given angle. Thus is a redundant case of both
     /// from_axis_angle() and from_euler() for 2D space.
-    fn from_angle<A: Into<Rad<S>>>(theta: A) -> Self;
+    fn from_angle<A: Into<Rad<Self::Scalar>>>(theta: A) -> Self;
 }
 
 /// A three-dimensional rotation.
-pub trait Rotation3<S: BaseFloat>:
-    Rotation<Point3<S>> + Into<Matrix3<S>> + Into<Basis3<S>> + Into<Quaternion<S>> + From<Euler<Rad<S>>>
+pub trait Rotation3:
+    Rotation<Space = Point3<<Self as Rotation3>::Scalar>>
+    + Into<Matrix3<<Self as Rotation3>::Scalar>>
+    + Into<Basis3<<Self as Rotation3>::Scalar>>
+    + Into<Quaternion<<Self as Rotation3>::Scalar>>
+    + From<Euler<Rad<<Self as Rotation3>::Scalar>>>
 {
+    type Scalar: BaseFloat;
+
     /// Create a rotation using an angle around a given axis.
     ///
     /// The specified axis **must be normalized**, or it represents an invalid rotation.
-    fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Self;
+    fn from_axis_angle<A: Into<Rad<Self::Scalar>>>(axis: Vector3<Self::Scalar>, angle: A) -> Self;
 
     /// Create a rotation from an angle around the `x` axis (pitch).
     #[inline]
-    fn from_angle_x<A: Into<Rad<S>>>(theta: A) -> Self {
+    fn from_angle_x<A: Into<Rad<Self::Scalar>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_x(), theta)
     }
 
     /// Create a rotation from an angle around the `y` axis (yaw).
     #[inline]
-    fn from_angle_y<A: Into<Rad<S>>>(theta: A) -> Self {
+    fn from_angle_y<A: Into<Rad<Self::Scalar>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_y(), theta)
     }
 
     /// Create a rotation from an angle around the `z` axis (roll).
     #[inline]
-    fn from_angle_z<A: Into<Rad<S>>>(theta: A) -> Self {
+    fn from_angle_z<A: Into<Rad<Self::Scalar>>>(theta: A) -> Self {
         Rotation3::from_axis_angle(Vector3::unit_z(), theta)
     }
 }
@@ -183,7 +204,9 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis2<S>> for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point2<S>> for Basis2<S> {
+impl<S: BaseFloat> Rotation for Basis2<S> {
+    type Space = Point2<S>;
+
     #[inline]
     fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
@@ -262,7 +285,9 @@ impl<S: BaseFloat> approx::UlpsEq for Basis2<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation2<S> for Basis2<S> {
+impl<S: BaseFloat> Rotation2 for Basis2<S> {
+    type Scalar = S;
+
     fn from_angle<A: Into<Rad<S>>>(theta: A) -> Basis2<S> {
         Basis2 {
             mat: Matrix2::from_angle(theta),
@@ -334,7 +359,9 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation<Point3<S>> for Basis3<S> {
+impl<S: BaseFloat> Rotation for Basis3<S> {
+    type Space = Point3<S>;
+
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {
@@ -414,7 +441,9 @@ impl<S: BaseFloat> approx::UlpsEq for Basis3<S> {
     }
 }
 
-impl<S: BaseFloat> Rotation3<S> for Basis3<S> {
+impl<S: BaseFloat> Rotation3 for Basis3<S> {
+    type Scalar = S;
+
     fn from_axis_angle<A: Into<Rad<S>>>(axis: Vector3<S>, angle: A) -> Basis3<S> {
         Basis3 {
             mat: Matrix3::from_axis_angle(axis, angle),
