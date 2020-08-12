@@ -93,11 +93,7 @@ where
     /// a (currently nonexistent) function that tries to convert
     /// a matrix into a `Decomposed`.
     fn mul(self, rhs: Decomposed<P::Diff, R>) -> Self::Output {
-        Decomposed {
-            scale: self.scale * rhs.scale,
-            rot: self.rot * rhs.rot,
-            disp: self.disp + self.rot.rotate_vector(rhs.disp * self.scale),
-        }
+        self.concat(&rhs)
     }
 }
 
