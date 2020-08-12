@@ -20,7 +20,7 @@ extern crate cgmath;
 extern crate rand;
 extern crate test;
 
-use rand::{Rng, SeedableRng, rngs::SmallRng};
+use rand::{rngs::SmallRng, Rng, SeedableRng};
 use std::ops::*;
 use test::Bencher;
 
