@@ -69,6 +69,10 @@ extern crate serde;
 #[cfg(feature = "simd")]
 extern crate simd;
 
+#[cfg(feature = "schemars")]
+#[macro_use]
+extern crate schemars;
+
 // Re-exports
 
 pub use approx::*;

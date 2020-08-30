@@ -45,6 +45,7 @@ use mint;
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "schemars", derive(JsonSchema))]
 pub struct Quaternion<S> {
     /// The scalar part of the quaternion.
     pub s: S,
