@@ -29,7 +29,7 @@ use cgmath::*;
 #[macro_use]
 mod macros;
 
-fn bench_from_axis_angle<T: Rotation3<f32>>(bh: &mut Bencher) {
+fn bench_from_axis_angle<T: Rotation3<Scalar = f32>>(bh: &mut Bencher) {
     const LEN: usize = 1 << 13;
 
     let mut rng = SmallRng::from_entropy();
