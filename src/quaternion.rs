@@ -46,10 +46,10 @@ use mint;
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Quaternion<S> {
-    /// The scalar part of the quaternion.
-    pub s: S,
     /// The vector part of the quaternion.
     pub v: Vector3<S>,
+    /// The scalar part of the quaternion.
+    pub s: S,
 }
 
 impl<S> Quaternion<S> {
@@ -542,7 +542,7 @@ impl<S: BaseFloat> Into<[S; 4]> for Quaternion<S> {
     #[inline]
     fn into(self) -> [S; 4] {
         match self.into() {
-            (w, xi, yj, zk) => [w, xi, yj, zk],
+            (xi, yj, zk, w) => [xi, yj, zk, w],
         }
     }
 }
@@ -564,7 +564,7 @@ impl<S: BaseFloat> AsMut<[S; 4]> for Quaternion<S> {
 impl<S: BaseFloat> From<[S; 4]> for Quaternion<S> {
     #[inline]
     fn from(v: [S; 4]) -> Quaternion<S> {
-        Quaternion::new(v[0], v[1], v[2], v[3])
+        Quaternion::new(v[3], v[0], v[1], v[2])
     }
 }
 
@@ -589,7 +589,7 @@ impl<S: BaseFloat> Into<(S, S, S, S)> for Quaternion<S> {
             Quaternion {
                 s,
                 v: Vector3 { x, y, z },
-            } => (s, x, y, z),
+            } => (x, y, z, s),
         }
     }
 }
@@ -612,7 +612,7 @@ impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn from(v: (S, S, S, S)) -> Quaternion<S> {
         match v {
-            (w, xi, yj, zk) => Quaternion::new(w, xi, yj, zk),
+            (xi, yj, zk, w) => Quaternion::new(w, xi, yj, zk),
         }
     }
 }
@@ -698,12 +698,12 @@ mod tests {
     use vector::*;
 
     const QUATERNION: Quaternion<f32> = Quaternion {
-        s: 1.0,
         v: Vector3 {
-            x: 2.0,
-            y: 3.0,
-            z: 4.0,
+            x: 1.0,
+            y: 2.0,
+            z: 3.0,
         },
+        s: 4.0,
     };
 
     #[test]
