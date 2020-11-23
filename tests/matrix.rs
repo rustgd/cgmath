@@ -190,18 +190,18 @@ pub mod matrix2 {
     }
 
     #[test]
-    fn test_look_at() {
+    fn test_look_to() {
         // rot should rotate unit_x() to look at the input vector
-        let rot = Matrix2::look_at(V, Vector2::unit_y());
+        let rot = Matrix2::look_to(V, Vector2::unit_y());
         assert_eq!(rot * Vector2::unit_x(), V.normalize());
         let new_up = Vector2::new(-V.y, V.x).normalize();
         assert_eq!(rot * Vector2::unit_y(), new_up);
 
-        let rot_down = Matrix2::look_at(V, -1.0 * Vector2::unit_y());
+        let rot_down = Matrix2::look_to(V, -1.0 * Vector2::unit_y());
         assert_eq!(rot_down * Vector2::unit_x(), V.normalize());
         assert_eq!(rot_down * Vector2::unit_y(), -1.0 * new_up);
 
-        let rot2 = Matrix2::look_at(-V, Vector2::unit_y());
+        let rot2 = Matrix2::look_to(-V, Vector2::unit_y());
         assert_eq!(rot2 * Vector2::unit_x(), (-V).normalize());
     }
 }
@@ -726,6 +726,37 @@ pub mod matrix3 {
             );
         }
     }
+
+    #[test]
+    fn test_look_to_lh() {
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+        let m = Matrix3::look_to_lh(dir, up);
+
+        assert_ulps_eq!(m, Matrix3::from([
+            [0.9486833, -0.16903085, 0.26726127],
+            [0.0, 0.8451542, 0.53452253],
+            [-0.31622776, -0.50709254, 0.8017838_f32]
+        ]));
+
+        #[allow(deprecated)]
+        {
+            assert_ulps_eq!(m, Matrix3::look_at(dir, up));
+        }
+    }
+
+    #[test]
+    fn test_look_to_rh() {
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+        let m = Matrix3::look_to_rh(dir, up);
+
+        assert_ulps_eq!(m, Matrix3::from([
+            [-0.9486833, -0.16903085, -0.26726127],
+            [0.0, 0.8451542, -0.53452253],
+            [0.31622776, -0.50709254, -0.8017838_f32]
+        ]));
+    }
 }
 
 pub mod matrix4 {
@@ -1125,6 +1156,50 @@ pub mod matrix4 {
                 0.2f32, 1.5, 4.7, 2.5, 2.3, 5.7, 2.1, 1.1, 4.6, 5.2, 6.6, 0.2, 3.2, 1.8, 0.4, 2.9,
             )
         );
+    }
+
+    #[test]
+    fn test_look_to_rh() {
+        let eye = Point3::new(10.0, 15.0, 20.0);
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+
+        let m = Matrix4::look_to_rh(eye, dir, up);
+        #[allow(deprecated)]
+        {
+            assert_ulps_eq!(m, Matrix4::look_at_dir(eye, dir, up));
+        }
+
+        let expected = Matrix4::from([
+            [-0.9486833, -0.16903086, -0.26726127, 0.0],
+            [0.0, 0.84515435, -0.53452253, 0.0],
+            [0.31622776, -0.5070926, -0.8017838, 0.0],
+            [3.1622782, -0.84515476, 26.726126, 1.0_f32]
+        ]);
+        assert_ulps_eq!(expected, m);
+
+        let m = Matrix4::look_at_rh(eye, eye + dir, up);
+        assert_abs_diff_eq!(expected, m, epsilon = 1.0e-4);
+    }
+
+    #[test]
+    fn test_look_to_lh() {
+        let eye = Point3::new(10.0, 15.0, 20.0);
+        let dir = Vector3::new(1.0, 2.0, 3.0).normalize();
+        let up = Vector3::unit_y();
+
+        let m = Matrix4::look_to_lh(eye, dir, up);
+
+        let expected = Matrix4::from([
+            [0.9486833, -0.16903086, 0.26726127, 0.0],
+            [0.0, 0.84515435, 0.53452253, 0.0],
+            [-0.31622776, -0.5070926, 0.8017838, 0.0],
+            [-3.1622782, -0.84515476, -26.726126, 1.0_f32]
+        ]);
+        assert_ulps_eq!(expected, m);
+
+        let m = Matrix4::look_at_lh(eye, eye + dir, up);
+        assert_abs_diff_eq!(expected, m, epsilon = 1.0e-4);
     }
 
     mod from {

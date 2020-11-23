@@ -88,13 +88,55 @@ fn test_inverse_vector() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_look_at() {
     let eye = Point3::new(0.0f64, 0.0, -5.0);
     let center = Point3::new(0.0f64, 0.0, 0.0);
     let up = Vector3::new(1.0f64, 0.0, 0.0);
     let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);
+    assert_ulps_eq!(t, Decomposed::<Vector3<f64>, Quaternion<f64>>::look_at(eye, center, up));
     let point = Point3::new(1.0f64, 0.0, 0.0);
     let view_point = Point3::new(0.0f64, 1.0, 5.0);
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
+}
+
+#[test]
+fn test_look_at_lh() {
+    let eye = Point3::new(0.0f64, 0.0, -5.0);
+    let center = Point3::new(0.0f64, 0.0, 0.0);
+    let up = Vector3::new(1.0f64, 0.0, 0.0);
+    let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at_lh(eye, center, up);
+    assert_ulps_eq!(t, Decomposed::<Vector3<f64>, Quaternion<f64>>::look_at_lh(eye, center, up));
+    let point = Point3::new(1.0f64, 0.0, 0.0);
+    let view_point = Point3::new(0.0f64, 1.0, 5.0);
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
+
+    // Decomposed::look_at_lh and Matrix4::look_at_lh should be consistent
+    let t: Matrix4<f64> = Transform::look_at_lh(eye, center, up);
+    assert_ulps_eq!(t, Matrix4::<f64>::look_at_lh(eye, center, up));
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
+
+    // Decomposed::look_at is inconsistent and deprecated, but verify that the behvaior
+    // remains the same until removed.
+    #[allow(deprecated)]
+    let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
+}
+
+#[test]
+fn test_look_at_rh() {
+    let eye = Point3::new(0.0f64, 0.0, -5.0);
+    let center = Point3::new(0.0f64, 0.0, 0.0);
+    let up = Vector3::new(1.0f64, 0.0, 0.0);
+    let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at_rh(eye, center, up);
+    assert_ulps_eq!(t, Decomposed::<Vector3<f64>, Quaternion<f64>>::look_at_rh(eye, center, up));
+    let point = Point3::new(1.0f64, 0.0, 0.0);
+    let view_point = Point3::new(0.0f64, 1.0, -5.0);
+    assert_ulps_eq!(&t.transform_point(point), &view_point);
+
+    // Decomposed::look_at_rh and Matrix4::look_at_rh should be consistent
+    let t: Matrix4<f64> = Transform::look_at_rh(eye, center, up);
+    assert_ulps_eq!(t, Matrix4::<f64>::look_at_rh(eye, center, up));
     assert_ulps_eq!(&t.transform_point(point), &view_point);
 }
 

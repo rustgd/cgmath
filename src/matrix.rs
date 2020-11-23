@@ -101,14 +101,29 @@ impl<S> Matrix2<S> {
 impl<S: BaseFloat> Matrix2<S> {
     /// Create a transformation matrix that will cause `unit_x()` to point at
     /// `dir`. `unit_y()` will be perpendicular to `dir`, and the closest to `up`.
+    #[deprecated = "Use Matrix2::look_to"]
     pub fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
-        Matrix2::look_at_stable(dir, up.x * dir.y >= up.y * dir.x)
+        Matrix2::look_to(dir, up)
     }
 
     /// Crate a transformation that will cause `unit_x()` to point at
-    /// `dir`. This is similar to `look_at`, but does not take an `up` vector.
+    /// `dir`. This is similar to `look_to`, but does not take an `up` vector.
     /// This will not cause `unit_y()` to flip when `dir` crosses over the `up` vector.
+    #[deprecated = "Use Matrix2::look_to_stable"]
     pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Matrix2<S> {
+        Matrix2::look_to_stable(dir, flip)
+    }
+
+    /// Create a transformation matrix that will cause `unit_x()` to point at
+    /// `dir`. `unit_y()` will be perpendicular to `dir`, and the closest to `up`.
+    pub fn look_to(dir: Vector2<S>, up: Vector2<S>) -> Matrix2<S> {
+        Matrix2::look_to_stable(dir, up.x * dir.y >= up.y * dir.x)
+    }
+
+    /// Crate a transformation that will cause `unit_x()` to point at
+    /// `dir`. This is similar to `look_to`, but does not take an `up` vector.
+    /// This will not cause `unit_y()` to flip when `dir` crosses over the `up` vector.
+    pub fn look_to_stable(dir: Vector2<S>, flip: bool) -> Matrix2<S> {
         let basis1 = dir.normalize();
         let basis2 = if flip {
             Vector2::new(basis1.y, -basis1.x)
@@ -189,12 +204,25 @@ impl<S: BaseFloat> Matrix3<S> {
 
     /// Create a rotation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
+    #[deprecated = "Use Matrix3::look_to_lh or Matrix3::look_to_rh for the right handed variation"]
     pub fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
+        Matrix3::look_to_lh(dir, up)
+    }
+
+    /// Create a rotation matrix that will cause a vector to point at
+    /// `dir`, using `up` for orientation.
+    pub fn look_to_lh(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = dir.normalize();
         let side = up.cross(dir).normalize();
         let up = dir.cross(side).normalize();
 
         Matrix3::from_cols(side, up, dir).transpose()
+    }
+
+    /// Create a rotation matrix that will cause a vector to point at
+    /// `dir`, using `up` for orientation.
+    pub fn look_to_rh(dir: Vector3<S>, up: Vector3<S>) -> Matrix3<S> {
+        Matrix3::look_to_lh(-dir, up)
     }
 
     /// Create a rotation matrix from a rotation around the `x` axis (pitch).
@@ -333,7 +361,16 @@ impl<S: BaseFloat> Matrix4<S> {
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `dir`, using `up` for orientation.
+    #[deprecated = "Use Matrix4::look_to_rh or Matrix3::look_to_lh for the left handed variation"]
     pub fn look_at_dir(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Self::look_to_rh(eye, dir, up)
+    }
+
+    /// Creates a homogeneous right-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point in `dir` direction, using `up` for orientation
+    /// assuming a right-handed corrdinate system.
+    pub fn look_to_rh(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
         let f = dir.normalize();
         let s = f.cross(up).normalize();
         let u = s.cross(f);
@@ -347,10 +384,35 @@ impl<S: BaseFloat> Matrix4<S> {
         )
     }
 
+    /// Creates a homogeneous left-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point in `dir` direction, using `up` for orientation
+    /// assuming a left-handed corrdinate system.
+    pub fn look_to_lh(eye: Point3<S>, dir: Vector3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_to_rh(eye, -dir, up)
+    }
+
     /// Create a homogeneous transformation matrix that will cause a vector to point at
     /// `center`, using `up` for orientation.
+    #[deprecated = "Use Matrix4::look_at_rh or look_at_lh for the left handed variation"]
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        Matrix4::look_at_dir(eye, center - eye, up)
+        Matrix4::look_to_rh(eye, center - eye, up)
+    }
+
+    /// Creates a homogeneous right-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point at `center`, using `up` for orientation
+    /// assuming a right-handed corrdinate system.
+    pub fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_to_rh(eye, center - eye, up)
+    }
+
+    /// Creates a homogeneous left-handed look-at transformation matrix.
+    ///
+    /// This matrix will transform a vector to point at `center`, using `up` for orientation
+    /// assuming a left-handed corrdinate system.
+    pub fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_to_lh(eye, center - eye, up)
     }
 
     /// Create a homogeneous transformation matrix from a rotation around the `x` axis (pitch).
@@ -1040,7 +1102,17 @@ impl<S: BaseFloat> approx::UlpsEq for Matrix4<S> {
 impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
     fn look_at(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::from(Matrix2::look_at(dir, up))
+        Matrix3::from(Matrix2::look_to(dir, up))
+    }
+
+    fn look_at_lh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::from(Matrix2::look_to(dir, up))
+    }
+
+    fn look_at_rh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+        let dir = eye - center;
+        Matrix3::from(Matrix2::look_to(dir, up))
     }
 
     fn transform_vector(&self, vec: Vector2<S>) -> Vector2<S> {
@@ -1063,7 +1135,17 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::look_at(dir, up)
+        Matrix3::look_to_lh(dir, up)
+    }
+
+    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::look_to_lh(dir, up)
+    }
+
+    fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::look_to_rh(dir, up)
     }
 
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
@@ -1084,8 +1166,17 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
 }
 
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
+    #[allow(deprecated)]
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_at(eye, center, up)
+    }
+
+    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_at_lh(eye, center, up)
+    }
+
+    fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_at_rh(eye, center, up)
     }
 
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {

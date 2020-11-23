@@ -42,7 +42,16 @@ where
     type Space: EuclideanSpace;
 
     /// Create a rotation to a given direction with an 'up' vector.
+    #[deprecated = "Use Rotation::look_to"]
     fn look_at(
+        dir: <Self::Space as EuclideanSpace>::Diff,
+        up: <Self::Space as EuclideanSpace>::Diff,
+    ) -> Self {
+        Self::look_to(dir, up)
+    }
+
+    /// Create a rotation to a given direction with an 'up' vector.
+    fn look_to(
         dir: <Self::Space as EuclideanSpace>::Diff,
         up: <Self::Space as EuclideanSpace>::Diff,
     ) -> Self;
@@ -169,9 +178,9 @@ pub struct Basis2<S> {
 }
 
 impl<S: BaseFloat> Basis2<S> {
-    pub fn look_at_stable(dir: Vector2<S>, flip: bool) -> Basis2<S> {
+    pub fn look_to_stable(dir: Vector2<S>, flip: bool) -> Basis2<S> {
         Basis2 {
-            mat: Matrix2::look_at_stable(dir, flip),
+            mat: Matrix2::look_to_stable(dir, flip),
         }
     }
 }
@@ -208,9 +217,9 @@ impl<S: BaseFloat> Rotation for Basis2<S> {
     type Space = Point2<S>;
 
     #[inline]
-    fn look_at(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
+    fn look_to(dir: Vector2<S>, up: Vector2<S>) -> Basis2<S> {
         Basis2 {
-            mat: Matrix2::look_at(dir, up),
+            mat: Matrix2::look_to(dir, up),
         }
     }
 
@@ -362,10 +371,11 @@ impl<'a, S: 'a + BaseFloat> iter::Product<&'a Basis3<S>> for Basis3<S> {
 impl<S: BaseFloat> Rotation for Basis3<S> {
     type Space = Point3<S>;
 
+    /// Construct a look-at view matrix assuming a left-handed coordinate system.
     #[inline]
-    fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
+    fn look_to(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {
-            mat: Matrix3::look_at(dir, up),
+            mat: Matrix3::look_to_lh(dir, up),
         }
     }
 
