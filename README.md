@@ -1,6 +1,6 @@
 # cgmath-rs
 
-[![Build Status](https://travis-ci.org/rustgd/cgmath.svg?branch=master)](https://travis-ci.org/rustgd/cgmath)
+[![Build Status](https://github.com/rustgd/cgmath/workflows/tests/badge.svg)](https://github.com/rustgd/cgmath/actions)
 [![Documentation](https://docs.rs/cgmath/badge.svg)](https://docs.rs/cgmath)
 [![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/cgmath)
 [![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/rustgd/cgmath/blob/master/LICENSE)
