@@ -68,7 +68,6 @@ jobs:
         toolchain: [nightly]
         features:
           # The benchmark always needs the 'rand' feature
-          - "rand"
           - "rand,serde,mint"
     steps:
       - uses: actions/checkout@v2
