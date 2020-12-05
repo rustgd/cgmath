@@ -740,7 +740,9 @@ pub mod matrix3 {
         ]));
 
         #[allow(deprecated)]
-        assert_ulps_eq!(m, Matrix3::look_at(dir, up));
+        {
+            assert_ulps_eq!(m, Matrix3::look_at(dir, up));
+        }
     }
 
     #[test]
@@ -1164,7 +1166,9 @@ pub mod matrix4 {
 
         let m = Matrix4::look_to_rh(eye, dir, up);
         #[allow(deprecated)]
-        assert_ulps_eq!(m, Matrix4::look_at_dir(eye, dir, up));
+        {
+            assert_ulps_eq!(m, Matrix4::look_at_dir(eye, dir, up));
+        }
 
         let expected = Matrix4::from([
             [-0.9486833, -0.16903086, -0.26726127, 0.0],

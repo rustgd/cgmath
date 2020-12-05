@@ -387,7 +387,7 @@ impl<S: BaseFloat> Matrix4<S> {
     /// `center`, using `up` for orientation.
     #[deprecated = "Use Matrix4::look_at_rh"]
     pub fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        Matrix4::look_at_dir(eye, center - eye, up)
+        Matrix4::look_at_rh(eye, center, up)
     }
 
     /// Create a homogeneous transformation matrix that will cause a vector to point at
@@ -1122,7 +1122,7 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = center - eye;
-        Matrix3::look_at(dir, up)
+        Matrix3::look_to_lh(dir, up)
     }
 
     fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
@@ -1155,7 +1155,7 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
 
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        Matrix4::look_at(eye, center, up)
+        Matrix4::look_at_rh(eye, center, up)
     }
 
     fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
