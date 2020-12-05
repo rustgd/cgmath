@@ -365,7 +365,7 @@ impl<S: BaseFloat> Rotation for Basis3<S> {
     #[inline]
     fn look_at(dir: Vector3<S>, up: Vector3<S>) -> Basis3<S> {
         Basis3 {
-            mat: Matrix3::look_at(dir, up),
+            mat: Matrix3::look_to_lh(dir, up),
         }
     }
 
