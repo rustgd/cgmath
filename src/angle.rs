@@ -217,7 +217,7 @@ macro_rules! impl_angle {
                 S: BaseFloat + SampleUniform {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $Angle<S> {
-                $Angle(rng.gen_range(cast::<_, S>(-$hi).unwrap(), cast::<_, S>($hi).unwrap()))
+                $Angle(rng.gen_range(cast::<_, S>(-$hi).unwrap() .. cast::<_, S>($hi).unwrap()))
             }
         }
 
