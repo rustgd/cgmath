@@ -21,11 +21,11 @@ unstable = []
 swizzle = []
 
 [dependencies]
-approx = "0.3"
+approx = "0.4"
 mint = { version = "0.5", optional = true }
 num-traits = "0.2"
 # small_rng used only for benchmarks
-rand = { version = "0.7", features = ["small_rng"], optional = true }
+rand = { version = "0.8", features = ["small_rng"], optional = true }
 serde = { version = "1.0", features = ["serde_derive"], optional = true }
 simd = { version = "0.2", optional = true }  # works only in rust toolchain up to 1.32
 
