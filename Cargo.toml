@@ -1,8 +1,8 @@
 [package]
 
 name = "cgmath"
-version = "0.17.0"
-authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>"]
+version = "0.18.0"
+authors = ["Rust game-developers"]
 license = "Apache-2.0"
 description = "A linear algebra and mathematics library for computer graphics."
 
@@ -27,8 +27,8 @@ num-traits = "0.2"
 # small_rng used only for benchmarks
 rand = { version = "0.8", features = ["small_rng"], optional = true }
 serde = { version = "1.0", features = ["serde_derive"], optional = true }
-simd = { version = "0.2", optional = true }  # works only in rust toolchain up to 1.32
+# works only in rust toolchain up to 1.32, disabled indefinitely
+#simd = { version = "0.2", optional = true }
 
 [dev-dependencies]
-# glium = "0.23"  # causes problems with nightly-2019-01-01 needed for testing "simd"
 serde_json = "1.0"
