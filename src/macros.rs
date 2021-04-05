@@ -139,30 +139,8 @@ macro_rules! impl_assignment_operator {
 }
 
 macro_rules! fold_array {
-    (&$method:ident, { $x:expr }) => {
-        *$x
-    };
-    (&$method:ident, { $x:expr, $y:expr }) => {
-        $x.$method(&$y)
-    };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr }) => {
-        $x.$method(&$y).$method(&$z)
-    };
-    (&$method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => {
-        $x.$method(&$y).$method(&$z).$method(&$w)
-    };
-    ($method:ident, { $x:expr }) => {
-        $x
-    };
-    ($method:ident, { $x:expr, $y:expr }) => {
-        $x.$method($y)
-    };
-    ($method:ident, { $x:expr, $y:expr, $z:expr }) => {
-        $x.$method($y).$method($z)
-    };
-    ($method:ident, { $x:expr, $y:expr, $z:expr, $w:expr }) => {
-        $x.$method($y).$method($z).$method($w)
-    };
+    ($method:ident, $x:expr) => ($x);
+    ($method:ident, $x:expr, $($y:expr),+) => ($x.$method(fold_array!($method, $($y),+)))
 }
 
 /// Generate array conversion implementations for a compound array type

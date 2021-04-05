@@ -163,12 +163,12 @@ macro_rules! impl_vector {
 
             #[inline]
             fn sum(self) -> S where S: Add<Output = S> {
-                fold_array!(add, { $(self.$field),+ })
+                fold_array!(add, $(self.$field),+ )
             }
 
             #[inline]
             fn product(self) -> S where S: Mul<Output = S> {
-                fold_array!(mul, { $(self.$field),+ })
+                fold_array!(mul, $(self.$field),+ )
             }
 
             fn is_finite(&self) -> bool where S: Float {
