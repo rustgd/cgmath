@@ -1153,7 +1153,6 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
 }
 
 impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
-
     fn look_at(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_at_rh(eye, center, up)
     }
@@ -1450,10 +1449,10 @@ where
 
 macro_rules! fixed_array_conversions {
     ($MatrixN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-        impl<$S> Into<[[$S; $n]; $n]> for $MatrixN<$S> {
+        impl<$S> From<$MatrixN<$S>> for [[$S; $n]; $n] {
             #[inline]
-            fn into(self) -> [[$S; $n]; $n] {
-                match self { $MatrixN { $($field),+ } => [$($field.into()),+] }
+            fn from(v: $MatrixN<$S>) -> Self {
+                match v { $MatrixN { $($field),+ } => [$($field.into()),+] }
             }
         }
 
@@ -1546,10 +1545,10 @@ fixed_array_conversions!(Matrix4<S> { x:0, y:1, z:2, w:3 }, 4);
 #[cfg(feature = "mint")]
 macro_rules! mint_conversions {
     ($MatrixN:ident { $($field:ident),+ }, $MintN:ident) => {
-        impl<S: Clone> Into<mint::$MintN<S>> for $MatrixN<S> {
+        impl<S: Clone> From<$MatrixN<S>> for mint::$MintN<S> {
             #[inline]
-            fn into(self) -> mint::$MintN<S> {
-                mint::$MintN { $($field: self.$field.into()),+ }
+            fn from(v: $MatrixN<S>) -> Self {
+                mint::$MintN { $($field: v.$field.into()),+ }
             }
         }
 

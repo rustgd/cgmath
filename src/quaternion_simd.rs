@@ -36,11 +36,11 @@ impl From<Simdf32x4> for Quaternion<f32> {
     }
 }
 
-impl Into<Simdf32x4> for Quaternion<f32> {
+impl From<Quaternion<f32>> for Simdf32x4 {
     #[inline]
-    fn into(self) -> Simdf32x4 {
-        let self_ref: &[f32; 4] = self.as_ref();
-        Simdf32x4::load(self_ref.as_ref(), 0 as usize)
+    fn from(v: Quaternion<f32>) -> Self {
+        let v_ref: &[f32; 4] = v.as_ref();
+        Simdf32x4::load(v_ref.as_ref(), 0 as usize)
     }
 }
 

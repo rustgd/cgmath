@@ -219,8 +219,8 @@ impl<S, A: Angle + From<S>> From<MintEuler<S>> for Euler<A> {
 }
 
 #[cfg(feature = "mint")]
-impl<S: Clone, A: Angle + Into<S>> Into<MintEuler<S>> for Euler<A> {
-    fn into(self) -> MintEuler<S> {
-        MintEuler::from([self.x.into(), self.y.into(), self.z.into()])
+impl<S: Clone, A: Angle + Into<S>> From<Euler<A>> for MintEuler<S> {
+    fn from(v: Euler<A>) -> Self {
+        MintEuler::from([v.x.into(), v.y.into(), v.z.into()])
     }
 }
