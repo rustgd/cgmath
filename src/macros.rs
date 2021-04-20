@@ -146,10 +146,10 @@ macro_rules! fold_array {
 /// Generate array conversion implementations for a compound array type
 macro_rules! impl_fixed_array_conversions {
     ($ArrayN:ident <$S:ident> { $($field:ident : $index:expr),+ }, $n:expr) => {
-        impl<$S> Into<[$S; $n]> for $ArrayN<$S> {
+        impl<$S> From<$ArrayN<$S>> for [$S; $n] {
             #[inline]
-            fn into(self) -> [$S; $n] {
-                match self { $ArrayN { $($field),+ } => [$($field),+] }
+            fn from(v: $ArrayN<$S>) -> Self {
+                match v { $ArrayN { $($field),+ } => [$($field),+] }
             }
         }
 
@@ -194,10 +194,10 @@ macro_rules! impl_fixed_array_conversions {
 /// Generate homogeneous tuple conversion implementations for a compound array type
 macro_rules! impl_tuple_conversions {
     ($ArrayN:ident <$S:ident> { $($field:ident),+ }, $Tuple:ty) => {
-        impl<$S> Into<$Tuple> for $ArrayN<$S> {
+        impl<$S> From<$ArrayN<$S>> for $Tuple {
             #[inline]
-            fn into(self) -> $Tuple {
-                match self { $ArrayN { $($field),+ } => ($($field),+,) }
+            fn from(v: $ArrayN<$S>) -> Self {
+                match v { $ArrayN { $($field),+ } => ($($field),+,) }
             }
         }
 
@@ -360,10 +360,10 @@ macro_rules! impl_operator_simd {
 #[cfg(feature = "mint")]
 macro_rules! impl_mint_conversions {
     ($ArrayN:ident { $($field:ident),+ }, $Mint:ident) => {
-        impl<S: Clone> Into<mint::$Mint<S>> for $ArrayN<S> {
+        impl<S: Clone> From<$ArrayN<S>> for mint::$Mint<S> {
             #[inline]
-            fn into(self) -> mint::$Mint<S> {
-                mint::$Mint::from([$(self.$field),+])
+            fn from(v: $ArrayN<S>) -> Self {
+                mint::$Mint::from([$(v.$field),+])
             }
         }
 
