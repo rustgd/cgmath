@@ -61,11 +61,11 @@ impl Vector4<f32> {
     }
 }
 
-impl Into<Simdf32x4> for Vector4<f32> {
+impl From<Vector4<f32>> for Simdf32x4 {
     #[inline]
-    fn into(self) -> Simdf32x4 {
-        let self_ref: &[f32; 4] = self.as_ref();
-        Simdf32x4::load(self_ref.as_ref(), 0 as usize)
+    fn from(v: Vector4<f32>) -> Self {
+        let v_ref: &[f32; 4] = v.as_ref();
+        Simdf32x4::load(v_ref.as_ref(), 0 as usize)
     }
 }
 
@@ -254,11 +254,11 @@ impl From<Simdi32x4> for Vector4<i32> {
     }
 }
 
-impl Into<Simdi32x4> for Vector4<i32> {
+impl From<Vector4<i32>> for Simdi32x4 {
     #[inline]
-    fn into(self) -> Simdi32x4 {
-        let self_ref: &[i32; 4] = self.as_ref();
-        Simdi32x4::load(self_ref.as_ref(), 0 as usize)
+    fn from(v: Vector4<i32>) -> Self {
+        let v_ref: &[i32; 4] = v.as_ref();
+        Simdi32x4::load(v_ref.as_ref(), 0 as usize)
     }
 }
 
@@ -334,11 +334,11 @@ impl From<Simdu32x4> for Vector4<u32> {
     }
 }
 
-impl Into<Simdu32x4> for Vector4<u32> {
+impl From<Vector4<u32>> for Simdu32x4 {
     #[inline]
-    fn into(self) -> Simdu32x4 {
-        let self_ref: &[u32; 4] = self.as_ref();
-        Simdu32x4::load(self_ref.as_ref(), 0 as usize)
+    fn from(v: Vector4<u32>) -> Self {
+        let v_ref: &[u32; 4] = v.as_ref();
+        Simdu32x4::load(v_ref.as_ref(), 0 as usize)
     }
 }
 

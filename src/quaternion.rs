@@ -106,7 +106,7 @@ impl<S: BaseFloat> Quaternion<S> {
     }
 
     /// Do a normalized linear interpolation with `other`, by `amount`.
-    /// 
+    ///
     /// This takes the shortest path, so if the quaternions have a negative
     /// dot product, the interpolation will be between `self` and `-other`.
     pub fn nlerp(self, mut other: Quaternion<S>, amount: S) -> Quaternion<S> {
@@ -121,7 +121,7 @@ impl<S: BaseFloat> Quaternion<S> {
     ///
     /// Return the spherical linear interpolation between the quaternion and
     /// `other`. Both quaternions should be normalized first.
-    /// 
+    ///
     /// This takes the shortest path, so if the quaternions have a negative
     /// dot product, the interpolation will be between `self` and `-other`.
     ///
@@ -538,10 +538,10 @@ impl<S: BaseFloat> Rotation3 for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Into<[S; 4]> for Quaternion<S> {
+impl<S: BaseFloat> From<Quaternion<S>> for [S; 4] {
     #[inline]
-    fn into(self) -> [S; 4] {
-        match self.into() {
+    fn from(v: Quaternion<S>) -> Self {
+        match v.into() {
             (xi, yj, zk, w) => [xi, yj, zk, w],
         }
     }
@@ -582,10 +582,10 @@ impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> Into<(S, S, S, S)> for Quaternion<S> {
+impl<S: BaseFloat> From<Quaternion<S>> for (S, S, S, S) {
     #[inline]
-    fn into(self) -> (S, S, S, S) {
-        match self {
+    fn from(v: Quaternion<S>) -> Self {
+        match v {
             Quaternion {
                 s,
                 v: Vector3 { x, y, z },
@@ -683,11 +683,11 @@ impl<S> From<mint::Quaternion<S>> for Quaternion<S> {
 }
 
 #[cfg(feature = "mint")]
-impl<S: Clone> Into<mint::Quaternion<S>> for Quaternion<S> {
-    fn into(self) -> mint::Quaternion<S> {
+impl<S: Clone> From<Quaternion<S>> for mint::Quaternion<S> {
+    fn from(v: Quaternion<S>) -> Self {
         mint::Quaternion {
-            s: self.s,
-            v: self.v.into(),
+            s: v.s,
+            v: v.v.into(),
         }
     }
 }
@@ -933,7 +933,7 @@ mod tests {
             -0.5576775358252053,
             -0.5576775358252053,
             -0.5576775358252053,
-            0.2588190451025208
+            0.2588190451025208,
         ]);
         assert_ulps_eq!(expected, q.slerp(r, 0.25));
     }
