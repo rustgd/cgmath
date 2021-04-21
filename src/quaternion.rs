@@ -684,7 +684,7 @@ impl<S> From<mint::Quaternion<S>> for Quaternion<S> {
 
 #[cfg(feature = "mint")]
 impl<S: Clone> From<Quaternion<S>> for mint::Quaternion<S> {
-    fn from(v: Quaternion<S>) -> mint::Quaternion<S> {
+    fn from(v: Quaternion<S>) -> Self {
         mint::Quaternion {
             s: v.s,
             v: v.v.into(),
