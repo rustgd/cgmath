@@ -220,7 +220,7 @@ mod from {
         use cgmath::*;
 
         fn check_with_euler(x: Rad<f32>, y: Rad<f32>, z: Rad<f32>) {
-            let matrix3 = Matrix3::from(Euler { x: x, y: y, z: z });
+            let matrix3 = Matrix3::from(Euler { x, y, z });
             let quaternion = Quaternion::from(matrix3);
             let quaternion_matrix3 = Matrix3::from(quaternion);
             assert_ulps_eq!(matrix3, quaternion_matrix3);
@@ -265,7 +265,7 @@ mod arc {
     #[test]
     fn test_same() {
         let v = Vector3::unit_x();
-        let q = Quaternion::from_arc(v, v, None);
+        let q = Quaternion::from_arc(v.clone(), v, None);
         assert_eq!(q, Quaternion::new(1.0, 0.0, 0.0, 0.0));
     }
 

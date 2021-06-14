@@ -51,7 +51,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add `Array::len`
 - Re-export `Bounded` and implement for vectors, points, and angles
 - Add vector subtraction to `EuclideanSpace`
-- Add swizzle functions behinde that `"swizzle"` feature
+- Add swizzle functions behind that `"swizzle"` feature
 - Add `Matrix4::look_at_dir`
 
 ### Changed

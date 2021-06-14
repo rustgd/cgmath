@@ -123,8 +123,8 @@ where
     }
 
     #[inline]
-    fn look_at_lh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
-        let rot = R::look_at(center - eye, up);
+    fn look_at_rh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
+        let rot = R::look_at(eye - center, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
@@ -134,8 +134,8 @@ where
     }
 
     #[inline]
-    fn look_at_rh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
-        let rot = R::look_at(eye - center, up);
+    fn look_at_lh(eye: P, center: P, up: P::Diff) -> Decomposed<P::Diff, R> {
+        let rot = R::look_at(center - eye, up);
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
@@ -366,7 +366,7 @@ mod serde_de {
         where
             D: serde::de::Deserializer<'a>,
         {
-            const FIELDS: &'static [&'static str] = &["scale", "rot", "disp"];
+            const FIELDS: &[&str] = &["scale", "rot", "disp"];
             deserializer.deserialize_struct("Decomposed", FIELDS, DecomposedVisitor(PhantomData))
         }
     }
@@ -422,11 +422,7 @@ mod serde_de {
                 None => return Err(serde::de::Error::missing_field("disp")),
             };
 
-            Ok(Decomposed {
-                scale: scale,
-                rot: rot,
-                disp: disp,
-            })
+            Ok(Decomposed { scale, rot, disp })
         }
     }
 }

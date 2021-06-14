@@ -149,7 +149,7 @@ pub trait Rotation3:
 /// let unit_y = rot.rotate_vector(unit_x);
 ///
 /// // Since sin(π/2) may not be exactly zero due to rounding errors, we can
-/// // use approx's assert_ulps_eq!() feature to show that it is close enough.
+/// // use approx assert_ulps_eq!() feature to show that it is close enough.
 /// // assert_ulps_eq!(&unit_y, &Vector2::unit_y()); // TODO: Figure out how to use this
 ///
 /// // This is exactly equivalent to using the raw matrix itself:
@@ -319,7 +319,7 @@ impl<S: BaseFloat> Basis3<S> {
     #[inline]
     pub fn from_quaternion(quaternion: &Quaternion<S>) -> Basis3<S> {
         Basis3 {
-            mat: quaternion.clone().into(),
+            mat: (*quaternion).into(),
         }
     }
 }

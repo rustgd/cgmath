@@ -218,7 +218,7 @@ macro_rules! impl_tuple_conversions {
         impl<$S> From<$Tuple> for $ArrayN<$S> {
             #[inline]
             fn from(v: $Tuple) -> $ArrayN<$S> {
-                match v { ($($field),+,) => $ArrayN { $($field: $field),+ } }
+                match v { ($($field),+,) => $ArrayN { $($field),+ } }
             }
         }
 

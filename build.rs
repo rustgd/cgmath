@@ -7,7 +7,7 @@ use std::string::String;
 /// Generate the name of the swizzle function and what it returns.
 /// NOTE: This function assumes that variables are in ASCII format
 #[cfg(feature = "swizzle")]
-fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<(String, String)> {
+fn gen_swizzle_nth(variables: &str, mut i: usize, upto: usize) -> Option<(String, String)> {
     debug_assert!(i > 0); // zeroth permutation is empty
     let mut swizzle_impl = String::new();
     let mut swizzle = String::new();
@@ -22,7 +22,7 @@ fn gen_swizzle_nth<'a>(variables: &'a str, mut i: usize, upto: usize) -> Option<
         let c = variables.as_bytes()[i % n - 1] as char;
         swizzle.push(c);
         swizzle_impl.push_str(&format!("self.{}, ", c));
-        i = i / n;
+        i /= n;
     }
     Some((swizzle, swizzle_impl))
 }

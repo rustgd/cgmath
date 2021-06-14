@@ -563,8 +563,8 @@ impl<S: BaseFloat> VectorSpace for Matrix4<S> {
 }
 
 impl<S: BaseFloat> Matrix for Matrix2<S> {
-    type Column = Vector2<S>;
     type Row = Vector2<S>;
+    type Column = Vector2<S>;
     type Transpose = Matrix2<S>;
 
     #[inline]
@@ -661,8 +661,8 @@ impl<S: BaseFloat> SquareMatrix for Matrix2<S> {
 }
 
 impl<S: BaseFloat> Matrix for Matrix3<S> {
-    type Column = Vector3<S>;
     type Row = Vector3<S>;
+    type Column = Vector3<S>;
     type Transpose = Matrix3<S>;
 
     #[inline]
@@ -776,8 +776,8 @@ impl<S: BaseFloat> SquareMatrix for Matrix3<S> {
 }
 
 impl<S: BaseFloat> Matrix for Matrix4<S> {
-    type Column = Vector4<S>;
     type Row = Vector4<S>;
+    type Column = Vector4<S>;
     type Transpose = Matrix4<S>;
 
     #[inline]
@@ -1092,13 +1092,13 @@ impl<S: BaseFloat> Transform<Point2<S>> for Matrix3<S> {
         Matrix3::from(Matrix2::look_at(dir, up))
     }
 
-    fn look_at_lh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
-        let dir = center - eye;
+    fn look_at_rh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+        let dir = eye - center;
         Matrix3::from(Matrix2::look_at(dir, up))
     }
 
-    fn look_at_rh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
-        let dir = eye - center;
+    fn look_at_lh(eye: Point2<S>, center: Point2<S>, up: Vector2<S>) -> Matrix3<S> {
+        let dir = center - eye;
         Matrix3::from(Matrix2::look_at(dir, up))
     }
 
@@ -1125,14 +1125,14 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix3<S> {
         Matrix3::look_to_lh(dir, up)
     }
 
-    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
-        let dir = center - eye;
-        Matrix3::look_to_lh(dir, up)
-    }
-
     fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
         let dir = center - eye;
         Matrix3::look_to_rh(dir, up)
+    }
+
+    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix3<S> {
+        let dir = center - eye;
+        Matrix3::look_to_lh(dir, up)
     }
 
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {
@@ -1157,12 +1157,12 @@ impl<S: BaseFloat> Transform<Point3<S>> for Matrix4<S> {
         Matrix4::look_at_rh(eye, center, up)
     }
 
-    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
-        Matrix4::look_at_lh(eye, center, up)
-    }
-
     fn look_at_rh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
         Matrix4::look_at_rh(eye, center, up)
+    }
+
+    fn look_at_lh(eye: Point3<S>, center: Point3<S>, up: Vector3<S>) -> Matrix4<S> {
+        Matrix4::look_at_lh(eye, center, up)
     }
 
     fn transform_vector(&self, vec: Vector3<S>) -> Vector3<S> {

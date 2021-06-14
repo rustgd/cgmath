@@ -83,7 +83,7 @@ macro_rules! impl_point {
             /// Construct a new point, using the provided values.
             #[inline]
             pub const fn new($($field: S),+) -> $PointN<S> {
-                $PointN { $($field: $field),+ }
+                $PointN { $($field),+ }
             }
 
             /// Perform the given operation on each field in the point, returning a new point
@@ -405,7 +405,7 @@ mod tests {
         #[test]
         fn test_index_mut() {
             let mut p = POINT2;
-            *&mut p[0] = 0;
+            p[0] = 0;
             assert_eq!(p, [0, 2].into());
         }
 
@@ -518,7 +518,7 @@ mod tests {
         #[test]
         fn test_index_mut() {
             let mut p = POINT3;
-            *&mut p[1] = 0;
+            p[1] = 0;
             assert_eq!(p, [1, 0, 3].into());
         }
 
