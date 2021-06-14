@@ -31,9 +31,9 @@ use euler::Euler;
 use matrix::{Matrix3, Matrix4};
 use num::BaseFloat;
 use point::Point3;
+use quaternion;
 use rotation::{Basis3, Rotation, Rotation3};
 use vector::Vector3;
-use quaternion;
 
 #[cfg(feature = "mint")]
 use mint;
@@ -542,7 +542,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for [S; 4] {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
         let (xi, yj, zk, w) = v.into();
-            [xi, yj, zk, w]
+        [xi, yj, zk, w]
     }
 }
 
@@ -584,10 +584,10 @@ impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
 impl<S: BaseFloat> From<Quaternion<S>> for (S, S, S, S) {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
-            let Quaternion {
-                s,
-                v: Vector3 { x, y, z },
-            } = v;
+        let Quaternion {
+            s,
+            v: Vector3 { x, y, z },
+        } = v;
         (x, y, z, s)
     }
 }

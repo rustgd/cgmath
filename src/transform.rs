@@ -46,7 +46,8 @@ pub trait Transform<P: EuclideanSpace>: Sized + One {
 
     /// Inverse transform a vector using this transform
     fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
-        self.inverse_transform().map(|inverse| inverse.transform_vector(vec))
+        self.inverse_transform()
+            .map(|inverse| inverse.transform_vector(vec))
     }
 
     /// Transform a point using this transform.
