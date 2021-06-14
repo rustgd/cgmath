@@ -35,9 +35,9 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
 ) -> Matrix4<S> {
     PerspectiveFov {
         fovy: fovy.into(),
-        aspect: aspect,
-        near: near,
-        far: far,
+        aspect,
+        near,
+        far,
     }
     .into()
 }
@@ -49,12 +49,12 @@ pub fn perspective<S: BaseFloat, A: Into<Rad<S>>>(
 /// [`glFrustum`]: http://www.opengl.org/sdk/docs/man2/xhtml/glFrustum.xml
 pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Perspective {
-        left: left,
-        right: right,
-        bottom: bottom,
-        top: top,
-        near: near,
-        far: far,
+        left,
+        right,
+        bottom,
+        top,
+        near,
+        far,
     }
     .into()
 }
@@ -66,12 +66,12 @@ pub fn frustum<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far:
 /// [`glOrtho`]: http://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml
 pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S) -> Matrix4<S> {
     Ortho {
-        left: left,
-        right: right,
-        bottom: bottom,
-        top: top,
-        near: near,
-        far: far,
+        left,
+        right,
+        bottom,
+        top,
+        near,
+        far,
     }
     .into()
 }
@@ -99,8 +99,8 @@ impl<S: BaseFloat> PerspectiveFov<S> {
             right: xmax,
             bottom: -ymax,
             top: ymax,
-            near: self.near.clone(),
-            far: self.far.clone(),
+            near: self.near,
+            far: self.far,
         }
     }
 }

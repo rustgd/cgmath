@@ -354,9 +354,9 @@ impl<S: BaseFloat> Matrix4<S> {
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
         Matrix4::new(
-            s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
-            s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
-            s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
+            s.x, u.x, -f.x, S::zero(),
+            s.y, u.y, -f.y, S::zero(),
+            s.z, u.z, -f.z, S::zero(),
             -eye.dot(s), -eye.dot(u), eye.dot(f), S::one(),
         )
     }
@@ -370,9 +370,9 @@ impl<S: BaseFloat> Matrix4<S> {
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
         Matrix4::new(
-            s.x.clone(), u.x.clone(), -f.x.clone(), S::zero(),
-            s.y.clone(), u.y.clone(), -f.y.clone(), S::zero(),
-            s.z.clone(), u.z.clone(), -f.z.clone(), S::zero(),
+            s.x, u.x, -f.x, S::zero(),
+            s.y, u.y, -f.y, S::zero(),
+            s.z, u.z, -f.z, S::zero(),
             -eye.dot(s), -eye.dot(u), eye.dot(f), S::one(),
         )
     }

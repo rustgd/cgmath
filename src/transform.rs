@@ -46,8 +46,7 @@ pub trait Transform<P: EuclideanSpace>: Sized + One {
 
     /// Inverse transform a vector using this transform
     fn inverse_transform_vector(&self, vec: P::Diff) -> Option<P::Diff> {
-        self.inverse_transform()
-            .and_then(|inverse| Some(inverse.transform_vector(vec)))
+        self.inverse_transform().map(|inverse| inverse.transform_vector(vec))
     }
 
     /// Transform a point using this transform.
@@ -117,8 +116,8 @@ where
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
-            rot: rot,
-            disp: disp,
+            rot,
+            disp,
         }
     }
 
@@ -128,8 +127,8 @@ where
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
-            rot: rot,
-            disp: disp,
+            rot,
+            disp,
         }
     }
 
@@ -139,8 +138,8 @@ where
         let disp = rot.rotate_vector(P::origin() - eye);
         Decomposed {
             scale: P::Scalar::one(),
-            rot: rot,
-            disp: disp,
+            rot,
+            disp,
         }
     }
 
@@ -201,7 +200,7 @@ pub trait Transform3:
 impl<S: BaseFloat, R: Rotation2<Scalar = S>> From<Decomposed<Vector2<S>, R>> for Matrix3<S> {
     fn from(dec: Decomposed<Vector2<S>, R>) -> Matrix3<S> {
         let m: Matrix2<_> = dec.rot.into();
-        let mut m: Matrix3<_> = (&m * dec.scale).into();
+        let mut m: Matrix3<_> = (m * dec.scale).into();
         m.z = dec.disp.extend(S::one());
         m
     }
@@ -210,7 +209,7 @@ impl<S: BaseFloat, R: Rotation2<Scalar = S>> From<Decomposed<Vector2<S>, R>> for
 impl<S: BaseFloat, R: Rotation3<Scalar = S>> From<Decomposed<Vector3<S>, R>> for Matrix4<S> {
     fn from(dec: Decomposed<Vector3<S>, R>) -> Matrix4<S> {
         let m: Matrix3<_> = dec.rot.into();
-        let mut m: Matrix4<_> = (&m * dec.scale).into();
+        let mut m: Matrix4<_> = (m * dec.scale).into();
         m.w = dec.disp.extend(S::one());
         m
     }
