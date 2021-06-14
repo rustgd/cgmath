@@ -96,7 +96,7 @@ macro_rules! impl_vector {
             /// Construct a new vector, using the provided values.
             #[inline]
             pub const fn new($($field: S),+) -> $VectorN<S> {
-                $VectorN { $($field: $field),+ }
+                $VectorN { $($field),+ }
             }
 
             /// Perform the given operation on each field in the vector, returning a new point
@@ -620,7 +620,7 @@ mod tests {
         #[test]
         fn test_index_mut() {
             let mut v = VECTOR2;
-            *&mut v[0] = 0;
+            v[0] = 0;
             assert_eq!(v, [0, 2].into());
         }
 
@@ -741,7 +741,7 @@ mod tests {
         #[test]
         fn test_index_mut() {
             let mut v = VECTOR3;
-            *&mut v[1] = 0;
+            v[1] = 0;
             assert_eq!(v, [1, 0, 3].into());
         }
 
@@ -868,7 +868,7 @@ mod tests {
         #[test]
         fn test_index_mut() {
             let mut v = VECTOR4;
-            *&mut v[2] = 0;
+            v[2] = 0;
             assert_eq!(v, [1, 2, 0, 4].into());
         }
 

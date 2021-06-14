@@ -122,7 +122,7 @@ fn test_look_at_lh() {
     assert_ulps_eq!(t, Matrix4::<f64>::look_at_lh(eye, center, up));
     assert_ulps_eq!(&t.transform_point(point), &view_point);
 
-    // Decomposed::look_at is inconsistent and deprecated, but verify that the behvaior
+    // Decomposed::look_at is inconsistent and deprecated, but verify that the behavior
     // remains the same until removed.
     #[allow(deprecated)]
     let t: Decomposed<Vector3<f64>, Quaternion<f64>> = Transform::look_at(eye, center, up);

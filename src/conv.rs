@@ -20,7 +20,7 @@
 //! let uniforms = uniform! {
 //!     point: Into::<[_; 2]>::into(point),
 //!     matrix: Into::<[[_; 4]; 4]>::into(matrix),
-//!     // Yuck!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻
+//!     // Yuck!! (ﾉಥ益ಥ）ﾉ﻿ ┻━┻)
 //! };
 //! # }
 //! ` ` `

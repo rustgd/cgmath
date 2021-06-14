@@ -28,7 +28,7 @@ impl From<Simdf32x4> for Vector4<f32> {
     #[inline]
     fn from(f: Simdf32x4) -> Self {
         unsafe {
-            let mut ret: Self = mem::uninitialized();
+            let mut ret: Self = mem::MaybeUninit();
             {
                 let ret_mut: &mut [f32; 4] = ret.as_mut();
                 f.store(ret_mut.as_mut(), 0 as usize);
@@ -244,7 +244,7 @@ impl From<Simdi32x4> for Vector4<i32> {
     #[inline]
     fn from(f: Simdi32x4) -> Self {
         unsafe {
-            let mut ret: Self = mem::uninitialized();
+            let mut ret: Self = mem::MaybeUninit();
             {
                 let ret_mut: &mut [i32; 4] = ret.as_mut();
                 f.store(ret_mut.as_mut(), 0 as usize);
@@ -324,7 +324,7 @@ impl From<Simdu32x4> for Vector4<u32> {
     #[inline]
     fn from(f: Simdu32x4) -> Self {
         unsafe {
-            let mut ret: Self = mem::uninitialized();
+            let mut ret: Self = mem::MaybeUninit();
             {
                 let ret_mut: &mut [u32; 4] = ret.as_mut();
                 f.store(ret_mut.as_mut(), 0 as usize);

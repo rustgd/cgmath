@@ -26,7 +26,7 @@ impl From<Simdf32x4> for Quaternion<f32> {
     #[inline]
     fn from(f: Simdf32x4) -> Self {
         unsafe {
-            let mut ret: Self = mem::uninitialized();
+            let mut ret: Self = mem::MaybeUninit();
             {
                 let ret_mut: &mut [f32; 4] = ret.as_mut();
                 f.store(ret_mut.as_mut(), 0 as usize);

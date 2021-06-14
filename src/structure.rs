@@ -580,10 +580,10 @@ where
     fn is_symmetric(&self) -> bool;
 }
 
-/// Angles and their associated trigonometric functions.
+/// Angles, and their associated trigonometric functions.
 ///
 /// Typed angles allow for the writing of self-documenting code that makes it
-/// clear when semantic violations have occured - for example, adding degrees to
+/// clear when semantic violations have occurred - for example, adding degrees to
 /// radians, or adding a number to an angle.
 ///
 pub trait Angle
@@ -609,7 +609,7 @@ where
 {
     type Unitless: BaseFloat;
 
-    /// Return the angle, normalized to the range `[0, full_turn)`.
+    /// Return the angle, normalized to the range `[0, full_turn]`.
     #[inline]
     fn normalize(self) -> Self {
         let rem = self % Self::full_turn();
@@ -620,7 +620,7 @@ where
         }
     }
 
-    /// Return the angle, normalized to the range `[-turn_div_2, turn_div_2)`.
+    /// Return the angle, normalized to the range `[-turn_div_2, turn_div_2]`.
     #[inline]
     fn normalize_signed(self) -> Self {
         let rem = self.normalize();
