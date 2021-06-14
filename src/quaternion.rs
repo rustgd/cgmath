@@ -14,7 +14,6 @@
 // limitations under the License.
 
 use std::iter;
-use std::mem;
 use std::ops::*;
 
 use num_traits::{cast, NumCast};
@@ -34,6 +33,7 @@ use num::BaseFloat;
 use point::Point3;
 use rotation::{Basis3, Rotation, Rotation3};
 use vector::Vector3;
+use quaternion;
 
 #[cfg(feature = "mint")]
 use mint;
@@ -63,7 +63,7 @@ impl<S> Quaternion<S> {
     /// Construct a new quaternion from a scalar and a vector.
     #[inline]
     pub const fn from_sv(s: S, v: Vector3<S>) -> Quaternion<S> {
-        Quaternion { s: s, v: v }
+        Quaternion { v, s }
     }
 }
 
@@ -541,23 +541,22 @@ impl<S: BaseFloat> Rotation3 for Quaternion<S> {
 impl<S: BaseFloat> From<Quaternion<S>> for [S; 4] {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
-        match v.into() {
-            (xi, yj, zk, w) => [xi, yj, zk, w],
-        }
+        let (xi, yj, zk, w) = v.into();
+            [xi, yj, zk, w]
     }
 }
 
 impl<S: BaseFloat> AsRef<[S; 4]> for Quaternion<S> {
     #[inline]
     fn as_ref(&self) -> &[S; 4] {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const quaternion::Quaternion<S> as *const [S; 4]) }
     }
 }
 
 impl<S: BaseFloat> AsMut<[S; 4]> for Quaternion<S> {
     #[inline]
     fn as_mut(&mut self) -> &mut [S; 4] {
-        unsafe { mem::transmute(self) }
+        unsafe { &mut *(self as *mut quaternion::Quaternion<S> as *mut [S; 4]) }
     }
 }
 
@@ -571,63 +570,61 @@ impl<S: BaseFloat> From<[S; 4]> for Quaternion<S> {
 impl<'a, S: BaseFloat> From<&'a [S; 4]> for &'a Quaternion<S> {
     #[inline]
     fn from(v: &'a [S; 4]) -> &'a Quaternion<S> {
-        unsafe { mem::transmute(v) }
+        unsafe { &*(v as *const [S; 4] as *const quaternion::Quaternion<S>) }
     }
 }
 
 impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
     #[inline]
     fn from(v: &'a mut [S; 4]) -> &'a mut Quaternion<S> {
-        unsafe { mem::transmute(v) }
+        unsafe { &mut *(v as *mut [S; 4] as *mut quaternion::Quaternion<S>) }
     }
 }
 
 impl<S: BaseFloat> From<Quaternion<S>> for (S, S, S, S) {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
-        match v {
-            Quaternion {
+            let Quaternion {
                 s,
                 v: Vector3 { x, y, z },
-            } => (x, y, z, s),
-        }
+            } = v;
+        (x, y, z, s)
     }
 }
 
 impl<S: BaseFloat> AsRef<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn as_ref(&self) -> &(S, S, S, S) {
-        unsafe { mem::transmute(self) }
+        unsafe { &*(self as *const quaternion::Quaternion<S> as *const (S, S, S, S)) }
     }
 }
 
 impl<S: BaseFloat> AsMut<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn as_mut(&mut self) -> &mut (S, S, S, S) {
-        unsafe { mem::transmute(self) }
+        unsafe { &mut *(self as *mut quaternion::Quaternion<S> as *mut (S, S, S, S)) }
     }
 }
 
 impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn from(v: (S, S, S, S)) -> Quaternion<S> {
-        match v {
-            (xi, yj, zk, w) => Quaternion::new(w, xi, yj, zk),
-        }
+        let (xi, yj, zk, w) = v;
+        Quaternion::new(w, xi, yj, zk)
     }
 }
 
 impl<'a, S: BaseFloat> From<&'a (S, S, S, S)> for &'a Quaternion<S> {
     #[inline]
     fn from(v: &'a (S, S, S, S)) -> &'a Quaternion<S> {
-        unsafe { mem::transmute(v) }
+        unsafe { &*(v as *const (S, S, S, S) as *const quaternion::Quaternion<S>) }
     }
 }
 
 impl<'a, S: BaseFloat> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
     #[inline]
     fn from(v: &'a mut (S, S, S, S)) -> &'a mut Quaternion<S> {
-        unsafe { mem::transmute(v) }
+        unsafe { &mut *(v as *mut (S, S, S, S) as *mut quaternion::Quaternion<S>) }
     }
 }
 
