@@ -135,7 +135,7 @@ impl<S: BaseFloat> Quaternion<S> {
     /// - [Understanding Slerp, Then Not Using It]
     ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
     /// - [Arcsynthesis OpenGL tutorial]
-    ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
+    ///   (https://www.roiatalla.com/public/arcsynthesis/html/Positioning/Tut08%20Interpolation.html)
     pub fn slerp(self, mut other: Quaternion<S>, amount: S) -> Quaternion<S> {
         let mut dot = self.dot(other);
         let dot_threshold: S = cast(0.9995f64).unwrap();
