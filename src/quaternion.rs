@@ -72,10 +72,8 @@ impl<S: BaseFloat> Quaternion<S> {
     ///
     /// Return the closest rotation that turns `src` vector into `dst`.
     ///
-    /// - [Related StackOverflow question]
-    ///   (http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
-    /// - [Ogre implementation for normalized vectors]
-    ///   (https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
+    /// - [Related StackOverflow question](http://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another)
+    /// - [Ogre implementation for normalized vectors](https://bitbucket.org/sinbad/ogre/src/9db75e3ba05c/OgreMain/include/OgreVector3.h?fileviewer=file-view-default#cl-651)
     pub fn from_arc(
         src: Vector3<S>,
         dst: Vector3<S>,
@@ -132,10 +130,8 @@ impl<S: BaseFloat> Quaternion<S> {
     /// more advisable to use `nlerp` when you know your rotations are going
     /// to be small.
     ///
-    /// - [Understanding Slerp, Then Not Using It]
-    ///   (http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
-    /// - [Arcsynthesis OpenGL tutorial]
-    ///   (http://www.arcsynthesis.org/gltut/Positioning/Tut08%20Interpolation.html)
+    /// - [Understanding Slerp, Then Not Using It](http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/)
+    /// - [Arcsynthesis OpenGL tutorial](https://www.roiatalla.com/public/arcsynthesis/html/Positioning/Tut08%20Interpolation.html)
     pub fn slerp(self, mut other: Quaternion<S>, amount: S) -> Quaternion<S> {
         let mut dot = self.dot(other);
         let dot_threshold: S = cast(0.9995f64).unwrap();
