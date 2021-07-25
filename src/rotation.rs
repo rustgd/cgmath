@@ -23,7 +23,7 @@ use angle::Rad;
 use approx;
 use euler::Euler;
 use matrix::{Matrix2, Matrix3};
-use num::BaseFloat;
+use num::{BaseFloat, BaseNum};
 use point::{Point2, Point3};
 use quaternion::Quaternion;
 use vector::{Vector2, Vector3};
@@ -36,7 +36,7 @@ where
     Self: approx::AbsDiffEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
     Self: approx::RelativeEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
     Self: approx::UlpsEq<Epsilon = <<Self as Rotation>::Space as EuclideanSpace>::Scalar>,
-    <Self::Space as EuclideanSpace>::Scalar: BaseFloat,
+    <Self::Space as EuclideanSpace>::Scalar: BaseNum,
     Self: iter::Product<Self>,
 {
     type Space: EuclideanSpace;

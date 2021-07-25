@@ -30,7 +30,7 @@ use structure::*;
 use angle::Rad;
 use approx;
 use euler::Euler;
-use num::BaseFloat;
+use num::{BaseFloat, BaseNum};
 use point::{Point2, Point3};
 use quaternion::Quaternion;
 use transform::{Transform, Transform2, Transform3};
@@ -1569,7 +1569,7 @@ mint_conversions!(Matrix3 { x, y, z }, ColumnMatrix3);
 #[cfg(feature = "mint")]
 mint_conversions!(Matrix4 { x, y, z, w }, ColumnMatrix4);
 
-impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
+impl<S: BaseNum> From<Matrix2<S>> for Matrix3<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 3-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix3<S> {
@@ -1582,7 +1582,7 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
+impl<S: BaseNum> From<Matrix2<S>> for Matrix4<S> {
     /// Clone the elements of a 2-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix2<S>) -> Matrix4<S> {
@@ -1596,7 +1596,7 @@ impl<S: BaseFloat> From<Matrix2<S>> for Matrix4<S> {
     }
 }
 
-impl<S: BaseFloat> From<Matrix3<S>> for Matrix4<S> {
+impl<S: BaseNum> From<Matrix3<S>> for Matrix4<S> {
     /// Clone the elements of a 3-dimensional matrix into the top-left corner
     /// of a 4-dimensional identity matrix.
     fn from(m: Matrix3<S>) -> Matrix4<S> {
@@ -1678,7 +1678,7 @@ impl<S: fmt::Debug> fmt::Debug for Matrix4<S> {
 impl<S> Distribution<Matrix2<S>> for Standard
 where
     Standard: Distribution<Vector2<S>>,
-    S: BaseFloat,
+    S: BaseNum,
 {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix2<S> {
@@ -1693,7 +1693,7 @@ where
 impl<S> Distribution<Matrix3<S>> for Standard
 where
     Standard: Distribution<Vector3<S>>,
-    S: BaseFloat,
+    S: BaseNum,
 {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix3<S> {
@@ -1709,7 +1709,7 @@ where
 impl<S> Distribution<Matrix4<S>> for Standard
 where
     Standard: Distribution<Vector4<S>>,
-    S: BaseFloat,
+    S: BaseNum,
 {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Matrix4<S> {

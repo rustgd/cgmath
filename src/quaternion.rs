@@ -29,7 +29,7 @@ use angle::Rad;
 use approx;
 use euler::Euler;
 use matrix::{Matrix3, Matrix4};
-use num::BaseFloat;
+use num::{BaseFloat, BaseNum};
 use point::Point3;
 use quaternion;
 use rotation::{Basis3, Rotation, Rotation3};
@@ -410,7 +410,7 @@ impl<S: BaseFloat> approx::UlpsEq for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
+impl<S: BaseNum> From<Quaternion<S>> for Matrix3<S> {
     /// Convert the quaternion to a 3 x 3 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix3<S> {
         let x2 = quat.v.x + quat.v.x;
@@ -438,7 +438,7 @@ impl<S: BaseFloat> From<Quaternion<S>> for Matrix3<S> {
     }
 }
 
-impl<S: BaseFloat> From<Quaternion<S>> for Matrix4<S> {
+impl<S: BaseNum> From<Quaternion<S>> for Matrix4<S> {
     /// Convert the quaternion to a 4 x 4 rotation matrix.
     fn from(quat: Quaternion<S>) -> Matrix4<S> {
         let x2 = quat.v.x + quat.v.x;
@@ -534,7 +534,7 @@ impl<S: BaseFloat> Rotation3 for Quaternion<S> {
     }
 }
 
-impl<S: BaseFloat> From<Quaternion<S>> for [S; 4] {
+impl<S: BaseNum> From<Quaternion<S>> for [S; 4] {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
         let (xi, yj, zk, w) = v.into();
@@ -542,42 +542,42 @@ impl<S: BaseFloat> From<Quaternion<S>> for [S; 4] {
     }
 }
 
-impl<S: BaseFloat> AsRef<[S; 4]> for Quaternion<S> {
+impl<S: BaseNum> AsRef<[S; 4]> for Quaternion<S> {
     #[inline]
     fn as_ref(&self) -> &[S; 4] {
         unsafe { &*(self as *const quaternion::Quaternion<S> as *const [S; 4]) }
     }
 }
 
-impl<S: BaseFloat> AsMut<[S; 4]> for Quaternion<S> {
+impl<S: BaseNum> AsMut<[S; 4]> for Quaternion<S> {
     #[inline]
     fn as_mut(&mut self) -> &mut [S; 4] {
         unsafe { &mut *(self as *mut quaternion::Quaternion<S> as *mut [S; 4]) }
     }
 }
 
-impl<S: BaseFloat> From<[S; 4]> for Quaternion<S> {
+impl<S: BaseNum> From<[S; 4]> for Quaternion<S> {
     #[inline]
     fn from(v: [S; 4]) -> Quaternion<S> {
         Quaternion::new(v[3], v[0], v[1], v[2])
     }
 }
 
-impl<'a, S: BaseFloat> From<&'a [S; 4]> for &'a Quaternion<S> {
+impl<'a, S: BaseNum> From<&'a [S; 4]> for &'a Quaternion<S> {
     #[inline]
     fn from(v: &'a [S; 4]) -> &'a Quaternion<S> {
         unsafe { &*(v as *const [S; 4] as *const quaternion::Quaternion<S>) }
     }
 }
 
-impl<'a, S: BaseFloat> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
+impl<'a, S: BaseNum> From<&'a mut [S; 4]> for &'a mut Quaternion<S> {
     #[inline]
     fn from(v: &'a mut [S; 4]) -> &'a mut Quaternion<S> {
         unsafe { &mut *(v as *mut [S; 4] as *mut quaternion::Quaternion<S>) }
     }
 }
 
-impl<S: BaseFloat> From<Quaternion<S>> for (S, S, S, S) {
+impl<S: BaseNum> From<Quaternion<S>> for (S, S, S, S) {
     #[inline]
     fn from(v: Quaternion<S>) -> Self {
         let Quaternion {
@@ -588,21 +588,21 @@ impl<S: BaseFloat> From<Quaternion<S>> for (S, S, S, S) {
     }
 }
 
-impl<S: BaseFloat> AsRef<(S, S, S, S)> for Quaternion<S> {
+impl<S: BaseNum> AsRef<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn as_ref(&self) -> &(S, S, S, S) {
         unsafe { &*(self as *const quaternion::Quaternion<S> as *const (S, S, S, S)) }
     }
 }
 
-impl<S: BaseFloat> AsMut<(S, S, S, S)> for Quaternion<S> {
+impl<S: BaseNum> AsMut<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn as_mut(&mut self) -> &mut (S, S, S, S) {
         unsafe { &mut *(self as *mut quaternion::Quaternion<S> as *mut (S, S, S, S)) }
     }
 }
 
-impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
+impl<S: BaseNum> From<(S, S, S, S)> for Quaternion<S> {
     #[inline]
     fn from(v: (S, S, S, S)) -> Quaternion<S> {
         let (xi, yj, zk, w) = v;
@@ -610,14 +610,14 @@ impl<S: BaseFloat> From<(S, S, S, S)> for Quaternion<S> {
     }
 }
 
-impl<'a, S: BaseFloat> From<&'a (S, S, S, S)> for &'a Quaternion<S> {
+impl<'a, S: BaseNum> From<&'a (S, S, S, S)> for &'a Quaternion<S> {
     #[inline]
     fn from(v: &'a (S, S, S, S)) -> &'a Quaternion<S> {
         unsafe { &*(v as *const (S, S, S, S) as *const quaternion::Quaternion<S>) }
     }
 }
 
-impl<'a, S: BaseFloat> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
+impl<'a, S: BaseNum> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
     #[inline]
     fn from(v: &'a mut (S, S, S, S)) -> &'a mut Quaternion<S> {
         unsafe { &mut *(v as *mut (S, S, S, S) as *mut quaternion::Quaternion<S>) }
@@ -626,7 +626,7 @@ impl<'a, S: BaseFloat> From<&'a mut (S, S, S, S)> for &'a mut Quaternion<S> {
 
 macro_rules! index_operators {
     ($S:ident, $Output:ty, $I:ty) => {
-        impl<$S: BaseFloat> Index<$I> for Quaternion<$S> {
+        impl<$S: BaseNum> Index<$I> for Quaternion<$S> {
             type Output = $Output;
 
             #[inline]
@@ -636,7 +636,7 @@ macro_rules! index_operators {
             }
         }
 
-        impl<$S: BaseFloat> IndexMut<$I> for Quaternion<$S> {
+        impl<$S: BaseNum> IndexMut<$I> for Quaternion<$S> {
             #[inline]
             fn index_mut<'a>(&'a mut self, i: $I) -> &'a mut $Output {
                 let v: &mut [$S; 4] = self.as_mut();
@@ -657,7 +657,7 @@ impl<S> Distribution<Quaternion<S>> for Standard
 where
     Standard: Distribution<S>,
     Standard: Distribution<Vector3<S>>,
-    S: BaseFloat,
+    S: BaseNum,
 {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quaternion<S> {

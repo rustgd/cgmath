@@ -30,7 +30,7 @@ use rand::{
 use structure::*;
 
 use approx;
-use num::BaseFloat;
+use num::{BaseFloat, BaseNum};
 
 /// An angle, in radians.
 ///
@@ -138,38 +138,38 @@ macro_rules! impl_angle {
             }
         }
 
-        impl_operator!(<S: BaseFloat> Add<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseNum> Add<$Angle<S> > for $Angle<S> {
             fn add(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 + rhs.0) }
         });
-        impl_operator!(<S: BaseFloat> Sub<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseNum> Sub<$Angle<S> > for $Angle<S> {
             fn sub(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 - rhs.0) }
         });
-        impl_operator!(<S: BaseFloat> Div<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseNum> Div<$Angle<S> > for $Angle<S> {
             fn div(lhs, rhs) -> S { lhs.0 / rhs.0 }
         });
-        impl_operator!(<S: BaseFloat> Rem<$Angle<S> > for $Angle<S> {
+        impl_operator!(<S: BaseNum> Rem<$Angle<S> > for $Angle<S> {
             fn rem(lhs, rhs) -> $Angle<S> { $Angle(lhs.0 % rhs.0) }
         });
-        impl_assignment_operator!(<S: BaseFloat> AddAssign<$Angle<S> > for $Angle<S> {
+        impl_assignment_operator!(<S: BaseNum> AddAssign<$Angle<S> > for $Angle<S> {
             fn add_assign(&mut self, other) { self.0 += other.0; }
         });
-        impl_assignment_operator!(<S: BaseFloat> SubAssign<$Angle<S> > for $Angle<S> {
+        impl_assignment_operator!(<S: BaseNum> SubAssign<$Angle<S> > for $Angle<S> {
             fn sub_assign(&mut self, other) { self.0 -= other.0; }
         });
-        impl_assignment_operator!(<S: BaseFloat> RemAssign<$Angle<S> > for $Angle<S> {
+        impl_assignment_operator!(<S: BaseNum> RemAssign<$Angle<S> > for $Angle<S> {
             fn rem_assign(&mut self, other) { self.0 %= other.0; }
         });
 
-        impl_operator!(<S: BaseFloat> Mul<S> for $Angle<S> {
+        impl_operator!(<S: BaseNum> Mul<S> for $Angle<S> {
             fn mul(lhs, scalar) -> $Angle<S> { $Angle(lhs.0 * scalar) }
         });
-        impl_operator!(<S: BaseFloat> Div<S> for $Angle<S> {
+        impl_operator!(<S: BaseNum> Div<S> for $Angle<S> {
             fn div(lhs, scalar) -> $Angle<S> { $Angle(lhs.0 / scalar) }
         });
-        impl_assignment_operator!(<S: BaseFloat> MulAssign<S> for $Angle<S> {
+        impl_assignment_operator!(<S: BaseNum> MulAssign<S> for $Angle<S> {
             fn mul_assign(&mut self, scalar) { self.0 *= scalar; }
         });
-        impl_assignment_operator!(<S: BaseFloat> DivAssign<S> for $Angle<S> {
+        impl_assignment_operator!(<S: BaseNum> DivAssign<S> for $Angle<S> {
             fn div_assign(&mut self, scalar) { self.0 /= scalar; }
         });
 

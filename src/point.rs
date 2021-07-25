@@ -154,7 +154,7 @@ macro_rules! impl_point {
             }
         }
 
-        impl<S: BaseFloat> MetricSpace for $PointN<S> {
+        impl<S: BaseNum> MetricSpace for $PointN<S> {
             type Metric = S;
 
             #[inline]
