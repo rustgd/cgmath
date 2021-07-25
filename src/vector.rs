@@ -254,7 +254,7 @@ macro_rules! impl_vector {
         #[cfg(feature = "rand")]
         impl<S> Distribution<$VectorN<S>> for Standard
             where Standard: Distribution<S>,
-                S: BaseFloat {
+                S: BaseNum {
             #[inline]
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $VectorN<S> {
                 $VectorN { $($field: rng.gen()),+ }
@@ -520,7 +520,7 @@ impl<S: BaseNum> Vector4<S> {
 #[inline]
 pub fn dot<V: InnerSpace>(a: V, b: V) -> V::Scalar
 where
-    V::Scalar: BaseFloat,
+    V::Scalar: BaseNum,
 {
     V::dot(a, b)
 }

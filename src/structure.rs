@@ -25,7 +25,7 @@ use approx;
 use angle::Rad;
 use num::{BaseFloat, BaseNum};
 
-pub use num_traits::{Bounded, NumCast, One, Zero};
+pub use num_traits::{Bounded, Num, NumCast, One, Zero};
 
 /// An array containing elements of type `Element`
 pub trait Array
@@ -441,7 +441,7 @@ where
 /// see `SquareMatrix`.
 pub trait Matrix: VectorSpace
 where
-    Self::Scalar: Float,
+    Self::Scalar: Num,
 
     // FIXME: Ugly type signatures - blocked by rust-lang/rust#24092
     Self: Index<usize, Output = <Self as Matrix>::Column>,
@@ -493,7 +493,7 @@ where
 /// A column-major major matrix where the rows and column vectors are of the same dimensions.
 pub trait SquareMatrix
 where
-    Self::Scalar: Float,
+    Self::Scalar: Num,
 
     Self: One,
     Self: iter::Product<Self>,
