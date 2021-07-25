@@ -18,7 +18,7 @@ use approx;
 use std::fmt;
 use std::ops::*;
 
-use num_traits::{Float, Num, NumCast};
+use num_traits::{Float, Num};
 
 /// Base numeric types with partial ordering
 pub trait BaseNum:
@@ -26,7 +26,6 @@ pub trait BaseNum:
     + Clone
     + fmt::Debug
     + Num
-    + NumCast
     + PartialOrd
     + AddAssign
     + SubAssign
@@ -41,7 +40,6 @@ impl<T> BaseNum for T where
         + Clone
         + fmt::Debug
         + Num
-        + NumCast
         + PartialOrd
         + AddAssign
         + SubAssign
