@@ -25,7 +25,7 @@ use approx;
 use angle::Rad;
 use num::{BaseFloat, BaseNum};
 
-pub use num_traits::{Bounded, One, Zero};
+pub use num_traits::{Bounded, NumCast, One, Zero};
 
 /// An array containing elements of type `Element`
 pub trait Array
@@ -388,7 +388,7 @@ where
     /// ```
     #[inline]
     fn midpoint(self, other: Self) -> Self {
-        self + (other - self) / cast(2).unwrap()
+        self + (other - self) / (Self::Scalar::one() + Self::Scalar::one())
     }
 
     /// Returns the average position of all points in the slice.
@@ -406,7 +406,7 @@ where
     /// let centroid = Point2::centroid(&triangle);
     /// ```
     #[inline]
-    fn centroid(points: &[Self]) -> Self {
+    fn centroid(points: &[Self]) -> Self where Self::Scalar: NumCast {
         let total_displacement = points
             .iter()
             .fold(Self::Diff::zero(), |acc, p| acc + p.to_vec());
