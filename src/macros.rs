@@ -373,7 +373,7 @@ macro_rules! impl_mint_conversions {
                 $ArrayN { $( $field: v.$field, )+ }
             }
         }
-        
+
         impl<S: Clone> mint::IntoMint for $ArrayN<S> {
             type MintType = mint::$Mint<S>;
         }

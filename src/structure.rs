@@ -406,7 +406,10 @@ where
     /// let centroid = Point2::centroid(&triangle);
     /// ```
     #[inline]
-    fn centroid(points: &[Self]) -> Self where Self::Scalar: NumCast {
+    fn centroid(points: &[Self]) -> Self
+    where
+        Self::Scalar: NumCast,
+    {
         let total_displacement = points
             .iter()
             .fold(Self::Diff::zero(), |acc, p| acc + p.to_vec());

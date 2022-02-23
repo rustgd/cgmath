@@ -1558,7 +1558,7 @@ macro_rules! mint_conversions {
                 $MatrixN { $($field: m.$field.into()),+ }
             }
         }
-        
+
         impl<S: Clone> mint::IntoMint for $MatrixN<S> {
             type MintType = mint::$MintN<S>;
         }
