@@ -29,6 +29,7 @@ rand = { version = "0.8", features = ["small_rng"], optional = true }
 serde = { version = "1.0", features = ["serde_derive"], optional = true }
 # works only in rust toolchain up to 1.32, disabled indefinitely
 #simd = { version = "0.2", optional = true }
+bytemuck = { version = "1.0", optional = true }
 
 [dev-dependencies]
 serde_json = "1.0"

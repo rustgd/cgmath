@@ -597,6 +597,18 @@ impl<S: fmt::Debug> fmt::Debug for Vector4<S> {
     }
 }
 
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Vector1);
+
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Vector2);
+
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Vector3);
+
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Vector4);
+
 #[cfg(feature = "mint")]
 impl_mint_conversions!(Vector2 { x, y }, Vector2);
 #[cfg(feature = "mint")]

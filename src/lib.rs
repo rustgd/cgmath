@@ -55,6 +55,9 @@
 #[macro_use]
 extern crate approx;
 
+#[cfg(feature = "bytemuck")]
+extern crate bytemuck;
+
 #[cfg(feature = "mint")]
 pub extern crate mint;
 

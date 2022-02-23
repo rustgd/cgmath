@@ -224,3 +224,6 @@ impl<S: Clone, A: Angle + Into<S>> From<Euler<A>> for MintEuler<S> {
         MintEuler::from([v.x.into(), v.y.into(), v.z.into()])
     }
 }
+
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Euler);

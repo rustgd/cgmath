@@ -368,6 +368,13 @@ impl_mint_conversions!(Point2 { x, y }, Point2);
 #[cfg(feature = "mint")]
 impl_mint_conversions!(Point3 { x, y, z }, Point3);
 
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Point1);
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Point2);
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Point3);
+
 impl<S: fmt::Debug> fmt::Debug for Point1<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Point1 ")?;

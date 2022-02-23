@@ -380,4 +380,13 @@ macro_rules! impl_mint_conversions {
     }
 }
 
+/// Generate implementation required to cast using `bytemuck`
+#[cfg(feature = "bytemuck")]
+macro_rules! impl_bytemuck_cast {
+    ($ArrayN:ident) => {
+        unsafe impl<S: bytemuck::Pod> bytemuck::Pod for $ArrayN<S> {}
+        unsafe impl<S: bytemuck::Zeroable> bytemuck::Zeroable for $ArrayN<S> {}
+    };
+}
+
 include!(concat!(env!("OUT_DIR"), "/swizzle_operator_macro.rs"));
