@@ -690,6 +690,9 @@ impl <S: Clone> mint::IntoMint for Quaternion<S> {
     type MintType = mint::Quaternion<S>;
 }
 
+#[cfg(feature = "bytemuck")]
+impl_bytemuck_cast!(Quaternion);
+
 #[cfg(test)]
 mod tests {
     use quaternion::*;
