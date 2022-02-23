@@ -686,7 +686,7 @@ impl<S: Clone> From<Quaternion<S>> for mint::Quaternion<S> {
 }
 
 #[cfg(feature = "mint")]
-impl <S: Clone> mint::IntoMint for Quaternion<S> {
+impl<S: Clone> mint::IntoMint for Quaternion<S> {
     type MintType = mint::Quaternion<S>;
 }
 
