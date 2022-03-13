@@ -112,6 +112,12 @@ macro_rules! impl_point {
             $PointN::new($($field),+)
         }
 
+        impl<S:BaseNum> From<$VectorN<S>> for $PointN<S> {
+            fn from(v: $VectorN<S>) -> $PointN<S> {
+                $PointN { $($field: v.$field),+ }
+            }
+        }
+
         impl<S: BaseNum> Array for $PointN<S> {
             type Element = S;
 
@@ -612,6 +618,7 @@ mod tests {
                 let p: &mut Point3<_> = From::from(p);
                 assert_eq!(p, &POINT3);
             }
+            assert_eq!(Point3::from(Vector3::new(1, 2, 3)), POINT3);
         }
 
         #[test]
