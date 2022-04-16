@@ -209,7 +209,6 @@ macro_rules! impl_vector {
         impl<S: Neg<Output = S>> Neg for $VectorN<S> {
             type Output = $VectorN<S>;
 
-            #[inline]
             default_fn!( neg(self) -> $VectorN<S> { $VectorN::new($(-self.$field),+) } );
         }
 
@@ -309,30 +308,30 @@ macro_rules! impl_vector {
         });
 
         impl<S: BaseNum> ElementWise for $VectorN<S> {
-            #[inline] default_fn!( add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) } );
-            #[inline] default_fn!( sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) } );
-            #[inline] default_fn!( mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) } );
-            #[inline] default_fn!( div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) } );
+            default_fn!( add_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field + rhs.$field),+) } );
+            default_fn!( sub_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field - rhs.$field),+) } );
+            default_fn!( mul_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field * rhs.$field),+) } );
+            default_fn!( div_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field / rhs.$field),+) } );
             #[inline] fn rem_element_wise(self, rhs: $VectorN<S>) -> $VectorN<S> { $VectorN::new($(self.$field % rhs.$field),+) }
 
-            #[inline] default_fn!( add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ } );
-            #[inline] default_fn!( sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ } );
-            #[inline] default_fn!( mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ } );
-            #[inline] default_fn!( div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ } );
+            default_fn!( add_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field += rhs.$field);+ } );
+            default_fn!( sub_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field -= rhs.$field);+ } );
+            default_fn!( mul_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field *= rhs.$field);+ } );
+            default_fn!( div_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field /= rhs.$field);+ } );
             #[inline] fn rem_assign_element_wise(&mut self, rhs: $VectorN<S>) { $(self.$field %= rhs.$field);+ }
         }
 
         impl<S: BaseNum> ElementWise<S> for $VectorN<S> {
-            #[inline] default_fn!( add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) } );
-            #[inline] default_fn!( sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) } );
-            #[inline] default_fn!( mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) } );
-            #[inline] default_fn!( div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) } );
+            default_fn!( add_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field + rhs),+) } );
+            default_fn!( sub_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field - rhs),+) } );
+            default_fn!( mul_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field * rhs),+) } );
+            default_fn!( div_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field / rhs),+) } );
             #[inline] fn rem_element_wise(self, rhs: S) -> $VectorN<S> { $VectorN::new($(self.$field % rhs),+) }
 
-            #[inline] default_fn!( add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ } );
-            #[inline] default_fn!( sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ } );
-            #[inline] default_fn!( mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ } );
-            #[inline] default_fn!( div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ } );
+            default_fn!( add_assign_element_wise(&mut self, rhs: S) { $(self.$field += rhs);+ } );
+            default_fn!( sub_assign_element_wise(&mut self, rhs: S) { $(self.$field -= rhs);+ } );
+            default_fn!( mul_assign_element_wise(&mut self, rhs: S) { $(self.$field *= rhs);+ } );
+            default_fn!( div_assign_element_wise(&mut self, rhs: S) { $(self.$field /= rhs);+ } );
             #[inline] fn rem_assign_element_wise(&mut self, rhs: S) { $(self.$field %= rhs);+ }
         }
 
