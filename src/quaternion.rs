@@ -238,7 +238,6 @@ impl<S: NumCast + Copy> Quaternion<S> {
 }
 
 impl<S: BaseFloat> InnerSpace for Quaternion<S> {
-    #[inline]
     default_fn!( dot(self, other: Quaternion<S>) -> S {
         self.s * other.s + self.v.dot(other.v)
     } );
