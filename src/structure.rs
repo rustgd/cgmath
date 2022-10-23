@@ -273,6 +273,9 @@ where
     }
 
     /// Returns a vector with the same direction, but with a magnitude of `1`.
+    ///
+    /// If a vector with magnitude zero is passed in this will return a `NaN` vector. If you do not
+    /// want this then use `InnerSpace::checked_normalize` instead.
     #[inline]
     fn normalize(self) -> Self
     where
@@ -282,12 +285,47 @@ where
     }
 
     /// Returns a vector with the same direction and a given magnitude.
+    ///
+    /// If a vector with magnitude zero is passed in this will return a `NaN` vector. If you do not
+    /// want this then use `InnerSpace::checked_normalize_to` instead.
     #[inline]
     fn normalize_to(self, magnitude: Self::Scalar) -> Self
     where
         Self::Scalar: Float,
     {
         self * (magnitude / self.magnitude())
+    }
+
+    /// Returns a vector with the same direction, but with a magnitude of `1` unless the vector is
+    /// zero in which case it will return zero.
+    ///
+    /// Same as `InnerSpace::normalize` except when `Zero::is_zero` is true.
+    #[inline]
+    fn checked_normalize(self) -> Self
+    where
+        Self::Scalar: Float,
+    {
+        if self.is_zero() {
+            self
+        } else {
+            self.normalize()
+        }
+    }
+
+    /// Returns a vector with the same direction and a given magnitude unless the vector is
+    /// zero in which case it will return zero.
+    ///
+    /// Same as `InnerSpace::normalize_to` except when `Zero::is_zero` is true.
+    #[inline]
+    fn checked_normalize_to(self, magnitude: Self::Scalar) -> Self
+    where
+        Self::Scalar: Float,
+    {
+        if self.is_zero() {
+            self
+        } else {
+            self.normalize_to(magnitude)
+        }
     }
 }
 

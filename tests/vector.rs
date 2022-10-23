@@ -320,6 +320,34 @@ fn test_normalize() {
 }
 
 #[test]
+fn test_checked_normalize() {
+    assert_ulps_eq!(
+        Vector2::new(0.0f64, 0.0f64).checked_normalize(),
+        Vector2::new(0.0f64, 0.0f64)
+    );
+    assert_ulps_eq!(
+        Vector3::new(0.0f64, 0.0f64, 0.0f64).checked_normalize(),
+        Vector3::new(0.0f64, 0.0f64, 0.0f64)
+    );
+    assert_ulps_eq!(
+        Vector4::new(0.0f64, 0.0f64, 0.0f64, 0.0f64).checked_normalize(),
+        Vector4::new(0.0f64, 0.0f64, 0.0f64, 0.0f64)
+    );
+    assert_ulps_eq!(
+        Vector2::new(5.0f64, 12.0f64).checked_normalize(),
+        Vector2::new(5.0 / 13.0, 12.0 / 13.0)
+    );
+    assert_ulps_eq!(
+        Vector3::new(4.0f64, 4.0f64, 7.0f64).checked_normalize(),
+        Vector3::new(4.0 / 9.0, 4.0 / 9.0, 7.0 / 9.0)
+    );
+    assert_ulps_eq!(
+        Vector4::new(1.0f64, 3.0f64, 5.0f64, 17.0f64).checked_normalize(),
+        Vector4::new(1.0 / 18.0, 3.0 / 18.0, 5.0 / 18.0, 17.0 / 18.0)
+    );
+}
+
+#[test]
 fn test_project_on() {
     assert_ulps_eq!(
         Vector2::new(-1.0f64, 5.0).project_on(Vector2::new(2.0, 4.0)),
