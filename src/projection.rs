@@ -77,9 +77,9 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
 }
 
 /// Create a planar projection matrix, which can be either perspective or orthographic.
-/// 
-/// The projection frustum is always two units high one unit along the view direction,
-/// making the focal point at `1.0 - cot(fovy / 2.0)`. Unlike a standard perspective
+///
+/// The projection frustum is always two units high at the origin along the view direction,
+/// making the focal point located at `(0.0, 0.0, cot(fovy / 2.0))`. Unlike a standard perspective
 /// projection, this allows `fovy` to be zero or negative.
 pub fn planar<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
     PlanarFov {
@@ -325,7 +325,7 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
         let two: S = cast(2).unwrap();
         let inv_f = Rad::tan(persp.fovy / two);
 
-        let focal_point = S::one() - inv_f.recip();
+        let focal_point = -inv_f.recip();
 
         assert!(
             abs_diff_ne!(persp.aspect.abs(), S::zero()),
@@ -340,7 +340,7 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
         );
         assert!(
             focal_point < S::min(persp.far, persp.near) || focal_point > S::max(persp.far, persp.near),
-            "The focal point cannot be between the far and near planes, found: focal: {:?} far: {:?}, near: {:?}",
+            "The focal point cannot be between the far and near planes, found: focal: {:?}, far: {:?}, near: {:?}",
             focal_point,
             persp.far,
             persp.near,
@@ -358,15 +358,14 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
 
         let c2r0 = S::zero();
         let c2r1 = S::zero();
-        let c2r2 = ((persp.far + persp.near - two) * inv_f + two) / (persp.near - persp.far);
+        let c2r2 = ((persp.far + persp.near) * inv_f + two) / (persp.near - persp.far);
         let c2r3 = -inv_f;
 
         let c3r0 = S::zero();
         let c3r1 = S::zero();
-        let c3r2 = (two * persp.far * persp.near * inv_f
-            + (S::one() - inv_f) * (persp.far + persp.near))
+        let c3r2 = (two * persp.far * persp.near * inv_f + (persp.far + persp.near))
             / (persp.near - persp.far);
-        let c3r3 = S::one() - inv_f;
+        let c3r3 = S::one();
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
         Matrix4::new(
