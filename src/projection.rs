@@ -76,6 +76,21 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
     .into()
 }
 
+/// Create a planar projection matrix, which can be either perspective or orthographic.
+/// 
+/// The projection frustum is always two units high one unit along the view direction,
+/// making the focal point at `1.0 - cot(fovy / 2.0)`. Unlike a standard perspective
+/// projection, this allows `fovy` to be zero or negative.
+pub fn planar<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+    PlanarFov {
+        fovy: fovy.into(),
+        aspect,
+        near,
+        far,
+    }
+    .into()
+}
+
 /// A perspective projection based on a vertical field-of-view angle.
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
@@ -273,6 +288,85 @@ impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
         let c3r1 = -(ortho.top + ortho.bottom) / (ortho.top - ortho.bottom);
         let c3r2 = -(ortho.far + ortho.near) / (ortho.far - ortho.near);
         let c3r3 = S::one();
+
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        Matrix4::new(
+            c0r0, c0r1, c0r2, c0r3,
+            c1r0, c1r1, c1r2, c1r3,
+            c2r0, c2r1, c2r2, c2r3,
+            c3r0, c3r1, c3r2, c3r3,
+        )
+    }
+}
+
+/// A planar projection based on a vertical field-of-view angle.
+#[derive(Copy, Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct PlanarFov<S> {
+    pub fovy: Rad<S>,
+    pub aspect: S,
+    pub near: S,
+    pub far: S,
+}
+
+impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
+    fn from(persp: PlanarFov<S>) -> Matrix4<S> {
+        assert!(
+            persp.fovy > -Rad::turn_div_2(),
+            "The vertical field of view cannot be less than a negative half turn, found: {:?}",
+            persp.fovy
+        );
+        assert!(
+            persp.fovy < Rad::turn_div_2(),
+            "The vertical field of view cannot be greater than a half turn, found: {:?}",
+            persp.fovy
+        );
+
+        let two: S = cast(2).unwrap();
+        let inv_f = Rad::tan(persp.fovy / two);
+
+        let focal_point = S::one() - inv_f.recip();
+
+        assert!(
+            abs_diff_ne!(persp.aspect.abs(), S::zero()),
+            "The absolute aspect ratio cannot be zero, found: {:?}",
+            persp.aspect.abs()
+        );
+        assert!(
+            abs_diff_ne!(persp.far, persp.near),
+            "The far plane and near plane are too close, found: far: {:?}, near: {:?}",
+            persp.far,
+            persp.near
+        );
+        assert!(
+            focal_point < S::min(persp.far, persp.near) || focal_point > S::max(persp.far, persp.near),
+            "The focal point cannot be between the far and near planes, found: focal: {:?} far: {:?}, near: {:?}",
+            focal_point,
+            persp.far,
+            persp.near,
+        );
+
+        let c0r0 = S::one() / persp.aspect;
+        let c0r1 = S::zero();
+        let c0r2 = S::zero();
+        let c0r3 = S::zero();
+
+        let c1r0 = S::zero();
+        let c1r1 = S::one();
+        let c1r2 = S::zero();
+        let c1r3 = S::zero();
+
+        let c2r0 = S::zero();
+        let c2r1 = S::zero();
+        let c2r2 = ((persp.far + persp.near - two) * inv_f + two) / (persp.near - persp.far);
+        let c2r3 = -inv_f;
+
+        let c3r0 = S::zero();
+        let c3r1 = S::zero();
+        let c3r2 = (two * persp.far * persp.near * inv_f
+            + (S::one() - inv_f) * (persp.far + persp.near))
+            / (persp.near - persp.far);
+        let c3r3 = S::one() - inv_f;
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
         Matrix4::new(
