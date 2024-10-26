@@ -78,13 +78,20 @@ pub fn ortho<S: BaseFloat>(left: S, right: S, bottom: S, top: S, near: S, far: S
 
 /// Create a planar projection matrix, which can be either perspective or orthographic.
 ///
-/// The projection frustum is always two units high at the origin along the view direction,
-/// making the focal point located at `(0.0, 0.0, cot(fovy / 2.0))`. Unlike a standard perspective
-/// projection, this allows `fovy` to be zero or negative.
-pub fn planar<S: BaseFloat, A: Into<Rad<S>>>(fovy: A, aspect: S, near: S, far: S) -> Matrix4<S> {
+/// The projection frustum is always `height` units high at the origin along the view direction,
+/// making the focal point located at `(0.0, 0.0, cot(fovy / 2.0)) * height / 2.0`. Unlike
+/// a standard perspective projection, this allows `fovy` to be zero or negative.
+pub fn planar<S: BaseFloat, A: Into<Rad<S>>>(
+    fovy: A,
+    aspect: S,
+    height: S,
+    near: S,
+    far: S,
+) -> Matrix4<S> {
     PlanarFov {
         fovy: fovy.into(),
         aspect,
+        height,
         near,
         far,
     }
@@ -305,6 +312,7 @@ impl<S: BaseFloat> From<Ortho<S>> for Matrix4<S> {
 pub struct PlanarFov<S> {
     pub fovy: Rad<S>,
     pub aspect: S,
+    pub height: S,
     pub near: S,
     pub far: S,
 }
@@ -321,6 +329,11 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
             "The vertical field of view cannot be greater than a half turn, found: {:?}",
             persp.fovy
         );
+        assert! {
+            persp.height >= S::zero(),
+            "The projection plane height cannot be negative, found: {:?}",
+            persp.height
+        }
 
         let two: S = cast(2).unwrap();
         let inv_f = Rad::tan(persp.fovy / two);
@@ -346,13 +359,13 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
             persp.near,
         );
 
-        let c0r0 = S::one() / persp.aspect;
+        let c0r0 = two / (persp.aspect * persp.height);
         let c0r1 = S::zero();
         let c0r2 = S::zero();
         let c0r3 = S::zero();
 
         let c1r0 = S::zero();
-        let c1r1 = S::one();
+        let c1r1 = two / persp.height;
         let c1r2 = S::zero();
         let c1r3 = S::zero();
 
