@@ -162,6 +162,7 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
             persp.near
         );
 
+        let one: S = cast(1).unwrap();
         let two: S = cast(2).unwrap();
         let f = Rad::cot(persp.fovy / two);
 
@@ -177,12 +178,20 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
 
         let c2r0 = S::zero();
         let c2r1 = S::zero();
-        let c2r2 = (persp.far + persp.near) / (persp.near - persp.far);
+        let c2r2 = if persp.far.is_finite() {
+            (persp.far + persp.near) / (persp.near - persp.far)
+        } else {
+            -one
+        };
         let c2r3 = -S::one();
 
         let c3r0 = S::zero();
         let c3r1 = S::zero();
-        let c3r2 = (two * persp.far * persp.near) / (persp.near - persp.far);
+        let c3r2 = if persp.far.is_finite() {
+            (two * persp.far * persp.near) / (persp.near - persp.far)
+        } else {
+            -two * persp.near
+        };
         let c3r3 = S::zero();
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -228,6 +237,7 @@ impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
             persp.far
         );
 
+        let one: S = cast(1i8).unwrap();
         let two: S = cast(2i8).unwrap();
 
         let c0r0 = (two * persp.near) / (persp.right - persp.left);
@@ -242,12 +252,20 @@ impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
 
         let c2r0 = (persp.right + persp.left) / (persp.right - persp.left);
         let c2r1 = (persp.top + persp.bottom) / (persp.top - persp.bottom);
-        let c2r2 = -(persp.far + persp.near) / (persp.far - persp.near);
+        let c2r2 = if persp.far.is_finite() {
+            (persp.far + persp.near) / (persp.near - persp.far)
+        } else {
+            -one
+        };
         let c2r3 = -S::one();
 
         let c3r0 = S::zero();
         let c3r1 = S::zero();
-        let c3r2 = -(two * persp.far * persp.near) / (persp.far - persp.near);
+        let c3r2 = if persp.far.is_finite() {
+            (two * persp.far * persp.near) / (persp.near - persp.far)
+        } else {
+            -two * persp.near
+        };
         let c3r3 = S::zero();
 
         #[cfg_attr(rustfmt, rustfmt_skip)]
