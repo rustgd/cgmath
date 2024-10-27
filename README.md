@@ -17,7 +17,7 @@ The library provides:
 - rotation matrices: `Basis2`, `Basis3`
 - angle units: `Rad`, `Deg`
 - points: `Point2`, `Point3`
-- perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`
+- perspective projections: `Perspective`, `PerspectiveFov`, `Ortho`, `PlanarFov`
 - spatial transformations: `AffineMatrix3`, `Transform3`
 
 Not all of the functionality has been implemented yet, and the existing code
