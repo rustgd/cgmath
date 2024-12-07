@@ -336,7 +336,7 @@ impl<S: BaseFloat> From<PlanarFov<S>> for Matrix4<S> {
         }
 
         let two: S = cast(2).unwrap();
-        let inv_f = Rad::tan(persp.fovy / two);
+        let inv_f = Rad::tan(persp.fovy / two) * two / persp.height;
 
         let focal_point = -inv_f.recip();
 
