@@ -102,6 +102,7 @@ pub fn planar<S: BaseFloat, A: Into<Rad<S>>>(
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "rustc-serialize", derive(RustcEncodable, RustcDecodable))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "rkyv", derive(Archive, Unarchive))]
 pub struct PerspectiveFov<S> {
     pub fovy: Rad<S>,
     pub aspect: S,
@@ -198,6 +199,7 @@ impl<S: BaseFloat> From<PerspectiveFov<S>> for Matrix4<S> {
 /// A perspective projection with arbitrary left/right/bottom/top distances
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "rkyv", derive(Archive, Unarchive))]
 pub struct Perspective<S> {
     pub left: S,
     pub right: S,
@@ -263,6 +265,7 @@ impl<S: BaseFloat> From<Perspective<S>> for Matrix4<S> {
 /// An orthographic projection with arbitrary left/right/bottom/top distances
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "rkyv", derive(Archive, Unarchive))]
 pub struct Ortho<S> {
     pub left: S,
     pub right: S,
