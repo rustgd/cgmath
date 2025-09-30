@@ -644,7 +644,7 @@ where
     #[inline]
     fn bisect(self, other: Self) -> Self {
         let half = cast(0.5f64).unwrap();
-        Self::normalize((self - other) * half + self)
+        Self::normalize((self + other) * half)
     }
 
     /// A full rotation.
