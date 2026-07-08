@@ -16,6 +16,134 @@
 extern crate approx;
 extern crate cgmath;
 
+/// Tests for swap_columns, swap_rows, and swap_elements correctness and soundness
+/// (see https://github.com/rustgd/cgmath/issues/565).
+pub mod swap {
+    use cgmath::*;
+
+    #[test]
+    fn matrix2_swap_columns_same_index() {
+        let original = Matrix2::new(1.0f64, 2.0, 3.0, 4.0);
+        let mut m = original;
+        m.swap_columns(0, 0);
+        assert_eq!(m, original);
+        m.swap_columns(1, 1);
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix2_swap_columns_different_indices() {
+        let mut m = Matrix2::new(1.0f64, 2.0, 3.0, 4.0);
+        m.swap_columns(0, 1);
+        assert_eq!(m, Matrix2::new(3.0, 4.0, 1.0, 2.0));
+        // swapping back gives original
+        m.swap_columns(1, 0);
+        assert_eq!(m, Matrix2::new(1.0, 2.0, 3.0, 4.0));
+    }
+
+    #[test]
+    fn matrix2_swap_elements_same_position() {
+        let original = Matrix2::new(1.0f64, 2.0, 3.0, 4.0);
+        let mut m = original;
+        m.swap_elements((0, 0), (0, 0));
+        assert_eq!(m, original);
+        m.swap_elements((1, 1), (1, 1));
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix2_swap_elements_same_column_different_row() {
+        // column 0 has elements [1.0 (row0), 2.0 (row1)]
+        let mut m = Matrix2::new(1.0f64, 2.0, 3.0, 4.0);
+        m.swap_elements((0, 0), (0, 1));
+        assert_eq!(m, Matrix2::new(2.0, 1.0, 3.0, 4.0));
+    }
+
+    #[test]
+    fn matrix3_swap_columns_same_index() {
+        let original = Matrix3::new(1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+        let mut m = original;
+        m.swap_columns(0, 0);
+        assert_eq!(m, original);
+        m.swap_columns(1, 1);
+        assert_eq!(m, original);
+        m.swap_columns(2, 2);
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix3_swap_columns_different_indices() {
+        let mut m = Matrix3::new(1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+        let col0_before = m[0];
+        let col2_before = m[2];
+        m.swap_columns(0, 2);
+        assert_eq!(m[0], col2_before);
+        assert_eq!(m[2], col0_before);
+    }
+
+    #[test]
+    fn matrix3_swap_elements_same_position() {
+        let original = Matrix3::new(1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+        let mut m = original;
+        m.swap_elements((1, 1), (1, 1));
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix3_swap_elements_same_column_different_row() {
+        let mut m = Matrix3::new(1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+        m.swap_elements((1, 0), (1, 2));
+        // column 1 had [4, 5, 6]; after swap row0 and row2: [6, 5, 4]
+        assert_eq!(m[1], Vector3::new(6.0, 5.0, 4.0));
+    }
+
+    #[test]
+    fn matrix4_swap_columns_same_index() {
+        let original = Matrix4::new(
+            1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+            16.0,
+        );
+        let mut m = original;
+        m.swap_columns(2, 2);
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix4_swap_columns_different_indices() {
+        let mut m = Matrix4::new(
+            1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+            16.0,
+        );
+        let col1_before = m[1];
+        let col3_before = m[3];
+        m.swap_columns(1, 3);
+        assert_eq!(m[1], col3_before);
+        assert_eq!(m[3], col1_before);
+    }
+
+    #[test]
+    fn matrix4_swap_elements_same_position() {
+        let original = Matrix4::new(
+            1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+            16.0,
+        );
+        let mut m = original;
+        m.swap_elements((2, 2), (2, 2));
+        assert_eq!(m, original);
+    }
+
+    #[test]
+    fn matrix4_swap_elements_same_column_different_row() {
+        let mut m = Matrix4::new(
+            1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0,
+            16.0,
+        );
+        // column 2 has rows [9, 10, 11, 12]; swap row 0 and row 3
+        m.swap_elements((2, 0), (2, 3));
+        assert_eq!(m[2], Vector4::new(12.0, 10.0, 11.0, 9.0));
+    }
+}
+
 pub mod matrix2 {
     use std::f64;
 

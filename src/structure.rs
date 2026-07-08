@@ -72,10 +72,13 @@ where
     /// Swap the elements at indices `i` and `j` in-place.
     #[inline]
     fn swap_elements(&mut self, i: usize, j: usize) {
-        use std::ptr;
-
-        // Yeah, ok borrow checker – I know what I'm doing here
-        unsafe { ptr::swap(&mut self[i], &mut self[j]) };
+        if i == j {
+            return;
+        }
+        // Element: Copy is a supertrait bound, so we can swap without unsafe.
+        let tmp = self[i];
+        self[i] = self[j];
+        self[j] = tmp;
     }
 
     /// The sum of the elements of the array.
