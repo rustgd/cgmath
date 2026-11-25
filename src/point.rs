@@ -87,28 +87,70 @@ macro_rules! impl_point {
             }
 
             /// Returns true if each of the components of self are >= the corrosponding components of other
-            pub fn all_ge(self, other: Self) -> bool 
+            pub fn all_ge(self, other: Self) -> bool
                 where S: BaseNum
             {
                 $(self.$field >= other.$field)&&+
             }
 
             /// Returns true if each of the components of self are <= the corrosponding components of other
-            pub fn all_le(self, other: Self) -> bool 
+            pub fn all_le(self, other: Self) -> bool
                 where S: BaseNum
             {
                 $(self.$field <= other.$field)&&+
             }
 
+            /// Returns true if each of the components of self are > the corrosponding components of other
+            pub fn all_gt(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field > other.$field)&&+
+            }
+
+            /// Returns true if each of the components of self are < the corrosponding components of other
+            pub fn all_lt(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field < other.$field)&&+
+            }
+
+            /// Returns true if any of the components of self are >= the corrosponding components of other
+            pub fn any_ge(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field >= other.$field)||+
+            }
+
+            /// Returns true if any of the components of self are <= the corrosponding components of other
+            pub fn any_le(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field <= other.$field)||+
+            }
+
+            /// Returns true if any of the components of self are > the corrosponding components of other
+            pub fn any_gt(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field > other.$field)||+
+            }
+
+            /// Returns true if any of the components of self are < the corrosponding components of other
+            pub fn any_lt(self, other: Self) -> bool
+                where S: BaseNum
+            {
+                $(self.$field < other.$field)||+
+            }
+
             /// Min between two Points
-            pub fn min(self, other: Self) -> $PointN<S> 
+            pub fn min(self, other: Self) -> $PointN<S>
                 where S: BaseNum
             {
                 $PointN { $($field: if self.$field > other.$field { self.$field } else { other.$field }),+ }
             }
 
             /// Max Between two Points
-            pub fn max(self, other: Self) -> $PointN<S> 
+            pub fn max(self, other: Self) -> $PointN<S>
                 where S: BaseNum
             {
                 $PointN { $($field: if self.$field < other.$field { self.$field } else { other.$field }),+ }
@@ -120,10 +162,10 @@ macro_rules! impl_point {
             {
                 $PointN { $($field: self.$field.clamp(min.$field, max.$field)),+ }
             }
-            
+
             /// Selects the Fields of either if true or if false based on the mask given
             /// The Mask Should have either 1.0 for true or -1.0 for false
-            pub fn select(mask: $PointN<S>, if_true: $PointN<S>, if_false: $PointN<S>) -> $PointN<S> 
+            pub fn select(mask: $PointN<S>, if_true: $PointN<S>, if_false: $PointN<S>) -> $PointN<S>
                 where S: BaseFloat
             {
                 $PointN { $($field: if mask.$field == S::from(1.0).unwrap() { if_true.$field } else { if_false.$field } ),+ }
@@ -131,7 +173,7 @@ macro_rules! impl_point {
 
             /// Selects the Fields of either if true or if false based on the mask vector given
             /// The Mask Vector Should have either 1.0 for true or -1.0 for false
-            pub fn select_vec(mask: $VectorN<S>, if_true: $PointN<S>, if_false: $PointN<S>) -> $PointN<S> 
+            pub fn select_vec(mask: $VectorN<S>, if_true: $PointN<S>, if_false: $PointN<S>) -> $PointN<S>
                 where S: BaseFloat
             {
                 $PointN { $($field: if mask.$field == S::from(1.0).unwrap() { if_true.$field } else { if_false.$field } ),+ }
