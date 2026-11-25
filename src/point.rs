@@ -142,6 +142,62 @@ macro_rules! impl_point {
                 $(self.$field < other.$field)||+
             }
 
+            /// Returns true if each of the components of self are >= other
+            pub fn all_ge_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field >= other)&&+
+            }
+
+            /// Returns true if each of the components of self are <= other
+            pub fn all_le_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field <= other)&&+
+            }
+
+            /// Returns true if each of the components of self are > other
+            pub fn all_gt_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field > other)&&+
+            }
+
+            /// Returns true if each of the components of self are < other
+            pub fn all_lt_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field < other)&&+
+            }
+
+            /// Returns true if any of the components of self are >= other
+            pub fn any_ge_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field >= other)||+
+            }
+
+            /// Returns true if any of the components of self are <= other
+            pub fn any_le_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field <= other)||+
+            }
+
+            /// Returns true if any of the components of self are > other
+            pub fn any_gt_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field > other)||+
+            }
+
+            /// Returns true if any of the components of self are < other
+            pub fn any_lt_scalar(self, other: S) -> bool
+                where S: PartialOrd + Copy
+            {
+                $(self.$field < other)||+
+            }
+
             /// Min between two Points
             pub fn min(self, other: Self) -> $PointN<S>
                 where S: BaseNum
